@@ -1,0 +1,35 @@
+{
+  "name": "lentokonepeli",
+  "version": "1.0.0",
+  "description": "A modern remake of Lentokonepeli/Dogfight",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "ts-node server/src/server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattbruv/Lentokonepeli.git"
+  },
+  "keywords": [
+    "lentokonepeli",
+    "dogfight",
+    "remake",
+    "aapeli",
+    "playray",
+    "playforia"
+  ],
+  "author": "Matt P.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mattbruv/Lentokonepeli/issues"
+  },
+  "homepage": "https://github.com/mattbruv/Lentokonepeli#readme",
+  "dependencies": {
+    "@types/express": "^4.17.0",
+    "express": "^4.17.1",
+    "parcel": "^1.12.3",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3"
+  }
+}
