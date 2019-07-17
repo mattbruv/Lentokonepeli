@@ -1,14 +1,14 @@
 {
+  "eslint.enable": true,
   "eslint.validate": [
     "javascript",
     "javascriptreact",
+    "typescriptreact",
     {
       "language": "typescript",
       "autoFix": true
     }
   ],
-  "files.autoSave": "off",
-  "javascript.format.enable": false,
   "editor.formatOnSave": true,
   "eslint.autoFixOnSave": true,
   "editor.tabSize": 2,
