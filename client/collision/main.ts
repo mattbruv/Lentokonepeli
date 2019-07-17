@@ -9,11 +9,19 @@ const app = new PIXI.Application({
   transparent: true
 });
 
-const rect1 = new Rectangle();
+const rectangles = [];
+
+function addRectangles(): void {
+  for (let i = 0; i < 20; i++) {
+    const rect = new Rectangle();
+    rectangles.push(rect);
+    app.stage.addChild(rect.sprite);
+  }
+}
 
 function init(): void {
   document.body.appendChild(app.view);
-  app.stage.addChild(rect1.sprite);
+  addRectangles();
 }
 
 window.addEventListener("load", (): void => {

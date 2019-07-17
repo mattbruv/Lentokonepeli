@@ -19,14 +19,15 @@ export class Rectangle implements Draggable {
   public constructor() {
     this.sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
     this.sprite.tint = randBetween(0, 0xffffff);
-    this.sprite.width = randBetween(20, 100);
-    this.sprite.height = randBetween(20, 100);
+    this.sprite.width = randBetween(10, 100);
+    this.sprite.height = randBetween(10, 100);
     this.sprite.position.set(randBetween(0, 1000), randBetween(0, 1000));
     this.sprite.interactive = true;
     this.sprite.buttonMode = true;
     this.sprite.anchor.set(0.5);
     this.direction = 0;
     this.bindEventHandlers();
+    if (randBetween(0, 2) == 1) this.setDirection(randBetween(0, 256));
   }
 
   public rotate(dir: rotateDirection): void {
