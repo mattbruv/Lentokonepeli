@@ -8,9 +8,9 @@
         }
     ],
     "files.autoSave": "off",
-    "editor.formatOnSave": false,
     "javascript.format.enable": false,
+    "editor.formatOnSave": true,
     "eslint.autoFixOnSave": true,
-    "editor.tabSize": 2,
+    "editor.tabSize": 4,
     "files.eol": "\n"
 }
