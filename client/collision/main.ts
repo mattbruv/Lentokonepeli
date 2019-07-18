@@ -1,27 +1,21 @@
 import * as PIXI from "pixi.js";
-import { Rectangle } from "./rect";
+import { RectExample } from "./rect";
 
 console.log("collision script");
 
 const app = new PIXI.Application({
-  width: 1000,
-  height: 1000,
-  transparent: true
+  width: 750,
+  height: 750
+  // transparent: true
 });
 
-const rectangles = [];
-
-function addRectangles(): void {
-  for (let i = 0; i < 20; i++) {
-    const rect = new Rectangle();
-    rectangles.push(rect);
-    app.stage.addChild(rect.sprite);
-  }
-}
+const rect1 = new RectExample();
+const rect2 = new RectExample();
 
 function init(): void {
   document.body.appendChild(app.view);
-  addRectangles();
+  app.stage.addChild(rect1.sprite);
+  app.stage.addChild(rect2.sprite);
 }
 
 window.addEventListener("load", (): void => {
