@@ -1,5 +1,9 @@
 import * as PIXI from "pixi.js";
-import { Vec2d } from "../../dogfight/src/rectangle";
+import {
+  Vec2d,
+  Rectangle,
+  rectFromDimensions
+} from "../../dogfight/src/rectangle";
 import {
   randBetween,
   Draggable,
@@ -14,21 +18,35 @@ const RECT_MIN = 20;
 const RECT_MAX = 100;
 const DIRECTIONS = 256;
 
-export class RectExample implements Draggable, Rotateable {
+interface RectExample {
+  model: Rectangle;
+}
+
+export class Rect implements RectExample, Draggable, Rotateable {
   public sprite: PIXI.Sprite;
   public selected: false;
   public eventData: PIXI.interaction.InteractionData;
 
   public direction: number;
   public position: Vec2d;
+  public model: Rectangle;
+
+  public width: number;
+  public height: number;
 
   public constructor() {
+    this.width = randBetween(RECT_MIN, RECT_MAX);
+    this.height = randBetween(RECT_MIN, RECT_MAX);
+
+    // Initialize sprite
     this.sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
     this.sprite.tint = randBetween(0, 0xffffff);
-    this.sprite.width = randBetween(RECT_MIN, RECT_MAX);
-    this.sprite.height = randBetween(RECT_MIN, RECT_MAX);
+    this.sprite.width = this.width;
+    this.sprite.height = this.height;
     this.sprite.anchor.set(0.5);
     this.sprite.interactive = true;
+
+    // Intialize object properties
     this.setPosition(randBetween(0, 750), randBetween(0, 750));
     this.setDirection(randBetween(0, DIRECTIONS));
     this.bindEventHandlers();
@@ -40,7 +58,10 @@ export class RectExample implements Draggable, Rotateable {
       y: Math.floor(newY)
     };
     this.sprite.position.set(this.position.x, this.position.y);
-    // console.log(this.position);
+    console.log({ w: this.width, h: this.height });
+    console.log(this.position);
+    this.model = rectFromDimensions(this.position, this.width, this.height);
+    console.log(this.model);
   }
 
   public setDirection(newAngle: number): void {

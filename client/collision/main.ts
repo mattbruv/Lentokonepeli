@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { RectExample } from "./rect";
+import { Rect } from "./rect";
 
 console.log("collision script");
 
@@ -9,8 +9,8 @@ const app = new PIXI.Application({
   transparent: true
 });
 
-const rect1 = new RectExample();
-const rect2 = new RectExample();
+const rect1 = new Rect();
+const rect2 = new Rect();
 
 function init(): void {
   document.body.appendChild(app.view);
