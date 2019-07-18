@@ -5,8 +5,8 @@ console.log("collision script");
 
 const app = new PIXI.Application({
   width: 750,
-  height: 750
-  // transparent: true
+  height: 750,
+  transparent: true
 });
 
 const rect1 = new RectExample();
