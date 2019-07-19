@@ -8,6 +8,10 @@ export function randBetween(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
+export interface Renderable {
+  getContainer(): PIXI.Container;
+}
+
 export interface Draggable {
   selected: boolean;
   sprite: PIXI.Sprite;
