@@ -17,8 +17,8 @@ export interface Draggable {
 
 export interface Rotateable {
   selected: boolean;
-  direction: number;
-  setDirection(newAngle: number);
+  setDirection(newAngle: number): void;
+  getDirection(): number;
 }
 
 export function onDragStart(
@@ -48,11 +48,11 @@ export function onKeyDown(object: Rotateable, event: KeyboardEvent): void {
     // console.log(object);
     switch (event.key) {
       case "ArrowRight": {
-        object.setDirection(object.direction + 1);
+        object.setDirection(object.getDirection() + 1);
         break;
       }
       case "ArrowLeft": {
-        object.setDirection(object.direction - 1);
+        object.setDirection(object.getDirection() - 1);
         break;
       }
       case "ArrowUp": {

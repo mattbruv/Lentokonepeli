@@ -1,9 +1,5 @@
 import * as PIXI from "pixi.js";
-import {
-  Vec2d,
-  Rectangle,
-  rectFromDimensions
-} from "../../dogfight/src/rectangle";
+import { RectangleModel } from "../../dogfight/src/rectangle";
 import {
   randBetween,
   Draggable,
@@ -18,33 +14,38 @@ const RECT_MIN = 20;
 const RECT_MAX = 100;
 const DIRECTIONS = 256;
 
-interface RectExample {
-  model: Rectangle;
-}
+/**
+ * This is an example Rectangle object
+ * with the basic properties to simulate a rectangle.
+ * Something similar to the rectangle object in the Dogfight engine.
+ * We only care about collision detection here,
+ * so we're not going to flesh this out beyond that.
+ */
 
-export class Rect implements RectExample, Draggable, Rotateable {
+export class RectangleSprite implements Draggable, Rotateable {
   public sprite: PIXI.Sprite;
   public selected: false;
   public eventData: PIXI.interaction.InteractionData;
-
-  public direction: number;
-  public position: Vec2d;
-  public model: Rectangle;
-
-  public width: number;
-  public height: number;
+  public rectObj: RectangleModel;
 
   public constructor() {
-    this.width = randBetween(RECT_MIN, RECT_MAX);
-    this.height = randBetween(RECT_MIN, RECT_MAX);
-
+    this.rectObj = {
+      width: randBetween(RECT_MIN, RECT_MAX),
+      height: randBetween(RECT_MIN, RECT_MAX),
+      center: {
+        x: randBetween(0, 750),
+        y: randBetween(0, 750)
+      },
+      direction: 0
+    };
     // Initialize sprite
     this.sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
     this.sprite.tint = randBetween(0, 0xffffff);
-    this.sprite.width = this.width;
-    this.sprite.height = this.height;
+    this.sprite.width = this.rectObj.width;
+    this.sprite.height = this.rectObj.height;
     this.sprite.anchor.set(0.5);
     this.sprite.interactive = true;
+    this.sprite.buttonMode = true;
 
     // Intialize object properties
     this.setPosition(randBetween(0, 750), randBetween(0, 750));
@@ -53,26 +54,29 @@ export class Rect implements RectExample, Draggable, Rotateable {
   }
 
   public setPosition(newX: number, newY: number): void {
-    this.position = {
+    this.rectObj.center = {
       x: Math.floor(newX),
       y: Math.floor(newY)
     };
-    this.sprite.position.set(this.position.x, this.position.y);
-    console.log({ w: this.width, h: this.height });
-    console.log(this.position);
-    this.model = rectFromDimensions(this.position, this.width, this.height);
-    console.log(this.model);
+    this.sprite.position.set(this.rectObj.center.x, this.rectObj.center.y);
+    console.log(this.rectObj.center);
+  }
+
+  public getDirection(): number {
+    return this.rectObj.direction;
   }
 
   public setDirection(newAngle: number): void {
     newAngle = newAngle % DIRECTIONS;
     newAngle = newAngle < 0 ? DIRECTIONS + newAngle : newAngle;
-    this.direction = newAngle;
+    this.rectObj.direction = newAngle;
     this.sprite.rotation = this.directionToRadians();
+    console.log("Direction: " + this.rectObj.direction);
+    console.log(this.sprite.rotation);
   }
 
   private directionToRadians(): number {
-    return (Math.PI * 2 * this.direction) / DIRECTIONS;
+    return (Math.PI * 2 * this.rectObj.direction) / DIRECTIONS;
   }
 
   private bindEventHandlers(): void {
@@ -87,4 +91,8 @@ export class Rect implements RectExample, Draggable, Rotateable {
       onKeyDown(this, event)
     );
   }
+}
+
+class RectangleSpriteDebug {
+  public constructor() {}
 }
