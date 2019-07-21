@@ -40,6 +40,13 @@ function getRectanglePoints(rect: RectangleModel): RectanglePoints {
   };
 }
 
+function translatePoint(origin: Vec2d, translation: Vec2d): Vec2d {
+  return {
+    x: origin.x + translation.x,
+    y: origin.y + translation.y
+  };
+}
+
 /**
  * Rotate a point by the given angle
  * @param point The point to rotate
@@ -61,12 +68,23 @@ function rotatePoint(point: Vec2d, radians: number): Vec2d {
 export function getRotatedRectanglePoints(
   rect: RectangleModel
 ): RectanglePoints {
+  const offset = rect.center;
+  rect.center = { x: 0, y: 0 };
   const radians = directionToRadians(rect.direction);
   const unrotated = getRectanglePoints(rect);
-  return {
+  rect.center = offset;
+
+  const r: RectanglePoints = {
     upperLeft: rotatePoint(unrotated.upperLeft, radians),
     upperRight: rotatePoint(unrotated.upperRight, radians),
     lowerRight: rotatePoint(unrotated.lowerRight, radians),
     lowerLeft: rotatePoint(unrotated.lowerLeft, radians)
   };
+
+  r.upperLeft = translatePoint(r.upperLeft, offset);
+  r.upperRight = translatePoint(r.upperRight, offset);
+  r.lowerRight = translatePoint(r.lowerRight, offset);
+  r.lowerLeft = translatePoint(r.lowerLeft, offset);
+
+  return r;
 }
