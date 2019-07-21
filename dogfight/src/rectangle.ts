@@ -1,6 +1,11 @@
-import { Vec2d, directionToRadians } from "./vector";
+import {
+  Vec2d,
+  rotatePoint,
+  translatePoint,
+  directionToRadians
+} from "./vector";
 
-// Collision detection for rotated rectangles
+// Collision detection and modeling for rotated rectangles
 // relies on the Separating Axis Theorem described here:
 // https://www.gamedev.net/articles/programming/general-and-gameplay-programming/2d-rotated-rectangle-collision-r2604
 
@@ -28,36 +33,15 @@ export interface RectanglePoints {
  * Gets the points of a rectangle model as it would appear on a graph with no rotation
  * @param rect Rectangle model to get the points of
  */
-function getRectanglePoints(rect: RectangleModel): RectanglePoints {
+function getRectOriginPoints(rect: RectangleModel): RectanglePoints {
   const halfWidth = Math.round(rect.width / 2);
   const halfHeight = Math.round(rect.height / 2);
   //TODO: update this so it works relative to rect center and not 0,0
   return {
-    upperLeft: { x: rect.center.x - halfWidth, y: rect.center.y + halfHeight },
-    upperRight: { x: rect.center.x + halfWidth, y: rect.center.y + halfHeight },
-    lowerRight: { x: rect.center.x + halfWidth, y: rect.center.y - halfHeight },
-    lowerLeft: { x: rect.center.x - halfWidth, y: rect.center.y - halfHeight }
-  };
-}
-
-function translatePoint(origin: Vec2d, translation: Vec2d): Vec2d {
-  return {
-    x: origin.x + translation.x,
-    y: origin.y + translation.y
-  };
-}
-
-/**
- * Rotate a point by the given angle
- * @param point The point to rotate
- * @param radians The angle at which to rotate the point
- */
-function rotatePoint(point: Vec2d, radians: number): Vec2d {
-  const cos = Math.cos(radians);
-  const sin = Math.sin(radians);
-  return {
-    x: point.x * cos - point.y * sin,
-    y: point.x * sin + point.y * cos
+    upperLeft: { x: -halfWidth, y: halfHeight },
+    upperRight: { x: halfWidth, y: halfHeight },
+    lowerRight: { x: halfWidth, y: -halfHeight },
+    lowerLeft: { x: -halfWidth, y: -halfHeight }
   };
 }
 
@@ -65,26 +49,19 @@ function rotatePoint(point: Vec2d, radians: number): Vec2d {
  * Returns points of the rectangle factoring in the direction
  * @param rect The Rectangle to get the points for
  */
-export function getRotatedRectanglePoints(
-  rect: RectangleModel
-): RectanglePoints {
-  const offset = rect.center;
-  rect.center = { x: 0, y: 0 };
+export function getRotatedRectPoints(rect: RectangleModel): RectanglePoints {
+  const offset = rect.center; // Original rect offset to translate back
   const radians = directionToRadians(rect.direction);
-  const unrotated = getRectanglePoints(rect);
-  rect.center = offset;
-
+  const unrotated = getRectOriginPoints(rect);
   const r: RectanglePoints = {
     upperLeft: rotatePoint(unrotated.upperLeft, radians),
     upperRight: rotatePoint(unrotated.upperRight, radians),
     lowerRight: rotatePoint(unrotated.lowerRight, radians),
     lowerLeft: rotatePoint(unrotated.lowerLeft, radians)
   };
-
   r.upperLeft = translatePoint(r.upperLeft, offset);
   r.upperRight = translatePoint(r.upperRight, offset);
   r.lowerRight = translatePoint(r.lowerRight, offset);
   r.lowerLeft = translatePoint(r.lowerLeft, offset);
-
   return r;
 }

@@ -3,7 +3,7 @@ import { directionToRadians, Vec2d } from "../../dogfight/src/vector";
 import {
   RectangleModel,
   RectanglePoints,
-  getRotatedRectanglePoints
+  getRotatedRectPoints
 } from "../../dogfight/src/rectangle";
 import {
   randBetween,
@@ -31,7 +31,7 @@ class RectangleSpriteDebug {
   }
 
   public update(rect: RectangleModel): void {
-    const points = getRotatedRectanglePoints(rect);
+    const points = getRotatedRectPoints(rect);
     this.graphics.clear();
     this.drawRect(points);
     this.drawPoints(points);

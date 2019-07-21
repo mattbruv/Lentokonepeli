@@ -9,6 +9,32 @@ export interface Vec2d {
 }
 
 /**
+ *
+ * @param origin
+ * @param translation
+ */
+export function translatePoint(origin: Vec2d, translation: Vec2d): Vec2d {
+  return {
+    x: origin.x + translation.x,
+    y: origin.y + translation.y
+  };
+}
+
+/**
+ * Rotate a point by the given angle
+ * @param point The point to rotate
+ * @param radians The angle at which to rotate the point
+ */
+export function rotatePoint(point: Vec2d, radians: number): Vec2d {
+  const cos = Math.cos(radians);
+  const sin = Math.sin(radians);
+  return {
+    x: point.x * cos - point.y * sin,
+    y: point.x * sin + point.y * cos
+  };
+}
+
+/**
  * Turns our custom defined direction/angle into radians
  * @param direction The angle, between 0 and the maximum rotation directions
  */
