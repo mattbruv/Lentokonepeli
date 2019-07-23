@@ -5,10 +5,6 @@ import {
   directionToRadians
 } from "./vector";
 
-// Collision detection and modeling for rotated rectangles
-// relies on the Separating Axis Theorem described here:
-// https://www.gamedev.net/articles/programming/general-and-gameplay-programming/2d-rotated-rectangle-collision-r2604
-
 /**
  * A rectangle hitbox model for the purpose of collision detection
  */

@@ -1,7 +1,7 @@
 import { ROTATION_DIRECTIONS } from "./constants";
 
 /**
- * A position in the game world.
+ * An (x, y) position in the game world.
  */
 export interface Vec2d {
   x: number;
@@ -9,9 +9,9 @@ export interface Vec2d {
 }
 
 /**
- *
- * @param origin
- * @param translation
+ * Moves a starting point by a specified direction
+ * @param origin The starting point
+ * @param translation The direction in which to move the starting point
  */
 export function translatePoint(origin: Vec2d, translation: Vec2d): Vec2d {
   return {

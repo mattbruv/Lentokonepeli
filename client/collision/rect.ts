@@ -38,9 +38,10 @@ class RectangleSpriteDebug {
   }
 
   private drawPoints(p: RectanglePoints): void {
-    this.graphics.beginFill(0xff0000);
+    this.graphics.beginFill(0x0000ff);
     this.graphics.lineStyle(0);
     this.drawSinglePoint(p.upperLeft);
+    this.graphics.beginFill(0xff0000);
     this.drawSinglePoint(p.upperRight);
     this.drawSinglePoint(p.lowerRight);
     this.drawSinglePoint(p.lowerLeft);
@@ -70,7 +71,6 @@ class RectangleSpriteDebug {
  * We only care about collision detection here,
  * so we're not going to flesh this out beyond that.
  */
-
 export class RectangleSprite implements Renderable, Draggable, Rotateable {
   public selected: false;
   public eventData: PIXI.interaction.InteractionData;
@@ -79,8 +79,11 @@ export class RectangleSprite implements Renderable, Draggable, Rotateable {
   private container: PIXI.Container;
   public sprite: PIXI.Sprite;
   private debugSprite: RectangleSpriteDebug;
+  public tint: number;
+  private callback: () => void;
 
   public constructor() {
+    this.callback = (): void => {};
     this.container = new PIXI.Container();
     this.debugSprite = new RectangleSpriteDebug();
     this.rectObj = {
@@ -92,9 +95,10 @@ export class RectangleSprite implements Renderable, Draggable, Rotateable {
       },
       direction: 0
     };
+    this.tint = randBetween(0, 0xffffff);
     // Initialize sprite
     this.sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
-    this.sprite.tint = randBetween(0, 0xffffff);
+    this.sprite.tint = this.tint;
     this.sprite.width = this.rectObj.width;
     this.sprite.height = this.rectObj.height;
     this.sprite.anchor.set(0.5);
@@ -111,6 +115,14 @@ export class RectangleSprite implements Renderable, Draggable, Rotateable {
     this.container.addChild(this.debugSprite.graphics);
   }
 
+  public setCollisionCallback(callback: () => void): void {
+    this.callback = callback;
+  }
+
+  private updateCollisions(): void {
+    this.callback();
+  }
+
   public getContainer(): PIXI.Container {
     return this.container;
   }
@@ -123,6 +135,7 @@ export class RectangleSprite implements Renderable, Draggable, Rotateable {
     this.sprite.position.set(this.rectObj.center.x, this.rectObj.center.y);
     console.log(this.rectObj.center);
     this.debugSprite.update(this.rectObj);
+    this.updateCollisions();
   }
 
   public getDirection(): number {
@@ -137,6 +150,7 @@ export class RectangleSprite implements Renderable, Draggable, Rotateable {
     this.debugSprite.update(this.rectObj);
     console.log("Direction: " + this.rectObj.direction);
     console.log(this.sprite.rotation);
+    this.updateCollisions();
   }
 
   private bindEventHandlers(): void {
