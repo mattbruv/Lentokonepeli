@@ -15,6 +15,18 @@ export interface RectangleModel {
   direction: number;
 }
 
+interface RectangleAxes {
+  Axis1: Vec2d;
+  Axis2: Vec2d;
+}
+
+interface RectangleAxes {
+  Axis1: Vec2d;
+  Axis2: Vec2d;
+}
+
+type ProjectionPoints = number[];
+
 /**
  * Four points in the game world that define a rectangle.
  */
@@ -32,7 +44,6 @@ export interface RectanglePoints {
 function getRectOriginPoints(rect: RectangleModel): RectanglePoints {
   const halfWidth = Math.round(rect.width / 2);
   const halfHeight = Math.round(rect.height / 2);
-  //TODO: update this so it works relative to rect center and not 0,0
   return {
     upperLeft: { x: -halfWidth, y: halfHeight },
     upperRight: { x: halfWidth, y: halfHeight },
@@ -60,4 +71,69 @@ export function getRotatedRectPoints(rect: RectangleModel): RectanglePoints {
   r.lowerRight = translatePoint(r.lowerRight, offset);
   r.lowerLeft = translatePoint(r.lowerLeft, offset);
   return r;
+}
+
+export function getRectAxes(rect: RectanglePoints): RectangleAxes {
+  return {
+    Axis1: {
+      x: rect.upperRight.x - rect.upperLeft.x,
+      y: rect.upperRight.y - rect.upperLeft.y
+    },
+    Axis2: {
+      x: rect.upperRight.x - rect.lowerRight.x,
+      y: rect.upperRight.y - rect.lowerRight.y
+    }
+  };
+}
+
+// Step 2
+function projectPointToAxis(point: Vec2d, axis: Vec2d): Vec2d {
+  // helper function to reduce typing
+  const reduce = (point: Vec2d, axis: Vec2d): number => {
+    const top = point.x * axis.x + point.y * axis.y;
+    const bot = Math.pow(axis.x, 2) + Math.pow(axis.y, 2);
+    return top / bot;
+  };
+  return {
+    x: reduce(point, axis) * axis.x,
+    y: reduce(point, axis) * axis.y
+  };
+}
+
+function projectionToScalar(projection: Vec2d, axis: Vec2d): number {
+  return projection.x * axis.x + projection.y * axis.y;
+}
+
+function getProjection(point: Vec2d, axis: Vec2d): number {
+  return projectionToScalar(projectPointToAxis(point, axis), axis);
+}
+
+function projectRectangle(
+  points: RectanglePoints,
+  axis: Vec2d
+): ProjectionPoints {
+  return [
+    getProjection(points.upperLeft, axis),
+    getProjection(points.upperRight, axis),
+    getProjection(points.lowerRight, axis),
+    getProjection(points.lowerLeft, axis)
+  ];
+}
+
+export function isCollisionOnAxis(
+  axis: Vec2d,
+  rA: RectanglePoints,
+  rB: RectanglePoints
+): boolean {
+  const projectionA = projectRectangle(rA, axis);
+  const projectionB = projectRectangle(rB, axis);
+  const aMin = Math.min(...projectionA);
+  const aMax = Math.max(...projectionA);
+  const bMin = Math.min(...projectionB);
+  const bMax = Math.max(...projectionB);
+
+  if (bMin <= aMax && bMax >= aMin) {
+    return true;
+  }
+  return false;
 }

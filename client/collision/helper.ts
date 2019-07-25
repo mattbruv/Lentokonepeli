@@ -1,7 +1,5 @@
 import * as PIXI from "pixi.js";
 
-export type rotateDirection = "right" | "left";
-
 export function randBetween(min: number, max: number): number {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -14,7 +12,7 @@ export interface Renderable {
 
 export interface Draggable {
   selected: boolean;
-  sprite: PIXI.Sprite;
+  sprite: PIXI.Container;
   eventData: PIXI.interaction.InteractionData;
   setPosition(newX: number, newY: number);
 }

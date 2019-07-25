@@ -133,7 +133,7 @@ export class RectangleSprite implements Renderable, Draggable, Rotateable {
       y: Math.floor(newY)
     };
     this.sprite.position.set(this.rectObj.center.x, this.rectObj.center.y);
-    console.log(this.rectObj.center);
+    // console.log(this.rectObj.center);
     this.debugSprite.update(this.rectObj);
     this.updateCollisions();
   }

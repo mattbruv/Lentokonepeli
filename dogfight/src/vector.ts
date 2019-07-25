@@ -21,7 +21,7 @@ export function translatePoint(origin: Vec2d, translation: Vec2d): Vec2d {
 }
 
 /**
- * Rotate a point by the given angle
+ * Rotate a point by the given angle around the origin (0, 0)
  * @param point The point to rotate
  * @param radians The angle at which to rotate the point
  */

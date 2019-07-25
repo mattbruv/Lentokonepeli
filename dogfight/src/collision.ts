@@ -1,102 +1,132 @@
-import { Vec2d } from "./vector";
-import { RectanglePoints } from "./rectangle";
-
-interface RectangleAxes {
-  Axis1: Vec2d;
-  Axis2: Vec2d;
-}
-
-type ProjectionPoints = number[];
+import {
+  getRectAxes,
+  isCollisionOnAxis,
+  RectangleModel,
+  getRotatedRectPoints
+} from "./rectangle";
+import { CircleModel } from "./circle";
+import {
+  Vec2d,
+  rotatePoint,
+  translatePoint,
+  directionToRadians
+} from "./vector";
 
 // Collision detection and modeling for rotated rectangles
 // relies on the Separating Axis Theorem described here:
 // https://www.gamedev.net/articles/programming/general-and-gameplay-programming/2d-rotated-rectangle-collision-r2604
 
-function getRectAxes(rect: RectanglePoints): RectangleAxes {
-  return {
-    Axis1: {
-      x: rect.upperRight.x - rect.upperLeft.x,
-      y: rect.upperRight.y - rect.upperLeft.y
-    },
-    Axis2: {
-      x: rect.upperRight.x - rect.lowerRight.x,
-      y: rect.upperRight.y - rect.lowerRight.y
-    }
-  };
-}
-
-// Step 2
-function projectPointToAxis(point: Vec2d, axis: Vec2d): Vec2d {
-  // helper function to reduce typing
-  const reduce = (point: Vec2d, axis: Vec2d): number => {
-    const top = point.x * axis.x + point.y * axis.y;
-    const bot = Math.pow(axis.x, 2) + Math.pow(axis.y, 2);
-    return top / bot;
-  };
-  return {
-    x: reduce(point, axis) * axis.x,
-    y: reduce(point, axis) * axis.y
-  };
-}
-
-function projectionToScalar(projection: Vec2d, axis: Vec2d): number {
-  return projection.x * axis.x + projection.y * axis.y;
-}
-
-function getProjection(point: Vec2d, axis: Vec2d): number {
-  return projectionToScalar(projectPointToAxis(point, axis), axis);
-}
-
-function projectRectangle(
-  points: RectanglePoints,
-  axis: Vec2d
-): ProjectionPoints {
-  return [
-    getProjection(points.upperLeft, axis),
-    getProjection(points.upperRight, axis),
-    getProjection(points.lowerRight, axis),
-    getProjection(points.lowerLeft, axis)
-  ];
-}
-
-function isCollisionOnAxis(
-  axis: Vec2d,
-  rA: RectanglePoints,
-  rB: RectanglePoints
-): boolean {
-  const projectionA = projectRectangle(rA, axis);
-  const projectionB = projectRectangle(rB, axis);
-  const aMin = Math.min(...projectionA);
-  const aMax = Math.max(...projectionA);
-  const bMin = Math.min(...projectionB);
-  const bMax = Math.max(...projectionB);
-
-  if (bMin <= aMax && bMax >= aMin) {
-    return true;
-  }
-  return false;
-}
-
+/**
+ * Determines if two rotated rectangles are colliding.
+ * @param rectA Rectangle A
+ * @param rectB Rectangle B
+ */
 export function isRectangleCollision(
-  rectA: RectanglePoints,
-  rectB: RectanglePoints
+  rectA: RectangleModel,
+  rectB: RectangleModel
 ): boolean {
-  const rectAAxes = getRectAxes(rectA);
-  const rectBAxes = getRectAxes(rectB);
-
+  const rectPointsA = getRotatedRectPoints(rectA);
+  const rectPointsB = getRotatedRectPoints(rectB);
+  const rectAAxes = getRectAxes(rectPointsA);
+  const rectBAxes = getRectAxes(rectPointsB);
   const axes = [
     rectAAxes.Axis1,
     rectAAxes.Axis2,
     rectBAxes.Axis1,
     rectBAxes.Axis2
   ];
-
   for (let i = 0; i < axes.length; i++) {
     const axis = axes[i];
-    if (!isCollisionOnAxis(axis, rectA, rectB)) {
+    if (!isCollisionOnAxis(axis, rectPointsA, rectPointsB)) {
       return false;
     }
   }
-
   return true;
+}
+
+/*
+  Collision detection between Circle and Rotated Rectangle:
+  Collision detection is done assuming the rectangle is at (0, 0),
+  and that it is axis aligned (not rotated).
+  We can simulate this without changing the rectangle's position/angle
+  by assuming the rectangle is unrotated at 0,0 already.
+  Then all we have to do is rotate the circle relative to 
+  the unrotated rectangle.
+  This is simply done by rotating the circle by the negative angle
+  of the rectangle.
+  The rest of the collision is calculated using a modified version
+  of this algorithm found here:
+  http://jeffreythompson.org/collision-detection/circle-rect.php
+*/
+
+/**
+ * Determines if a circle is colliding with a rotated rectangle.
+ * @param circle The circle model
+ * @param rect The rectangle model
+ */
+export function isCircleRectCollision(
+  circle: CircleModel,
+  rect: RectangleModel
+): boolean {
+  const translation: Vec2d = {
+    x: -rect.center.x,
+    y: -rect.center.y
+  };
+  const circleTranslated = translatePoint(circle.center, translation);
+
+  // Rotate the circle's center to be relative to rect
+  const radians = directionToRadians(-rect.direction);
+  const circlePos = rotatePoint(circleTranslated, radians);
+
+  let testX = circlePos.x;
+  let testY = circlePos.y;
+  const halfWidth = rect.width / 2;
+  const halfHeight = rect.height / 2;
+
+  if (circlePos.x < -halfWidth) {
+    // Left edge
+    testX = -halfWidth;
+  } else if (circlePos.x > halfWidth) {
+    // Right edge
+    testX = halfWidth;
+  }
+
+  if (circlePos.y < -halfHeight) {
+    // bottom edge
+    testY = -halfHeight;
+  } else if (circlePos.y > halfHeight) {
+    // top edge
+    testY = halfHeight;
+  }
+  const distX = circlePos.x - testX;
+  const distY = circlePos.y - testY;
+  const distance = Math.sqrt(distX * distX + distY * distY);
+
+  return distance <= circle.radius ? true : false;
+}
+
+export function isPointRectCollision(
+  point: Vec2d,
+  rect: RectangleModel
+): boolean {
+  const translation: Vec2d = {
+    x: -rect.center.x,
+    y: -rect.center.y
+  };
+  const pointTranslated = translatePoint(point, translation);
+  // Rotate the point's center to be relative to rect
+  const radians = directionToRadians(-rect.direction);
+  const pointLocal = rotatePoint(pointTranslated, radians);
+  const halfWidth = rect.width / 2;
+  const halfHeight = rect.height / 2;
+
+  if (
+    pointLocal.x >= -halfWidth &&
+    pointLocal.x <= halfWidth &&
+    (pointLocal.y >= -halfHeight && pointLocal.y <= halfHeight)
+  ) {
+    return true;
+  }
+
+  return false;
 }
