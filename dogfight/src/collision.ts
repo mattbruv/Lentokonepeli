@@ -15,7 +15,6 @@ import {
 // Collision detection and modeling for rotated rectangles
 // relies on the Separating Axis Theorem described here:
 // https://www.gamedev.net/articles/programming/general-and-gameplay-programming/2d-rotated-rectangle-collision-r2604
-
 /**
  * Determines if two rotated rectangles are colliding.
  * @param rectA Rectangle A
@@ -58,7 +57,6 @@ export function isRectangleCollision(
   of this algorithm found here:
   http://jeffreythompson.org/collision-detection/circle-rect.php
 */
-
 /**
  * Determines if a circle is colliding with a rotated rectangle.
  * @param circle The circle model
@@ -105,6 +103,13 @@ export function isCircleRectCollision(
   return distance <= circle.radius ? true : false;
 }
 
+// The point/rectangle collision works very similarly to
+// the circle/rectangle collision, except it is much more basic.
+/**
+ * Determines if a single point is colliding with a rotated rectangle.
+ * @param point The point
+ * @param rect The rectangle
+ */
 export function isPointRectCollision(
   point: Vec2d,
   rect: RectangleModel
@@ -119,7 +124,6 @@ export function isPointRectCollision(
   const pointLocal = rotatePoint(pointTranslated, radians);
   const halfWidth = rect.width / 2;
   const halfHeight = rect.height / 2;
-
   if (
     pointLocal.x >= -halfWidth &&
     pointLocal.x <= halfWidth &&
@@ -127,6 +131,5 @@ export function isPointRectCollision(
   ) {
     return true;
   }
-
   return false;
 }

@@ -34,6 +34,8 @@ Everything can interact with rectangle 1.
 * When two rectangles collide, they will both turn red.
 * When rectangle 1 collides with a circle, it will become transparent.
 * When rectangle 1 collides with a single point (bullet), the bullet will double in size.
+* Holding Left/Right while clicking on a rectangle will change the rectangle's rotation.
+Hitting Up will reset it's rotation to zero.
 
 The code got kind of hacky and not pretty to maintain as time went on.
 The purpose of this page is soley for quick visual feedback. 
