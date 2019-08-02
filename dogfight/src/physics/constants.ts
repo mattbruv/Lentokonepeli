@@ -1,1 +1,0 @@
-export const ROTATION_DIRECTIONS = 256;
