@@ -2,10 +2,13 @@ import {
   projectPointToAxis,
   projectionToScalar,
   RectangleModel
-} from "../src/rectangle";
-import { Vec2d } from "../src/vector";
-import { isPointRectCollision, isRectangleCollision } from "../src/collision";
-import { ROTATION_DIRECTIONS } from "../src/constants";
+} from "../src/physics/rectangle";
+import { Vec2d } from "../src/physics/vector";
+import {
+  isPointRectCollision,
+  isRectangleCollision
+} from "../src/physics/collision";
+import { ROTATION_DIRECTIONS } from "../src/physics/constants";
 
 const point: Vec2d = {
   x: 2,

@@ -6,7 +6,7 @@ import {
   onDragEnd,
   onDragMove
 } from "./helper";
-import { Vec2d } from "../../dogfight/src/vector";
+import { Vec2d } from "../../dogfight/src/physics/vector";
 
 export class PointSprite implements Renderable, Draggable {
   public selected: false;

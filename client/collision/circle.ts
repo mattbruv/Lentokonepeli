@@ -7,7 +7,7 @@ import {
   onDragEnd,
   onDragMove
 } from "./helper";
-import { CircleModel } from "../../dogfight/src/circle";
+import { CircleModel } from "../../dogfight/src/physics/circle";
 
 export class CircleSprite implements Renderable, Draggable {
   public selected: false;

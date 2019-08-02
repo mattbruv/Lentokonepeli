@@ -4,7 +4,7 @@ import {
   isRectangleCollision,
   isCircleRectCollision,
   isPointRectCollision
-} from "../../dogfight/src/collision";
+} from "../../dogfight/src/physics/collision";
 import { CircleSprite } from "./circle";
 import { PointSprite } from "./point";
 

@@ -1,10 +1,10 @@
 import * as PIXI from "pixi.js";
-import { directionToRadians, Vec2d } from "../../dogfight/src/vector";
+import { directionToRadians, Vec2d } from "../../dogfight/src/physics/vector";
 import {
   RectangleModel,
   RectanglePoints,
   getRotatedRectPoints
-} from "../../dogfight/src/rectangle";
+} from "../../dogfight/src/physics/rectangle";
 import {
   randBetween,
   Draggable,
