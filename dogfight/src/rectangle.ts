@@ -15,12 +15,7 @@ export interface RectangleModel {
   direction: number;
 }
 
-interface RectangleAxes {
-  Axis1: Vec2d;
-  Axis2: Vec2d;
-}
-
-interface RectangleAxes {
+export interface RectangleAxes {
   Axis1: Vec2d;
   Axis2: Vec2d;
 }
@@ -87,7 +82,7 @@ export function getRectAxes(rect: RectanglePoints): RectangleAxes {
 }
 
 // Step 2
-function projectPointToAxis(point: Vec2d, axis: Vec2d): Vec2d {
+export function projectPointToAxis(point: Vec2d, axis: Vec2d): Vec2d {
   // helper function to reduce typing
   const reduce = (point: Vec2d, axis: Vec2d): number => {
     const top = point.x * axis.x + point.y * axis.y;
@@ -100,7 +95,7 @@ function projectPointToAxis(point: Vec2d, axis: Vec2d): Vec2d {
   };
 }
 
-function projectionToScalar(projection: Vec2d, axis: Vec2d): number {
+export function projectionToScalar(projection: Vec2d, axis: Vec2d): number {
   return projection.x * axis.x + projection.y * axis.y;
 }
 
