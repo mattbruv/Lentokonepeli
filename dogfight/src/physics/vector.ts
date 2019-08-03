@@ -1,4 +1,4 @@
-import { ROTATION_DIRECTIONS } from "./constants";
+import { ROTATION_DIRECTIONS } from "../constants";
 
 /**
  * An (x, y) position in the game world.

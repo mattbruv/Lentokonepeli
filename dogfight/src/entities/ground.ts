@@ -7,13 +7,3 @@ export interface Ground {
   position: Vec2d;
   width: number;
 }
-
-/** 
-export interface Runway extends Health {
-  id: number;
-  position: Vec2d;
-  facing: Facing;
-  team: Team;
-}
-
-*/
