@@ -8,6 +8,7 @@
     "server": "ts-node server/src/server.ts",
     "client": "parcel client/public/index.html",
     "collision": "parcel client/collision/index.html",
+    "world": "parcel client/world/index.html",
     "lint": "eslint **/*.ts"
   },
   "repository": {
