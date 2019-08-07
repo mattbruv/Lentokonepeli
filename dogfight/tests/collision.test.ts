@@ -8,7 +8,7 @@ import {
   isPointRectCollision,
   isRectangleCollision
 } from "../src/physics/collision";
-import { ROTATION_DIRECTIONS } from "../src/physics/constants";
+import { ROTATION_DIRECTIONS } from "../src/constants";
 
 const point: Vec2d = {
   x: 2,
