@@ -1,34 +1,24 @@
-import * as PIXI from "pixi.js";
-import { newGameWorld } from "../../dogfight/src/engine/world";
+// import * as PIXI from "pixi.js";
 import { loadSpriteSheet, spriteSheet } from "../src/render/textures";
-import { RenderWorld, renderNewWorldState } from "../src/render/worldRenderer";
 
-const app = new PIXI.Application({
-  width: 750,
-  height: 750,
-  transparent: true,
-  antialias: true
-});
+import { GameRenderer } from "../src/render/renderer";
 
-const world = newGameWorld();
+const renderer = new GameRenderer();
 
-world.grounds.push({
-  position: { x: 30, y: 30 },
-  width: 500
-});
-
-const renderer: RenderWorld = {
-  world: app.stage,
-  grounds: []
-};
+function fitToScreen(): void {
+  renderer.resize(window.innerWidth, window.innerHeight);
+}
 
 function init(): void {
-  renderNewWorldState(renderer, world);
   console.log(spriteSheet);
-  console.log(world);
-  document.body.appendChild(app.view);
+  document.body.appendChild(renderer.getView());
+  fitToScreen();
 }
 
 window.addEventListener("load", (): void => {
   loadSpriteSheet(init);
+});
+
+window.addEventListener("resize", (): void => {
+  fitToScreen();
 });
