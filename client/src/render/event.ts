@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
+import { Vec2d } from "../../../dogfight/src/physics/vector";
 
-export interface UserEventData {
-  data: PIXI.interaction.InteractionData;
+export interface MouseClickEvent {
+  clickPos: Vec2d;
   dragging: boolean;
 }

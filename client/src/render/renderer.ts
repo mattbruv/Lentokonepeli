@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
 import { GridSprite } from "./objects/grid";
 import { HillSprite } from "./objects/hill";
-import { toPixiCoords } from "./helpers";
-import { UserEventData } from "./event";
+import { toPixiCoords, toGameCoords } from "./helpers";
+import { MouseClickEvent } from "./event";
 
 /**
  * A class which holds the PIXI object
@@ -11,10 +11,9 @@ import { UserEventData } from "./event";
 export class GameRenderer {
   private app: PIXI.Application;
 
-  private eventData: UserEventData;
+  private mouseClick: MouseClickEvent;
 
   private worldContainer: PIXI.Container;
-  private gridContainer: PIXI.Container;
 
   private grid: GridSprite;
   private hill: HillSprite;
@@ -24,31 +23,32 @@ export class GameRenderer {
       width: 500,
       height: 500,
       transparent: true,
-      antialias: true
+      antialias: false
     });
 
-    this.eventData = {
-      data: null,
+    this.mouseClick = {
+      clickPos: { x: 0, y: 0 },
       dragging: false
     };
 
     this.worldContainer = new PIXI.Container();
-    this.gridContainer = new PIXI.Container();
 
     this.grid = new GridSprite(this.app.renderer);
     this.hill = new HillSprite();
 
-    this.gridContainer.addChild(this.grid.gridSprite);
-    this.gridContainer.addChild(this.grid.axisSprite);
-
     this.worldContainer.addChild(this.hill.container);
 
     this.app.stage.addChild(this.worldContainer);
-    this.app.stage.addChild(this.gridContainer);
+    this.app.stage.addChild(this.grid.gridContainer);
 
     this.makeInteractive();
   }
 
+  /**
+   * Sets the camera to an (x, y) position in PIXI space.
+   * @param x PIXI world X position
+   * @param y PIXI world Y position
+   */
   public setCamera(x: number, y: number): void {
     this.worldContainer.position.set(x, y);
     this.grid.setCamera(x, y);
@@ -88,39 +88,42 @@ export class GameRenderer {
     this.app.stage.on(
       "pointerdown",
       (event: PIXI.interaction.InteractionEvent): void => {
-        this.eventData.data = event.data;
-        this.eventData.dragging = true;
+        this.mouseClick.clickPos = {
+          x: event.data.global.x,
+          y: event.data.global.y
+        };
+        this.mouseClick.dragging = true;
       }
     );
 
     this.app.stage.on("pointerup", (): void => {
-      this.eventData.data = null;
-      this.eventData.dragging = false;
+      this.mouseClick.dragging = false;
     });
 
     this.app.stage.on("pointerupoutside", (): void => {
-      this.eventData.data = null;
-      this.eventData.dragging = false;
+      this.mouseClick.dragging = false;
     });
 
     this.app.stage.on(
       "pointermove",
       (event: PIXI.interaction.InteractionEvent): void => {
-        // console.log(foo.data.global);
-        if (!this.eventData.dragging) {
-          return;
+        const foo = event.data.getLocalPosition(this.worldContainer);
+        const cursor = toGameCoords(foo);
+        this.grid.setCursorCoords(cursor.x, cursor.y);
+        if (this.mouseClick.dragging) {
+          const pos = event.data.global;
+          const prev = this.mouseClick.clickPos;
+          const worldPos = this.worldContainer.position;
+          const dx = pos.x - prev.x;
+          const dy = pos.y - prev.y;
+          const camX = Math.round(worldPos.x + dx);
+          const camY = Math.round(worldPos.y + dy);
+          this.setCamera(camX, camY);
+          this.mouseClick.clickPos = {
+            x: pos.x,
+            y: pos.y
+          };
         }
-
-        console.log("\n\n");
-        console.log(event);
-
-        const oldPos = this.eventData.data.global;
-        const newPos = event.data.global;
-        console.log(oldPos);
-        console.log(newPos);
-        this.eventData.data = event.data;
-
-        // this.setCamera(newX, newY);
       }
     );
   }
