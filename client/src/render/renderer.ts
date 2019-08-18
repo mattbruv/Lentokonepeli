@@ -1,35 +1,29 @@
 import * as PIXI from "pixi.js";
 import { GridSprite } from "./objects/grid";
 import { HillSprite } from "./objects/hill";
-import { toPixiCoords, toGameCoords } from "./helpers";
-import { MouseClickEvent } from "./event";
+import { toPixiCoords } from "./helpers";
+import { EventManager } from "./event";
+import { SCREEN_WIDTH, SCREEN_HEIGHT } from "./constants";
 
 /**
  * A class which holds the PIXI object
- * and state of our current game.
+ * and a renderable representation of game state.
  */
 export class GameRenderer {
-  private app: PIXI.Application;
+  public app: PIXI.Application;
+  public worldContainer: PIXI.Container;
+  public grid: GridSprite;
+  public hill: HillSprite;
 
-  private mouseClick: MouseClickEvent;
-
-  private worldContainer: PIXI.Container;
-
-  private grid: GridSprite;
-  private hill: HillSprite;
+  private eventManager: EventManager;
 
   public constructor() {
     this.app = new PIXI.Application({
-      width: 500,
-      height: 500,
-      transparent: true,
+      width: SCREEN_WIDTH,
+      height: SCREEN_HEIGHT,
+      backgroundColor: 0xf984e5,
       antialias: false
     });
-
-    this.mouseClick = {
-      clickPos: { x: 0, y: 0 },
-      dragging: false
-    };
 
     this.worldContainer = new PIXI.Container();
 
@@ -41,7 +35,8 @@ export class GameRenderer {
     this.app.stage.addChild(this.worldContainer);
     this.app.stage.addChild(this.grid.gridContainer);
 
-    this.makeInteractive();
+    this.eventManager = new EventManager(this);
+    this.eventManager.makeInteractive();
   }
 
   /**
@@ -69,62 +64,21 @@ export class GameRenderer {
     pos.y += Math.round(canvasHeight / 2);
     this.worldContainer.position.set(pos.x, pos.y);
     this.grid.setCamera(pos.x, pos.y);
-
-    console.log(this.worldContainer.position);
   }
 
+  /**
+   * Returns the PIXI view
+   */
   public getView(): HTMLCanvasElement {
     return this.app.view;
   }
 
+  /**
+   * Resizes the view of the canvas
+   * and adjusts all game elements accordingly
+   */
   public resize(width: number, height: number): void {
     this.app.renderer.resize(width, height);
     this.grid.resizeGrid(width, height);
-  }
-
-  private makeInteractive(): void {
-    this.app.stage.interactive = true;
-
-    this.app.stage.on(
-      "pointerdown",
-      (event: PIXI.interaction.InteractionEvent): void => {
-        this.mouseClick.clickPos = {
-          x: event.data.global.x,
-          y: event.data.global.y
-        };
-        this.mouseClick.dragging = true;
-      }
-    );
-
-    this.app.stage.on("pointerup", (): void => {
-      this.mouseClick.dragging = false;
-    });
-
-    this.app.stage.on("pointerupoutside", (): void => {
-      this.mouseClick.dragging = false;
-    });
-
-    this.app.stage.on(
-      "pointermove",
-      (event: PIXI.interaction.InteractionEvent): void => {
-        const foo = event.data.getLocalPosition(this.worldContainer);
-        const cursor = toGameCoords(foo);
-        this.grid.setCursorCoords(cursor.x, cursor.y);
-        if (this.mouseClick.dragging) {
-          const pos = event.data.global;
-          const prev = this.mouseClick.clickPos;
-          const worldPos = this.worldContainer.position;
-          const dx = pos.x - prev.x;
-          const dy = pos.y - prev.y;
-          const camX = Math.round(worldPos.x + dx);
-          const camY = Math.round(worldPos.y + dy);
-          this.setCamera(camX, camY);
-          this.mouseClick.clickPos = {
-            x: pos.x,
-            y: pos.y
-          };
-        }
-      }
-    );
   }
 }

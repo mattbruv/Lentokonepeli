@@ -1,12 +1,13 @@
 import * as PIXI from "pixi.js";
 import { Vec2d } from "../../../../dogfight/src/physics/vector";
+import { SCREEN_WIDTH, SCREEN_HEIGHT } from "../constants";
 
 const GRID_WIDTH = 100;
 const GRID_HEIGHT = 100;
 const GRID_COLOR = 0xbbbbbb;
 
 /** The maximum distance in pixels to draw the x,y axis line */
-const AXIS_BOUNDS = 32768;
+const AXIS_BOUNDS = Math.pow(2, 16 - 1);
 
 /**
  * A class which has a grid that better helps see
@@ -31,6 +32,8 @@ export class GridSprite {
     graphics.endFill();
     renderer.render(graphics, renderTexture);
     this.gridSprite = new PIXI.TilingSprite(renderTexture);
+    this.gridSprite.width = SCREEN_WIDTH;
+    this.gridSprite.height = SCREEN_HEIGHT;
 
     // Draw axes
     this.axisSprite = new PIXI.Graphics();
