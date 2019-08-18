@@ -23,8 +23,6 @@ function init(): void {
   for (let i = 0; i < entities.length; i++) {
     renderer.addEntity(entities[i]);
   }
-
-  renderer.deleteEntity(1);
 }
 
 window.addEventListener("load", (): void => {

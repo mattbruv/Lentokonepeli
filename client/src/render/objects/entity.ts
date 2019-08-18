@@ -12,6 +12,12 @@ export interface EntitySprite {
   update(data: Entity): void;
 
   /**
+   * Called upon object deletion
+   * used to properly stop animation callbacks, etc.
+   */
+  onDestroy(): void;
+
+  /**
    * A list of renderable PIXI display objects that belong to this object.
    *
    * Note: The reason we use an array of display objects

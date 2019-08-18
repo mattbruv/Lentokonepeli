@@ -77,6 +77,9 @@ export class GameRenderer {
       return;
     }
 
+    // Gracefully stop and clean up all animations, etc.
+    entObj.onDestroy();
+
     // Destroy all of its renderable PIXI objects
     entObj.renderables.map((obj): void => {
       obj.destroy();

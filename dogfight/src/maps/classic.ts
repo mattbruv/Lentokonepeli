@@ -5,7 +5,7 @@ export const CLASSIC_MAP: MapDefinition = {
   waters: [
     {
       position: { x: 0, y: 0 },
-      width: 10000,
+      width: 30000,
       waveDirection: Facing.Right
     }
   ],
