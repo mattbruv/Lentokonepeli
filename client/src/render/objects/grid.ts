@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
-import { Vec2d } from "../../../../dogfight/src/physics/vector";
 import { SCREEN_WIDTH, SCREEN_HEIGHT } from "../constants";
+import { Vec2d } from "../../../../dogfight/src/physics/vector";
 
 const GRID_WIDTH = 100;
 const GRID_HEIGHT = 100;
@@ -25,12 +25,15 @@ export class GridSprite {
       height: GRID_HEIGHT,
       width: GRID_WIDTH
     });
+
     const graphics = new PIXI.Graphics();
+
     graphics.lineStyle(2, GRID_COLOR, 1);
     graphics.beginFill(0x000000, 0);
     graphics.drawRect(0, 0, GRID_HEIGHT, GRID_WIDTH);
     graphics.endFill();
     renderer.render(graphics, renderTexture);
+
     this.gridSprite = new PIXI.TilingSprite(renderTexture);
     this.gridSprite.width = SCREEN_WIDTH;
     this.gridSprite.height = SCREEN_HEIGHT;
@@ -53,6 +56,8 @@ export class GridSprite {
     this.gridContainer.addChild(this.gridSprite);
     this.gridContainer.addChild(this.axisSprite);
     this.gridContainer.addChild(this.cursorText);
+
+    this.gridSprite.alpha = 0.5;
   }
 
   public setCamera(x: number, y: number): void {

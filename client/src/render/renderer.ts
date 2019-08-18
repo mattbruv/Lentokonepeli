@@ -1,9 +1,13 @@
 import * as PIXI from "pixi.js";
 import { GridSprite } from "./objects/grid";
-import { HillSprite } from "./objects/hill";
 import { toPixiCoords } from "./helpers";
 import { EventManager } from "./event";
 import { SCREEN_WIDTH, SCREEN_HEIGHT } from "./constants";
+import { EntitySprite } from "./objects/entity";
+import { Entity } from "../../../dogfight/src/entities/entity";
+import { EntityType } from "../../../dogfight/src/constants";
+import { WaterSprite } from "./objects/water";
+import { WaterEntity } from "../../../dogfight/src/entities/water";
 
 /**
  * A class which holds the PIXI object
@@ -13,7 +17,9 @@ export class GameRenderer {
   public app: PIXI.Application;
   public worldContainer: PIXI.Container;
   public grid: GridSprite;
-  public hill: HillSprite;
+
+  /** A list of all game sprite objects currently being rendered */
+  private entitySprites: EntitySprite[];
 
   private eventManager: EventManager;
 
@@ -25,18 +31,63 @@ export class GameRenderer {
       antialias: false
     });
 
+    this.entitySprites = [];
+
     this.worldContainer = new PIXI.Container();
 
     this.grid = new GridSprite(this.app.renderer);
-    this.hill = new HillSprite();
-
-    this.worldContainer.addChild(this.hill.container);
 
     this.app.stage.addChild(this.worldContainer);
     this.app.stage.addChild(this.grid.gridContainer);
 
     this.eventManager = new EventManager(this);
     this.eventManager.makeInteractive();
+  }
+
+  public addEntity(entity: Entity): void {
+    this.deleteEntity(entity.id);
+
+    let newEntity: EntitySprite;
+
+    switch (entity.type) {
+      case EntityType.Water:
+        newEntity = new WaterSprite(entity as WaterEntity);
+        break;
+      default:
+        return;
+    }
+
+    newEntity.renderables.map((obj): void => {
+      this.worldContainer.addChild(obj);
+    });
+
+    this.entitySprites.push(newEntity);
+  }
+
+  /**
+   * Deletes an entity's sprite and removes it from the internal entity list.
+   * @param destroyID The entity id to reference for deletion
+   */
+  public deleteEntity(destroyID: number): void {
+    // Find the entity in the sprite list
+    const entObj = this.entitySprites.find((e): boolean => e.id === destroyID);
+
+    if (entObj === undefined) {
+      console.log("Attempted to delete undefined entity id: " + destroyID);
+      return;
+    }
+
+    // Destroy all of its renderable PIXI objects
+    entObj.renderables.map((obj): void => {
+      obj.destroy();
+    });
+
+    // Update our entity array to omit this entity ID
+    this.entitySprites = this.entitySprites.filter(
+      (e: EntitySprite): boolean => {
+        return e.id !== destroyID;
+      }
+    );
   }
 
   /**
