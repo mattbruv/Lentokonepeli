@@ -5,11 +5,13 @@ import { WaterEntity } from "../entities/water";
 import { getUniqueEntityID } from "../world/world";
 import { GroundEntity } from "../entities/ground";
 import { HillEntity } from "../entities/hill";
+import { RunwayEntity } from "../entities/runway";
 
 export interface MapDefinition {
   grounds: GroundEntry[];
   waters: WaterEntry[];
   hills: HillEntry[];
+  runways: RunwayEntry[];
 }
 
 export interface WaterEntry {
@@ -25,6 +27,11 @@ export interface GroundEntry {
 
 export interface HillEntry {
   position: Vec2d;
+}
+
+export interface RunwayEntry {
+  position: Vec2d;
+  facing: Facing;
 }
 
 function createWater(entry: WaterEntry, id: number): WaterEntity {
@@ -66,6 +73,21 @@ function createHill(entry: HillEntry, id: number): HillEntity {
   };
 }
 
+function createRunway(entry: RunwayEntry, id: number): RunwayEntity {
+  return {
+    id,
+    type: EntityType.Runway,
+    position: entry.position,
+    facing: entry.facing,
+    hitbox: {
+      width: 280,
+      height: 10,
+      center: { x: entry.position.x, y: entry.position.y - 5 },
+      direction: 0
+    }
+  };
+}
+
 export function entitiesFromMap(mapData: MapDefinition): Entity[] {
   const entities = [];
 
@@ -82,6 +104,11 @@ export function entitiesFromMap(mapData: MapDefinition): Entity[] {
   mapData.hills.map((entry: HillEntry): void => {
     const hill = createHill(entry, getUniqueEntityID(entities));
     entities.push(hill);
+  });
+
+  mapData.runways.map((entry: RunwayEntry): void => {
+    const runway = createRunway(entry, getUniqueEntityID(entities));
+    entities.push(runway);
   });
 
   return entities;

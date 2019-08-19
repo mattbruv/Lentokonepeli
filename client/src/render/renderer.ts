@@ -13,6 +13,8 @@ import { GroundEntity } from "../../../dogfight/src/entities/ground";
 import { SkySprite } from "./objects/sky";
 import { HillSprite } from "./objects/hill";
 import { HillEntity } from "../../../dogfight/src/entities/hill";
+import { RunwaySprite } from "./objects/runway";
+import { RunwayEntity } from "../../../dogfight/src/entities/runway";
 
 /**
  * A class which holds the PIXI object
@@ -68,6 +70,9 @@ export class GameRenderer {
         break;
       case EntityType.Hill:
         newEntity = new HillSprite(entity as HillEntity);
+        break;
+      case EntityType.Runway:
+        newEntity = new RunwaySprite(entity as RunwayEntity);
         break;
       default:
         return;

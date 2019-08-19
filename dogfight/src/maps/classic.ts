@@ -24,11 +24,29 @@ export const CLASSIC_MAP: MapDefinition = {
     { position: { x: -1800, y: 0 } },
     { position: { x: -1300, y: 0 } },
     { position: { x: -800, y: 0 } },
-    { position: { x: -300, y: 0 } },
+    { position: { x: -250, y: 0 } },
 
     { position: { x: 1800, y: 0 } },
     { position: { x: 1300, y: 0 } },
     { position: { x: 800, y: 0 } },
-    { position: { x: 300, y: 0 } }
+    { position: { x: 250, y: 0 } }
+  ],
+  runways: [
+    {
+      position: { x: -1800, y: 4 },
+      facing: Facing.Right
+    },
+    {
+      position: { x: -1300, y: 4 },
+      facing: Facing.Right
+    },
+    {
+      position: { x: 1800, y: 4 },
+      facing: Facing.Left
+    },
+    {
+      position: { x: 1300, y: 4 },
+      facing: Facing.Left
+    }
   ]
 };

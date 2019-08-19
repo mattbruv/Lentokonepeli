@@ -24,6 +24,12 @@ export class EventManager {
   public makeInteractive(): void {
     this.renderer.app.stage.interactive = true;
 
+    window.addEventListener("keypress", (event: KeyboardEvent): void => {
+      if (event.key == "d") {
+        this.renderer.grid.toggleVisibility();
+      }
+    });
+
     this.renderer.app.stage.on(
       "pointerdown",
       (event: PIXI.interaction.InteractionEvent): void => {

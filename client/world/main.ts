@@ -15,7 +15,8 @@ function init(): void {
   // console.log(spriteSheet);
   document.body.appendChild(renderer.getView());
   fitToScreen();
-  renderer.centerCamera(0, 0);
+  // TODO: figure out why this is broken
+  renderer.centerCamera(1800, 0);
 
   const entities = entitiesFromMap(CLASSIC_MAP);
   console.log(entities);

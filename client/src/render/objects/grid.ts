@@ -76,6 +76,12 @@ export class GridSprite {
     this.updateCursorText();
   }
 
+  public toggleVisibility(): void {
+    this.gridSprite.visible = !this.gridSprite.visible;
+    this.axisSprite.visible = !this.axisSprite.visible;
+    this.cursorText.visible = !this.cursorText.visible;
+  }
+
   private updateCursorText(): void {
     this.cursorText.text =
       "x: " + this.cursorPos.x + " \ny: " + this.cursorPos.y;
