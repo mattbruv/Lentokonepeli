@@ -8,6 +8,9 @@ import { Entity } from "../../../dogfight/src/entities/entity";
 import { EntityType } from "../../../dogfight/src/constants";
 import { WaterSprite } from "./objects/water";
 import { WaterEntity } from "../../../dogfight/src/entities/water";
+import { GroundSprite } from "./objects/ground";
+import { GroundEntity } from "../../../dogfight/src/entities/ground";
+import { SkySprite } from "./objects/sky";
 
 /**
  * A class which holds the PIXI object
@@ -17,6 +20,8 @@ export class GameRenderer {
   public app: PIXI.Application;
   public worldContainer: PIXI.Container;
   public grid: GridSprite;
+
+  private sky: SkySprite;
 
   /** A list of all game sprite objects currently being rendered */
   private entitySprites: EntitySprite[];
@@ -34,9 +39,12 @@ export class GameRenderer {
     this.entitySprites = [];
 
     this.worldContainer = new PIXI.Container();
+    this.worldContainer.sortableChildren = true;
 
     this.grid = new GridSprite(this.app.renderer);
+    this.sky = new SkySprite();
 
+    this.app.stage.addChild(this.sky.sprite);
     this.app.stage.addChild(this.worldContainer);
     this.app.stage.addChild(this.grid.gridContainer);
 
@@ -52,6 +60,9 @@ export class GameRenderer {
     switch (entity.type) {
       case EntityType.Water:
         newEntity = new WaterSprite(entity as WaterEntity);
+        break;
+      case EntityType.Ground:
+        newEntity = new GroundSprite(entity as GroundEntity);
         break;
       default:
         return;
@@ -101,6 +112,7 @@ export class GameRenderer {
   public setCamera(x: number, y: number): void {
     this.worldContainer.position.set(x, y);
     this.grid.setCamera(x, y);
+    this.sky.setCamera(x, y);
   }
 
   /**
@@ -118,6 +130,7 @@ export class GameRenderer {
     pos.y += Math.round(canvasHeight / 2);
     this.worldContainer.position.set(pos.x, pos.y);
     this.grid.setCamera(pos.x, pos.y);
+    this.sky.setCamera(pos.x, pos.y);
   }
 
   /**
@@ -134,5 +147,6 @@ export class GameRenderer {
   public resize(width: number, height: number): void {
     this.app.renderer.resize(width, height);
     this.grid.resizeGrid(width, height);
+    this.sky.resizeSky(width, height);
   }
 }

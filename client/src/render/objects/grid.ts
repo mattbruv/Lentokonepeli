@@ -58,6 +58,7 @@ export class GridSprite {
     this.gridContainer.addChild(this.cursorText);
 
     this.gridContainer.alpha = 0.5;
+    this.axisSprite.alpha = 0.25;
   }
 
   public setCamera(x: number, y: number): void {

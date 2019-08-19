@@ -29,11 +29,12 @@ export class WaterSprite implements EntitySprite {
 
     this.water = new PIXI.Graphics();
     this.water.beginFill(WaterColor.Normal);
-    this.water.drawRect(pos.x - halfWidth, 0, data.width, 2000);
+    this.water.drawRect(pos.x - halfWidth, pos.y, data.width, 2000);
     this.water.endFill();
 
     this.waves = new PIXI.TilingSprite(wavy, data.width, wavy.height);
     this.waves.anchor.set(0.5, 0);
+    this.waves.position.set(pos.x, pos.y);
 
     if (data.waveDirection === Facing.Right) {
       this.waves.scale.x = -1;

@@ -3,7 +3,6 @@ import { loadSpriteSheet, spriteSheet } from "../src/render/textures";
 import { GameRenderer } from "../src/render/renderer";
 import { entitiesFromMap } from "../../dogfight/src/maps/map";
 import { CLASSIC_MAP } from "../../dogfight/src/maps/classic";
-import { getUniqueEntityID } from "../../dogfight/src/world/world";
 
 let renderer: GameRenderer;
 

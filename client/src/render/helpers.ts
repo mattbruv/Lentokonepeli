@@ -8,8 +8,8 @@ import { Vec2d } from "../../../dogfight/src/physics/vector";
  */
 export function toPixiCoords(gameCoords: Vec2d): Vec2d {
   return {
-    x: gameCoords.x,
-    y: gameCoords.y * -1
+    x: Math.round(gameCoords.x),
+    y: Math.round(gameCoords.y * -1)
   };
 }
 
@@ -21,7 +21,7 @@ export function toPixiCoords(gameCoords: Vec2d): Vec2d {
  */
 export function toGameCoords(pixiCoords: Vec2d): Vec2d {
   return {
-    x: pixiCoords.x,
-    y: pixiCoords.y * -1
+    x: Math.round(pixiCoords.x),
+    y: Math.round(pixiCoords.y * -1)
   };
 }

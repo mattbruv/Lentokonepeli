@@ -46,8 +46,8 @@ export class EventManager {
     this.renderer.app.stage.on(
       "pointermove",
       (event: PIXI.interaction.InteractionEvent): void => {
-        const foo = event.data.getLocalPosition(this.renderer.worldContainer);
-        const cursor = toGameCoords(foo);
+        const local = event.data.getLocalPosition(this.renderer.worldContainer);
+        const cursor = toGameCoords(local);
         this.renderer.grid.setCursorCoords(cursor.x, cursor.y);
         if (this.mouseClick.dragging) {
           const pos = event.data.global;

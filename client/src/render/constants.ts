@@ -4,17 +4,17 @@ export const SCREEN_HEIGHT = 565;
 export const WAVE_PHASE_TIME = 200; // milliseconds
 
 export enum DrawLayer {
-  LAYER17,
-  LAYER16,
-  LAYER15,
-  LAYER14,
-  LAYER13,
-  LAYER12,
-  LAYER11,
-  LAYER10,
-  LAYER09,
+  LAYER07,
   LAYER08,
-  LAYER07
+  LAYER09,
+  LAYER10,
+  LAYER11,
+  LAYER12,
+  LAYER13,
+  LAYER14,
+  LAYER15,
+  LAYER16,
+  LAYER17
 }
 
 export enum WaterColor {
