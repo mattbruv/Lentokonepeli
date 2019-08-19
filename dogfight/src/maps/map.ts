@@ -4,10 +4,12 @@ import { Entity } from "../entities/entity";
 import { WaterEntity } from "../entities/water";
 import { getUniqueEntityID } from "../world/world";
 import { GroundEntity } from "../entities/ground";
+import { HillEntity } from "../entities/hill";
 
 export interface MapDefinition {
   grounds: GroundEntry[];
   waters: WaterEntry[];
+  hills: HillEntry[];
 }
 
 export interface WaterEntry {
@@ -19,6 +21,10 @@ export interface WaterEntry {
 export interface GroundEntry {
   position: Vec2d;
   width: number;
+}
+
+export interface HillEntry {
+  position: Vec2d;
 }
 
 function createWater(entry: WaterEntry, id: number): WaterEntity {
@@ -52,6 +58,14 @@ function createGround(entry: GroundEntry, id: number): GroundEntity {
   };
 }
 
+function createHill(entry: HillEntry, id: number): HillEntity {
+  return {
+    id,
+    type: EntityType.Hill,
+    position: entry.position
+  };
+}
+
 export function entitiesFromMap(mapData: MapDefinition): Entity[] {
   const entities = [];
 
@@ -63,6 +77,11 @@ export function entitiesFromMap(mapData: MapDefinition): Entity[] {
   mapData.grounds.map((entry: GroundEntry): void => {
     const ground = createGround(entry, getUniqueEntityID(entities));
     entities.push(ground);
+  });
+
+  mapData.hills.map((entry: HillEntry): void => {
+    const hill = createHill(entry, getUniqueEntityID(entities));
+    entities.push(hill);
   });
 
   return entities;

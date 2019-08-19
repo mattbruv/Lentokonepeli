@@ -4,19 +4,31 @@ import { Facing } from "../constants";
 export const CLASSIC_MAP: MapDefinition = {
   waters: [
     {
-      position: { x: 0, y: -17 },
-      width: 30000,
+      position: { x: -10000, y: -17 },
+      width: 20020,
       waveDirection: Facing.Right
+    },
+    {
+      position: { x: 10000, y: -17 },
+      width: 20020,
+      waveDirection: Facing.Left
     }
   ],
   grounds: [
     {
-      position: { x: -200, y: 0 },
-      width: 500
-    },
-    {
-      position: { x: 750, y: 0 },
-      width: 500
+      position: { x: 0, y: 0 },
+      width: 4000
     }
+  ],
+  hills: [
+    { position: { x: -1800, y: 0 } },
+    { position: { x: -1300, y: 0 } },
+    { position: { x: -800, y: 0 } },
+    { position: { x: -300, y: 0 } },
+
+    { position: { x: 1800, y: 0 } },
+    { position: { x: 1300, y: 0 } },
+    { position: { x: 800, y: 0 } },
+    { position: { x: 300, y: 0 } }
   ]
 };

@@ -11,6 +11,8 @@ import { WaterEntity } from "../../../dogfight/src/entities/water";
 import { GroundSprite } from "./objects/ground";
 import { GroundEntity } from "../../../dogfight/src/entities/ground";
 import { SkySprite } from "./objects/sky";
+import { HillSprite } from "./objects/hill";
+import { HillEntity } from "../../../dogfight/src/entities/hill";
 
 /**
  * A class which holds the PIXI object
@@ -63,6 +65,9 @@ export class GameRenderer {
         break;
       case EntityType.Ground:
         newEntity = new GroundSprite(entity as GroundEntity);
+        break;
+      case EntityType.Hill:
+        newEntity = new HillSprite(entity as HillEntity);
         break;
       default:
         return;
@@ -126,8 +131,10 @@ export class GameRenderer {
     const canvasWidth = this.app.screen.width;
     const canvasHeight = this.app.screen.height;
     const pos = toPixiCoords({ x, y });
+    // console.log(pos);
     pos.x += Math.round(canvasWidth / 2);
     pos.y += Math.round(canvasHeight / 2);
+
     this.worldContainer.position.set(pos.x, pos.y);
     this.grid.setCamera(pos.x, pos.y);
     this.sky.setCamera(pos.x, pos.y);

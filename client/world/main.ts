@@ -12,12 +12,13 @@ function fitToScreen(): void {
 
 function init(): void {
   renderer = new GameRenderer();
-  console.log(spriteSheet);
+  // console.log(spriteSheet);
   document.body.appendChild(renderer.getView());
   fitToScreen();
   renderer.centerCamera(0, 0);
 
   const entities = entitiesFromMap(CLASSIC_MAP);
+  console.log(entities);
 
   for (let i = 0; i < entities.length; i++) {
     renderer.addEntity(entities[i]);
