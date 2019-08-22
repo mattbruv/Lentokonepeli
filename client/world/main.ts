@@ -1,5 +1,5 @@
 // import * as PIXI from "pixi.js";
-import { loadSpriteSheet, spriteSheet } from "../src/render/textures";
+import { loadSpriteSheet } from "../src/render/textures";
 import { GameRenderer } from "../src/render/renderer";
 import { entitiesFromMap } from "../../dogfight/src/maps/map";
 import { CLASSIC_MAP } from "../../dogfight/src/maps/classic";
@@ -7,7 +7,7 @@ import { CLASSIC_MAP } from "../../dogfight/src/maps/classic";
 let renderer: GameRenderer;
 
 function fitToScreen(): void {
-  renderer.resize(window.innerWidth, window.innerHeight);
+  // renderer.resize(window.innerWidth, window.innerHeight);
 }
 
 function init(): void {
@@ -15,8 +15,8 @@ function init(): void {
   // console.log(spriteSheet);
   document.body.appendChild(renderer.getView());
   fitToScreen();
-  // TODO: figure out why this is broken
-  renderer.centerCamera(1800, 0);
+
+  renderer.centerCamera(-1800, 0);
 
   const entities = entitiesFromMap(CLASSIC_MAP);
   console.log(entities);

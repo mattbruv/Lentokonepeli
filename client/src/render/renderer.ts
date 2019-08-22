@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 import { GridSprite } from "./objects/grid";
 import { toPixiCoords } from "./helpers";
 import { EventManager } from "./event";
-import { SCREEN_WIDTH, SCREEN_HEIGHT } from "./constants";
+import { SCREEN_WIDTH, SCREEN_HEIGHT, PANEL_HEIGHT } from "./constants";
 import { EntitySprite } from "./objects/entity";
 import { Entity } from "../../../dogfight/src/entities/entity";
 import { EntityType } from "../../../dogfight/src/constants";
@@ -15,6 +15,7 @@ import { HillSprite } from "./objects/hill";
 import { HillEntity } from "../../../dogfight/src/entities/hill";
 import { RunwaySprite } from "./objects/runway";
 import { RunwayEntity } from "../../../dogfight/src/entities/runway";
+import { GameHUD } from "./objects/hud";
 
 /**
  * A class which holds the PIXI object
@@ -24,11 +25,12 @@ export class GameRenderer {
   public app: PIXI.Application;
   public worldContainer: PIXI.Container;
   public grid: GridSprite;
+  public HUD: GameHUD;
 
   private sky: SkySprite;
 
   /** A list of all game sprite objects currently being rendered */
-  private entitySprites: EntitySprite[];
+  public entitySprites: EntitySprite[];
 
   private eventManager: EventManager;
 
@@ -45,15 +47,19 @@ export class GameRenderer {
     this.worldContainer = new PIXI.Container();
     this.worldContainer.sortableChildren = true;
 
+    this.HUD = new GameHUD();
+
     this.grid = new GridSprite(this.app.renderer);
     this.sky = new SkySprite();
 
     this.app.stage.addChild(this.sky.sprite);
     this.app.stage.addChild(this.worldContainer);
     this.app.stage.addChild(this.grid.gridContainer);
+    this.app.stage.addChild(this.HUD.container);
 
     this.eventManager = new EventManager(this);
     this.eventManager.makeInteractive();
+    this.grid.toggleVisibility();
   }
 
   public addEntity(entity: Entity): void {
@@ -120,6 +126,7 @@ export class GameRenderer {
    * @param y PIXI world Y position
    */
   public setCamera(x: number, y: number): void {
+    // this.updateParallax(x, y);
     this.worldContainer.position.set(x, y);
     this.grid.setCamera(x, y);
     this.sky.setCamera(x, y);
@@ -134,15 +141,23 @@ export class GameRenderer {
    */
   public centerCamera(x: number, y: number): void {
     const canvasWidth = this.app.screen.width;
-    const canvasHeight = this.app.screen.height;
-    const pos = toPixiCoords({ x, y });
-    // console.log(pos);
+    const canvasHeight = this.app.screen.height - PANEL_HEIGHT;
+    // this.updateParallax(x, y);
+    const pos = toPixiCoords({ x: -x, y: -y });
     pos.x += Math.round(canvasWidth / 2);
     pos.y += Math.round(canvasHeight / 2);
 
+    console.log(this.worldContainer.position);
     this.worldContainer.position.set(pos.x, pos.y);
+    console.log(this.worldContainer.position);
     this.grid.setCamera(pos.x, pos.y);
     this.sky.setCamera(pos.x, pos.y);
+  }
+
+  private getSpritesByType(type: EntityType): EntitySprite[] {
+    return this.entitySprites.filter((e): boolean => {
+      return e.type === type;
+    });
   }
 
   /**

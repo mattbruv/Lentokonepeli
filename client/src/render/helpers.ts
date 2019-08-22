@@ -1,4 +1,6 @@
 import { Vec2d } from "../../../dogfight/src/physics/vector";
+import { EntityType } from "../../../dogfight/src/constants";
+import { EntitySprite } from "./objects/entity";
 
 /**
  * Turns a coordinate position from the game world

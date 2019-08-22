@@ -1,6 +1,8 @@
 export const SCREEN_WIDTH = 740;
 export const SCREEN_HEIGHT = 565;
 
+export const PANEL_HEIGHT = 150;
+
 export const WAVE_PHASE_TIME = 200; // milliseconds
 
 export enum DrawLayer {
