@@ -13,7 +13,9 @@ function fitToScreen(): void {
 function init(): void {
   renderer = new GameRenderer();
   // console.log(spriteSheet);
-  document.body.appendChild(renderer.getView());
+  // document.body.appendChild(renderer.getView());
+  const grid = document.getElementById("container");
+  grid.appendChild(renderer.getView());
   fitToScreen();
 
   renderer.centerCamera(-1800, 0);
