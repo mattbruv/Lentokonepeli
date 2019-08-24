@@ -5,6 +5,9 @@ import { EntityType } from "../../../../dogfight/src/constants";
 import { toPixiCoords } from "../helpers";
 import { GroundEntity } from "../../../../dogfight/src/entities/ground";
 import { DrawLayer } from "../constants";
+import { DebugHitboxSprite } from "./debug";
+
+const HITBOX_COLOR = 0x800000;
 
 export class GroundSprite implements EntitySprite {
   public id: number;
@@ -15,10 +18,14 @@ export class GroundSprite implements EntitySprite {
   private leftBeach: PIXI.Sprite;
   private rightBeach: PIXI.Sprite;
 
+  private hitbox: DebugHitboxSprite;
+
   public constructor(data: GroundEntity) {
     this.id = data.id;
     this.type = data.type;
     this.renderables = [];
+
+    this.hitbox = new DebugHitboxSprite(data.hitbox, HITBOX_COLOR);
 
     const textureGround: PIXI.Texture = spriteSheet.textures["ground1.gif"];
     const textureBeach: PIXI.Texture = spriteSheet.textures["beach-l.gif"];
@@ -48,10 +55,15 @@ export class GroundSprite implements EntitySprite {
     this.renderables.push(this.ground);
     this.renderables.push(this.leftBeach);
     this.renderables.push(this.rightBeach);
+    this.renderables.push(this.hitbox.container);
   }
 
   public update(data: GroundEntity): void {
     console.log(data);
+  }
+
+  public setDebug(active: boolean): void {
+    this.hitbox.setEnabled(active);
   }
 
   public onDestroy(): void {}

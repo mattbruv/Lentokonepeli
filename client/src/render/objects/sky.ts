@@ -10,7 +10,7 @@ export class SkySprite {
   private pos: Vec2d;
 
   public constructor() {
-    this.pos = toPixiCoords({ x: 0, y: 500 });
+    this.pos = toPixiCoords({ x: 0, y: 510 });
     const texture: PIXI.Texture = spriteSheet.textures["sky3b.jpg"];
     this.sprite = new PIXI.TilingSprite(texture);
     this.sprite.width = SCREEN_WIDTH;

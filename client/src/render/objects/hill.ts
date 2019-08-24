@@ -35,5 +35,7 @@ export class HillSprite implements EntitySprite {
     console.log(data);
   }
 
+  public setDebug(active: boolean): void {}
+
   public onDestroy(): void {}
 }

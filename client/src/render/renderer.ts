@@ -26,6 +26,7 @@ export class GameRenderer {
   public worldContainer: PIXI.Container;
   public grid: GridSprite;
   public HUD: GameHUD;
+  public debug: boolean;
 
   private sky: SkySprite;
 
@@ -59,7 +60,8 @@ export class GameRenderer {
 
     this.eventManager = new EventManager(this);
     this.eventManager.makeInteractive();
-    this.grid.toggleVisibility();
+
+    this.setDebug(false);
   }
 
   public addEntity(entity: Entity): void {
@@ -165,6 +167,15 @@ export class GameRenderer {
    */
   public getView(): HTMLCanvasElement {
     return this.app.view;
+  }
+
+  public setDebug(active: boolean): void {
+    this.debug = active;
+    this.grid.setEnabled(this.debug);
+
+    this.entitySprites.map((e): void => {
+      e.setDebug(this.debug);
+    });
   }
 
   /**

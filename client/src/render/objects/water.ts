@@ -5,6 +5,9 @@ import { EntityType, Facing } from "../../../../dogfight/src/constants";
 import { WaterEntity } from "../../../../dogfight/src/entities/water";
 import { toPixiCoords } from "../helpers";
 import { WaterColor, DrawLayer, WAVE_PHASE_TIME } from "../constants";
+import { DebugHitboxSprite } from "./debug";
+
+const HITBOX_COLOR = 0x0000ff;
 
 export class WaterSprite implements EntitySprite {
   public id: number;
@@ -17,10 +20,14 @@ export class WaterSprite implements EntitySprite {
   private renderWaves: number;
   private waveFrame: number;
 
+  private hitbox: DebugHitboxSprite;
+
   public constructor(data: WaterEntity) {
     this.id = data.id;
     this.type = data.type;
     this.renderables = [];
+
+    this.hitbox = new DebugHitboxSprite(data.hitbox, HITBOX_COLOR);
 
     const pos = toPixiCoords(data.position);
     const halfWidth = Math.round(data.width / 2);
@@ -47,6 +54,7 @@ export class WaterSprite implements EntitySprite {
 
     this.renderables.push(this.water);
     this.renderables.push(this.waves);
+    this.renderables.push(this.hitbox.container);
   }
 
   private animateWaves(): void {
@@ -61,6 +69,10 @@ export class WaterSprite implements EntitySprite {
 
   public update(data: WaterEntity): void {
     console.log(data);
+  }
+
+  public setDebug(active: boolean): void {
+    this.hitbox.setEnabled(active);
   }
 
   public onDestroy(): void {

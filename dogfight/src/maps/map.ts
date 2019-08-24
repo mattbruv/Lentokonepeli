@@ -2,7 +2,7 @@ import { Vec2d } from "../physics/vector";
 import { Facing, EntityType } from "../constants";
 import { Entity } from "../entities/entity";
 import { WaterEntity } from "../entities/water";
-import { getUniqueEntityID } from "../world/world";
+import { getUniqueEntityID } from "../engine/world";
 import { GroundEntity } from "../entities/ground";
 import { HillEntity } from "../entities/hill";
 import { RunwayEntity } from "../entities/runway";
@@ -44,7 +44,7 @@ function createWater(entry: WaterEntry, id: number): WaterEntity {
     hitbox: {
       width: entry.width,
       height: 1000,
-      center: { x: entry.position.x, y: -500 },
+      center: { x: entry.position.x, y: entry.position.y - 500 },
       direction: 0
     }
   };
@@ -58,8 +58,8 @@ function createGround(entry: GroundEntry, id: number): GroundEntity {
     width: entry.width,
     hitbox: {
       width: entry.width,
-      height: 1000,
-      center: { x: entry.position.x, y: -500 },
+      height: 100,
+      center: { x: entry.position.x, y: entry.position.y - 50 },
       direction: 0
     }
   };

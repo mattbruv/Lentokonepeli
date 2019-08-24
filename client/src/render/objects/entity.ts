@@ -18,6 +18,11 @@ export interface EntitySprite {
   onDestroy(): void;
 
   /**
+   * Called to render any debug information about an object
+   */
+  setDebug(active: boolean): void;
+
+  /**
    * A list of renderable PIXI display objects that belong to this object.
    *
    * Note: The reason we use an array of display objects

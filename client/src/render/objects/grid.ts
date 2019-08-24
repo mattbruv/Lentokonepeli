@@ -1,10 +1,11 @@
 import * as PIXI from "pixi.js";
-import { SCREEN_WIDTH, SCREEN_HEIGHT } from "../constants";
+import { SCREEN_WIDTH, SCREEN_HEIGHT, DrawLayer } from "../constants";
 import { Vec2d } from "../../../../dogfight/src/physics/vector";
 
 const GRID_WIDTH = 100;
 const GRID_HEIGHT = 100;
 const GRID_COLOR = 0xbbbbbb;
+const GRID_OPACITY = 0.5;
 
 /** The maximum distance in pixels to draw the x,y axis line */
 const AXIS_BOUNDS = Math.pow(2, 16 - 1);
@@ -19,6 +20,8 @@ export class GridSprite {
   private axisSprite: PIXI.Graphics;
   private cursorPos: Vec2d;
   private cursorText: PIXI.Text;
+
+  private enabled: boolean;
 
   public constructor(renderer: PIXI.Renderer) {
     const renderTexture = PIXI.RenderTexture.create({
@@ -45,6 +48,7 @@ export class GridSprite {
     this.axisSprite.lineTo(0, -AXIS_BOUNDS);
     this.axisSprite.moveTo(AXIS_BOUNDS, 0);
     this.axisSprite.lineTo(-AXIS_BOUNDS, 0);
+    this.axisSprite.endFill();
 
     // add cursor debug text
     this.cursorPos = { x: 0, y: 0 };
@@ -57,8 +61,9 @@ export class GridSprite {
     this.gridContainer.addChild(this.axisSprite);
     this.gridContainer.addChild(this.cursorText);
 
-    this.gridContainer.alpha = 0.5;
-    this.axisSprite.alpha = 0.25;
+    this.gridContainer.alpha = GRID_OPACITY;
+
+    this.setEnabled(false);
   }
 
   public setCamera(x: number, y: number): void {
@@ -76,10 +81,16 @@ export class GridSprite {
     this.updateCursorText();
   }
 
-  public toggleVisibility(): void {
-    this.gridSprite.visible = !this.gridSprite.visible;
+  public toggleAxes(): void {
     this.axisSprite.visible = !this.axisSprite.visible;
-    this.cursorText.visible = !this.cursorText.visible;
+    this.gridSprite.visible = !this.gridSprite.visible;
+  }
+
+  public setEnabled(active: boolean): void {
+    this.enabled = active;
+    this.gridSprite.visible = this.enabled;
+    this.axisSprite.visible = this.enabled;
+    this.cursorText.visible = this.enabled;
   }
 
   private updateCursorText(): void {
