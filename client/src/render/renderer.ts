@@ -16,6 +16,8 @@ import { HillEntity } from "../../../dogfight/src/entities/hill";
 import { RunwaySprite } from "./objects/runway";
 import { RunwayEntity } from "../../../dogfight/src/entities/runway";
 import { GameHUD } from "./objects/hud";
+import { ManSprite } from "./objects/man";
+import { ManEntity } from "../../../dogfight/src/entities/man";
 
 /**
  * A class which holds the PIXI object
@@ -84,7 +86,11 @@ export class GameRenderer {
       case EntityType.Runway:
         newEntity = new RunwaySprite(entity as RunwayEntity);
         break;
+      case EntityType.Man:
+        newEntity = new ManSprite(entity as ManEntity);
+        break;
       default:
+        console.log("undefined entity-sprite id: ", entity.type);
         return;
     }
 

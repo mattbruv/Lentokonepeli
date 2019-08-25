@@ -17,9 +17,9 @@ export interface RunwayOptions {
   facing: Facing;
 }
 
-function genRunwayHitbox(pos: Vec2d, width: number): RectangleModel {
+function genRunwayHitbox(pos: Vec2d): RectangleModel {
   return {
-    width,
+    width: HITBOX_WIDTH,
     height: HITBOX_HEIGHT,
     center: { x: pos.x, y: pos.y - Math.round(HITBOX_HEIGHT / 2) },
     direction: 0
@@ -32,6 +32,6 @@ export function createRunway(entry: RunwayOptions, id: number): RunwayEntity {
     type: EntityType.Runway,
     position: entry.position,
     facing: entry.facing,
-    hitbox: genRunwayHitbox(entry.position, HITBOX_WIDTH)
+    hitbox: genRunwayHitbox(entry.position)
   };
 }
