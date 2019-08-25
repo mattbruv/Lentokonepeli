@@ -31,6 +31,12 @@ export class DebugHitboxSprite {
       hitbox.height
     );
 
+    this.sprite.lineStyle(1, color, 1);
+    this.sprite.moveTo(pos.x - halfWidth, pos.y - halfHeight);
+    this.sprite.lineTo(pos.x + halfWidth, pos.y + halfHeight);
+    this.sprite.moveTo(pos.x - halfWidth, pos.y + halfHeight);
+    this.sprite.lineTo(pos.x + halfWidth, pos.y - halfHeight);
+
     this.sprite.lineStyle(0);
     this.sprite.beginFill(color, 1);
     this.sprite.drawCircle(pos.x, pos.y, 3);
