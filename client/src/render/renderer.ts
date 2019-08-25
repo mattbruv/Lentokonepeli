@@ -65,7 +65,9 @@ export class GameRenderer {
   }
 
   public addEntity(entity: Entity): void {
-    this.deleteEntity(entity.id);
+    if (this.entityExists(entity.id)) {
+      this.deleteEntity(entity.id);
+    }
 
     let newEntity: EntitySprite;
 
@@ -122,6 +124,12 @@ export class GameRenderer {
     );
   }
 
+  private entityExists(entityID: number): boolean {
+    const result =
+      this.entitySprites.find((e): boolean => e.id === entityID) !== undefined;
+    return result;
+  }
+
   /**
    * Sets the camera to an (x, y) position in PIXI space.
    * @param x PIXI world X position
@@ -144,14 +152,11 @@ export class GameRenderer {
   public centerCamera(x: number, y: number): void {
     const canvasWidth = this.app.screen.width;
     const canvasHeight = this.app.screen.height - PANEL_HEIGHT;
-    // this.updateParallax(x, y);
     const pos = toPixiCoords({ x: -x, y: -y });
     pos.x += Math.round(canvasWidth / 2);
     pos.y += Math.round(canvasHeight / 2);
 
-    console.log(this.worldContainer.position);
     this.worldContainer.position.set(pos.x, pos.y);
-    console.log(this.worldContainer.position);
     this.grid.setCamera(pos.x, pos.y);
     this.sky.setCamera(pos.x, pos.y);
   }

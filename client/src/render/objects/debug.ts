@@ -3,6 +3,8 @@ import { RectangleModel } from "../../../../dogfight/src/physics/rectangle";
 import { DrawLayer } from "../constants";
 import { toPixiCoords } from "../helpers";
 
+const OPACITY = 0.2;
+
 export class DebugHitboxSprite {
   private hitbox: RectangleModel;
 
@@ -10,9 +12,7 @@ export class DebugHitboxSprite {
   public container: PIXI.Container;
 
   public constructor(hitbox: RectangleModel, color: number) {
-    console.log(hitbox);
     this.container = new PIXI.Container();
-
     this.hitbox = hitbox;
 
     const halfWidth = Math.round(hitbox.width / 2);
@@ -22,7 +22,7 @@ export class DebugHitboxSprite {
 
     this.sprite = new PIXI.Graphics();
     this.sprite.lineStyle(2, color, 1);
-    this.sprite.beginFill(color, 0.1);
+    this.sprite.beginFill(color, OPACITY);
 
     this.sprite.drawRect(
       pos.x - halfWidth,
@@ -38,7 +38,6 @@ export class DebugHitboxSprite {
     this.sprite.endFill();
 
     this.container.zIndex = DrawLayer.LAYER17;
-
     this.container.addChild(this.sprite);
 
     this.setEnabled(false);

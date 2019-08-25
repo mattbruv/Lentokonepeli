@@ -1,5 +1,5 @@
 import { Entity } from "../entities/entity";
-import { getUniqueEntityID } from "../engine/world";
+import { getUniqueEntityID } from "../entities/entity";
 import { HillOptions, createHill } from "../entities/hill";
 import { RunwayOptions, createRunway } from "../entities/runway";
 import { createWater, WaterOptions } from "../entities/water";

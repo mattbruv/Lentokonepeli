@@ -20,6 +20,7 @@ function init(): void {
   for (let i = 0; i < entities.length; i++) {
     renderer.addEntity(entities[i]);
   }
+  console.log(entities);
 }
 
 window.addEventListener("load", (): void => {
