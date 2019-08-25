@@ -2,6 +2,7 @@ import { MapDefinition } from "./map";
 import { Facing } from "../constants";
 
 export const CLASSIC_MAP: MapDefinition = {
+  name: "classic",
   waters: [
     {
       position: { x: -10000, y: -17 },

@@ -6,6 +6,7 @@ import { createWater, WaterOptions } from "../entities/water";
 import { createGround, GroundOptions } from "../entities/ground";
 
 export interface MapDefinition {
+  name: string;
   grounds: GroundOptions[];
   waters: WaterOptions[];
   hills: HillOptions[];

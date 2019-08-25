@@ -1,5 +1,5 @@
 import { EntityType, U16_MAX } from "../constants";
-import { Player } from "./player";
+import { Player } from "../player";
 
 /**
  * Basic details of an entity in the game world

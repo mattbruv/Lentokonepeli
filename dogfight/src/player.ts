@@ -1,4 +1,4 @@
-import { Team } from "../constants";
+import { Team } from "./constants";
 
 export interface Player {
   playerID: number;
