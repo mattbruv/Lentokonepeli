@@ -5,7 +5,10 @@ import { Facing, EntityType } from "../constants";
 
 export enum ManStatus {
   Parachuting,
-  Walking
+  Falling,
+  Standing,
+  WalkingLeft,
+  WalkingRight
 }
 
 const HITBOX_HEIGHT = 10;
@@ -16,14 +19,12 @@ const HITBOX_PARACHUTE_WIDTH = 24;
 
 export interface ManEntity extends Entity {
   position: Vec2d;
-  facing: Facing;
   status: ManStatus;
   hitbox: RectangleModel;
 }
 
 export interface ManOptions {
   position: Vec2d;
-  facing: Facing;
   status: ManStatus;
 }
 
@@ -36,7 +37,7 @@ function genManHitbox(pos: Vec2d, status: ManStatus): RectangleModel {
       hitWidth = HITBOX_PARACHUTE_WIDTH;
       hitHeight = HITBOX_PARACHUTE_HEIGHT;
       break;
-    case ManStatus.Walking:
+    default:
       hitWidth = HITBOX_WIDTH;
       hitHeight = HITBOX_HEIGHT;
       break;
@@ -55,7 +56,6 @@ export function createMan(entry: ManOptions, id: number): ManEntity {
     id,
     type: EntityType.Man,
     position: entry.position,
-    facing: entry.facing,
     status: entry.status,
     hitbox: genManHitbox(entry.position, entry.status)
   };

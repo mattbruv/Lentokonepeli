@@ -56,8 +56,11 @@ export class ManSprite implements EntitySprite {
     switch (status) {
       case ManStatus.Parachuting:
         return "parachuter1.gif";
-      case ManStatus.Walking:
+      case ManStatus.Falling:
+      case ManStatus.Standing:
         return "parachuter0.gif";
+      default:
+        return "parachuter2.gif";
     }
   }
 }

@@ -19,7 +19,6 @@ function init(): void {
 
   const man: ManOptions = {
     position: { x: -1600, y: 100 },
-    facing: Facing.Left,
     status: ManStatus.Parachuting
   };
   const man1 = createMan(man, getUniqueEntityID(client.localEngine.entities));
