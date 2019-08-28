@@ -47,7 +47,7 @@ export class DebugHitboxSprite {
 
     this.sprite.lineStyle(0);
     this.sprite.beginFill(this.color, 1);
-    this.sprite.drawCircle(pos.x, pos.y, 3);
+    this.sprite.drawCircle(0, 0, 3);
 
     this.sprite.endFill();
 
