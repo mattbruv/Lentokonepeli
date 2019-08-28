@@ -37,20 +37,26 @@ export class GameEngine {
     this.init();
   }
 
-  public tick(): void {
+  /**
+   * Simulates the game world by one tick.
+   * @param delta Number of milliseconds since previous tick
+   */
+  public tick(milliseconds: number): void {
+    const seconds = milliseconds / 1000;
+    // TODO: figure out why 25ms movement breaks with this
     // 1. User input
 
     // 2. Object position updates
-    this.moveEntities();
+    this.moveEntities(seconds);
 
     // 3. Physics updates
     this.updateCollisions();
   }
 
-  private moveEntities(): void {
+  private moveEntities(delta: number): void {
     const men = this.getEntities(EntityType.Man) as ManEntity[];
     men.forEach((man): void => {
-      const diff = moveMan(man as ManEntity);
+      const diff = moveMan(man, delta);
       this.updateEntity(diff);
     });
   }
@@ -60,7 +66,7 @@ export class GameEngine {
 
     for (let i = 0; i < 75; i++) {
       const manOpts: ManOptions = {
-        position: { x: randBetween(-2500, -1400), y: randBetween(10, 1200) },
+        position: { x: randBetween(-2500, -1400), y: randBetween(100, 1300) },
         status: randBetween(0, 1)
       };
       const man = createMan(manOpts, getUniqueEntityID(this.entities));

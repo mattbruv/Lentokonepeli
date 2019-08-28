@@ -1,6 +1,7 @@
 import { Vec2d } from "../physics/vector";
 import { Entity } from "./entity";
 import { RectangleModel } from "../physics/rectangle";
+import { MAN_FALL_SPEED, MAN_FALL_PARACHUTE_SPEED } from "../physics/constants";
 import { EntityType } from "../constants";
 
 export enum ManStatus {
@@ -61,7 +62,7 @@ export function createMan(entry: ManOptions, id: number): ManEntity {
   };
 }
 
-export function moveMan(man: ManEntity): Partial<ManEntity> {
+export function moveMan(man: ManEntity, delta: number): Partial<ManEntity> {
   const update: Partial<ManEntity> = {
     id: man.id,
     position: { x: man.position.x, y: man.position.y }
@@ -69,10 +70,10 @@ export function moveMan(man: ManEntity): Partial<ManEntity> {
 
   switch (man.status) {
     case ManStatus.Parachuting:
-      update.position.y -= 1;
+      update.position.y -= Math.round(MAN_FALL_PARACHUTE_SPEED * delta);
       break;
     case ManStatus.Falling:
-      update.position.y -= 3;
+      update.position.y -= Math.round(MAN_FALL_SPEED * delta);
       break;
   }
 
