@@ -38,7 +38,7 @@ export class EventManager {
     this.renderer.app.stage.on(
       "pointerdown",
       (event: PIXI.interaction.InteractionEvent): void => {
-        if (!this.renderer.debug) return;
+        // if (!this.renderer.debug) return;
         this.mouseClick.clickPos = {
           x: event.data.global.x,
           y: event.data.global.y
@@ -48,19 +48,19 @@ export class EventManager {
     );
 
     this.renderer.app.stage.on("pointerup", (): void => {
-      if (!this.renderer.debug) return;
+      // if (!this.renderer.debug) return;
       this.mouseClick.dragging = false;
     });
 
     this.renderer.app.stage.on("pointerupoutside", (): void => {
-      if (!this.renderer.debug) return;
+      // if (!this.renderer.debug) return;
       this.mouseClick.dragging = false;
     });
 
     this.renderer.app.stage.on(
       "pointermove",
       (event: PIXI.interaction.InteractionEvent): void => {
-        if (!this.renderer.debug) return;
+        // if (!this.renderer.debug) return;
         const local = event.data.getLocalPosition(this.renderer.worldContainer);
         const cursor = toGameCoords(local);
         this.renderer.grid.setCursorCoords(cursor.x, cursor.y);

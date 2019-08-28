@@ -5,12 +5,16 @@ import { GameClient } from "../src/client";
 import {
   ManOptions,
   ManStatus,
-  createMan,
-  ManEntity
+  createMan
 } from "../../dogfight/src/entities/man";
 import { getUniqueEntityID } from "../../dogfight/src/entities/entity";
 
 let client: GameClient;
+
+function loop(): void {
+  client.localEngine.tick();
+  window.requestAnimationFrame(loop);
+}
 
 function init(): void {
   client = new GameClient();
@@ -27,6 +31,8 @@ function init(): void {
   // append to document grid
   const grid = document.getElementById("container");
   grid.appendChild(client.renderer.getView());
+
+  window.requestAnimationFrame(loop);
 }
 
 window.addEventListener("load", (): void => {

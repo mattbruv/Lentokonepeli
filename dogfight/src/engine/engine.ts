@@ -2,6 +2,7 @@ import { Entity } from "../entities/entity";
 import { Player } from "../player";
 import { MapDefinition, entitiesFromMap } from "../maps/map";
 import { EngineCallbacks } from "./callbacks";
+import { EntityType } from "../constants";
 
 /**
  * This is the game engine class.
@@ -21,6 +22,10 @@ export class GameEngine {
     this.callbacks = callbacks;
     this.players = [];
     this.entities = [];
+  }
+
+  public tick(): void {
+    console.log("game tick...");
   }
 
   public addEntity(newEntity: Entity): void {
@@ -53,6 +58,16 @@ export class GameEngine {
   public getEntity(id: number): Entity | undefined {
     return this.entities.find((e): boolean => {
       return e.id === id;
+    });
+  }
+
+  /**
+   * Returns a list of a specific entity type
+   * @param type The type of entities to retrieve
+   */
+  public getEntities(type: EntityType): Entity[] {
+    return this.entities.filter((e): boolean => {
+      return e.type === type;
     });
   }
 
