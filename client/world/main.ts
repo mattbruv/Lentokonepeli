@@ -7,6 +7,7 @@ let client: GameClient;
 function loop(): void {
   client.localEngine.tick();
   window.requestAnimationFrame(loop);
+  console.log(Date.now());
 }
 
 function init(): void {

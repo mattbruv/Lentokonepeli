@@ -58,7 +58,7 @@ export class GameEngine {
   private init(): void {
     this.loadMap(CLASSIC_MAP);
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 75; i++) {
       const manOpts: ManOptions = {
         position: { x: randBetween(-2500, -1400), y: randBetween(10, 1200) },
         status: randBetween(0, 1)
@@ -100,7 +100,6 @@ export class GameEngine {
   }
 
   public addEntity(newEntity: Entity): void {
-    console.log("Add new ent", newEntity.id);
     this.entities.push(newEntity);
     this.callbacks.onEntityAdd(newEntity);
   }

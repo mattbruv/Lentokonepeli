@@ -25,7 +25,7 @@ export class EventManager {
     this.renderer.app.stage.interactive = true;
 
     window.addEventListener("keypress", (event: KeyboardEvent): void => {
-      if (event.code === "Backquote") {
+      if (event.code === "KeyD") {
         this.renderer.setDebug(!this.renderer.debug);
       }
       if (this.renderer.debug) {

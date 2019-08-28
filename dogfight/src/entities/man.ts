@@ -14,8 +14,8 @@ export enum ManStatus {
 const HITBOX_HEIGHT = 10;
 const HITBOX_WIDTH = 10;
 
-const HITBOX_PARACHUTE_HEIGHT = 34;
-const HITBOX_PARACHUTE_WIDTH = 24;
+const HITBOX_PARACHUTE_HEIGHT = 30;
+const HITBOX_PARACHUTE_WIDTH = 20;
 
 export interface ManEntity extends Entity {
   position: Vec2d;
@@ -46,7 +46,7 @@ function genManHitbox(pos: Vec2d, status: ManStatus): RectangleModel {
   return {
     width: hitWidth,
     height: hitHeight,
-    center: { x: pos.x, y: pos.y + Math.round(hitHeight / 2) },
+    center: { x: pos.x + 1, y: pos.y + Math.round(hitHeight / 2) + 1 },
     direction: 0
   };
 }
