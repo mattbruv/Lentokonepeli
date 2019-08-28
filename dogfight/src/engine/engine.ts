@@ -1,8 +1,20 @@
-import { Entity } from "../entities/entity";
+import { Entity, getUniqueEntityID } from "../entities/entity";
 import { Player } from "../player";
 import { MapDefinition, entitiesFromMap } from "../maps/map";
 import { EngineCallbacks } from "./callbacks";
 import { EntityType } from "../constants";
+import {
+  moveMan,
+  ManEntity,
+  ManStatus,
+  ManOptions,
+  createMan
+} from "../entities/man";
+import { GroundEntity } from "../entities/ground";
+import { WaterEntity } from "../entities/water";
+import { isRectangleCollision } from "../physics/collision";
+import { randBetween } from "./helpers";
+import { CLASSIC_MAP } from "../maps/classic";
 
 /**
  * This is the game engine class.
@@ -22,13 +34,73 @@ export class GameEngine {
     this.callbacks = callbacks;
     this.players = [];
     this.entities = [];
+    this.init();
   }
 
   public tick(): void {
-    console.log("game tick...");
+    // 1. User input
+
+    // 2. Object position updates
+    this.moveEntities();
+
+    // 3. Physics updates
+    this.updateCollisions();
+  }
+
+  private moveEntities(): void {
+    const men = this.getEntities(EntityType.Man) as ManEntity[];
+    men.forEach((man): void => {
+      const diff = moveMan(man as ManEntity);
+      this.updateEntity(diff);
+    });
+  }
+
+  private init(): void {
+    this.loadMap(CLASSIC_MAP);
+
+    for (let i = 0; i < 50; i++) {
+      const manOpts: ManOptions = {
+        position: { x: randBetween(-2500, -1400), y: randBetween(10, 1200) },
+        status: randBetween(0, 1)
+      };
+      const man = createMan(manOpts, getUniqueEntityID(this.entities));
+      this.addEntity(man);
+    }
+  }
+
+  private updateCollisions(): void {
+    const men = this.getEntities(EntityType.Man) as ManEntity[];
+    const grounds = this.getEntities(EntityType.Ground) as GroundEntity[];
+    const waters = this.getEntities(EntityType.Water) as WaterEntity[];
+
+    men.forEach((man): void => {
+      const update: Partial<ManEntity> = {
+        id: man.id,
+        position: man.position
+      };
+
+      grounds.forEach((ground): void => {
+        if (isRectangleCollision(man.hitbox, ground.hitbox)) {
+          if (man.status === ManStatus.Falling) {
+            this.deleteEntity(man.id);
+          }
+          update.position.y = ground.position.y;
+          update.status = ManStatus.Standing;
+        }
+      });
+
+      waters.forEach((water): void => {
+        if (isRectangleCollision(man.hitbox, water.hitbox)) {
+          this.deleteEntity(man.id);
+        }
+      });
+
+      this.updateEntity(update);
+    });
   }
 
   public addEntity(newEntity: Entity): void {
+    console.log("Add new ent", newEntity.id);
     this.entities.push(newEntity);
     this.callbacks.onEntityAdd(newEntity);
   }

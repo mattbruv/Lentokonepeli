@@ -25,7 +25,6 @@ export class ManSprite implements EntitySprite {
     this.type = data.type;
     this.renderables = [];
 
-    console.log(data.hitbox);
     this.hitbox = new DebugHitboxSprite(data.hitbox, HITBOX_COLOR);
 
     const texName = this.getTexture(data.status);
@@ -44,6 +43,7 @@ export class ManSprite implements EntitySprite {
   public update(data: ManEntity): void {
     this.setPosition(data.position);
     this.hitbox.drawHitbox(data.hitbox);
+    this.sprite.texture = spriteSheet.textures[this.getTexture(data.status)];
   }
 
   private setPosition(coords: Vec2d): void {

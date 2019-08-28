@@ -18,8 +18,6 @@ export class GameClient {
 
   private onEntityUpdate(data: Partial<Entity>): void {
     const fullObject = this.localEngine.getEntity(data.id);
-    console.log("fullObj");
-    console.log(fullObject);
     this.renderer.updateEntity(fullObject);
   }
 

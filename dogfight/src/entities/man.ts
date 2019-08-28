@@ -1,7 +1,7 @@
 import { Vec2d } from "../physics/vector";
 import { Entity } from "./entity";
 import { RectangleModel } from "../physics/rectangle";
-import { Facing, EntityType } from "../constants";
+import { EntityType } from "../constants";
 
 export enum ManStatus {
   Parachuting,
@@ -59,4 +59,23 @@ export function createMan(entry: ManOptions, id: number): ManEntity {
     status: entry.status,
     hitbox: genManHitbox(entry.position, entry.status)
   };
+}
+
+export function moveMan(man: ManEntity): Partial<ManEntity> {
+  const update: Partial<ManEntity> = {
+    id: man.id,
+    position: { x: man.position.x, y: man.position.y }
+  };
+
+  switch (man.status) {
+    case ManStatus.Parachuting:
+      update.position.y -= 1;
+      break;
+    case ManStatus.Falling:
+      update.position.y -= 3;
+      break;
+  }
+
+  update.hitbox = genManHitbox(update.position, man.status);
+  return update;
 }
