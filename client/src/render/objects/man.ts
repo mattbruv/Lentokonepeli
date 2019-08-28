@@ -28,22 +28,27 @@ export class ManSprite implements EntitySprite {
     console.log(data.hitbox);
     this.hitbox = new DebugHitboxSprite(data.hitbox, HITBOX_COLOR);
 
-    this.pos = toPixiCoords(data.position);
-
     const texName = this.getTexture(data.status);
     const texture: PIXI.Texture = spriteSheet.textures[texName];
 
     this.sprite = new PIXI.Sprite(texture);
     this.sprite.anchor.set(0.5, 1);
-    this.sprite.position.set(this.pos.x, this.pos.y);
     this.sprite.zIndex = DrawLayer.LAYER15;
+
+    this.setPosition(data.position);
 
     this.renderables.push(this.sprite);
     this.renderables.push(this.hitbox.container);
   }
 
   public update(data: ManEntity): void {
-    console.log(data);
+    this.setPosition(data.position);
+    this.hitbox.drawHitbox(data.hitbox);
+  }
+
+  private setPosition(coords: Vec2d): void {
+    this.pos = toPixiCoords(coords);
+    this.sprite.position.set(this.pos.x, this.pos.y);
   }
 
   public setDebug(active: boolean): void {

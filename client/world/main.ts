@@ -5,9 +5,9 @@ import { GameClient } from "../src/client";
 import {
   ManOptions,
   ManStatus,
-  createMan
+  createMan,
+  ManEntity
 } from "../../dogfight/src/entities/man";
-import { Facing } from "../../dogfight/src/constants";
 import { getUniqueEntityID } from "../../dogfight/src/entities/entity";
 
 let client: GameClient;

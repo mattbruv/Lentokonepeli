@@ -9,5 +9,6 @@ import { Entity } from "../entities/entity";
 
 export interface EngineCallbacks {
   onEntityAdd(newEntity: Entity): void;
+  onEntityUpdate(diff: Partial<Entity>): void;
   onEntityDelete(id: number): void;
 }

@@ -101,6 +101,18 @@ export class GameRenderer {
     this.entitySprites.push(newEntity);
   }
 
+  public updateEntity(data: Entity): void {
+    // Find the entity in the sprite list
+    const entObj = this.entitySprites.find((e): boolean => e.id === data.id);
+
+    if (entObj === undefined) {
+      console.log("Attempted to update undefined entity id: " + data.id);
+      return;
+    }
+
+    entObj.update(data);
+  }
+
   /**
    * Deletes an entity's sprite and removes it from the internal entity list.
    * @param destroyID The entity id to reference for deletion

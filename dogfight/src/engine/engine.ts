@@ -23,6 +23,39 @@ export class GameEngine {
     this.entities = [];
   }
 
+  public addEntity(newEntity: Entity): void {
+    this.entities.push(newEntity);
+    this.callbacks.onEntityAdd(newEntity);
+  }
+
+  public updateEntity(data: Partial<Entity>): void {
+    const entity = this.getEntity(data.id);
+    if (entity === undefined) return;
+
+    for (const property in data) {
+      entity[property] = data[property];
+    }
+
+    this.callbacks.onEntityUpdate(data);
+  }
+
+  public deleteEntity(id: number): void {
+    this.entities = this.entities.filter((e): boolean => {
+      return e.id !== id;
+    });
+    this.callbacks.onEntityDelete(id);
+  }
+
+  /**
+   * Attempts to get an entity from the array
+   * @param id The entity's ID
+   */
+  public getEntity(id: number): Entity | undefined {
+    return this.entities.find((e): boolean => {
+      return e.id === id;
+    });
+  }
+
   /**
    * Populates entities into the game world from a map definition.
    * @param map The map from which to load entities.
@@ -35,18 +68,6 @@ export class GameEngine {
     newEntities.forEach((e): void => {
       this.addEntity(e);
     });
-  }
-
-  public addEntity(newEntity: Entity): void {
-    this.entities.push(newEntity);
-    this.callbacks.onEntityAdd(newEntity);
-  }
-
-  public deleteEntity(id: number): void {
-    this.entities = this.entities.filter((e): boolean => {
-      return e.id === id;
-    });
-    this.callbacks.onEntityDelete(id);
   }
 
   /**

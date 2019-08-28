@@ -12,11 +12,18 @@ export class GameClient {
     this.localEngine = new GameEngine(this.clientCallbacks());
   }
 
-  public onEntityAdd(newEntity: Entity): void {
+  private onEntityAdd(newEntity: Entity): void {
     this.renderer.addEntity(newEntity);
   }
 
-  public deleteEntity(id: number): void {
+  private onEntityUpdate(data: Partial<Entity>): void {
+    const fullObject = this.localEngine.getEntity(data.id);
+    console.log("fullObj");
+    console.log(fullObject);
+    this.renderer.updateEntity(fullObject);
+  }
+
+  private deleteEntity(id: number): void {
     this.renderer.deleteEntity(id);
   }
 
@@ -24,6 +31,9 @@ export class GameClient {
     return {
       onEntityAdd: (newEntity: Entity): void => {
         this.onEntityAdd(newEntity);
+      },
+      onEntityUpdate: (data: Partial<Entity>): void => {
+        this.onEntityUpdate(data);
       },
       onEntityDelete: (id: number): void => {
         this.deleteEntity(id);
