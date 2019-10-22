@@ -1,7 +1,7 @@
 import {
   projectPointToAxis,
   projectionToScalar,
-  RectangleModel
+  RectangleBody
 } from "../src/physics/rectangle";
 import { Vec2d } from "../src/physics/vector";
 import {
@@ -36,7 +36,7 @@ test("can make projection point scalar", (): void => {
 });
 
 const bullet: Vec2d = { x: 397, y: 280 };
-const rectA: RectangleModel = {
+const rectA: RectangleBody = {
   width: 82,
   height: 22,
   center: { x: 410, y: 309 },
@@ -54,14 +54,14 @@ test("bullet should hit rotated rectangle", (): void => {
   expect(isPointRectCollision(bullet, rectA)).toBe(true);
 });
 
-const rectB: RectangleModel = {
+const rectB: RectangleBody = {
   center: { x: 389, y: 362 },
   direction: 12,
   height: 69,
   width: 64
 };
 
-const rectC: RectangleModel = {
+const rectC: RectangleBody = {
   center: { x: 455, y: 375 },
   direction: 228,
   height: 22,

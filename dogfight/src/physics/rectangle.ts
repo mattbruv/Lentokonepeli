@@ -8,7 +8,7 @@ import {
 /**
  * A rectangle hitbox model for the purpose of collision detection
  */
-export interface RectangleModel {
+export interface RectangleBody {
   width: number;
   height: number;
   center: Vec2d;
@@ -36,7 +36,7 @@ export interface RectanglePoints {
  * Gets the points of a rectangle model as it would appear on a graph with no rotation
  * @param rect Rectangle model to get the points of
  */
-function getRectOriginPoints(rect: RectangleModel): RectanglePoints {
+function getRectOriginPoints(rect: RectangleBody): RectanglePoints {
   const halfWidth = Math.round(rect.width / 2);
   const halfHeight = Math.round(rect.height / 2);
   return {
@@ -51,7 +51,7 @@ function getRectOriginPoints(rect: RectangleModel): RectanglePoints {
  * Returns points of the rectangle factoring in the direction
  * @param rect The Rectangle to get the points for
  */
-export function getRotatedRectPoints(rect: RectangleModel): RectanglePoints {
+export function getRotatedRectPoints(rect: RectangleBody): RectanglePoints {
   const offset = rect.center; // Original rect offset to translate back
   const radians = directionToRadians(rect.direction);
   const unrotated = getRectOriginPoints(rect);

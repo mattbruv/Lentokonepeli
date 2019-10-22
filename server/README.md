@@ -1,3 +1,3 @@
 # Dogfight Server
 
-This package contains the websocket and webserver code and acts as the authoritative game server.
+This package contains the code that acts as an instance of an authoritative game server.

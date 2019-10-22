@@ -7,11 +7,11 @@ import {
   onDragEnd,
   onDragMove
 } from "./helper";
-import { CircleModel } from "../../dogfight/src/physics/circle";
+import { CircleBody } from "../../dogfight/src/physics/circle";
 
 export class CircleSprite implements Renderable, Draggable {
   public selected: false;
-  public circleObj: CircleModel;
+  public circleObj: CircleBody;
   public sprite: PIXI.Graphics;
   public eventData: PIXI.interaction.InteractionData;
   private callback: () => void;

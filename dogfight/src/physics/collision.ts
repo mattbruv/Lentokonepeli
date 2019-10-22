@@ -1,10 +1,10 @@
 import {
   getRectAxes,
   isCollisionOnAxis,
-  RectangleModel,
+  RectangleBody,
   getRotatedRectPoints
 } from "./rectangle";
-import { CircleModel } from "./circle";
+import { CircleBody } from "./circle";
 import {
   Vec2d,
   rotatePoint,
@@ -21,8 +21,8 @@ import {
  * @param rectB Rectangle B
  */
 export function isRectangleCollision(
-  rectA: RectangleModel,
-  rectB: RectangleModel
+  rectA: RectangleBody,
+  rectB: RectangleBody
 ): boolean {
   const rectPointsA = getRotatedRectPoints(rectA);
   const rectPointsB = getRotatedRectPoints(rectB);
@@ -63,8 +63,8 @@ export function isRectangleCollision(
  * @param rect The rectangle model
  */
 export function isCircleRectCollision(
-  circle: CircleModel,
-  rect: RectangleModel
+  circle: CircleBody,
+  rect: RectangleBody
 ): boolean {
   const translation: Vec2d = {
     x: -rect.center.x,
@@ -112,7 +112,7 @@ export function isCircleRectCollision(
  */
 export function isPointRectCollision(
   point: Vec2d,
-  rect: RectangleModel
+  rect: RectangleBody
 ): boolean {
   const translation: Vec2d = {
     x: -rect.center.x,
@@ -133,3 +133,5 @@ export function isPointRectCollision(
   }
   return false;
 }
+
+// TODO: Point/Circle collision for explosions

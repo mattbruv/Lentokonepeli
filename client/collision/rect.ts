@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { directionToRadians, Vec2d } from "../../dogfight/src/physics/vector";
 import {
-  RectangleModel,
+  RectangleBody,
   RectanglePoints,
   getRotatedRectPoints
 } from "../../dogfight/src/physics/rectangle";
@@ -30,7 +30,7 @@ class RectangleSpriteDebug {
     this.graphics = new PIXI.Graphics();
   }
 
-  public update(rect: RectangleModel): void {
+  public update(rect: RectangleBody): void {
     const points = getRotatedRectPoints(rect);
     this.graphics.clear();
     this.drawRect(points);
@@ -74,7 +74,7 @@ class RectangleSpriteDebug {
 export class RectangleSprite implements Renderable, Draggable, Rotateable {
   public selected: false;
   public eventData: PIXI.interaction.InteractionData;
-  public rectObj: RectangleModel;
+  public rectObj: RectangleBody;
 
   private container: PIXI.Container;
   public sprite: PIXI.Sprite;
