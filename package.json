@@ -32,7 +32,7 @@
   "dependencies": {
     "@types/express": "^4.17.0",
     "express": "^4.17.1",
-    "parcel": "^1.12.3",
+    "parcel": "^1.12.4",
     "pixi.js": "^5.0.4",
     "prettier": "^1.18.2",
     "rect": "^1.2.1",
