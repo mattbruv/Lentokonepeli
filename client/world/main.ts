@@ -1,13 +1,11 @@
-import { loadSpriteSheet, spriteSheet } from "../src/render/textures";
-import { GameRenderer } from "../src/render/renderer";
+import { loadSpriteSheet } from "../src/render/textures";
+import { GameClient } from "../src/client";
 
-let world: GameRenderer;
+let client: GameClient;
 
 function init(): void {
-  world = new GameRenderer();
-
-  const body = document.getElementById("app");
-  body.appendChild(world.app.view);
+  client = new GameClient();
+  client.sayHi();
 }
 
 window.addEventListener("load", (): void => {

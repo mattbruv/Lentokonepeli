@@ -8,3 +8,8 @@ export enum Team {
   Centrals,
   Allies
 }
+
+export enum Terrain {
+  Normal,
+  Desert
+}

@@ -127,7 +127,8 @@ export function isPointRectCollision(
   if (
     pointLocal.x >= -halfWidth &&
     pointLocal.x <= halfWidth &&
-    (pointLocal.y >= -halfHeight && pointLocal.y <= halfHeight)
+    pointLocal.y >= -halfHeight &&
+    pointLocal.y <= halfHeight
   ) {
     return true;
   }
