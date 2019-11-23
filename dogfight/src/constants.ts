@@ -1,5 +1,3 @@
-export const U16_MAX = 0xffff;
-
 export const ROTATION_DIRECTIONS = 256;
 
 export enum ByteSize {

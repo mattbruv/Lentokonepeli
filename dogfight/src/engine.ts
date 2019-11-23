@@ -1,6 +1,6 @@
 import { GameWorld } from "./world";
 import { MAP_CLASSIC } from "./maps/classic";
-import { GameEvent, GameEventType } from "./event";
+import { State } from "./state";
 
 /**
  * Main Dogfight Engine Class/API.
@@ -33,9 +33,8 @@ export class DogfightEngine {
     this.world.logWorld();
   }
 
-  public getState(): GameEvent {
-    const data: GameEvent = { eventType: GameEventType.EntityUpdate };
-    return data;
+  public getState(): State[] {
+    return this.world.getState();
   }
 
   public applyInput(): void {}
