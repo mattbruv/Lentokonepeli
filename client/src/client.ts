@@ -19,9 +19,8 @@ export class GameClient {
   public constructor() {
     console.log("Initializing Game Client..");
     this.localEngine = new DogfightEngine();
-  }
-
-  public sayHi(): void {
-    console.log("Hello from client!");
+    this.localEngine.debug();
+    // init renderer
+    // get local engine state and pass it to renderer...
   }
 }

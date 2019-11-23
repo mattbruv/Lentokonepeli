@@ -19,17 +19,20 @@ import { EntityType } from "./entity";
  * -> ClientRenderer.Apply(Events)
  *
  */
-export enum EventType {
+export enum GameEventType {
   None,
-  Entity,
+  EntityAdd,
+  EntityUpdate,
+  EntityDelete,
   PlayerInput
   // and so on
 }
 
-export interface Event {
-  eventType: EventType;
+export interface GameEvent {
+  eventType: GameEventType;
 }
 
-export interface EntityEvent extends Event {
+export interface EntityEvent extends GameEvent {
   entityType: EntityType;
+  entityId: number;
 }

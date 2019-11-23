@@ -1,17 +1,12 @@
 import { Vec2d } from "../physics/vector";
-import { Terrain, ByteSize } from "../constants";
-import { Entity, EntityInfo, EntityType } from "../entity";
-import { EntityEvent, EventType } from "../event";
+import { Terrain } from "../constants";
+import { Entity, EntityProperty } from "../entity";
 
 export interface GroundOptions {
   center?: Vec2d;
   width?: number;
   terrain?: Terrain;
 }
-
-export const groundInfo: EntityInfo = {
-  maxAllowed: ByteSize.ONE_BYTE
-};
 
 const example: GroundOptions = {
   center: { x: 0, y: 0 },
@@ -45,18 +40,14 @@ export class GroundEntity implements Entity {
   /** The type of terrain this ground is */
   private terrain: Terrain;
 
-  public constructor(opts?: GroundOptions) {
+  public constructor(opts: GroundOptions) {
     this.center = opts.center != null ? opts.center : example.center;
     this.width = opts.width != null ? opts.width : example.width;
     this.terrain = opts.terrain != null ? opts.terrain : example.terrain;
   }
 
-  public getState(): EntityEvent {
-    const event = {
-      eventType: EventType.Entity,
-      entityType: EntityType.Ground
-    };
-    return event;
+  public getState(): EntityProperty[] {
+    return [];
   }
 
   public groundFunc(): void {

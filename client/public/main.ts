@@ -5,7 +5,6 @@ let client: GameClient;
 
 function init(): void {
   client = new GameClient();
-  client.sayHi();
 }
 
 window.addEventListener("load", (): void => {

@@ -1,23 +1,33 @@
-import { GroundEntity, groundInfo } from "./entities/ground";
+import { GroundEntity } from "./entities/ground";
 import { GameMap } from "./map";
-import { EntityContainer } from "./entity";
+import { EntityContainer, EntityType } from "./entity";
+import { GameEvent } from "./event";
 
 /**
  * The Game World contains all entites,
  * World state, etc. of a game.
  */
 export class GameWorld {
-  private inEventQueue: Event[]; // processes on beginniong of tick();
-  private outEventQueue: Event[]; // flushes on tick()
-  private grounds = new EntityContainer<GroundEntity>(groundInfo);
+  private eventQueueIn: GameEvent[] = []; // processes on beginniong of tick();
+  private eventQueueOut: GameEvent[] = []; // flushes on tick()
+  private grounds = new EntityContainer<GroundEntity>(EntityType.Ground);
 
   public constructor() {
-    console.log("Created world Object!");
     this.resetWorld();
   }
 
+  public debug(): void {
+    const del = this.grounds.delete(0);
+    this.eventQueueOut.push(del);
+    console.log(this.eventQueueOut);
+    this.logWorld();
+  }
+
+  public tick(): void {
+    console.log("game tick");
+  }
+
   private resetWorld(): void {
-    console.log("Resetting world...");
     this.grounds.reset();
   }
 
@@ -27,9 +37,6 @@ export class GameWorld {
         this.grounds.add(new GroundEntity(ground));
       });
     }
-    console.log("Loaded map!");
-    console.log(this.grounds);
-    console.log(this.grounds.get());
     this.logWorld();
   }
 

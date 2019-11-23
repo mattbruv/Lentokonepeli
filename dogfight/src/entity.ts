@@ -1,8 +1,9 @@
-import { EntityEvent } from "./event";
+import { EntityEvent, GameEventType } from "./event";
+import { PropertyType, Property, ByteSize } from "./constants";
 
 export interface Entity {
   id: number;
-  getState: () => EntityEvent;
+  getState: () => EntityProperty[];
 }
 
 /**
@@ -19,17 +20,17 @@ export enum EntityType {
   Explosion
 }
 
-export interface EntityInfo {
-  maxAllowed: number;
-  /*
-   * Properties of an entity that are able
-   * to be packed should be listed here.
-   *
-   * ex: {
-   *      "x": ByteSize.TWO_BYTES,
-   *      "health": ByteSize.ONE_BYTE
-   *     }
-   */
+/**
+ * Entity Property
+ * Defines a property in an entity object
+ * that can be serialized and sent.
+ * Such properties are subject to change,
+ * like (x, y), rotation, etc.
+ */
+export interface EntityProperty {
+  key: string;
+  propType: PropertyType;
+  value: Property;
 }
 
 /**
@@ -37,12 +38,12 @@ export interface EntityInfo {
  *
  * Usefull to have a generic ID function
  */
-export class EntityContainer<Ent extends Entity> {
-  private list: Ent[];
-  private info: EntityInfo;
+export class EntityContainer<E extends Entity> {
+  private list: E[];
+  private type: EntityType;
 
-  public constructor(info: EntityInfo) {
-    this.info = info;
+  public constructor(type: EntityType) {
+    this.type = type;
     this.reset();
   }
 
@@ -50,28 +51,46 @@ export class EntityContainer<Ent extends Entity> {
     this.list = [];
   }
 
-  public add(instance: Ent): EntityEvent {
-    const id = this.getUniqueID();
-    if (id >= 0) {
-      instance.id = id;
-      const state = instance.getState();
-      this.list.push(instance);
-      return state;
-    }
+  public add(instance: E): EntityEvent {
+    instance.id = this.getUniqueID();
+    // const state = instance.getState();
+    this.list.push(instance);
+    const event = {
+      entityType: this.type,
+      eventType: GameEventType.EntityAdd,
+      entityId: instance.id
+    };
+    return event;
   }
 
-  public get(): Ent[] {
+  public delete(id: number): EntityEvent {
+    let index = ByteSize.TWO_BYTES;
+    for (let i = 0; i < this.list.length; i++) {
+      if (this.list[i].id == id) {
+        index = i;
+        break;
+      }
+    }
+    this.list.splice(index, 1);
+    const event = {
+      entityType: this.type,
+      eventType: GameEventType.EntityDelete,
+      entityId: id
+    };
+    return event;
+  }
+
+  public get(): E[] {
     return this.list;
   }
 
   private getUniqueID(): number {
-    const max = this.info.maxAllowed;
-    const used = this.list.map((e: Ent): number => e.id);
-    for (let id = 0; id <= max; id++) {
+    const used = this.list.map((e: E): number => e.id);
+    for (let id = 0; id <= ByteSize.TWO_BYTES; id++) {
       if (!used.includes(id)) {
         return id;
       }
     }
-    return -1;
+    return ByteSize.TWO_BYTES;
   }
 }
