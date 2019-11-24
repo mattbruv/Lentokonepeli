@@ -6,6 +6,8 @@ const GRID_HEIGHT = 100;
 const GRID_COLOR = 0xbbbbbb;
 const GRID_OPACITY = 0.5;
 
+const DOT_COLOR = 0x333333;
+
 /** The maximum distance in pixels to draw the x,y axis line */
 const AXIS_BOUNDS = Math.pow(2, 16 - 1);
 
@@ -14,13 +16,19 @@ export class GridObject {
   private gridSprite: PIXI.TilingSprite;
   private axisSprite: PIXI.Graphics;
 
-  private enabled: boolean;
+  // grid snap dot
+  private dot: PIXI.Graphics;
 
   public constructor(renderer: PIXI.Renderer) {
     const renderTexture = PIXI.RenderTexture.create({
       height: GRID_HEIGHT,
       width: GRID_WIDTH
     });
+
+    this.dot = new PIXI.Graphics();
+    this.dot.beginFill(DOT_COLOR);
+    this.dot.drawCircle(0, 0, 5);
+    this.dot.endFill();
 
     const graphics = new PIXI.Graphics();
 
@@ -43,15 +51,14 @@ export class GridObject {
     this.axisSprite.lineTo(-AXIS_BOUNDS, 0);
     this.axisSprite.endFill();
 
-    // add cursor debug text
     // Add to main container
     this.container = new PIXI.Container();
     this.container.addChild(this.gridSprite);
     this.container.addChild(this.axisSprite);
+    this.container.addChild(this.dot);
 
-    this.container.alpha = GRID_OPACITY;
-
-    this.setEnabled(false);
+    this.gridSprite.alpha = GRID_OPACITY;
+    this.axisSprite.alpha = GRID_OPACITY;
   }
 
   public setCamera(x: number, y: number): void {
@@ -64,15 +71,8 @@ export class GridObject {
     this.gridSprite.height = height;
   }
 
-  /*
-  public setCursorCoords(x: number, y: number): void {
-    this.cursorPos = { x, y };
-    this.updateCursorText();
-  } */
-
   public setEnabled(active: boolean): void {
-    this.enabled = active;
-    this.gridSprite.visible = this.enabled;
-    this.axisSprite.visible = this.enabled;
+    this.gridSprite.visible = active;
+    this.axisSprite.visible = active;
   }
 }

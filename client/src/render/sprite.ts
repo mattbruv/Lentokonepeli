@@ -10,6 +10,7 @@ export interface GameSprite {
   entityId: number;
   entityType: EntityType;
   container: PIXI.Container;
+  debugContainer: PIXI.Container;
 
   /**
    * Updates the sprite on the game screen.

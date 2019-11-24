@@ -7,11 +7,13 @@ export class GroundSprite implements GameSprite {
   public entityId: number;
   public entityType = EntityType.Ground;
   public container: PIXI.Container;
+  public debugContainer: PIXI.Container;
 
   public constructor(spritesheet: PIXI.Spritesheet, id: number) {
     this.entityId = id;
     console.log(spritesheet);
     this.container = new PIXI.Container();
+    this.debugContainer = new PIXI.Container();
     console.log("create ground sprite!");
   }
 

@@ -4,7 +4,7 @@ import { GameSprite } from "./sprite";
 import { EntityType } from "../../../dogfight/src/entity";
 import { GroundSprite } from "./sprites/ground";
 import { GameScreen } from "./constants";
-import { GridObject } from "./objects/grid";
+import { DebugView } from "./objects/debug";
 
 /**
  * A class which renders the game world.
@@ -18,11 +18,7 @@ export class GameRenderer {
   private pixiApp: PIXI.Application;
   private worldContainer: PIXI.Container;
   private entityContainer: PIXI.Container;
-
-  private debugGrid: GridObject;
-
-  // Flags
-  private debugMode: boolean = false;
+  private debug: DebugView;
 
   public constructor(spritesheet: PIXI.Spritesheet) {
     this.spriteSheet = spritesheet;
@@ -35,8 +31,8 @@ export class GameRenderer {
     });
     this.worldContainer = new PIXI.Container();
     this.entityContainer = new PIXI.Container();
-    this.debugGrid = new GridObject(this.pixiApp.renderer);
-    this.debugGrid.setEnabled(true);
+    this.debug = new DebugView(this.pixiApp.renderer);
+    this.debug.setEnabled(true);
 
     // Setup pixi classes
     // Make the screen objects layerable.
@@ -44,7 +40,7 @@ export class GameRenderer {
     this.entityContainer.sortableChildren = true;
 
     // Add stuff to the appropriate containers
-    this.worldContainer.addChild(this.debugGrid.container);
+    this.worldContainer.addChild(this.debug.container);
     this.worldContainer.addChild(this.entityContainer);
 
     // Add containers to main stage
@@ -74,6 +70,7 @@ export class GameRenderer {
       if (sprite) {
         sprite.update(state.properties);
         this.entityContainer.addChild(sprite.container);
+        this.debug.container.addChild(sprite.debugContainer);
         this.sprites.push(sprite);
       }
       return;
@@ -121,5 +118,9 @@ export class GameRenderer {
 
   public getView(): HTMLCanvasElement {
     return this.pixiApp.view;
+  }
+
+  public mouseOver(event: MouseEvent): void {
+    this.debug.setCursorPos(event.offsetX, event.offsetY);
   }
 }

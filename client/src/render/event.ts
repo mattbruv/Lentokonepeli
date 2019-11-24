@@ -14,10 +14,18 @@ export class CanvasEventHandler {
     this.canvas = this.renderer.getView();
   }
 
+  /*
+    The following may be needed to get click relative to canvas position in window:
+    this.canvas.getBoundingClientRect();
+  */
   public addListeners(): void {
     console.log("bound listners!");
     this.canvas.addEventListener("mousedown", (event: MouseEvent): void => {
       console.log(event);
+    });
+
+    this.canvas.addEventListener("mousemove", (event: MouseEvent): void => {
+      this.renderer.mouseOver(event);
     });
   }
 }
