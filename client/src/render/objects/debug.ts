@@ -1,5 +1,6 @@
 import * as PIXI from "pixi.js";
 import { GridObject } from "./grid";
+import { Vec2d } from "../../../../dogfight/src/physics/vector";
 
 export class DebugView {
   public container: PIXI.Container;
@@ -14,15 +15,21 @@ export class DebugView {
     this.grid = new GridObject(renderer);
 
     // cursor text
-    this.cursorText = new PIXI.Text("", { fontSize: 20 });
+    this.cursorText = new PIXI.Text("", { fontSize: 24 });
     this.cursorText.position.set(5, 5);
 
     this.container.addChild(this.grid.container);
     this.container.addChild(this.cursorText);
+    this.setEnabled(false);
+  }
+
+  public isEnabled(): boolean {
+    return this.enabled;
   }
 
   public toggle(): void {
     this.setEnabled(!this.enabled);
+    console.log("Debug mode", this.enabled ? "enabled" : "disabled");
   }
 
   public setEnabled(active: boolean): void {
@@ -31,7 +38,9 @@ export class DebugView {
     this.enabled = active;
   }
 
-  public setCursorPos(x: number, y: number): void {
-    this.cursorText.text = "(" + x + ", " + y + ")";
+  public setCursorPos(gameCoords: Vec2d): void {
+    const dotCoords = this.grid.getDot(gameCoords);
+    this.grid.setDot(dotCoords);
+    this.cursorText.text = "(" + dotCoords.x + ", " + dotCoords.y + ")";
   }
 }

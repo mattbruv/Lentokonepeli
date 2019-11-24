@@ -5,6 +5,7 @@ import { EntityType } from "../../../dogfight/src/entity";
 import { GroundSprite } from "./sprites/ground";
 import { GameScreen } from "./constants";
 import { DebugView } from "./objects/debug";
+import { Vec2d } from "../../../dogfight/src/physics/vector";
 
 /**
  * A class which renders the game world.
@@ -16,8 +17,8 @@ export class GameRenderer {
   private sprites: GameSprite[] = [];
 
   private pixiApp: PIXI.Application;
-  private worldContainer: PIXI.Container;
-  private entityContainer: PIXI.Container;
+  public gameContainer: PIXI.Container;
+  public worldContainer: PIXI.Container;
   private debug: DebugView;
 
   public constructor(spritesheet: PIXI.Spritesheet) {
@@ -29,22 +30,22 @@ export class GameRenderer {
       backgroundColor: 0xf984e5,
       antialias: false
     });
+    this.gameContainer = new PIXI.Container();
     this.worldContainer = new PIXI.Container();
-    this.entityContainer = new PIXI.Container();
     this.debug = new DebugView(this.pixiApp.renderer);
     this.debug.setEnabled(true);
 
     // Setup pixi classes
     // Make the screen objects layerable.
+    this.gameContainer.sortableChildren = true;
     this.worldContainer.sortableChildren = true;
-    this.entityContainer.sortableChildren = true;
 
     // Add stuff to the appropriate containers
-    this.worldContainer.addChild(this.debug.container);
-    this.worldContainer.addChild(this.entityContainer);
+    this.gameContainer.addChild(this.debug.container);
+    this.gameContainer.addChild(this.worldContainer);
 
     // Add containers to main stage
-    this.pixiApp.stage.addChild(this.worldContainer);
+    this.pixiApp.stage.addChild(this.gameContainer);
 
     this.reset();
   }
@@ -69,7 +70,7 @@ export class GameRenderer {
       const sprite = this.createSprite(state);
       if (sprite) {
         sprite.update(state.properties);
-        this.entityContainer.addChild(sprite.container);
+        this.worldContainer.addChild(sprite.container);
         this.debug.container.addChild(sprite.debugContainer);
         this.sprites.push(sprite);
       }
@@ -116,11 +117,22 @@ export class GameRenderer {
     }
   }
 
+  public getStage(): PIXI.Container {
+    return this.pixiApp.stage;
+  }
+
   public getView(): HTMLCanvasElement {
     return this.pixiApp.view;
   }
 
-  public mouseOver(event: MouseEvent): void {
-    this.debug.setCursorPos(event.offsetX, event.offsetY);
+  public setCursorPosInGame(pos: Vec2d): void {
+    if (this.debug.isEnabled()) {
+      this.debug.setCursorPos(pos);
+    }
+  }
+
+  public toggleDebugMode(): void {
+    const active = this.debug.isEnabled();
+    this.debug.setEnabled(!active);
   }
 }

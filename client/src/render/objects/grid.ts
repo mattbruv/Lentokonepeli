@@ -1,12 +1,15 @@
 import * as PIXI from "pixi.js";
 import { GameScreen } from "../constants";
+import { Vec2d } from "../../../../dogfight/src/physics/vector";
+import { toPixiCoords } from "../coords";
 
 const GRID_WIDTH = 100;
 const GRID_HEIGHT = 100;
-const GRID_COLOR = 0xbbbbbb;
-const GRID_OPACITY = 0.5;
+const GRID_COLOR = 0x999999;
+const GRID_OPACITY = 0.75;
 
-const DOT_COLOR = 0x333333;
+const DOT_SIZE = 5;
+const DOT_COLOR = 0x666666;
 
 /** The maximum distance in pixels to draw the x,y axis line */
 const AXIS_BOUNDS = Math.pow(2, 16 - 1);
@@ -27,7 +30,7 @@ export class GridObject {
 
     this.dot = new PIXI.Graphics();
     this.dot.beginFill(DOT_COLOR);
-    this.dot.drawCircle(0, 0, 5);
+    this.dot.drawCircle(0, 0, DOT_SIZE);
     this.dot.endFill();
 
     const graphics = new PIXI.Graphics();
@@ -61,6 +64,24 @@ export class GridObject {
     this.axisSprite.alpha = GRID_OPACITY;
   }
 
+  // returns corner to snap dot to, or nothing.
+  // Snaps when within 10% of an edge in x and y
+  public getDot(gameCoords: Vec2d): Vec2d {
+    // if pos within 10%, snap to closest edge
+    const closestX = Math.round(gameCoords.x / GRID_HEIGHT) * GRID_HEIGHT;
+    const closestY = Math.round(gameCoords.y / GRID_HEIGHT) * GRID_HEIGHT;
+    const diffX = Math.abs(closestX - gameCoords.x);
+    const diffY = Math.abs(closestY - gameCoords.y);
+    const nX = diffX <= 10 ? closestX : gameCoords.x;
+    const nY = diffY <= 10 ? closestY : gameCoords.y;
+    return { x: nX, y: nY };
+  }
+
+  public setDot(gameCoords: Vec2d): void {
+    const pos = toPixiCoords(gameCoords);
+    this.dot.position.set(pos.x, pos.y);
+  }
+
   public setCamera(x: number, y: number): void {
     this.gridSprite.tilePosition.set(x, y);
     this.axisSprite.position.set(x, y);
@@ -74,5 +95,6 @@ export class GridObject {
   public setEnabled(active: boolean): void {
     this.gridSprite.visible = active;
     this.axisSprite.visible = active;
+    this.dot.visible = active;
   }
 }
