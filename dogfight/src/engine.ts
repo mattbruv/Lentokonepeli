@@ -1,6 +1,6 @@
 import { GameWorld } from "./world";
-import { MAP_CLASSIC } from "./maps/classic";
 import { State } from "./state";
+import { GameMap } from "./map";
 
 /**
  * Main Dogfight Engine Class/API.
@@ -17,11 +17,10 @@ export class DogfightEngine {
 
   public constructor() {
     this.world = new GameWorld();
-    this.world.loadMap(MAP_CLASSIC);
   }
 
-  public debug(): void {
-    this.world.debug();
+  public loadMap(map: GameMap): void {
+    this.world.loadMap(map);
   }
 
   /**
@@ -38,4 +37,8 @@ export class DogfightEngine {
   }
 
   public applyInput(): void {}
+
+  public debug(): void {
+    this.world.debug();
+  }
 }

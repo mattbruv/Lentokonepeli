@@ -1,5 +1,9 @@
+import { spriteSheet } from "./render/textures";
 import { DogfightEngine } from "../../dogfight/src/engine";
 import { State } from "../../dogfight/src/state";
+import { MAP_CLASSIC } from "../../dogfight/src/maps/classic";
+import { GameRenderer } from "./render/renderer";
+import { CanvasEventHandler } from "./render/event";
 
 export class GameClient {
   /**
@@ -15,16 +19,28 @@ export class GameClient {
    * This takes game changes and renders a world
    * based on those changes.
    */
-  private localRenderer: void;
+  private localRenderer: GameRenderer;
+
+  private canvasHandler: CanvasEventHandler;
 
   public constructor() {
     console.log("Initializing Game Client..");
     this.localEngine = new DogfightEngine();
-    // this.localEngine.debug();
-    // init renderer
+    this.localEngine.loadMap(MAP_CLASSIC);
+    // create renderer
+    this.localRenderer = new GameRenderer(spriteSheet);
+
+    // create canvas event handler
+    this.canvasHandler = new CanvasEventHandler(this.localRenderer);
+    this.canvasHandler.addListeners();
+
+    // Draw it to the screen
+    const div = document.getElementById("app");
+    div.appendChild(this.localRenderer.getView());
+
     // get local engine state and pass it to renderer...
     const state = this.getState();
-    console.log(state);
+    this.localRenderer.renderStateList(state);
   }
 
   /**
