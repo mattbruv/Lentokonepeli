@@ -5,8 +5,8 @@ import { toPixiCoords } from "../coords";
 
 const GRID_WIDTH = 100;
 const GRID_HEIGHT = 100;
-const GRID_COLOR = 0x999999;
-const GRID_OPACITY = 0.75;
+const GRID_COLOR = 0x000000;
+const GRID_OPACITY = 0.25;
 
 const DOT_SIZE = 5;
 const DOT_COLOR = 0x666666;
@@ -16,8 +16,8 @@ const AXIS_BOUNDS = Math.pow(2, 16 - 1);
 
 export class GridObject {
   public container: PIXI.Container;
-  private gridSprite: PIXI.TilingSprite;
-  private axisSprite: PIXI.Graphics;
+  public gridSprite: PIXI.TilingSprite;
+  public axisSprite: PIXI.Graphics;
 
   // grid snap dot
   private dot: PIXI.Graphics;
@@ -62,7 +62,7 @@ export class GridObject {
     // this.container.addChild(this.dot);
 
     this.gridSprite.alpha = GRID_OPACITY;
-    this.axisSprite.alpha = GRID_OPACITY;
+    // this.axisSprite.alpha = GRID_OPACITY;
   }
 
   // returns corner to snap dot to, or nothing.

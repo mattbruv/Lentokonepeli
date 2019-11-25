@@ -18,7 +18,31 @@ export class GameRenderer {
   private sprites: GameSprite[] = [];
 
   private pixiApp: PIXI.Application;
+
+  /**
+   * A container that holds the game
+   * as it is seen fully.
+   * Eg. entities, HUD, etc.
+   */
+  public gameContainer: PIXI.Container;
+
+  /**
+   * Contains all major containers
+   * in the world that scale together,
+   * such as entities and usernames, etc.
+   */
   public worldContainer: PIXI.Container;
+
+  /**
+   * This is the overall container for all standard in the game.
+   * Entities that belong in the game world go here.
+   */
+  public entityContainer: PIXI.Container;
+
+  /**
+   * A container which draws grids, coords, and
+   * bounding boxes onto the screen to help with debugging
+   */
   private debug: DebugView;
 
   public constructor(spritesheet: PIXI.Spritesheet) {
@@ -30,18 +54,27 @@ export class GameRenderer {
       backgroundColor: 0xf984e5,
       antialias: true
     });
+
+    this.gameContainer = new PIXI.Container();
     this.worldContainer = new PIXI.Container();
+    this.entityContainer = new PIXI.Container();
+    this.gameContainer.interactive = true;
+
     this.debug = new DebugView(this.pixiApp.renderer);
     this.debug.setEnabled(false);
     this.toggleDebugMode();
 
     // Setup pixi classes
     // Make the screen objects layerable.
-    this.worldContainer.sortableChildren = true;
+    this.entityContainer.sortableChildren = true;
 
     // Add stuff to the appropriate containers
-    this.pixiApp.stage.addChild(this.worldContainer);
-    this.pixiApp.stage.addChild(this.debug.container);
+    this.worldContainer.addChild(this.entityContainer);
+    this.worldContainer.addChild(this.debug.worldContainer);
+
+    this.gameContainer.addChild(this.worldContainer);
+    this.gameContainer.addChild(this.debug.gameContainer);
+    this.pixiApp.stage.addChild(this.gameContainer);
 
     this.reset();
   }
@@ -66,8 +99,8 @@ export class GameRenderer {
       const sprite = this.createSprite(state);
       if (sprite) {
         sprite.update(state.properties);
-        this.worldContainer.addChild(sprite.container);
-        this.debug.container.addChild(sprite.debugContainer);
+        this.entityContainer.addChild(sprite.container);
+        this.debug.worldContainer.addChild(sprite.debugContainer);
         this.sprites.push(sprite);
       }
       return;
@@ -146,7 +179,6 @@ export class GameRenderer {
     const factor = 1 + direction * 0.1;
     this.worldContainer.scale.x *= factor;
     this.worldContainer.scale.y *= factor;
-    console.log(this.worldContainer.scale);
     this.debug.zoom(factor);
   }
 

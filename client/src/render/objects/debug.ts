@@ -3,7 +3,8 @@ import { GridObject } from "./grid";
 import { Vec2d } from "../../../../dogfight/src/physics/vector";
 
 export class DebugView {
-  public container: PIXI.Container;
+  public gameContainer: PIXI.Container;
+  public worldContainer: PIXI.Container;
   private cursorText: PIXI.Text;
 
   private grid: GridObject;
@@ -11,15 +12,17 @@ export class DebugView {
   private enabled: boolean = false;
 
   public constructor(renderer: PIXI.Renderer) {
-    this.container = new PIXI.Container();
+    this.worldContainer = new PIXI.Container();
+    this.gameContainer = new PIXI.Container();
     this.grid = new GridObject(renderer);
 
     // cursor text
     this.cursorText = new PIXI.Text("", { fontSize: 24 });
     this.cursorText.position.set(5, 5);
 
-    this.container.addChild(this.grid.container);
-    this.container.addChild(this.cursorText);
+    this.gameContainer.addChild(this.grid.container);
+    this.gameContainer.addChild(this.cursorText);
+
     this.setEnabled(false);
   }
 
@@ -43,18 +46,18 @@ export class DebugView {
   }
 
   public resetZoom(): void {
-    this.grid.container.scale.set(1);
+    this.grid.gridSprite.tileScale.set(1);
+    this.grid.axisSprite.scale.set(1);
   }
 
   public zoom(factor: number): void {
-    this.grid.container.scale.x *= factor;
-    this.grid.container.scale.y *= factor;
-    console.log(this.grid.container.scale);
+    this.grid.gridSprite.tileScale.x *= factor;
+    this.grid.gridSprite.tileScale.y *= factor;
+    this.grid.axisSprite.scale.x *= factor;
+    this.grid.axisSprite.scale.y *= factor;
   }
 
   public setCursorPos(gameCoords: Vec2d): void {
-    // jconst dotCoords = this.grid.getDot(gameCoords);
-    // this.grid.setDot(dotCoords);
     this.cursorText.text = "(" + gameCoords.x + ", " + gameCoords.y + ")";
   }
 }
