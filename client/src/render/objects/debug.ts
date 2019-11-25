@@ -32,6 +32,10 @@ export class DebugView {
     console.log("Debug mode", this.enabled ? "enabled" : "disabled");
   }
 
+  public setCamera(x: number, y: number): void {
+    this.grid.setCamera(x, y);
+  }
+
   public setEnabled(active: boolean): void {
     this.grid.setEnabled(active);
     this.cursorText.visible = active;
@@ -39,8 +43,8 @@ export class DebugView {
   }
 
   public setCursorPos(gameCoords: Vec2d): void {
-    const dotCoords = this.grid.getDot(gameCoords);
-    this.grid.setDot(dotCoords);
-    this.cursorText.text = "(" + dotCoords.x + ", " + dotCoords.y + ")";
+    // jconst dotCoords = this.grid.getDot(gameCoords);
+    // this.grid.setDot(dotCoords);
+    this.cursorText.text = "(" + gameCoords.x + ", " + gameCoords.y + ")";
   }
 }

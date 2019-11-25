@@ -58,7 +58,8 @@ export class GridObject {
     this.container = new PIXI.Container();
     this.container.addChild(this.gridSprite);
     this.container.addChild(this.axisSprite);
-    this.container.addChild(this.dot);
+    // remove the dot for now until fixed.
+    // this.container.addChild(this.dot);
 
     this.gridSprite.alpha = GRID_OPACITY;
     this.axisSprite.alpha = GRID_OPACITY;
@@ -79,17 +80,14 @@ export class GridObject {
 
   public setDot(gameCoords: Vec2d): void {
     const pos = toPixiCoords(gameCoords);
+    console.log(pos);
+
     this.dot.position.set(pos.x, pos.y);
   }
 
   public setCamera(x: number, y: number): void {
     this.gridSprite.tilePosition.set(x, y);
     this.axisSprite.position.set(x, y);
-  }
-
-  public resizeGrid(width: number, height: number): void {
-    this.gridSprite.width = width;
-    this.gridSprite.height = height;
   }
 
   public setEnabled(active: boolean): void {

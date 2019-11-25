@@ -17,7 +17,6 @@ export class GameRenderer {
   private sprites: GameSprite[] = [];
 
   private pixiApp: PIXI.Application;
-  public gameContainer: PIXI.Container;
   public worldContainer: PIXI.Container;
   private debug: DebugView;
 
@@ -30,22 +29,18 @@ export class GameRenderer {
       backgroundColor: 0xf984e5,
       antialias: false
     });
-    this.gameContainer = new PIXI.Container();
     this.worldContainer = new PIXI.Container();
     this.debug = new DebugView(this.pixiApp.renderer);
-    this.debug.setEnabled(true);
+    this.debug.setEnabled(false);
+    this.toggleDebugMode();
 
     // Setup pixi classes
     // Make the screen objects layerable.
-    this.gameContainer.sortableChildren = true;
     this.worldContainer.sortableChildren = true;
 
     // Add stuff to the appropriate containers
-    this.gameContainer.addChild(this.debug.container);
-    this.gameContainer.addChild(this.worldContainer);
-
-    // Add containers to main stage
-    this.pixiApp.stage.addChild(this.gameContainer);
+    this.pixiApp.stage.addChild(this.worldContainer);
+    this.pixiApp.stage.addChild(this.debug.container);
 
     this.reset();
   }
@@ -125,14 +120,35 @@ export class GameRenderer {
     return this.pixiApp.view;
   }
 
-  public setCursorPosInGame(pos: Vec2d): void {
-    if (this.debug.isEnabled()) {
-      this.debug.setCursorPos(pos);
-    }
+  public setCursorPosInGame(gameCoords: Vec2d): void {
+    this.debug.setCursorPos(gameCoords);
+  }
+
+  /**
+   * Sets the camera at a given location
+   *
+   * WARNING!
+   * Coordinates are in PIXIJS form!!
+   */
+  public setCamera(x: number, y: number): void {
+    this.worldContainer.position.set(x, y);
+    this.debug.setCamera(x, y);
+  }
+
+  public dragCamera(deltaX: number, deltaY: number): void {
+    const worldPos = this.worldContainer.position;
+    const newX = Math.round(worldPos.x + deltaX);
+    const newY = Math.round(worldPos.y + deltaY);
+    this.setCamera(newX, newY);
+  }
+
+  public isDebugEnabled(): boolean {
+    return this.debug.isEnabled();
   }
 
   public toggleDebugMode(): void {
-    const active = this.debug.isEnabled();
-    this.debug.setEnabled(!active);
+    const active = !this.isDebugEnabled();
+    this.debug.setEnabled(active);
+    this.pixiApp.stage.cursor = active ? "grab" : "default";
   }
 }

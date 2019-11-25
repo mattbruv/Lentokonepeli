@@ -9,6 +9,10 @@ import { toGameCoords } from "./coords";
 export class CanvasEventHandler {
   private renderer: GameRenderer;
   private stage: PIXI.Container;
+  private dragging: boolean = false;
+
+  private prevX: number;
+  private prevY: number;
 
   public constructor(renderer: GameRenderer) {
     this.renderer = renderer;
@@ -16,10 +20,6 @@ export class CanvasEventHandler {
     this.stage.interactive = true;
   }
 
-  /*
-    The following may be needed to get click relative to canvas position in window:
-    this.canvas.getBoundingClientRect();
-  */
   public addListeners(): void {
     console.log("bound listners!");
 
@@ -34,23 +34,42 @@ export class CanvasEventHandler {
     this.stage.on(
       "pointermove",
       (event: PIXI.interaction.InteractionEvent): void => {
-        if (event.target !== null) {
+        if (event.target !== null && this.renderer.isDebugEnabled()) {
           const local = event.data.getLocalPosition(
             this.renderer.worldContainer
           );
-          const gamePos = toGameCoords(local);
-          this.renderer.setCursorPosInGame(gamePos);
+          const gameCoords = toGameCoords(local);
+          this.renderer.setCursorPosInGame(gameCoords);
+        }
+        if (this.dragging && this.renderer.isDebugEnabled()) {
+          const pos = event.data.global;
+          const dx = pos.x - this.prevX;
+          const dy = pos.y - this.prevY;
+          this.renderer.dragCamera(dx, dy);
+          this.prevX = pos.x;
+          this.prevY = pos.y;
         }
       }
     );
-    /*
-    this.canvas.addEventListener("mousedown", (event: MouseEvent): void => {
-      console.log(event);
+
+    // Mousedown/dragging start
+    this.stage.on(
+      "pointerdown",
+      (event: PIXI.interaction.InteractionEvent): void => {
+        this.dragging = true;
+        this.prevX = event.data.global.x;
+        this.prevY = event.data.global.y;
+      }
+    );
+
+    // Mouseup/dragging stop
+    this.stage.on("pointerup", (): void => {
+      this.dragging = false;
     });
 
-    this.canvas.addEventListener("mousemove", (event: MouseEvent): void => {
-      this.renderer.mouseOver(event);
+    // Mouseup/dragging stop outside of canvas.
+    this.stage.on("pointerupoutside", (): void => {
+      this.dragging = false;
     });
-    */
   }
 }
