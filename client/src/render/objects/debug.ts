@@ -42,6 +42,16 @@ export class DebugView {
     this.enabled = active;
   }
 
+  public resetZoom(): void {
+    this.grid.container.scale.set(1);
+  }
+
+  public zoom(factor: number): void {
+    this.grid.container.scale.x *= factor;
+    this.grid.container.scale.y *= factor;
+    console.log(this.grid.container.scale);
+  }
+
   public setCursorPos(gameCoords: Vec2d): void {
     // jconst dotCoords = this.grid.getDot(gameCoords);
     // this.grid.setDot(dotCoords);

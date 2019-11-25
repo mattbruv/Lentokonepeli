@@ -28,7 +28,7 @@ export class GameRenderer {
       width: GameScreen.Width,
       height: GameScreen.Height,
       backgroundColor: 0xf984e5,
-      antialias: false
+      antialias: true
     });
     this.worldContainer = new PIXI.Container();
     this.debug = new DebugView(this.pixiApp.renderer);
@@ -134,6 +134,20 @@ export class GameRenderer {
   public setCamera(x: number, y: number): void {
     this.worldContainer.position.set(x, y);
     this.debug.setCamera(x, y);
+  }
+
+  public resetZoom(): void {
+    this.worldContainer.scale.set(1);
+    this.debug.resetZoom();
+  }
+
+  public zoom(x: number, y: number, isZoomIn: boolean): void {
+    const direction = isZoomIn ? 1 : -1;
+    const factor = 1 + direction * 0.1;
+    this.worldContainer.scale.x *= factor;
+    this.worldContainer.scale.y *= factor;
+    console.log(this.worldContainer.scale);
+    this.debug.zoom(factor);
   }
 
   /**

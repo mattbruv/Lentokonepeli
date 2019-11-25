@@ -21,14 +21,26 @@ export class CanvasEventHandler {
   }
 
   public addListeners(): void {
-    console.log("bound listners!");
-
     // Add button listeners.
     window.addEventListener("keypress", (event: KeyboardEvent): void => {
-      if (event.code == "KeyD") {
-        this.renderer.toggleDebugMode();
+      switch (event.code) {
+        case "KeyD":
+          this.renderer.toggleDebugMode();
+          break;
+        case "KeyR":
+          this.renderer.resetZoom();
+          break;
       }
     });
+
+    this.renderer
+      .getView()
+      .addEventListener("wheel", (event: WheelEvent): void => {
+        if (!this.renderer.isDebugEnabled()) {
+          return;
+        }
+        this.renderer.zoom(event.deltaX, event.deltaY, event.deltaY < 0);
+      });
 
     // Add mouse listeners.
     this.stage.on(
