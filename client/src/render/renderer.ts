@@ -6,6 +6,7 @@ import { GroundSprite } from "./sprites/ground";
 import { GameScreen } from "./constants";
 import { DebugView } from "./objects/debug";
 import { Vec2d } from "../../../dogfight/src/physics/vector";
+import { toPixiCoords } from "./coords";
 
 /**
  * A class which renders the game world.
@@ -133,6 +134,19 @@ export class GameRenderer {
   public setCamera(x: number, y: number): void {
     this.worldContainer.position.set(x, y);
     this.debug.setCamera(x, y);
+  }
+
+  /**
+   * Center the camera view on a specific (x, y) location
+   * Coordinates must be in game world space.
+   */
+  public centerCamera(x: number, y: number): void {
+    const canvasHeight = this.pixiApp.screen.height;
+    const canvasWidth = this.pixiApp.screen.width;
+    const pos = toPixiCoords({ x: -x, y: -y });
+    pos.x += Math.round(canvasWidth / 2);
+    pos.y += Math.round(canvasHeight / 2);
+    this.setCamera(pos.x, pos.y);
   }
 
   public dragCamera(deltaX: number, deltaY: number): void {

@@ -34,6 +34,9 @@ export class GameClient {
     this.canvasHandler = new CanvasEventHandler(this.localRenderer);
     this.canvasHandler.addListeners();
 
+    // center camera
+    this.localRenderer.centerCamera(0, 0);
+
     // Draw it to the screen
     const div = document.getElementById("app");
     div.appendChild(this.localRenderer.getView());
