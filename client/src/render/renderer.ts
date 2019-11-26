@@ -175,6 +175,12 @@ export class GameRenderer {
   public setCamera(x: number, y: number): void {
     this.worldContainer.position.set(x, y);
     this.debug.setCamera(x, y);
+    // center sky?
+    const px = GameScreen.Width / 2;
+    const py = GameScreen.Height / 2;
+    const point = new PIXI.Point(px, py);
+    const coords = this.worldContainer.toLocal(point);
+    this.sky.setPosition(coords.x, coords.y);
     this.sky.setCamera(x, y);
   }
 
