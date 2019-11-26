@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { GridObject } from "./grid";
 import { Vec2d } from "../../../../dogfight/src/physics/vector";
+import { loadOptions } from "@babel/core";
 
 export class DebugView {
   public gameContainer: PIXI.Container;
@@ -48,6 +49,8 @@ export class DebugView {
   public resetZoom(): void {
     this.grid.gridSprite.tileScale.set(1);
     this.grid.axisSprite.scale.set(1);
+    this.grid.gridSprite.pivot.set(0);
+    this.grid.axisSprite.pivot.set(0);
   }
 
   public zoom(factor: number): void {

@@ -39,7 +39,7 @@ export class CanvasEventHandler {
         if (!this.renderer.isDebugEnabled()) {
           return;
         }
-        this.renderer.zoom(event.deltaX, event.deltaY, event.deltaY < 0);
+        this.renderer.zoom(event.clientX, event.clientY, event.deltaY < 0);
       });
 
     // Add mouse listeners.

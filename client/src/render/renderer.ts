@@ -6,7 +6,7 @@ import { GroundSprite } from "./sprites/ground";
 import { GameScreen } from "./constants";
 import { DebugView } from "./objects/debug";
 import { Vec2d } from "../../../dogfight/src/physics/vector";
-import { toPixiCoords } from "./coords";
+import { toPixiCoords, roundCoords } from "./coords";
 
 /**
  * A class which renders the game world.
@@ -171,15 +171,22 @@ export class GameRenderer {
 
   public resetZoom(): void {
     this.worldContainer.scale.set(1);
+    this.worldContainer.pivot.set(0);
     this.debug.resetZoom();
   }
 
   public zoom(x: number, y: number, isZoomIn: boolean): void {
+    const mouse = new PIXI.Point(x, y);
+    const local = this.worldContainer.toLocal(mouse);
     const direction = isZoomIn ? 1 : -1;
     const factor = 1 + direction * 0.1;
     this.worldContainer.scale.x *= factor;
     this.worldContainer.scale.y *= factor;
+    const newX = -(local.x * this.worldContainer.scale.x) + mouse.x;
+    const newY = -(local.y * this.worldContainer.scale.y) + mouse.y;
+
     this.debug.zoom(factor);
+    this.setCamera(newX, newY);
   }
 
   /**
