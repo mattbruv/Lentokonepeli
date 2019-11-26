@@ -7,6 +7,7 @@ import { GameScreen } from "./constants";
 import { DebugView } from "./objects/debug";
 import { Vec2d } from "../../../dogfight/src/physics/vector";
 import { toPixiCoords } from "./coords";
+import { Sky } from "./objects/sky";
 
 /**
  * A class which renders the game world.
@@ -45,6 +46,8 @@ export class GameRenderer {
    */
   private debug: DebugView;
 
+  private sky: Sky;
+
   public constructor(spritesheet: PIXI.Spritesheet) {
     this.spriteSheet = spritesheet;
     // Initialize PIXI classes
@@ -64,6 +67,8 @@ export class GameRenderer {
     this.debug.setEnabled(false);
     this.toggleDebugMode();
 
+    this.sky = new Sky(this.spriteSheet);
+
     // Setup pixi classes
     // Make the screen objects layerable.
     this.entityContainer.sortableChildren = true;
@@ -72,8 +77,10 @@ export class GameRenderer {
     this.worldContainer.addChild(this.entityContainer);
     this.worldContainer.addChild(this.debug.worldContainer);
 
+    this.gameContainer.addChild(this.sky.container);
     this.gameContainer.addChild(this.worldContainer);
     this.gameContainer.addChild(this.debug.gameContainer);
+
     this.pixiApp.stage.addChild(this.gameContainer);
 
     this.reset();
@@ -167,12 +174,13 @@ export class GameRenderer {
   public setCamera(x: number, y: number): void {
     this.worldContainer.position.set(x, y);
     this.debug.setCamera(x, y);
+    this.sky.setCamera(x, y);
   }
 
   public resetZoom(): void {
     this.worldContainer.scale.set(1);
-    this.worldContainer.pivot.set(0);
     this.debug.resetZoom();
+    this.sky.resetZoom();
   }
 
   public zoom(x: number, y: number, isZoomIn: boolean): void {
@@ -185,9 +193,10 @@ export class GameRenderer {
     const factor = 1 + direction * 0.1;
     this.worldContainer.scale.x *= factor;
     this.worldContainer.scale.y *= factor;
-    const newX = -(local.x * this.worldContainer.scale.x) + mouse.x;
-    const newY = -(local.y * this.worldContainer.scale.y) + mouse.y;
+    const newX = Math.round(-(local.x * this.worldContainer.scale.x) + mouse.x);
+    const newY = Math.round(-(local.y * this.worldContainer.scale.y) + mouse.y);
     this.debug.zoom(factor);
+    this.sky.zoom(factor);
     this.setCamera(newX, newY);
   }
 
