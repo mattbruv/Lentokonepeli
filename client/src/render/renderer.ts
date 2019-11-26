@@ -7,7 +7,7 @@ import { GameScreen } from "./constants";
 import { DebugView } from "./objects/debug";
 import { Vec2d } from "../../../dogfight/src/physics/vector";
 import { toPixiCoords } from "./coords";
-import { Sky } from "./objects/sky";
+import { SkyBackground } from "./objects/sky";
 
 /**
  * A class which renders the game world.
@@ -46,7 +46,7 @@ export class GameRenderer {
    */
   private debug: DebugView;
 
-  private sky: Sky;
+  public sky: SkyBackground;
 
   public constructor(spritesheet: PIXI.Spritesheet) {
     this.spriteSheet = spritesheet;
@@ -67,20 +67,21 @@ export class GameRenderer {
     this.debug.setEnabled(false);
     this.toggleDebugMode();
 
-    this.sky = new Sky(this.spriteSheet);
+    this.sky = new SkyBackground(this.spriteSheet);
 
     // Setup pixi classes
     // Make the screen objects layerable.
     this.entityContainer.sortableChildren = true;
 
     // Add stuff to the appropriate containers
+    this.worldContainer.addChild(this.sky.container);
     this.worldContainer.addChild(this.entityContainer);
     this.worldContainer.addChild(this.debug.worldContainer);
 
     this.gameContainer.addChild(this.worldContainer);
     this.gameContainer.addChild(this.debug.gameContainer);
 
-    this.pixiApp.stage.addChild(this.sky.container);
+    // this.pixiApp.stage.addChild(this.sky.container);
     this.pixiApp.stage.addChild(this.gameContainer);
 
     this.reset();
@@ -180,7 +181,6 @@ export class GameRenderer {
   public resetZoom(): void {
     this.worldContainer.scale.set(1);
     this.debug.resetZoom();
-    this.sky.resetZoom();
   }
 
   public zoom(x: number, y: number, isZoomIn: boolean): void {
@@ -196,7 +196,6 @@ export class GameRenderer {
     const newX = Math.round(-(local.x * this.worldContainer.scale.x) + mouse.x);
     const newY = Math.round(-(local.y * this.worldContainer.scale.y) + mouse.y);
     this.debug.zoom(factor);
-    this.sky.zoom(factor);
     this.setCamera(newX, newY);
   }
 
