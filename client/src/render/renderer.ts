@@ -176,6 +176,9 @@ export class GameRenderer {
   }
 
   public zoom(x: number, y: number, isZoomIn: boolean): void {
+    const current = this.worldContainer.scale.x;
+    if (isZoomIn && current > 5.0) return;
+    if (!isZoomIn && current < 0.1) return;
     const mouse = new PIXI.Point(x, y);
     const local = this.worldContainer.toLocal(mouse);
     const direction = isZoomIn ? 1 : -1;
@@ -184,7 +187,6 @@ export class GameRenderer {
     this.worldContainer.scale.y *= factor;
     const newX = -(local.x * this.worldContainer.scale.x) + mouse.x;
     const newY = -(local.y * this.worldContainer.scale.y) + mouse.y;
-
     this.debug.zoom(factor);
     this.setCamera(newX, newY);
   }
