@@ -77,10 +77,10 @@ export class GameRenderer {
     this.worldContainer.addChild(this.entityContainer);
     this.worldContainer.addChild(this.debug.worldContainer);
 
-    this.gameContainer.addChild(this.sky.container);
     this.gameContainer.addChild(this.worldContainer);
     this.gameContainer.addChild(this.debug.gameContainer);
 
+    this.pixiApp.stage.addChild(this.sky.container);
     this.pixiApp.stage.addChild(this.gameContainer);
 
     this.reset();
@@ -231,7 +231,6 @@ export class GameRenderer {
   }
 
   public toggleGrid(): void {
-    console.log("TOOGGLE AXIS!");
     this.debug.toggleGrid();
   }
 }
