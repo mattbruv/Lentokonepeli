@@ -15,6 +15,7 @@ export class DebugView {
   private dot: PIXI.Graphics;
 
   private enabled: boolean = false;
+  private showGrid: boolean = true;
 
   public constructor(renderer: PIXI.Renderer) {
     this.worldContainer = new PIXI.Container();
@@ -94,5 +95,12 @@ export class DebugView {
     const dotCoords = this.getDot(gameCoords);
     this.setDot(dotCoords);
     this.cursorText.text = "(" + dotCoords.x + ", " + dotCoords.y + ")";
+  }
+
+  public toggleGrid(): void {
+    this.dot.visible = !this.showGrid;
+    this.grid.gridSprite.visible = !this.showGrid;
+    this.grid.axisSprite.visible = !this.showGrid;
+    this.showGrid = !this.showGrid;
   }
 }

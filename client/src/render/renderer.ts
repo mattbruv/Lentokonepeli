@@ -220,4 +220,9 @@ export class GameRenderer {
     this.debug.setEnabled(active);
     this.pixiApp.stage.cursor = active ? "grab" : "default";
   }
+
+  public toggleGrid(): void {
+    console.log("TOOGGLE AXIS!");
+    this.debug.toggleGrid();
+  }
 }

@@ -30,6 +30,12 @@ export class CanvasEventHandler {
         case "KeyR":
           this.renderer.resetZoom();
           break;
+        case "KeyX": {
+          if (this.renderer.isDebugEnabled()) {
+            this.renderer.toggleGrid();
+          }
+          break;
+        }
       }
     });
 
