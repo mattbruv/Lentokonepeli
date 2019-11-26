@@ -6,7 +6,7 @@ import { GroundSprite } from "./sprites/ground";
 import { GameScreen } from "./constants";
 import { DebugView } from "./objects/debug";
 import { Vec2d } from "../../../dogfight/src/physics/vector";
-import { toPixiCoords, roundCoords } from "./coords";
+import { toPixiCoords } from "./coords";
 
 /**
  * A class which renders the game world.
