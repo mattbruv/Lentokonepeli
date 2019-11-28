@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { EntityType } from "../../../../dogfight/src/entity";
 import { Properties } from "../../../../dogfight/src/state";
+import { DrawLayer } from "../constants";
 
 export class GroundSprite implements GameSprite {
   public entityId: number;
@@ -32,6 +33,8 @@ export class GroundSprite implements GameSprite {
     this.container.addChild(this.ground);
     this.container.addChild(this.beachLeft);
     this.container.addChild(this.beachRight);
+
+    this.container.zIndex = DrawLayer.Ground;
   }
 
   private updatePosition(): void {
@@ -58,4 +61,6 @@ export class GroundSprite implements GameSprite {
       this.center(props.x);
     }
   }
+
+  public destroy(): void {}
 }

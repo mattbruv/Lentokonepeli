@@ -16,4 +16,11 @@ export interface GameSprite {
    * Updates the sprite on the game screen.
    */
   update: (props: Properties) => void;
+
+  /**
+   * Called when an entity is deleted.
+   * Used to clear pixi memory, callbacks,
+   * and other floating client things.
+   */
+  destroy: () => void;
 }

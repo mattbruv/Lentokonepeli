@@ -22,3 +22,8 @@ export enum Terrain {
   Normal,
   Desert
 }
+
+export enum WaveDirection {
+  Left,
+  Right
+}

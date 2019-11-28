@@ -2,6 +2,11 @@ export const PANEL_HEIGHT = 150;
 
 export const WAVE_PHASE_TIME = 200; // Milliseconds
 
+export enum DrawLayer {
+  Water = -100,
+  Ground = 0
+}
+
 export enum GameScreen {
   Width = 740,
   Height = 565

@@ -8,6 +8,7 @@ import { DebugView } from "./objects/debug";
 import { Vec2d } from "../../../dogfight/src/physics/vector";
 import { toPixiCoords } from "./coords";
 import { SkyBackground } from "./objects/sky";
+import { WaterSprite } from "./sprites/water";
 
 /**
  * A class which renders the game world.
@@ -99,13 +100,21 @@ export class GameRenderer {
 
   private renderState(state: State): void {
     if (state.action == StateAction.Delete) {
-      this.removeSprite(state.id);
+      const sprite = this.getSprite(state.id);
+      if (sprite) {
+        sprite.destroy();
+        this.worldContainer.removeChild(sprite.container);
+        this.debug.worldContainer.removeChild(sprite.debugContainer);
+        sprite.container.destroy({ children: true });
+        sprite.debugContainer.destroy({ children: true });
+        this.removeSprite(state.id);
+      }
       return;
     }
     if (state.action == StateAction.Create) {
       this.removeSprite(state.id);
       const sprite = this.createSprite(state);
-      if (sprite) {
+      if (sprite !== undefined) {
         sprite.update(state.properties);
         this.entityContainer.addChild(sprite.container);
         this.debug.worldContainer.addChild(sprite.debugContainer);
@@ -115,7 +124,7 @@ export class GameRenderer {
     }
     if (state.action == StateAction.Update) {
       const sprite = this.getSprite(state.id);
-      if (sprite) {
+      if (sprite !== undefined) {
         sprite.update(state.properties);
       }
       return;
@@ -126,6 +135,11 @@ export class GameRenderer {
     switch (state.type) {
       case EntityType.Ground:
         return new GroundSprite(this.spriteSheet, state.id);
+      case EntityType.Water:
+        return new WaterSprite(this.spriteSheet, state.id);
+      default:
+        console.log("ERROR: Create undefined entity type!", state.type);
+        break;
     }
   }
 
