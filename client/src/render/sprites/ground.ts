@@ -10,24 +10,52 @@ export class GroundSprite implements GameSprite {
   public debugContainer: PIXI.Container;
 
   private ground: PIXI.TilingSprite;
+  private beachLeft: PIXI.Sprite;
+  private beachRight: PIXI.Sprite;
 
   public constructor(spritesheet: PIXI.Spritesheet, id: number) {
-    this.entityId = id;
-    console.log(spritesheet);
-    this.container = new PIXI.Container();
-    this.debugContainer = new PIXI.Container();
     console.log("create ground sprite!");
+    this.entityId = id;
+
+    this.container = new PIXI.Container();
+    this.beachLeft = new PIXI.Sprite(spritesheet.textures["beach-l.gif"]);
+    this.beachRight = new PIXI.Sprite(spritesheet.textures["beach-l.gif"]);
+    this.debugContainer = new PIXI.Container();
+
     const textureGround: PIXI.Texture = spritesheet.textures["ground1.gif"];
+
     this.ground = new PIXI.TilingSprite(textureGround);
     this.ground.height = textureGround.height;
-    this.ground.position.set(0, 0);
+
+    this.updatePosition();
+
     this.container.addChild(this.ground);
+    this.container.addChild(this.beachLeft);
+    this.container.addChild(this.beachRight);
+  }
+
+  private updatePosition(): void {
+    this.beachRight.scale.x = -1;
+    this.beachLeft.position.x = 0;
+    this.ground.position.x = this.beachLeft.width;
+    this.beachRight.position.x =
+      this.ground.position.x + this.ground.width + this.beachRight.width;
+  }
+
+  private center(newX: number): void {
+    const halfWidth = Math.round(this.container.width / 2);
+    this.container.x = newX - halfWidth;
+    //this.container.x = 0;
   }
 
   public update(props: Properties): void {
-    if (props.width) {
+    console.log("update this entity with: ", props);
+    if (props.width !== undefined) {
       this.ground.width = props.width;
     }
-    console.log("update this entity with: ", props);
+    this.updatePosition();
+    if (props.x !== undefined) {
+      this.center(props.x);
+    }
   }
 }
