@@ -15,7 +15,6 @@ export class GroundSprite implements GameSprite {
   private beachRight: PIXI.Sprite;
 
   public constructor(spritesheet: PIXI.Spritesheet, id: number) {
-    console.log("create ground sprite!");
     this.entityId = id;
 
     this.container = new PIXI.Container();
@@ -48,11 +47,9 @@ export class GroundSprite implements GameSprite {
   private center(newX: number): void {
     const halfWidth = Math.round(this.container.width / 2);
     this.container.x = newX - halfWidth;
-    //this.container.x = 0;
   }
 
   public update(props: Properties): void {
-    console.log("update this entity with: ", props);
     if (props.width !== undefined) {
       this.ground.width = props.width;
     }

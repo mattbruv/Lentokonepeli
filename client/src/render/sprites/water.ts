@@ -60,7 +60,6 @@ export class WaterSprite implements GameSprite {
   }
 
   private setDirection(dir: WaveDirection): void {
-    console.log("set direction...");
     if (dir == WaveDirection.Right) {
       this.waves.scale.x = -1;
       this.waves.position.x = this.waves.width;
@@ -81,7 +80,6 @@ export class WaterSprite implements GameSprite {
   }
 
   public update(props: Properties): void {
-    console.log("update this entity with: ", props);
     if (props.width !== undefined) {
       this.createWater(props.width);
     }

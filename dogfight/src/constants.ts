@@ -27,3 +27,8 @@ export enum WaveDirection {
   Left,
   Right
 }
+
+export enum RunwayDirection {
+  Left,
+  Right
+}

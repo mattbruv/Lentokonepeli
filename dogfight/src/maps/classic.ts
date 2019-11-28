@@ -1,5 +1,5 @@
 import { GameMap } from "../map";
-import { Terrain, WaveDirection } from "../constants";
+import { Terrain, WaveDirection, Team, RunwayDirection } from "../constants";
 
 export const MAP_CLASSIC: GameMap = {
   grounds: [
@@ -7,6 +7,18 @@ export const MAP_CLASSIC: GameMap = {
       center: { x: 0, y: 0 },
       width: 4500, // measured from original map
       terrain: Terrain.Normal
+    }
+  ],
+  runways: [
+    {
+      center: { x: -180, y: 0 },
+      direction: RunwayDirection.Right,
+      team: Team.Centrals
+    },
+    {
+      center: { x: 180, y: 0 },
+      direction: RunwayDirection.Left,
+      team: Team.Centrals
     }
   ],
   waters: [

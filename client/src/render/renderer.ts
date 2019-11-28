@@ -9,6 +9,7 @@ import { Vec2d } from "../../../dogfight/src/physics/vector";
 import { toPixiCoords } from "./coords";
 import { SkyBackground } from "./objects/sky";
 import { WaterSprite } from "./sprites/water";
+import { RunwaySprite } from "./sprites/runway";
 
 /**
  * A class which renders the game world.
@@ -137,6 +138,8 @@ export class GameRenderer {
         return new GroundSprite(this.spriteSheet, state.id);
       case EntityType.Water:
         return new WaterSprite(this.spriteSheet, state.id);
+      case EntityType.Runway:
+        return new RunwaySprite(this.spriteSheet, state.id);
       default:
         console.log("ERROR: Create undefined entity type!", state.type);
         break;

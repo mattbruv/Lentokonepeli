@@ -12,7 +12,8 @@ export interface Entity {
  */
 export enum EntityType {
   Ground,
-  Water
+  Water,
+  Runway
 }
 
 export function getUniqueID(list: Entity[]): number {
