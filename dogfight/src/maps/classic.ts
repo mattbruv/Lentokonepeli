@@ -31,6 +31,16 @@ export const MAP_CLASSIC: GameMap = {
       team: Team.Allies
     }
   ],
+  flags: [
+    {
+      center: { x: -2100, y: 0 },
+      team: Team.Centrals
+    },
+    {
+      center: { x: 2100, y: 0 },
+      team: Team.Allies
+    }
+  ],
   waters: [
     {
       width: 60000,

@@ -1,20 +1,18 @@
 import { Vec2d } from "../physics/vector";
-import { WaveDirection } from "../constants";
+import { Team } from "../constants";
 import { Entity, EntityType } from "../entity";
 import { Properties } from "../state";
 
-export interface WaterOptions {
+export interface FlagOptions {
   id?: number;
   center?: Vec2d;
-  width?: number;
-  direction?: WaveDirection;
+  team?: Team;
 }
 
-const example: WaterOptions = {
+const example: FlagOptions = {
   id: -1,
-  center: { x: 0, y: -25 },
-  width: 100,
-  direction: WaveDirection.Right
+  center: { x: 0, y: 0 },
+  team: Team.Centrals
 };
 
 /**
@@ -24,21 +22,19 @@ const example: WaterOptions = {
  * It's center point is a (x,y) vector, and
  * it goes out in both directions by width length.
  */
-export class WaterEntity implements Entity {
+export class FlagEntity implements Entity {
   public id: number = example.id;
-  public readonly type = EntityType.Water;
+  public readonly type = EntityType.Flag;
 
-  /** (x, y) position of this ground object. */
+  /** (x, y) position of this object. */
   private center: Vec2d = example.center;
 
-  private width: number = example.width;
-
   /** The type of terrain this ground is */
-  private direction: WaveDirection = example.direction;
+  public team: Team = example.team;
 
   public constructor() {}
 
-  public setOptions(opts: WaterOptions): void {
+  public setOptions(opts: FlagOptions): void {
     for (const key in opts) {
       this[key] = opts[key];
     }
@@ -48,8 +44,7 @@ export class WaterEntity implements Entity {
     return {
       x: this.center.x,
       y: this.center.y,
-      direction: this.direction,
-      width: this.width
+      team: this.team
     };
   }
 }

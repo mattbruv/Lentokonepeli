@@ -1,7 +1,8 @@
 import { GroundOptions, GroundEntity } from "./entities/ground";
-import { Entity, getUniqueID } from "./entity";
+import { Entity, getUniqueID, EntityType } from "./entity";
 import { WaterOptions, WaterEntity } from "./entities/water";
 import { RunwayOptions, RunwayEntity } from "./entities/runway";
+import { FlagOptions, FlagEntity } from "./entities/flag";
 
 /**
  * A declaritive object that describes a level.
@@ -12,6 +13,7 @@ export interface GameMap {
   grounds?: GroundOptions[];
   waters?: WaterOptions[];
   runways?: RunwayOptions[];
+  flags?: FlagOptions[];
 }
 
 export function loadMapEntities(mapData: GameMap, entities: Entity[]): void {
@@ -38,6 +40,15 @@ export function loadMapEntities(mapData: GameMap, entities: Entity[]): void {
       runway.id = getUniqueID(entities);
       const ent = new RunwayEntity();
       ent.setOptions(runway);
+      entities.push(ent);
+    });
+  }
+
+  if (mapData.flags) {
+    mapData.flags.forEach((flag): void => {
+      flag.id = getUniqueID(entities);
+      const ent = new FlagEntity();
+      ent.setOptions(flag);
       entities.push(ent);
     });
   }
