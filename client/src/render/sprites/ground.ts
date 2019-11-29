@@ -14,6 +14,9 @@ export class GroundSprite implements GameSprite {
   private beachLeft: PIXI.Sprite;
   private beachRight: PIXI.Sprite;
 
+  private x: number;
+  private width: number;
+
   public constructor(spritesheet: PIXI.Spritesheet, id: number) {
     this.entityId = id;
 
@@ -27,36 +30,37 @@ export class GroundSprite implements GameSprite {
     this.ground = new PIXI.TilingSprite(textureGround);
     this.ground.height = textureGround.height;
 
-    this.updatePosition();
-
     this.container.addChild(this.ground);
     this.container.addChild(this.beachLeft);
     this.container.addChild(this.beachRight);
 
     this.container.zIndex = DrawLayer.Ground;
+
+    this.draw();
   }
 
-  private updatePosition(): void {
+  public update(props: Properties): void {
+    if (props.width !== undefined) {
+      this.width = props.width;
+    }
+    if (props.x !== undefined) {
+      this.x = props.x;
+    }
+    this.draw();
+  }
+
+  private draw(): void {
+    // set width
+    this.ground.width = this.width;
+    // position beaches
     this.beachRight.scale.x = -1;
     this.beachLeft.position.x = 0;
     this.ground.position.x = this.beachLeft.width;
     this.beachRight.position.x =
       this.ground.position.x + this.ground.width + this.beachRight.width;
-  }
-
-  private center(newX: number): void {
+    // center ground
     const halfWidth = Math.round(this.container.width / 2);
-    this.container.x = newX - halfWidth;
-  }
-
-  public update(props: Properties): void {
-    if (props.width !== undefined) {
-      this.ground.width = props.width;
-    }
-    this.updatePosition();
-    if (props.x !== undefined) {
-      this.center(props.x);
-    }
+    this.container.x = this.x - halfWidth;
   }
 
   public destroy(): void {}

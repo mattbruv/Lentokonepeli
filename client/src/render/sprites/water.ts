@@ -25,6 +25,11 @@ export class WaterSprite implements GameSprite {
 
   private windowInterval: number;
 
+  private x: number;
+  private y: number;
+  private width: number;
+  private direction: WaveDirection;
+
   public constructor(spritesheet: PIXI.Spritesheet, id: number) {
     this.spritesheet = spritesheet;
     this.entityId = id;
@@ -36,7 +41,6 @@ export class WaterSprite implements GameSprite {
     const texture = spritesheet.textures[texStr];
     this.waves = new PIXI.TilingSprite(texture);
     this.waves.height = texture.height;
-    this.createWater(100);
 
     this.container.addChild(this.water);
     this.container.addChild(this.waves);
@@ -46,6 +50,8 @@ export class WaterSprite implements GameSprite {
     }, WAVE_PHASE_TIME);
 
     this.container.zIndex = DrawLayer.Water;
+
+    this.draw();
   }
 
   private phaseWave(): void {
@@ -59,39 +65,42 @@ export class WaterSprite implements GameSprite {
     return WAVE_TEXTURE_STR.replace("N", this.wavePhase.toString());
   }
 
-  private setDirection(dir: WaveDirection): void {
-    if (dir == WaveDirection.Right) {
+  public update(props: Properties): void {
+    if (props.width !== undefined) {
+      this.width = props.width;
+    }
+    if (props.x !== undefined) {
+      this.x = props.x;
+    }
+    if (props.y !== undefined) {
+      this.y = -props.y;
+    }
+    if (props.direction !== undefined) {
+      this.direction = props.direction;
+    }
+    this.draw();
+  }
+
+  private draw(): void {
+    // create water
+    this.water.clear();
+    this.water.beginFill(this.waterColor);
+    this.water.drawRect(0, 0, this.width, WATER_HEIGHT);
+    this.water.endFill();
+    this.waves.width = this.width;
+
+    // set wave directions
+    if (this.direction == WaveDirection.Right) {
       this.waves.scale.x = -1;
       this.waves.position.x = this.waves.width;
     }
-  }
 
-  private createWater(width: number): void {
-    this.water.clear();
-    this.water.beginFill(this.waterColor);
-    this.water.drawRect(0, 0, width, WATER_HEIGHT);
-    this.water.endFill();
-    this.waves.width = width;
-  }
-
-  private center(newX: number): void {
+    // center water.
     const halfWidth = Math.round(this.container.width / 2);
-    this.container.x = newX - halfWidth;
-  }
+    this.container.x = this.x - halfWidth;
 
-  public update(props: Properties): void {
-    if (props.width !== undefined) {
-      this.createWater(props.width);
-    }
-    if (props.x !== undefined) {
-      this.center(props.x);
-    }
-    if (props.y !== undefined) {
-      this.container.position.y = -props.y;
-    }
-    if (props.direction !== undefined) {
-      this.setDirection(props.direction);
-    }
+    // set water y-offset
+    this.container.y = this.y;
   }
 
   public destroy(): void {

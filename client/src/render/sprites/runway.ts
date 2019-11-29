@@ -16,8 +16,9 @@ export class RunwaySprite implements GameSprite {
 
   private spritesheet: PIXI.Spritesheet;
 
+  private x: number;
+  private y: number;
   private direction: RunwayDirection = RunwayDirection.Right;
-  private y: number = 0;
 
   public constructor(spritesheet: PIXI.Spritesheet, id: number) {
     this.spritesheet = spritesheet;
@@ -42,45 +43,36 @@ export class RunwaySprite implements GameSprite {
     this.backpart.zIndex = DrawLayer.RunwayBack;
   }
 
-  private redraw(): void {
-    this.redrawHeight();
+  public update(props: Properties): void {
+    if (props.x !== undefined) {
+      this.x = props.x;
+    }
+    if (props.y !== undefined) {
+      this.y = props.y;
+    }
+    if (props.direction !== undefined) {
+      this.direction = props.direction;
+    }
+    this.draw();
   }
 
-  private redrawHeight(): void {
-    const offset = this.direction == RunwayDirection.Right ? 25 : 25;
-    this.container.position.y = -this.y - offset;
-  }
-
-  private setDirection(dir: RunwayDirection): void {
-    this.direction = dir;
-    if (dir == RunwayDirection.Right) {
+  private draw(): void {
+    // set direction
+    if (this.direction == RunwayDirection.Right) {
       this.runway.texture = this.spritesheet.textures["runway.gif"];
       this.backpart.visible = false;
     } else {
       this.runway.texture = this.spritesheet.textures["runway2.gif"];
       this.backpart.visible = true;
     }
-  }
 
-  private center(newX: number): void {
+    // center runway on x
     const halfWidth = Math.round(this.container.width / 2);
-    this.container.x = newX - halfWidth;
-  }
+    this.container.x = this.x - halfWidth;
 
-  public update(props: Properties): void {
-    console.log("update this entity with: ", props);
-    if (props.width !== undefined) {
-    }
-    if (props.x !== undefined) {
-      this.center(props.x);
-    }
-    if (props.y !== undefined) {
-      this.y = props.y;
-    }
-    if (props.direction !== undefined) {
-      this.setDirection(props.direction);
-    }
-    this.redraw();
+    // update height
+    const offset = 25; //this.direction == RunwayDirection.Right ? 25 : 25;
+    this.container.position.y = -this.y - offset;
   }
 
   public destroy(): void {}
