@@ -32,3 +32,8 @@ export enum RunwayDirection {
   Left,
   Right
 }
+
+export enum ControlTowerDirection {
+  Left,
+  Right
+}

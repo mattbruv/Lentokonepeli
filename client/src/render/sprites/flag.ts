@@ -60,6 +60,8 @@ export class FlagSprite implements GameSprite {
   }
 
   public update(props: Properties): void {
+    console.log("TOWER", props);
+
     if (props.x !== undefined) {
       this.x = props.x;
     }

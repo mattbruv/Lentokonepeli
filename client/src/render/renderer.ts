@@ -11,6 +11,7 @@ import { SkyBackground } from "./objects/sky";
 import { WaterSprite } from "./sprites/water";
 import { RunwaySprite } from "./sprites/runway";
 import { FlagSprite } from "./sprites/flag";
+import { ControlTowerSprite } from "./sprites/tower";
 
 /**
  * A class which renders the game world.
@@ -143,6 +144,8 @@ export class GameRenderer {
         return new RunwaySprite(this.spriteSheet, state.id);
       case EntityType.Flag:
         return new FlagSprite(this.spriteSheet, state.id);
+      case EntityType.ControlTower:
+        return new ControlTowerSprite(this.spriteSheet, state.id);
       default:
         console.log("ERROR: Create undefined entity type!", state.type);
         break;

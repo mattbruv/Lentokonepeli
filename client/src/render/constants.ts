@@ -5,6 +5,7 @@ export const WAVE_PHASE_TIME = 200; // Milliseconds
 export enum DrawLayer {
   Water = -100,
   Flag = -70,
+  ControlTower = -60,
   Ground = -50,
   Runway = 0,
   RunwayBack = -1

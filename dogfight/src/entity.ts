@@ -14,7 +14,8 @@ export enum EntityType {
   Ground,
   Water,
   Runway,
-  Flag
+  Flag,
+  ControlTower
 }
 
 export function getUniqueID(list: Entity[]): number {
