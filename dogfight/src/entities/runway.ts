@@ -8,13 +8,15 @@ export interface RunwayOptions {
   center?: Vec2d;
   direction?: RunwayDirection;
   team?: Team;
+  health?: number;
 }
 
 const example: RunwayOptions = {
   id: -1,
   center: { x: 0, y: 0 },
   direction: RunwayDirection.Right,
-  team: Team.Centrals
+  team: Team.Centrals,
+  health: 255
 };
 
 /**
@@ -34,6 +36,7 @@ export class RunwayEntity implements Entity {
   /** The type of terrain this ground is */
   public direction: RunwayDirection = example.direction;
   public team: Team = example.team;
+  public health: number = example.health;
 
   public constructor() {}
 
@@ -48,7 +51,8 @@ export class RunwayEntity implements Entity {
       x: this.center.x,
       y: this.center.y,
       direction: this.direction,
-      team: this.team
+      team: this.team,
+      health: this.health
     };
   }
 }

@@ -18,7 +18,7 @@ export const MAP_CLASSIC: GameMap = {
     {
       center: { x: 180, y: 0 },
       direction: RunwayDirection.Left,
-      team: Team.Centrals
+      team: Team.Allies
     }
   ],
   waters: [
