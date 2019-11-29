@@ -1,10 +1,9 @@
 import { spriteSheet } from "./render/textures";
 import { DogfightEngine } from "../../dogfight/src/engine";
-import { State, StateAction } from "../../dogfight/src/state";
+import { State } from "../../dogfight/src/state";
 import { MAP_CLASSIC } from "../../dogfight/src/maps/classic";
 import { GameRenderer } from "./render/renderer";
 import { CanvasEventHandler } from "./render/event";
-import { EntityType } from "../../dogfight/src/entity";
 
 export class GameClient {
   /**

@@ -37,7 +37,7 @@ export class RunwaySprite implements GameSprite {
     this.runway = new PIXI.Sprite(texture);
     const backTex = spritesheet.textures["runway2b.gif"];
     this.backpart = new PIXI.Sprite(backTex);
-    this.backpart.x = 214;
+    this.backpart.x = 217;
     this.backpart.visible = false;
 
     // create health bar
@@ -100,11 +100,16 @@ export class RunwaySprite implements GameSprite {
   }
 
   private drawHealthBar(): void {
+    if (this.health <= 0) {
+      this.healthBar.visible = false;
+      return;
+    }
+    this.healthBar.visible = true;
+
     const color =
       this.team == Team.Allies
         ? TeamColor.OpponentBackground
         : TeamColor.OwnBackground;
-    console.log(color);
 
     const amount = Math.round((this.runwayWidth - 20) * (this.health / 255));
 
@@ -112,14 +117,6 @@ export class RunwaySprite implements GameSprite {
     this.healthBar.beginFill(color);
     this.healthBar.drawRect(0, 0, amount, HEALTH_BAR_HEIGHT);
     this.healthBar.endFill();
-
-    /*
-    paramGraphics2D.fillRect
-        (paramInt1 + 10,
-         paramInt2 + image[0].getHeight() - 3 - 1,
-         (image[0].getWidth() - 20) * this.health / 255,
-         3);
-    */
   }
 
   public destroy(): void {}

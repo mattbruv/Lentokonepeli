@@ -11,12 +11,22 @@ export const MAP_CLASSIC: GameMap = {
   ],
   runways: [
     {
-      center: { x: -180, y: 0 },
+      center: { x: -2096, y: 0 },
       direction: RunwayDirection.Right,
       team: Team.Centrals
     },
     {
-      center: { x: 180, y: 0 },
+      center: { x: -1596, y: 0 },
+      direction: RunwayDirection.Right,
+      team: Team.Centrals
+    },
+    {
+      center: { x: 2096, y: 0 },
+      direction: RunwayDirection.Left,
+      team: Team.Allies
+    },
+    {
+      center: { x: 1596, y: 0 },
       direction: RunwayDirection.Left,
       team: Team.Allies
     }
