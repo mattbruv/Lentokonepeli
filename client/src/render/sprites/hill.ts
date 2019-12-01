@@ -22,9 +22,16 @@ export class HillSprite implements GameSprite {
 
   private maxY: number;
 
-  public constructor(spritesheet: PIXI.Spritesheet, id: number) {
+  private parent: PIXI.Container;
+
+  public constructor(
+    parent: PIXI.Container,
+    spritesheet: PIXI.Spritesheet,
+    id: number
+  ) {
     this.entityId = id;
     this.spritesheet = spritesheet;
+    this.parent = parent;
 
     this.container = new PIXI.Container();
     this.debugContainer = new PIXI.Container();
@@ -37,8 +44,6 @@ export class HillSprite implements GameSprite {
 
     this.container.addChild(this.hill);
     this.container.zIndex = DrawLayer.Hill;
-
-    this.container.visible = false;
 
     this.draw();
   }
@@ -64,16 +69,10 @@ export class HillSprite implements GameSprite {
   }
 
   public setCamera(): void {
-    if (this.container.parent == null) {
-      return;
-    }
-    this.container.visible = true;
-
     const centerX = Math.round(GameScreen.Width / 2);
     const centerY = Math.round(GameScreen.Height / 2);
-    const center = this.container.parent.toLocal(
-      new PIXI.Point(centerX, centerY)
-    );
+
+    const center = this.parent.toLocal(new PIXI.Point(centerX, centerY));
     //center.x *= -1;
     //center.y *= -1;
 

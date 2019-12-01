@@ -154,7 +154,7 @@ export class GameRenderer {
       case EntityType.ControlTower:
         return new ControlTowerSprite(this.spriteSheet, state.id);
       case EntityType.Hill:
-        return new HillSprite(this.spriteSheet, state.id);
+        return new HillSprite(this.entityContainer, this.spriteSheet, state.id);
       default:
         console.log("ERROR: Create undefined entity type!", state.type);
         break;
