@@ -47,6 +47,44 @@ export const MAP_CLASSIC: GameMap = {
       team: Team.Allies
     }
   ],
+  hills: [
+    {
+      center: { x: -2100, y: 0 },
+      terrain: Terrain.Normal
+    },
+    {
+      center: { x: -1600, y: 0 },
+      terrain: Terrain.Normal
+    },
+    {
+      center: { x: -1100, y: 0 },
+      terrain: Terrain.Normal
+    },
+    {
+      center: { x: -600, y: 0 },
+      terrain: Terrain.Normal
+    },
+    {
+      center: { x: -100, y: 0 },
+      terrain: Terrain.Normal
+    },
+    {
+      center: { x: 400, y: 0 },
+      terrain: Terrain.Normal
+    },
+    {
+      center: { x: 900, y: 0 },
+      terrain: Terrain.Normal
+    },
+    {
+      center: { x: 1400, y: 0 },
+      terrain: Terrain.Normal
+    },
+    {
+      center: { x: 1900, y: 0 },
+      terrain: Terrain.Normal
+    }
+  ],
   towers: [
     {
       center: { x: -1600, y: 0 },

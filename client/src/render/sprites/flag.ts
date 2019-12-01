@@ -60,8 +60,6 @@ export class FlagSprite implements GameSprite {
   }
 
   public update(props: Properties): void {
-    console.log("TOWER", props);
-
     if (props.x !== undefined) {
       this.x = props.x;
     }
@@ -77,12 +75,12 @@ export class FlagSprite implements GameSprite {
   private draw(): void {
     const tex = this.getTextureString();
     this.flag.texture = this.spritesheet.textures[tex];
-    // center runway on x
+    // center on x
     const halfWidth = Math.round(this.container.width / 2);
     this.container.x = this.x - halfWidth;
 
     // update height
-    const offset = 25; //this.direction == RunwayDirection.Right ? 25 : 25;
+    const offset = 25;
     this.container.position.y = -this.y - offset;
   }
 

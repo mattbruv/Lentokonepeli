@@ -39,7 +39,7 @@ import { ByteSize } from "../../../../dogfight/src/constants";
  * and if it looks believable in-game.
  */
 
-const SKY_Y_OFFSET = -500;
+const SKY_Y_OFFSET = -375;
 const SKY_HEIGHT = 10000;
 const SKY_WIDTH = 10000;
 
@@ -57,7 +57,6 @@ export class SkyBackground {
   private y: number = 0;
 
   public constructor(spritesheet: PIXI.Spritesheet) {
-    console.log(spritesheet);
     this.container = new PIXI.Container();
     const textureSky: PIXI.Texture = spritesheet.textures["sky3b.jpg"];
     this.sky = new PIXI.TilingSprite(textureSky);

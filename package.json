@@ -7,6 +7,7 @@
     "test": "jest",
     "server": "ts-node server/src/server.ts",
     "client": "parcel client/public/index.html",
+    "build": "parcel build client/public/index.html",
     "collision": "parcel client/collision/index.html",
     "lint": "eslint **/*.ts"
   },

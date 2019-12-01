@@ -4,6 +4,7 @@ import { WaterOptions, WaterEntity } from "./entities/water";
 import { RunwayOptions, RunwayEntity } from "./entities/runway";
 import { FlagOptions, FlagEntity } from "./entities/flag";
 import { ControlTowerOptions, ControlTowerEntity } from "./entities/tower";
+import { HillOptions, HillEntity } from "./entities/hill";
 
 /**
  * A declaritive object that describes a level.
@@ -16,6 +17,7 @@ export interface GameMap {
   runways?: RunwayOptions[];
   flags?: FlagOptions[];
   towers?: ControlTowerOptions[];
+  hills?: HillOptions[];
 }
 
 // Don't repeat yourself FAIL, lol. TODO: clean this up
@@ -61,6 +63,15 @@ export function loadMapEntities(mapData: GameMap, entities: Entity[]): void {
       tower.id = getUniqueID(entities);
       const ent = new ControlTowerEntity();
       ent.setOptions(tower);
+      entities.push(ent);
+    });
+  }
+
+  if (mapData.hills) {
+    mapData.hills.forEach((hill): void => {
+      hill.id = getUniqueID(entities);
+      const ent = new HillEntity();
+      ent.setOptions(hill);
       entities.push(ent);
     });
   }

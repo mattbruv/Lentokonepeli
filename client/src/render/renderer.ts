@@ -11,7 +11,9 @@ import { SkyBackground } from "./objects/sky";
 import { WaterSprite } from "./sprites/water";
 import { RunwaySprite } from "./sprites/runway";
 import { FlagSprite } from "./sprites/flag";
+import { HillSprite } from "./sprites/hill";
 import { ControlTowerSprite } from "./sprites/tower";
+import { GameHud } from "./objects/hud";
 
 /**
  * A class which renders the game world.
@@ -52,6 +54,8 @@ export class GameRenderer {
 
   public sky: SkyBackground;
 
+  private HUD: GameHud;
+
   public constructor(spritesheet: PIXI.Spritesheet) {
     this.spriteSheet = spritesheet;
     // Initialize PIXI classes
@@ -73,6 +77,8 @@ export class GameRenderer {
 
     this.sky = new SkyBackground(this.spriteSheet);
 
+    this.HUD = new GameHud(spritesheet);
+
     // Setup pixi classes
     // Make the screen objects layerable.
     this.entityContainer.sortableChildren = true;
@@ -84,6 +90,7 @@ export class GameRenderer {
 
     this.gameContainer.addChild(this.worldContainer);
     this.gameContainer.addChild(this.debug.gameContainer);
+    this.gameContainer.addChild(this.HUD.container);
 
     // this.pixiApp.stage.addChild(this.sky.container);
     this.pixiApp.stage.addChild(this.gameContainer);
@@ -146,6 +153,8 @@ export class GameRenderer {
         return new FlagSprite(this.spriteSheet, state.id);
       case EntityType.ControlTower:
         return new ControlTowerSprite(this.spriteSheet, state.id);
+      case EntityType.Hill:
+        return new HillSprite(this.spriteSheet, state.id);
       default:
         console.log("ERROR: Create undefined entity type!", state.type);
         break;
@@ -206,6 +215,14 @@ export class GameRenderer {
     const center = this.worldContainer.toLocal(point);
     this.sky.setPosition(center.x, center.y);
     this.sky.setCamera(x, y);
+
+    // set hill position
+    const hills = this.sprites.filter((sprite): boolean => {
+      return sprite.entityType == EntityType.Hill;
+    });
+    hills.forEach((hill): void => {
+      (hill as HillSprite).setCamera();
+    });
   }
 
   public resetZoom(): void {
