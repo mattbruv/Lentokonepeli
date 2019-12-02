@@ -1,6 +1,7 @@
 import { GameMap, loadMapEntities } from "./map";
-import { Entity } from "./entity";
+import { Entity, getUniqueID } from "./entity";
 import { State, StateAction } from "./state";
+import { TrooperEntity } from "./entities/trooper";
 
 /**
  * The Game World contains all entites,
@@ -12,24 +13,28 @@ export class GameWorld {
 
   public constructor() {
     this.resetWorld();
+    this.debug();
   }
 
   public debug(): void {
-    this.logWorld();
+    const trooper = new TrooperEntity();
+    trooper.setOptions({
+      id: getUniqueID(this.entities),
+      position: { x: 100, y: -10 }
+    });
+    this.entities.push(trooper);
   }
 
-  public tick(): State[] {
+  /**
+   * Processes a step of the game simulation.
+   *
+   * Updates physics, checks collisions, creates/destroys entities,
+   * and returns the changes.
+   *
+   * @param timestep Number of milliseconds to advance simulation
+   */
+  public tick(timestamp: number): State[] {
     this.changes = [];
-    /**
-     * Takes a number of milliseconds to tick by
-     *
-     * 1. Process player input
-     * 2. Move entities that can be moved.
-     * 3. Check collision
-     * 4. remove entities that should be deleted.
-     * populate state changes, etc..
-     */
-    console.log("game tick");
     return this.changes;
   }
 
@@ -43,7 +48,7 @@ export class GameWorld {
 
   public logWorld(): void {
     console.log("Game World:");
-    console.log(this.entities);
+    // console.log(this.entities);
   }
 
   public getState(): State[] {

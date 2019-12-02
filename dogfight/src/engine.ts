@@ -24,12 +24,15 @@ export class DogfightEngine {
   }
 
   /**
-   * Updates the game world by one tick.
-   * processes physics, collision, creation/deletion of entities.
-   * returns the changes applied during this tick.
+   * Processes a step of the game simulation.
+   *
+   * Updates physics, checks collisions, creates/destroys entities,
+   * and returns the changes.
+   *
+   * @param timestep Number of milliseconds to advance simulation
    */
-  public tick(): void {
-    this.world.logWorld();
+  public tick(timestep: number): State[] {
+    return this.world.tick(timestep);
   }
 
   public getState(): State[] {

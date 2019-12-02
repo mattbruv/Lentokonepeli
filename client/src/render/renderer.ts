@@ -14,6 +14,7 @@ import { FlagSprite } from "./sprites/flag";
 import { HillSprite } from "./sprites/hill";
 import { ControlTowerSprite } from "./sprites/tower";
 import { GameHud } from "./objects/hud";
+import { TrooperSprite } from "./sprites/trooper";
 
 /**
  * A class which renders the game world.
@@ -155,6 +156,8 @@ export class GameRenderer {
         return new ControlTowerSprite(this.spriteSheet, state.id);
       case EntityType.Hill:
         return new HillSprite(this.entityContainer, this.spriteSheet, state.id);
+      case EntityType.Trooper:
+        return new TrooperSprite(this.spriteSheet, state.id);
       default:
         console.log("ERROR: Create undefined entity type!", state.type);
         break;

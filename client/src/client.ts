@@ -23,6 +23,9 @@ export class GameClient {
 
   private canvasHandler: CanvasEventHandler;
 
+  private startTime = Date.now();
+  private lastTick: number = 0;
+
   public constructor() {
     console.log("Initializing Game Client..");
     this.localEngine = new DogfightEngine();
@@ -44,6 +47,19 @@ export class GameClient {
     // get local engine state and pass it to renderer...
     const state = this.getState();
     this.localRenderer.renderStateList(state);
+  }
+
+  public loop(): void {
+    const currentTick = Date.now() - this.startTime;
+    const deltaTime = currentTick - this.lastTick;
+    // console.log(deltaTime, this.lastTick);
+    const updates = this.localEngine.tick(deltaTime);
+    this.localRenderer.renderStateList(updates);
+    this.lastTick = currentTick;
+
+    window.requestAnimationFrame((): void => {
+      this.loop();
+    });
   }
 
   /**

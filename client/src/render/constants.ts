@@ -9,7 +9,8 @@ export enum DrawLayer {
   ControlTower = -60,
   Ground = -50,
   RunwayBack = -1,
-  Runway = 0
+  Runway = 0,
+  Trooper = 1
 }
 
 export enum GameScreen {
