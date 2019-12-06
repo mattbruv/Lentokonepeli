@@ -1,16 +1,16 @@
 import { ByteSize } from "./constants";
 import { Properties } from "./state";
 
-export interface Entity {
+export interface GameObject {
+  type: GameObjectType;
   id: number;
-  readonly type: EntityType;
-  getState: () => Properties;
+  getProperties(): Properties;
 }
 
 /**
  * Constants for each type of Entity in the game.
  */
-export enum EntityType {
+export enum GameObjectType {
   Ground,
   Water,
   Runway,
@@ -20,12 +20,12 @@ export enum EntityType {
   Trooper
 }
 
-export function getUniqueID(list: Entity[]): number {
-  const idsInUse = list.map((e): number => e.id);
-  for (let i = 0; i < ByteSize.TWO_BYTES; i++) {
+export function getUniqueID(list: GameObject[]): number {
+  const idsInUse = list.map((obj): number => obj.id);
+  for (let i = 0; i < ByteSize.ONE_BYTE; i++) {
     if (idsInUse.includes(i) == false) {
       return i;
     }
   }
-  return ByteSize.TWO_BYTES;
+  return ByteSize.ONE_BYTE;
 }

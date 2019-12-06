@@ -1,7 +1,8 @@
 import { GameMap, loadMapEntities } from "./map";
-import { Entity, getUniqueID } from "./entity";
-import { State, StateAction } from "./state";
+import { Entity, getUniqueID, GameObject } from "./entity";
+import { State, StateAction, GameState } from "./state";
 import { TrooperEntity } from "./entities/trooper";
+import { ByteSize } from "./constants";
 
 /**
  * The Game World contains all entites,
@@ -51,19 +52,7 @@ export class GameWorld {
     // console.log(this.entities);
   }
 
-  public getState(): State[] {
-    const stateList = this.entities.map(
-      (e): State => {
-        const state = {
-          action: StateAction.Create,
-          id: e.id,
-          type: e.type,
-          properties: e.getState()
-        };
-        return state;
-      }
-    );
-    // also append player state later..
-    return stateList;
+  public getState(): GameState {
+    return {};
   }
 }
