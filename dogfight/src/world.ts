@@ -1,30 +1,24 @@
-import { GameMap, loadMapEntities } from "./map";
-import { Entity, getUniqueID, GameObject } from "./entity";
-import { State, StateAction, GameState } from "./state";
-import { TrooperEntity } from "./entities/trooper";
-import { ByteSize } from "./constants";
+import { GameMap } from "./map";
+import { GameState } from "./state";
+import { FlagObject } from "./objects/flag";
 
 /**
  * The Game World contains all entites,
  * World state, etc. of a game.
  */
 export class GameWorld {
-  private changes: State[] = []; // A list of changes from this tick.
-  private entities: Entity[] = [];
+  // A list of changes from this tick.
+  private changes: GameState;
+
+  private flags: FlagObject[];
 
   public constructor() {
+    this.changes = {};
     this.resetWorld();
     this.debug();
   }
 
-  public debug(): void {
-    const trooper = new TrooperEntity();
-    trooper.setOptions({
-      id: getUniqueID(this.entities),
-      position: { x: 100, y: -10 }
-    });
-    this.entities.push(trooper);
-  }
+  public debug(): void {}
 
   /**
    * Processes a step of the game simulation.
@@ -34,17 +28,18 @@ export class GameWorld {
    *
    * @param timestep Number of milliseconds to advance simulation
    */
-  public tick(timestamp: number): State[] {
-    this.changes = [];
+  public tick(timestamp: number): GameState {
+    this.changes = {};
     return this.changes;
   }
 
   private resetWorld(): void {
-    this.entities = [];
+    this.changes = {};
+    this.flags = [];
   }
 
   public loadMap(map: GameMap): void {
-    loadMapEntities(map, this.entities);
+    console.log(map);
   }
 
   public logWorld(): void {

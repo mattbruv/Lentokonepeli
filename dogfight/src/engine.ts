@@ -1,5 +1,5 @@
 import { GameWorld } from "./world";
-import { State } from "./state";
+import { GameState } from "./state";
 import { GameMap } from "./map";
 
 /**
@@ -31,11 +31,11 @@ export class DogfightEngine {
    *
    * @param timestep Number of milliseconds to advance simulation
    */
-  public tick(timestep: number): State[] {
+  public tick(timestep: number): GameState {
     return this.world.tick(timestep);
   }
 
-  public getState(): State[] {
+  public getState(): GameState {
     return this.world.getState();
   }
 

@@ -5,13 +5,6 @@ export enum ByteSize {
   TWO_BYTES = 0xffff // 65,535
 }
 
-export type Property = number | string;
-
-export enum PropertyType {
-  Number,
-  String
-}
-
 export enum Team {
   Spectator,
   Centrals,
@@ -23,17 +16,7 @@ export enum Terrain {
   Desert
 }
 
-export enum WaveDirection {
-  Left,
-  Right
-}
-
-export enum RunwayDirection {
-  Left,
-  Right
-}
-
-export enum ControlTowerDirection {
+export enum FacingDirection {
   Left,
   Right
 }

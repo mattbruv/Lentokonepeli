@@ -1,18 +1,9 @@
+import { GameObjectData } from "./object";
+
 export enum StateAction {
   Create,
   Update,
   Delete
-}
-
-type sendableData = number;
-
-/**
- * Properties from a game object.
- * Can be virtually anything non-nested
- * that can be assigned to a key.
- */
-export interface Properties {
-  [key: string]: sendableData;
 }
 
 /**
@@ -31,7 +22,7 @@ export interface GameState {
   [type: number]: {
     [id: number]: {
       action: StateAction;
-      data: Properties;
+      data: GameObjectData;
     };
   };
 }
