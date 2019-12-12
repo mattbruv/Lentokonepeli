@@ -1,29 +1,39 @@
 import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
-import { EntityType } from "../../../../dogfight/src/entity";
-import { Properties } from "../../../../dogfight/src/state";
 import { DrawLayer } from "../constants";
+import { GroundProperties } from "../../../../dogfight/src/objects/ground";
+import { Terrain } from "../../../../dogfight/src/constants";
 
-export class GroundSprite implements GameSprite {
-  public entityId: number;
-  public entityType = EntityType.Ground;
-  public container: PIXI.Container;
-  public debugContainer: PIXI.Container;
+export class GroundSprite extends GameSprite implements GroundProperties {
+  public x: number;
+  public y: number;
+  public terrain: Terrain;
+  public width: number;
+
+  private spritesheet: PIXI.Spritesheet;
+
+  private container: PIXI.Container;
 
   private ground: PIXI.TilingSprite;
   private beachLeft: PIXI.Sprite;
   private beachRight: PIXI.Sprite;
 
-  private x: number;
-  private width: number;
+  public constructor(spritesheet: PIXI.Spritesheet) {
+    super();
 
-  public constructor(spritesheet: PIXI.Spritesheet, id: number) {
-    this.entityId = id;
+    this.x = 0;
+    this.y = 0;
+    this.terrain = Terrain.Normal;
+    this.width = 500;
+
+    this.spritesheet = spritesheet;
+
+    this.container = new PIXI.Container();
+    this.container.zIndex = DrawLayer.Ground;
 
     this.container = new PIXI.Container();
     this.beachLeft = new PIXI.Sprite(spritesheet.textures["beach-l.gif"]);
     this.beachRight = new PIXI.Sprite(spritesheet.textures["beach-l.gif"]);
-    this.debugContainer = new PIXI.Container();
 
     const textureGround: PIXI.Texture = spritesheet.textures["ground1.gif"];
 
@@ -36,23 +46,11 @@ export class GroundSprite implements GameSprite {
 
     this.container.zIndex = DrawLayer.Ground;
 
-    this.draw();
+    this.renderables.push(this.container);
   }
 
-  public update(props: Properties): void {
-    if (props.width !== undefined) {
-      this.width = props.width;
-    }
-    if (props.x !== undefined) {
-      this.x = props.x;
-    }
-    this.draw();
-  }
-
-  private draw(): void {
-    // set width
+  public redraw(): void {
     this.ground.width = this.width;
-    // position beaches
     this.beachRight.scale.x = -1;
     this.beachLeft.position.x = 0;
     this.ground.position.x = this.beachLeft.width;

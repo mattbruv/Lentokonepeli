@@ -1,46 +1,53 @@
 import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
-import { EntityType } from "../../../../dogfight/src/entity";
-import { Properties } from "../../../../dogfight/src/state";
-import { WaterColor, DrawLayer, WAVE_PHASE_TIME } from "../constants";
-import { WaveDirection } from "../../../../dogfight/src/constants";
+import { DrawLayer, WaterColor } from "../constants";
+import { FacingDirection } from "../../../../dogfight/src/constants";
+import { WaterProperties } from "../../../../dogfight/src/objects/water";
 
+const WAVE_PHASE_TIME = 200; // Milliseconds
 const WATER_HEIGHT = 10000;
-
 const WAVE_TEXTURE_STR = "wave-l_N.gif";
 
-export class WaterSprite implements GameSprite {
-  public entityId: number;
-  public entityType = EntityType.Water;
-  public container: PIXI.Container;
-  public debugContainer: PIXI.Container;
+export class WaterSprite extends GameSprite implements WaterProperties {
+  public x: number;
+  public y: number;
+  public width: number;
+  public direction: FacingDirection;
 
   private spritesheet: PIXI.Spritesheet;
 
+  private container: PIXI.Container;
   private water: PIXI.Graphics;
   private waves: PIXI.TilingSprite;
 
-  private waterColor: WaterColor = WaterColor.Normal;
-  private wavePhase = 1;
-
+  private color: WaterColor;
+  private wavePhase: number;
   private windowInterval: number;
 
-  private x: number;
-  private y: number;
-  private width: number;
-  private direction: WaveDirection;
+  public constructor(spritesheet: PIXI.Spritesheet) {
+    super();
 
-  public constructor(spritesheet: PIXI.Spritesheet, id: number) {
+    this.x = 0;
+    this.y = 0;
+    this.width = 500;
+    this.direction = FacingDirection.Right;
+
+    this.color = WaterColor.Normal;
+    this.wavePhase = 1;
+
     this.spritesheet = spritesheet;
-    this.entityId = id;
 
     this.container = new PIXI.Container();
-    this.debugContainer = new PIXI.Container();
+    this.container.zIndex = DrawLayer.Ground;
+
     this.water = new PIXI.Graphics();
     const texStr = this.getWaveTextureString();
     const texture = spritesheet.textures[texStr];
     this.waves = new PIXI.TilingSprite(texture);
     this.waves.height = texture.height;
+
+    this.container = new PIXI.Container();
+    this.container.zIndex = DrawLayer.Water;
 
     this.container.addChild(this.water);
     this.container.addChild(this.waves);
@@ -49,9 +56,7 @@ export class WaterSprite implements GameSprite {
       this.phaseWave();
     }, WAVE_PHASE_TIME);
 
-    this.container.zIndex = DrawLayer.Water;
-
-    this.draw();
+    this.renderables.push(this.container);
   }
 
   private phaseWave(): void {
@@ -65,32 +70,16 @@ export class WaterSprite implements GameSprite {
     return WAVE_TEXTURE_STR.replace("N", this.wavePhase.toString());
   }
 
-  public update(props: Properties): void {
-    if (props.width !== undefined) {
-      this.width = props.width;
-    }
-    if (props.x !== undefined) {
-      this.x = props.x;
-    }
-    if (props.y !== undefined) {
-      this.y = -props.y;
-    }
-    if (props.direction !== undefined) {
-      this.direction = props.direction;
-    }
-    this.draw();
-  }
-
-  private draw(): void {
+  public redraw(): void {
     // create water
     this.water.clear();
-    this.water.beginFill(this.waterColor);
+    this.water.beginFill(this.color);
     this.water.drawRect(0, 0, this.width, WATER_HEIGHT);
     this.water.endFill();
     this.waves.width = this.width;
 
     // set wave directions
-    if (this.direction == WaveDirection.Right) {
+    if (this.direction == FacingDirection.Right) {
       this.waves.scale.x = -1;
       this.waves.position.x = this.waves.width;
     }

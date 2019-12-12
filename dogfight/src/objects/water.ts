@@ -1,55 +1,34 @@
-import { Vec2d } from "../physics/vector";
-import { WaveDirection } from "../constants";
-import { Entity, EntityType } from "../entity";
-import { Properties } from "../state";
+import { FacingDirection } from "../constants";
+import { GameObject, GameObjectType, GameObjectData } from "../object";
 
-export interface WaterOptions {
-  id?: number;
-  center?: Vec2d;
-  width?: number;
-  direction?: WaveDirection;
+export interface WaterProperties {
+  x: number;
+  y: number;
+  width: number;
+  direction: FacingDirection;
 }
 
-const example: WaterOptions = {
-  id: -1,
-  center: { x: 0, y: -25 },
-  width: 100,
-  direction: WaveDirection.Right
-};
+export class WaterObject extends GameObject<WaterProperties>
+  implements WaterProperties {
+  public x: number;
+  public y: number;
+  public width: number;
+  public direction: FacingDirection;
 
-/**
- * A class that represents a ground object.
- *
- * A ground can be imagined as a flat plane.
- * It's center point is a (x,y) vector, and
- * it goes out in both directions by width length.
- */
-export class WaterEntity implements Entity {
-  public id: number = example.id;
-  public readonly type = EntityType.Water;
-
-  /** (x, y) position of this ground object. */
-  private center: Vec2d = example.center;
-
-  private width: number = example.width;
-
-  /** The type of terrain this ground is */
-  private direction: WaveDirection = example.direction;
-
-  public constructor() {}
-
-  public setOptions(opts: WaterOptions): void {
-    for (const key in opts) {
-      this[key] = opts[key];
-    }
+  public constructor(id: number) {
+    super(id, GameObjectType.Water);
+    this.x = 0;
+    this.y = 0;
+    this.width = 500;
+    this.direction = FacingDirection.Right;
   }
 
-  public getState(): Properties {
+  public getState(): GameObjectData {
     return {
-      x: this.center.x,
-      y: this.center.y,
-      direction: this.direction,
-      width: this.width
+      x: this.x,
+      y: this.y,
+      width: this.width,
+      direction: this.direction
     };
   }
 }

@@ -1,36 +1,35 @@
 import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
-import { EntityType } from "../../../../dogfight/src/entity";
-import { Properties } from "../../../../dogfight/src/state";
 import { DrawLayer } from "../constants";
-import {
-  Terrain,
-  ControlTowerDirection
-} from "../../../../dogfight/src/constants";
+import { Terrain, FacingDirection } from "../../../../dogfight/src/constants";
+import { TowerProperties } from "../../../../dogfight/src/objects/tower";
 
-export class ControlTowerSprite implements GameSprite {
-  public entityId: number;
-  public entityType = EntityType.ControlTower;
-  public container: PIXI.Container;
-  public debugContainer: PIXI.Container;
-
-  private tower: PIXI.Sprite;
-
-  private x: number = 0;
-  private y: number = 0;
-  private terrain: Terrain;
-  private direction: ControlTowerDirection;
-
-  private towerWidth: number = 0;
+export class TowerSprite extends GameSprite implements TowerProperties {
+  public x: number;
+  public y: number;
+  public terrain: Terrain;
+  public direction: FacingDirection;
 
   private spritesheet: PIXI.Spritesheet;
 
-  public constructor(spritesheet: PIXI.Spritesheet, id: number) {
-    this.entityId = id;
+  private container: PIXI.Container;
+
+  private tower: PIXI.Sprite;
+
+  private towerWidth: number;
+
+  public constructor(spritesheet: PIXI.Spritesheet) {
+    super();
+
+    this.x = 0;
+    this.y = 0;
+    this.terrain = Terrain.Normal;
+    this.direction = FacingDirection.Right;
+
     this.spritesheet = spritesheet;
 
     this.container = new PIXI.Container();
-    this.debugContainer = new PIXI.Container();
+    this.container.zIndex = DrawLayer.Ground;
 
     const tex: PIXI.Texture = spritesheet.textures["controlTower.gif"];
     this.tower = new PIXI.Sprite(tex);
@@ -38,31 +37,14 @@ export class ControlTowerSprite implements GameSprite {
     this.towerWidth = tex.width;
 
     this.container.addChild(this.tower);
-
     this.container.zIndex = DrawLayer.ControlTower;
 
-    this.draw();
+    this.renderables.push(this.container);
   }
 
-  public update(props: Properties): void {
-    if (props.x !== undefined) {
-      this.x = props.x;
-    }
-    if (props.y !== undefined) {
-      this.y = props.y;
-    }
-    if (props.direction !== undefined) {
-      this.direction = props.direction;
-    }
-    if (props.terrain !== undefined) {
-      this.terrain = props.terrain;
-    }
-    this.draw();
-  }
-
-  private draw(): void {
+  public redraw(): void {
     // orient properly
-    if (this.direction == ControlTowerDirection.Left) {
+    if (this.direction == FacingDirection.Left) {
       this.tower.scale.x = -1;
       this.tower.position.x = this.towerWidth;
     } else {

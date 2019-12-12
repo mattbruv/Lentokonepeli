@@ -2,9 +2,9 @@ import { ByteSize } from "./constants";
 
 type sendableData = number;
 
-export interface GameObjectProperties {
-  type: GameObjectType;
+export interface GameObjectInfo {
   id: number;
+  type: GameObjectType;
 }
 
 /**
@@ -14,8 +14,7 @@ export interface GameObjectProperties {
  *
  * It also has a method to retrieve its current state.
  */
-export abstract class GameObject<CustomProperties>
-  implements GameObjectProperties {
+export abstract class GameObject<CustomProperties> implements GameObjectInfo {
   public type: GameObjectType;
   public id: number;
 
@@ -24,7 +23,7 @@ export abstract class GameObject<CustomProperties>
     this.type = type;
   }
 
-  public abstract getState(): CustomProperties;
+  public abstract getState(): GameObjectData;
 
   public setData(data: Partial<CustomProperties>): void {
     for (const key in data) {
@@ -55,7 +54,7 @@ export enum GameObjectType {
   Trooper
 }
 
-export function getUniqueID(list: GameObjectProperties[]): number {
+export function getUniqueID(list: GameObjectInfo[]): number {
   const idsInUse = list.map((obj): number => obj.id);
   for (let i = 0; i < ByteSize.ONE_BYTE; i++) {
     if (idsInUse.includes(i) == false) {

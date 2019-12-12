@@ -1,20 +1,18 @@
 import * as PIXI from "pixi.js";
-import { State, StateAction } from "../../../dogfight/src/state";
+import { GameState, StateAction } from "../../../dogfight/src/state";
 import { GameSprite } from "./sprite";
-import { EntityType } from "../../../dogfight/src/entity";
-import { GroundSprite } from "./sprites/ground";
 import { GameScreen } from "./constants";
 import { DebugView } from "./objects/debug";
 import { Vec2d } from "../../../dogfight/src/physics/vector";
 import { toPixiCoords } from "./coords";
 import { SkyBackground } from "./objects/sky";
-import { WaterSprite } from "./sprites/water";
-import { RunwaySprite } from "./sprites/runway";
-import { FlagSprite } from "./sprites/flag";
-import { HillSprite } from "./sprites/hill";
-import { ControlTowerSprite } from "./sprites/tower";
 import { GameHud } from "./objects/hud";
-import { TrooperSprite } from "./sprites/trooper";
+import { GameObjectType, GameObjectData } from "../../../dogfight/src/object";
+import { FlagSprite } from "./sprites/flag";
+import { GroundSprite } from "./sprites/ground";
+import { WaterSprite } from "./sprites/water";
+import { TowerSprite } from "./sprites/tower";
+import { HillSprite } from "./sprites/hill";
 
 /**
  * A class which renders the game world.
@@ -22,8 +20,9 @@ import { TrooperSprite } from "./sprites/trooper";
  */
 export class GameRenderer {
   private spriteSheet: PIXI.Spritesheet;
-  /** A list of all Game Entities and their Srite Objects */
-  private sprites: GameSprite[] = [];
+
+  /** A JS container of all Game Objects and their Srite Objects */
+  private sprites: {};
 
   private pixiApp: PIXI.Application;
 
@@ -100,93 +99,100 @@ export class GameRenderer {
   }
 
   private reset(): void {
-    this.sprites = [];
+    this.sprites = {};
+    for (const type in GameObjectType) {
+      this.sprites[type] = {};
+    }
   }
 
-  public renderStateList(list: State[]): void {
-    list.forEach((state): void => {
-      this.renderState(state);
-    });
+  public renderState(state: GameState): void {
+    for (const type in state) {
+      for (const id in state[type]) {
+        const info = state[type][id];
+        this.renderObject(parseInt(type), parseInt(id), info.action, info.data);
+      }
+    }
   }
 
-  private renderState(state: State): void {
-    if (state.action == StateAction.Delete) {
-      const sprite = this.getSprite(state.id);
+  private renderObject(
+    type: number,
+    id: number,
+    action: StateAction,
+    data: GameObjectData
+  ): void {
+    if (action == StateAction.Create) {
+      this.removeSprite(type, id);
+      const sprite = this.createSprite(type);
+      if (sprite !== undefined) {
+        sprite.update(data);
+        sprite.renderables.forEach((container): void => {
+          this.entityContainer.addChild(container);
+        });
+        sprite.renderablesDebug.forEach((container): void => {
+          this.debug.worldContainer.addChild(container);
+        });
+        this.sprites[type][id] = sprite;
+      }
+      return;
+    }
+    if (action == StateAction.Update) {
+      const sprite = this.getSprite(type, id);
+      if (sprite !== undefined) {
+        sprite.update(data);
+      }
+      return;
+    }
+    if (action == StateAction.Delete) {
+      const sprite = this.getSprite(type, id);
       if (sprite) {
         sprite.destroy();
-        this.worldContainer.removeChild(sprite.container);
-        this.debug.worldContainer.removeChild(sprite.debugContainer);
-        sprite.container.destroy({ children: true });
-        sprite.debugContainer.destroy({ children: true });
-        this.removeSprite(state.id);
-      }
-      return;
-    }
-    if (state.action == StateAction.Create) {
-      this.removeSprite(state.id);
-      const sprite = this.createSprite(state);
-      if (sprite !== undefined) {
-        sprite.update(state.properties);
-        this.entityContainer.addChild(sprite.container);
-        this.debug.worldContainer.addChild(sprite.debugContainer);
-        this.sprites.push(sprite);
-      }
-      return;
-    }
-    if (state.action == StateAction.Update) {
-      const sprite = this.getSprite(state.id);
-      if (sprite !== undefined) {
-        sprite.update(state.properties);
+        sprite.renderables.forEach((container): void => {
+          this.worldContainer.removeChild(container);
+          container.destroy({ children: true });
+        });
+        sprite.renderablesDebug.forEach((container): void => {
+          this.debug.worldContainer.removeChild(container);
+          container.destroy({ children: true });
+        });
+        this.removeSprite(type, id);
       }
       return;
     }
   }
 
-  private createSprite(state: State): GameSprite {
-    switch (state.type) {
-      case EntityType.Ground:
-        return new GroundSprite(this.spriteSheet, state.id);
-      case EntityType.Water:
-        return new WaterSprite(this.spriteSheet, state.id);
-      case EntityType.Runway:
-        return new RunwaySprite(this.spriteSheet, state.id);
-      case EntityType.Flag:
-        return new FlagSprite(this.spriteSheet, state.id);
-      case EntityType.ControlTower:
-        return new ControlTowerSprite(this.spriteSheet, state.id);
-      case EntityType.Hill:
-        return new HillSprite(this.entityContainer, this.spriteSheet, state.id);
-      case EntityType.Trooper:
-        return new TrooperSprite(this.spriteSheet, state.id);
+  private createSprite(type: GameObjectType): GameSprite {
+    switch (type) {
+      case GameObjectType.Flag:
+        return new FlagSprite(this.spriteSheet);
+      case GameObjectType.Ground:
+        return new GroundSprite(this.spriteSheet);
+      case GameObjectType.Water:
+        return new WaterSprite(this.spriteSheet);
+      case GameObjectType.ControlTower:
+        return new TowerSprite(this.spriteSheet);
+      case GameObjectType.Hill:
+        return new HillSprite(this.spriteSheet, this.entityContainer);
       default:
-        console.log("ERROR: Create undefined entity type!", state.type);
+        console.log(
+          "ERROR: Failed to create undefined object sprite:",
+          GameObjectType[type]
+        );
         break;
     }
   }
 
   /**
-   * Gets a reference to a sprite object by a specific ID
+   * Gets a reference to a sprite object by a specific type and ID
    */
-  private getSprite(id: number): GameSprite {
-    return this.sprites[this.getSpriteIndex(id)];
-  }
-
-  /** Gets the sprite index in the array */
-  private getSpriteIndex(id: number): number {
-    return this.sprites.findIndex((sprite: GameSprite): boolean => {
-      return sprite.entityId === id;
-    });
+  private getSprite(type: GameObjectType, id: number): GameSprite {
+    return this.sprites[type][id];
   }
 
   /**
    * Removes an entity from the game renderer.
-   * @param id The entity to remove from the renderer.
    */
-  private removeSprite(id: number): void {
-    const index = this.getSpriteIndex(id);
-    if (index >= 0) {
-      this.sprites.splice(index, 1);
-    }
+  private removeSprite(type: GameObjectType, id: number): void {
+    delete this.sprites[type][id];
   }
 
   public getStage(): PIXI.Container {
@@ -220,12 +226,10 @@ export class GameRenderer {
     this.sky.setCamera(x, y);
 
     // set hill position
-    const hills = this.sprites.filter((sprite): boolean => {
-      return sprite.entityType == EntityType.Hill;
-    });
-    hills.forEach((hill): void => {
-      (hill as HillSprite).setCamera();
-    });
+    const hills = this.sprites[GameObjectType.Hill];
+    for (const id in hills) {
+      hills[id].setCamera();
+    }
   }
 
   public resetZoom(): void {

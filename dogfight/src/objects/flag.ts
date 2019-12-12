@@ -1,5 +1,5 @@
 import { Team } from "../constants";
-import { GameObject, GameObjectType } from "../object";
+import { GameObject, GameObjectType, GameObjectData } from "../object";
 
 export interface FlagProperties {
   x: number;
@@ -20,7 +20,7 @@ export class FlagObject extends GameObject<FlagProperties>
     this.team = Team.Centrals;
   }
 
-  public getState(): FlagProperties {
+  public getState(): GameObjectData {
     return {
       x: this.x,
       y: this.y,

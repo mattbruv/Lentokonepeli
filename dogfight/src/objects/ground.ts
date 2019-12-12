@@ -1,5 +1,5 @@
 import { Terrain } from "../constants";
-import { GameObject, GameObjectType } from "../object";
+import { GameObject, GameObjectType, GameObjectData } from "../object";
 
 export interface GroundProperties {
   x: number;
@@ -23,7 +23,7 @@ export class GroundObject extends GameObject<GroundProperties>
     this.terrain = Terrain.Normal;
   }
 
-  public getState(): GroundProperties {
+  public getState(): GameObjectData {
     return {
       x: this.x,
       y: this.y,

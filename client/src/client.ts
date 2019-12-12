@@ -1,6 +1,6 @@
 import { spriteSheet } from "./render/textures";
 import { DogfightEngine } from "../../dogfight/src/engine";
-import { State } from "../../dogfight/src/state";
+import { GameState } from "../../dogfight/src/state";
 import { MAP_CLASSIC } from "../../dogfight/src/maps/classic";
 import { GameRenderer } from "./render/renderer";
 import { CanvasEventHandler } from "./render/event";
@@ -46,7 +46,7 @@ export class GameClient {
 
     // get local engine state and pass it to renderer...
     const state = this.getState();
-    this.localRenderer.renderStateList(state);
+    this.localRenderer.renderState(state);
   }
 
   public loop(): void {
@@ -54,11 +54,11 @@ export class GameClient {
     const deltaTime = currentTick - this.lastTick;
     // console.log(deltaTime, this.lastTick);
     const updates = this.localEngine.tick(deltaTime);
-    this.localRenderer.renderStateList(updates);
+    this.localRenderer.renderState(updates);
     this.lastTick = currentTick;
 
     window.requestAnimationFrame((): void => {
-      this.loop();
+      //this.loop();
     });
   }
 
@@ -69,7 +69,7 @@ export class GameClient {
    * In the future, this will request it from the network
    * and unpack the data.
    */
-  private getState(): State[] {
+  private getState(): GameState {
     return this.localEngine.getState();
   }
 }

@@ -1,7 +1,5 @@
-import { Vec2d } from "../physics/vector";
 import { Team } from "../constants";
-import { Entity, EntityType } from "../entity";
-import { Properties } from "../state";
+import { GameObject, GameObjectType, GameObjectData } from "../object";
 
 export enum TrooperState {
   Parachuting,
@@ -16,52 +14,40 @@ export enum TrooperDirection {
   Right
 }
 
-export interface TrooperOptions {
-  id?: number;
-  position?: Vec2d;
-  team?: Team;
-  health?: number;
-  state?: TrooperState;
-  direction?: TrooperDirection;
+export interface TrooperProperties {
+  x: number;
+  y: number;
+  health: number;
+  state: TrooperState;
+  direction: TrooperDirection;
+  team: Team;
 }
 
-const example: TrooperOptions = {
-  id: -1,
-  position: { x: 0, y: 0 },
-  team: Team.Centrals,
-  health: 1,
-  state: TrooperState.Parachuting,
-  direction: TrooperDirection.None
-};
+export class TrooperObject extends GameObject<TrooperProperties>
+  implements TrooperProperties {
+  public x: number;
+  public y: number;
+  public health: number;
+  public state: TrooperState;
+  public direction: TrooperDirection;
+  public team: Team;
 
-export class TrooperEntity implements Entity {
-  public id: number = example.id;
-  public readonly type = EntityType.Trooper;
-
-  /** (x, y) position of this object. */
-  private position: Vec2d = example.position;
-
-  public team: Team = example.team;
-  public health: number = example.health;
-  public state: TrooperState = example.state;
-  public direction: TrooperDirection = example.direction;
-
-  public constructor() {}
-
-  public setOptions(opts: TrooperOptions): void {
-    for (const key in opts) {
-      this[key] = opts[key];
-    }
+  public constructor(id: number) {
+    super(id, GameObjectType.Trooper);
+    this.x = 0;
+    this.y = 0;
+    this.direction = TrooperDirection.None;
+    this.health = 255;
   }
 
-  public getState(): Properties {
+  public getState(): GameObjectData {
     return {
-      x: this.position.x,
-      y: this.position.y,
-      team: this.team,
+      x: this.x,
+      y: this.y,
       health: this.health,
       state: this.state,
-      direction: this.direction
+      direction: this.direction,
+      team: this.team
     };
   }
 }

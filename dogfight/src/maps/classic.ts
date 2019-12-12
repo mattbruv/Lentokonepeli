@@ -1,112 +1,126 @@
 import { GameMap } from "../map";
-import {
-  Terrain,
-  WaveDirection,
-  Team,
-  RunwayDirection,
-  ControlTowerDirection
-} from "../constants";
+import { Terrain, Team, FacingDirection } from "../constants";
 
 export const MAP_CLASSIC: GameMap = {
   grounds: [
     {
-      center: { x: 0, y: 0 },
+      x: 0,
+      y: 0,
       width: 4500, // measured from original map
       terrain: Terrain.Normal
     }
   ],
-  runways: [
-    {
-      center: { x: -2096, y: 0 },
-      direction: RunwayDirection.Right,
-      team: Team.Centrals
-    },
-    {
-      center: { x: -1596, y: 0 },
-      direction: RunwayDirection.Right,
-      team: Team.Centrals
-    },
-    {
-      center: { x: 2096, y: 0 },
-      direction: RunwayDirection.Left,
-      team: Team.Allies
-    },
-    {
-      center: { x: 1596, y: 0 },
-      direction: RunwayDirection.Left,
-      team: Team.Allies
-    }
-  ],
   flags: [
     {
-      center: { x: -2100, y: 0 },
+      x: -2100,
+      y: 0,
       team: Team.Centrals
     },
     {
-      center: { x: 2100, y: 0 },
+      x: 2100,
+      y: 0,
       team: Team.Allies
     }
   ],
-  hills: [
+  runways: [
     {
-      center: { x: -2100, y: 0 },
-      terrain: Terrain.Normal
+      x: -2096,
+      y: 0,
+      direction: FacingDirection.Right,
+      team: Team.Centrals
     },
     {
-      center: { x: -1600, y: 0 },
-      terrain: Terrain.Normal
+      x: -1596,
+      y: 0,
+      direction: FacingDirection.Right,
+      team: Team.Centrals
     },
     {
-      center: { x: -1100, y: 0 },
-      terrain: Terrain.Normal
+      x: 2096,
+      y: 0,
+      direction: FacingDirection.Left,
+      team: Team.Allies
     },
     {
-      center: { x: -600, y: 0 },
-      terrain: Terrain.Normal
-    },
-    {
-      center: { x: -100, y: 0 },
-      terrain: Terrain.Normal
-    },
-    {
-      center: { x: 400, y: 0 },
-      terrain: Terrain.Normal
-    },
-    {
-      center: { x: 900, y: 0 },
-      terrain: Terrain.Normal
-    },
-    {
-      center: { x: 1400, y: 0 },
-      terrain: Terrain.Normal
-    },
-    {
-      center: { x: 1900, y: 0 },
-      terrain: Terrain.Normal
-    }
-  ],
-  towers: [
-    {
-      center: { x: -1600, y: 0 },
-      direction: ControlTowerDirection.Right,
-      terrain: Terrain.Normal
-    },
-    {
-      center: { x: 1600, y: 0 },
-      direction: ControlTowerDirection.Left,
-      terrain: Terrain.Normal
+      x: 1596,
+      y: 0,
+      direction: FacingDirection.Left,
+      team: Team.Allies
     }
   ],
   waters: [
     {
       width: 60000,
-      center: { x: -30000, y: -25 },
-      direction: WaveDirection.Right
+      x: -30000,
+      y: -25,
+      direction: FacingDirection.Right
     },
     {
       width: 60000,
-      center: { x: 30000, y: -25 },
-      direction: WaveDirection.Left
+      x: 30000,
+      y: -25,
+      direction: FacingDirection.Left
+    }
+  ],
+  towers: [
+    {
+      x: -1600,
+      y: 0,
+      direction: FacingDirection.Right,
+      terrain: Terrain.Normal
+    },
+    {
+      x: 1600,
+      y: 0,
+      direction: FacingDirection.Left,
+      terrain: Terrain.Normal
+    }
+  ],
+  hills: [
+    {
+      x: -2100,
+      y: 0,
+      terrain: Terrain.Normal
+    },
+    {
+      x: -1600,
+      y: 0,
+      terrain: Terrain.Normal
+    },
+    {
+      x: -1100,
+      y: 0,
+      terrain: Terrain.Normal
+    },
+    {
+      x: -600,
+      y: 0,
+      terrain: Terrain.Normal
+    },
+    {
+      x: -100,
+      y: 0,
+      terrain: Terrain.Normal
+    },
+    {
+      x: 400,
+      y: 0,
+      terrain: Terrain.Normal
+    },
+    {
+      x: 900,
+      y: 0,
+      terrain: Terrain.Normal
+    },
+    {
+      x: 1400,
+      y: 0,
+      terrain: Terrain.Normal
+    },
+    {
+      x: 1900,
+      y: 0,
+      terrain: Terrain.Normal
     }
   ]
 };

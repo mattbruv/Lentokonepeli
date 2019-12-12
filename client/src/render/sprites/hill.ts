@@ -1,40 +1,35 @@
 import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
-import { EntityType } from "../../../../dogfight/src/entity";
-import { Properties } from "../../../../dogfight/src/state";
 import { DrawLayer, GameScreen } from "../constants";
 import { Terrain } from "../../../../dogfight/src/constants";
-import { Vec2d } from "../../../../dogfight/src/physics/vector";
+import { HillProperties } from "../../../../dogfight/src/objects/hill";
 
-export class HillSprite implements GameSprite {
-  public entityId: number;
-  public entityType = EntityType.Hill;
-  public container: PIXI.Container;
-  public debugContainer: PIXI.Container;
-
-  private hill: PIXI.Sprite;
-
-  private x: number = 0;
-  private y: number = 0;
-  private terrain: Terrain;
+export class HillSprite extends GameSprite implements HillProperties {
+  public x: number;
+  public y: number;
+  public terrain: Terrain;
 
   private spritesheet: PIXI.Spritesheet;
 
-  private maxY: number;
+  private container: PIXI.Container;
 
   private parent: PIXI.Container;
 
-  public constructor(
-    parent: PIXI.Container,
-    spritesheet: PIXI.Spritesheet,
-    id: number
-  ) {
-    this.entityId = id;
+  private hill: PIXI.Sprite;
+
+  private maxY: number;
+
+  public constructor(spritesheet: PIXI.Spritesheet, parent: PIXI.Container) {
+    super();
+
+    this.x = 0;
+    this.y = 0;
+    this.terrain = Terrain.Normal;
+
     this.spritesheet = spritesheet;
     this.parent = parent;
 
     this.container = new PIXI.Container();
-    this.debugContainer = new PIXI.Container();
 
     const tex: PIXI.Texture = spritesheet.textures["hill1.gif"];
     this.hill = new PIXI.Sprite(tex);
@@ -45,23 +40,10 @@ export class HillSprite implements GameSprite {
     this.container.addChild(this.hill);
     this.container.zIndex = DrawLayer.Hill;
 
-    this.draw();
+    this.renderables.push(this.container);
   }
 
-  public update(props: Properties): void {
-    if (props.x !== undefined) {
-      this.x = props.x;
-    }
-    if (props.y !== undefined) {
-      this.y = props.y;
-    }
-    if (props.terrain !== undefined) {
-      this.terrain = props.terrain;
-    }
-    this.draw();
-  }
-
-  private draw(): void {
+  public redraw(): void {
     // update terrain
     const tex = this.terrain == Terrain.Normal ? "hill1.gif" : "sandhill.gif";
     this.hill.texture = this.spritesheet.textures[tex];
@@ -75,20 +57,11 @@ export class HillSprite implements GameSprite {
     const center = this.parent.toLocal(new PIXI.Point(centerX, centerY));
     //center.x *= -1;
     //center.y *= -1;
+    const diffX = this.x - center.x;
+    const diffY = this.y - center.y;
 
-    const diff: Vec2d = {
-      x: this.x - center.x,
-      y: this.y - center.y
-    };
-
-    /*
-      100 * 8 = 800 / 10 = 80
-      paramInt1 = paramInt1 * 8 / 10;
-      paramInt2 = paramInt2 * 9 / 10;
-    */
-
-    const newX = Math.round(this.x - diff.x / 8);
-    let newY = Math.round(this.y - diff.y / 9);
+    const newX = Math.round(this.x - diffX / 8);
+    let newY = Math.round(this.y - diffY / 9);
 
     const min = -Math.round(this.maxY / 2);
 

@@ -1,26 +1,46 @@
 import * as PIXI from "pixi.js";
-import { EntityType } from "../../../dogfight/src/entity";
-import { Properties } from "../../../dogfight/src/state";
+import {
+  GameObjectType,
+  GameObjectInfo,
+  GameObjectData
+} from "../../../dogfight/src/object";
 
-/**
- * The basic properties that
- * every single game sprite has.
- */
-export interface GameSprite {
-  entityId: number;
-  entityType: EntityType;
-  container: PIXI.Container;
-  debugContainer: PIXI.Container;
+export abstract class GameSprite implements GameObjectInfo {
+  public id: number;
+  public type: GameObjectType;
+  public renderables: PIXI.Container[];
+  public renderablesDebug: PIXI.Container[];
+
+  public constructor() {
+    this.renderables = [];
+    this.renderablesDebug = [];
+  }
 
   /**
-   * Updates the sprite on the game screen.
+   * Updates a game object's display after new property changes.
    */
-  update: (props: Properties) => void;
+  public update(data: GameObjectData): void {
+    for (const key in data) {
+      let value = data[key];
+      if (key == "y") {
+        // kind of hacky, but it is what it is.
+        value *= -1;
+      }
+      this[key] = value;
+    }
+    this.redraw();
+  }
 
   /**
-   * Called when an entity is deleted.
+   * Renders a game sprite based on the object's properties.
+   * Should be called after properties are updated.
+   */
+  public abstract redraw(): void;
+
+  /**
+   * Called when a game object is deleted.
    * Used to clear pixi memory, callbacks,
-   * and other floating client things.
+   * and other client things floating about.
    */
-  destroy: () => void;
+  public abstract destroy(): void;
 }
