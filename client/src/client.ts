@@ -58,7 +58,7 @@ export class GameClient {
     this.lastTick = currentTick;
 
     window.requestAnimationFrame((): void => {
-      //this.loop();
+      this.loop();
     });
   }
 

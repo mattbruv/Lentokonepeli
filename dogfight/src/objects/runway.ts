@@ -1,5 +1,6 @@
 import { FacingDirection, Team } from "../constants";
 import { GameObject, GameObjectType, GameObjectData } from "../object";
+import { Change } from "../state";
 
 export interface RunwayProperties {
   x: number;
@@ -14,7 +15,7 @@ export class RunwayObject extends GameObject<RunwayProperties>
   public x: number;
   public y: number;
   public direction: FacingDirection;
-  public team: Team.Centrals;
+  public team: Team;
   public health: number;
 
   public constructor(id: number) {
@@ -24,6 +25,21 @@ export class RunwayObject extends GameObject<RunwayProperties>
     this.direction = FacingDirection.Right;
     this.team = Team.Centrals;
     this.health = 255;
+  }
+
+  public damage(): Change {
+    if (this.health == 0) {
+      this.health = 0;
+    } else {
+      if (Math.random() > 0.5) {
+        this.health -= 1;
+      }
+    }
+    return {
+      id: this.id,
+      type: this.type,
+      data: { x: this.x, health: this.health }
+    };
   }
 
   public getState(): GameObjectData {

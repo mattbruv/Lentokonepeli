@@ -13,6 +13,7 @@ import { GroundSprite } from "./sprites/ground";
 import { WaterSprite } from "./sprites/water";
 import { TowerSprite } from "./sprites/tower";
 import { HillSprite } from "./sprites/hill";
+import { RunwaySprite } from "./sprites/runway";
 
 /**
  * A class which renders the game world.
@@ -92,7 +93,6 @@ export class GameRenderer {
     this.gameContainer.addChild(this.debug.gameContainer);
     this.gameContainer.addChild(this.HUD.container);
 
-    // this.pixiApp.stage.addChild(this.sky.container);
     this.pixiApp.stage.addChild(this.gameContainer);
 
     this.reset();
@@ -172,6 +172,8 @@ export class GameRenderer {
         return new TowerSprite(this.spriteSheet);
       case GameObjectType.Hill:
         return new HillSprite(this.spriteSheet, this.entityContainer);
+      case GameObjectType.Runway:
+        return new RunwaySprite(this.spriteSheet);
       default:
         console.log(
           "ERROR: Failed to create undefined object sprite:",

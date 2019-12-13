@@ -38,7 +38,6 @@ export class WaterSprite extends GameSprite implements WaterProperties {
     this.spritesheet = spritesheet;
 
     this.container = new PIXI.Container();
-    this.container.zIndex = DrawLayer.Ground;
 
     this.water = new PIXI.Graphics();
     const texStr = this.getWaveTextureString();

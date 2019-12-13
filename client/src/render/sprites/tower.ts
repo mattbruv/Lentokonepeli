@@ -29,7 +29,6 @@ export class TowerSprite extends GameSprite implements TowerProperties {
     this.spritesheet = spritesheet;
 
     this.container = new PIXI.Container();
-    this.container.zIndex = DrawLayer.Ground;
 
     const tex: PIXI.Texture = spritesheet.textures["controlTower.gif"];
     this.tower = new PIXI.Sprite(tex);

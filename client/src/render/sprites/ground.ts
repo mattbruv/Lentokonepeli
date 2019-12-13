@@ -29,7 +29,6 @@ export class GroundSprite extends GameSprite implements GroundProperties {
     this.spritesheet = spritesheet;
 
     this.container = new PIXI.Container();
-    this.container.zIndex = DrawLayer.Ground;
 
     this.container = new PIXI.Container();
     this.beachLeft = new PIXI.Sprite(spritesheet.textures["beach-l.gif"]);

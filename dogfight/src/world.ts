@@ -1,5 +1,5 @@
 import { GameMap } from "./map";
-import { GameState, StateAction } from "./state";
+import { GameState, StateAction, Change } from "./state";
 import { FlagObject } from "./objects/flag";
 import { GroundObject } from "./objects/ground";
 import { RunwayObject } from "./objects/runway";
@@ -8,7 +8,6 @@ import { TrooperObject } from "./objects/trooper";
 import { WaterObject } from "./objects/water";
 import { HillObject } from "./objects/hill";
 import { getUniqueID, GameObjectType } from "./object";
-import { State } from "pixi.js";
 
 /**
  * The Game World contains all entites,
@@ -34,6 +33,9 @@ export class GameWorld {
 
   private resetChanges(): void {
     this.changes = {};
+    for (const index in GameObjectType) {
+      this.changes[index] = {};
+    }
   }
 
   private resetWorld(): void {
@@ -58,13 +60,22 @@ export class GameWorld {
    * @param timestep Number of milliseconds to advance simulation
    */
   public tick(timestamp: number): GameState {
-    this.changes = {};
-    console.log(timestamp);
+    this.resetChanges();
     return this.changes;
   }
 
   public logWorld(): void {
     console.log("Game World:");
+  }
+
+  private change(diff: Change): void {
+    if (this.changes[diff.type][diff.id] == undefined) {
+      this.changes[diff.type][diff.id] = {
+        action: StateAction.Update,
+        data: {}
+      };
+    }
+    this.changes[diff.type][diff.id].data = diff.data;
   }
 
   public getState(): GameState {

@@ -1,9 +1,13 @@
-import { GameObjectData } from "./object";
+import { GameObjectData, GameObjectInfo } from "./object";
 
 export enum StateAction {
   Create,
   Update,
   Delete
+}
+
+export interface Change extends GameObjectInfo {
+  data: GameObjectData;
 }
 
 /**
