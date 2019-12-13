@@ -1,6 +1,6 @@
 import { ByteSize } from "./constants";
 
-type sendableData = number;
+type sendableData = number | string;
 
 export interface GameObjectInfo {
   id: number;
@@ -51,7 +51,8 @@ export enum GameObjectType {
   Flag,
   ControlTower,
   Hill,
-  Trooper
+  Trooper,
+  Player
 }
 
 export function getUniqueID(list: GameObjectInfo[]): number {

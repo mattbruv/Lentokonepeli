@@ -4,10 +4,11 @@ import { FlagObject } from "./objects/flag";
 import { GroundObject } from "./objects/ground";
 import { RunwayObject } from "./objects/runway";
 import { TowerObject } from "./objects/tower";
-import { TrooperObject } from "./objects/trooper";
+import { TrooperObject, TrooperState } from "./objects/trooper";
 import { WaterObject } from "./objects/water";
 import { HillObject } from "./objects/hill";
 import { getUniqueID, GameObjectType } from "./object";
+import { PlayerObject } from "./objects/player";
 
 /**
  * The Game World contains all entites,
@@ -16,6 +17,8 @@ import { getUniqueID, GameObjectType } from "./object";
 export class GameWorld {
   // A list of changes from this tick.
   private changes: GameState;
+
+  private players: PlayerObject[];
 
   private flags: FlagObject[];
   private grounds: GroundObject[];
@@ -40,6 +43,7 @@ export class GameWorld {
 
   private resetWorld(): void {
     this.resetChanges();
+    this.players = [];
     this.flags = [];
     this.grounds = [];
     this.hills = [];
@@ -49,7 +53,13 @@ export class GameWorld {
     this.waters = [];
   }
 
-  public debug(): void {}
+  public debug(): void {
+    // create a player
+    this.players.push(new PlayerObject(getUniqueID(this.players)));
+    const troop = new TrooperObject(getUniqueID(this.troopers));
+    troop.setData({ state: TrooperState.Parachuting, x: 0, y: 250 });
+    this.troopers.push(troop);
+  }
 
   /**
    * Processes a step of the game simulation.
@@ -80,6 +90,7 @@ export class GameWorld {
 
   public getState(): GameState {
     const objects = [
+      this.players,
       this.flags,
       this.grounds,
       this.hills,
@@ -88,6 +99,7 @@ export class GameWorld {
       this.troopers,
       this.waters
     ];
+
     const state: GameState = {};
     for (const objtype in objects) {
       const arr = objects[objtype];

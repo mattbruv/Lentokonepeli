@@ -14,6 +14,8 @@ import { WaterSprite } from "./sprites/water";
 import { TowerSprite } from "./sprites/tower";
 import { HillSprite } from "./sprites/hill";
 import { RunwaySprite } from "./sprites/runway";
+import { PlayerSprite } from "./sprites/player";
+import { TrooperSprite } from "./sprites/trooper";
 
 /**
  * A class which renders the game world.
@@ -75,6 +77,7 @@ export class GameRenderer {
     this.debug = new DebugView(this.pixiApp.renderer);
     this.debug.setEnabled(false);
     this.toggleDebugMode();
+    this.toggleGrid();
 
     this.sky = new SkyBackground(this.spriteSheet);
 
@@ -174,6 +177,10 @@ export class GameRenderer {
         return new HillSprite(this.spriteSheet, this.entityContainer);
       case GameObjectType.Runway:
         return new RunwaySprite(this.spriteSheet);
+      case GameObjectType.Player:
+        return new PlayerSprite(this.spriteSheet);
+      case GameObjectType.Trooper:
+        return new TrooperSprite(this.spriteSheet);
       default:
         console.log(
           "ERROR: Failed to create undefined object sprite:",
