@@ -1,5 +1,5 @@
 import { spriteSheet } from "./render/textures";
-import { DogfightEngine } from "../../dogfight/src/engine";
+import { GameWorld } from "../../dogfight/src/world";
 import { GameState } from "../../dogfight/src/state";
 import { MAP_CLASSIC } from "../../dogfight/src/maps/classic";
 import { GameRenderer } from "./render/renderer";
@@ -12,7 +12,7 @@ export class GameClient {
    * movement between state updates
    * (client side prediction)
    */
-  private localEngine: DogfightEngine;
+  private localWorld: GameWorld;
 
   /**
    * A local instance of the Dogfight Renderer.
@@ -28,8 +28,8 @@ export class GameClient {
 
   public constructor() {
     console.log("Initializing Game Client..");
-    this.localEngine = new DogfightEngine();
-    this.localEngine.loadMap(MAP_CLASSIC);
+    this.localWorld = new GameWorld();
+    this.localWorld.loadMap(MAP_CLASSIC);
     // create renderer
     this.localRenderer = new GameRenderer(spriteSheet);
 
@@ -53,7 +53,7 @@ export class GameClient {
     const currentTick = Date.now() - this.startTime;
     const deltaTime = currentTick - this.lastTick;
     // console.log(deltaTime, this.lastTick);
-    const updates = this.localEngine.tick(deltaTime);
+    const updates = this.localWorld.tick(deltaTime);
     this.localRenderer.renderState(updates);
     this.lastTick = currentTick;
 
@@ -70,6 +70,6 @@ export class GameClient {
    * and unpack the data.
    */
   private getState(): GameState {
-    return this.localEngine.getState();
+    return this.localWorld.getState();
   }
 }

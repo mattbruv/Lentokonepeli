@@ -34,15 +34,15 @@ export class GameWorld {
     this.debug();
   }
 
+  /*
   private resetChanges(): void {
     this.changes = {};
     for (const index in GameObjectType) {
       this.changes[index] = {};
     }
-  }
+  }*/
 
   private resetWorld(): void {
-    this.resetChanges();
     this.players = [];
     this.flags = [];
     this.grounds = [];
@@ -70,7 +70,12 @@ export class GameWorld {
    * @param timestep Number of milliseconds to advance simulation
    */
   public tick(timestamp: number): GameState {
-    this.resetChanges();
+    this.changes = {};
+
+    this.troopers.forEach((man): void => {
+      this.change(man.move());
+    });
+
     return this.changes;
   }
 
@@ -79,6 +84,9 @@ export class GameWorld {
   }
 
   private change(diff: Change): void {
+    if (this.changes[diff.type] == undefined) {
+      this.changes[diff.type] = {};
+    }
     if (this.changes[diff.type][diff.id] == undefined) {
       this.changes[diff.type][diff.id] = {
         action: StateAction.Update,

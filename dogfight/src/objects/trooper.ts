@@ -1,5 +1,6 @@
 import { Team } from "../constants";
 import { GameObject, GameObjectType, GameObjectData } from "../object";
+import { Change } from "../state";
 
 export enum TrooperState {
   Parachuting,
@@ -38,6 +39,17 @@ export class TrooperObject extends GameObject<TrooperProperties>
     this.y = 0;
     this.direction = TrooperDirection.None;
     this.health = 255;
+  }
+
+  public move(): Change {
+    this.x += 1;
+    return {
+      id: this.id,
+      type: GameObjectType.Trooper,
+      data: {
+        x: this.x
+      }
+    };
   }
 
   public getState(): GameObjectData {
