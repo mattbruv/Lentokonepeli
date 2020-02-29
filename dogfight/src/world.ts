@@ -7,7 +7,7 @@ import { TowerObject } from "./objects/tower";
 import { TrooperObject, TrooperState } from "./objects/trooper";
 import { WaterObject } from "./objects/water";
 import { HillObject } from "./objects/hill";
-import { getUniqueID, GameObjectType } from "./object";
+import { getUniqueID } from "./object";
 import { PlayerObject } from "./objects/player";
 
 /**
@@ -33,14 +33,6 @@ export class GameWorld {
     this.resetWorld();
     this.debug();
   }
-
-  /*
-  private resetChanges(): void {
-    this.changes = {};
-    for (const index in GameObjectType) {
-      this.changes[index] = {};
-    }
-  }*/
 
   private resetWorld(): void {
     this.players = [];
