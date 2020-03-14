@@ -1,7 +1,6 @@
 import { spriteSheet } from "./render/textures";
 import { GameWorld } from "../../dogfight/src/world";
 import { GameState } from "../../dogfight/src/state";
-import { MAP_CLASSIC } from "../../dogfight/src/maps/classic";
 import { GameRenderer } from "./render/renderer";
 import { CanvasEventHandler } from "./render/event";
 
@@ -29,7 +28,7 @@ export class GameClient {
   public constructor() {
     console.log("Initializing Game Client..");
     this.localWorld = new GameWorld();
-    this.localWorld.loadMap(MAP_CLASSIC);
+    // this.localWorld.loadMap(MAP_CLASSIC);
     // create renderer
     this.localRenderer = new GameRenderer(spriteSheet);
 
@@ -45,8 +44,8 @@ export class GameClient {
     div.appendChild(this.localRenderer.getView());
 
     // get local engine state and pass it to renderer...
-    const state = this.getState();
-    this.localRenderer.renderState(state);
+    // const state = this.getState();
+    // this.localRenderer.renderState(state);
   }
 
   public loop(): void {
@@ -60,6 +59,10 @@ export class GameClient {
     window.requestAnimationFrame((): void => {
       this.loop();
     });
+  }
+
+  public updateState(data: GameState): void {
+    this.localRenderer.renderState(data);
   }
 
   /**
