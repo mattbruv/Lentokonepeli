@@ -1,6 +1,5 @@
 import { Team } from "../constants";
 import { GameObject, GameObjectType, GameObjectData } from "../object";
-import { Change } from "../state";
 
 export enum TrooperState {
   Parachuting,
@@ -41,14 +40,12 @@ export class TrooperObject extends GameObject<TrooperProperties>
     this.health = 255;
   }
 
-  public move(): Change {
-    this.x += 1;
+  public move(deltaTime: number): GameObjectData {
+    const unitsPerSecond = 50;
+    const multiplier = deltaTime / 1000;
+    this.x += Math.round(multiplier * unitsPerSecond);
     return {
-      id: this.id,
-      type: GameObjectType.Trooper,
-      data: {
-        x: this.x
-      }
+      x: this.x
     };
   }
 

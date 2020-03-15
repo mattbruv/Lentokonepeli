@@ -25,19 +25,24 @@ let lastTick = 0;
 function loop(): void {
   const currentTick = Date.now() - startTime;
   const deltaTime = currentTick - lastTick;
-  // console.log(currentTick, deltaTime);
+  // console.log(lastTick, currentTick, deltaTime);
   const updates = world.tick(deltaTime);
-  // send updates to each client
-  wss.clients.forEach((client): void => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify(updates));
-    }
-  });
+  const json = JSON.stringify(updates);
+  world.clearChanges();
+
+  if (json !== "{}") {
+    // send updates to each client
+    wss.clients.forEach((client): void => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(updates));
+      }
+    });
+  }
   // console.log(updates);
   lastTick = currentTick;
 }
 
-setInterval(loop, 1000 / 5);
+setInterval(loop, 1000 / 20);
 
 wss.on("connection", (ws): void => {
   console.log("New connection!");
@@ -54,6 +59,6 @@ wss.on("connection", (ws): void => {
   });
 });
 
-server.listen(process.env.PORT || 3259, (): void => {
+server.listen(3259, (): void => {
   console.log("Server started on port" + server.address().toString());
 });

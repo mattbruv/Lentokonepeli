@@ -1,5 +1,5 @@
 import { GameMap } from "./map";
-import { GameState, StateAction, Change } from "./state";
+import { GameState, Action } from "./state";
 import { FlagObject } from "./objects/flag";
 import { GroundObject } from "./objects/ground";
 import { RunwayObject } from "./objects/runway";
@@ -7,7 +7,7 @@ import { TowerObject } from "./objects/tower";
 import { TrooperObject, TrooperState } from "./objects/trooper";
 import { WaterObject } from "./objects/water";
 import { HillObject } from "./objects/hill";
-import { getUniqueID } from "./object";
+import { getUniqueID, GameObjectData, GameObject } from "./object";
 import { PlayerObject } from "./objects/player";
 
 /**
@@ -29,9 +29,23 @@ export class GameWorld {
   private waters: WaterObject[];
 
   public constructor() {
-    this.changes = {};
+    this.clearChanges();
     this.resetWorld();
-    this.debug();
+  }
+
+  public clearChanges(): void {
+    this.changes = {};
+  }
+
+  /**
+   * Creates a new player in the game and
+   * returns their ID.
+   */
+  public createPlayer(): number {
+    const player = new PlayerObject(getUniqueID(this.players));
+    this.players.push(player);
+    this.applyCreate(player);
+    return player.id;
   }
 
   private resetWorld(): void {
@@ -45,14 +59,6 @@ export class GameWorld {
     this.waters = [];
   }
 
-  public debug(): void {
-    // create a player
-    this.players.push(new PlayerObject(getUniqueID(this.players)));
-    const troop = new TrooperObject(getUniqueID(this.troopers));
-    troop.setData({ state: TrooperState.Parachuting, x: 0, y: 250 });
-    this.troopers.push(troop);
-  }
-
   /**
    * Processes a step of the game simulation.
    *
@@ -61,11 +67,26 @@ export class GameWorld {
    *
    * @param timestep Number of milliseconds to advance simulation
    */
-  public tick(timestamp: number): GameState {
-    this.changes = {};
+  public tick(deltaTime: number): GameState {
+    if (this.troopers.length == 0) {
+      const trooper = new TrooperObject(getUniqueID(this.troopers));
+      trooper.setData({
+        x: 0,
+        y: 200,
+        state: TrooperState.Parachuting
+      });
+      this.troopers.push(trooper);
+      this.applyCreate(trooper);
+    }
 
+    // move troopers.
     this.troopers.forEach((man): void => {
-      this.change(man.move());
+      this.applyChange(man, man.move(deltaTime), Action.Update);
+      // console.log(man.x);
+      // blow them up if they're too far.
+      if (man.x > 350) {
+        this.deleteObject(this.troopers, man);
+      }
     });
 
     return this.changes;
@@ -75,17 +96,62 @@ export class GameWorld {
     console.log("Game World:");
   }
 
-  private change(diff: Change): void {
-    if (this.changes[diff.type] == undefined) {
-      this.changes[diff.type] = {};
+  /**
+   * Broadcasts the creation of an object.
+   * @param obj The new game object to broadcast.
+   */
+  private applyCreate(obj: GameObject<any>): void {
+    this.applyChange(obj, obj.getState(), Action.Create);
+  }
+
+  /**
+   * Broadcasts the deletion of an object.
+   * @param obj The game object to broadcast deletion.
+   */
+  private applyDelete(obj: GameObject<any>): void {
+    this.applyChange(obj, {}, Action.Delete);
+  }
+
+  private deleteObject(array: GameObject<any>[], obj: GameObject<any>): void {
+    let found = false;
+    let index = 0;
+    for (let i = 0; i < array.length; i++) {
+      if (obj.id === array[i].id) {
+        found = true;
+        break;
+      }
+      index++;
     }
-    if (this.changes[diff.type][diff.id] == undefined) {
-      this.changes[diff.type][diff.id] = {
-        action: StateAction.Update,
+    if (found) {
+      array.splice(index, 1);
+      this.applyDelete(obj);
+    }
+  }
+
+  private applyChange(
+    obj: GameObject<any>,
+    data: GameObjectData,
+    action: Action
+  ): void {
+    if (this.changes[obj.type] == undefined) {
+      this.changes[obj.type] = {};
+    }
+    if (this.changes[obj.type][obj.id] == undefined) {
+      this.changes[obj.type][obj.id] = {
+        action,
         data: {}
       };
     }
-    this.changes[diff.type][diff.id].data = diff.data;
+    // disallow 'change' to override 'create'
+    // const previous = this.changes[obj.type][obj.id].action;
+    const previous = this.changes[obj.type][obj.id].action;
+    if (previous == Action.Create && action == Action.Update) {
+      action = Action.Create;
+    }
+    this.changes[obj.type][obj.id].action = action;
+
+    const existing = this.changes[obj.type][obj.id].data;
+    this.changes[obj.type][obj.id].data = Object.assign(data, existing);
   }
 
   public getState(): GameState {
@@ -111,7 +177,7 @@ export class GameWorld {
           state[type] = {};
         }
         state[type][id] = {
-          action: StateAction.Create,
+          action: Action.Create,
           data: obj.getState()
         };
       }

@@ -1,13 +1,9 @@
-import { GameObjectData, GameObjectInfo } from "./object";
+import { GameObjectData } from "./object";
 
-export enum StateAction {
+export enum Action {
   Create,
   Update,
   Delete
-}
-
-export interface Change extends GameObjectInfo {
-  data: GameObjectData;
 }
 
 /**
@@ -25,7 +21,7 @@ export interface GameState {
   /** Game Object Type */
   [type: number]: {
     [id: number]: {
-      action: StateAction;
+      action: Action;
       data: GameObjectData;
     };
   };

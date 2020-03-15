@@ -2,7 +2,6 @@ import { loadSpriteSheet } from "../src/render/textures";
 import { GameClient } from "../src/client";
 
 let client: GameClient;
-
 const wssPath = "ws://" + location.host;
 
 function init(): void {
@@ -13,11 +12,10 @@ function init(): void {
   const ws = new WebSocket(wssPath);
 
   ws.onmessage = (event): void => {
+    console.log(event.data);
     const data = JSON.parse(event.data);
-    console.log(data);
     client.updateState(data);
   };
-  console.log(wssPath);
 }
 
 window.addEventListener("load", (): void => {

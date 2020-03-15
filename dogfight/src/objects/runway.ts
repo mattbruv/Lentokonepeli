@@ -1,6 +1,5 @@
 import { FacingDirection, Team } from "../constants";
 import { GameObject, GameObjectType, GameObjectData } from "../object";
-import { Change } from "../state";
 
 export interface RunwayProperties {
   x: number;
@@ -27,7 +26,7 @@ export class RunwayObject extends GameObject<RunwayProperties>
     this.health = 255;
   }
 
-  public damage(): Change {
+  public damage(): GameObjectData {
     if (this.health == 0) {
       this.health = 0;
     } else {
@@ -36,9 +35,8 @@ export class RunwayObject extends GameObject<RunwayProperties>
       }
     }
     return {
-      id: this.id,
-      type: this.type,
-      data: { x: this.x, health: this.health }
+      x: this.x,
+      health: this.health
     };
   }
 

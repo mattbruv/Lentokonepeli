@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { GameState, StateAction } from "../../../dogfight/src/state";
+import { GameState, Action } from "../../../dogfight/src/state";
 import { GameSprite } from "./sprite";
 import { GameScreen } from "./constants";
 import { DebugView } from "./objects/debug";
@@ -120,10 +120,10 @@ export class GameRenderer {
   private renderObject(
     type: number,
     id: number,
-    action: StateAction,
+    action: Action,
     data: GameObjectData
   ): void {
-    if (action == StateAction.Create) {
+    if (action == Action.Create) {
       this.removeSprite(type, id);
       const sprite = this.createSprite(type);
       if (sprite !== undefined) {
@@ -138,14 +138,14 @@ export class GameRenderer {
       }
       return;
     }
-    if (action == StateAction.Update) {
+    if (action == Action.Update) {
       const sprite = this.getSprite(type, id);
       if (sprite !== undefined) {
         sprite.update(data);
       }
       return;
     }
-    if (action == StateAction.Delete) {
+    if (action == Action.Delete) {
       const sprite = this.getSprite(type, id);
       if (sprite) {
         sprite.destroy();
