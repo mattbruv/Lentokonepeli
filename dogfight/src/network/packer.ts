@@ -1,5 +1,13 @@
-import { CacheEntry } from "./cache";
+import { CacheEntry, Cache } from "./cache";
 import { GameObjectSchema, IntByteSizes } from "./types";
+
+export function encodeCache(cache: Cache): void {
+  let bytes = 0;
+  console.log(cache);
+  for (const entry in cache) {
+    console.log(entry);
+  }
+}
 
 export function encodeEntry(
   id: number,

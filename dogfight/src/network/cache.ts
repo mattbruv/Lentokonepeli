@@ -21,7 +21,7 @@ export interface CacheEntry {
   [key: string]: SendableType;
 }
 
-export const test: CacheEntry = {
+export const foo: CacheEntry = {
   type: GameObjectType.Trooper,
   x: 0,
   y: 200,
@@ -31,3 +31,8 @@ export const test: CacheEntry = {
   foo: true,
   bar: false
 };
+
+const test: Cache = {};
+const i = 0;
+
+test[i] = { type: "foo" };
