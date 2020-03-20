@@ -1,52 +1,30 @@
 import { FacingDirection, Team } from "../constants";
-import { GameObject, GameObjectType, GameObjectData } from "../object";
+import { GameObject, GameObjectType } from "../object";
+import { Cache, CacheEntry } from "../network/cache";
 
-export interface RunwayProperties {
-  x: number;
-  y: number;
-  direction: FacingDirection;
-  team: Team;
-  health: number;
-}
+export class Runway extends GameObject {
+  public type = GameObjectType.Runway;
 
-export class RunwayObject extends GameObject<RunwayProperties>
-  implements RunwayProperties {
   public x: number;
   public y: number;
   public direction: FacingDirection;
   public team: Team;
   public health: number;
 
-  public constructor(id: number) {
-    super(id, GameObjectType.Runway);
-    this.x = 0;
-    this.y = 0;
-    this.direction = FacingDirection.Right;
-    this.team = Team.Centrals;
-    this.health = 255;
+  public constructor(id: number, cache: Cache) {
+    super(id, cache);
+    this.setData({
+      x: 0,
+      y: 0,
+      direction: FacingDirection.Right,
+      team: Team.Centrals,
+      health: 255
+    });
   }
 
-  public damage(): GameObjectData {
-    if (this.health == 0) {
-      this.health = 0;
-    } else {
-      if (Math.random() > 0.5) {
-        this.health -= 1;
-      }
-    }
+  public getState(): CacheEntry {
     return {
-      x: this.x,
-      health: this.health
-    };
-  }
-
-  public getState(): GameObjectData {
-    return {
-      x: this.x,
-      y: this.y,
-      direction: this.direction,
-      team: this.team,
-      health: this.health
+      type: this.type
     };
   }
 }

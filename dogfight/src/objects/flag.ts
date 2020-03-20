@@ -1,27 +1,25 @@
 import { Team } from "../constants";
-import { GameObject, GameObjectType, GameObjectData } from "../object";
+import { GameObject, GameObjectType } from "../object";
+import { CacheEntry, Cache } from "../network/cache";
 
-export interface FlagProperties {
-  x: number;
-  y: number;
-  team: Team;
-}
-
-export class FlagObject extends GameObject<FlagProperties>
-  implements FlagProperties {
+export class Flag extends GameObject {
+  public type = GameObjectType.Flag;
   public x: number;
   public y: number;
   public team: Team;
 
-  public constructor(id: number) {
-    super(id, GameObjectType.Flag);
-    this.x = 0;
-    this.y = 0;
-    this.team = Team.Centrals;
+  public constructor(id: number, cache: Cache) {
+    super(id, cache);
+    this.setData({
+      x: 0,
+      y: 0,
+      team: Team.Centrals
+    });
   }
 
-  public getState(): GameObjectData {
+  public getState(): CacheEntry {
     return {
+      type: this.type,
       x: this.x,
       y: this.y,
       team: this.team

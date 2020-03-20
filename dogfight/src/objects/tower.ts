@@ -1,30 +1,28 @@
 import { FacingDirection, Terrain } from "../constants";
-import { GameObject, GameObjectType, GameObjectData } from "../object";
+import { GameObject, GameObjectType } from "../object";
+import { Cache, CacheEntry } from "../network/cache";
 
-export interface TowerProperties {
-  x: number;
-  y: number;
-  terrain: Terrain;
-  direction: FacingDirection;
-}
+export class Tower extends GameObject {
+  public type = GameObjectType.ControlTower;
 
-export class TowerObject extends GameObject<TowerProperties>
-  implements TowerProperties {
   public x: number;
   public y: number;
   public terrain: Terrain;
   public direction: FacingDirection;
 
-  public constructor(id: number) {
-    super(id, GameObjectType.ControlTower);
-    this.x = 0;
-    this.y = 0;
-    this.direction = FacingDirection.Right;
-    this.terrain = Terrain.Normal;
+  public constructor(id: number, cache: Cache) {
+    super(id, cache);
+    this.setData({
+      x: 0,
+      y: 0,
+      terrain: Terrain.Normal,
+      direction: FacingDirection.Right
+    });
   }
 
-  public getState(): GameObjectData {
+  public getState(): CacheEntry {
     return {
+      type: this.type,
       x: this.x,
       y: this.y,
       terrain: this.terrain,

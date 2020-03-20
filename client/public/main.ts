@@ -1,6 +1,5 @@
 import { loadSpriteSheet } from "../src/render/textures";
 import { GameClient } from "../src/client";
-import { foo } from "../../dogfight/src/network/cache";
 import { encodeEntry, getEncodedSize } from "../../dogfight/src/network/packer";
 import { SchemaTrooper } from "../../dogfight/src/network/schemas";
 
@@ -25,7 +24,4 @@ window.addEventListener("load", (): void => {
   // loadSpriteSheet(init);
   console.log("HELLO");
   // const foo = encodeEntry(0, test, SchemaTrooper);
-  const foo = new Test();
-  foo.set("3", true);
-  foo.x = 60;
 });

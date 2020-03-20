@@ -1,28 +1,27 @@
 import { Terrain } from "../constants";
-import { GameObject, GameObjectType, GameObjectData } from "../object";
+import { GameObject, GameObjectType } from "../object";
+import { CacheEntry, Cache } from "../network/cache";
 
-/*
-export interface GroundProperties {
-  x: number;
-  y: number;
-  width: number;
-  terrain: Terrain;
-}
-*/
-
-export class GroundObject extends GameObject {
+export class Ground extends GameObject {
+  public type = GameObjectType.Ground;
   public x: number;
   public y: number;
   public width: number;
   public terrain: Terrain;
 
-  public constructor(id: number) {
-    super(id);
-    this.set("x", "3");
+  public constructor(id: number, cache: Cache) {
+    super(id, cache);
+    this.setData({
+      x: 0,
+      y: 0,
+      width: 0,
+      terrain: Terrain.Normal
+    });
   }
 
-  public getState(): GameObjectData {
+  public getState(): CacheEntry {
     return {
+      type: this.type,
       x: this.x,
       y: this.y,
       width: this.width,

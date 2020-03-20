@@ -1,6 +1,5 @@
 import { spriteSheet } from "./render/textures";
 import { GameWorld } from "../../dogfight/src/world";
-import { GameState } from "../../dogfight/src/state";
 import { GameRenderer } from "./render/renderer";
 import { CanvasEventHandler } from "./render/event";
 
@@ -61,18 +60,7 @@ export class GameClient {
     });
   }
 
-  public updateState(data: GameState): void {
+  public updateState(data: any): void {
     this.localRenderer.renderState(data);
-  }
-
-  /**
-   * Request the entire state of the world.
-   * Right now it only returns the local engine's state.
-   *
-   * In the future, this will request it from the network
-   * and unpack the data.
-   */
-  private getState(): GameState {
-    return this.localWorld.getState();
   }
 }

@@ -28,7 +28,7 @@ function loop(): void {
   // console.log(lastTick, currentTick, deltaTime);
   const updates = world.tick(deltaTime);
   const json = JSON.stringify(updates);
-  world.clearChanges();
+  world.clearCache();
 
   if (json !== "{}") {
     // send updates to each client

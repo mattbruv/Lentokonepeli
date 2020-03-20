@@ -1,29 +1,21 @@
-import { GameObject, GameObjectData, GameObjectType } from "../object";
+import { GameObject, GameObjectType } from "../object";
+import { CacheEntry, Cache } from "../network/cache";
 
-export interface PlayerProperties {
-  name: string;
-  controlType: GameObjectType;
-  controlID: number;
-}
-
-export class PlayerObject extends GameObject<PlayerProperties>
-  implements PlayerProperties {
+export class Player extends GameObject {
+  public type = GameObjectType.Player;
   public name: string;
   public controlType: GameObjectType;
   public controlID: number;
 
-  public constructor(id: number) {
-    super(id, GameObjectType.Player);
+  public constructor(id: number, cache: Cache) {
+    super(id, cache);
     this.name = "Player_" + this.id;
-    this.controlType = GameObjectType.Player;
     this.controlID = -1;
   }
 
-  public getState(): GameObjectData {
+  public getState(): CacheEntry {
     return {
-      name: this.name,
-      controlType: this.controlType,
-      controlID: this.controlID
+      type: this.type
     };
   }
 }

@@ -1,5 +1,6 @@
 import { Team } from "../constants";
-import { GameObject, GameObjectType, GameObjectData } from "../object";
+import { GameObject, GameObjectType } from "../object";
+import { Cache, CacheEntry } from "../network/cache";
 
 export enum TrooperState {
   Parachuting,
@@ -14,17 +15,9 @@ export enum TrooperDirection {
   Right
 }
 
-export interface TrooperProperties {
-  x: number;
-  y: number;
-  health: number;
-  state: TrooperState;
-  direction: TrooperDirection;
-  team: Team;
-}
+export class Trooper extends GameObject {
+  public type = GameObjectType.Trooper;
 
-export class TrooperObject extends GameObject<TrooperProperties>
-  implements TrooperProperties {
   public x: number;
   public y: number;
   public health: number;
@@ -32,25 +25,28 @@ export class TrooperObject extends GameObject<TrooperProperties>
   public direction: TrooperDirection;
   public team: Team;
 
-  public constructor(id: number) {
-    super(id, GameObjectType.Trooper);
-    this.x = 0;
-    this.y = 0;
-    this.direction = TrooperDirection.None;
-    this.health = 255;
+  public constructor(id: number, cache: Cache) {
+    super(id, cache);
+    this.setData({
+      x: 0,
+      y: 0,
+      health: 255,
+      state: TrooperState.Standing,
+      direction: TrooperDirection.None,
+      team: Team.Spectator
+    });
   }
 
-  public move(deltaTime: number): GameObjectData {
+  public move(deltaTime: number): void {
     const unitsPerSecond = 50;
     const multiplier = deltaTime / 1000;
-    this.x += Math.round(multiplier * unitsPerSecond);
-    return {
-      x: this.x
-    };
+    const newX = this.x + Math.round(multiplier * unitsPerSecond);
+    this.set("x", newX);
   }
 
-  public getState(): GameObjectData {
+  public getState(): CacheEntry {
     return {
+      type: this.type,
       x: this.x,
       y: this.y,
       health: this.health,

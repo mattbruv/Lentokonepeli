@@ -1,30 +1,28 @@
 import { FacingDirection } from "../constants";
-import { GameObject, GameObjectType, GameObjectData } from "../object";
+import { GameObject, GameObjectType } from "../object";
+import { Cache, CacheEntry } from "../network/cache";
 
-export interface WaterProperties {
-  x: number;
-  y: number;
-  width: number;
-  direction: FacingDirection;
-}
+export class Water extends GameObject {
+  public type = GameObjectType.Water;
 
-export class WaterObject extends GameObject<WaterProperties>
-  implements WaterProperties {
   public x: number;
   public y: number;
   public width: number;
   public direction: FacingDirection;
 
-  public constructor(id: number) {
-    super(id, GameObjectType.Water);
-    this.x = 0;
-    this.y = 0;
-    this.width = 500;
-    this.direction = FacingDirection.Right;
+  public constructor(id: number, cache: Cache) {
+    super(id, cache);
+    this.setData({
+      x: 0,
+      y: 0,
+      width: 500,
+      direction: FacingDirection.Right
+    });
   }
 
-  public getState(): GameObjectData {
+  public getState(): CacheEntry {
     return {
+      type: this.type,
       x: this.x,
       y: this.y,
       width: this.width,

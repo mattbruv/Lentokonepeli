@@ -31,8 +31,3 @@ export const foo: CacheEntry = {
   foo: true,
   bar: false
 };
-
-const test: Cache = {};
-const i = 0;
-
-test[i] = { type: "foo" };

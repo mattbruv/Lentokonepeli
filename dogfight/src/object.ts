@@ -1,5 +1,4 @@
-import { ByteSize } from "./constants";
-import { CacheEntry } from "./network/cache";
+import { Cache, CacheEntry } from "./network/cache";
 
 /**
  * Constants for each type of object in the game.
@@ -28,7 +27,7 @@ type sendableData = number | string;
  * It also has a method to retrieve its current state.
  */
 export abstract class GameObject {
-  public type: GameObjectType;
+  public abstract type: GameObjectType;
   public id: number;
   private cache: Cache;
 
@@ -37,8 +36,17 @@ export abstract class GameObject {
     this.cache = cache;
   }
 
+  /**
+   * Returns the current state of this object.
+   */
   public abstract getState(): CacheEntry;
 
+  /**
+   * Sets a property of this object, and queues it
+   * to be sent out over the network.
+   * @param property The property to set
+   * @param value The value to set
+   */
   public set(property: string, value: sendableData): void {
     // If there is no change in the value, don't do anything.
     // Otherwise, apply this change so it can be sent over the network.
@@ -48,11 +56,23 @@ export abstract class GameObject {
 
     // Check to see if this object exists in our cache right now.
     if (this.cache[this.id] === undefined) {
-      this.cache[this.id] = {};
+      this.cache[this.id] = {
+        type: this.type
+      };
     }
 
     // Update our variable in the object, and the cache.
     this[property] = value;
     this.cache[this.id][property] = value;
+  }
+
+  /**
+   * Sets multiple properties of this object at once.
+   * @param data An object with properties to set and their values
+   */
+  public setData(data: any): void {
+    for (const property in data) {
+      this.set(property, data[property]);
+    }
   }
 }
