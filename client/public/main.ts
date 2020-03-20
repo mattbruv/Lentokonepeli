@@ -14,14 +14,11 @@ function init(): void {
   const ws = new WebSocket(wssPath);
 
   ws.onmessage = (event): void => {
-    console.log(event.data);
-    const data = JSON.parse(event.data);
-    client.updateState(data);
+    const cache = JSON.parse(event.data);
+    client.updateCache(cache);
   };
 }
 
 window.addEventListener("load", (): void => {
-  // loadSpriteSheet(init);
-  console.log("HELLO");
-  // const foo = encodeEntry(0, test, SchemaTrooper);
+  loadSpriteSheet(init);
 });

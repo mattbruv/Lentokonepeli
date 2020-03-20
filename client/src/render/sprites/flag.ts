@@ -2,13 +2,12 @@ import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
 import { Team } from "../../../../dogfight/src/constants";
-import { FlagProperties } from "../../../../dogfight/src/objects/flag";
 
 const FLAG_STR = "flag_TEAM_N.gif";
 
 const FLAG_PHASE_TIME = 256; // milliseconds
 
-export class FlagSprite extends GameSprite implements FlagProperties {
+export class FlagSprite extends GameSprite {
   public x: number;
   public y: number;
   public team: number;

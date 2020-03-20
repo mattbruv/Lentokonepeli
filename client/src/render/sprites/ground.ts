@@ -1,10 +1,9 @@
 import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
-import { GroundProperties } from "../../../../dogfight/src/objects/ground";
 import { Terrain } from "../../../../dogfight/src/constants";
 
-export class GroundSprite extends GameSprite implements GroundProperties {
+export class GroundSprite extends GameSprite {
   public x: number;
   public y: number;
   public terrain: Terrain;
@@ -20,7 +19,6 @@ export class GroundSprite extends GameSprite implements GroundProperties {
 
   public constructor(spritesheet: PIXI.Spritesheet) {
     super();
-
     this.x = 0;
     this.y = 0;
     this.terrain = Terrain.Normal;
@@ -59,5 +57,7 @@ export class GroundSprite extends GameSprite implements GroundProperties {
     this.container.x = this.x - halfWidth;
   }
 
-  public destroy(): void {}
+  public destroy(): void {
+    //
+  }
 }

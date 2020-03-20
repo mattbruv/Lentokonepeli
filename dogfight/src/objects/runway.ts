@@ -1,6 +1,7 @@
 import { FacingDirection, Team } from "../constants";
 import { GameObject, GameObjectType } from "../object";
 import { Cache, CacheEntry } from "../network/cache";
+import { textSpanIntersectsWithPosition } from "typescript";
 
 export class Runway extends GameObject {
   public type = GameObjectType.Runway;
@@ -24,7 +25,12 @@ export class Runway extends GameObject {
 
   public getState(): CacheEntry {
     return {
-      type: this.type
+      type: this.type,
+      x: this.x,
+      y: this.y,
+      direction: this.direction,
+      team: this.team,
+      health: this.health
     };
   }
 }

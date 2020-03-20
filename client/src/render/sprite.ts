@@ -1,11 +1,7 @@
 import * as PIXI from "pixi.js";
-import {
-  GameObjectType,
-  GameObjectInfo,
-  GameObjectData
-} from "../../../dogfight/src/object";
+import { GameObjectType } from "../../../dogfight/src/object";
 
-export abstract class GameSprite implements GameObjectInfo {
+export abstract class GameSprite {
   public id: number;
   public type: GameObjectType;
   public renderables: PIXI.Container[];
@@ -19,7 +15,7 @@ export abstract class GameSprite implements GameObjectInfo {
   /**
    * Updates a game object's display after new property changes.
    */
-  public update(data: GameObjectData): void {
+  public update(data: any): void {
     for (const key in data) {
       let value = data[key];
       if (key == "y") {

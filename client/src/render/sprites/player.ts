@@ -1,10 +1,9 @@
 import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
-import { PlayerProperties } from "../../../../dogfight/src/objects/player";
 import { GameObjectType } from "../../../../dogfight/src/object";
 
-export class PlayerSprite extends GameSprite implements PlayerProperties {
+export class PlayerSprite extends GameSprite {
   public name: string;
   public controlID: number;
   public controlType: GameObjectType;
@@ -22,7 +21,11 @@ export class PlayerSprite extends GameSprite implements PlayerProperties {
     this.container.zIndex = DrawLayer.Player;
   }
 
-  public redraw(): void {}
+  public redraw(): void {
+    //
+  }
 
-  public destroy(): void {}
+  public destroy(): void {
+    //
+  }
 }

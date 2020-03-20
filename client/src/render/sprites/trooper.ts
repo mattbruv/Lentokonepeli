@@ -2,13 +2,12 @@ import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
 import {
-  TrooperProperties,
   TrooperState,
   TrooperDirection
 } from "../../../../dogfight/src/objects/trooper";
 import { Team } from "../../../../dogfight/src/constants";
 
-export class TrooperSprite extends GameSprite implements TrooperProperties {
+export class TrooperSprite extends GameSprite {
   public x: number;
   public y: number;
   public health: number;
@@ -63,5 +62,7 @@ export class TrooperSprite extends GameSprite implements TrooperProperties {
     this.container.position.set(this.x, this.y);
   }
 
-  public destroy(): void {}
+  public destroy(): void {
+    //
+  }
 }

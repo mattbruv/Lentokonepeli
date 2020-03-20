@@ -5,6 +5,8 @@ import * as WebSocket from "ws";
 import { GameWorld } from "../dogfight/src/world";
 import { MAP_CLASSIC } from "../dogfight/src/maps/classic";
 
+const PORT = 3259;
+
 const app = express();
 const filepath = path.join(__dirname, "../dist");
 console.log(filepath);
@@ -59,6 +61,6 @@ wss.on("connection", (ws): void => {
   });
 });
 
-server.listen(3259, (): void => {
-  console.log("Server started on port" + server.address().toString());
+server.listen(PORT, (): void => {
+  console.log("Server started on port", PORT);
 });

@@ -1,5 +1,4 @@
 import * as PIXI from "pixi.js";
-import { ByteSize } from "../../../../dogfight/src/constants";
 
 /**
  * Read all ye' who enter this wretched file:
@@ -77,7 +76,7 @@ export class SkyBackground {
 
     this.sky.anchor.set(0.5, 0.5);
     this.sky.height = textureSky.height;
-    this.sky.width = ByteSize.TWO_BYTES;
+    this.sky.width = 0xffff;
     this.container.addChild(this.sky);
     this.container.addChild(this.upper);
     this.container.addChild(this.lower);

@@ -2,9 +2,8 @@ import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
 import { Terrain, FacingDirection } from "../../../../dogfight/src/constants";
-import { TowerProperties } from "../../../../dogfight/src/objects/tower";
 
-export class TowerSprite extends GameSprite implements TowerProperties {
+export class TowerSprite extends GameSprite {
   public x: number;
   public y: number;
   public terrain: Terrain;
@@ -67,5 +66,7 @@ export class TowerSprite extends GameSprite implements TowerProperties {
     this.container.position.y = -this.y + offset;
   }
 
-  public destroy(): void {}
+  public destroy(): void {
+    //
+  }
 }

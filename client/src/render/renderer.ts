@@ -1,5 +1,4 @@
 import * as PIXI from "pixi.js";
-import { GameState, Action } from "../../../dogfight/src/state";
 import { GameSprite } from "./sprite";
 import { GameScreen } from "./constants";
 import { DebugView } from "./objects/debug";
@@ -7,7 +6,7 @@ import { Vec2d } from "../../../dogfight/src/physics/vector";
 import { toPixiCoords } from "./coords";
 import { SkyBackground } from "./objects/sky";
 import { GameHud } from "./objects/hud";
-import { GameObjectType, GameObjectData } from "../../../dogfight/src/object";
+import { GameObjectType } from "../../../dogfight/src/object";
 import { FlagSprite } from "./sprites/flag";
 import { GroundSprite } from "./sprites/ground";
 import { WaterSprite } from "./sprites/water";
@@ -16,6 +15,7 @@ import { HillSprite } from "./sprites/hill";
 import { RunwaySprite } from "./sprites/runway";
 import { PlayerSprite } from "./sprites/player";
 import { TrooperSprite } from "./sprites/trooper";
+import { Cache, CacheEntry } from "../../../dogfight/src/network/cache";
 
 /**
  * A class which renders the game world.
@@ -103,64 +103,53 @@ export class GameRenderer {
 
   private reset(): void {
     this.sprites = {};
-    for (const type in GameObjectType) {
+  }
+
+  public updateCache(cache: Cache): void {
+    for (const id in cache) {
+      this.updateCacheEntry(cache[id], id);
+    }
+  }
+
+  private updateCacheEntry(entry: CacheEntry, id: string): void {
+    const { type, ...data } = entry;
+    if (this.sprites[type] === undefined) {
       this.sprites[type] = {};
     }
-  }
-
-  public renderState(state: GameState): void {
-    for (const type in state) {
-      for (const id in state[type]) {
-        const info = state[type][id];
-        this.renderObject(parseInt(type), parseInt(id), info.action, info.data);
+    // if the sprite doesn't exist, create it
+    // and add the containers.
+    if (this.sprites[type][id] === undefined) {
+      this.sprites[type][id] = this.createSprite(type);
+      for (const container of this.sprites[type][id].renderables) {
+        this.entityContainer.addChild(container);
       }
+    }
+    const dataLength = Object.keys(data).length;
+    if (dataLength > 0) {
+      this.sprites[type][id].update(entry);
+    } else {
+      // if data is empty, that is a signal from the engine to delete the object.
+      this.deleteSprite(type, id);
     }
   }
 
-  private renderObject(
-    type: number,
-    id: number,
-    action: Action,
-    data: GameObjectData
-  ): void {
-    if (action == Action.Create) {
-      this.removeSprite(type, id);
-      const sprite = this.createSprite(type);
-      if (sprite !== undefined) {
-        sprite.update(data);
-        sprite.renderables.forEach((container): void => {
-          this.entityContainer.addChild(container);
-        });
-        sprite.renderablesDebug.forEach((container): void => {
-          this.debug.worldContainer.addChild(container);
-        });
-        this.sprites[type][id] = sprite;
-      }
+  private deleteSprite(type: number, id: string): void {
+    const sprite: GameSprite = this.sprites[type][id];
+    if (sprite === undefined) {
+      console.log("Attempted to delete undefined sprite:", type, id);
       return;
     }
-    if (action == Action.Update) {
-      const sprite = this.getSprite(type, id);
-      if (sprite !== undefined) {
-        sprite.update(data);
-      }
-      return;
+    // Destroy all window setintervals, etc.
+    sprite.destroy();
+    for (const container of sprite.renderables) {
+      this.worldContainer.removeChild(container);
+      container.destroy({ children: true });
     }
-    if (action == Action.Delete) {
-      const sprite = this.getSprite(type, id);
-      if (sprite) {
-        sprite.destroy();
-        sprite.renderables.forEach((container): void => {
-          this.worldContainer.removeChild(container);
-          container.destroy({ children: true });
-        });
-        sprite.renderablesDebug.forEach((container): void => {
-          this.debug.worldContainer.removeChild(container);
-          container.destroy({ children: true });
-        });
-        this.removeSprite(type, id);
-      }
-      return;
+    for (const container of sprite.renderablesDebug) {
+      this.debug.worldContainer.removeChild(container);
+      container.destroy({ children: true });
     }
+    delete this.sprites[type][id];
   }
 
   private createSprite(type: GameObjectType): GameSprite {
@@ -188,20 +177,6 @@ export class GameRenderer {
         );
         break;
     }
-  }
-
-  /**
-   * Gets a reference to a sprite object by a specific type and ID
-   */
-  private getSprite(type: GameObjectType, id: number): GameSprite {
-    return this.sprites[type][id];
-  }
-
-  /**
-   * Removes an entity from the game renderer.
-   */
-  private removeSprite(type: GameObjectType, id: number): void {
-    delete this.sprites[type][id];
   }
 
   public getStage(): PIXI.Container {

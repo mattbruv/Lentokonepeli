@@ -2,9 +2,8 @@ import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer, GameScreen } from "../constants";
 import { Terrain } from "../../../../dogfight/src/constants";
-import { HillProperties } from "../../../../dogfight/src/objects/hill";
 
-export class HillSprite extends GameSprite implements HillProperties {
+export class HillSprite extends GameSprite {
   public x: number;
   public y: number;
   public terrain: Terrain;
@@ -74,5 +73,7 @@ export class HillSprite extends GameSprite implements HillProperties {
     this.container.position.set(newX, newY);
   }
 
-  public destroy(): void {}
+  public destroy(): void {
+    //
+  }
 }

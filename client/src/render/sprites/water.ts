@@ -2,13 +2,12 @@ import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer, WaterColor } from "../constants";
 import { FacingDirection } from "../../../../dogfight/src/constants";
-import { WaterProperties } from "../../../../dogfight/src/objects/water";
 
 const WAVE_PHASE_TIME = 200; // Milliseconds
 const WATER_HEIGHT = 10000;
 const WAVE_TEXTURE_STR = "wave-l_N.gif";
 
-export class WaterSprite extends GameSprite implements WaterProperties {
+export class WaterSprite extends GameSprite {
   public x: number;
   public y: number;
   public width: number;

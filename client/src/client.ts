@@ -2,6 +2,7 @@ import { spriteSheet } from "./render/textures";
 import { GameWorld } from "../../dogfight/src/world";
 import { GameRenderer } from "./render/renderer";
 import { CanvasEventHandler } from "./render/event";
+import { Cache } from "../../dogfight/src/network/cache";
 
 export class GameClient {
   /**
@@ -52,7 +53,7 @@ export class GameClient {
     const deltaTime = currentTick - this.lastTick;
     // console.log(deltaTime, this.lastTick);
     const updates = this.localWorld.tick(deltaTime);
-    this.localRenderer.renderState(updates);
+    // this.localRenderer.renderState(updates);
     this.lastTick = currentTick;
 
     window.requestAnimationFrame((): void => {
@@ -60,7 +61,7 @@ export class GameClient {
     });
   }
 
-  public updateState(data: any): void {
-    this.localRenderer.renderState(data);
+  public updateCache(cache: Cache): void {
+    this.localRenderer.updateCache(cache);
   }
 }

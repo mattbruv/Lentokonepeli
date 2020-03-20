@@ -1,12 +1,11 @@
 import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
-import { RunwayProperties } from "../../../../dogfight/src/objects/runway";
 import { FacingDirection, Team } from "../../../../dogfight/src/constants";
 import { DrawLayer, TeamColor } from "../constants";
 
 const HEALTH_BAR_HEIGHT = 3;
 
-export class RunwaySprite extends GameSprite implements RunwayProperties {
+export class RunwaySprite extends GameSprite {
   public x: number;
   public y: number;
   public direction: FacingDirection;
@@ -112,5 +111,7 @@ export class RunwaySprite extends GameSprite implements RunwayProperties {
     this.healthBar.endFill();
   }
 
-  public destroy(): void {}
+  public destroy(): void {
+    //
+  }
 }

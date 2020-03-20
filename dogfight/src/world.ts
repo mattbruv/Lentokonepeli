@@ -63,7 +63,23 @@ export class GameWorld {
   }
 
   public getState(): Cache {
-    return {};
+    const objects = [
+      this.players,
+      this.flags,
+      this.grounds,
+      this.hills,
+      this.runways,
+      this.towers,
+      this.troopers,
+      this.waters
+    ];
+    const cache: Cache = {};
+    for (const obj in objects) {
+      for (const thing of objects[obj]) {
+        cache[thing.id] = thing.getState();
+      }
+    }
+    return cache;
   }
 
   public nextID(): number {
