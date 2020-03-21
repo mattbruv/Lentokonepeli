@@ -131,6 +131,7 @@ export class GameRenderer {
       // if data is empty, that is a signal from the engine to delete the object.
       this.deleteSprite(type, id);
     }
+    // console.log(this.sprites[GameObjectType.Player]);
   }
 
   private deleteSprite(type: number, id: string): void {

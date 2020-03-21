@@ -60,19 +60,35 @@ export class GameWorld {
    * @param timestep Number of milliseconds to advance simulation
    */
   public tick(deltaTime: number): Cache {
+    /*
     if (this.troopers.length == 0) {
       const man = new Trooper(this.nextID(), this.cache);
       man.setPos(this.cache, 0, 100);
       man.set(this.cache, "state", TrooperState.Parachuting);
-      this.troopers.push(man);
+      this.addObject(this.troopers, man);
     }
     for (const trooper of this.troopers) {
       trooper.move(this.cache, deltaTime);
       if (trooper.x > 350) {
-        this.deleteObject(this.troopers, trooper);
+        this.removeObject(this.troopers, trooper);
       }
     }
+    */
     return this.cache;
+  }
+
+  /**
+   * Adds a player to the game,
+   * and returns the information.
+   */
+  public addPlayer(): Player {
+    const player = new Player(this.nextID(), this.cache);
+    this.addObject(this.players, player);
+    return player;
+  }
+
+  public removePlayer(p: Player): void {
+    this.removeObject(this.players, p);
   }
 
   public getState(): Cache {
@@ -95,7 +111,12 @@ export class GameWorld {
     return cache;
   }
 
-  private deleteObject(arr: GameObject[], obj: GameObject): void {
+  private addObject(arr: GameObject[], obj: GameObject): void {
+    arr.push(obj);
+    this.cache[obj.id] = obj.getState();
+  }
+
+  private removeObject(arr: GameObject[], obj: GameObject): void {
     const index = this.getObjectIndex(arr, obj.id);
     if (index < 0) {
       return;

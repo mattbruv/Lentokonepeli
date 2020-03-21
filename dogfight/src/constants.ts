@@ -1,9 +1,9 @@
 export const ROTATION_DIRECTIONS = 256;
 
 export enum Team {
-  Spectator,
   Centrals,
-  Allies
+  Allies,
+  Spectator
 }
 
 export enum Terrain {

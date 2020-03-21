@@ -45,12 +45,15 @@ function loop(): void {
 }
 
 // 5 seconds at 20
-setInterval(loop, 1000 / 20); // 3.3 @ 10    // 5 @ 20
+setInterval(loop, 1000 / 5); // 3.3 @ 10    // 5 @ 20
 
 wss.on("connection", (ws): void => {
   console.log("New connection!");
   // get current world state and send it to newly player
   ws.send(JSON.stringify(world.getState()));
+
+  // Create this new player and add them to the game.
+  const me = world.addPlayer();
 
   ws.on("message", (message): void => {
     console.log("recieved" + message);
@@ -58,7 +61,8 @@ wss.on("connection", (ws): void => {
   });
 
   ws.on("close", (): void => {
-    console.log("Client disconnected!");
+    world.removePlayer(me);
+    console.log("Client disconnected: Player", me.id);
   });
 });
 
