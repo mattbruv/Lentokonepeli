@@ -16,6 +16,7 @@ function init(): void {
   ws.onmessage = (event): void => {
     const cache = JSON.parse(event.data);
     client.updateCache(cache);
+    console.log(cache);
   };
 }
 

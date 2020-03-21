@@ -1,4 +1,4 @@
-import { Team } from "../constants";
+import { Team, SCALE_FACTOR } from "../constants";
 import { GameObject, GameObjectType } from "../object";
 import { Cache, CacheEntry } from "../network/cache";
 
@@ -18,6 +18,8 @@ export enum TrooperDirection {
 export class Trooper extends GameObject {
   public type = GameObjectType.Trooper;
 
+  public localX: number;
+  public localY: number;
   public x: number;
   public y: number;
   public health: number;
@@ -27,6 +29,8 @@ export class Trooper extends GameObject {
 
   public constructor(id: number, cache: Cache) {
     super(id);
+    this.localX = 0;
+    this.localY = 0;
     this.setData(cache, {
       x: 0,
       y: 0,
@@ -37,11 +41,18 @@ export class Trooper extends GameObject {
     });
   }
 
+  public setPos(cache: Cache, x: number, y: number): void {
+    this.localX = x * SCALE_FACTOR;
+    this.localY = y * SCALE_FACTOR;
+    this.setData(cache, { x, y });
+  }
+
   public move(cache: Cache, deltaTime: number): void {
-    const unitsPerSecond = 50;
+    const unitsPerSecond = 250 * SCALE_FACTOR;
     const multiplier = deltaTime / 1000;
-    const newX = this.x + Math.round(multiplier * unitsPerSecond);
-    this.set(cache, "x", newX);
+    // const newX = this.x + Math.round(multiplier * unitsPerSecond);
+    this.localX = this.localX + Math.round(multiplier * unitsPerSecond);
+    this.set(cache, "x", Math.round(this.localX / SCALE_FACTOR));
   }
 
   public getState(): CacheEntry {

@@ -8,6 +8,7 @@ import { Runway } from "./objects/runway";
 import { Tower } from "./objects/tower";
 import { Trooper, TrooperState } from "./objects/trooper";
 import { Water } from "./objects/water";
+import { GameObject } from "./object";
 
 /**
  * The Game World contains all entites,
@@ -61,13 +62,16 @@ export class GameWorld {
   public tick(deltaTime: number): Cache {
     if (this.troopers.length == 0) {
       const man = new Trooper(this.nextID(), this.cache);
+      man.setPos(this.cache, 0, 100);
+      man.set(this.cache, "state", TrooperState.Parachuting);
       this.troopers.push(man);
     }
     for (const trooper of this.troopers) {
       trooper.move(this.cache, deltaTime);
+      if (trooper.x > 350) {
+        this.deleteObject(this.troopers, trooper);
+      }
     }
-    console.log(this.cache);
-
     return this.cache;
   }
 
@@ -89,6 +93,39 @@ export class GameWorld {
       }
     }
     return cache;
+  }
+
+  private deleteObject(arr: GameObject[], obj: GameObject): void {
+    const index = this.getObjectIndex(arr, obj.id);
+    if (index < 0) {
+      return;
+    }
+    const type = obj.type;
+    const id = obj.id;
+
+    arr.splice(index, 1);
+
+    // Create an empty update in the cache.
+    // The renderer treats an empty update as a deletion.
+    this.cache[id] = {
+      type
+    };
+  }
+
+  /**
+   * Returns the index of an object in the array.
+   * @param arr Array of game objects to search through.
+   * @param id The ID of the object to find.
+   */
+  private getObjectIndex(arr: GameObject[], id: number): number {
+    let index = -1;
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i].id === id) {
+        index = i;
+        break;
+      }
+    }
+    return index;
   }
 
   public nextID(): number {
