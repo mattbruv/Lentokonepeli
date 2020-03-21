@@ -16,6 +16,7 @@ import { RunwaySprite } from "./sprites/runway";
 import { PlayerSprite } from "./sprites/player";
 import { TrooperSprite } from "./sprites/trooper";
 import { Cache, CacheEntry } from "../../../dogfight/src/network/cache";
+import { TeamChooser } from "./objects/teamChooser";
 
 /**
  * A class which renders the game world.
@@ -58,6 +59,7 @@ export class GameRenderer {
   public sky: SkyBackground;
 
   private HUD: GameHud;
+  private teamChooser: TeamChooser;
 
   public constructor(spritesheet: PIXI.Spritesheet) {
     this.spriteSheet = spritesheet;
@@ -76,12 +78,12 @@ export class GameRenderer {
 
     this.debug = new DebugView(this.pixiApp.renderer);
     this.debug.setEnabled(false);
-    this.toggleDebugMode();
-    this.toggleGrid();
+    //this.toggleDebugMode();
+    //this.toggleGrid();
 
     this.sky = new SkyBackground(this.spriteSheet);
-
-    this.HUD = new GameHud(spritesheet);
+    this.HUD = new GameHud(this.spriteSheet);
+    this.teamChooser = new TeamChooser(this.spriteSheet);
 
     // Setup pixi classes
     // Make the screen objects layerable.
@@ -95,6 +97,7 @@ export class GameRenderer {
     this.gameContainer.addChild(this.worldContainer);
     this.gameContainer.addChild(this.debug.gameContainer);
     this.gameContainer.addChild(this.HUD.container);
+    this.gameContainer.addChild(this.teamChooser.container);
 
     this.pixiApp.stage.addChild(this.gameContainer);
 
