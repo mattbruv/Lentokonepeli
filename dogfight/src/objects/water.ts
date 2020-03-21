@@ -11,8 +11,8 @@ export class Water extends GameObject {
   public direction: FacingDirection;
 
   public constructor(id: number, cache: Cache) {
-    super(id, cache);
-    this.setData({
+    super(id);
+    this.setData(cache, {
       x: 0,
       y: 0,
       width: 500,

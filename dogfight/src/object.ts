@@ -29,11 +29,9 @@ type sendableData = number | string;
 export abstract class GameObject {
   public abstract type: GameObjectType;
   public id: number;
-  private cache: Cache;
 
-  public constructor(id: number, cache: Cache) {
+  public constructor(id: number) {
     this.id = id;
-    this.cache = cache;
   }
 
   /**
@@ -47,7 +45,7 @@ export abstract class GameObject {
    * @param property The property to set
    * @param value The value to set
    */
-  public set(property: string, value: sendableData): void {
+  public set(cache: Cache, property: string, value: sendableData): void {
     // If there is no change in the value, don't do anything.
     // Otherwise, apply this change so it can be sent over the network.
     if (this[property] === value) {
@@ -55,24 +53,24 @@ export abstract class GameObject {
     }
 
     // Check to see if this object exists in our cache right now.
-    if (this.cache[this.id] === undefined) {
-      this.cache[this.id] = {
+    if (cache[this.id] === undefined) {
+      cache[this.id] = {
         type: this.type
       };
     }
 
     // Update our variable in the object, and the cache.
     this[property] = value;
-    this.cache[this.id][property] = value;
+    cache[this.id][property] = value;
   }
 
   /**
    * Sets multiple properties of this object at once.
    * @param data An object with properties to set and their values
    */
-  public setData(data: any): void {
+  public setData(cache: Cache, data: any): void {
     for (const property in data) {
-      this.set(property, data[property]);
+      this.set(cache, property, data[property]);
     }
   }
 }

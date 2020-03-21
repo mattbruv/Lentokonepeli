@@ -26,8 +26,8 @@ export class Trooper extends GameObject {
   public team: Team;
 
   public constructor(id: number, cache: Cache) {
-    super(id, cache);
-    this.setData({
+    super(id);
+    this.setData(cache, {
       x: 0,
       y: 0,
       health: 255,
@@ -37,11 +37,11 @@ export class Trooper extends GameObject {
     });
   }
 
-  public move(deltaTime: number): void {
+  public move(cache: Cache, deltaTime: number): void {
     const unitsPerSecond = 50;
     const multiplier = deltaTime / 1000;
     const newX = this.x + Math.round(multiplier * unitsPerSecond);
-    this.set("x", newX);
+    this.set(cache, "x", newX);
   }
 
   public getState(): CacheEntry {

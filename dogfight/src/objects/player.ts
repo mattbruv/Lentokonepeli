@@ -8,7 +8,7 @@ export class Player extends GameObject {
   public controlID: number;
 
   public constructor(id: number, cache: Cache) {
-    super(id, cache);
+    super(id);
     this.name = "Player_" + this.id;
     this.controlID = -1;
   }

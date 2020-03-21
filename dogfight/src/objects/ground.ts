@@ -10,8 +10,8 @@ export class Ground extends GameObject {
   public terrain: Terrain;
 
   public constructor(id: number, cache: Cache) {
-    super(id, cache);
-    this.setData({
+    super(id);
+    this.setData(cache, {
       x: 0,
       y: 0,
       width: 0,

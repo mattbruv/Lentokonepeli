@@ -13,8 +13,8 @@ export class Runway extends GameObject {
   public health: number;
 
   public constructor(id: number, cache: Cache) {
-    super(id, cache);
-    this.setData({
+    super(id);
+    this.setData(cache, {
       x: 0,
       y: 0,
       direction: FacingDirection.Right,
