@@ -102,7 +102,6 @@ export class TeamChooser {
   }
 
   private setSelection(flag: number): void {
-    console.log(flag);
     const offsetX = gap * flag + this.flagWidth * flag;
     const x = this.flagContainer.x + offsetX - borderSize;
     const y = this.flagContainer.y - borderSize;

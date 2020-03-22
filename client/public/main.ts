@@ -33,7 +33,6 @@ function addLanguageSelect(): void {
   selector.id = "language";
   const cookie = Cookies.get("language");
   for (const key in Localizer.dictionary) {
-    console.log(key);
     const option = document.createElement("option");
     option.value = key;
     option.text = key;

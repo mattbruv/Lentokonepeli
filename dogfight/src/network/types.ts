@@ -1,6 +1,39 @@
 export type SendableType = number | string | boolean;
 
 /**
+ * All networked information is sent through packets.
+ * Some packets may be compressed to binary, but most are not.
+ *
+ * Large or high bandwidth packets will be compressed.
+ * Infrequent packets will be sent as JSON strings.
+ * It all depends on packet type.
+ */
+export interface Packet {
+  type: PacketType;
+  data?: any;
+}
+
+/**
+ * Container Object which holds all information
+ * that is to be sent out over the wire.
+ */
+const enum PacketType {
+  /* User --> Server */
+  RequestFullSync,
+  RequestJoinTeam,
+  RequestTakeoff,
+  UserGameInput,
+
+  /* User <--> Server */
+  Ping,
+
+  /* Server --> User */
+  FullSync,
+  ChangeSync,
+  AssignPlayer
+}
+
+/**
  * Defines the networked properties of a game object.
  */
 export interface GameObjectSchema {
