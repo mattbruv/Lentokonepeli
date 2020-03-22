@@ -108,6 +108,10 @@ export class GameRenderer {
     this.sprites = {};
   }
 
+  public startGame(): void {
+    this.teamChooser.setEnabled(true);
+  }
+
   // calls all objects with text so they can update their language.
   public updateLanguage(): void {
     this.teamChooser.updateText();

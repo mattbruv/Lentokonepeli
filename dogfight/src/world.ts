@@ -60,7 +60,6 @@ export class GameWorld {
    * @param timestep Number of milliseconds to advance simulation
    */
   public tick(deltaTime: number): Cache {
-    /*
     if (this.troopers.length == 0) {
       const man = new Trooper(this.nextID(), this.cache);
       man.setPos(this.cache, 0, 100);
@@ -73,7 +72,6 @@ export class GameWorld {
         this.removeObject(this.troopers, trooper);
       }
     }
-    */
     return this.cache;
   }
 

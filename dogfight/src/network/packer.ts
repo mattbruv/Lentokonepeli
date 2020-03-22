@@ -1,44 +1,20 @@
-import { CacheEntry, Cache } from "./cache";
-import { GameObjectSchema, IntByteSizes } from "./types";
+import { Packet } from "./types";
 
-export function encodeCache(cache: Cache): void {
-  let bytes = 0;
-  console.log(cache);
-  for (const entry in cache) {
-    console.log(entry);
-  }
+/**
+ * Takes a packet and turns it into sendable data
+ * to be recieved over the wire.
+ * @param info Packet to pack.
+ */
+// or byte array
+export function pack(info: Packet): string {
+  return JSON.stringify(info);
 }
 
-export function encodeEntry(
-  id: number,
-  entry: CacheEntry,
-  schema: GameObjectSchema
-): void {
-  console.log("pack id: ", id);
-  console.log("with entry: ", entry);
-  console.log("with schema: ", schema);
-}
-
-export function getEncodedSize(
-  entry: CacheEntry,
-  schema: GameObjectSchema
-): number {
-  let totalSize = 0;
-
-  const bitmaskBytes = Math.ceil(
-    (schema.numbers.length + schema.booleans.length) / 8
-  );
-
-  schema.numbers.forEach((n): void => {
-    if (n.name in entry) {
-      const size = IntByteSizes[n.intType];
-      totalSize += size;
-    }
-  });
-
-  const boolBytes = Math.ceil(schema.booleans.length / 8);
-
-  totalSize += bitmaskBytes + boolBytes;
-
-  return totalSize;
+/**
+ * Takes data sent over the network
+ * and parses it into a packet object for JS use.
+ * @param info network data
+ */
+export function unpack(info: string): Packet {
+  return JSON.parse(info);
 }

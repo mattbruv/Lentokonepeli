@@ -121,5 +121,6 @@ export class TeamChooser {
 
   public setEnabled(active: boolean): void {
     this.enabled = active;
+    this.container.visible = this.enabled;
   }
 }

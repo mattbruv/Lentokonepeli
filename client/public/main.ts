@@ -1,9 +1,9 @@
 import { loadSpriteSheet } from "../src/render/textures";
 import { GameClient } from "../src/client";
-import { encodeEntry, getEncodedSize } from "../../dogfight/src/network/packer";
-import { SchemaTrooper } from "../../dogfight/src/network/schemas";
+import { pack, unpack } from "../../dogfight/src/network/packer";
 import Cookies from "js-cookie";
 import { Localizer } from "../src/localization/localizer";
+import { PacketType } from "../../dogfight/src/network/types";
 
 let client: GameClient;
 const wssPath = "ws://" + location.host;
@@ -15,10 +15,13 @@ function init(): void {
   // create connection to server.
   const ws = new WebSocket(wssPath);
 
+  ws.onopen = (): void => {
+    ws.send(pack({ type: PacketType.RequestFullSync }));
+  };
+
   ws.onmessage = (event): void => {
-    const cache = JSON.parse(event.data);
-    client.updateCache(cache);
-    console.log(cache);
+    const packet = unpack(event.data);
+    client.processPacket(packet);
   };
 }
 

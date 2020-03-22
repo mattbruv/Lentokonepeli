@@ -4,6 +4,7 @@ import { GameRenderer } from "./render/renderer";
 import { CanvasEventHandler } from "./render/event";
 import { Cache } from "../../dogfight/src/network/cache";
 import { Localizer } from "./localization/localizer";
+import { Packet, PacketType } from "../../dogfight/src/network/types";
 
 export class GameClient {
   /**
@@ -62,8 +63,16 @@ export class GameClient {
     });
   }
 
-  public updateCache(cache: Cache): void {
-    this.localRenderer.updateCache(cache);
+  public processPacket(packet: Packet): void {
+    const type = packet.type;
+    console.log(packet.data);
+    if (type == PacketType.FullSync) {
+      this.localRenderer.updateCache(packet.data);
+      this.localRenderer.startGame();
+    }
+    if (type == PacketType.ChangeSync) {
+      this.localRenderer.updateCache(packet.data);
+    }
   }
 
   public updateLanguage(language: string): void {

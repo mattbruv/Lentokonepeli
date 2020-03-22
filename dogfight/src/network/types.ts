@@ -17,7 +17,7 @@ export interface Packet {
  * Container Object which holds all information
  * that is to be sent out over the wire.
  */
-const enum PacketType {
+export enum PacketType {
   /* User --> Server */
   RequestFullSync,
   RequestJoinTeam,
