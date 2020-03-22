@@ -84,7 +84,7 @@ export class TeamChooser {
 
     this.setSelection(1);
 
-    this.loadText();
+    this.updateText();
 
     // set positioning of everything
     this.infoBox.position.set(5, 27);
@@ -109,7 +109,7 @@ export class TeamChooser {
     this.selection.position.set(x, y);
   }
 
-  private loadText(): void {
+  public updateText(): void {
     const title = Localizer.get("teamChooserTitle");
     const desc = Localizer.get("teamChooserDescription");
     this.bigText.text = title;

@@ -3,6 +3,7 @@ import { GameWorld } from "../../dogfight/src/world";
 import { GameRenderer } from "./render/renderer";
 import { CanvasEventHandler } from "./render/event";
 import { Cache } from "../../dogfight/src/network/cache";
+import { Localizer } from "./localization/localizer";
 
 export class GameClient {
   /**
@@ -63,5 +64,11 @@ export class GameClient {
 
   public updateCache(cache: Cache): void {
     this.localRenderer.updateCache(cache);
+  }
+
+  public updateLanguage(language: string): void {
+    console.log("Changing language to", language);
+    Localizer.setLanguage(language);
+    this.localRenderer.updateLanguage();
   }
 }

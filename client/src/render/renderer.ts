@@ -108,6 +108,11 @@ export class GameRenderer {
     this.sprites = {};
   }
 
+  // calls all objects with text so they can update their language.
+  public updateLanguage(): void {
+    this.teamChooser.updateText();
+  }
+
   public updateCache(cache: Cache): void {
     for (const id in cache) {
       this.updateCacheEntry(cache[id], id);

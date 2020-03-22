@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import { English } from "./english";
 import { Finnish } from "./finnish";
 
@@ -11,7 +12,7 @@ interface Dictionary {
 }
 
 class Localize {
-  private dictionary: Dictionary;
+  public dictionary: Dictionary;
   private language: string;
 
   public constructor() {
@@ -19,7 +20,12 @@ class Localize {
       en: English,
       fi: Finnish
     };
-    this.language = "en";
+    const cookie = Cookies.get("language");
+    if (cookie !== undefined) {
+      this.setLanguage(cookie);
+    } else {
+      this.setLanguage("en");
+    }
   }
 
   public get(phrase: keyof Translation, params?: any): string {
@@ -33,7 +39,12 @@ class Localize {
   }
 
   public setLanguage(language: string): void {
-    this.language = language;
+    if (this.dictionary[language] === undefined) {
+      this.language = "en";
+    } else {
+      this.language = language;
+    }
+    Cookies.set("language", language);
   }
 }
 
