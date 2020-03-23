@@ -48,7 +48,7 @@ export class Trooper extends GameObject {
   }
 
   public move(cache: Cache, deltaTime: number): void {
-    const unitsPerSecond = 250 * SCALE_FACTOR;
+    const unitsPerSecond = 100 * SCALE_FACTOR;
     const multiplier = deltaTime / 1000;
     // const newX = this.x + Math.round(multiplier * unitsPerSecond);
     this.localX = this.localX + Math.round(multiplier * unitsPerSecond);

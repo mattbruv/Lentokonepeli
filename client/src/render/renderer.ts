@@ -17,6 +17,7 @@ import { PlayerSprite } from "./sprites/player";
 import { TrooperSprite } from "./sprites/trooper";
 import { Cache, CacheEntry } from "../../../dogfight/src/network/cache";
 import { TeamChooser } from "./objects/teamChooser";
+import { ClientMode } from "../types";
 
 /**
  * A class which renders the game world.
@@ -56,10 +57,10 @@ export class GameRenderer {
    */
   private debug: DebugView;
 
-  public sky: SkyBackground;
+  private sky: SkyBackground;
 
   private HUD: GameHud;
-  private teamChooser: TeamChooser;
+  public teamChooser: TeamChooser;
 
   public constructor(spritesheet: PIXI.Spritesheet) {
     this.spriteSheet = spritesheet;
@@ -78,8 +79,6 @@ export class GameRenderer {
 
     this.debug = new DebugView(this.pixiApp.renderer);
     this.debug.setEnabled(false);
-    //this.toggleDebugMode();
-    //this.toggleGrid();
 
     this.sky = new SkyBackground(this.spriteSheet);
     this.HUD = new GameHud(this.spriteSheet);
@@ -102,6 +101,10 @@ export class GameRenderer {
     this.pixiApp.stage.addChild(this.gameContainer);
 
     this.reset();
+  }
+
+  public setMode(mode: ClientMode): void {
+    this.teamChooser.setEnabled(mode === ClientMode.SelectTeam);
   }
 
   private reset(): void {

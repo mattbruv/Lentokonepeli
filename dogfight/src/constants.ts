@@ -1,5 +1,16 @@
 export const ROTATION_DIRECTIONS = 256;
 
+export enum InputKey {
+  Left,
+  Right,
+  Up,
+  Down,
+  Fire,
+  Bomb,
+  Jump,
+  Enter
+}
+
 export enum Team {
   Centrals,
   Allies,

@@ -2,11 +2,21 @@ import { spriteSheet } from "./render/textures";
 import { GameWorld } from "../../dogfight/src/world";
 import { GameRenderer } from "./render/renderer";
 import { CanvasEventHandler } from "./render/event";
-import { Cache } from "../../dogfight/src/network/cache";
 import { Localizer } from "./localization/localizer";
 import { Packet, PacketType } from "../../dogfight/src/network/types";
+import { pack, unpack } from "../../dogfight/src/network/packer";
+import { GameInput } from "./input";
+import { ClientMode, TeamSelect } from "./types";
+import { InputKey } from "../../dogfight/src/constants";
+
+const wssPath = "ws://" + location.host;
 
 export class GameClient {
+  /**
+   * WebSocket connection
+   */
+  private ws: WebSocket;
+
   /**
    * A local instance of the Dogfight Engine.
    * This is helpful for processing entity
@@ -24,8 +34,10 @@ export class GameClient {
 
   private canvasHandler: CanvasEventHandler;
 
-  private startTime = Date.now();
-  private lastTick: number = 0;
+  private input: GameInput;
+
+  private mode: ClientMode;
+  private teamSelection: TeamSelect;
 
   public constructor() {
     console.log("Initializing Game Client..");
@@ -38,6 +50,12 @@ export class GameClient {
     this.canvasHandler = new CanvasEventHandler(this.localRenderer);
     this.canvasHandler.addListeners();
 
+    // Add event listeners for input
+    this.input = new GameInput();
+    document.addEventListener("keydown", (event): void => {
+      this.keyDown(event);
+    });
+
     // center camera
     this.localRenderer.centerCamera(0, 0);
 
@@ -45,27 +63,53 @@ export class GameClient {
     const div = document.getElementById("app");
     div.appendChild(this.localRenderer.getView());
 
-    // get local engine state and pass it to renderer...
-    // const state = this.getState();
-    // this.localRenderer.renderState(state);
+    this.setMode(ClientMode.SelectTeam);
+    this.teamSelection = TeamSelect.Random;
+
+    // create connection to server.
+    this.ws = new WebSocket(wssPath);
+
+    this.ws.onopen = (): void => {
+      this.ws.send(pack({ type: PacketType.RequestFullSync }));
+    };
+
+    this.ws.onmessage = (event): void => {
+      const packet = unpack(event.data);
+      this.processPacket(packet);
+    };
   }
 
-  public loop(): void {
-    const currentTick = Date.now() - this.startTime;
-    const deltaTime = currentTick - this.lastTick;
-    // console.log(deltaTime, this.lastTick);
-    const updates = this.localWorld.tick(deltaTime);
-    // this.localRenderer.renderState(updates);
-    this.lastTick = currentTick;
-
-    window.requestAnimationFrame((): void => {
-      this.loop();
-    });
+  private setMode(mode: ClientMode): void {
+    this.mode = mode;
+    this.localRenderer.setMode(mode);
   }
 
-  public processPacket(packet: Packet): void {
+  private keyDown(event: KeyboardEvent): void {
+    if (!this.input.isGameKey(event)) {
+      return;
+    }
+    const key = this.input.getGameKey(event);
+    /*
+    if (this.mode === ClientMode.SelectTeam) {
+      let offset = 0;
+      if (key == InputKey.Left) {
+        offset = -1;
+      }
+      if (key == InputKey.Right) {
+        offset = 1;
+      }
+
+      const newSelection = (this.teamSelection + offset) % 3;
+      console.log(-1 % 3);
+      console.log(this.teamSelection, newSelection);
+      this.teamSelection = newSelection;
+      this.localRenderer.teamChooser.setSelection(newSelection);
+    }*/
+  }
+
+  private processPacket(packet: Packet): void {
     const type = packet.type;
-    console.log(packet.data);
+    //console.log(packet.data);
     if (type == PacketType.FullSync) {
       this.localRenderer.updateCache(packet.data);
       this.localRenderer.startGame();
