@@ -17,7 +17,7 @@ import { PlayerSprite } from "./sprites/player";
 import { TrooperSprite } from "./sprites/trooper";
 import { Cache, CacheEntry } from "../../../dogfight/src/network/cache";
 import { TeamChooser } from "./objects/teamChooser";
-import { ClientMode } from "../types";
+import { ClientMode, GameObjectIdentifier } from "../types";
 
 /**
  * A class which renders the game world.
@@ -27,7 +27,7 @@ export class GameRenderer {
   private spriteSheet: PIXI.Spritesheet;
 
   /** A JS container of all Game Objects and their Srite Objects */
-  private sprites: {};
+  private sprites = {};
 
   private pixiApp: PIXI.Application;
 
@@ -72,6 +72,12 @@ export class GameRenderer {
       antialias: true
     });
 
+    // Initialize sprite container
+    this.sprites = {};
+    for (const key in GameObjectType) {
+      this.sprites[key] = {};
+    }
+
     this.gameContainer = new PIXI.Container();
     this.worldContainer = new PIXI.Container();
     this.entityContainer = new PIXI.Container();
@@ -99,16 +105,10 @@ export class GameRenderer {
     this.gameContainer.addChild(this.teamChooser.container);
 
     this.pixiApp.stage.addChild(this.gameContainer);
-
-    this.reset();
   }
 
   public setMode(mode: ClientMode): void {
     this.teamChooser.setEnabled(mode === ClientMode.SelectTeam);
-  }
-
-  private reset(): void {
-    this.sprites = {};
   }
 
   public startGame(): void {
@@ -120,36 +120,17 @@ export class GameRenderer {
     this.teamChooser.updateText();
   }
 
-  public updateCache(cache: Cache): void {
-    for (const id in cache) {
-      this.updateCacheEntry(cache[id], id);
-    }
-  }
-
-  private updateCacheEntry(entry: CacheEntry, id: string): void {
-    const { type, ...data } = entry;
-    if (this.sprites[type] === undefined) {
-      this.sprites[type] = {};
-    }
-    // if the sprite doesn't exist, create it
-    // and add the containers.
+  public updateSprite(type: number, id: string, data: any): void {
     if (this.sprites[type][id] === undefined) {
       this.sprites[type][id] = this.createSprite(type);
       for (const container of this.sprites[type][id].renderables) {
         this.entityContainer.addChild(container);
       }
     }
-    const dataLength = Object.keys(data).length;
-    if (dataLength > 0) {
-      this.sprites[type][id].update(entry);
-    } else {
-      // if data is empty, that is a signal from the engine to delete the object.
-      this.deleteSprite(type, id);
-    }
-    // console.log(this.sprites[GameObjectType.Player]);
+    this.sprites[type][id].update(data);
   }
 
-  private deleteSprite(type: number, id: string): void {
+  public deleteSprite(type: number, id: string): void {
     const sprite: GameSprite = this.sprites[type][id];
     if (sprite === undefined) {
       console.log("Attempted to delete undefined sprite:", type, id);
@@ -158,7 +139,7 @@ export class GameRenderer {
     // Destroy all window setintervals, etc.
     sprite.destroy();
     for (const container of sprite.renderables) {
-      this.worldContainer.removeChild(container);
+      this.entityContainer.removeChild(container);
       container.destroy({ children: true });
     }
     for (const container of sprite.renderablesDebug) {
