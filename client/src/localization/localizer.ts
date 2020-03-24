@@ -5,6 +5,8 @@ import { Finnish } from "./finnish";
 export interface Translation {
   teamChooserTitle: string;
   teamChooserDescription: string;
+  planeAlbatrosName: string;
+  planeAlbatrosDescription: string;
 }
 
 interface Dictionary {

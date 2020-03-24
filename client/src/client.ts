@@ -8,8 +8,9 @@ import { GameInput } from "./input";
 import { ClientMode } from "./types";
 import { CacheEntry } from "../../dogfight/src/network/cache";
 import { GameObjectType } from "../../dogfight/src/object";
-import { TeamOption, TeamSelector } from "./teamSelector";
+import { TeamSelector } from "./teamSelector";
 import { Team } from "../../dogfight/src/constants";
+import { TakeoffSelector } from "./takeoffSelector";
 
 const wssPath = "ws://" + location.host;
 
@@ -29,10 +30,11 @@ export class GameClient {
 
   // Client UI Logic classes
   private teamSelector: TeamSelector;
+  private takeoffSelector: TakeoffSelector;
 
   private gameObjects = {};
 
-  private myPlayer = {
+  private playerInfo = {
     id: undefined,
     team: undefined
   };
@@ -52,6 +54,7 @@ export class GameClient {
 
     // instantiate client UI logic
     this.teamSelector = new TeamSelector();
+    this.takeoffSelector = new TakeoffSelector();
 
     // Add event listeners for input
     this.input = new GameInput();
@@ -87,9 +90,20 @@ export class GameClient {
 
   private setMode(mode: ClientMode): void {
     this.mode = mode;
-    this.renderer.teamChooser.setEnabled(mode == ClientMode.SelectTeam);
+    this.renderer.setMode(mode);
+    // this.renderer.teamChooser.setEnabled(mode == ClientMode.SelectTeam);
     if (this.mode == ClientMode.SelectTeam) {
-      this.renderer.teamChooser.setSelection(this.teamSelector.getSelection());
+      this.renderer.teamChooserUI.setSelection(
+        this.teamSelector.getSelection()
+      );
+      return;
+    }
+    if (this.mode == ClientMode.PreFlight) {
+      this.takeoffSelector.setTeam(this.playerInfo.team);
+      const plane = this.takeoffSelector.getPlaneSelection();
+      console.log(plane);
+
+      // set my player info
     }
   }
 
@@ -121,6 +135,11 @@ export class GameClient {
       this.processCache(data);
     }
     if (type == PacketType.AssignPlayer) {
+      console.log("Assigned as player", data.id, "team", Team[data.team]);
+      this.playerInfo = {
+        id: data.id,
+        team: data.team
+      };
       this.setMode(ClientMode.PreFlight);
     }
   }
@@ -143,6 +162,7 @@ export class GameClient {
     // create if not exists
     if (this.gameObjects[type][id] === undefined) {
       this.gameObjects[type][id] = {};
+      console.log("Create", GameObjectType[type], id);
     }
     const object = this.gameObjects[type][id];
 

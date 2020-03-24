@@ -5,5 +5,9 @@ export const English: Translation = {
   teamChooserDescription: `Central Powers or Allies.
 Both sides have their own unique plane selection,
 from which you can select after choosing your side.
-Middle selection assigns you randomly.`
+Middle selection assigns you randomly.`,
+  planeAlbatrosName: "Albatros D.II",
+  planeAlbatrosDescription: `line 1
+line 2
+line 3`
 };

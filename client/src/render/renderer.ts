@@ -15,8 +15,9 @@ import { HillSprite } from "./sprites/hill";
 import { RunwaySprite } from "./sprites/runway";
 import { PlayerSprite } from "./sprites/player";
 import { TrooperSprite } from "./sprites/trooper";
-import { TeamChooser } from "./objects/teamChooser";
+import { TeamChooserUI } from "./objects/teamChooserUI";
 import { ClientMode } from "../types";
+import { TakeoffSelectUI } from "./objects/takeoffSelectUI";
 
 /**
  * A class which renders the game world.
@@ -59,7 +60,10 @@ export class GameRenderer {
   private sky: SkyBackground;
 
   private HUD: GameHud;
-  public teamChooser: TeamChooser;
+
+  // UI Controllers
+  public teamChooserUI: TeamChooserUI;
+  public takeoffSelectUI: TakeoffSelectUI;
 
   public constructor(spritesheet: PIXI.Spritesheet) {
     this.spriteSheet = spritesheet;
@@ -87,7 +91,10 @@ export class GameRenderer {
 
     this.sky = new SkyBackground(this.spriteSheet);
     this.HUD = new GameHud(this.spriteSheet);
-    this.teamChooser = new TeamChooser(this.spriteSheet);
+
+    // Initialize UI
+    this.teamChooserUI = new TeamChooserUI(this.spriteSheet);
+    this.takeoffSelectUI = new TakeoffSelectUI(this.spriteSheet);
 
     // Setup pixi classes
     // Make the screen objects layerable.
@@ -101,22 +108,27 @@ export class GameRenderer {
     this.gameContainer.addChild(this.worldContainer);
     this.gameContainer.addChild(this.debug.gameContainer);
     this.gameContainer.addChild(this.HUD.container);
-    this.gameContainer.addChild(this.teamChooser.container);
+
+    // Add UI controllers
+    this.gameContainer.addChild(this.teamChooserUI.container);
+    this.gameContainer.addChild(this.takeoffSelectUI.container);
 
     this.pixiApp.stage.addChild(this.gameContainer);
   }
 
   public setMode(mode: ClientMode): void {
-    this.teamChooser.setEnabled(mode === ClientMode.SelectTeam);
+    this.teamChooserUI.setEnabled(mode === ClientMode.SelectTeam);
+    this.takeoffSelectUI.setEnabled(mode === ClientMode.PreFlight);
   }
 
   public startGame(): void {
-    this.teamChooser.setEnabled(true);
+    this.teamChooserUI.setEnabled(true);
   }
 
   // calls all objects with text so they can update their language.
   public updateLanguage(): void {
-    this.teamChooser.updateText();
+    this.teamChooserUI.updateText();
+    this.takeoffSelectUI.updateText();
   }
 
   public updateSprite(type: number, id: string, data: any): void {

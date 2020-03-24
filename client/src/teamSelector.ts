@@ -53,6 +53,6 @@ export class TeamSelector {
     }
     newSelection %= max + 1;
     this.selection = newSelection;
-    renderer.teamChooser.setSelection(this.selection);
+    renderer.teamChooserUI.setSelection(this.selection);
   }
 }

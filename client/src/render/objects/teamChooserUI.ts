@@ -6,7 +6,7 @@ import { TeamOption } from "../../teamSelector";
 const gap = 10;
 const borderSize = 3;
 
-export class TeamChooser {
+export class TeamChooserUI {
   public container: PIXI.Container;
 
   private enabled: boolean = false;
@@ -102,7 +102,7 @@ export class TeamChooser {
     this.setEnabled(false);
   }
 
-  public setSelection(team: TeamSelect): void {
+  public setSelection(team: TeamOption): void {
     const offsetX = gap * team + this.flagWidth * team;
     const x = this.flagContainer.x + offsetX - borderSize;
     const y = this.flagContainer.y - borderSize;
