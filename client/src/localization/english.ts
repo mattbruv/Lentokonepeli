@@ -10,12 +10,14 @@ Middle selection assigns you randomly.`,
   planeAlbatrosDescription: `line 1
 line 2
 line 3`,
-  planeFokkerName: "Fokker Dr.I",
-  planeFokkerDescription: `mother
-fokker`,
+  planeFokkerName: "Fokker DR.I",
+  planeFokkerDescription: `The legendary triplane.
+Very agile and can reach
+high heights.`,
   planeSopwithName: "Sopwith Camel",
-  planeSopwithDescription: `sop
-with`,
+  planeSopwithDescription: `Very agile.
+not recommended for
+beginner pilots.`,
   planeBristolName: "Bristol F.2b",
   planeBristolDescription: `bris
 tol`,

@@ -1,28 +1,41 @@
 import { Translation } from "./localizer";
 
+// Å, å
+// Ä, ä
+// Ö, ö
+
 export const Finnish: Translation = {
   teamChooserTitle: "Valitse kumpien puolella lennät:",
   teamChooserDescription: `keskusvaltojen vai ympärysvaltojen
 Kummallakin puolella on oma konevalikoimansa,
 josta saat puolen valittuasi valita koneesi.
 Keskimmäinen valinta arpoo puolesi`,
-  planeAlbatrosName: "Finnish Albatros D.II",
-  planeAlbatrosDescription: `line 1 finish
-line 2 finnish
-line 3 finish`,
-  planeFokkerName: "Fokker Dr.I",
-  planeFokkerDescription: `finnish
-fokker`,
+  planeAlbatrosName: "Albatros D.II",
+  planeAlbatrosDescription: `Konekiväärillä varustettu
+peruskone ilman erityisen
+hyviä tai huonoja puolia.
+Hyvä valinta aloittelijalle.`,
+  planeFokkerName: "Fokker DR.I",
+  planeFokkerDescription: `Legendaarinen kolmitaso.
+Erittäin kettärä ja myös
+mainio maksimilentokorkeus.`,
   planeSopwithName: "Sopwith Camel",
-  planeSopwithDescription: `finnish
-with`,
+  planeSopwithDescription: `Erittäin ketterä.
+ei suositella aloitteleville
+lentäjille.`,
   planeBristolName: "Bristol F.2b",
-  planeBristolDescription: `finnish
-tol`,
-  planeJunkersName: "Junkers JI",
-  planeJunkersDescription: `finnish
-ers`,
+  planeBristolDescription: `Sangen tulivoimaisella
+konekiväärillä varustettu
+kone. Hyvä valinta etenkin
+aloitteleville lentäjille.`,
+  planeJunkersName: "Junkers J.I",
+  planeJunkersDescription: `Konekiväärin lisäksi
+pommeilla varustettu,
+erittäin kestävä, mutta
+kömpelö kone.`,
   planeSalmsonName: "Salmson 2",
-  planeSalmsonDescription: `finnish
-2342kl3j43l`
+  planeSalmsonDescription: `Monipuolinen kaksitaso.
+Konekiväärin lisäksa pommit.
+Nopea ja vahvamoottorinen
+kone, joskaan ei ketterä.`
 };
