@@ -6,6 +6,9 @@ import { GameWorld } from "../dogfight/src/world";
 import { MAP_CLASSIC } from "../dogfight/src/maps/classic";
 import { pack, unpack } from "../dogfight/src/network/packer";
 import { PacketType, Packet } from "../dogfight/src/network/types";
+import { Player } from "../dogfight/src/objects/player";
+import { TeamOption } from "../client/src/teamSelector";
+import { Team } from "../dogfight/src/constants";
 
 const PORT = 3259;
 
@@ -49,8 +52,8 @@ setInterval(loop, 1000 / 30);
 
 wss.on("connection", (ws): void => {
   console.log("New connection!");
-  // Create this new player and add them to the game.
-  // const me = world.addPlayer();
+
+  let player: Player = undefined;
 
   ws.on("message", (message): void => {
     // parse into packet structure
@@ -63,12 +66,45 @@ wss.on("connection", (ws): void => {
       const state = world.getState();
       const data: Packet = { type: PacketType.FullSync, data: state };
       ws.send(pack(data));
+      return;
+    }
+
+    if (packet.type == PacketType.RequestJoinTeam) {
+      // Ignore this if we've already assigned them a player.
+      if (player !== undefined) {
+        return;
+      }
+      // make sure our data is valid
+      let selection = packet.data.team;
+      // validate selection
+      switch (selection) {
+        case TeamOption.Centrals:
+          selection = Team.Centrals;
+          break;
+        case TeamOption.Allies:
+          selection = Team.Allies;
+          break;
+        default:
+          selection = Math.random() < 0.5 ? Team.Centrals : Team.Allies;
+          break;
+      }
+      player = world.addPlayer(selection);
+      console.log("Created new Player: id", player.id, Team[player.team]);
+
+      const response: Packet = {
+        type: PacketType.AssignPlayer,
+        data: { id: player.id, team: player.team }
+      };
+      ws.send(pack(response));
+      return;
     }
   });
 
   ws.on("close", (): void => {
-    // world.removePlayer(me);
-    // console.log("Client disconnected: Player", me.id);
+    if (player !== undefined) {
+      world.removePlayer(player);
+      console.log("Client disconnected: Player", player.id);
+    }
   });
 });
 

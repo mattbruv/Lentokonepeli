@@ -5,9 +5,11 @@ import { Localizer } from "./localization/localizer";
 import { Packet, PacketType } from "../../dogfight/src/network/types";
 import { pack, unpack } from "../../dogfight/src/network/packer";
 import { GameInput } from "./input";
-import { ClientMode, TeamSelect, GameObjectIdentifier } from "./types";
+import { ClientMode } from "./types";
 import { CacheEntry } from "../../dogfight/src/network/cache";
 import { GameObjectType } from "../../dogfight/src/object";
+import { TeamOption, TeamSelector } from "./teamSelector";
+import { Team } from "../../dogfight/src/constants";
 
 const wssPath = "ws://" + location.host;
 
@@ -22,11 +24,20 @@ export class GameClient {
   private input: GameInput;
   private canvasHandler: CanvasEventHandler;
 
+  private loadedGame: boolean = false;
   private mode: ClientMode;
-  private teamSelection: TeamSelect;
+
+  // Client UI Logic classes
+  private teamSelector: TeamSelector;
 
   private gameObjects = {};
-  private watching = {
+
+  private myPlayer = {
+    id: undefined,
+    team: undefined
+  };
+
+  private followObject = {
     type: undefined,
     id: undefined
   };
@@ -39,6 +50,9 @@ export class GameClient {
     this.canvasHandler = new CanvasEventHandler(this.renderer);
     this.canvasHandler.addListeners();
 
+    // instantiate client UI logic
+    this.teamSelector = new TeamSelector();
+
     // Add event listeners for input
     this.input = new GameInput();
     document.addEventListener("keydown", (event): void => {
@@ -46,7 +60,7 @@ export class GameClient {
     });
 
     // center camera
-    this.renderer.centerCamera(0, 0);
+    this.renderer.centerCamera(0, 150);
 
     // Draw it to the screen
     const div = document.getElementById("app");
@@ -57,8 +71,6 @@ export class GameClient {
     for (const key in GameObjectType) {
       this.gameObjects[key] = {};
     }
-
-    this.teamSelection = TeamSelect.Random;
 
     // create connection to server.
     this.ws = new WebSocket(wssPath);
@@ -73,23 +85,43 @@ export class GameClient {
     };
   }
 
+  private setMode(mode: ClientMode): void {
+    this.mode = mode;
+    this.renderer.teamChooser.setEnabled(mode == ClientMode.SelectTeam);
+    if (this.mode == ClientMode.SelectTeam) {
+      this.renderer.teamChooser.setSelection(this.teamSelector.getSelection());
+    }
+  }
+
   private keyDown(event: KeyboardEvent): void {
     if (!this.input.isGameKey(event)) {
       return;
     }
     const key = this.input.getGameKey(event);
+
+    switch (this.mode) {
+      case ClientMode.SelectTeam: {
+        this.teamSelector.processInput(key, this.renderer, this.ws);
+        break;
+      }
+    }
   }
 
   private processPacket(packet: Packet): void {
     const type = packet.type;
+    const data = packet.data;
     if (type == PacketType.FullSync) {
-      // this.localRenderer.updateCache(packet.data);
-      // this.localRenderer.startGame();
-      this.processCache(packet.data);
+      this.processCache(data);
+      if (this.loadedGame == false) {
+        this.loadedGame = true;
+        this.setMode(ClientMode.SelectTeam);
+      }
     }
     if (type == PacketType.ChangeSync) {
-      this.processCache(packet.data);
-      // this.localRenderer.updateCache(packet.data);
+      this.processCache(data);
+    }
+    if (type == PacketType.AssignPlayer) {
+      this.setMode(ClientMode.PreFlight);
     }
   }
 
@@ -121,18 +153,6 @@ export class GameClient {
     }
 
     this.renderer.updateSprite(type, id, data);
-
-    if (type == GameObjectType.Trooper) {
-      // this.watching = { type, id };
-    }
-
-    /*
-    if (this.watching.id == id) {
-      const { x, y } = this.gameObjects[type][id];
-      if (x !== undefined && y !== undefined) {
-        this.renderer.centerCamera(x, y);
-      }
-    }*/
   }
 
   private deleteObject(type: number, id: string): void {

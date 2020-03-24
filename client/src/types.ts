@@ -4,9 +4,3 @@ export enum ClientMode {
   Playing,
   Specating
 } //
-
-export enum TeamSelect {
-  Centrals,
-  Random,
-  Allies
-}

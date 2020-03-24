@@ -15,9 +15,8 @@ import { HillSprite } from "./sprites/hill";
 import { RunwaySprite } from "./sprites/runway";
 import { PlayerSprite } from "./sprites/player";
 import { TrooperSprite } from "./sprites/trooper";
-import { Cache, CacheEntry } from "../../../dogfight/src/network/cache";
 import { TeamChooser } from "./objects/teamChooser";
-import { ClientMode, GameObjectIdentifier } from "../types";
+import { ClientMode } from "../types";
 
 /**
  * A class which renders the game world.
@@ -239,7 +238,11 @@ export class GameRenderer {
    * Coordinates must be in game world space.
    */
   public centerCamera(x: number, y: number): void {
-    const canvasHeight = this.pixiApp.screen.height;
+    let canvasHeight = this.pixiApp.screen.height;
+    // account for HUD height
+    if (this.HUD.isEnabled()) {
+      canvasHeight -= this.HUD.getPanelHeight();
+    }
     const canvasWidth = this.pixiApp.screen.width;
     const pos = toPixiCoords({ x: -x, y: -y });
     pos.x += Math.round(canvasWidth / 2);

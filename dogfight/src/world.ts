@@ -9,6 +9,7 @@ import { Tower } from "./objects/tower";
 import { Trooper, TrooperState } from "./objects/trooper";
 import { Water } from "./objects/water";
 import { GameObject } from "./object";
+import { Team } from "./constants";
 
 /**
  * The Game World contains all entites,
@@ -60,6 +61,7 @@ export class GameWorld {
    * @param timestep Number of milliseconds to advance simulation
    */
   public tick(deltaTime: number): Cache {
+    /*
     if (this.troopers.length == 0) {
       const man = new Trooper(this.nextID(), this.cache);
       man.setPos(this.cache, 0, 100);
@@ -72,6 +74,7 @@ export class GameWorld {
         this.removeObject(this.troopers, trooper);
       }
     }
+    */
     return this.cache;
   }
 
@@ -79,8 +82,9 @@ export class GameWorld {
    * Adds a player to the game,
    * and returns the information.
    */
-  public addPlayer(): Player {
+  public addPlayer(team: Team): Player {
     const player = new Player(this.nextID(), this.cache);
+    player.set(this.cache, "team", team);
     this.addObject(this.players, player);
     return player;
   }

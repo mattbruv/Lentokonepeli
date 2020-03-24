@@ -18,7 +18,11 @@ export class GameHud {
 
     this.container.position.y = GameScreen.Height - tex.height;
 
-    this.setEnabled(false);
+    this.setEnabled(true);
+  }
+
+  public getPanelHeight(): number {
+    return this.panel.height;
   }
 
   public isEnabled(): boolean {
@@ -27,5 +31,6 @@ export class GameHud {
 
   public setEnabled(active: boolean): void {
     this.enabled = active;
+    this.container.visible = this.enabled;
   }
 }

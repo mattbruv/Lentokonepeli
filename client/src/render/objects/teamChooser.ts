@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { GameScreen } from "../constants";
 import { Localizer } from "../../localization/localizer";
-import { TeamSelect } from "../../types";
+import { TeamOption } from "../../teamSelector";
 
 const gap = 10;
 const borderSize = 3;
@@ -83,7 +83,7 @@ export class TeamChooser {
     );
     this.flagContainer.y = 235;
 
-    this.setSelection(TeamSelect.Random);
+    this.setSelection(TeamOption.Random);
 
     this.updateText();
 
