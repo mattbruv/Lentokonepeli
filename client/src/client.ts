@@ -101,9 +101,7 @@ export class GameClient {
     if (this.mode == ClientMode.PreFlight) {
       this.takeoffSelector.setTeam(this.playerInfo.team);
       const plane = this.takeoffSelector.getPlaneSelection();
-      console.log(plane);
-
-      // set my player info
+      this.renderer.takeoffSelectUI.setPlane(plane);
     }
   }
 
@@ -116,6 +114,10 @@ export class GameClient {
     switch (this.mode) {
       case ClientMode.SelectTeam: {
         this.teamSelector.processInput(key, this.renderer, this.ws);
+        break;
+      }
+      case ClientMode.PreFlight: {
+        this.takeoffSelector.processInput(key, this.renderer, this.ws);
         break;
       }
     }

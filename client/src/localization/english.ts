@@ -9,5 +9,20 @@ Middle selection assigns you randomly.`,
   planeAlbatrosName: "Albatros D.II",
   planeAlbatrosDescription: `line 1
 line 2
-line 3`
+line 3`,
+  planeFokkerName: "Fokker Dr.I",
+  planeFokkerDescription: `mother
+fokker`,
+  planeSopwithName: "Sopwith Camel",
+  planeSopwithDescription: `sop
+with`,
+  planeBristolName: "Bristol F.2b",
+  planeBristolDescription: `bris
+tol`,
+  planeJunkersName: "Junkers JI",
+  planeJunkersDescription: `junk
+ers`,
+  planeSalmsonName: "Salmson 2",
+  planeSalmsonDescription: `almsons
+2342kl3j43l`
 };

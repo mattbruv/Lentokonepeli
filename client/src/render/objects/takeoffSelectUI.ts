@@ -1,6 +1,18 @@
 import * as PIXI from "pixi.js";
-import { Localizer } from "../../localization/localizer";
+import { Localizer, Translation } from "../../localization/localizer";
 import { GameScreen } from "../constants";
+import { PlaneType } from "../../../../dogfight/src/objects/plane";
+
+const planeImages = {
+  [PlaneType.Fokker]: "pic_plane6.gif",
+  [PlaneType.Sopwith]: "pic_plane9.gif",
+
+  [PlaneType.Albatros]: "pic_plane4.gif",
+  [PlaneType.Bristol]: "pic_plane7.gif",
+
+  [PlaneType.Junkers]: "pic_plane5.gif",
+  [PlaneType.Salmson]: "pic_plane8.gif"
+};
 
 export class TakeoffSelectUI {
   public container: PIXI.Container;
@@ -15,6 +27,8 @@ export class TakeoffSelectUI {
   private bigText: PIXI.Text;
   private smallText: PIXI.Text;
 
+  private planeType: PlaneType;
+
   public constructor(spritesheet: PIXI.Spritesheet) {
     this.spritesheet = spritesheet;
     this.container = new PIXI.Container();
@@ -23,6 +37,8 @@ export class TakeoffSelectUI {
     const planeTex = spritesheet.textures["pic_plane4.gif"];
     this.infoBox = new PIXI.Sprite(infoTex);
     this.planeImage = new PIXI.Sprite(planeTex);
+
+    this.planeType = PlaneType.Albatros;
 
     this.bigText = new PIXI.Text("", {
       fontSize: 20,
@@ -61,13 +77,18 @@ export class TakeoffSelectUI {
     this.setEnabled(false);
   }
 
-  public setSelection(): void {
-    // TODO
+  public setPlane(planeType: PlaneType): void {
+    this.planeType = planeType;
+    this.planeImage.texture = this.spritesheet.textures[planeImages[planeType]];
+    this.updateText();
   }
 
   public updateText(): void {
-    const title = Localizer.get("planeAlbatrosName");
-    const desc = Localizer.get("planeAlbatrosDescription");
+    const name = PlaneType[this.planeType];
+    const planeTitle = `plane${name}Name`;
+    const planeDesc = `plane${name}Description`;
+    const title = Localizer.get(planeTitle as keyof Translation);
+    const desc = Localizer.get(planeDesc as keyof Translation);
     this.bigText.text = title;
     this.smallText.text = desc;
   }

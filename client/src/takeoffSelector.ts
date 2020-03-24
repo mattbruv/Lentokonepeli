@@ -58,16 +58,24 @@ export class TakeoffSelector {
       websocket.send(pack(packet));
       return;
     }
-    if (key == InputKey.Left || key == InputKey.Up) {
-      // this.changeSelection(-1, renderer);
+    if (key == InputKey.Up) {
+      this.changeSelection(-1, renderer);
       return;
     }
-    if (key == InputKey.Right || key == InputKey.Down) {
-      // this.changeSelection(1, renderer);
+    if (key == InputKey.Down) {
+      this.changeSelection(1, renderer);
     }
   }
 
-  private changeSelection(renderer: GameRenderer): void {
-    // renderer.teamChooser.setSelection(this.selection);
+  private changeSelection(offset: number, renderer: GameRenderer): void {
+    let newIndex = this.index + offset;
+    if (newIndex < 0) {
+      newIndex = 2;
+    } else if (newIndex > 2) {
+      newIndex = 0;
+    }
+    this.index = newIndex;
+    this.setPlane(newIndex);
+    renderer.takeoffSelectUI.setPlane(this.planeSelection);
   }
 }
