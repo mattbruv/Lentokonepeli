@@ -1,20 +1,30 @@
 import * as PIXI from "pixi.js";
 import { GameScreen } from "../constants";
+import { Radar } from "./radar";
 
 export class GameHud {
   public container: PIXI.Container;
 
   private enabled: boolean = false;
 
-  private panel: PIXI.Sprite;
   private spritesheet: PIXI.Spritesheet;
+
+  private panel: PIXI.Sprite;
+
+  // game components
+  public radar: Radar;
 
   public constructor(spritesheet: PIXI.Spritesheet) {
     this.spritesheet = spritesheet;
     this.container = new PIXI.Container();
+
+    // init radar
+    this.radar = new Radar(spritesheet);
+
     const tex = spritesheet.textures["metalpanel.jpg"];
     this.panel = new PIXI.Sprite(tex);
     this.container.addChild(this.panel);
+    this.container.addChild(this.radar.container);
 
     this.container.position.y = GameScreen.Height - tex.height;
 

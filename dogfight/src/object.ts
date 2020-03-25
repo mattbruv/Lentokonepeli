@@ -13,6 +13,7 @@ export enum GameObjectType {
   Flag,
   ControlTower,
   Hill,
+  Plane,
   Trooper,
   Player
 }
