@@ -1,6 +1,7 @@
-import { Translation } from "./localizer";
+import { Translation } from "./translation";
 
 export const English: Translation = {
+  gameName: "Dogfight",
   teamChooserTitle: "Choose your team:",
   teamChooserDescription: `Central Powers or Allies.
 Both sides have their own unique plane selection,

@@ -1,10 +1,11 @@
-import { Translation } from "./localizer";
+import { Translation } from "./translation";
 
 // Å, å
 // Ä, ä
 // Ö, ö
 
 export const Finnish: Translation = {
+  gameName: "Lentokonepeli",
   teamChooserTitle: "Valitse kumpien puolella lennät:",
   teamChooserDescription: `keskusvaltojen vai ympärysvaltojen
 Kummallakin puolella on oma konevalikoimansa,

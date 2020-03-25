@@ -75,6 +75,9 @@ export class GameClient {
       this.gameObjects[key] = {};
     }
 
+    // update language
+    this.updateLanguage(Localizer.getLanguage());
+
     // create connection to server.
     this.ws = new WebSocket(wssPath);
 
@@ -100,6 +103,8 @@ export class GameClient {
     }
     if (this.mode == ClientMode.PreFlight) {
       this.takeoffSelector.setTeam(this.playerInfo.team);
+      const runways = this.gameObjects[GameObjectType.Runway];
+      this.takeoffSelector.updateRunways(runways, this.renderer);
       const plane = this.takeoffSelector.getPlaneSelection();
       this.renderer.takeoffSelectUI.setPlane(plane);
     }
@@ -117,6 +122,8 @@ export class GameClient {
         break;
       }
       case ClientMode.PreFlight: {
+        const runways = this.gameObjects[GameObjectType.Runway];
+        this.takeoffSelector.updateRunways(runways, this.renderer);
         this.takeoffSelector.processInput(key, this.renderer, this.ws);
         break;
       }
@@ -185,6 +192,8 @@ export class GameClient {
   public updateLanguage(language: string): void {
     console.log("Changing language to", language);
     Localizer.setLanguage(language);
+    // update strings.
     this.renderer.updateLanguage();
+    document.title = Localizer.get("gameName");
   }
 }

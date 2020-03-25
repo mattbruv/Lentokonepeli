@@ -1,29 +1,7 @@
 import Cookies from "js-cookie";
 import { English } from "./english";
 import { Finnish } from "./finnish";
-
-export interface Translation {
-  teamChooserTitle: string;
-  teamChooserDescription: string;
-
-  planeAlbatrosName: string;
-  planeAlbatrosDescription: string;
-
-  planeSopwithName: string;
-  planeSopwithDescription: string;
-
-  planeFokkerName: string;
-  planeFokkerDescription: string;
-
-  planeBristolName: string;
-  planeBristolDescription: string;
-
-  planeJunkersName: string;
-  planeJunkersDescription: string;
-
-  planeSalmsonName: string;
-  planeSalmsonDescription: string;
-}
+import { Translation } from "./translation";
 
 interface Dictionary {
   [key: string]: Translation;
@@ -54,6 +32,10 @@ class Localize {
       }
     }
     return str;
+  }
+
+  public getLanguage(): string {
+    return this.language;
   }
 
   public setLanguage(language: string): void {
