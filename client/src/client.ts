@@ -11,6 +11,7 @@ import { GameObjectType } from "../../dogfight/src/object";
 import { TeamSelector } from "./teamSelector";
 import { Team } from "../../dogfight/src/constants";
 import { TakeoffSelector } from "./takeoffSelector";
+import { radarObjects } from "./render/objects/radar";
 
 const wssPath = "ws://" + location.host;
 
@@ -182,6 +183,11 @@ export class GameClient {
     }
 
     this.renderer.updateSprite(type, id, data);
+
+    // check if this changes our radar, if so, update it too.
+    if (radarObjects.includes(type)) {
+      this.renderer.HUD.radar.refreshRadar(this.gameObjects);
+    }
   }
 
   private deleteObject(type: number, id: string): void {

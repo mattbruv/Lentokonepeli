@@ -59,7 +59,7 @@ export class GameRenderer {
 
   private sky: SkyBackground;
 
-  private HUD: GameHud;
+  public HUD: GameHud;
 
   // UI Controllers
   public teamChooserUI: TeamChooserUI;
