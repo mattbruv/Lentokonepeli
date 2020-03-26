@@ -1,7 +1,11 @@
 import * as PIXI from "pixi.js";
 import { GameObjectType } from "../../../../dogfight/src/object";
+import { Team } from "../../../../dogfight/src/constants";
 
 const BackgroundColor = 0xc7d3df;
+
+export const RADAR_WIDTH = 208;
+export const RADAR_HEIGHT = 104;
 
 export const radarObjects = [
   GameObjectType.Ground,
@@ -9,6 +13,10 @@ export const radarObjects = [
   GameObjectType.Plane,
   GameObjectType.Trooper
 ];
+
+const ENEMY_COLOR = 0xff0000;
+const TEAM_COLOR = 0x0000ff;
+const NEUTRAL_COLOR = 0xffffff;
 
 export class Radar {
   public container: PIXI.Container;
@@ -18,7 +26,10 @@ export class Radar {
   private background: PIXI.Graphics;
   private radarGraphics: PIXI.Graphics;
 
+  private myTeam: Team;
+
   public constructor(spritesheet: PIXI.Spritesheet) {
+    this.setTeam(Team.Spectator);
     this.spritesheet = spritesheet;
     this.container = new PIXI.Container();
 
@@ -31,10 +42,18 @@ export class Radar {
 
     // offset the container so the radar is in the right spot
     // this.radar.setBounds(425, 26, 208, 104);
-    // this.container.position.set(425, 26);
+    const offsetX = 425;
+    const offsetY = 26;
+    const halfX = Math.round(RADAR_WIDTH / 2);
+    const halfY = Math.round(RADAR_HEIGHT / 2);
+    this.container.position.set(offsetX + halfX, offsetY + halfY);
 
     // this.container.addChild(this.background);
     this.container.addChild(this.radarGraphics);
+  }
+
+  public setTeam(newTeam: Team): void {
+    this.myTeam = newTeam;
   }
 
   public refreshRadar(gameObjects: any): void {
@@ -43,24 +62,53 @@ export class Radar {
     for (const id in grounds) {
       this.renderGround(grounds[id]);
     }
+    const runways = gameObjects[GameObjectType.Runway];
+    for (const id in runways) {
+      this.renderRunway(runways[id]);
+    }
+    const troopers = gameObjects[GameObjectType.Trooper];
+    for (const id in troopers) {
+      this.renderObject(troopers[id]);
+    }
   }
 
-  public renderGround(ground: any): void {
-    /*
-      width is 20x smaller than actual size?
-      height is 10x smaller?
+  private renderObject(obj: any): void {
+    const startX = Math.round((obj.x * RADAR_HEIGHT) / 1000) - 1;
+    const startY = Math.round((obj.y * -1 * RADAR_HEIGHT) / 1000) - 1;
+    let color;
+    if (this.myTeam == Team.Spectator || obj.team == Team.Spectator) {
+      color = NEUTRAL_COLOR;
+    } else {
+      if (obj.team == this.myTeam) {
+        color = TEAM_COLOR;
+      } else {
+        color = ENEMY_COLOR;
+      }
+    }
+    this.radarGraphics.beginFill(color);
+    this.radarGraphics.drawRect(startX, startY, 3, 3);
+    this.radarGraphics.endFill();
+  }
 
-    */
-    const scaleWidth = 10;
-    const scaleHeight = 5;
-    const { x, y, width } = ground;
-    const fromX = 0; //Math.round(-(width / 2) / scaleWidth) + x;
-    const fromY = y;
-    const lineWidth = Math.round(width / scaleWidth);
-    console.log(fromX, fromY, lineWidth, 1);
+  private renderRunway(runway: any): void {
+    if (runway.health <= 0) {
+      return;
+    }
+    const startX = Math.round((runway.x * RADAR_HEIGHT) / 1000) - 1;
+    const startY = Math.round((runway.y * -1 * RADAR_HEIGHT) / 1000) - 1;
+    this.radarGraphics.beginFill(0xffffff);
+    this.radarGraphics.drawRect(startX, startY, 3, 3);
+    this.radarGraphics.endFill();
+  }
 
+  private renderGround(ground: any): void {
+    const startX = Math.round(
+      ((-Math.round(ground.width / 2) + ground.x) * RADAR_HEIGHT) / 1000
+    );
+    const startY = Math.round((ground.y * -1 * RADAR_HEIGHT) / 1000);
+    const rGroundWidth = Math.round((ground.width * RADAR_HEIGHT) / 1000);
     this.radarGraphics.beginFill(0x0);
-    this.radarGraphics.drawRect(fromX, fromY, lineWidth, 2);
+    this.radarGraphics.drawRect(startX, startY, rGroundWidth, 2);
     this.radarGraphics.endFill();
   }
 }

@@ -151,6 +151,7 @@ export class GameClient {
         team: data.team
       };
       this.setMode(ClientMode.PreFlight);
+      this.renderer.HUD.radar.setTeam(data.team);
     }
   }
 
