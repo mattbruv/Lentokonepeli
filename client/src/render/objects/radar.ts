@@ -7,6 +7,13 @@ const BackgroundColor = 0xc7d3df;
 export const RADAR_WIDTH = 208;
 export const RADAR_HEIGHT = 104;
 
+const offsetX = 425;
+const offsetY = 26;
+const halfX = Math.round(RADAR_WIDTH / 2);
+const halfY = Math.round(RADAR_HEIGHT / 2);
+const centerX = halfX + offsetX;
+const centerY = halfY + offsetY;
+
 export const radarObjects = [
   GameObjectType.Ground,
   GameObjectType.Runway,
@@ -24,6 +31,7 @@ export class Radar {
   private spritesheet: PIXI.Spritesheet;
 
   private background: PIXI.Graphics;
+  private mask: PIXI.Graphics;
   private radarGraphics: PIXI.Graphics;
 
   private myTeam: Team;
@@ -35,21 +43,34 @@ export class Radar {
 
     this.background = new PIXI.Graphics();
     this.radarGraphics = new PIXI.Graphics();
+    this.mask = new PIXI.Graphics();
 
     this.background.beginFill(BackgroundColor);
-    this.background.drawRect(0, 0, 208, 104);
+    // this.background.beginFill(0xff00ff);
+    this.background.drawRect(0, 0, RADAR_WIDTH, RADAR_HEIGHT);
     this.background.endFill();
+
+    this.mask.beginFill(0xff00ff);
+    this.mask.drawRect(0, 0, RADAR_WIDTH, RADAR_HEIGHT);
+    this.mask.endFill();
 
     // offset the container so the radar is in the right spot
     // this.radar.setBounds(425, 26, 208, 104);
-    const offsetX = 425;
-    const offsetY = 26;
-    const halfX = Math.round(RADAR_WIDTH / 2);
-    const halfY = Math.round(RADAR_HEIGHT / 2);
-    this.container.position.set(offsetX + halfX, offsetY + halfY);
+    this.container.position.set(centerX, centerY);
+    this.background.position.set(-halfX, -halfY);
+    this.mask.position.set(-halfX, -halfY);
 
     // this.container.addChild(this.background);
+    this.container.addChild(this.background);
     this.container.addChild(this.radarGraphics);
+    this.container.addChild(this.mask);
+    this.radarGraphics.mask = this.mask;
+  }
+
+  public centerCamera(x: number, y: number): void {
+    const radarX = Math.round((x * -1 * RADAR_HEIGHT) / 1000);
+    const radarY = Math.round((y * RADAR_HEIGHT) / 1000);
+    this.radarGraphics.position.set(radarX, radarY);
   }
 
   public setTeam(newTeam: Team): void {

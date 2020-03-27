@@ -254,6 +254,7 @@ export class GameRenderer {
     // account for HUD height
     if (this.HUD.isEnabled()) {
       canvasHeight -= this.HUD.getPanelHeight();
+      this.HUD.radar.centerCamera(x, y);
     }
     const canvasWidth = this.pixiApp.screen.width;
     const pos = toPixiCoords({ x: -x, y: -y });
