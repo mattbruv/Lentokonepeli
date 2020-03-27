@@ -11,6 +11,15 @@ export enum PlaneType {
   Sopwith
 }
 
+interface TeamPlanes {
+  [key: number]: PlaneType[];
+}
+
+export const teamPlanes: TeamPlanes = {
+  [Team.Centrals]: [PlaneType.Albatros, PlaneType.Fokker, PlaneType.Junkers],
+  [Team.Allies]: [PlaneType.Bristol, PlaneType.Sopwith, PlaneType.Salmson]
+};
+
 export class Plane extends GameObject {
   public type = GameObjectType.Plane;
 
@@ -19,8 +28,9 @@ export class Plane extends GameObject {
   public x: number;
   public y: number;
 
-  public planeType: PlaneType;
   public team: Team;
+
+  public planeType: PlaneType;
   public health: number;
   public direction: number;
   public flipped: boolean;
@@ -61,8 +71,7 @@ export class Plane extends GameObject {
       flipped: this.flipped,
       direction: this.direction,
       health: this.health,
-      planeType: this.planeType,
-      team: this.team
+      planeType: this.planeType
     };
   }
 }

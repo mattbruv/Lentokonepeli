@@ -41,7 +41,7 @@ export class GameClient {
   };
 
   private followObject = {
-    type: undefined,
+    type: GameObjectType.None,
     id: undefined
   };
 
@@ -108,6 +108,9 @@ export class GameClient {
       this.takeoffSelector.updateRunways(runways, this.renderer);
       const plane = this.takeoffSelector.getPlaneSelection();
       this.renderer.takeoffSelectUI.setPlane(plane);
+    }
+    if (this.mode == ClientMode.Playing) {
+      console.log("you are playing now!");
     }
   }
 
@@ -188,6 +191,26 @@ export class GameClient {
     // check if this changes our radar, if so, update it too.
     if (radarObjects.includes(type)) {
       this.renderer.HUD.radar.refreshRadar(this.gameObjects);
+    }
+
+    // check if change to our player or followobject
+    if (type == GameObjectType.Player && this.playerInfo.id == id) {
+      // set following
+      this.followObject = {
+        type: object["controlType"],
+        id: object["controlID"]
+      };
+      if (this.followObject.type !== GameObjectType.None) {
+        this.setMode(ClientMode.Playing);
+      } else {
+        this.setMode(ClientMode.PreFlight);
+      }
+    }
+    if (type == this.followObject.type && this.followObject.id == id) {
+      const { x, y } = object;
+      if (x !== undefined && y !== undefined) {
+        this.renderer.centerCamera(x, y);
+      }
     }
   }
 

@@ -6,7 +6,7 @@ import { Vec2d } from "../../../dogfight/src/physics/vector";
 import { toPixiCoords } from "./coords";
 import { SkyBackground } from "./objects/sky";
 import { GameHud } from "./objects/hud";
-import { GameObjectType } from "../../../dogfight/src/object";
+import { GameObjectType, GameObject } from "../../../dogfight/src/object";
 import { FlagSprite } from "./sprites/flag";
 import { GroundSprite } from "./sprites/ground";
 import { WaterSprite } from "./sprites/water";
@@ -18,6 +18,7 @@ import { TrooperSprite } from "./sprites/trooper";
 import { TeamChooserUI } from "./objects/teamChooserUI";
 import { ClientMode } from "../types";
 import { TakeoffSelectUI } from "./objects/takeoffSelectUI";
+import { PlaneSprite } from "./sprites/plane";
 
 /**
  * A class which renders the game world.
@@ -137,6 +138,9 @@ export class GameRenderer {
       for (const container of this.sprites[type][id].renderables) {
         this.entityContainer.addChild(container);
       }
+      if (type == GameObjectType.Plane) {
+        console.log(data);
+      }
     }
     this.sprites[type][id].update(data);
   }
@@ -178,6 +182,8 @@ export class GameRenderer {
         return new PlayerSprite(this.spriteSheet);
       case GameObjectType.Trooper:
         return new TrooperSprite(this.spriteSheet);
+      case GameObjectType.Plane:
+        return new PlaneSprite(this.spriteSheet);
       default:
         console.log(
           "ERROR: Failed to create undefined object sprite:",

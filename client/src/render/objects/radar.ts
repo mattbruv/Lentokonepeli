@@ -91,6 +91,10 @@ export class Radar {
     for (const id in troopers) {
       this.renderObject(troopers[id]);
     }
+    const planes = gameObjects[GameObjectType.Plane];
+    for (const id in planes) {
+      this.renderObject(planes[id]);
+    }
   }
 
   private renderObject(obj: any): void {

@@ -130,7 +130,7 @@ export class TakeoffSelector {
         type: PacketType.RequestTakeoff,
         data: {
           plane: this.planeSelection,
-          runway: this.selectedRunway
+          runway: parseInt(this.selectedRunway)
         }
       };
       websocket.send(pack(packet));

@@ -8,8 +8,10 @@ import { Runway } from "./objects/runway";
 import { Tower } from "./objects/tower";
 import { Trooper, TrooperState } from "./objects/trooper";
 import { Water } from "./objects/water";
-import { GameObject } from "./object";
+import { GameObject, GameObjectType } from "./object";
 import { Team } from "./constants";
+import { TakeoffRequest, TakeoffEntry } from "./takeoff";
+import { teamPlanes, Plane } from "./objects/plane";
 
 /**
  * The Game World contains all entites,
@@ -19,14 +21,18 @@ export class GameWorld {
   // A cache of changes to send, refreshed on every tick.
   private cache: Cache = {};
 
+  // A queue of takeoff requests to be processed.
+  private takeoffQueue: TakeoffEntry[];
+
   private players: Player[];
   private flags: Flag[];
   private grounds: Ground[];
   private hills: Hill[];
   private runways: Runway[];
   private towers: Tower[];
-  private troopers: Trooper[];
   private waters: Water[];
+  private planes: Plane[];
+  private troopers: Trooper[];
 
   // Next available ID, incremented by 1.
   // Always counts up, never resets.
@@ -42,6 +48,8 @@ export class GameWorld {
 
   private resetWorld(): void {
     this.clearCache();
+    this.takeoffQueue = [];
+
     this.players = [];
     this.flags = [];
     this.grounds = [];
@@ -50,6 +58,7 @@ export class GameWorld {
     this.towers = [];
     this.troopers = [];
     this.waters = [];
+    this.planes = [];
   }
 
   /**
@@ -61,22 +70,54 @@ export class GameWorld {
    * @param timestep Number of milliseconds to advance simulation
    */
   public tick(deltaTime: number): Cache {
-    /*
-    if (this.troopers.length == 0) {
-      const man = new Trooper(this.nextID(), this.cache);
-      man.setPos(this.cache, 0, 100);
-      man.set(this.cache, "state", TrooperState.Parachuting);
-      man.set(this.cache, "team", Team.Centrals);
-      this.addObject(this.troopers, man);
-    }
-    for (const trooper of this.troopers) {
-      trooper.move(this.cache, deltaTime);
-      if (trooper.x > 1596) {
-        this.removeObject(this.troopers, trooper);
-      }
-    }
-    */
+    this.processTakeoffs();
     return this.cache;
+  }
+
+  private processTakeoffs(): void {
+    // console.log(this.takeoffQueue);
+    for (const takeoff of this.takeoffQueue) {
+      this.doTakeoff(takeoff);
+    }
+    this.takeoffQueue = [];
+  }
+
+  private doTakeoff(takeoff: TakeoffEntry): void {
+    console.log(takeoff);
+    // test if player exists
+    const playerIndex = this.getObjectIndex(this.players, takeoff.playerID);
+    if (playerIndex < 0) {
+      return;
+    }
+    const player = this.players[playerIndex];
+    // make sure he's not controlling anything
+    if (player.controlType !== GameObjectType.None) {
+      return;
+    }
+    const runwayIndex = this.getObjectIndex(
+      this.runways,
+      takeoff.request.runway
+    );
+    // test if runway exists
+    if (runwayIndex < 0) {
+      return;
+    }
+    // make sure runway isn't dead
+    const runway = this.runways[runwayIndex];
+    if (runway.health <= 0) {
+      return;
+    }
+    // create plane
+    const plane = new Plane(
+      this.nextID(),
+      this.cache,
+      takeoff.request.plane,
+      player.team
+    );
+    plane.setPos(this.cache, runway.x, 200);
+    this.planes.push(plane);
+    // assing plane to player
+    player.setControl(this.cache, plane.type, plane.id);
   }
 
   /**
@@ -154,6 +195,22 @@ export class GameWorld {
 
   public nextID(): number {
     return this.idCounter++;
+  }
+
+  public requestTakeoff(player: Player, takeoffRequest: TakeoffRequest): void {
+    const team = player.team;
+    const { plane, runway } = takeoffRequest;
+    if (!teamPlanes[team].includes(plane)) {
+      return;
+    }
+    const runwayID = this.getObjectIndex(this.runways, runway);
+    // if runway exists, add request to queue to be processed.
+    if (runwayID >= 0) {
+      this.takeoffQueue.push({
+        playerID: player.id,
+        request: takeoffRequest
+      });
+    }
   }
 
   public loadMap(map: GameMap): void {

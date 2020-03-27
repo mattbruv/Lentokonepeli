@@ -8,7 +8,8 @@ export enum DrawLayer {
   Flag = -70,
   ControlTower = -60,
   Ground = -50,
-  RunwayBack = -1,
+  RunwayBack = -10,
+  Plane = -5,
   Runway = 0,
   Trooper = 5,
   Player = 100

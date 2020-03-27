@@ -7,6 +7,7 @@ import { Cache, CacheEntry } from "./network/cache";
  * for game information.
  */
 export enum GameObjectType {
+  None,
   Ground,
   Water,
   Runway,
