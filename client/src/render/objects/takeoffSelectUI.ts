@@ -1,7 +1,8 @@
 import * as PIXI from "pixi.js";
-import { Localizer, Translation } from "../../localization/localizer";
+import { Localizer } from "../../localization/localizer";
 import { GameScreen } from "../constants";
 import { PlaneType } from "../../../../dogfight/src/objects/plane";
+import { Translation } from "../../localization/translation";
 
 const planeImages = {
   [PlaneType.Fokker]: "pic_plane6.gif",

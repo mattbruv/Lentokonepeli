@@ -6,14 +6,14 @@ import { PlaneType } from "../../dogfight/src/objects/plane";
 
 const centralPlanes: PlaneType[] = [
   PlaneType.Albatros,
-  PlaneType.Fokker,
-  PlaneType.Junkers
+  PlaneType.Junkers,
+  PlaneType.Fokker
 ];
 
 const alliedPlanes: PlaneType[] = [
   PlaneType.Bristol,
-  PlaneType.Sopwith,
-  PlaneType.Salmson
+  PlaneType.Salmson,
+  PlaneType.Sopwith
 ];
 
 const cameraOffset = {
