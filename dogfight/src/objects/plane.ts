@@ -58,7 +58,7 @@ export class Plane extends GameObject {
   */
   public move(cache: Cache, deltaTime: number): void {
     const multiplier = deltaTime / 1000;
-    const scaleSpeed = 250 * SCALE_FACTOR;
+    const scaleSpeed = 300 * SCALE_FACTOR;
     const radians = directionToRadians(this.direction);
     const deltaX = Math.round(scaleSpeed * Math.cos(radians) * multiplier);
     const deltaY = Math.round(scaleSpeed * Math.sin(radians) * multiplier);

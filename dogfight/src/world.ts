@@ -124,7 +124,8 @@ export class GameWorld {
       runway.direction == FacingDirection.Left
         ? Math.round(ROTATION_DIRECTIONS / 2)
         : 0;
-    plane.setDirection(this.cache, direction);
+    // plane.setDirection(this.cache, direction);
+    plane.setDirection(this.cache, 32);
     this.planes.push(plane);
     // assing plane to player
     player.setControl(this.cache, plane.type, plane.id);

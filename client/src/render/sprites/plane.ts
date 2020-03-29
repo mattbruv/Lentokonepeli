@@ -41,6 +41,9 @@ export class PlaneSprite extends GameSprite {
 
   private plane: PIXI.Sprite;
 
+  private lightSmoke: PIXI.Container;
+  private lightSmokeInterval: number;
+
   public constructor(spritesheet: PIXI.Spritesheet) {
     super();
 
@@ -56,13 +59,19 @@ export class PlaneSprite extends GameSprite {
     this.spritesheet = spritesheet;
 
     this.container = new PIXI.Container();
+    this.lightSmoke = new PIXI.Container();
 
     this.plane = new PIXI.Sprite();
     this.plane.anchor.set(0.5);
     this.container.addChild(this.plane);
     this.container.zIndex = DrawLayer.Plane;
 
+    this.lightSmokeInterval = window.setInterval((): void => {
+      this.createLightSmoke();
+    }, 100);
+
     this.renderables.push(this.container);
+    this.renderables.push(this.lightSmoke);
   }
 
   private setDirection(): void {
@@ -88,7 +97,30 @@ export class PlaneSprite extends GameSprite {
     this.container.position.set(this.x, this.y);
   }
 
+  private createLightSmoke(): void {
+    const smoketex = this.spritesheet.textures["smoke1.gif"];
+    const smoke = new PIXI.Sprite(smoketex);
+
+    // direction = 0 -> 256   2^8
+    const radians = directionToRadians(this.direction);
+    const halfWidth = Math.round(this.plane.width / 2);
+    const offset = Math.round(halfWidth / 6);
+
+    const r = halfWidth + offset;
+    const theta = radians * -1;
+    const deltaX = r * Math.cos(theta);
+    const deltaY = r * Math.sin(theta);
+    const newX = this.x - deltaX;
+    const newY = this.y - deltaY;
+    smoke.position.set(newX, newY);
+
+    this.lightSmoke.addChild(smoke);
+    setTimeout((): void => {
+      this.lightSmoke.removeChild(smoke);
+    }, 200);
+  }
+
   public destroy(): void {
-    //
+    window.clearInterval(this.lightSmokeInterval);
   }
 }
