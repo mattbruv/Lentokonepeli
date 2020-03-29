@@ -1,6 +1,7 @@
 import { GameObjectType, GameObject } from "../object";
-import { Team, SCALE_FACTOR } from "../constants";
+import { Team, SCALE_FACTOR, ROTATION_DIRECTIONS } from "../constants";
 import { Cache, CacheEntry } from "../network/cache";
+import { directionToRadians } from "../physics/helpers";
 
 export enum PlaneType {
   Albatros,
@@ -50,17 +51,42 @@ export class Plane extends GameObject {
     });
   }
 
+  /*
+    double d = getAngle(paramInt3);
+    paramInt1 += (int)(100 * paramInt4 / 25.0D * Math.cos(d));
+    paramInt2 += (int)(100 * paramInt4 / 25.0D * Math.sin(d));
+  */
+  public move(cache: Cache, deltaTime: number): void {
+    const multiplier = deltaTime / 1000;
+    const scaleSpeed = 250 * SCALE_FACTOR;
+    const radians = directionToRadians(this.direction);
+    const deltaX = Math.round(scaleSpeed * Math.cos(radians) * multiplier);
+    const deltaY = Math.round(scaleSpeed * Math.sin(radians) * multiplier);
+    this.localX += deltaX;
+    this.localY += deltaY;
+    this.setData(cache, {
+      x: Math.round(this.localX / SCALE_FACTOR),
+      y: Math.round(this.localY / SCALE_FACTOR)
+    });
+  }
+
+  public rotate(cache: Cache): void {
+    const direction = (this.direction + 1) % ROTATION_DIRECTIONS;
+    this.setDirection(cache, direction);
+  }
+
+  public setDirection(cache: Cache, direction: number): void {
+    this.set(cache, "direction", direction);
+  }
+
+  public setFlipped(cache: Cache, status: boolean): void {
+    this.set(cache, "flipped", status);
+  }
+
   public setPos(cache: Cache, x: number, y: number): void {
     this.localX = x * SCALE_FACTOR;
     this.localY = y * SCALE_FACTOR;
     this.setData(cache, { x, y });
-  }
-
-  public move(cache: Cache, deltaTime: number): void {
-    const unitsPerSecond = 100 * SCALE_FACTOR;
-    const multiplier = deltaTime / 1000;
-    this.localX = this.localX + Math.round(multiplier * unitsPerSecond);
-    this.set(cache, "x", Math.round(this.localX / SCALE_FACTOR));
   }
 
   public getState(): CacheEntry {
@@ -71,7 +97,8 @@ export class Plane extends GameObject {
       flipped: this.flipped,
       direction: this.direction,
       health: this.health,
-      planeType: this.planeType
+      planeType: this.planeType,
+      team: this.team
     };
   }
 }

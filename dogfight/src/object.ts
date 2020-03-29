@@ -19,7 +19,7 @@ export enum GameObjectType {
   Player
 }
 
-type sendableData = number | string;
+type sendableData = number | string | boolean;
 
 /**
  * A generic game object class.

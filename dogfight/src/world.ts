@@ -9,7 +9,7 @@ import { Tower } from "./objects/tower";
 import { Trooper, TrooperState } from "./objects/trooper";
 import { Water } from "./objects/water";
 import { GameObject, GameObjectType } from "./object";
-import { Team } from "./constants";
+import { Team, FacingDirection, ROTATION_DIRECTIONS } from "./constants";
 import { TakeoffRequest, TakeoffEntry } from "./takeoff";
 import { teamPlanes, Plane } from "./objects/plane";
 
@@ -71,6 +71,10 @@ export class GameWorld {
    */
   public tick(deltaTime: number): Cache {
     this.processTakeoffs();
+    this.planes.forEach((p): void => {
+      p.rotate(this.cache);
+      p.move(this.cache, deltaTime);
+    });
     return this.cache;
   }
 
@@ -115,6 +119,12 @@ export class GameWorld {
       player.team
     );
     plane.setPos(this.cache, runway.x, 200);
+    plane.setFlipped(this.cache, runway.direction == FacingDirection.Left);
+    const direction =
+      runway.direction == FacingDirection.Left
+        ? Math.round(ROTATION_DIRECTIONS / 2)
+        : 0;
+    plane.setDirection(this.cache, direction);
     this.planes.push(plane);
     // assing plane to player
     player.setControl(this.cache, plane.type, plane.id);
@@ -144,7 +154,8 @@ export class GameWorld {
       this.runways,
       this.towers,
       this.troopers,
-      this.waters
+      this.waters,
+      this.planes
     ];
     const cache: Cache = {};
     for (const obj in objects) {

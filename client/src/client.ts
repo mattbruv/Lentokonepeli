@@ -155,6 +155,7 @@ export class GameClient {
       };
       this.setMode(ClientMode.PreFlight);
       this.renderer.HUD.radar.setTeam(data.team);
+      this.renderer.HUD.radar.refreshRadar(this.gameObjects);
     }
   }
 
@@ -215,6 +216,12 @@ export class GameClient {
   }
 
   private deleteObject(type: number, id: string): void {
+    if (this.followObject.type == type && this.followObject.id == id) {
+      this.followObject = {
+        type: GameObjectType.None,
+        id: undefined
+      };
+    }
     delete this.gameObjects[type][id];
     this.renderer.deleteSprite(type, id);
   }
