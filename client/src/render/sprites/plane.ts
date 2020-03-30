@@ -2,7 +2,6 @@ import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
 import { PlaneType } from "../../../../dogfight/src/objects/plane";
-import { ROTATION_DIRECTIONS } from "../../../../dogfight/src/constants";
 import { directionToRadians } from "../../../../dogfight/src/physics/helpers";
 
 const planeImageIDs = {
@@ -33,6 +32,9 @@ const flipAnimation = [
   FrameStatus.Normal
 ];
 
+// How long smoke stays on the screen, in milliseconds.
+const SMOKE_DURATION = 200;
+
 export class PlaneSprite extends GameSprite {
   public x: number;
   public y: number;
@@ -55,6 +57,9 @@ export class PlaneSprite extends GameSprite {
   private lightSmoke: PIXI.Container;
   private lightSmokeInterval: number;
 
+  private darkSmoke: PIXI.Container;
+  private darkSmokeTimeout: number;
+
   public constructor(spritesheet: PIXI.Spritesheet) {
     super();
 
@@ -71,18 +76,27 @@ export class PlaneSprite extends GameSprite {
 
     this.container = new PIXI.Container();
     this.lightSmoke = new PIXI.Container();
+    this.darkSmoke = new PIXI.Container();
 
     this.plane = new PIXI.Sprite();
     this.plane.anchor.set(0.5);
-    this.container.addChild(this.plane);
+
     this.container.zIndex = DrawLayer.Plane;
+    this.lightSmoke.zIndex = DrawLayer.LightSmoke;
+    this.darkSmoke.zIndex = DrawLayer.DarkSmoke;
 
     this.lightSmokeInterval = window.setInterval((): void => {
       this.createLightSmoke();
     }, 100);
 
+    this.darkSmokeTimeout = window.setTimeout((): void => {
+      this.createDarkSmoke();
+    });
+
+    this.container.addChild(this.plane);
     this.renderables.push(this.container);
     this.renderables.push(this.lightSmoke);
+    this.renderables.push(this.darkSmoke);
   }
 
   private setDirection(): void {
@@ -108,8 +122,6 @@ export class PlaneSprite extends GameSprite {
     }
     // check to see if the plane has flipped
     if (this.flipped != this.lastFlipState) {
-      // If it is our first flip, just render
-      // the plane how it should be rendered without animating.
       // perform the flip animation.
       if (this.animatingFlip == false) {
         this.animatingFlip = true;
@@ -165,10 +177,42 @@ export class PlaneSprite extends GameSprite {
     this.lightSmoke.addChild(smoke);
     setTimeout((): void => {
       this.lightSmoke.removeChild(smoke);
-    }, 200);
+    }, SMOKE_DURATION);
+  }
+
+  public createDarkSmoke(): void {
+    const percentage = this.health / 255;
+
+    // how often black smoke should appear, in milliseconds.
+    let smokeFrequency = 300;
+
+    if (percentage < 0.9) {
+      // Draw the dark smoke and change
+      // callback time based on how damaged plane is.
+      const smoketex = this.spritesheet.textures["smoke2.gif"];
+      const smoke = new PIXI.Sprite(smoketex);
+      smoke.position.set(this.x, this.y);
+      this.darkSmoke.addChild(smoke);
+
+      if (percentage <= 0.66) {
+        smokeFrequency = 200;
+      }
+      if (percentage <= 0.33) {
+        smokeFrequency = 100;
+      }
+      // destroy it after a while
+      window.setTimeout((): void => {
+        this.darkSmoke.removeChild(smoke);
+      }, SMOKE_DURATION);
+    }
+
+    this.darkSmokeTimeout = window.setTimeout((): void => {
+      this.createDarkSmoke();
+    }, smokeFrequency);
   }
 
   public destroy(): void {
     window.clearInterval(this.lightSmokeInterval);
+    window.clearTimeout(this.darkSmokeTimeout);
   }
 }

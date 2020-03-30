@@ -74,7 +74,7 @@ export class GameWorld {
     this.planes.forEach((p): void => {
       p.rotate(this.cache);
       p.move(this.cache, deltaTime);
-      if (Math.random() > 0.99) {
+      if (Math.random() > 0.95) {
         // flip plane
         p.setFlipped(this.cache, !p.flipped);
       }
@@ -130,6 +130,7 @@ export class GameWorld {
         : 0;
     // plane.setDirection(this.cache, direction);
     plane.setDirection(this.cache, 32);
+    plane.set(this.cache, "health", Math.round(Math.random() * 255));
     this.planes.push(plane);
     // assing plane to player
     player.setControl(this.cache, plane.type, plane.id);
