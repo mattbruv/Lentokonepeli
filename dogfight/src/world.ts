@@ -74,6 +74,10 @@ export class GameWorld {
     this.planes.forEach((p): void => {
       p.rotate(this.cache);
       p.move(this.cache, deltaTime);
+      if (Math.random() > 0.99) {
+        // flip plane
+        p.setFlipped(this.cache, !p.flipped);
+      }
     });
     return this.cache;
   }

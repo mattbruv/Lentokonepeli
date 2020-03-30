@@ -26,6 +26,13 @@ const frameTextureString = {
   [FrameStatus.Flip2]: "planeX_flip2.gif"
 };
 
+const flipAnimation = [
+  FrameStatus.Flip1,
+  FrameStatus.Flip2,
+  FrameStatus.Flip1,
+  FrameStatus.Normal
+];
+
 export class PlaneSprite extends GameSprite {
   public x: number;
   public y: number;
@@ -33,6 +40,10 @@ export class PlaneSprite extends GameSprite {
   public direction: number;
   public planeType: PlaneType;
   public flipped: boolean;
+
+  private flipFrame: number = 0;
+  private lastFlipState: boolean = undefined;
+  private animatingFlip: boolean = false;
 
   private frameStatus: FrameStatus;
 
@@ -85,14 +96,51 @@ export class PlaneSprite extends GameSprite {
     this.plane.texture = this.spritesheet.textures[textureString];
   }
 
-  private setFlip(): void {
+  private handleFlip(): void {
     const value = this.flipped ? -1 : 1;
     this.plane.scale.y = value;
+    // If our initial flip isn't set yet, we don't want to animate..
+    if (this.flipped === undefined) {
+      return;
+    }
+    if (this.lastFlipState === undefined) {
+      this.lastFlipState = this.flipped;
+    }
+    // check to see if the plane has flipped
+    if (this.flipped != this.lastFlipState) {
+      // If it is our first flip, just render
+      // the plane how it should be rendered without animating.
+      // perform the flip animation.
+      if (this.animatingFlip == false) {
+        this.animatingFlip = true;
+        this.flipFrame = 0;
+        this.animateFlip();
+      }
+      this.lastFlipState = this.flipped;
+    }
+  }
+
+  private animateFlip(): void {
+    if (this.flipFrame > flipAnimation.length - 1) {
+      this.flipFrame = 0;
+      this.animatingFlip = false;
+      return;
+    }
+    // set frame status
+    this.frameStatus = flipAnimation[this.flipFrame];
+    // render texture
+    this.setPlaneTexture();
+    // increment counter
+    this.flipFrame += 1;
+    // call animate again.
+    window.setTimeout((): void => {
+      this.animateFlip();
+    }, 80);
   }
 
   public redraw(): void {
+    this.handleFlip();
     this.setPlaneTexture();
-    this.setFlip();
     this.setDirection();
     this.container.position.set(this.x, this.y);
   }

@@ -2,12 +2,19 @@ import { GameObject, GameObjectType } from "../object";
 import { CacheEntry, Cache } from "../network/cache";
 import { Team } from "../constants";
 
+export enum PlayerStatus {
+  Playing,
+  Takeoff,
+  Spectating
+}
+
 export class Player extends GameObject {
   public type = GameObjectType.Player;
   public name: string;
   public team: Team;
   public controlType: GameObjectType;
   public controlID: number;
+  public status: PlayerStatus;
 
   public constructor(id: number, cache: Cache) {
     super(id);
@@ -15,6 +22,11 @@ export class Player extends GameObject {
     this.controlType = GameObjectType.None;
     this.controlID = 0;
     this.team = Team.Spectator;
+    this.setStatus(cache, PlayerStatus.Takeoff);
+  }
+
+  public setStatus(cache: Cache, status: PlayerStatus): void {
+    this.set(cache, "status", status);
   }
 
   public setControl(
@@ -32,7 +44,8 @@ export class Player extends GameObject {
       name: this.name,
       team: this.team,
       controlType: this.controlType,
-      controlID: this.controlID
+      controlID: this.controlID,
+      status: this.status
     };
   }
 }
