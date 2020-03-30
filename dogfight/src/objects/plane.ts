@@ -21,6 +21,8 @@ export const teamPlanes: TeamPlanes = {
   [Team.Allies]: [PlaneType.Bristol, PlaneType.Sopwith, PlaneType.Salmson]
 };
 
+const bomberPlanes: PlaneType[] = [PlaneType.Junkers, PlaneType.Salmson];
+
 export class Plane extends GameObject {
   public type = GameObjectType.Plane;
 
@@ -32,9 +34,12 @@ export class Plane extends GameObject {
   public team: Team;
 
   public planeType: PlaneType;
-  public health: number;
   public direction: number;
   public flipped: boolean;
+  public health: number;
+  public fuel: number;
+  public ammo: number;
+  public bombs: number;
 
   public constructor(id: number, cache: Cache, kind: PlaneType, side: Team) {
     super(id);
@@ -45,10 +50,16 @@ export class Plane extends GameObject {
       y: 0,
       flipped: false,
       direction: 0,
-      health: 100,
       planeType: kind,
-      team: side
+      team: side,
+      health: 255,
+      fuel: 255,
+      ammo: 255,
+      bombs: 0
     });
+    if (bomberPlanes.includes(this.planeType)) {
+      this.set(cache, "bombs", 5);
+    }
   }
 
   /*
@@ -98,7 +109,10 @@ export class Plane extends GameObject {
       direction: this.direction,
       health: this.health,
       planeType: this.planeType,
-      team: this.team
+      team: this.team,
+      fuel: this.fuel,
+      ammo: this.ammo,
+      bombs: this.bombs
     };
   }
 }

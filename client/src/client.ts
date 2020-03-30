@@ -207,11 +207,14 @@ export class GameClient {
         this.setMode(ClientMode.PreFlight);
       }
     }
+    // If this is an update to our follow object,
+    // update our HUD
     if (type == this.followObject.type && this.followObject.id == id) {
       const { x, y } = object;
       if (x !== undefined && y !== undefined) {
         this.renderer.centerCamera(x, y);
       }
+      this.renderer.HUD.updateFollowObject(object);
     }
   }
 
