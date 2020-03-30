@@ -1,6 +1,13 @@
 import * as PIXI from "pixi.js";
 import { GameScreen } from "../constants";
 import { Radar } from "./radar";
+import { Team } from "../../../../dogfight/src/constants";
+
+const teamPanel = {
+  [Team.Centrals]: "metalpanel.jpg",
+  [Team.Spectator]: "metalpanel.jpg",
+  [Team.Allies]: "woodpanel.jpg"
+};
 
 export class GameHud {
   public container: PIXI.Container;
@@ -42,5 +49,12 @@ export class GameHud {
   public setEnabled(active: boolean): void {
     this.enabled = active;
     this.container.visible = this.enabled;
+  }
+
+  public setTeam(side: Team): void {
+    const str = teamPanel[side];
+    const tex = this.spritesheet.textures[str];
+    this.panel.texture = tex;
+    this.radar.setTeam(side);
   }
 }
