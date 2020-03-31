@@ -8,9 +8,10 @@ Both sides have their own unique plane selection,
 from which you can select after choosing your side.
 Middle selection assigns you randomly.`,
   planeAlbatrosName: "Albatros D.II",
-  planeAlbatrosDescription: `A basic plane equipped
-with only a machine gun.
-A good choice for beginners.`,
+  planeAlbatrosDescription: `A basic plane shipped with
+a machinegun without any
+specific pros or cons.
+Good choice for a novice.`,
   planeFokkerName: "Fokker DR.I",
   planeFokkerDescription: `The legendary triplane.
 Very agile and can reach
