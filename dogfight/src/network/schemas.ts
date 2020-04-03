@@ -1,4 +1,5 @@
 import { IntType, GameObjectSchema } from "./types";
+import { GameObjectType } from "../object";
 
 export const SchemaPlane: GameObjectSchema = {
   numbers: [
@@ -14,4 +15,8 @@ export const SchemaPlane: GameObjectSchema = {
   ],
   booleans: ["flipped"],
   strings: []
+};
+
+export const schemaTypes = {
+  [GameObjectType.Plane]: SchemaPlane
 };

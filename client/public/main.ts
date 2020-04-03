@@ -2,7 +2,7 @@ import { loadSpriteSheet } from "../src/render/textures";
 import { GameClient } from "../src/client";
 import Cookies from "js-cookie";
 import { Localizer } from "../src/localization/localizer";
-import { encodeCache } from "../../dogfight/src/network/encode";
+import { encodeCache, encodePacket } from "../../dogfight/src/network/encode";
 
 let client: GameClient;
 
@@ -10,8 +10,7 @@ function init(): void {
   // create game client engine
   // client = new GameClient();
 
-  const foo = encodeCache();
-  // console.log(foo);
+  const foo = encodePacket();
 }
 
 /**
