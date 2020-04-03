@@ -37,9 +37,9 @@ export enum PacketType {
  * Defines the networked properties of a game object.
  */
 export interface GameObjectSchema {
-  strings: string[];
-  booleans: string[];
   numbers: NumberProperty[];
+  booleans: string[];
+  strings: string[];
 }
 
 /**
