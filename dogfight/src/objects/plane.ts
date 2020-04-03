@@ -16,6 +16,56 @@ interface TeamPlanes {
   [key: number]: PlaneType[];
 }
 
+interface PlaneInfo {
+  [key: number]: {
+    flightTime: number; // seconds flying
+    ammo: number;
+    fireRate: number; // shots per minute
+    speed: number; // how fast the aircraft moves in units per second
+    // flight altitude
+    // resistance
+  };
+}
+
+export const planeData: PlaneInfo = {
+  [PlaneType.Albatros]: {
+    flightTime: 80,
+    ammo: 95,
+    fireRate: 500,
+    speed: 330
+  },
+  [PlaneType.Bristol]: {
+    flightTime: 70,
+    ammo: 100,
+    fireRate: 600,
+    speed: 281
+  },
+  [PlaneType.Fokker]: {
+    flightTime: 90,
+    ammo: 90,
+    fireRate: 454,
+    speed: 292
+  },
+  [PlaneType.Junkers]: {
+    flightTime: 100,
+    ammo: 100,
+    fireRate: 18,
+    speed: 271
+  },
+  [PlaneType.Salmson]: {
+    flightTime: 60,
+    ammo: 60,
+    fireRate: 316,
+    speed: 317
+  },
+  [PlaneType.Sopwith]: {
+    flightTime: 80,
+    ammo: 80,
+    fireRate: 432,
+    speed: 330
+  }
+};
+
 export const teamPlanes: TeamPlanes = {
   [Team.Centrals]: [PlaneType.Albatros, PlaneType.Fokker, PlaneType.Junkers],
   [Team.Allies]: [PlaneType.Bristol, PlaneType.Sopwith, PlaneType.Salmson]
@@ -26,8 +76,6 @@ const bomberPlanes: PlaneType[] = [PlaneType.Junkers, PlaneType.Salmson];
 export class Plane extends GameObject {
   public type = GameObjectType.Plane;
 
-  public localX: number;
-  public localY: number;
   public x: number;
   public y: number;
 
@@ -41,10 +89,30 @@ export class Plane extends GameObject {
   public ammo: number;
   public bombs: number;
 
+  // internal variables //
+
+  // physics variables
+  public localX: number;
+  public localY: number;
+  private speed: number;
+
+  // number of elapsed milliseconds since last fuel decrease.
+  private fuelCounter: number;
+  // number of milliseconds elapsed to decrease fuel by 1.
+  private fuelThreshold: number;
+
   public constructor(id: number, cache: Cache, kind: PlaneType, side: Team) {
     super(id);
+    // set internal variables
     this.localX = 0;
     this.localY = 0;
+
+    // set fuel decrement threshold
+    this.fuelCounter = 0;
+    this.fuelThreshold = Math.round(1000 / (255 / planeData[kind].flightTime));
+    this.speed = planeData[kind].speed;
+
+    // set networked variables
     this.setData(cache, {
       x: 0,
       y: 0,
@@ -62,14 +130,38 @@ export class Plane extends GameObject {
     }
   }
 
+  // advance the plane simulation
+  public tick(cache: Cache, deltaTime: number): void {
+    this.move(cache, deltaTime);
+    this.burnFuel(cache, deltaTime);
+  }
+
+  private burnFuel(cache: Cache, deltaTime: number): void {
+    // add time to counter
+    this.fuelCounter += deltaTime;
+
+    // if time elapsed is greater than our threshold,
+    // it's time to burn some fuel.
+    if (this.fuelCounter > this.fuelThreshold) {
+      // burn fuel
+      const unitsToBurn = Math.floor(this.fuelCounter / this.fuelThreshold);
+      let newFuel = this.fuel - unitsToBurn;
+      if (newFuel < 0) {
+        newFuel = 0;
+      }
+      this.fuelCounter = this.fuelCounter % this.fuelThreshold;
+      this.set(cache, "fuel", newFuel);
+    }
+  }
+
   /*
     double d = getAngle(paramInt3);
     paramInt1 += (int)(100 * paramInt4 / 25.0D * Math.cos(d));
     paramInt2 += (int)(100 * paramInt4 / 25.0D * Math.sin(d));
   */
-  public move(cache: Cache, deltaTime: number): void {
+  private move(cache: Cache, deltaTime: number): void {
     const multiplier = deltaTime / 1000;
-    const scaleSpeed = 300 * SCALE_FACTOR;
+    const scaleSpeed = this.speed * SCALE_FACTOR;
     const radians = directionToRadians(this.direction);
     const deltaX = Math.round(scaleSpeed * Math.cos(radians) * multiplier);
     const deltaY = Math.round(scaleSpeed * Math.sin(radians) * multiplier);

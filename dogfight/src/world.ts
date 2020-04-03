@@ -6,7 +6,7 @@ import { Ground } from "./objects/ground";
 import { Hill } from "./objects/hill";
 import { Runway } from "./objects/runway";
 import { Tower } from "./objects/tower";
-import { Trooper, TrooperState } from "./objects/trooper";
+import { Trooper } from "./objects/trooper";
 import { Water } from "./objects/water";
 import { GameObject, GameObjectType } from "./object";
 import { Team, FacingDirection, ROTATION_DIRECTIONS } from "./constants";
@@ -71,15 +71,19 @@ export class GameWorld {
    */
   public tick(deltaTime: number): Cache {
     this.processTakeoffs();
-    this.planes.forEach((p): void => {
-      p.rotate(this.cache);
-      p.move(this.cache, deltaTime);
-      if (Math.random() > 0.95) {
-        // flip plane
-        p.setFlipped(this.cache, !p.flipped);
+    this.processPlanes(deltaTime);
+    return this.cache;
+  }
+
+  private processPlanes(deltaTime: number): void {
+    this.planes.forEach((plane): void => {
+      plane.tick(this.cache, deltaTime);
+
+      // if fuel has run out, kill entity.
+      if (plane.fuel <= 0) {
+        this.removeObject(this.planes, plane);
       }
     });
-    return this.cache;
   }
 
   private processTakeoffs(): void {
@@ -128,9 +132,7 @@ export class GameWorld {
       runway.direction == FacingDirection.Left
         ? Math.round(ROTATION_DIRECTIONS / 2)
         : 0;
-    // plane.setDirection(this.cache, direction);
-    plane.setDirection(this.cache, 32);
-    plane.set(this.cache, "health", Math.round(Math.random() * 255));
+    plane.setDirection(this.cache, direction);
     this.planes.push(plane);
     // assing plane to player
     player.setControl(this.cache, plane.type, plane.id);
