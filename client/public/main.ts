@@ -2,15 +2,12 @@ import { loadSpriteSheet } from "../src/render/textures";
 import { GameClient } from "../src/client";
 import Cookies from "js-cookie";
 import { Localizer } from "../src/localization/localizer";
-import { encodeCache, encodePacket } from "../../dogfight/src/network/encode";
 
 let client: GameClient;
 
 function init(): void {
   // create game client engine
-  // client = new GameClient();
-
-  const foo = encodePacket();
+  client = new GameClient();
 }
 
 /**
