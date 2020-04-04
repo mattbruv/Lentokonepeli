@@ -1,8 +1,8 @@
 import { InputKey, Team, FacingDirection } from "../../dogfight/src/constants";
 import { GameRenderer } from "./render/renderer";
 import { Packet, PacketType } from "../../dogfight/src/network/types";
-import { pack } from "../../dogfight/src/network/packer";
 import { PlaneType } from "../../dogfight/src/objects/plane";
+import { NetworkHandler } from "./networkHandler";
 
 const centralPlanes: PlaneType[] = [
   PlaneType.Albatros,
@@ -122,7 +122,7 @@ export class TakeoffSelector {
   public processInput(
     key: InputKey,
     renderer: GameRenderer,
-    websocket: WebSocket
+    network: NetworkHandler
   ): void {
     if (key === InputKey.Enter) {
       console.log("Sending takeoff request..");
@@ -133,7 +133,8 @@ export class TakeoffSelector {
           runway: parseInt(this.selectedRunway)
         }
       };
-      websocket.send(pack(packet));
+      // websocket.send(pack(packet));
+      network.send(packet);
       return;
     }
     if (key == InputKey.Up) {

@@ -3,7 +3,6 @@ import { GameRenderer } from "./render/renderer";
 import { CanvasEventHandler } from "./render/event";
 import { Localizer } from "./localization/localizer";
 import { Packet, PacketType } from "../../dogfight/src/network/types";
-import { pack, unpack } from "../../dogfight/src/network/packer";
 import { GameInput } from "./input";
 import { ClientMode } from "./types";
 import { CacheEntry } from "../../dogfight/src/network/cache";
@@ -12,17 +11,12 @@ import { TeamSelector } from "./teamSelector";
 import { Team } from "../../dogfight/src/constants";
 import { TakeoffSelector } from "./takeoffSelector";
 import { radarObjects } from "./render/objects/radar";
-import { decodePacket } from "../../dogfight/src/network/encode";
-
-const wssPath = "ws://" + location.host;
+import { NetworkHandler } from "./networkHandler";
 
 export class GameClient {
-  /**
-   * WebSocket connection
-   */
-  private ws: WebSocket;
-
   private renderer: GameRenderer;
+
+  private network: NetworkHandler;
 
   private input: GameInput;
   private canvasHandler: CanvasEventHandler;
@@ -54,6 +48,12 @@ export class GameClient {
     this.canvasHandler = new CanvasEventHandler(this.renderer);
     this.canvasHandler.addListeners();
 
+    // create network handler
+    this.network = new NetworkHandler();
+    this.network.onPacketRecieved = (data: Packet): void => {
+      this.processPacket(data);
+    };
+
     // instantiate client UI logic
     this.teamSelector = new TeamSelector();
     this.takeoffSelector = new TakeoffSelector();
@@ -79,24 +79,6 @@ export class GameClient {
 
     // update language
     this.updateLanguage(Localizer.getLanguage());
-
-    // create connection to server.
-    this.ws = new WebSocket(wssPath);
-    this.ws.binaryType = "arraybuffer";
-
-    this.ws.onopen = (): void => {
-      this.ws.send(pack({ type: PacketType.RequestFullSync }));
-    };
-
-    this.ws.onmessage = (event): void => {
-      if (typeof event.data == "string") {
-        const packet = unpack(event.data);
-        this.processPacket(packet);
-      } else {
-        const packet = decodePacket(event.data);
-        this.processPacket(packet);
-      }
-    };
   }
 
   private setMode(mode: ClientMode): void {
@@ -129,13 +111,13 @@ export class GameClient {
 
     switch (this.mode) {
       case ClientMode.SelectTeam: {
-        this.teamSelector.processInput(key, this.renderer, this.ws);
+        this.teamSelector.processInput(key, this.renderer, this.network);
         break;
       }
       case ClientMode.PreFlight: {
         const runways = this.gameObjects[GameObjectType.Runway];
         this.takeoffSelector.updateRunways(runways, this.renderer);
-        this.takeoffSelector.processInput(key, this.renderer, this.ws);
+        this.takeoffSelector.processInput(key, this.renderer, this.network);
         break;
       }
     }
