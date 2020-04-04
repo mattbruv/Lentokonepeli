@@ -8,11 +8,8 @@ import { PacketType, Packet } from "../dogfight/src/network/types";
 import { Player } from "../dogfight/src/objects/player";
 import { TeamOption } from "../client/src/teamSelector";
 import { Team } from "../dogfight/src/constants";
-import {
-  encodeCache,
-  decodePacket,
-  encodePacket
-} from "../dogfight/src/network/encode";
+import { decodePacket, encodePacket } from "../dogfight/src/network/encode";
+import { InputChange, InputKey } from "../dogfight/src/input";
 
 const PORT = 3259;
 
@@ -45,7 +42,7 @@ function loop(): void {
     // send updates to each client
     wss.clients.forEach((client): void => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(encodeCache(packet));
+        client.send(encodePacket(packet));
       }
     });
   }
@@ -63,14 +60,30 @@ wss.on("connection", (ws): void => {
   ws.on("message", (message): void => {
     // parse into packet structure
     const packet = decodePacket(message as string | ArrayBuffer);
-    console.log("Recieved", packet);
+
+    // process user input
+    if (packet.type == PacketType.UserGameInput) {
+      const data: InputChange = packet.data;
+      const key = data.key;
+      const isPressed = data.isPressed === true;
+      // if they sent a valid key, send it to server.
+      if (key in InputKey) {
+        // set in our player keys
+        const state = player.inputState[key];
+        // if there is an actual difference, send it to the engine.
+        if (state !== isPressed) {
+          world.queueInput(player.id, key, isPressed);
+          player.inputState[key] = isPressed;
+        }
+      }
+    }
 
     // send world state to newly connected player.
     if (packet.type == PacketType.RequestFullSync) {
       // get current world state and send it to newly player
       const state = world.getState();
       const data: Packet = { type: PacketType.FullSync, data: state };
-      ws.send(encodeCache(data));
+      ws.send(encodePacket(data));
       return;
     }
 
