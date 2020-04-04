@@ -12,7 +12,7 @@ import { GameObject, GameObjectType } from "./object";
 import { Team, FacingDirection, ROTATION_DIRECTIONS } from "./constants";
 import { TakeoffRequest, TakeoffEntry } from "./takeoff";
 import { teamPlanes, Plane } from "./objects/plane";
-import { InputQueue, InputKey } from "./input";
+import { InputQueue, InputKey, KeyChangeList } from "./input";
 
 /**
  * The Game World contains all entites,
@@ -118,12 +118,45 @@ export class GameWorld {
       if (player === undefined) {
         return;
       }
-      console.log(id);
-      // get object player is controlling
-      // call its input functions
+      const cID = player.controlID;
+      const cType = player.controlType;
+      const controlling = this.getObject(cType, cID);
+      if (controlling !== undefined) {
+        switch (cType) {
+          case GameObjectType.Plane: {
+            this.planeInput(player, controlling as Plane, this.inputQueue[id]);
+            break;
+          }
+        }
+      }
     }
     // reset queue
     this.inputQueue = {};
+  }
+
+  public planeInput(
+    player: Player,
+    plane: Plane,
+    changes: KeyChangeList
+  ): void {
+    console.log("\n");
+    for (const keyType in changes) {
+      const key: InputKey = parseInt(keyType);
+      const isPressed = changes[keyType];
+      switch (key) {
+        case InputKey.Left:
+        case InputKey.Right: {
+          plane.setRotation(this.cache, key, isPressed);
+          break;
+        }
+        case InputKey.Up: {
+          if (isPressed) {
+            plane.setFlipped(this.cache, !plane.flipped);
+          }
+          break;
+        }
+      }
+    }
   }
 
   private processTakeoffs(): void {

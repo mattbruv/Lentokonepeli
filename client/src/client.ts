@@ -12,7 +12,7 @@ import { Team } from "../../dogfight/src/constants";
 import { TakeoffSelector } from "./takeoffSelector";
 import { radarObjects } from "./render/objects/radar";
 import { NetworkHandler } from "./networkHandler";
-import { InputChange, InputKey } from "../../dogfight/src/input";
+import { InputChange } from "../../dogfight/src/input";
 
 export class GameClient {
   private renderer: GameRenderer;
@@ -117,7 +117,6 @@ export class GameClient {
         break;
       }
       case ClientMode.Playing: {
-        console.log(InputKey[change.key]);
         const packet: Packet = { type: PacketType.UserGameInput, data: change };
         this.network.send(packet);
         break;
