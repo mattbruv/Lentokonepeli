@@ -56,7 +56,7 @@ const playerSchema: GameObjectSchema = {
     { name: "status", intType: IntType.Uint8 }
   ],
   booleans: [],
-  strings: []
+  strings: ["name"]
 };
 
 const runwaySchema: GameObjectSchema = {

@@ -16,6 +16,16 @@ function getGameObjectSize(data: any, schema: GameObjectSchema): number {
     }
   });
 
+  schema.strings.forEach((str): void => {
+    if (data[str] !== undefined) {
+      const encoder = new TextEncoder();
+      const view = encoder.encode(data[str]);
+      // 1 for size of string, rest is string length
+      const strBytes = 1 + view.byteLength;
+      dataBytes += strBytes;
+    }
+  });
+
   let setBools = 0;
   schema.booleans.forEach((bool): void => {
     if (data[bool] !== undefined) {
@@ -142,6 +152,31 @@ function encodeGameObject(
   });
   newOffset += Math.ceil(totalBools / 8);
 
+  // Write each string
+  schema.strings.forEach((str): void => {
+    // do something
+    if (data[str] !== undefined) {
+      // this is set, so set it's property bit.
+      propertyByte |= 1 << currentProperty % 8;
+      // write property byte
+      view.setUint8(propertyByteOffset, propertyByte);
+      const encoder = new TextEncoder();
+      const strView = encoder.encode(data[str]);
+      // write header size
+      view.setUint8(newOffset++, strView.byteLength);
+      strView.forEach((byte): void => {
+        // write the bytes to view
+        view.setUint8(newOffset++, byte);
+      });
+    }
+    // Increment which property we're on.
+    currentProperty++;
+    if (currentProperty % 8 == 0) {
+      propertyByteOffset++;
+      propertyByte = 0;
+    }
+  });
+
   return newOffset;
 }
 
@@ -256,6 +291,29 @@ function decodeCache(view: DataView, offset: number, packet: Packet): void {
     });
 
     currentOffset += Math.ceil(totalBools / 8);
+
+    // decode strings
+    schema.strings.forEach((str): void => {
+      const index = currentProperty % 8;
+      const isSet: boolean = ((propertyByte >> index) & 1) == 1;
+      if (isSet) {
+        // get length of string
+        const length = view.getUint8(currentOffset++);
+        const decoder = new TextDecoder();
+        const strBytes = [];
+        for (let i = 0; i < length; i++) {
+          // get each byte
+          strBytes.push(view.getUint8(currentOffset++));
+        }
+        const strValue = decoder.decode(new Uint8Array(strBytes));
+        packet.data[id][str] = strValue;
+      }
+      currentProperty++;
+      if (currentProperty % 8 == 0) {
+        propertyByteOffset++;
+        propertyByte = view.getUint8(propertyByteOffset);
+      }
+    });
   }
 }
 
