@@ -1,6 +1,6 @@
 import { Packet, PacketType } from "../src/network/types";
 import { encodePacket, decodePacket } from "../src/network/encode";
-import { GameObject, GameObjectType } from "../src/object";
+import { GameObjectType } from "../src/object";
 
 /*
   Old style: Raw JSON, 167 bytes
@@ -40,12 +40,14 @@ test("can encode/decode example packet", (): void => {
 });
 
 test("can encode/decode int16 range", (): void => {
-  for (let i = 0x0; i < 0xffff; i++) {
+  for (let i = -32768; i < 32767; i++) {
     const example: Packet = {
       type: PacketType.ChangeSync,
       data: {
-        type: GameObjectType.Plane,
-        x: i
+        0: {
+          type: GameObjectType.Plane,
+          x: i
+        }
       }
     };
     const decoded = decodePacket(encodePacket(example));
