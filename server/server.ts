@@ -9,6 +9,7 @@ import { PacketType, Packet } from "../dogfight/src/network/types";
 import { Player } from "../dogfight/src/objects/player";
 import { TeamOption } from "../client/src/teamSelector";
 import { Team } from "../dogfight/src/constants";
+import { encodePacket } from "../dogfight/src/network/encode";
 
 const PORT = 3259;
 
@@ -37,10 +38,11 @@ function loop(): void {
   world.clearCache();
 
   if (Object.keys(updates).length > 0) {
+    const packet = { type: PacketType.ChangeSync, data: updates };
     // send updates to each client
     wss.clients.forEach((client): void => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(pack({ type: PacketType.ChangeSync, data: updates }));
+        client.send(encodePacket(packet));
       }
     });
   }
@@ -65,7 +67,7 @@ wss.on("connection", (ws): void => {
       // get current world state and send it to newly player
       const state = world.getState();
       const data: Packet = { type: PacketType.FullSync, data: state };
-      ws.send(pack(data));
+      ws.send(encodePacket(data));
       return;
     }
 

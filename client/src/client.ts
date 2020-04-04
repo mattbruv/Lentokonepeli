@@ -12,6 +12,7 @@ import { TeamSelector } from "./teamSelector";
 import { Team } from "../../dogfight/src/constants";
 import { TakeoffSelector } from "./takeoffSelector";
 import { radarObjects } from "./render/objects/radar";
+import { decodePacket } from "../../dogfight/src/network/encode";
 
 const wssPath = "ws://" + location.host;
 
@@ -81,14 +82,20 @@ export class GameClient {
 
     // create connection to server.
     this.ws = new WebSocket(wssPath);
+    this.ws.binaryType = "arraybuffer";
 
     this.ws.onopen = (): void => {
       this.ws.send(pack({ type: PacketType.RequestFullSync }));
     };
 
     this.ws.onmessage = (event): void => {
-      const packet = unpack(event.data);
-      this.processPacket(packet);
+      if (typeof event.data == "string") {
+        const packet = unpack(event.data);
+        this.processPacket(packet);
+      } else {
+        const packet = decodePacket(event.data);
+        this.processPacket(packet);
+      }
     };
   }
 
