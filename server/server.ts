@@ -4,12 +4,15 @@ import * as http from "http";
 import * as WebSocket from "ws";
 import { GameWorld } from "../dogfight/src/world";
 import { MAP_CLASSIC } from "../dogfight/src/maps/classic";
-import { pack, unpack } from "../dogfight/src/network/packer";
 import { PacketType, Packet } from "../dogfight/src/network/types";
 import { Player } from "../dogfight/src/objects/player";
 import { TeamOption } from "../client/src/teamSelector";
 import { Team } from "../dogfight/src/constants";
-import { encodePacket } from "../dogfight/src/network/encode";
+import {
+  encodeCache,
+  decodePacket,
+  encodePacket
+} from "../dogfight/src/network/encode";
 
 const PORT = 3259;
 
@@ -42,11 +45,10 @@ function loop(): void {
     // send updates to each client
     wss.clients.forEach((client): void => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(encodePacket(packet));
+        client.send(encodeCache(packet));
       }
     });
   }
-  // console.log(updates);
   lastTick = currentTick;
 }
 
@@ -59,7 +61,7 @@ wss.on("connection", (ws): void => {
 
   ws.on("message", (message): void => {
     // parse into packet structure
-    const packet = unpack(message as string);
+    const packet = decodePacket(message as string);
     console.log("Recieved", packet);
 
     // send world state to newly connected player.
@@ -67,7 +69,7 @@ wss.on("connection", (ws): void => {
       // get current world state and send it to newly player
       const state = world.getState();
       const data: Packet = { type: PacketType.FullSync, data: state };
-      ws.send(encodePacket(data));
+      ws.send(encodeCache(data));
       return;
     }
 
@@ -101,7 +103,7 @@ wss.on("connection", (ws): void => {
         type: PacketType.AssignPlayer,
         data: { id: player.id, team: player.team }
       };
-      ws.send(pack(response));
+      ws.send(encodePacket(response));
       return;
     }
   });

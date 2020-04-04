@@ -1,6 +1,5 @@
-import { pack, unpack } from "../../dogfight/src/network/packer";
 import { PacketType, Packet } from "../../dogfight/src/network/types";
-import { decodePacket } from "../../dogfight/src/network/encode";
+import { encodePacket, decodePacket } from "../../dogfight/src/network/encode";
 
 const wssPath = "ws://" + location.host;
 
@@ -28,18 +27,13 @@ export class NetworkHandler {
     };
   }
 
-  public send(data: Packet): void {
-    const info = pack(data);
-    this.ws.send(info);
+  public send(packet: Packet): void {
+    const data = encodePacket(packet);
+    this.ws.send(data);
   }
 
   private processServerMessage(event: MessageEvent): void {
-    if (typeof event.data == "string") {
-      const packet = unpack(event.data);
-      this.onPacketRecieved(packet);
-    } else {
-      const packet = decodePacket(event.data);
-      this.onPacketRecieved(packet);
-    }
+    const packet = decodePacket(event.data);
+    this.onPacketRecieved(packet);
   }
 }

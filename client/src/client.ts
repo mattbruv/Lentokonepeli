@@ -3,7 +3,7 @@ import { GameRenderer } from "./render/renderer";
 import { CanvasEventHandler } from "./render/event";
 import { Localizer } from "./localization/localizer";
 import { Packet, PacketType } from "../../dogfight/src/network/types";
-import { GameInput } from "./input";
+import { InputHandler } from "./inputHandler";
 import { ClientMode } from "./types";
 import { CacheEntry } from "../../dogfight/src/network/cache";
 import { GameObjectType } from "../../dogfight/src/object";
@@ -12,13 +12,14 @@ import { Team } from "../../dogfight/src/constants";
 import { TakeoffSelector } from "./takeoffSelector";
 import { radarObjects } from "./render/objects/radar";
 import { NetworkHandler } from "./networkHandler";
+import { InputChange, InputKey } from "../../dogfight/src/input";
 
 export class GameClient {
   private renderer: GameRenderer;
 
   private network: NetworkHandler;
 
-  private input: GameInput;
+  private input: InputHandler;
   private canvasHandler: CanvasEventHandler;
 
   private loadedGame: boolean = false;
@@ -50,7 +51,7 @@ export class GameClient {
 
     // create network handler
     this.network = new NetworkHandler();
-    this.network.onPacketRecieved = (data: Packet): void => {
+    this.network.onPacketRecieved = (data): void => {
       this.processPacket(data);
     };
 
@@ -59,10 +60,10 @@ export class GameClient {
     this.takeoffSelector = new TakeoffSelector();
 
     // Add event listeners for input
-    this.input = new GameInput();
-    document.addEventListener("keydown", (event): void => {
-      this.keyDown(event);
-    });
+    this.input = new InputHandler();
+    this.input.processGameKeyChange = (change): void => {
+      this.processGameInput(change);
+    };
 
     // center camera
     this.renderer.centerCamera(0, 150);
@@ -103,21 +104,22 @@ export class GameClient {
     }
   }
 
-  private keyDown(event: KeyboardEvent): void {
-    if (!this.input.isGameKey(event)) {
-      return;
-    }
-    const key = this.input.getGameKey(event);
-
+  private processGameInput(change: InputChange): void {
     switch (this.mode) {
       case ClientMode.SelectTeam: {
-        this.teamSelector.processInput(key, this.renderer, this.network);
+        this.teamSelector.processInput(change, this.renderer, this.network);
         break;
       }
       case ClientMode.PreFlight: {
         const runways = this.gameObjects[GameObjectType.Runway];
         this.takeoffSelector.updateRunways(runways, this.renderer);
-        this.takeoffSelector.processInput(key, this.renderer, this.network);
+        this.takeoffSelector.processInput(change, this.renderer, this.network);
+        break;
+      }
+      case ClientMode.Playing: {
+        console.log(InputKey[change.key]);
+        const packet: Packet = { type: PacketType.UserGameInput, data: change };
+        this.network.send(packet);
         break;
       }
     }
