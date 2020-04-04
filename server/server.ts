@@ -56,12 +56,13 @@ setInterval(loop, 1000 / 30);
 
 wss.on("connection", (ws): void => {
   console.log("New connection!");
+  ws.binaryType = "arraybuffer";
 
   let player: Player = undefined;
 
   ws.on("message", (message): void => {
     // parse into packet structure
-    const packet = decodePacket(message as string);
+    const packet = decodePacket(message as string | ArrayBuffer);
     console.log("Recieved", packet);
 
     // send world state to newly connected player.
