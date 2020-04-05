@@ -186,6 +186,11 @@ export class Plane extends GameObject {
   }
 
   private burnFuel(cache: Cache, deltaTime: number): void {
+    // Don't burn fuel if engine is off.
+    if (!this.engineOn) {
+      return;
+    }
+
     // add time to counter
     this.fuelCounter += deltaTime;
 
