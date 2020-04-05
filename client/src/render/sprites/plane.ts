@@ -42,6 +42,7 @@ export class PlaneSprite extends GameSprite {
   public direction: number;
   public planeType: PlaneType;
   public flipped: boolean;
+  public engineOn: boolean = true;
 
   private flipFrame: number = 0;
   private lastFlipState: boolean = undefined;
@@ -158,6 +159,9 @@ export class PlaneSprite extends GameSprite {
   }
 
   private createLightSmoke(): void {
+    if (this.engineOn == false) {
+      return;
+    }
     const smoketex = this.spritesheet.textures["smoke1.gif"];
     const smoke = new PIXI.Sprite(smoketex);
 

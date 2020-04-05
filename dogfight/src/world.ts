@@ -139,7 +139,6 @@ export class GameWorld {
     plane: Plane,
     changes: KeyChangeList
   ): void {
-    console.log("\n");
     for (const keyType in changes) {
       const key: InputKey = parseInt(keyType);
       const isPressed = changes[keyType];
@@ -152,6 +151,12 @@ export class GameWorld {
         case InputKey.Up: {
           if (isPressed) {
             plane.setFlipped(this.cache, !plane.flipped);
+          }
+          break;
+        }
+        case InputKey.Down: {
+          if (isPressed) {
+            plane.setEngine(this.cache, !plane.engineOn);
           }
           break;
         }
@@ -197,13 +202,17 @@ export class GameWorld {
       takeoff.request.plane,
       player.team
     );
-    plane.setPos(this.cache, runway.x, 200);
+    let offsetX = 100;
+    if (runway.direction == FacingDirection.Right) {
+      offsetX *= -1;
+    }
+    plane.setPos(this.cache, runway.x + offsetX, 10);
     plane.setFlipped(this.cache, runway.direction == FacingDirection.Left);
     const direction =
       runway.direction == FacingDirection.Left
         ? Math.round(ROTATION_DIRECTIONS / 2)
         : 0;
-    plane.setDirection(this.cache, direction + 1);
+    plane.setDirection(this.cache, direction);
     this.planes.push(plane);
     // assing plane to player
     player.setControl(this.cache, plane.type, plane.id);

@@ -4,6 +4,17 @@ import { Cache, CacheEntry } from "../network/cache";
 import { directionToRadians } from "../physics/helpers";
 import { KeyChangeList, InputKey } from "../input";
 
+// Movement Physics
+const thrust = 500 * SCALE_FACTOR;
+// const drag = 1.5; //  * SCALE_FACTOR; //0 * SCALE_FACTOR;
+// theta
+// pos = localX, localY
+//const stallV = 1 * SCALE_FACTOR;
+//const maxVelocity = 10 * SCALE_FACTOR;
+//const stallTurnRate = 1 * SCALE_FACTOR;
+const gravity = 500 * SCALE_FACTOR;
+//const turnRate = Math.round(0.1 * SCALE_FACTOR);
+
 export enum PlaneType {
   Albatros,
   Junkers,
@@ -95,15 +106,17 @@ export class Plane extends GameObject {
   public fuel: number;
   public ammo: number;
   public bombs: number;
+  public engineOn: boolean;
 
   // internal variables //
 
   private rotateStatus: PlaneRotationStatus;
 
   // physics variables
-  public localX: number;
-  public localY: number;
-  private speed: number;
+  private localX: number;
+  private localY: number;
+  private velocity = 0; //3 * SCALE_FACTOR;
+  private drag: number;
 
   // number of elapsed milliseconds since last fuel decrease.
   private fuelCounter: number;
@@ -120,13 +133,21 @@ export class Plane extends GameObject {
     // set fuel decrement threshold
     this.fuelCounter = 0;
     this.fuelThreshold = Math.round(1000 / (255 / planeData[kind].flightTime));
-    this.speed = planeData[kind].speed;
+
+    // physics variables
+    // Max speed is set via drag value.
+    // figured out relative to other forces.
+    const speed = planeData[kind].speed;
+    this.drag = Math.round(thrust / SCALE_FACTOR) / speed;
+
+    console.log(PlaneType[kind], speed, "drag:", this.drag);
 
     // set networked variables
     this.setData(cache, {
       x: 0,
       y: 0,
       flipped: false,
+      engineOn: true,
       direction: 0,
       planeType: kind,
       team: side,
@@ -165,18 +186,42 @@ export class Plane extends GameObject {
     }
   }
 
+  private accelerate(y: number, engineStatus: boolean, v: number): number {
+    // Also, in the acceleration function you can experiment with drag*v^2,
+    // that's more realistic but will come down to how it feels
+    const engine = engineStatus == true ? 1 : 0;
+    return -y * gravity - this.drag * v + engine * thrust;
+    // return -y * gravity - drag * Math.pow(v, 2) + engine * thrust;
+  }
+
   private move(cache: Cache, deltaTime: number): void {
-    const multiplier = deltaTime / 1000;
-    const scaleSpeed = this.speed * SCALE_FACTOR;
+    const tstep = deltaTime / 1000; // deltatime = milliseconds between frames
     const radians = directionToRadians(this.direction);
-    const deltaX = Math.round(scaleSpeed * Math.cos(radians) * multiplier);
-    const deltaY = Math.round(scaleSpeed * Math.sin(radians) * multiplier);
+    // const cosTheta = Math.cos(this.direction);
+    const sinTheta = Math.sin(radians);
+
+    // y = sin(theta)
+    const accel = this.accelerate(sinTheta, this.engineOn, this.velocity);
+    this.velocity = this.velocity + accel * tstep;
+
+    //console.log(this.velocity);
+    const deltaX = Math.round(this.velocity * Math.cos(radians) * tstep);
+    const deltaY = Math.round(this.velocity * Math.sin(radians) * tstep);
     this.localX += deltaX;
     this.localY += deltaY;
     this.setData(cache, {
       x: Math.round(this.localX / SCALE_FACTOR),
       y: Math.round(this.localY / SCALE_FACTOR)
     });
+    /*
+  const multiplier = deltaTime / 1000;
+  const v = this.speed * SCALE_FACTOR;
+  const radians = directionToRadians(this.direction);
+  const deltaX = Math.round(scaleSpeed * Math.cos(radians) * multiplier);
+  const deltaY = Math.round(scaleSpeed * Math.sin(radians) * multiplier);
+  this.localX += deltaX;
+  this.localY += deltaY;
+  */
   }
 
   public setRotation(cache: Cache, key: InputKey, doRotate: boolean): void {
@@ -208,6 +253,10 @@ export class Plane extends GameObject {
 
   public setFlipped(cache: Cache, status: boolean): void {
     this.set(cache, "flipped", status);
+  }
+
+  public setEngine(cache: Cache, status: boolean): void {
+    this.set(cache, "engineOn", status);
   }
 
   public setPos(cache: Cache, x: number, y: number): void {
