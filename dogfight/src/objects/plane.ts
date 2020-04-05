@@ -1,8 +1,8 @@
 import { GameObjectType, GameObject } from "../object";
 import { Team, SCALE_FACTOR, ROTATION_DIRECTIONS } from "../constants";
 import { Cache, CacheEntry } from "../network/cache";
-import { directionToRadians } from "../physics/helpers";
-import { KeyChangeList, InputKey } from "../input";
+import { directionToRadians, mod } from "../physics/helpers";
+import { InputKey } from "../input";
 
 // Movement Physics
 const thrust = 500 * SCALE_FACTOR;
@@ -40,6 +40,7 @@ interface PlaneInfo {
     ammo: number;
     fireRate: number; // shots per minute
     speed: number; // how fast the aircraft moves in units per second
+    turnRate: number; // degrees turned per second.
     // flight altitude
     // resistance
   };
@@ -50,37 +51,43 @@ export const planeData: PlaneInfo = {
     flightTime: 80,
     ammo: 95,
     fireRate: 500,
-    speed: 330
+    speed: 330,
+    turnRate: 150
   },
   [PlaneType.Bristol]: {
     flightTime: 70,
     ammo: 100,
     fireRate: 600,
-    speed: 281
+    speed: 281,
+    turnRate: 110
   },
   [PlaneType.Fokker]: {
     flightTime: 90,
     ammo: 90,
     fireRate: 454,
-    speed: 292
+    speed: 292,
+    turnRate: 190
   },
   [PlaneType.Junkers]: {
     flightTime: 100,
     ammo: 100,
     fireRate: 18,
-    speed: 271
+    speed: 271,
+    turnRate: 90
   },
   [PlaneType.Salmson]: {
     flightTime: 60,
     ammo: 60,
     fireRate: 316,
-    speed: 317
+    speed: 317,
+    turnRate: 128
   },
   [PlaneType.Sopwith]: {
     flightTime: 80,
     ammo: 80,
     fireRate: 432,
-    speed: 330
+    speed: 330,
+    turnRate: 190
   }
 };
 
@@ -123,6 +130,11 @@ export class Plane extends GameObject {
   // number of milliseconds elapsed to decrease fuel by 1.
   private fuelThreshold: number;
 
+  // number of elapsed ms since last rotation change
+  private rotationCounter: number;
+  // number of degrees to turn per second.
+  private rotationThreshold: number;
+
   public constructor(id: number, cache: Cache, kind: PlaneType, side: Team) {
     super(id);
     // set internal variables
@@ -133,6 +145,11 @@ export class Plane extends GameObject {
     // set fuel decrement threshold
     this.fuelCounter = 0;
     this.fuelThreshold = Math.round(1000 / (255 / planeData[kind].flightTime));
+
+    // rotation variables
+    this.rotationCounter = 0;
+    // degrees per second.
+    this.rotationThreshold = Math.round(1000 / planeData[kind].turnRate);
 
     // physics variables
     // Max speed is set via drag value.
@@ -163,7 +180,7 @@ export class Plane extends GameObject {
 
   // advance the plane simulation
   public tick(cache: Cache, deltaTime: number): void {
-    this.rotate(cache);
+    this.rotate(cache, deltaTime);
     this.move(cache, deltaTime);
     this.burnFuel(cache, deltaTime);
   }
@@ -225,6 +242,7 @@ export class Plane extends GameObject {
   }
 
   public setRotation(cache: Cache, key: InputKey, doRotate: boolean): void {
+    this.rotationCounter = 0;
     if (doRotate == false) {
       this.rotateStatus = PlaneRotationStatus.None;
       return;
@@ -236,15 +254,28 @@ export class Plane extends GameObject {
     }
   }
 
-  public rotate(cache: Cache): void {
+  public rotate(cache: Cache, deltaTime: number): void {
     if (this.rotateStatus == PlaneRotationStatus.None) {
       return;
     }
-    const offset = this.rotateStatus == PlaneRotationStatus.Up ? 1 : -1;
-    const rotateSpeed = 2;
-    const direction =
-      (this.direction + offset * rotateSpeed) % ROTATION_DIRECTIONS;
-    this.setDirection(cache, direction);
+    const upOrDown = this.rotateStatus == PlaneRotationStatus.Up ? 1 : -1;
+    // add time to counter
+    this.rotationCounter += deltaTime;
+
+    // if time elapsed is greater than our threshold,
+    // it's time to rotate
+    if (this.rotationCounter > this.rotationThreshold) {
+      // rotate plane
+      const degreesToRotate = Math.floor(
+        this.rotationCounter / this.rotationThreshold
+      );
+      let newDirection = this.direction + degreesToRotate * upOrDown;
+      newDirection = mod(newDirection, ROTATION_DIRECTIONS);
+      this.rotationCounter = this.rotationCounter % this.rotationThreshold;
+      this.set(cache, "direction", newDirection);
+    }
+    //   (this.direction + offset * rotateSpeed) % ROTATION_DIRECTIONS;
+    // this.setDirection(cache, direction);
   }
 
   public setDirection(cache: Cache, direction: number): void {
