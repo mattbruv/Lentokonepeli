@@ -43,6 +43,16 @@ export class GameClient {
   };
 
   public constructor() {
+    // Initialize game object container
+    this.gameObjects = {};
+    for (const key in GameObjectType) {
+      this.gameObjects[key] = {};
+    }
+
+    // instantiate client UI logic
+    this.teamSelector = new TeamSelector();
+    this.takeoffSelector = new TakeoffSelector();
+
     // create renderer
     this.renderer = new GameRenderer(spriteSheet);
 
@@ -51,14 +61,9 @@ export class GameClient {
     this.canvasHandler.addListeners();
 
     // create network handler
-    this.network = new NetworkHandler();
-    this.network.onPacketRecieved = (data): void => {
+    this.network = new NetworkHandler((data): void => {
       this.processPacket(data);
-    };
-
-    // instantiate client UI logic
-    this.teamSelector = new TeamSelector();
-    this.takeoffSelector = new TakeoffSelector();
+    });
 
     // Add event listeners for input
     this.input = new InputHandler();
@@ -72,12 +77,6 @@ export class GameClient {
     // Draw it to the screen
     const div = document.getElementById("app");
     div.appendChild(this.renderer.getView());
-
-    // Initialize game object container
-    this.gameObjects = {};
-    for (const key in GameObjectType) {
-      this.gameObjects[key] = {};
-    }
 
     // update language
     this.updateLanguage(Localizer.getLanguage());
