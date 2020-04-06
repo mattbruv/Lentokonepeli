@@ -13,6 +13,7 @@ import { TakeoffSelector } from "./takeoffSelector";
 import { radarObjects } from "./render/objects/radar";
 import { NetworkHandler } from "./networkHandler";
 import { InputChange } from "../../dogfight/src/input";
+import { PlayerStatus, Player } from "../../dogfight/src/objects/player";
 
 export class GameClient {
   private renderer: GameRenderer;
@@ -85,7 +86,6 @@ export class GameClient {
   private setMode(mode: ClientMode): void {
     this.mode = mode;
     this.renderer.setMode(mode);
-    // this.renderer.teamChooser.setEnabled(mode == ClientMode.SelectTeam);
     if (this.mode == ClientMode.SelectTeam) {
       this.renderer.teamChooserUI.setSelection(
         this.teamSelector.getSelection()
@@ -95,7 +95,7 @@ export class GameClient {
     if (this.mode == ClientMode.PreFlight) {
       this.takeoffSelector.setTeam(this.playerInfo.team);
       const runways = this.gameObjects[GameObjectType.Runway];
-      this.takeoffSelector.updateRunways(runways, this.renderer);
+      this.takeoffSelector.updateRunways(runways, this.renderer, true);
       const plane = this.takeoffSelector.getPlaneSelection();
       this.renderer.takeoffSelectUI.setPlane(plane);
     }
@@ -112,7 +112,7 @@ export class GameClient {
       }
       case ClientMode.PreFlight: {
         const runways = this.gameObjects[GameObjectType.Runway];
-        this.takeoffSelector.updateRunways(runways, this.renderer);
+        this.takeoffSelector.updateRunways(runways, this.renderer, false);
         this.takeoffSelector.processInput(change, this.renderer, this.network);
         break;
       }
@@ -188,13 +188,17 @@ export class GameClient {
     if (type == GameObjectType.Player && this.playerInfo.id == id) {
       // set following
       this.followObject = {
-        type: object["controlType"],
-        id: object["controlID"]
+        type: object.controlType,
+        id: object.controlID
       };
-      if (this.followObject.type !== GameObjectType.None) {
-        this.setMode(ClientMode.Playing);
-      } else {
-        this.setMode(ClientMode.PreFlight);
+      const status = object.status;
+      if (status !== undefined) {
+        if (status == PlayerStatus.Playing) {
+          this.setMode(ClientMode.Playing);
+        }
+        if (status == PlayerStatus.Takeoff) {
+          this.setMode(ClientMode.PreFlight);
+        }
       }
     }
     // If this is an update to our follow object,

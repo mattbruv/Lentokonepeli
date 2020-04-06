@@ -69,12 +69,9 @@ wss.on("connection", (ws): void => {
       // if they sent a valid key, send it to server.
       if (key in InputKey) {
         // set in our player keys
-        const state = player.inputState[key];
         // if there is an actual difference, send it to the engine.
-        if (state !== isPressed) {
-          world.queueInput(player.id, key, isPressed);
-          player.inputState[key] = isPressed;
-        }
+        world.queueInput(player.id, key, isPressed);
+        player.inputState[key] = isPressed;
       }
     }
 

@@ -51,7 +51,11 @@ export class TakeoffSelector {
     this.runways = [];
   }
 
-  public updateRunways(runways: any, renderer: GameRenderer): void {
+  public updateRunways(
+    runways: any,
+    renderer: GameRenderer,
+    reset: boolean
+  ): void {
     this.runways = [];
     for (const id in runways) {
       const data = runways[id];
@@ -70,7 +74,7 @@ export class TakeoffSelector {
     });
 
     // set default runway if not set.
-    if (this.selectedRunway == undefined) {
+    if (reset) {
       this.setRunway(this.runways[0].id, renderer);
     }
   }

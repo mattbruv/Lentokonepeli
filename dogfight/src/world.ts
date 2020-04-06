@@ -1,6 +1,6 @@
 import { GameMap } from "./map";
 import { Cache } from "./network/cache";
-import { Player } from "./objects/player";
+import { Player, PlayerStatus } from "./objects/player";
 import { Flag } from "./objects/flag";
 import { Ground } from "./objects/ground";
 import { Hill } from "./objects/hill";
@@ -160,6 +160,16 @@ export class GameWorld {
           }
           break;
         }
+        case InputKey.Jump: {
+          // temporary, just destroy the plane for now.
+          if (isPressed) {
+            this.removeObject(plane);
+            // set player info to pre-flight
+            player.setStatus(this.cache, PlayerStatus.Takeoff);
+            player.setControl(this.cache, GameObjectType.None, 0);
+          }
+          break;
+        }
       }
     }
   }
@@ -216,6 +226,7 @@ export class GameWorld {
     this.planes.push(plane);
     // assing plane to player
     player.setControl(this.cache, plane.type, plane.id);
+    player.setStatus(this.cache, PlayerStatus.Playing);
   }
 
   /**
