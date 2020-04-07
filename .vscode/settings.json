@@ -1,16 +1,13 @@
 {
   "eslint.enable": true,
   "eslint.validate": [
+    "vue",
     "javascript",
+    "typescript",
     "javascriptreact",
-    "typescriptreact",
-    {
-      "language": "typescript",
-      "autoFix": true
-    }
+    "typescriptreact"
   ],
   "editor.formatOnSave": true,
-  "eslint.autoFixOnSave": true,
   "editor.tabSize": 2,
   "files.eol": "\n",
   "editor.codeActionsOnSave": {
