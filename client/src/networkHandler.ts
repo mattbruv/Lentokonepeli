@@ -14,7 +14,7 @@ export class NetworkHandler {
 
   private onPacketRecieved: packetCallback;
 
-  private clientOnly = false;
+  private clientOnly = process.env.MODE == "client";
   private clientServer: ClientServer;
 
   public constructor(callback: packetCallback) {
