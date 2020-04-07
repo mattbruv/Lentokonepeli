@@ -1,5 +1,12 @@
-import { Packet, GameObjectSchema, IntByteSizes, IntType } from "./types";
+import {
+  Packet,
+  GameObjectSchema,
+  IntByteSizes,
+  IntType,
+  PacketType
+} from "./types";
 import { schemaTypes } from "./schemas";
+import { InputChange } from "../input";
 
 function getGameObjectSize(data: any, schema: GameObjectSchema): number {
   const typeBytes = 1;
@@ -216,10 +223,15 @@ export function encodeCache(packet: Packet): ArrayBuffer {
   return buffer;
 }
 
-function decodeCache(view: DataView, offset: number, packet: Packet): void {
+export function decodeCache(buffer: ArrayBuffer): Packet {
+  let currentOffset = 0;
+  const view = new DataView(buffer);
+  const type = view.getUint8(currentOffset++);
+  const packet: Packet = {
+    type,
+    data: {}
+  };
   const maxOffset = view.byteLength;
-  let currentOffset = offset;
-
   while (currentOffset < maxOffset) {
     const typeandid = view.getUint32(currentOffset);
     const type = (typeandid >> 24) & 0xff;
@@ -260,7 +272,7 @@ function decodeCache(view: DataView, offset: number, packet: Packet): void {
     });
 
     if (currentOffset >= maxOffset) {
-      return;
+      break;
     }
 
     let totalBools = 0;
@@ -315,20 +327,58 @@ function decodeCache(view: DataView, offset: number, packet: Packet): void {
       }
     });
   }
-}
-
-export function decodePacket(buffer: ArrayBuffer): Packet {
-  const view = new DataView(buffer);
-  const type = view.getUint8(0);
-  const packet: Packet = {
-    type,
-    data: {}
-  };
-  decodeCache(view, 1, packet);
   return packet;
 }
 
-export function encodePacket(packet: Packet): ArrayBuffer {
-  const encoded = encodeCache(packet);
-  return encoded;
+function encodeInput(packet: Packet): ArrayBuffer {
+  const change: InputChange = packet.data;
+  const buffer = new ArrayBuffer(3);
+  const view = new DataView(buffer);
+  view.setUint8(0, packet.type);
+  view.setUint8(1, change.key);
+  view.setUint8(2, change.isPressed ? 1 : 0);
+  return buffer;
+}
+
+function decodeInput(buffer: ArrayBuffer): Packet {
+  const view = new DataView(buffer);
+  const type = view.getUint8(0);
+  const key = view.getUint8(1);
+  const isPressed = view.getUint8(2) == 1;
+  const data: InputChange = { key, isPressed };
+  return { type, data };
+}
+
+export function encodePacket(packet: Packet): string | ArrayBuffer {
+  switch (packet.type) {
+    case PacketType.FullSync:
+    case PacketType.ChangeSync: {
+      return encodeCache(packet);
+    }
+    case PacketType.UserGameInput: {
+      return encodeInput(packet);
+    }
+    default: {
+      return JSON.stringify(packet);
+    }
+  }
+}
+
+export function decodePacket(data: string | ArrayBuffer): Packet {
+  if (typeof data == "string") {
+    const packet = JSON.parse(data);
+    return packet;
+  } else {
+    const view = new DataView(data);
+    const type: PacketType = view.getUint8(0);
+    switch (type) {
+      case PacketType.ChangeSync:
+      case PacketType.FullSync: {
+        return decodeCache(data);
+      }
+      case PacketType.UserGameInput: {
+        return decodeInput(data);
+      }
+    }
+  }
 }

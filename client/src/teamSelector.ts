@@ -1,7 +1,7 @@
-import { InputKey } from "../../dogfight/src/constants";
 import { GameRenderer } from "./render/renderer";
 import { Packet, PacketType } from "../../dogfight/src/network/types";
-import { pack } from "../../dogfight/src/network/packer";
+import { NetworkHandler } from "./networkHandler";
+import { InputChange, InputKey } from "../../dogfight/src/input";
 
 export enum TeamOption {
   Centrals,
@@ -21,10 +21,14 @@ export class TeamSelector {
   }
 
   public processInput(
-    key: InputKey,
+    change: InputChange,
     renderer: GameRenderer,
-    websocket: WebSocket
+    network: NetworkHandler
   ): void {
+    if (!change.isPressed) {
+      return;
+    }
+    const key = change.key;
     if (key === InputKey.Enter) {
       console.log("Requesting to join team:", this.selection);
       const packet: Packet = {
@@ -33,7 +37,7 @@ export class TeamSelector {
           team: this.selection
         }
       };
-      websocket.send(pack(packet));
+      network.send(packet);
       return;
     }
     if (key == InputKey.Left || key == InputKey.Up) {

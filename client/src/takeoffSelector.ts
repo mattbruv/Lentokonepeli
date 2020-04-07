@@ -1,8 +1,9 @@
-import { InputKey, Team, FacingDirection } from "../../dogfight/src/constants";
+import { Team, FacingDirection } from "../../dogfight/src/constants";
 import { GameRenderer } from "./render/renderer";
 import { Packet, PacketType } from "../../dogfight/src/network/types";
-import { pack } from "../../dogfight/src/network/packer";
 import { PlaneType } from "../../dogfight/src/objects/plane";
+import { NetworkHandler } from "./networkHandler";
+import { InputChange, InputKey } from "../../dogfight/src/input";
 
 const centralPlanes: PlaneType[] = [
   PlaneType.Albatros,
@@ -50,7 +51,11 @@ export class TakeoffSelector {
     this.runways = [];
   }
 
-  public updateRunways(runways: any, renderer: GameRenderer): void {
+  public updateRunways(
+    runways: any,
+    renderer: GameRenderer,
+    reset: boolean
+  ): void {
     this.runways = [];
     for (const id in runways) {
       const data = runways[id];
@@ -69,7 +74,7 @@ export class TakeoffSelector {
     });
 
     // set default runway if not set.
-    if (this.selectedRunway == undefined) {
+    if (reset) {
       this.setRunway(this.runways[0].id, renderer);
     }
   }
@@ -120,10 +125,14 @@ export class TakeoffSelector {
   }
 
   public processInput(
-    key: InputKey,
+    change: InputChange,
     renderer: GameRenderer,
-    websocket: WebSocket
+    network: NetworkHandler
   ): void {
+    if (!change.isPressed) {
+      return;
+    }
+    const key = change.key;
     if (key === InputKey.Enter) {
       console.log("Sending takeoff request..");
       const packet: Packet = {
@@ -133,7 +142,7 @@ export class TakeoffSelector {
           runway: parseInt(this.selectedRunway)
         }
       };
-      websocket.send(pack(packet));
+      network.send(packet);
       return;
     }
     if (key == InputKey.Up) {

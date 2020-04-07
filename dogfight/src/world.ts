@@ -1,6 +1,6 @@
 import { GameMap } from "./map";
 import { Cache } from "./network/cache";
-import { Player } from "./objects/player";
+import { Player, PlayerStatus } from "./objects/player";
 import { Flag } from "./objects/flag";
 import { Ground } from "./objects/ground";
 import { Hill } from "./objects/hill";
@@ -12,6 +12,7 @@ import { GameObject, GameObjectType } from "./object";
 import { Team, FacingDirection, ROTATION_DIRECTIONS } from "./constants";
 import { TakeoffRequest, TakeoffEntry } from "./takeoff";
 import { teamPlanes, Plane } from "./objects/plane";
+import { InputQueue, InputKey, KeyChangeList } from "./input";
 
 /**
  * The Game World contains all entites,
@@ -23,6 +24,7 @@ export class GameWorld {
 
   // A queue of takeoff requests to be processed.
   private takeoffQueue: TakeoffEntry[];
+  private inputQueue: InputQueue;
 
   private players: Player[];
   private flags: Flag[];
@@ -33,6 +35,19 @@ export class GameWorld {
   private waters: Water[];
   private planes: Plane[];
   private troopers: Trooper[];
+
+  // god please forgive me for this sin
+  private objectArrays = {
+    [GameObjectType.Player]: "players",
+    [GameObjectType.Flag]: "flags",
+    [GameObjectType.Ground]: "grounds",
+    [GameObjectType.Hill]: "hills",
+    [GameObjectType.Runway]: "runways",
+    [GameObjectType.ControlTower]: "towers",
+    [GameObjectType.Trooper]: "troopers",
+    [GameObjectType.Water]: "waters",
+    [GameObjectType.Plane]: "planes"
+  };
 
   // Next available ID, incremented by 1.
   // Always counts up, never resets.
@@ -49,6 +64,7 @@ export class GameWorld {
   private resetWorld(): void {
     this.clearCache();
     this.takeoffQueue = [];
+    this.inputQueue = {};
 
     this.players = [];
     this.flags = [];
@@ -70,6 +86,7 @@ export class GameWorld {
    * @param timestep Number of milliseconds to advance simulation
    */
   public tick(deltaTime: number): Cache {
+    this.processInputs();
     this.processTakeoffs();
     this.processPlanes(deltaTime);
     return this.cache;
@@ -81,13 +98,83 @@ export class GameWorld {
 
       // if fuel has run out, kill entity.
       if (plane.fuel <= 0) {
-        this.removeObject(this.planes, plane);
+        this.removeObject(plane);
       }
     });
   }
 
+  public queueInput(id: number, key: InputKey, value: boolean): void {
+    if (this.inputQueue[id] === undefined) {
+      this.inputQueue[id] = {};
+    }
+    this.inputQueue[id][key] = value;
+  }
+
+  private processInputs(): void {
+    // process input...
+    for (const playerID in this.inputQueue) {
+      const id = parseInt(playerID);
+      const player = this.getObject(GameObjectType.Player, id) as Player;
+      if (player === undefined) {
+        return;
+      }
+      const cID = player.controlID;
+      const cType = player.controlType;
+      const controlling = this.getObject(cType, cID);
+      if (controlling !== undefined) {
+        switch (cType) {
+          case GameObjectType.Plane: {
+            this.planeInput(player, controlling as Plane, this.inputQueue[id]);
+            break;
+          }
+        }
+      }
+    }
+    // reset queue
+    this.inputQueue = {};
+  }
+
+  public planeInput(
+    player: Player,
+    plane: Plane,
+    changes: KeyChangeList
+  ): void {
+    for (const keyType in changes) {
+      const key: InputKey = parseInt(keyType);
+      const isPressed = changes[keyType];
+      switch (key) {
+        case InputKey.Left:
+        case InputKey.Right: {
+          plane.setRotation(this.cache, key, isPressed);
+          break;
+        }
+        case InputKey.Up: {
+          if (isPressed) {
+            plane.setFlipped(this.cache, !plane.flipped);
+          }
+          break;
+        }
+        case InputKey.Down: {
+          if (isPressed) {
+            plane.setEngine(this.cache, !plane.engineOn);
+          }
+          break;
+        }
+        case InputKey.Jump: {
+          // temporary, just destroy the plane for now.
+          if (isPressed) {
+            this.removeObject(plane);
+            // set player info to pre-flight
+            player.setStatus(this.cache, PlayerStatus.Takeoff);
+            player.setControl(this.cache, GameObjectType.None, 0);
+          }
+          break;
+        }
+      }
+    }
+  }
+
   private processTakeoffs(): void {
-    // console.log(this.takeoffQueue);
     for (const takeoff of this.takeoffQueue) {
       this.doTakeoff(takeoff);
     }
@@ -95,27 +182,26 @@ export class GameWorld {
   }
 
   private doTakeoff(takeoff: TakeoffEntry): void {
-    console.log(takeoff);
     // test if player exists
-    const playerIndex = this.getObjectIndex(this.players, takeoff.playerID);
-    if (playerIndex < 0) {
+    const player = this.getObject(
+      GameObjectType.Player,
+      takeoff.playerID
+    ) as Player;
+    if (player === undefined) {
       return;
     }
-    const player = this.players[playerIndex];
     // make sure he's not controlling anything
     if (player.controlType !== GameObjectType.None) {
       return;
     }
-    const runwayIndex = this.getObjectIndex(
-      this.runways,
+    const runway = this.getObject(
+      GameObjectType.Runway,
       takeoff.request.runway
-    );
-    // test if runway exists
-    if (runwayIndex < 0) {
+    ) as Runway;
+    if (runway === undefined) {
       return;
     }
     // make sure runway isn't dead
-    const runway = this.runways[runwayIndex];
     if (runway.health <= 0) {
       return;
     }
@@ -126,16 +212,21 @@ export class GameWorld {
       takeoff.request.plane,
       player.team
     );
-    plane.setPos(this.cache, runway.x, 200);
+    let offsetX = 100;
+    if (runway.direction == FacingDirection.Right) {
+      offsetX *= -1;
+    }
+    plane.setPos(this.cache, runway.x + offsetX, 10);
     plane.setFlipped(this.cache, runway.direction == FacingDirection.Left);
     const direction =
       runway.direction == FacingDirection.Left
         ? Math.round(ROTATION_DIRECTIONS / 2)
         : 0;
-    plane.setDirection(this.cache, direction + 1);
+    plane.setDirection(this.cache, direction);
     this.planes.push(plane);
     // assing plane to player
     player.setControl(this.cache, plane.type, plane.id);
+    player.setStatus(this.cache, PlayerStatus.Playing);
   }
 
   /**
@@ -145,12 +236,21 @@ export class GameWorld {
   public addPlayer(team: Team): Player {
     const player = new Player(this.nextID(), this.cache);
     player.set(this.cache, "team", team);
-    this.addObject(this.players, player);
+    this.addObject(player);
     return player;
   }
 
   public removePlayer(p: Player): void {
-    this.removeObject(this.players, p);
+    this.removeObject(p);
+  }
+
+  private getObject(type: GameObjectType, id: number): GameObject | undefined {
+    const index = this.getObjectIndex(type, id);
+    if (index < 0) {
+      return undefined;
+    }
+    const array = this[this.objectArrays[type]];
+    return array[index];
   }
 
   public getState(): Cache {
@@ -174,19 +274,21 @@ export class GameWorld {
     return cache;
   }
 
-  private addObject(arr: GameObject[], obj: GameObject): void {
+  private addObject(obj: GameObject): void {
+    const arr = this[this.objectArrays[obj.type]];
     arr.push(obj);
     this.cache[obj.id] = obj.getState();
   }
 
-  private removeObject(arr: GameObject[], obj: GameObject): void {
-    const index = this.getObjectIndex(arr, obj.id);
+  private removeObject(obj: GameObject): void {
+    const index = this.getObjectIndex(obj.type, obj.id);
     if (index < 0) {
       return;
     }
     const type = obj.type;
     const id = obj.id;
 
+    const arr = this[this.objectArrays[obj.type]];
     arr.splice(index, 1);
 
     // Create an empty update in the cache.
@@ -201,10 +303,14 @@ export class GameWorld {
    * @param arr Array of game objects to search through.
    * @param id The ID of the object to find.
    */
-  private getObjectIndex(arr: GameObject[], id: number): number {
+  private getObjectIndex(type: GameObjectType, id: number): number {
     let index = -1;
-    for (let i = 0; i < arr.length; i++) {
-      if (arr[i].id === id) {
+    if (type === GameObjectType.None) {
+      return index;
+    }
+    const array = this[this.objectArrays[type]];
+    for (let i = 0; i < array.length; i++) {
+      if (array[i].id === id) {
         index = i;
         break;
       }
@@ -222,7 +328,7 @@ export class GameWorld {
     if (!teamPlanes[team].includes(plane)) {
       return;
     }
-    const runwayID = this.getObjectIndex(this.runways, runway);
+    const runwayID = this.getObjectIndex(GameObjectType.Runway, runway);
     // if runway exists, add request to queue to be processed.
     if (runwayID >= 0) {
       this.takeoffQueue.push({

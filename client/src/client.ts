@@ -3,8 +3,7 @@ import { GameRenderer } from "./render/renderer";
 import { CanvasEventHandler } from "./render/event";
 import { Localizer } from "./localization/localizer";
 import { Packet, PacketType } from "../../dogfight/src/network/types";
-import { pack, unpack } from "../../dogfight/src/network/packer";
-import { GameInput } from "./input";
+import { InputHandler } from "./inputHandler";
 import { ClientMode } from "./types";
 import { CacheEntry } from "../../dogfight/src/network/cache";
 import { GameObjectType } from "../../dogfight/src/object";
@@ -12,19 +11,16 @@ import { TeamSelector } from "./teamSelector";
 import { Team } from "../../dogfight/src/constants";
 import { TakeoffSelector } from "./takeoffSelector";
 import { radarObjects } from "./render/objects/radar";
-import { decodePacket } from "../../dogfight/src/network/encode";
-
-const wssPath = "ws://" + location.host;
+import { NetworkHandler } from "./networkHandler";
+import { InputChange } from "../../dogfight/src/input";
+import { PlayerStatus, Player } from "../../dogfight/src/objects/player";
 
 export class GameClient {
-  /**
-   * WebSocket connection
-   */
-  private ws: WebSocket;
-
   private renderer: GameRenderer;
 
-  private input: GameInput;
+  private network: NetworkHandler;
+
+  private input: InputHandler;
   private canvasHandler: CanvasEventHandler;
 
   private loadedGame: boolean = false;
@@ -47,6 +43,16 @@ export class GameClient {
   };
 
   public constructor() {
+    // Initialize game object container
+    this.gameObjects = {};
+    for (const key in GameObjectType) {
+      this.gameObjects[key] = {};
+    }
+
+    // instantiate client UI logic
+    this.teamSelector = new TeamSelector();
+    this.takeoffSelector = new TakeoffSelector();
+
     // create renderer
     this.renderer = new GameRenderer(spriteSheet);
 
@@ -54,15 +60,16 @@ export class GameClient {
     this.canvasHandler = new CanvasEventHandler(this.renderer);
     this.canvasHandler.addListeners();
 
-    // instantiate client UI logic
-    this.teamSelector = new TeamSelector();
-    this.takeoffSelector = new TakeoffSelector();
+    // create network handler
+    this.network = new NetworkHandler((data): void => {
+      this.processPacket(data);
+    });
 
     // Add event listeners for input
-    this.input = new GameInput();
-    document.addEventListener("keydown", (event): void => {
-      this.keyDown(event);
-    });
+    this.input = new InputHandler();
+    this.input.processGameKeyChange = (change): void => {
+      this.processGameInput(change);
+    };
 
     // center camera
     this.renderer.centerCamera(0, 150);
@@ -71,38 +78,13 @@ export class GameClient {
     const div = document.getElementById("app");
     div.appendChild(this.renderer.getView());
 
-    // Initialize game object container
-    this.gameObjects = {};
-    for (const key in GameObjectType) {
-      this.gameObjects[key] = {};
-    }
-
     // update language
     this.updateLanguage(Localizer.getLanguage());
-
-    // create connection to server.
-    this.ws = new WebSocket(wssPath);
-    this.ws.binaryType = "arraybuffer";
-
-    this.ws.onopen = (): void => {
-      this.ws.send(pack({ type: PacketType.RequestFullSync }));
-    };
-
-    this.ws.onmessage = (event): void => {
-      if (typeof event.data == "string") {
-        const packet = unpack(event.data);
-        this.processPacket(packet);
-      } else {
-        const packet = decodePacket(event.data);
-        this.processPacket(packet);
-      }
-    };
   }
 
   private setMode(mode: ClientMode): void {
     this.mode = mode;
     this.renderer.setMode(mode);
-    // this.renderer.teamChooser.setEnabled(mode == ClientMode.SelectTeam);
     if (this.mode == ClientMode.SelectTeam) {
       this.renderer.teamChooserUI.setSelection(
         this.teamSelector.getSelection()
@@ -112,7 +94,7 @@ export class GameClient {
     if (this.mode == ClientMode.PreFlight) {
       this.takeoffSelector.setTeam(this.playerInfo.team);
       const runways = this.gameObjects[GameObjectType.Runway];
-      this.takeoffSelector.updateRunways(runways, this.renderer);
+      this.takeoffSelector.updateRunways(runways, this.renderer, true);
       const plane = this.takeoffSelector.getPlaneSelection();
       this.renderer.takeoffSelectUI.setPlane(plane);
     }
@@ -121,21 +103,21 @@ export class GameClient {
     }
   }
 
-  private keyDown(event: KeyboardEvent): void {
-    if (!this.input.isGameKey(event)) {
-      return;
-    }
-    const key = this.input.getGameKey(event);
-
+  private processGameInput(change: InputChange): void {
     switch (this.mode) {
       case ClientMode.SelectTeam: {
-        this.teamSelector.processInput(key, this.renderer, this.ws);
+        this.teamSelector.processInput(change, this.renderer, this.network);
         break;
       }
       case ClientMode.PreFlight: {
         const runways = this.gameObjects[GameObjectType.Runway];
-        this.takeoffSelector.updateRunways(runways, this.renderer);
-        this.takeoffSelector.processInput(key, this.renderer, this.ws);
+        this.takeoffSelector.updateRunways(runways, this.renderer, false);
+        this.takeoffSelector.processInput(change, this.renderer, this.network);
+        break;
+      }
+      case ClientMode.Playing: {
+        const packet: Packet = { type: PacketType.UserGameInput, data: change };
+        this.network.send(packet);
         break;
       }
     }
@@ -205,13 +187,17 @@ export class GameClient {
     if (type == GameObjectType.Player && this.playerInfo.id == id) {
       // set following
       this.followObject = {
-        type: object["controlType"],
-        id: object["controlID"]
+        type: object.controlType,
+        id: object.controlID
       };
-      if (this.followObject.type !== GameObjectType.None) {
-        this.setMode(ClientMode.Playing);
-      } else {
-        this.setMode(ClientMode.PreFlight);
+      const status = object.status;
+      if (status !== undefined) {
+        if (status == PlayerStatus.Playing) {
+          this.setMode(ClientMode.Playing);
+        }
+        if (status == PlayerStatus.Takeoff) {
+          this.setMode(ClientMode.PreFlight);
+        }
       }
     }
     // If this is an update to our follow object,

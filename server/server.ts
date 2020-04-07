@@ -4,12 +4,12 @@ import * as http from "http";
 import * as WebSocket from "ws";
 import { GameWorld } from "../dogfight/src/world";
 import { MAP_CLASSIC } from "../dogfight/src/maps/classic";
-import { pack, unpack } from "../dogfight/src/network/packer";
 import { PacketType, Packet } from "../dogfight/src/network/types";
 import { Player } from "../dogfight/src/objects/player";
 import { TeamOption } from "../client/src/teamSelector";
 import { Team } from "../dogfight/src/constants";
-import { encodePacket } from "../dogfight/src/network/encode";
+import { decodePacket, encodePacket } from "../dogfight/src/network/encode";
+import { InputChange, InputKey } from "../dogfight/src/input";
 
 const PORT = 3259;
 
@@ -46,21 +46,34 @@ function loop(): void {
       }
     });
   }
-  // console.log(updates);
   lastTick = currentTick;
 }
 
-setInterval(loop, 1000 / 30);
+setInterval(loop, 1000 / 60);
 
 wss.on("connection", (ws): void => {
   console.log("New connection!");
+  ws.binaryType = "arraybuffer";
 
   let player: Player = undefined;
 
   ws.on("message", (message): void => {
     // parse into packet structure
-    const packet = unpack(message as string);
-    console.log("Recieved", packet);
+    const packet = decodePacket(message as string | ArrayBuffer);
+
+    // process user input
+    if (packet.type == PacketType.UserGameInput) {
+      const data: InputChange = packet.data;
+      const key = data.key;
+      const isPressed = data.isPressed === true;
+      // if they sent a valid key, send it to server.
+      if (key in InputKey) {
+        // set in our player keys
+        // if there is an actual difference, send it to the engine.
+        world.queueInput(player.id, key, isPressed);
+        player.inputState[key] = isPressed;
+      }
+    }
 
     // send world state to newly connected player.
     if (packet.type == PacketType.RequestFullSync) {
@@ -101,7 +114,7 @@ wss.on("connection", (ws): void => {
         type: PacketType.AssignPlayer,
         data: { id: player.id, team: player.team }
       };
-      ws.send(pack(response));
+      ws.send(encodePacket(response));
       return;
     }
   });

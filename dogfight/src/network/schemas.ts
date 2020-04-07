@@ -13,7 +13,7 @@ const planeSchema: GameObjectSchema = {
     { name: "ammo", intType: IntType.Uint8 },
     { name: "bombs", intType: IntType.Uint8 }
   ],
-  booleans: ["flipped"],
+  booleans: ["flipped", "engineOn"],
   strings: []
 };
 
