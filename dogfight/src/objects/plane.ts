@@ -6,7 +6,7 @@ import { InputKey } from "../input";
 
 // Movement Physics
 const w0 = 128;
-const gravity = 150;// * SCALE_FACTOR;
+const gravity = 200;// * SCALE_FACTOR;
 
 export enum PlaneType {
   Albatros,
@@ -151,7 +151,7 @@ export class Plane extends GameObject {
     this.turnDirection = 0;
     this.fc = 0;
     this.v = 0;
-    this.thrust = 500;// * SCALE_FACTOR;
+    this.thrust = 150;// * SCALE_FACTOR;
     this.maxSpeed = 350;// * SCALE_FACTOR;
     this.stallV = 100;// * SCALE_FACTOR;
     this.R = 150;// * SCALE_FACTOR;
