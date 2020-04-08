@@ -33,10 +33,12 @@ interface PlaneInfo {
     ammo: number;
     fireRate: number; // shots per minute
     speed: number; // how fast the aircraft moves in units per second
-    turnRate: number; // degrees turned per second.
-    // flight altitude
-    // resistance
-  };
+    thrust: number; // engine acceleration
+    maxSpeed: number; // maximum horizontal speed
+    minSpeed: number; // minimum speed to not stall
+    turnRadius: number; // turning radius
+    maxAltitude: number; //Force stall above this height
+  }
 }
 
 export const planeData: PlaneInfo = {
@@ -45,42 +47,66 @@ export const planeData: PlaneInfo = {
     ammo: 95,
     fireRate: 500,
     speed: 330,
-    turnRate: 150
+    thrust: 275,
+    maxSpeed: 330,
+    minSpeed: 200,
+    turnRadius: 130,
+    maxAltitude: 950
   },
   [PlaneType.Bristol]: {
     flightTime: 70,
     ammo: 100,
     fireRate: 600,
     speed: 281,
-    turnRate: 110
+    thrust: 275,
+    maxSpeed: 280,
+    minSpeed: 200,
+    turnRadius: 180,
+    maxAltitude: 900
   },
-  [PlaneType.Fokker]: {
+  [PlaneType.Fokker]: { //fast boi
     flightTime: 90,
     ammo: 90,
     fireRate: 454,
     speed: 292,
-    turnRate: 190
+    thrust: 275,
+    maxSpeed: 290,
+    minSpeed: 150,
+    turnRadius: 105,
+    maxAltitude: 850
   },
   [PlaneType.Junkers]: {
     flightTime: 100,
     ammo: 100,
     fireRate: 18,
     speed: 271,
-    turnRate: 90
+    thrust: 275,
+    maxSpeed: 270,
+    minSpeed: 200,
+    turnRadius: 220,
+    maxAltitude: 750
   },
   [PlaneType.Salmson]: {
     flightTime: 60,
     ammo: 60,
     fireRate: 316,
     speed: 317,
-    turnRate: 128
+    thrust: 275,
+    maxSpeed: 320,
+    minSpeed: 200,
+    turnRadius: 155,
+    maxAltitude: 1000
   },
-  [PlaneType.Sopwith]: {
+  [PlaneType.Sopwith]: { //fast boi
     flightTime: 80,
     ammo: 80,
     fireRate: 432,
     speed: 330,
-    turnRate: 190
+    thrust: 275,
+    maxSpeed: 330,
+    minSpeed: 200,
+    turnRadius: 105,
+    maxAltitude: 800
   }
 };
 
@@ -142,11 +168,11 @@ export class Plane extends GameObject {
   public constructor(id: number, cache: Cache, kind: PlaneType, side: Team) {
     super(id);
     // These 5 variables can be tweaked for diff planes.
-    this.thrust = 250;// * SCALE_FACTOR;  // engine acceleration
-    this.maxSpeed = 350;// * SCALE_FACTOR; // maximum horizontal speed
-    this.minSpeed = 150;// * SCALE_FACTOR; // minimum speed to not stall
-    this.turnRadius = 150;// * SCALE_FACTOR; // turning radius
-    this.maxAltitude = 1000; //Force stall above this height
+    this.thrust = planeData[kind].thrust;// * SCALE_FACTOR;  // engine acceleration
+    this.maxSpeed = planeData[kind].maxSpeed;// * SCALE_FACTOR; // maximum horizontal speed
+    this.minSpeed = planeData[kind].minSpeed;// * SCALE_FACTOR; // minimum speed to not stall
+    this.turnRadius = planeData[kind].turnRadius;// * SCALE_FACTOR; // turning radius
+    this.maxAltitude = planeData[kind].maxAltitude; //Force stall above this height
     // set internal variables
     this.px = 2096; // x position
     this.py = 500; // y position
@@ -168,7 +194,8 @@ export class Plane extends GameObject {
     // rotation variables
     this.rotationCounter = 0;
     // degrees per second.
-    this.rotationThreshold = Math.round(1000 / planeData[kind].turnRate);
+    //this.rotationThreshold = Math.round(1000 / planeData[kind].turnRate);
+    this.rotationThreshold = w0 / 4;
 
     // physics variables
     // Max speed is set via drag value.
@@ -254,7 +281,7 @@ export class Plane extends GameObject {
   private move(cache: Cache, deltaTime: number): void {
     //console.log("speed:", this.speed, 'fc:', this.fc, "angle:", this.direction, "turn angle:", this.turnDirection);
     //console.log('px:', this.px, 'py:', this.py, 'vx:', this.vx, 'vy:', this.vy, 'ax:', this.ax, 'ay:', this.ay);
-    console.log('speed:', Math.round(this.speed), 'px:', Math.round(this.px), 'py:', Math.round(this.py));
+    console.log('speed:', Math.round(this.speed), 'px:', Math.round(this.px), 'py:', Math.round(this.py), 'angle:', this.direction);
     const tstep = deltaTime / 1000; // deltatime = milliseconds between frames
 
     this.speed = Math.pow(Math.pow(this.vx, 2) + Math.pow(this.vy, 2), 0.5);
