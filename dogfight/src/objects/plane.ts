@@ -6,7 +6,7 @@ import { InputKey } from "../input";
 
 // Movement Physics
 const w0 = 128;
-const gravity = 200;// * SCALE_FACTOR;
+const gravity = 350;// * SCALE_FACTOR;
 
 export enum PlaneType {
   Albatros,
@@ -141,21 +141,21 @@ export class Plane extends GameObject {
   public constructor(id: number, cache: Cache, kind: PlaneType, side: Team) {
     super(id);
     // set internal variables
-    this.px = 0;
-    this.py = 0;
-    this.vx = 0;
-    this.vy = 0;
-    this.ax = 0;
-    this.ay = 0;
-    this.direction = 0;
-    this.turnDirection = 0;
-    this.fc = 0;
-    this.v = 0;
-    this.thrust = 150;// * SCALE_FACTOR;
-    this.maxSpeed = 350;// * SCALE_FACTOR;
-    this.stallV = 100;// * SCALE_FACTOR;
-    this.R = 150;// * SCALE_FACTOR;
-    this.d = this.thrust / Math.pow(this.maxSpeed, 2);
+    this.px = 0; // x position
+    this.py = 0; // y position
+    this.vx = 0; // x velocity
+    this.vy = 0; // y velocity
+    this.ax = 0; // x acceleration
+    this.ay = 0; // y acceleration
+    this.direction = 0; // forward angle
+    this.turnDirection = 0; // angle towards turn
+    this.fc = 0; // centripetal force
+    this.v = 0; // speed
+    this.thrust = 285;// * SCALE_FACTOR;  // engine acceleration
+    this.maxSpeed = 350;// * SCALE_FACTOR; // maximum horizontal speed
+    this.stallV = 100;// * SCALE_FACTOR; // minimum speed to not stall
+    this.R = 150;// * SCALE_FACTOR; // turning radius
+    this.d = this.thrust / Math.pow(this.maxSpeed, 2); // drag coefficient
     this.rotateStatus = PlaneRotationStatus.None;
 
     // set fuel decrement threshold
@@ -260,7 +260,7 @@ export class Plane extends GameObject {
     this.px += this.vx * tstep;
     this.py += this.vy * tstep;
 
-    this.direction = Math.floor(w0 * Math.atan2(this.vy, this.vx) / Math.PI);
+    this.direction = Math.round(w0 * Math.atan2(this.vy, this.vx) / Math.PI);
     this.setData(cache, {
       x: Math.round(this.px),//   /SCALE_FACTOR),
       y: Math.round(this.py)//   /SCALE_FACTOR)
@@ -301,7 +301,7 @@ export class Plane extends GameObject {
       this.set(cache, "direction", newDirection);
     }
     //   (this.direction + offset * rotateSpeed) % ROTATION_DIRECTIONS;
-    // this.setDirection(cache, direction);
+    //this.setDirection(cache, direction);
   }
 
   public setDirection(cache: Cache, direction: number): void {
