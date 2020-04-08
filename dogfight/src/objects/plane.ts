@@ -6,7 +6,7 @@ import { InputKey } from "../input";
 
 // Movement Physics
 const w0 = 128;
-const gravity = 200;// * SCALE_FACTOR;
+const gravity = 150;// * SCALE_FACTOR;
 
 export enum PlaneType {
   Albatros,
@@ -151,9 +151,9 @@ export class Plane extends GameObject {
     this.turnDirection = 0;
     this.fc = 0;
     this.v = 0;
-    this.thrust = 150;// * SCALE_FACTOR;
+    this.thrust = 500;// * SCALE_FACTOR;
     this.maxSpeed = 350;// * SCALE_FACTOR;
-    this.stallV = 50;// * SCALE_FACTOR;
+    this.stallV = 100;// * SCALE_FACTOR;
     this.R = 150;// * SCALE_FACTOR;
     this.d = this.thrust / Math.pow(this.maxSpeed, 2);
     this.rotateStatus = PlaneRotationStatus.None;
@@ -229,13 +229,13 @@ export class Plane extends GameObject {
 
   private flight(): void {
     const engine = this.engineOn == true ? 1 : 0;
-    const flipped = this.flipped == true ? 1 : -1;
+    const flipped = this.flipped == true ? 1 : 1;
     if (this.rotateStatus == PlaneRotationStatus.Up) {
-      this.turnDirection = this.direction + flipped * w0 / 1.95;
-      this.fc = Math.pow(this.v, 2) / this.R - this.d * Math.pow(this.v, 2);
+      this.turnDirection = this.direction + flipped * w0 / 2;
+      this.fc = Math.pow(this.v, 2) / this.R;
     } else if (this.rotateStatus == PlaneRotationStatus.Down) {
-      this.turnDirection = this.direction - flipped * w0 / 1.95;
-      this.fc = Math.pow(this.v, 2) / this.R - this.d * Math.pow(this.v, 2);
+      this.turnDirection = this.direction - flipped * w0 / 2;
+      this.fc = Math.pow(this.v, 2) / this.R;
     } else {
       this.fc = 0;
     }
@@ -250,7 +250,7 @@ export class Plane extends GameObject {
     const tstep = deltaTime / 1000; // deltatime = milliseconds between frames
 
     this.v = Math.pow(Math.pow(this.vx, 2) + Math.pow(this.vy, 2), 0.5);
-    if (this.v < this.stallV || (!this.engineOn && this.rotateStatus == PlaneRotationStatus.None)) {
+    if (this.v < this.stallV) { // || (!this.engineOn && this.rotateStatus == PlaneRotationStatus.None)) {
       this.ballistic();
     } else {
       this.flight();
