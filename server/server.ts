@@ -70,8 +70,8 @@ wss.on("connection", (ws): void => {
       if (key in InputKey) {
         // set in our player keys
         // if there is an actual difference, send it to the engine.
-        world.queueInput(player.id, key, isPressed);
         player.inputState[key] = isPressed;
+        world.queueInput(player.id, key, isPressed);
       }
     }
 

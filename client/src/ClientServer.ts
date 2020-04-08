@@ -42,6 +42,7 @@ export class ClientServer {
       case PacketType.UserGameInput: {
         const key = packet.data.key;
         const isPressed = packet.data.isPressed === true;
+        this.player.inputState[key] = isPressed;
         this.world.queueInput(this.player.id, key, isPressed);
         break;
       }
