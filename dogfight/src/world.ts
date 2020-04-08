@@ -171,12 +171,12 @@ export class GameWorld {
         }
       }
     }
-    if(player.inputState[InputKey.Left] && !player.inputState[InputKey.Right])
-          plane.setRotation(this.cache, InputKey.Left, true);
-    if(!player.inputState[InputKey.Left] && player.inputState[InputKey.Right])
-          plane.setRotation(this.cache, InputKey.Right, true);
-    if(player.inputState[InputKey.Left] == player.inputState[InputKey.Right])
-          plane.setRotation(this.cache, InputKey.Right, false);
+    if (player.inputState[InputKey.Left] && !player.inputState[InputKey.Right])
+      plane.setRotation(this.cache, InputKey.Left, true);
+    if (!player.inputState[InputKey.Left] && player.inputState[InputKey.Right])
+      plane.setRotation(this.cache, InputKey.Right, true);
+    if (player.inputState[InputKey.Left] == player.inputState[InputKey.Right])
+      plane.setRotation(this.cache, InputKey.Right, false);
   }
 
   private processTakeoffs(): void {

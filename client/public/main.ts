@@ -5,27 +5,28 @@ import { GameClient } from "../src/client";
 
 import App from "../src/components/app.vue";
 import Vue from "vue";
+import Vuex from "vuex";
 import { VNode } from "vue/types/umd";
+import { GameObjectType } from "../../dogfight/src/object";
 
 Vue.config.productionTip = false;
-
-const info = {
-  a: "foo",
-  b: 0
-};
-
-window.setInterval((): void => {
-  info.b++;
-}, 500);
+Vue.use(Vuex);
 
 function init(): void {
+  const client = new GameClient();
+
+  const store = new Vuex.Store({
+    state: {
+      client: client
+    }
+  });
+
   // create game client engine
   const vm = new Vue({
     el: "#app",
-    data: info,
+    store,
     render: (h): VNode => h(App)
   });
-  console.log(App);
 }
 
 /**
@@ -56,6 +57,7 @@ function addLanguageSelect(): void {
  */
 
 window.addEventListener("load", (): void => {
-  loadSpriteSheet(init);
+  init();
+  // loadSpriteSheet(init);
   //  addLanguageSelect();
 });

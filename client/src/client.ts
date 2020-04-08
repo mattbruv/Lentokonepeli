@@ -1,4 +1,4 @@
-import { spriteSheet } from "./render/textures";
+import { spriteSheet, loadSpriteSheet } from "./render/textures";
 import { GameRenderer } from "./render/renderer";
 import { CanvasEventHandler } from "./render/event";
 import { Localizer } from "./localization/localizer";
@@ -13,7 +13,7 @@ import { TakeoffSelector } from "./takeoffSelector";
 import { radarObjects } from "./render/objects/radar";
 import { NetworkHandler } from "./networkHandler";
 import { InputChange } from "../../dogfight/src/input";
-import { PlayerStatus, Player } from "../../dogfight/src/objects/player";
+import { PlayerStatus } from "../../dogfight/src/objects/player";
 
 export class GameClient {
   private renderer: GameRenderer;
@@ -23,14 +23,14 @@ export class GameClient {
   private input: InputHandler;
   private canvasHandler: CanvasEventHandler;
 
-  private loadedGame: boolean = false;
+  public loadedGame: boolean = false;
   private mode: ClientMode;
 
   // Client UI Logic classes
   private teamSelector: TeamSelector;
   private takeoffSelector: TakeoffSelector;
 
-  private gameObjects = {};
+  public gameObjects: {};
 
   private playerInfo = {
     id: undefined,
@@ -46,13 +46,22 @@ export class GameClient {
     // Initialize game object container
     this.gameObjects = {};
     for (const key in GameObjectType) {
-      this.gameObjects[key] = {};
+      this.gameObjects[key] = {
+        updated: Date.now()
+      };
     }
 
     // instantiate client UI logic
     this.teamSelector = new TeamSelector();
     this.takeoffSelector = new TakeoffSelector();
 
+    loadSpriteSheet((): void => {
+      this.initRenderer();
+    });
+  }
+
+  private initRenderer(): void {
+    // initialize renderer stuff here
     // create renderer
     this.renderer = new GameRenderer(spriteSheet);
 
@@ -65,21 +74,21 @@ export class GameClient {
       this.processPacket(data);
     });
 
+    // center camera
+    this.renderer.centerCamera(0, 150);
+
+    // Draw it to the screen
+    const div = document.getElementById("game");
+    div.appendChild(this.renderer.getView());
+
+    // update language
+    this.updateLanguage(Localizer.getLanguage());
+
     // Add event listeners for input
     this.input = new InputHandler();
     this.input.processGameKeyChange = (change): void => {
       this.processGameInput(change);
     };
-
-    // center camera
-    this.renderer.centerCamera(0, 150);
-
-    // Draw it to the screen
-    const div = document.getElementById("app");
-    div.appendChild(this.renderer.getView());
-
-    // update language
-    this.updateLanguage(Localizer.getLanguage());
   }
 
   private setMode(mode: ClientMode): void {
@@ -175,6 +184,7 @@ export class GameClient {
       let value = data[key];
       object[key] = value;
     }
+    this.gameObjects[type].updated = Date.now();
 
     this.renderer.updateSprite(type, id, data);
 
@@ -219,6 +229,7 @@ export class GameClient {
       };
     }
     delete this.gameObjects[type][id];
+    this.gameObjects[type].updated = Date.now();
     this.renderer.deleteSprite(type, id);
     this.renderer.HUD.radar.refreshRadar(this.gameObjects);
   }
