@@ -1,7 +1,15 @@
 <template>
   <div id="physics">
     <!-- Physics shit goes here -->
-    <div></div>
+    <div>
+      <b>Global physics:</b>
+      <br />
+      <label>Gravity</label>
+      <input type="text" v-model.number="globals.gravity" />
+      <br />
+      <label>Recovery Angle</label>
+      <input type="text" v-model.number="globals.recoveryAngle" />
+    </div>
     <div
       class="planevar"
       v-for="(value, id) in planeInfo"
@@ -10,14 +18,23 @@
     >
       <b>{{ planeName(id) }}:</b>
       <br />
-      <label>Speed</label>
-      <input type="text" v-model="planeInfo[id].speed" />
+      <label>Thrust</label>
+      <input type="text" v-model.number="planeInfo[id].thrust" />
       <br />
-      <label>Turn Rate</label>
-      <input type="text" v-model="planeInfo[id].turnRate" />
+      <label>Max Speed</label>
+      <input type="text" v-model.number="planeInfo[id].maxSpeed" />
+      <br />
+      <label>Min Speed</label>
+      <input type="text" v-model.number="planeInfo[id].minSpeed" />
+      <br />
+      <label>Turn Radius</label>
+      <input type="text" v-model.number="planeInfo[id].turnRadius" />
+      <br />
+      <label>Max Altitude</label>
+      <input type="text" v-model.number="planeInfo[id].maxAltitude" />
       <br />
       <label>Flight Time</label>
-      <input type="text" v-model="planeInfo[id].flightTime" />
+      <input type="text" v-model.number="planeInfo[id].flightTime" />
       <br />
     </div>
   </div>
@@ -25,11 +42,14 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { PlaneType } from "../../../dogfight/src/objects/plane";
+import { PlaneType, planeGlobals } from "../../../dogfight/src/objects/plane";
 export default Vue.extend({
   computed: {
     planeInfo() {
       return this.$store.state.planeInfo;
+    },
+    globals() {
+      return planeGlobals;
     }
   },
   methods: {

@@ -1,12 +1,18 @@
 import { GameObjectType, GameObject } from "../object";
 import { Team, SCALE_FACTOR, ROTATION_DIRECTIONS } from "../constants";
 import { Cache, CacheEntry } from "../network/cache";
-import { directionToRadians, mod } from "../physics/helpers";
+import { mod } from "../physics/helpers";
 import { InputKey } from "../input";
 
 // Movement Physics
-const w0 = 128;
-const gravity = 300 * SCALE_FACTOR;
+// const w0 = 128;
+// const gravity = 300 * SCALE_FACTOR;
+
+export const planeGlobals = {
+  w0: Math.round(ROTATION_DIRECTIONS / 2),
+  gravity: 300,
+  recoveryAngle: 40
+};
 
 export enum PlaneType {
   Albatros,
@@ -147,7 +153,7 @@ export class Plane extends GameObject {
   public minSpeed: number; // Stall velocity. Below this stalls the plane.
   private turnRadius: number; // How wide a plane turns.
   private maxAltitude: number; // How high the plane can fly
-  private recoveryAngle: number; // The angle from horizontal after which you gain control during a stall
+  // private recoveryAngle: number; // The angle from horizontal after which you gain control during a stall
 
   // number of elapsed milliseconds since last fuel decrease.
   private fuelCounter: number;
@@ -169,7 +175,7 @@ export class Plane extends GameObject {
     this.maxAltitude = planeData[kind].maxAltitude * SCALE_FACTOR; //Force stall above this height
 
     // global for now, could be unique to each plane in the future.
-    this.recoveryAngle = w0 / 3; // (fastest recovery) -w0/2 < angle < w0/2 (slowest recovery)
+    // this.recoveryAngle = planeGlobals.w0 / 3; // (fastest recovery) -w0/2 < angle < w0/2 (slowest recovery)
 
     // set internal variables
     this.px = 0; // x position
@@ -192,7 +198,8 @@ export class Plane extends GameObject {
     // rotation variables
     this.rotationCounter = 0;
     // degrees per second.
-    this.rotationThreshold = w0 / 10;
+    this.rotationThreshold = planeGlobals.w0 / 10;
+    console.log(planeGlobals);
 
     // set networked variables
     this.setData(cache, {
@@ -227,10 +234,13 @@ export class Plane extends GameObject {
     this.speed = Math.pow(Math.pow(this.vx, 2) + Math.pow(this.vy, 2), 0.5);
 
     const ifStalling = this.speed < this.minSpeed || this.py > this.maxAltitude;
+    const w0 = planeGlobals.w0;
+
+    const recoveryAngle = planeGlobals.recoveryAngle;
 
     const aboveRecoveryAngle = !(
-      this.direction >= w0 + this.recoveryAngle &&
-      this.direction <= 2 * w0 - this.recoveryAngle
+      this.direction >= w0 + recoveryAngle &&
+      this.direction <= 2 * w0 - recoveryAngle
     );
 
     if (ifStalling && aboveRecoveryAngle) {
@@ -258,6 +268,8 @@ export class Plane extends GameObject {
   }
 
   private moveBallistic(): void {
+    const w0 = planeGlobals.w0;
+    const gravity = planeGlobals.gravity * SCALE_FACTOR;
     this.ax =
       -this.drag *
       Math.pow(this.speed, 2) *
@@ -271,6 +283,8 @@ export class Plane extends GameObject {
 
   private moveFlight(): void {
     const engine = this.engineOn == true ? 1 : 0;
+    const w0 = planeGlobals.w0;
+    console.log(planeGlobals);
 
     // Calculate the current angle based on which direction we're trying to turn.
     // And calculate centripetal force
@@ -284,6 +298,7 @@ export class Plane extends GameObject {
       this.fc = 0;
     }
     // Acelleration in forward direction
+    const gravity = planeGlobals.gravity * SCALE_FACTOR;
     const dv =
       engine * this.thrust -
       this.drag * Math.pow(this.speed, 2) -
