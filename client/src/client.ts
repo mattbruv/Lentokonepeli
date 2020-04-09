@@ -24,7 +24,7 @@ export class GameClient {
   private canvasHandler: CanvasEventHandler;
 
   public loadedGame: boolean = false;
-  private mode: ClientMode;
+  public mode: ClientMode = ClientMode.SelectTeam;
 
   // Client UI Logic classes
   private teamSelector: TeamSelector;
@@ -37,7 +37,7 @@ export class GameClient {
     team: undefined
   };
 
-  private followObject = {
+  public followObject = {
     type: GameObjectType.None,
     id: undefined
   };
@@ -89,6 +89,10 @@ export class GameClient {
     this.input.processGameKeyChange = (change): void => {
       this.processGameInput(change);
     };
+  }
+
+  public getFollowObject(): any | undefined {
+    return this.gameObjects[this.followObject.type][this.followObject.id];
   }
 
   private setMode(mode: ClientMode): void {

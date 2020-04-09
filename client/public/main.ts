@@ -8,6 +8,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import { VNode } from "vue/types/umd";
 import { GameObjectType } from "../../dogfight/src/object";
+import { planeData } from "../../dogfight/src/objects/plane";
 
 Vue.config.productionTip = false;
 Vue.use(Vuex);
@@ -17,7 +18,8 @@ function init(): void {
 
   const store = new Vuex.Store({
     state: {
-      client: client
+      client: client,
+      planeInfo: planeData
     }
   });
 

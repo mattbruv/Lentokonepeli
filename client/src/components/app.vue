@@ -1,17 +1,23 @@
 <template>
   <div id="app">
     <div id="game"></div>
-    <div>{{ planes }}</div>
+    <Physics />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
+import Physics from "./physics.vue";
 import { GameObjectType } from "../../../dogfight/src/object";
+import { ClientMode } from "../types";
 export default Vue.extend({
+  components: {
+    Physics
+  },
   computed: {
-    planes() {
-      return this.$store.state.client.gameObjects[GameObjectType.Plane];
+    status() {
+      const mode = this.$store.state.client.mode;
+      return ClientMode[mode];
     }
   }
 });
