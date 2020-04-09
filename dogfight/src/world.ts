@@ -215,7 +215,7 @@ export class GameWorld {
       this.nextID(),
       this.cache,
       takeoff.request.plane,
-      player.team,
+      player.team
     );
     let offsetX = 100;
     let simpleDirection = -1;
@@ -224,7 +224,7 @@ export class GameWorld {
       simpleDirection = 1;
     }
     plane.setPos(this.cache, runway.x + offsetX, 10);
-    plane.setVel(this.cache, plane.minSpeed * simpleDirection * 1.1, 0);
+    plane.setVelocity(this.cache, plane.minSpeed * simpleDirection * 1.1, 0);
     plane.setFlipped(this.cache, runway.direction == FacingDirection.Left);
     const direction =
       runway.direction == FacingDirection.Left

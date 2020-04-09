@@ -37,7 +37,7 @@ interface PlaneInfo {
     minSpeed: number; // minimum speed to not stall
     turnRadius: number; // turning radius
     maxAltitude: number; //Force stall above this height
-  }
+  };
 }
 
 export const planeData: PlaneInfo = {
@@ -132,22 +132,22 @@ export class Plane extends GameObject {
   private rotateStatus: PlaneRotationStatus;
 
   // physics variables
-  private px: number;
-  private py: number;
-  private vx: number;
-  private vy: number;
-  private ax: number;
-  private ay: number;
-  private turnDirection: number;
-  private fc: number;
-  private speed: number;
-  private drag: number;
-  private thrust: number;
-  private maxSpeed: number;
-  public minSpeed: number;
-  private turnRadius: number;
-  private maxAltitude: number;
-  private recoveryAngle: number;
+  private px: number; // local scaled X position
+  private py: number; // local scaled Y position
+  private vx: number; // velocity in X direction
+  private vy: number; // velocity in Y direction
+  private ax: number; // acceleration in X direction
+  private ay: number; // acceleration in Y direction
+  private turnDirection: number; // 90 degree angle relative to our current direction and turn path
+  private fc: number; // Centripetal force
+  private speed: number; // Current speed of the plane
+  private drag: number; // How well the plane's momentum is carried
+  private thrust: number; // Acelleration of the engine
+  private maxSpeed: number; // Top engine speed of the plane
+  public minSpeed: number; // Stall velocity. Below this stalls the plane.
+  private turnRadius: number; // How wide a plane turns.
+  private maxAltitude: number; // How high the plane can fly
+  private recoveryAngle: number; // The angle from horizontal after which you gain control during a stall
 
   // number of elapsed milliseconds since last fuel decrease.
   private fuelCounter: number;
@@ -162,12 +162,15 @@ export class Plane extends GameObject {
   public constructor(id: number, cache: Cache, kind: PlaneType, side: Team) {
     super(id);
     // These 5 variables can be tweaked for diff planes.
-    this.thrust = planeData[kind].thrust * SCALE_FACTOR;  // engine acceleration
+    this.thrust = planeData[kind].thrust * SCALE_FACTOR; // engine acceleration
     this.maxSpeed = planeData[kind].maxSpeed * SCALE_FACTOR; // maximum horizontal speed
     this.minSpeed = planeData[kind].minSpeed * SCALE_FACTOR; // minimum speed to not stall
     this.turnRadius = planeData[kind].turnRadius * SCALE_FACTOR; // turning radius
     this.maxAltitude = planeData[kind].maxAltitude * SCALE_FACTOR; //Force stall above this height
+
+    // global for now, could be unique to each plane in the future.
     this.recoveryAngle = w0 / 3; // (fastest recovery) -w0/2 < angle < w0/2 (slowest recovery)
+
     // set internal variables
     this.px = 0; // x position
     this.py = 0; // y position
@@ -189,13 +192,7 @@ export class Plane extends GameObject {
     // rotation variables
     this.rotationCounter = 0;
     // degrees per second.
-    this.rotationThreshold = w0 / 4;
-
-    // physics variables
-    // Max speed is set via drag value.
-    // figured out relative to other forces.
-    //const speed = planeData[kind].speed;
-    //this.d = Math.round(thrust / SCALE_FACTOR) / speed;
+    this.rotationThreshold = w0 / 10;
 
     // set networked variables
     this.setData(cache, {
@@ -221,6 +218,113 @@ export class Plane extends GameObject {
     this.rotate(cache, deltaTime);
     this.move(cache, deltaTime);
     this.burnFuel(cache, deltaTime);
+  }
+
+  private move(cache: Cache, deltaTime: number): void {
+    const tstep = deltaTime / 1000; // deltatime = milliseconds between frames
+
+    // Pythagorean theroum
+    this.speed = Math.pow(Math.pow(this.vx, 2) + Math.pow(this.vy, 2), 0.5);
+
+    const ifStalling = this.speed < this.minSpeed || this.py > this.maxAltitude;
+
+    const aboveRecoveryAngle = !(
+      this.direction >= w0 + this.recoveryAngle &&
+      this.direction <= 2 * w0 - this.recoveryAngle
+    );
+
+    if (ifStalling && aboveRecoveryAngle) {
+      this.moveBallistic();
+    } else {
+      this.moveFlight();
+    }
+
+    // update velocity
+    this.vx += this.ax * tstep;
+    this.vy += this.ay * tstep;
+
+    // update local position
+    this.px += this.vx * tstep;
+    this.py += this.vy * tstep;
+
+    this.direction =
+      (Math.round((w0 * Math.atan2(this.vy, this.vx)) / Math.PI) + 2 * w0) %
+      (2 * w0);
+
+    this.setData(cache, {
+      x: Math.round(this.px / SCALE_FACTOR),
+      y: Math.round(this.py / SCALE_FACTOR)
+    });
+  }
+
+  private moveBallistic(): void {
+    this.ax =
+      -this.drag *
+      Math.pow(this.speed, 2) *
+      Math.cos((Math.PI * this.direction) / w0);
+    this.ay =
+      -gravity -
+      this.drag *
+      Math.pow(this.speed, 2) *
+      Math.sin((Math.PI * this.direction) / w0);
+  }
+
+  private moveFlight(): void {
+    const engine = this.engineOn == true ? 1 : 0;
+
+    // Calculate the current angle based on which direction we're trying to turn.
+    // And calculate centripetal force
+    if (this.rotateStatus == PlaneRotationStatus.Up) {
+      this.turnDirection = this.direction + w0 / 2;
+      this.fc = Math.pow(this.speed, 2) / this.turnRadius;
+    } else if (this.rotateStatus == PlaneRotationStatus.Down) {
+      this.turnDirection = this.direction - w0 / 2;
+      this.fc = Math.pow(this.speed, 2) / this.turnRadius;
+    } else {
+      this.fc = 0;
+    }
+    // Acelleration in forward direction
+    const dv =
+      engine * this.thrust -
+      this.drag * Math.pow(this.speed, 2) -
+      gravity * Math.sin((Math.PI * this.direction) / w0);
+    this.ax =
+      dv * Math.cos((Math.PI * this.direction) / w0) +
+      this.fc * Math.cos((Math.PI * this.turnDirection) / w0);
+    this.ay =
+      dv * Math.sin((Math.PI * this.direction) / w0) +
+      this.fc * Math.sin((Math.PI * this.turnDirection) / w0);
+  }
+
+  public setRotation(cache: Cache, key: InputKey, doRotate: boolean): void {
+    this.rotationCounter = 0;
+    if (doRotate == false) {
+      this.rotateStatus = PlaneRotationStatus.None;
+      return;
+    }
+    if (key == InputKey.Left) {
+      this.rotateStatus = PlaneRotationStatus.Up;
+    } else {
+      this.rotateStatus = PlaneRotationStatus.Down;
+    }
+  }
+
+  public rotate(cache: Cache, deltaTime: number): void {
+    const upOrDown = this.rotateStatus == PlaneRotationStatus.Up ? 1 : -1;
+    // add time to counter
+    this.rotationCounter += deltaTime;
+    // if time elapsed is greater than our threshold,
+    // it's time to rotate
+    if (this.rotationCounter > this.rotationThreshold) {
+      // rotate plane
+      const degreesToRotate = Math.floor(
+        this.rotationCounter / this.rotationThreshold
+      );
+      let newDirection = this.direction + degreesToRotate * upOrDown;
+      newDirection = mod(newDirection, ROTATION_DIRECTIONS);
+      this.rotationCounter = this.rotationCounter % this.rotationThreshold;
+      this.set(cache, "direction", newDirection);
+    }
   }
 
   private burnFuel(cache: Cache, deltaTime: number): void {
@@ -250,89 +354,6 @@ export class Plane extends GameObject {
     }
   }
 
-  private ballistic(): void {
-    this.ax = -this.drag * Math.pow(this.speed, 2) * Math.cos((Math.PI * this.direction) / w0);
-    this.ay = -gravity - this.drag * Math.pow(this.speed, 2) * Math.sin((Math.PI * this.direction) / w0);
-  }
-
-  private flight(): void {
-    const engine = this.engineOn == true ? 1 : 0;
-    const flipped = this.flipped == true ? 1 : 1;
-    if (this.rotateStatus == PlaneRotationStatus.Up) {
-      this.turnDirection = this.direction + flipped * w0 / 2;
-      this.fc = Math.pow(this.speed, 2) / this.turnRadius;
-    } else if (this.rotateStatus == PlaneRotationStatus.Down) {
-      this.turnDirection = this.direction - flipped * w0 / 2;
-      this.fc = Math.pow(this.speed, 2) / this.turnRadius;
-    } else {
-      this.fc = 0;
-    }
-    const dv = (engine * this.thrust - this.drag * Math.pow(this.speed, 2) - gravity * Math.sin(Math.PI * this.direction / w0));
-    this.ax = (dv * Math.cos(Math.PI * this.direction / w0) + this.fc * Math.cos(Math.PI * this.turnDirection / w0));
-    this.ay = (dv * Math.sin(Math.PI * this.direction / w0) + this.fc * Math.sin(Math.PI * this.turnDirection / w0));
-  }
-
-  private move(cache: Cache, deltaTime: number): void {
-    //console.log("speed:", this.speed, 'fc:', this.fc, "angle:", this.direction, "turn angle:", this.turnDirection);
-    //console.log('px:', this.px, 'py:', this.py, 'vx:', this.vx, 'vy:', this.vy, 'ax:', this.ax, 'ay:', this.ay);
-    console.log('speed:', Math.round(this.speed), 'px:', Math.round(this.px), 'py:', Math.round(this.py), 'angle:', this.direction);
-    const tstep = deltaTime / 1000; // deltatime = milliseconds between frames
-
-    this.speed = Math.pow(Math.pow(this.vx, 2) + Math.pow(this.vy, 2), 0.5);
-    if ((this.speed < this.minSpeed || this.py > this.maxAltitude) && !(this.direction >= w0 + this.recoveryAngle && this.direction <= 2 * w0 - this.recoveryAngle)) { // || (!this.engineOn && this.rotateStatus == PlaneRotationStatus.None)) {
-      this.ballistic();
-    } else {
-      this.flight();
-    }
-    this.vx += this.ax * tstep;
-    this.vy += this.ay * tstep;
-    this.px += this.vx * tstep;
-    this.py += this.vy * tstep;
-
-    this.direction = (Math.round(w0 * Math.atan2(this.vy, this.vx) / Math.PI) + (2 * w0)) % (2 * w0);
-    this.setData(cache, {
-      x: Math.round(this.px / SCALE_FACTOR),
-      y: Math.round(this.py / SCALE_FACTOR)
-    });
-  }
-
-  public setRotation(cache: Cache, key: InputKey, doRotate: boolean): void {
-    this.rotationCounter = 0;
-    if (doRotate == false) {
-      this.rotateStatus = PlaneRotationStatus.None;
-      return;
-    }
-    if (key == InputKey.Left) {
-      this.rotateStatus = PlaneRotationStatus.Up;
-    } else {
-      this.rotateStatus = PlaneRotationStatus.Down;
-    }
-  }
-
-  public rotate(cache: Cache, deltaTime: number): void {
-    //if (this.rotateStatus == PlaneRotationStatus.None) {
-    //  return;
-    //}
-    const upOrDown = this.rotateStatus == PlaneRotationStatus.Up ? 1 : -1;
-    // add time to counter
-    this.rotationCounter += deltaTime;
-
-    // if time elapsed is greater than our threshold,
-    // it's time to rotate
-    if (this.rotationCounter > this.rotationThreshold) {
-      // rotate plane
-      const degreesToRotate = Math.floor(
-        this.rotationCounter / this.rotationThreshold
-      );
-      let newDirection = this.direction + degreesToRotate * upOrDown;
-      newDirection = mod(newDirection, ROTATION_DIRECTIONS);
-      this.rotationCounter = this.rotationCounter % this.rotationThreshold;
-      this.set(cache, "direction", newDirection);
-    }
-    //   (this.direction + offset * rotateSpeed) % ROTATION_DIRECTIONS;
-    //this.setDirection(cache, direction);
-  }
-
   public setDirection(cache: Cache, direction: number): void {
     this.set(cache, "direction", direction);
   }
@@ -351,7 +372,7 @@ export class Plane extends GameObject {
     this.setData(cache, { x, y });
   }
 
-  public setVel(cache: Cache, vx: number, vy: number): void {
+  public setVelocity(cache: Cache, vx: number, vy: number): void {
     this.vx = vx;
     this.vy = vy;
   }
