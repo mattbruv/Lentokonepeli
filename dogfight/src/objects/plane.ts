@@ -222,9 +222,19 @@ export class Plane extends GameObject {
 
   // advance the plane simulation
   public tick(cache: Cache, deltaTime: number): void {
+    this.updateVars(this.planeType);
     this.rotate(cache, deltaTime);
     this.move(cache, deltaTime);
     this.burnFuel(cache, deltaTime);
+  }
+
+  public updateVars(kind: PlaneType): void {
+    this.thrust = planeData[kind].thrust * SCALE_FACTOR; // engine acceleration
+    this.maxSpeed = planeData[kind].maxSpeed * SCALE_FACTOR; // maximum horizontal speed
+    this.minSpeed = planeData[kind].minSpeed * SCALE_FACTOR; // minimum speed to not stall
+    this.turnRadius = planeData[kind].turnRadius * SCALE_FACTOR; // turning radius
+    this.maxAltitude = planeData[kind].maxAltitude * SCALE_FACTOR; //Force stall above this height
+    this.drag = this.thrust / Math.pow(this.maxSpeed, 2); // drag coefficient
   }
 
   private move(cache: Cache, deltaTime: number): void {
@@ -284,7 +294,7 @@ export class Plane extends GameObject {
   private moveFlight(): void {
     const engine = this.engineOn == true ? 1 : 0;
     const w0 = planeGlobals.w0;
-    console.log(planeGlobals);
+    // console.log(planeGlobals);
 
     // Calculate the current angle based on which direction we're trying to turn.
     // And calculate centripetal force

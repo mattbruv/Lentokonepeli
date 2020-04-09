@@ -24,7 +24,7 @@
       <label>Max Speed</label>
       <input type="text" v-model.number="planeInfo[id].maxSpeed" />
       <br />
-      <label>Min Speed</label>
+      <label>Stall Speed</label>
       <input type="text" v-model.number="planeInfo[id].minSpeed" />
       <br />
       <label>Turn Radius</label>
