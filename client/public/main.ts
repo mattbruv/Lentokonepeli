@@ -1,4 +1,3 @@
-import { loadSpriteSheet } from "../src/render/textures";
 import { GameClient } from "../src/client";
 // import Cookies from "js-cookie";
 // import { Localizer } from "../src/localization/localizer";
