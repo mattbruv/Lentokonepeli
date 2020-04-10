@@ -1,18 +1,23 @@
 <template>
   <div id="app">
-    <div id="game"></div>
+    <Header></Header>
+    <Game></Game>
     <!-- <Physics /> -->
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
+import Game from "./game.vue";
+import Header from "./header.vue";
 import Physics from "./physics.vue";
 import { GameObjectType } from "../../../dogfight/src/object";
 import { ClientMode } from "../types";
 export default Vue.extend({
   name: "App",
   components: {
+    Game,
+    Header,
     Physics
   },
   computed: {
@@ -28,14 +33,15 @@ export default Vue.extend({
 </script>
 <style>
 body {
+  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
   background: linear-gradient(#76afe7, white);
   /* background: linear-gradient(#76afe7, white); */
   margin: 0;
   padding: 0;
 }
 
-#game > canvas {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  border: 10px gray;
+#app {
+  display: grid;
+  grid-template-rows: auto auto;
 }
 </style>
