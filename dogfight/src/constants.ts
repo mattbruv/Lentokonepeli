@@ -1,5 +1,10 @@
 export const ROTATION_DIRECTIONS = 256;
 
+export enum BuildType {
+  Client = "client",
+  Server = "server"
+}
+
 export enum Team {
   Centrals,
   Allies,

@@ -7,7 +7,6 @@ import App from "../src/components/app.vue";
 import Vue from "vue";
 import Vuex from "vuex";
 import { VNode } from "vue/types/umd";
-import { GameObjectType } from "../../dogfight/src/object";
 import { planeData } from "../../dogfight/src/objects/plane";
 
 Vue.config.productionTip = false;

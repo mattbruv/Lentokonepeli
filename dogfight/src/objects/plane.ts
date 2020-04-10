@@ -1,5 +1,10 @@
 import { GameObjectType, GameObject } from "../object";
-import { Team, SCALE_FACTOR, ROTATION_DIRECTIONS } from "../constants";
+import {
+  Team,
+  SCALE_FACTOR,
+  ROTATION_DIRECTIONS,
+  BuildType
+} from "../constants";
 import { Cache, CacheEntry } from "../network/cache";
 import { mod } from "../physics/helpers";
 import { InputKey } from "../input";
@@ -234,7 +239,9 @@ export class Plane extends GameObject {
 
   // advance the plane simulation
   public tick(cache: Cache, deltaTime: number): void {
-    this.updateVars(this.planeType);
+    if (process.env.BUILD == BuildType.Client) {
+      this.updateVars(this.planeType);
+    }
     this.rotate(cache, deltaTime);
     this.move(cache, deltaTime);
     this.burnFuel(cache, deltaTime);

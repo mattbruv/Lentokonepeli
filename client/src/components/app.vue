@@ -11,6 +11,7 @@ import Physics from "./physics.vue";
 import { GameObjectType } from "../../../dogfight/src/object";
 import { ClientMode } from "../types";
 export default Vue.extend({
+  name: "App",
   components: {
     Physics
   },

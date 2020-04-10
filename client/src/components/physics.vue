@@ -40,10 +40,11 @@
 <script lang="ts">
 import Vue from "vue";
 import { PlaneType, planeGlobals } from "../../../dogfight/src/objects/plane";
+import { BuildType } from "../../../dogfight/src/constants";
 export default Vue.extend({
   data: (): any => {
     return {
-      noServerMode: process.env.MODE == "client"
+      noServerMode: process.env.BUILD == BuildType.Client
     };
   },
   computed: {
