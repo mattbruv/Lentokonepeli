@@ -9,9 +9,7 @@ import { InputKey } from "../input";
 // const gravity = 300 * SCALE_FACTOR;
 
 export const planeGlobals = {
-  w0: Math.round(ROTATION_DIRECTIONS / 2),
-  gravity: 300,
-  recoveryAngle: 40
+  w0: Math.round(ROTATION_DIRECTIONS / 2)
 };
 
 export enum PlaneType {
@@ -43,6 +41,8 @@ interface PlaneInfo {
     minSpeed: number; // minimum speed to not stall
     turnRadius: number; // turning radius
     maxAltitude: number; //Force stall above this height
+    gravity: number; // Gravity value for this plane
+    recoveryAngle: number; // Angle at which the plane recovers from stalling
   };
 }
 
@@ -51,61 +51,73 @@ export const planeData: PlaneInfo = {
     flightTime: 80,
     ammo: 95,
     fireRate: 500,
-    thrust: 275,
-    maxSpeed: 330,
-    minSpeed: 200,
+    thrust: 420,
+    maxSpeed: 300,
+    minSpeed: 70,
     turnRadius: 130,
-    maxAltitude: 950
+    maxAltitude: 660,
+    gravity: 450,
+    recoveryAngle: 25
   },
   [PlaneType.Bristol]: {
     flightTime: 70,
     ammo: 100,
     fireRate: 600,
-    thrust: 275,
+    thrust: 350,
     maxSpeed: 280,
-    minSpeed: 200,
-    turnRadius: 180,
-    maxAltitude: 900
+    minSpeed: 60,
+    turnRadius: 122,
+    maxAltitude: 610,
+    gravity: 420, // dank
+    recoveryAngle: 15
   },
   [PlaneType.Fokker]: {
     flightTime: 90,
     ammo: 90,
     fireRate: 454,
-    thrust: 275,
-    maxSpeed: 290,
-    minSpeed: 150,
-    turnRadius: 105,
-    maxAltitude: 850
+    thrust: 380,
+    maxSpeed: 315,
+    minSpeed: 65,
+    turnRadius: 75,
+    maxAltitude: 600,
+    gravity: 430,
+    recoveryAngle: 35
   },
   [PlaneType.Junkers]: {
     flightTime: 100,
     ammo: 100,
     fireRate: 18,
-    thrust: 275,
+    thrust: 300,
     maxSpeed: 270,
-    minSpeed: 200,
-    turnRadius: 220,
-    maxAltitude: 750
+    minSpeed: 70,
+    turnRadius: 150,
+    maxAltitude: 580,
+    gravity: 450,
+    recoveryAngle: 25
   },
   [PlaneType.Salmson]: {
     flightTime: 60,
     ammo: 60,
     fireRate: 316,
-    thrust: 275,
-    maxSpeed: 320,
-    minSpeed: 200,
-    turnRadius: 155,
-    maxAltitude: 1000
+    thrust: 300,
+    maxSpeed: 330,
+    minSpeed: 95,
+    turnRadius: 140,
+    maxAltitude: 680,
+    gravity: 370,
+    recoveryAngle: 40
   },
   [PlaneType.Sopwith]: {
     flightTime: 80,
     ammo: 80,
     fireRate: 432,
-    thrust: 275,
-    maxSpeed: 330,
-    minSpeed: 200,
-    turnRadius: 105,
-    maxAltitude: 800
+    thrust: 380,
+    maxSpeed: 320,
+    minSpeed: 80,
+    turnRadius: 75,
+    maxAltitude: 590,
+    gravity: 420,
+    recoveryAngle: 40
   }
 };
 
@@ -153,7 +165,8 @@ export class Plane extends GameObject {
   public minSpeed: number; // Stall velocity. Below this stalls the plane.
   private turnRadius: number; // How wide a plane turns.
   private maxAltitude: number; // How high the plane can fly
-  // private recoveryAngle: number; // The angle from horizontal after which you gain control during a stall
+  private recoveryAngle: number; // The angle from horizontal after which you gain control during a stall
+  private gravity: number; // Individaul plane gravity values
 
   // number of elapsed milliseconds since last fuel decrease.
   private fuelCounter: number;
@@ -173,9 +186,8 @@ export class Plane extends GameObject {
     this.minSpeed = planeData[kind].minSpeed * SCALE_FACTOR; // minimum speed to not stall
     this.turnRadius = planeData[kind].turnRadius * SCALE_FACTOR; // turning radius
     this.maxAltitude = planeData[kind].maxAltitude * SCALE_FACTOR; //Force stall above this height
-
-    // global for now, could be unique to each plane in the future.
-    // this.recoveryAngle = planeGlobals.w0 / 3; // (fastest recovery) -w0/2 < angle < w0/2 (slowest recovery)
+    this.recoveryAngle = planeData[kind].recoveryAngle;
+    this.gravity = planeData[kind].gravity * SCALE_FACTOR;
 
     // set internal variables
     this.px = 0; // x position
@@ -229,6 +241,8 @@ export class Plane extends GameObject {
   }
 
   public updateVars(kind: PlaneType): void {
+    this.recoveryAngle = planeData[kind].recoveryAngle;
+    this.gravity = planeData[kind].gravity * SCALE_FACTOR;
     this.thrust = planeData[kind].thrust * SCALE_FACTOR; // engine acceleration
     this.maxSpeed = planeData[kind].maxSpeed * SCALE_FACTOR; // maximum horizontal speed
     this.minSpeed = planeData[kind].minSpeed * SCALE_FACTOR; // minimum speed to not stall
@@ -246,7 +260,7 @@ export class Plane extends GameObject {
     const ifStalling = this.speed < this.minSpeed || this.py > this.maxAltitude;
     const w0 = planeGlobals.w0;
 
-    const recoveryAngle = planeGlobals.recoveryAngle;
+    const recoveryAngle = this.recoveryAngle;
 
     const aboveRecoveryAngle = !(
       this.direction >= w0 + recoveryAngle &&
@@ -279,7 +293,7 @@ export class Plane extends GameObject {
 
   private moveBallistic(): void {
     const w0 = planeGlobals.w0;
-    const gravity = planeGlobals.gravity * SCALE_FACTOR;
+    const gravity = this.gravity;
     this.ax =
       -this.drag *
       Math.pow(this.speed, 2) *
@@ -308,7 +322,7 @@ export class Plane extends GameObject {
       this.fc = 0;
     }
     // Acelleration in forward direction
-    const gravity = planeGlobals.gravity * SCALE_FACTOR;
+    const gravity = this.gravity;
     const dv =
       engine * this.thrust -
       this.drag * Math.pow(this.speed, 2) -

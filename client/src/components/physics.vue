@@ -1,15 +1,6 @@
 <template>
-  <div id="physics">
+  <div id="physics" v-if="noServerMode">
     <!-- Physics shit goes here -->
-    <div>
-      <b>Global physics:</b>
-      <br />
-      <label>Gravity</label>
-      <input type="text" v-model.number="globals.gravity" />
-      <br />
-      <label>Recovery Angle</label>
-      <input type="text" v-model.number="globals.recoveryAngle" />
-    </div>
     <div
       class="planevar"
       v-for="(value, id) in planeInfo"
@@ -17,6 +8,12 @@
       v-bind:class="[isMyPlane(id) ? 'mine' : '']"
     >
       <b>{{ planeName(id) }}:</b>
+      <br />
+      <label>Gravity</label>
+      <input type="text" v-model.number="planeInfo[id].gravity" />
+      <br />
+      <label>Recovery Angle</label>
+      <input type="text" v-model.number="planeInfo[id].recoveryAngle" />
       <br />
       <label>Thrust</label>
       <input type="text" v-model.number="planeInfo[id].thrust" />
@@ -44,6 +41,11 @@
 import Vue from "vue";
 import { PlaneType, planeGlobals } from "../../../dogfight/src/objects/plane";
 export default Vue.extend({
+  data: (): any => {
+    return {
+      noServerMode: process.env.MODE == "client"
+    };
+  },
   computed: {
     planeInfo() {
       return this.$store.state.planeInfo;
@@ -63,10 +65,6 @@ export default Vue.extend({
         return mine.planeType == id;
       }
       return isMine;
-    },
-    updatePlaneVars() {
-      console.log(this.id);
-      console.log(this.$el.value);
     }
   }
 });
