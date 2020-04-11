@@ -216,7 +216,6 @@ export class Plane extends GameObject {
     this.rotationCounter = 0;
     // degrees per second.
     this.rotationThreshold = planeGlobals.w0 / 10;
-    console.log(planeGlobals);
 
     // set networked variables
     this.setData(cache, {

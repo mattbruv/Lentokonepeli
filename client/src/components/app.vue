@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Header></Header>
+    <!-- <Header></Header> -->
     <Game></Game>
     <!-- <Physics /> -->
   </div>
@@ -34,7 +34,7 @@ export default Vue.extend({
 <style>
 body {
   font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-  background: linear-gradient(#76afe7, white);
+  background: lightgray;
   /* background: linear-gradient(#76afe7, white); */
   margin: 0;
   padding: 0;

@@ -30,7 +30,7 @@ export class TeamSelector {
     }
     const key = change.key;
     if (key === InputKey.Enter) {
-      console.log("Requesting to join team:", this.selection);
+      console.log("Requesting to join team:", TeamOption[this.selection]);
       const packet: Packet = {
         type: PacketType.RequestJoinTeam,
         data: {
