@@ -1,5 +1,6 @@
 import * as PIXI from "pixi.js";
 import { Team } from "../../../../dogfight/src/constants";
+import { TeamColor } from "../constants";
 
 interface PlayerInfoObject {
   [key: number]: PIXI.Text;
@@ -24,8 +25,9 @@ export class PlayerInfo {
   private createText(): PIXI.Text {
     const text = new PIXI.Text("", {
       fontSize: 10,
-      fill: "black"
+      fill: TeamColor.SpectatorBackground
     });
+    text.anchor.x = 0.5;
     return text;
   }
 
@@ -42,12 +44,23 @@ export class PlayerInfo {
     }
     const text = this.info[pid];
     const name = playerInfo.name;
-    const theirTeam = playerInfo.team;
+    const objTeam = playerInfo.team;
+    let color = TeamColor.SpectatorForeground;
+
+    if (objTeam == myTeam) {
+      color = TeamColor.OwnForeground;
+    } else {
+      color = TeamColor.OpponentForeground;
+    }
+    if (myTeam == Team.Spectator) {
+      color = TeamColor.SpectatorForeground;
+    }
 
     const { x, y } = gameObj;
     if (name != undefined && x != undefined && y != undefined) {
       text.text = name;
-      text.position.set(x, -y + 35);
+      text.position.set(x, (y - 25) * -1);
+      text.style.fill = color;
     }
   }
 }

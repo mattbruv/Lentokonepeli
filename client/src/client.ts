@@ -219,6 +219,13 @@ export class GameClient {
       this.renderer.HUD.radar.refreshRadar(this.gameObjects);
     }
 
+    // If the player is not following anything, don't display name.
+    if (type == GameObjectType.Player) {
+      if (object.controlType == GameObjectType.None) {
+        this.renderer.playerInfo.deletePlayer(parseInt(id));
+      }
+    }
+
     // check if change to our player or followobject
     if (type == GameObjectType.Player && this.playerInfo.id == id) {
       // set following
