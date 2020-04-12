@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { Team } from "../../../../dogfight/src/constants";
-import { TeamColor } from "../constants";
+import { TeamColor, DrawLayer } from "../constants";
 
 interface PlayerInfoObject {
   [key: number]: PIXI.Text;
@@ -15,6 +15,7 @@ export class PlayerInfo {
     this.info = {};
     this.spritesheet = spritesheet;
     this.container = new PIXI.Container();
+    this.container.zIndex = DrawLayer.Player;
   }
 
   public deletePlayer(id: number): void {
