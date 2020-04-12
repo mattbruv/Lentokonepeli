@@ -20,6 +20,7 @@ import { ClientMode } from "../types";
 import { TakeoffSelectUI } from "./objects/takeoffSelectUI";
 import { PlaneSprite } from "./sprites/plane";
 import { PlayerInfo } from "./objects/playerInfo";
+import { ExplosionSprite } from "./sprites/explosion";
 
 /**
  * A class which renders the game world.
@@ -192,6 +193,8 @@ export class GameRenderer {
         return new PlayerSprite(this.spriteSheet);
       case GameObjectType.Trooper:
         return new TrooperSprite(this.spriteSheet);
+      case GameObjectType.Explosion:
+        return new ExplosionSprite(this.spriteSheet);
       case GameObjectType.Plane:
         return new PlaneSprite(this.spriteSheet);
       default:

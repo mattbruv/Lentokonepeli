@@ -14,6 +14,7 @@ export enum DrawLayer {
   DarkSmoke = -3,
   Runway = 0,
   Trooper = 5,
+  Explosion = 50,
   Player = 100
 }
 

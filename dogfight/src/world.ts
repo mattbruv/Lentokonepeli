@@ -8,6 +8,7 @@ import { Runway } from "./objects/runway";
 import { Tower } from "./objects/tower";
 import { Trooper } from "./objects/trooper";
 import { Water } from "./objects/water";
+import { Explosion, EXPLOSION_TIME } from "./objects/explosion";
 import { GameObject, GameObjectType } from "./object";
 import { Team, FacingDirection, ROTATION_DIRECTIONS } from "./constants";
 import { TakeoffRequest, TakeoffEntry } from "./takeoff";
@@ -35,6 +36,7 @@ export class GameWorld {
   private waters: Water[];
   private planes: Plane[];
   private troopers: Trooper[];
+  private explosions: Explosion[];
 
   // god please forgive me for this sin
   private objectArrays = {
@@ -46,7 +48,8 @@ export class GameWorld {
     [GameObjectType.ControlTower]: "towers",
     [GameObjectType.Trooper]: "troopers",
     [GameObjectType.Water]: "waters",
-    [GameObjectType.Plane]: "planes"
+    [GameObjectType.Plane]: "planes",
+    [GameObjectType.Explosion]: "explosions"
   };
 
   // Next available ID, incremented by 1.
@@ -75,6 +78,7 @@ export class GameWorld {
     this.troopers = [];
     this.waters = [];
     this.planes = [];
+    this.explosions = [];
   }
 
   /**
@@ -89,7 +93,18 @@ export class GameWorld {
     this.processInputs();
     this.processTakeoffs();
     this.processPlanes(deltaTime);
+    this.processExplosions(deltaTime);
     return this.cache;
+  }
+
+  private processExplosions(deltaTime: number): void {
+    // do something
+    this.explosions.forEach((explosion): void => {
+      explosion.tick(this.cache, deltaTime);
+      if (explosion.age > 1000) {
+        this.removeObject(explosion);
+      }
+    });
   }
 
   private processPlanes(deltaTime: number): void {
@@ -162,10 +177,15 @@ export class GameWorld {
         case InputKey.Jump: {
           // temporary, just destroy the plane for now.
           if (isPressed) {
+            const x = plane.x;
+            const y = plane.y;
             this.removeObject(plane);
             // set player info to pre-flight
             player.setStatus(this.cache, PlayerStatus.Takeoff);
             player.setControl(this.cache, GameObjectType.None, 0);
+            // create explosion
+            const explosion = new Explosion(this.nextID(), this.cache, x, y);
+            this.explosions.push(explosion);
           }
           break;
         }
@@ -271,7 +291,8 @@ export class GameWorld {
       this.towers,
       this.troopers,
       this.waters,
-      this.planes
+      this.planes,
+      this.explosions
     ];
     const cache: Cache = {};
     for (const obj in objects) {
