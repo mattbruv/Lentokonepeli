@@ -14,6 +14,8 @@ import { Team, FacingDirection, ROTATION_DIRECTIONS } from "./constants";
 import { TakeoffRequest, TakeoffEntry } from "./takeoff";
 import { teamPlanes, Plane } from "./objects/plane";
 import { InputQueue, InputKey, KeyChangeList } from "./input";
+import { RectangleBody } from "./physics/rectangle";
+import { isRectangleCollision } from "./physics/collision";
 
 /**
  * The Game World contains all entites,
@@ -94,7 +96,53 @@ export class GameWorld {
     this.processTakeoffs();
     this.processPlanes(deltaTime);
     this.processExplosions(deltaTime);
+    this.processCollision();
     return this.cache;
+  }
+
+  private processCollision(): void {
+    const grounds = this.grounds.map(
+      (g): RectangleBody => {
+        return g.getRect();
+      }
+    );
+    for (const plane of this.planes) {
+      let isDead = false;
+      const planeRect = plane.getRect();
+      for (const ground of grounds) {
+        if (isRectangleCollision(planeRect, ground)) {
+          this.destroyPlane(plane, true);
+          isDead = true;
+          break;
+        }
+      }
+      if (isDead) {
+        continue;
+      }
+      // process water collisions.
+    }
+  }
+
+  private destroyPlane(plane: Plane, doExplosion: boolean): void {
+    const x = plane.x;
+    const y = plane.y;
+    // set player info to pre-flight
+    const player = this.getPlayerControlling(plane);
+    player.setStatus(this.cache, PlayerStatus.Takeoff);
+    player.setControl(this.cache, GameObjectType.None, 0);
+    this.removeObject(plane);
+    if (doExplosion) {
+      const explosion = new Explosion(this.nextID(), this.cache, x, y);
+      this.explosions.push(explosion);
+    }
+  }
+
+  private getPlayerControlling(object: GameObject): Player {
+    for (const player of this.players) {
+      if (player.controlID == object.id && player.controlType == object.type) {
+        return player;
+      }
+    }
   }
 
   private processExplosions(deltaTime: number): void {
@@ -177,15 +225,6 @@ export class GameWorld {
         case InputKey.Jump: {
           // temporary, just destroy the plane for now.
           if (isPressed) {
-            const x = plane.x;
-            const y = plane.y;
-            this.removeObject(plane);
-            // set player info to pre-flight
-            player.setStatus(this.cache, PlayerStatus.Takeoff);
-            player.setControl(this.cache, GameObjectType.None, 0);
-            // create explosion
-            const explosion = new Explosion(this.nextID(), this.cache, x, y);
-            this.explosions.push(explosion);
           }
           break;
         }
@@ -243,7 +282,7 @@ export class GameWorld {
       offsetX *= -1;
       simpleDirection = 1;
     }
-    plane.setPos(this.cache, runway.x + offsetX, 10);
+    plane.setPos(this.cache, runway.x + offsetX, 30);
     plane.setVelocity(this.cache, plane.minSpeed * simpleDirection * 1.1, 0);
     plane.setFlipped(this.cache, runway.direction == FacingDirection.Left);
     const direction =

@@ -1,6 +1,7 @@
 import { Terrain } from "../constants";
 import { GameObject, GameObjectType } from "../object";
 import { CacheEntry, Cache } from "../network/cache";
+import { RectangleBody } from "../physics/rectangle";
 
 export class Ground extends GameObject {
   public type = GameObjectType.Ground;
@@ -17,6 +18,18 @@ export class Ground extends GameObject {
       width: 0,
       terrain: Terrain.Normal
     });
+  }
+
+  public getRect(): RectangleBody {
+    return {
+      width: this.width,
+      height: 20,
+      center: {
+        x: this.x,
+        y: this.y - 20
+      },
+      direction: 0
+    };
   }
 
   public getState(): CacheEntry {

@@ -8,6 +8,7 @@ import {
 import { Cache, CacheEntry } from "../network/cache";
 import { mod } from "../physics/helpers";
 import { InputKey } from "../input";
+import { RectangleBody } from "../physics/rectangle";
 
 // Movement Physics
 // const w0 = 128;
@@ -38,6 +39,8 @@ interface TeamPlanes {
 
 interface PlaneInfo {
   [key: number]: {
+    width: number; // Plane width for collision
+    height: number; // Plane height for collision
     flightTime: number; // seconds flying
     ammo: number;
     fireRate: number; // shots per minute
@@ -53,6 +56,8 @@ interface PlaneInfo {
 
 export const planeData: PlaneInfo = {
   [PlaneType.Albatros]: {
+    width: 30,
+    height: 16,
     flightTime: 80,
     ammo: 95,
     fireRate: 500,
@@ -65,6 +70,8 @@ export const planeData: PlaneInfo = {
     recoveryAngle: 25
   },
   [PlaneType.Bristol]: {
+    width: 36,
+    height: 19,
     flightTime: 70,
     ammo: 100,
     fireRate: 600,
@@ -77,6 +84,8 @@ export const planeData: PlaneInfo = {
     recoveryAngle: 15
   },
   [PlaneType.Fokker]: {
+    width: 38,
+    height: 20,
     flightTime: 90,
     ammo: 90,
     fireRate: 454,
@@ -89,6 +98,8 @@ export const planeData: PlaneInfo = {
     recoveryAngle: 35
   },
   [PlaneType.Junkers]: {
+    width: 42,
+    height: 19,
     flightTime: 100,
     ammo: 100,
     fireRate: 18,
@@ -101,6 +112,8 @@ export const planeData: PlaneInfo = {
     recoveryAngle: 25
   },
   [PlaneType.Salmson]: {
+    width: 40,
+    height: 15,
     flightTime: 60,
     ammo: 60,
     fireRate: 316,
@@ -113,6 +126,8 @@ export const planeData: PlaneInfo = {
     recoveryAngle: 40
   },
   [PlaneType.Sopwith]: {
+    width: 37,
+    height: 20,
     flightTime: 80,
     ammo: 80,
     fireRate: 432,
@@ -420,6 +435,21 @@ export class Plane extends GameObject {
   public setVelocity(cache: Cache, vx: number, vy: number): void {
     this.vx = vx;
     this.vy = vy;
+  }
+
+  /**
+   * Returns the collision body for this plane.
+   */
+  public getRect(): RectangleBody {
+    return {
+      width: Math.round(planeData[this.planeType].width * 0.9),
+      height: Math.round(planeData[this.planeType].height * 0.9),
+      center: {
+        x: this.x,
+        y: this.y
+      },
+      direction: this.direction
+    };
   }
 
   public getState(): CacheEntry {
