@@ -13,7 +13,7 @@ import { RectangleBody } from "../physics/rectangle";
 // Movement Physics
 export const planeGlobals = {
   w0: Math.round(ROTATION_DIRECTIONS / 2),
-  gravity: 400
+  gravity: 425
 };
 
 export const infoHUD = {
@@ -67,14 +67,14 @@ export const planeData: PlaneInfo = {
     flightTime: 80,
     ammo: 95,
     fireRate: 500,
-    thrust: 375,
-    maxSpeed: 300,
-    minSpeed: 70,
+    thrust: 290,
+    maxSpeed: 330,
+    minSpeed: 125,
     turnRadius: 130,
     maxAltitude: 660,
-    recoveryAngle: 22,
-    glideAngle: 25,
-    freeDrag: 0.5
+    recoveryAngle: 20,
+    glideAngle: 64,
+    freeDrag: 1.2
   },
   [PlaneType.Bristol]: {
     width: 36,
@@ -82,14 +82,14 @@ export const planeData: PlaneInfo = {
     flightTime: 70,
     ammo: 100,
     fireRate: 600,
-    thrust: 330,
-    maxSpeed: 280,
-    minSpeed: 60,
+    thrust: 310,
+    maxSpeed: 281,
+    minSpeed: 100,
     turnRadius: 122,
     maxAltitude: 610,
-    recoveryAngle: 18,
-    glideAngle: 25,
-    freeDrag: 0.5
+    recoveryAngle: 25,
+    glideAngle: 64,
+    freeDrag: 1
   },
   [PlaneType.Fokker]: {
     width: 38,
@@ -97,29 +97,29 @@ export const planeData: PlaneInfo = {
     flightTime: 90,
     ammo: 90,
     fireRate: 454,
-    thrust: 350,
-    maxSpeed: 315,
-    minSpeed: 65,
+    thrust: 330,
+    maxSpeed: 292,
+    minSpeed: 105,
     turnRadius: 75,
     maxAltitude: 600,
     recoveryAngle: 20,
-    glideAngle: 25,
-    freeDrag: 0.5
+    glideAngle: 64,
+    freeDrag: 1.2
   },
   [PlaneType.Junkers]: {
     width: 42,
     height: 19,
     flightTime: 100,
     ammo: 100,
-    fireRate: 18,
-    thrust: 265,
-    maxSpeed: 250,
-    minSpeed: 70,
+    fireRate: 180,
+    thrust: 300,
+    maxSpeed: 271,
+    minSpeed: 100,
     turnRadius: 150,
     maxAltitude: 580,
-    recoveryAngle: 14,
-    glideAngle: 25,
-    freeDrag: 0.5
+    recoveryAngle: 20,
+    glideAngle: 64,
+    freeDrag: 1.2
   },
   [PlaneType.Salmson]: {
     width: 40,
@@ -127,14 +127,14 @@ export const planeData: PlaneInfo = {
     flightTime: 60,
     ammo: 60,
     fireRate: 316,
-    thrust: 335,
-    maxSpeed: 330,
-    minSpeed: 95,
+    thrust: 350,
+    maxSpeed: 317,
+    minSpeed: 110,
     turnRadius: 140,
     maxAltitude: 680,
-    recoveryAngle: 19,
-    glideAngle: 25,
-    freeDrag: 0.5
+    recoveryAngle: 20,
+    glideAngle: 64,
+    freeDrag: 1.2
   },
   [PlaneType.Sopwith]: {
     width: 37,
@@ -142,14 +142,14 @@ export const planeData: PlaneInfo = {
     flightTime: 80,
     ammo: 80,
     fireRate: 432,
-    thrust: 360,
-    maxSpeed: 320,
-    minSpeed: 80,
+    thrust: 330,
+    maxSpeed: 330,
+    minSpeed: 115,
     turnRadius: 75,
     maxAltitude: 590,
     recoveryAngle: 20,
-    glideAngle: 25,
-    freeDrag: 0.5
+    glideAngle: 64,
+    freeDrag: 1.3
   }
 };
 
@@ -277,18 +277,6 @@ export class Plane extends GameObject {
   }
 
   public updateVars(kind: PlaneType): void {
-    /*
-    console.log(
-      "maxAscent:",
-      infoHUD.maxAscentAngle,
-      "angle:",
-      infoHUD.angle,
-      "altitude:",
-      infoHUD.altitude,
-      "speed:",
-      infoHUD.speed
-    );
-    */
     this.recoveryAngle = planeData[kind].recoveryAngle;
     this.glideAngle = planeData[kind].glideAngle;
     this.thrust = planeData[kind].thrust * SCALE_FACTOR; // engine acceleration
@@ -349,9 +337,11 @@ export class Plane extends GameObject {
     this.px += this.vx * tstep;
     this.py += this.vy * tstep;
 
-    this.setDirection(cache,
+    this.setDirection(
+      cache,
       (Math.round((w0 * Math.atan2(this.vy, this.vx)) / Math.PI) + 2 * w0) %
-      (2 * w0));
+      (2 * w0)
+    );
 
     this.setData(cache, {
       x: Math.round(this.px / SCALE_FACTOR),
@@ -418,7 +408,12 @@ export class Plane extends GameObject {
   }
 
   public rotate(cache: Cache, deltaTime: number): void {
-    const upOrDown = this.rotateStatus == PlaneRotationStatus.None ? 0 : this.rotateStatus == PlaneRotationStatus.Up ? 1 : -1;
+    const upOrDown =
+      this.rotateStatus == PlaneRotationStatus.None
+        ? 0
+        : this.rotateStatus == PlaneRotationStatus.Up
+          ? 1
+          : -1;
     // add time to counter
     this.rotationCounter += deltaTime;
     // if time elapsed is greater than our threshold,
