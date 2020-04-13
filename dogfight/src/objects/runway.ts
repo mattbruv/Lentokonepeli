@@ -1,7 +1,6 @@
 import { FacingDirection, Team } from "../constants";
 import { GameObject, GameObjectType } from "../object";
 import { Cache, CacheEntry } from "../network/cache";
-import { textSpanIntersectsWithPosition } from "typescript";
 
 export class Runway extends GameObject {
   public type = GameObjectType.Runway;

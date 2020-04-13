@@ -1,9 +1,11 @@
-import { GameWorld } from "../../dogfight/src/world";
+import { GameWorld } from "../../dogfight/src/world/world";
 import { MAP_CLASSIC } from "../../dogfight/src/maps/classic";
 import { PacketType, Packet } from "../../dogfight/src/network/types";
 import { Player } from "../../dogfight/src/objects/player";
 import { TeamOption } from "./teamSelector";
 import { Team } from "../../dogfight/src/constants";
+import { requestTakeoff } from "../../dogfight/src/world/takeoff";
+import { loadMap } from "../../dogfight/src/world/map";
 
 type messageCallback = (data: Packet) => void;
 
@@ -31,7 +33,7 @@ export class ClientServer {
     this.serverMsg = callback;
 
     this.world = new GameWorld();
-    this.world.loadMap(MAP_CLASSIC);
+    loadMap(this.world, MAP_CLASSIC);
     setInterval((): void => {
       this.loop();
     }, 1000 / 60);
@@ -58,7 +60,7 @@ export class ClientServer {
         break;
       }
       case PacketType.RequestTakeoff: {
-        this.world.requestTakeoff(this.player, packet.data);
+        requestTakeoff(this.world, this.player, packet.data);
         break;
       }
       case PacketType.RequestJoinTeam: {
