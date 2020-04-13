@@ -126,12 +126,9 @@ export class GameClient {
         this.takeoffSelector.processInput(change, this.renderer, this.network);
         break;
       }
-      case ClientMode.Playing: {
-        const packet: Packet = { type: PacketType.UserGameInput, data: change };
-        this.network.send(packet);
-        break;
-      }
     }
+    const packet: Packet = { type: PacketType.UserGameInput, data: change };
+    this.network.send(packet);
   }
 
   private processPacket(packet: Packet): void {

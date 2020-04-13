@@ -40,6 +40,9 @@ export class ClientServer {
   public packetRecieved(packet: Packet): void {
     switch (packet.type) {
       case PacketType.UserGameInput: {
+        if (this.player == undefined) {
+          break;
+        }
         const key = packet.data.key;
         const isPressed = packet.data.isPressed === true;
         this.player.inputState[key] = isPressed;
