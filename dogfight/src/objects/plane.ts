@@ -21,7 +21,7 @@ export const infoHUD = {
   altitude: 0,
   angle: 0,
   maxAscentAngle: 0
-}
+};
 
 export enum PlaneType {
   Albatros,
@@ -277,8 +277,20 @@ export class Plane extends GameObject {
   }
 
   public updateVars(kind: PlaneType): void {
-    console.log("maxAscent:", infoHUD.maxAscentAngle, "angle:", infoHUD.angle, "altitude:", infoHUD.altitude, "speed:", infoHUD.speed);
+    /*
+    console.log(
+      "maxAscent:",
+      infoHUD.maxAscentAngle,
+      "angle:",
+      infoHUD.angle,
+      "altitude:",
+      infoHUD.altitude,
+      "speed:",
+      infoHUD.speed
+    );
+    */
     this.recoveryAngle = planeData[kind].recoveryAngle;
+    this.glideAngle = planeData[kind].glideAngle;
     this.thrust = planeData[kind].thrust * SCALE_FACTOR; // engine acceleration
     this.maxSpeed = planeData[kind].maxSpeed * SCALE_FACTOR; // maximum horizontal speed
     this.minSpeed = planeData[kind].minSpeed * SCALE_FACTOR; // minimum speed to not stall
@@ -287,11 +299,18 @@ export class Plane extends GameObject {
     this.drag = this.thrust / Math.pow(this.maxSpeed, 2); // drag coefficient
     this.freeDrag = planeData[kind].freeDrag; // Drag multiplier with engine off
 
-
-    infoHUD.maxAscentAngle = (Math.asin((this.thrust - this.drag * Math.pow(this.minSpeed, 2)) / (planeGlobals.gravity * SCALE_FACTOR)) * planeGlobals.w0 / Math.PI);
+    infoHUD.maxAscentAngle =
+      (Math.asin(
+        (this.thrust - this.drag * Math.pow(this.minSpeed, 2)) /
+        (planeGlobals.gravity * SCALE_FACTOR)
+      ) *
+        planeGlobals.w0) /
+      Math.PI;
+    const a = infoHUD.maxAscentAngle;
+    infoHUD.maxAscentAngle = Math.round(a * 10) / 10;
     infoHUD.angle = this.direction;
     infoHUD.altitude = this.y;
-    infoHUD.speed = this.speed / SCALE_FACTOR;
+    infoHUD.speed = Math.round(this.speed / SCALE_FACTOR);
   }
 
   private move(cache: Cache, deltaTime: number): void {
@@ -301,10 +320,16 @@ export class Plane extends GameObject {
     // Pythagorean theorem
     this.speed = Math.pow(Math.pow(this.vx, 2) + Math.pow(this.vy, 2), 0.5);
 
-    const recoveryAngle = this.engineOn == true ? this.recoveryAngle : -this.glideAngle;
-    const aboveRecoveryAngle = recoveryAngle >= 0 ?
-      (this.direction >= recoveryAngle && this.direction <= w0 - recoveryAngle) :
-      !(this.direction >= w0 - recoveryAngle && this.direction <= 2 * w0 + recoveryAngle);
+    const recoveryAngle =
+      this.engineOn == true ? this.recoveryAngle : -this.glideAngle;
+    const aboveRecoveryAngle =
+      recoveryAngle >= 0
+        ? this.direction >= recoveryAngle &&
+        this.direction <= w0 - recoveryAngle
+        : !(
+          this.direction >= w0 - recoveryAngle &&
+          this.direction <= 2 * w0 + recoveryAngle
+        );
 
     const tooHigh = this.py > this.maxAltitude;
     const tooSlow = this.speed < this.minSpeed;
@@ -337,7 +362,7 @@ export class Plane extends GameObject {
   private moveBallistic(): void {
     const w0 = planeGlobals.w0;
     const gravity = planeGlobals.gravity * SCALE_FACTOR;
-    const drag = this.drag * (this.freeDrag);
+    const drag = this.drag * this.freeDrag;
     this.ax =
       -drag *
       Math.pow(this.speed, 2) *
@@ -465,8 +490,8 @@ export class Plane extends GameObject {
    */
   public getRect(): RectangleBody {
     return {
-      width: Math.round(planeData[this.planeType].width * 0.9),
-      height: Math.round(planeData[this.planeType].height * 0.9),
+      width: Math.round(planeData[this.planeType].width * 0.8),
+      height: Math.round(planeData[this.planeType].height * 0.8),
       center: {
         x: this.x,
         y: this.y

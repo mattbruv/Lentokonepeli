@@ -223,8 +223,8 @@ export class GameWorld {
           break;
         }
         case InputKey.Jump: {
-          // temporary, just destroy the plane for now.
           if (isPressed) {
+            this.destroyPlane(plane, true);
           }
           break;
         }

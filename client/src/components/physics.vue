@@ -2,6 +2,14 @@
   <div id="physics" v-if="noServerMode">
     <!-- Physics shit goes here -->
     <div align="left" padding="5px">
+      <b>Current Plane:</b>
+      <div v-for="(val, index) in HUD" v-bind:key="index">
+        {{ index }}:
+        {{ val }}
+      </div>
+      <br />
+    </div>
+    <div align="left" padding="5px">
       <b>Global physics:</b>
       <br />
       <label class="statLabel">Gravity</label>
@@ -68,7 +76,7 @@ export default Vue.extend({
       return planeGlobals;
     },
     HUD() {
-      return infoHUD;
+      return this.$store.state.infoHUD;
     }
   },
   methods: {
