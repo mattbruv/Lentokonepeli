@@ -1,8 +1,16 @@
 <template>
-  <div id="app">
-    <div id="game"></div>
-    <Physics />
-  </div>
+  <table>
+    <tr>
+      <th>
+        <div id="app">
+          <div id="game"></div>
+        </div>
+      </th>
+      <th>
+        <Physics />
+      </th>
+    </tr>
+  </table>
 </template>
 
 <script lang="ts">
