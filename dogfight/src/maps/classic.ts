@@ -1,4 +1,4 @@
-import { GameMap } from "../map";
+import { GameMap } from "../world/map";
 import { Terrain, Team, FacingDirection } from "../constants";
 
 export const MAP_CLASSIC: GameMap = {

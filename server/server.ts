@@ -65,6 +65,9 @@ wss.on("connection", (ws): void => {
 
     // process user input
     if (packet.type == PacketType.UserGameInput) {
+      if (player == undefined) {
+        return;
+      }
       const data: InputChange = packet.data;
       const key = data.key;
       const isPressed = data.isPressed === true;
