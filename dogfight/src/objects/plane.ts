@@ -349,9 +349,9 @@ export class Plane extends GameObject {
     this.px += this.vx * tstep;
     this.py += this.vy * tstep;
 
-    this.direction =
+    this.setDirection(cache,
       (Math.round((w0 * Math.atan2(this.vy, this.vx)) / Math.PI) + 2 * w0) %
-      (2 * w0);
+      (2 * w0));
 
     this.setData(cache, {
       x: Math.round(this.px / SCALE_FACTOR),
@@ -418,7 +418,7 @@ export class Plane extends GameObject {
   }
 
   public rotate(cache: Cache, deltaTime: number): void {
-    const upOrDown = this.rotateStatus == PlaneRotationStatus.Up ? 1 : -1;
+    const upOrDown = this.rotateStatus == PlaneRotationStatus.None ? 0 : this.rotateStatus == PlaneRotationStatus.Up ? 1 : -1;
     // add time to counter
     this.rotationCounter += deltaTime;
     // if time elapsed is greater than our threshold,
