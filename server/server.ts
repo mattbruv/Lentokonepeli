@@ -2,7 +2,6 @@ import * as path from "path";
 import * as express from "express";
 import * as http from "http";
 import * as WebSocket from "ws";
-import { MAP_CLASSIC } from "../dogfight/src/maps/classic";
 import { PacketType, Packet } from "../dogfight/src/network/types";
 import { Player } from "../dogfight/src/objects/player";
 import { TeamOption } from "../client/src/teamSelector";
@@ -12,6 +11,7 @@ import { InputChange, InputKey } from "../dogfight/src/input";
 import { GameWorld } from "../dogfight/src/world/world";
 import { requestTakeoff } from "../dogfight/src/world/takeoff";
 import { loadMap } from "../dogfight/src/world/map";
+import { MAP_CLASSIC_2 } from "../dogfight/src/maps/classic2";
 
 const PORT = 3259;
 
@@ -25,7 +25,7 @@ const wss = new WebSocket.Server({ server });
 
 // Initialize game world.
 const world = new GameWorld();
-loadMap(world, MAP_CLASSIC);
+loadMap(world, MAP_CLASSIC_2);
 
 // Game loop timing variables
 let startTime = Date.now();
