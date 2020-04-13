@@ -1,6 +1,7 @@
 import { FacingDirection } from "../constants";
 import { GameObject, GameObjectType } from "../object";
 import { Cache, CacheEntry } from "../network/cache";
+import { RectangleBody } from "../physics/rectangle";
 
 export class Water extends GameObject {
   public type = GameObjectType.Water;
@@ -18,6 +19,18 @@ export class Water extends GameObject {
       width: 500,
       direction: FacingDirection.Right
     });
+  }
+
+  public getRect(): RectangleBody {
+    return {
+      direction: 0,
+      width: this.width,
+      height: 1000,
+      center: {
+        x: this.x,
+        y: this.y - 505
+      }
+    };
   }
 
   public getState(): CacheEntry {

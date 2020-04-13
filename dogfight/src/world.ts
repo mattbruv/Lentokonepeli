@@ -106,6 +106,11 @@ export class GameWorld {
         return g.getRect();
       }
     );
+    const waters = this.waters.map(
+      (w): RectangleBody => {
+        return w.getRect();
+      }
+    );
     for (const plane of this.planes) {
       let isDead = false;
       const planeRect = plane.getRect();
@@ -118,6 +123,13 @@ export class GameWorld {
       }
       if (isDead) {
         continue;
+      }
+      for (const water of waters) {
+        if (isRectangleCollision(planeRect, water)) {
+          this.destroyPlane(plane, false);
+          isDead = true;
+          break;
+        }
       }
       // process water collisions.
     }
