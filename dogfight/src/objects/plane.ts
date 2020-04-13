@@ -11,12 +11,17 @@ import { InputKey } from "../input";
 import { RectangleBody } from "../physics/rectangle";
 
 // Movement Physics
-// const w0 = 128;
-// const gravity = 300 * SCALE_FACTOR;
-
 export const planeGlobals = {
-  w0: Math.round(ROTATION_DIRECTIONS / 2)
+  w0: Math.round(ROTATION_DIRECTIONS / 2),
+  gravity: 400
 };
+
+export const infoHUD = {
+  speed: 0,
+  altitude: 0,
+  angle: 0,
+  maxAscentAngle: 0
+}
 
 export enum PlaneType {
   Albatros,
@@ -49,8 +54,9 @@ interface PlaneInfo {
     minSpeed: number; // minimum speed to not stall
     turnRadius: number; // turning radius
     maxAltitude: number; //Force stall above this height
-    gravity: number; // Gravity value for this plane
     recoveryAngle: number; // Angle at which the plane recovers from stalling
+    glideAngle: number; // angle below horizontal at which you regain control when gliding with engine off
+    freeDrag: number; // Drag multiplier with engine off
   };
 }
 
@@ -61,13 +67,14 @@ export const planeData: PlaneInfo = {
     flightTime: 80,
     ammo: 95,
     fireRate: 500,
-    thrust: 420,
+    thrust: 375,
     maxSpeed: 300,
     minSpeed: 70,
     turnRadius: 130,
     maxAltitude: 660,
-    gravity: 450,
-    recoveryAngle: 25
+    recoveryAngle: 22,
+    glideAngle: 25,
+    freeDrag: 0.5
   },
   [PlaneType.Bristol]: {
     width: 36,
@@ -75,13 +82,14 @@ export const planeData: PlaneInfo = {
     flightTime: 70,
     ammo: 100,
     fireRate: 600,
-    thrust: 350,
+    thrust: 330,
     maxSpeed: 280,
     minSpeed: 60,
     turnRadius: 122,
     maxAltitude: 610,
-    gravity: 420, // dank
-    recoveryAngle: 15
+    recoveryAngle: 18,
+    glideAngle: 25,
+    freeDrag: 0.5
   },
   [PlaneType.Fokker]: {
     width: 38,
@@ -89,13 +97,14 @@ export const planeData: PlaneInfo = {
     flightTime: 90,
     ammo: 90,
     fireRate: 454,
-    thrust: 380,
+    thrust: 350,
     maxSpeed: 315,
     minSpeed: 65,
     turnRadius: 75,
     maxAltitude: 600,
-    gravity: 430,
-    recoveryAngle: 35
+    recoveryAngle: 20,
+    glideAngle: 25,
+    freeDrag: 0.5
   },
   [PlaneType.Junkers]: {
     width: 42,
@@ -103,13 +112,14 @@ export const planeData: PlaneInfo = {
     flightTime: 100,
     ammo: 100,
     fireRate: 18,
-    thrust: 300,
-    maxSpeed: 270,
+    thrust: 265,
+    maxSpeed: 250,
     minSpeed: 70,
     turnRadius: 150,
     maxAltitude: 580,
-    gravity: 450,
-    recoveryAngle: 25
+    recoveryAngle: 14,
+    glideAngle: 25,
+    freeDrag: 0.5
   },
   [PlaneType.Salmson]: {
     width: 40,
@@ -117,13 +127,14 @@ export const planeData: PlaneInfo = {
     flightTime: 60,
     ammo: 60,
     fireRate: 316,
-    thrust: 300,
+    thrust: 335,
     maxSpeed: 330,
     minSpeed: 95,
     turnRadius: 140,
     maxAltitude: 680,
-    gravity: 370,
-    recoveryAngle: 40
+    recoveryAngle: 19,
+    glideAngle: 25,
+    freeDrag: 0.5
   },
   [PlaneType.Sopwith]: {
     width: 37,
@@ -131,13 +142,14 @@ export const planeData: PlaneInfo = {
     flightTime: 80,
     ammo: 80,
     fireRate: 432,
-    thrust: 380,
+    thrust: 360,
     maxSpeed: 320,
     minSpeed: 80,
     turnRadius: 75,
     maxAltitude: 590,
-    gravity: 420,
-    recoveryAngle: 40
+    recoveryAngle: 20,
+    glideAngle: 25,
+    freeDrag: 0.5
   }
 };
 
@@ -165,8 +177,18 @@ export class Plane extends GameObject {
   public bombs: number;
   public engineOn: boolean;
 
-  // internal variables //
+  // plane stats
+  private drag: number; // How well the plane's momentum is carried
+  private freeDrag: number; // Drag multiplier with engine off
+  private thrust: number; // Acelleration of the engine
+  private maxSpeed: number; // Top engine speed of the plane
+  public minSpeed: number; // Stall velocity. Below this stalls the plane.
+  private turnRadius: number; // How wide a plane turns.
+  private maxAltitude: number; // How high the plane can fly
+  private recoveryAngle: number; // The angle above horizontal at which you regain control during a stall
+  private glideAngle: number; // angle below horizontal at which you regain control when gliding with engine off
 
+  // internal variables //
   private rotateStatus: PlaneRotationStatus;
 
   // physics variables
@@ -179,14 +201,6 @@ export class Plane extends GameObject {
   private turnDirection: number; // 90 degree angle relative to our current direction and turn path
   private fc: number; // Centripetal force
   private speed: number; // Current speed of the plane
-  private drag: number; // How well the plane's momentum is carried
-  private thrust: number; // Acelleration of the engine
-  private maxSpeed: number; // Top engine speed of the plane
-  public minSpeed: number; // Stall velocity. Below this stalls the plane.
-  private turnRadius: number; // How wide a plane turns.
-  private maxAltitude: number; // How high the plane can fly
-  private recoveryAngle: number; // The angle from horizontal after which you gain control during a stall
-  private gravity: number; // Individaul plane gravity values
 
   // number of elapsed milliseconds since last fuel decrease.
   private fuelCounter: number;
@@ -207,7 +221,8 @@ export class Plane extends GameObject {
     this.turnRadius = planeData[kind].turnRadius * SCALE_FACTOR; // turning radius
     this.maxAltitude = planeData[kind].maxAltitude * SCALE_FACTOR; //Force stall above this height
     this.recoveryAngle = planeData[kind].recoveryAngle;
-    this.gravity = planeData[kind].gravity * SCALE_FACTOR;
+    this.glideAngle = planeData[kind].glideAngle;
+    this.freeDrag = planeData[kind].freeDrag; // Drag multiplier with engine off
 
     // set internal variables
     this.px = 0; // x position
@@ -262,33 +277,40 @@ export class Plane extends GameObject {
   }
 
   public updateVars(kind: PlaneType): void {
+    console.log("maxAscent:", infoHUD.maxAscentAngle, "angle:", infoHUD.angle, "altitude:", infoHUD.altitude, "speed:", infoHUD.speed);
     this.recoveryAngle = planeData[kind].recoveryAngle;
-    this.gravity = planeData[kind].gravity * SCALE_FACTOR;
     this.thrust = planeData[kind].thrust * SCALE_FACTOR; // engine acceleration
     this.maxSpeed = planeData[kind].maxSpeed * SCALE_FACTOR; // maximum horizontal speed
     this.minSpeed = planeData[kind].minSpeed * SCALE_FACTOR; // minimum speed to not stall
     this.turnRadius = planeData[kind].turnRadius * SCALE_FACTOR; // turning radius
     this.maxAltitude = planeData[kind].maxAltitude * SCALE_FACTOR; //Force stall above this height
     this.drag = this.thrust / Math.pow(this.maxSpeed, 2); // drag coefficient
+    this.freeDrag = planeData[kind].freeDrag; // Drag multiplier with engine off
+
+
+    infoHUD.maxAscentAngle = (Math.asin((this.thrust - this.drag * Math.pow(this.minSpeed, 2)) / (planeGlobals.gravity * SCALE_FACTOR)) * planeGlobals.w0 / Math.PI);
+    infoHUD.angle = this.direction;
+    infoHUD.altitude = this.y;
+    infoHUD.speed = this.speed / SCALE_FACTOR;
   }
 
   private move(cache: Cache, deltaTime: number): void {
     const tstep = deltaTime / 1000; // deltatime = milliseconds between frames
-
-    // Pythagorean theroum
-    this.speed = Math.pow(Math.pow(this.vx, 2) + Math.pow(this.vy, 2), 0.5);
-
-    const ifStalling = this.speed < this.minSpeed || this.py > this.maxAltitude;
     const w0 = planeGlobals.w0;
 
-    const recoveryAngle = this.recoveryAngle;
+    // Pythagorean theorem
+    this.speed = Math.pow(Math.pow(this.vx, 2) + Math.pow(this.vy, 2), 0.5);
 
-    const aboveRecoveryAngle = !(
-      this.direction >= w0 + recoveryAngle &&
-      this.direction <= 2 * w0 - recoveryAngle
-    );
+    const recoveryAngle = this.engineOn == true ? this.recoveryAngle : -this.glideAngle;
+    const aboveRecoveryAngle = recoveryAngle >= 0 ?
+      (this.direction >= recoveryAngle && this.direction <= w0 - recoveryAngle) :
+      !(this.direction >= w0 - recoveryAngle && this.direction <= 2 * w0 + recoveryAngle);
 
-    if (ifStalling && aboveRecoveryAngle) {
+    const tooHigh = this.py > this.maxAltitude;
+    const tooSlow = this.speed < this.minSpeed;
+    const ifStalling = (tooSlow && aboveRecoveryAngle) || tooHigh;
+
+    if (ifStalling) {
       this.moveBallistic();
     } else {
       this.moveFlight();
@@ -314,14 +336,15 @@ export class Plane extends GameObject {
 
   private moveBallistic(): void {
     const w0 = planeGlobals.w0;
-    const gravity = this.gravity;
+    const gravity = planeGlobals.gravity * SCALE_FACTOR;
+    const drag = this.drag * (this.freeDrag);
     this.ax =
-      -this.drag *
+      -drag *
       Math.pow(this.speed, 2) *
       Math.cos((Math.PI * this.direction) / w0);
     this.ay =
       -gravity -
-      this.drag *
+      drag *
       Math.pow(this.speed, 2) *
       Math.sin((Math.PI * this.direction) / w0);
   }
@@ -329,9 +352,9 @@ export class Plane extends GameObject {
   private moveFlight(): void {
     const engine = this.engineOn == true ? 1 : 0;
     const w0 = planeGlobals.w0;
-    // console.log(planeGlobals);
+    const drag = this.drag * (this.freeDrag + engine * (1 - this.freeDrag));
 
-    // Calculate the current angle based on which direction we're trying to turn.
+    // Calculate the turn angle based on which direction we're trying to turn.
     // And calculate centripetal force
     if (this.rotateStatus == PlaneRotationStatus.Up) {
       this.turnDirection = this.direction + w0 / 2;
@@ -343,10 +366,10 @@ export class Plane extends GameObject {
       this.fc = 0;
     }
     // Acelleration in forward direction
-    const gravity = this.gravity;
+    const gravity = planeGlobals.gravity * SCALE_FACTOR;
     const dv =
       engine * this.thrust -
-      this.drag * Math.pow(this.speed, 2) -
+      drag * Math.pow(this.speed, 2) -
       gravity * Math.sin((Math.PI * this.direction) / w0);
     this.ax =
       dv * Math.cos((Math.PI * this.direction) / w0) +

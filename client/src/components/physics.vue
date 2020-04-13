@@ -1,45 +1,58 @@
 <template>
   <div id="physics" v-if="noServerMode">
     <!-- Physics shit goes here -->
+    <div align="left" padding="5px">
+      <b>Global physics:</b>
+      <br />
+      <label class="statLabel">Gravity</label>
+      <input type="text" class="statBox" v-model.number="globals.gravity" />
+    </div>
     <div
       class="planevar"
       v-for="(value, id) in planeInfo"
       :key="id"
       v-bind:class="[isMyPlane(id) ? 'mine' : '']"
+      align="left"
     >
       <b>{{ planeName(id) }}:</b>
       <br />
-      <label>Gravity</label>
-      <input type="text" v-model.number="planeInfo[id].gravity" />
+      <label class="statLabel">Recovery Angle</label>
+      <input type="text" class="statBox" v-model.number="planeInfo[id].recoveryAngle" />
       <br />
-      <label>Recovery Angle</label>
-      <input type="text" v-model.number="planeInfo[id].recoveryAngle" />
+      <label class="statLabel">Glide Angle</label>
+      <input type="text" class="statBox" v-model.number="planeInfo[id].glideAngle" />
       <br />
-      <label>Thrust</label>
-      <input type="text" v-model.number="planeInfo[id].thrust" />
+      <label class="statLabel">Thrust</label>
+      <input type="text" class="statBox" v-model.number="planeInfo[id].thrust" />
       <br />
-      <label>Max Speed</label>
-      <input type="text" v-model.number="planeInfo[id].maxSpeed" />
+      <label class="statLabel">Drag</label>
+      <input type="text" class="statBox" v-model.number="planeInfo[id].freeDrag" />
       <br />
-      <label>Stall Speed</label>
-      <input type="text" v-model.number="planeInfo[id].minSpeed" />
+      <label class="statLabel">Max Speed</label>
+      <input type="text" class="statBox" v-model.number="planeInfo[id].maxSpeed" />
       <br />
-      <label>Turn Radius</label>
-      <input type="text" v-model.number="planeInfo[id].turnRadius" />
+      <label class="statLabel">Stall Speed</label>
+      <input type="text" class="statBox" v-model.number="planeInfo[id].minSpeed" />
       <br />
-      <label>Max Altitude</label>
-      <input type="text" v-model.number="planeInfo[id].maxAltitude" />
+      <label class="statLabel">Turn Radius</label>
+      <input type="text" class="statBox" v-model.number="planeInfo[id].turnRadius" />
       <br />
-      <label>Flight Time</label>
-      <input type="text" v-model.number="planeInfo[id].flightTime" />
+      <label class="statLabel">Max Altitude</label>
+      <input type="text" class="statBox" v-model.number="planeInfo[id].maxAltitude" />
       <br />
+      <label class="statLabel">Flight Time</label>
+      <input type="text" class="statBox" v-model.number="planeInfo[id].flightTime" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { PlaneType, planeGlobals } from "../../../dogfight/src/objects/plane";
+import {
+  PlaneType,
+  planeGlobals,
+  infoHUD
+} from "../../../dogfight/src/objects/plane";
 import { BuildType } from "../../../dogfight/src/constants";
 export default Vue.extend({
   data: (): any => {
@@ -53,6 +66,9 @@ export default Vue.extend({
     },
     globals() {
       return planeGlobals;
+    },
+    HUD() {
+      return infoHUD;
     }
   },
   methods: {
@@ -74,6 +90,15 @@ export default Vue.extend({
 <style>
 #physics {
   margin: 1em;
+  font-size: 14px;
+}
+.statLabel {
+  display: inline-block;
+  width: 100px;
+}
+.statBox {
+  float: "right";
+  width: 80px;
 }
 .mine {
   background-color: lightblue;

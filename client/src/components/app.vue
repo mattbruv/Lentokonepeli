@@ -2,7 +2,7 @@
   <div id="app">
     <!-- <Header></Header> -->
     <Game></Game>
-    <!-- <Physics /> -->
+    <Physics />
   </div>
 </template>
 
