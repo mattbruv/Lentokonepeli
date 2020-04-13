@@ -10,7 +10,7 @@ import { Trooper } from "./objects/trooper";
 import { Water } from "./objects/water";
 import { Explosion, EXPLOSION_TIME } from "./objects/explosion";
 import { GameObject, GameObjectType } from "./object";
-import { Team, FacingDirection, ROTATION_DIRECTIONS } from "./constants";
+import { Team, FacingDirection, ROTATION_DIRECTIONS, SCALE_FACTOR } from "./constants";
 import { TakeoffRequest, TakeoffEntry } from "./takeoff";
 import { teamPlanes, Plane } from "./objects/plane";
 import { InputQueue, InputKey, KeyChangeList } from "./input";
@@ -289,19 +289,14 @@ export class GameWorld {
       player.team
     );
     let offsetX = 100;
-    let simpleDirection = -1;
     if (runway.direction == FacingDirection.Right) {
       offsetX *= -1;
-      simpleDirection = 1;
     }
-    plane.setPos(this.cache, runway.x + offsetX, 30);
-    plane.setVelocity(this.cache, plane.minSpeed * simpleDirection * 1.1, 0);
+    const startSpeedX = runway.direction == FacingDirection.Right ?
+      plane.minSpeed * 1.1 : plane.minSpeed * -1.1;
+    plane.setPos(this.cache, runway.x + offsetX, 3);
+    plane.setVelocity(this.cache, startSpeedX, 5 * SCALE_FACTOR);
     plane.setFlipped(this.cache, runway.direction == FacingDirection.Left);
-    const direction =
-      runway.direction == FacingDirection.Left
-        ? Math.round(ROTATION_DIRECTIONS / 2)
-        : 0;
-    plane.setDirection(this.cache, direction);
     this.planes.push(plane);
     // assign plane to player
     player.setControl(this.cache, plane.type, plane.id);
