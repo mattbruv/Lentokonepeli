@@ -2,18 +2,15 @@
   <div id="physics" v-if="noServerMode">
     <!-- Physics shit goes here -->
     <div align="left" padding="5px">
-      <b>Current Plane:</b>
-      <div v-for="(val, index) in HUD" v-bind:key="index">
-        {{ index }}:
-        {{ val }}
-      </div>
-      <br />
-    </div>
-    <div align="left" padding="5px">
       <b>Global physics:</b>
       <br />
       <label class="statLabel">Gravity</label>
       <input type="text" class="statBox" v-model.number="globals.gravity" />
+      <!-- Current plane physics -->
+      <span v-for="(val, index) in HUD" v-bind:key="index">
+        {{ index }}:
+        <b>{{ val }}</b>
+      </span>
     </div>
     <div
       class="planevar"
