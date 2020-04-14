@@ -6,6 +6,8 @@
       <br />
       <label class="statLabel">Gravity</label>
       <input type="text" class="statBox" v-model.number="globals.gravity" />
+      <label class="statLabel">Gravity Feathering</label>
+      <input type="text" class="statBox" v-model.number="globals.feather" />
       <!-- Current plane physics -->
       <span v-for="(val, index) in HUD" v-bind:key="index">
         {{ index }}:

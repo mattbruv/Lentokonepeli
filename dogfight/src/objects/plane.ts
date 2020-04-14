@@ -13,7 +13,8 @@ import { RectangleBody } from "../physics/rectangle";
 // Movement Physics
 export const planeGlobals = {
   w0: Math.round(ROTATION_DIRECTIONS / 2),
-  gravity: 425
+  gravity: 425,
+  feather: 0.9 // must be in this range:(0 <= feather < 1) set to 0 for old behaviour
 };
 
 export const infoHUD = {
@@ -337,7 +338,7 @@ export class Plane extends GameObject {
 
   private moveBallistic(): void {
     const angle = (Math.PI * this.direction) / planeGlobals.w0;
-    const feather = 0.9; // must be in this range:(0 <= feather < 1) set to 0 for old behaviour
+    const feather = planeGlobals.feather;
     //const gravityFeather = (1 - feather * Math.pow(100, -Math.pow(this.speed / this.minSpeed, 2))); //smoother but more intensive
     const gravityFeather = (1 - feather) + feather * Math.abs(this.speed / this.minSpeed); //much less intensive
     const gravity = planeGlobals.gravity * SCALE_FACTOR * gravityFeather;
