@@ -6,7 +6,7 @@ import {
   BuildType
 } from "../constants";
 import { Cache, CacheEntry } from "../network/cache";
-import { mod } from "../physics/helpers";
+import { mod, magnitude, getAngle, getInclination } from "../physics/helpers";
 import { InputKey } from "../input";
 import { RectangleBody } from "../physics/rectangle";
 
@@ -234,7 +234,7 @@ export class Plane extends GameObject {
     this.direction = 0; // forward angle
     this.turnDirection = 0; // angle towards turn
     this.fc = 0; // centripetal force
-    this.speed = Math.pow(Math.pow(this.vx, 2) + Math.pow(this.vy, 2), 0.5); // speed
+    this.speed = magnitude(this.vx, this.vy); // speed
     this.drag = this.thrust / Math.pow(this.maxSpeed, 2); // drag coefficient
     this.rotateStatus = PlaneRotationStatus.None;
 
@@ -271,7 +271,7 @@ export class Plane extends GameObject {
     if (process.env.BUILD == BuildType.Client) {
       this.updateVars(this.planeType);
     }
-    this.rotate(cache, deltaTime);
+    //this.rotate(cache, deltaTime);
     this.move(cache, deltaTime);
     this.burnFuel(cache, deltaTime);
   }
@@ -306,19 +306,11 @@ export class Plane extends GameObject {
     const w0 = planeGlobals.w0;
 
     // Pythagorean theorem
-    this.speed = Math.pow(Math.pow(this.vx, 2) + Math.pow(this.vy, 2), 0.5);
+    this.speed = magnitude(this.vx, this.vy);
 
     const recoveryAngle =
       this.engineOn == true ? this.recoveryAngle : -this.glideAngle;
-    const aboveRecoveryAngle =
-      recoveryAngle >= 0
-        ? this.direction >= recoveryAngle &&
-        this.direction <= w0 - recoveryAngle
-        : !(
-          this.direction >= w0 - recoveryAngle &&
-          this.direction <= 2 * w0 + recoveryAngle
-        );
-
+    const aboveRecoveryAngle = getInclination(this.direction) > recoveryAngle;
     const tooHigh = this.py > this.maxAltitude;
     const tooSlow = this.speed < this.minSpeed;
     const ifStalling = (tooSlow && aboveRecoveryAngle) || tooHigh;
@@ -332,17 +324,11 @@ export class Plane extends GameObject {
     // update velocity
     this.vx += this.ax * tstep;
     this.vy += this.ay * tstep;
-
     // update local position
     this.px += this.vx * tstep;
     this.py += this.vy * tstep;
 
-    this.setDirection(
-      cache,
-      (Math.round((w0 * Math.atan2(this.vy, this.vx)) / Math.PI) + 2 * w0) %
-      (2 * w0)
-    );
-
+    this.setDirection(cache, getAngle(this.vx, this.vy));
     this.setData(cache, {
       x: Math.round(this.px / SCALE_FACTOR),
       y: Math.round(this.py / SCALE_FACTOR)
@@ -350,18 +336,11 @@ export class Plane extends GameObject {
   }
 
   private moveBallistic(): void {
-    const w0 = planeGlobals.w0;
+    const angle = (Math.PI * this.direction) / planeGlobals.w0;
     const gravity = planeGlobals.gravity * SCALE_FACTOR;
-    const drag = this.drag * this.freeDrag;
-    this.ax =
-      -drag *
-      Math.pow(this.speed, 2) *
-      Math.cos((Math.PI * this.direction) / w0);
-    this.ay =
-      -gravity -
-      drag *
-      Math.pow(this.speed, 2) *
-      Math.sin((Math.PI * this.direction) / w0);
+    const dragForce = this.drag * this.freeDrag * Math.pow(this.speed, 2);
+    this.ax = -dragForce * Math.cos(angle);
+    this.ay = -gravity - dragForce * Math.sin(angle);
   }
 
   private moveFlight(): void {
@@ -380,18 +359,16 @@ export class Plane extends GameObject {
     } else {
       this.fc = 0;
     }
-    // Acelleration in forward direction
-    const gravity = planeGlobals.gravity * SCALE_FACTOR;
-    const dv =
-      engine * this.thrust -
-      drag * Math.pow(this.speed, 2) -
-      gravity * Math.sin((Math.PI * this.direction) / w0);
-    this.ax =
-      dv * Math.cos((Math.PI * this.direction) / w0) +
-      this.fc * Math.cos((Math.PI * this.turnDirection) / w0);
-    this.ay =
-      dv * Math.sin((Math.PI * this.direction) / w0) +
-      this.fc * Math.sin((Math.PI * this.turnDirection) / w0);
+
+    // Acceleration in forward direction
+    const angle = (Math.PI * this.direction) / planeGlobals.w0;
+    const turnAngle = (Math.PI * this.turnDirection) / planeGlobals.w0;
+    const gravityForce = planeGlobals.gravity * SCALE_FACTOR * Math.sin(angle);
+    const dragForce = drag * Math.pow(this.speed, 2);
+    const engineForce = engine * this.thrust;
+    const dv = engineForce - dragForce - gravityForce;
+    this.ax = dv * Math.cos(angle) + this.fc * Math.cos(turnAngle);
+    this.ay = dv * Math.sin(angle) + this.fc * Math.sin(turnAngle);
   }
 
   public setRotation(cache: Cache, key: InputKey, doRotate: boolean): void {
@@ -478,6 +455,7 @@ export class Plane extends GameObject {
   public setVelocity(cache: Cache, vx: number, vy: number): void {
     this.vx = vx;
     this.vy = vy;
+    this.setDirection(cache, getAngle(vx, vy));
   }
 
   /**
