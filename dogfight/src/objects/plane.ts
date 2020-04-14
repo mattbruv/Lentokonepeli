@@ -15,7 +15,7 @@ export const planeGlobals = {
   w0: Math.round(ROTATION_DIRECTIONS / 2),
   gravity: 425,
   feather: 0.9, // must be in this range:(0 <= feather < 1) set to 0 for old behaviour,
-  featherMethod: true
+  dragPower: 1.5
 };
 
 export const infoHUD = {
@@ -237,7 +237,7 @@ export class Plane extends GameObject {
     this.turnDirection = 0; // angle towards turn
     this.fc = 0; // centripetal force
     this.speed = magnitude(this.vx, this.vy); // speed
-    this.drag = this.thrust / Math.pow(this.maxSpeed, 2); // drag coefficient
+    this.drag = this.thrust / Math.pow(this.maxSpeed, planeGlobals.dragPower); // drag coefficient
     this.rotateStatus = PlaneRotationStatus.None;
 
     // set fuel decrement threshold
@@ -286,12 +286,12 @@ export class Plane extends GameObject {
     this.minSpeed = planeData[kind].minSpeed * SCALE_FACTOR; // minimum speed to not stall
     this.turnRadius = planeData[kind].turnRadius * SCALE_FACTOR; // turning radius
     this.maxAltitude = planeData[kind].maxAltitude * SCALE_FACTOR; //Force stall above this height
-    this.drag = this.thrust / Math.pow(this.maxSpeed, 2); // drag coefficient
+    this.drag = this.thrust / Math.pow(this.maxSpeed, planeGlobals.dragPower); // drag coefficient
     this.freeDrag = planeData[kind].freeDrag; // Drag multiplier with engine off
 
     infoHUD.maxAscentAngle =
       (Math.asin(
-        (this.thrust - this.drag * Math.pow(this.minSpeed, 2)) /
+        (this.thrust - this.drag * Math.pow(this.minSpeed, planeGlobals.dragPower)) /
         (planeGlobals.gravity * SCALE_FACTOR)
       ) *
         planeGlobals.w0) /
@@ -326,6 +326,15 @@ export class Plane extends GameObject {
     // update velocity
     this.vx += this.ax * tstep;
     this.vy += this.ay * tstep;
+    const absoluteMinSpeed = 30 * SCALE_FACTOR;
+    if (magnitude(this.vx, this.vy) < absoluteMinSpeed) {
+      console.log("too slow!!!");
+      this.vx = (this.vx / Math.abs(this.vx)) * Math.pow(Math.pow(absoluteMinSpeed, 2) - Math.pow(this.vy, 2), 0.5);
+      if (this.vx == 0) {
+        const plusOrMinus = Math.random() < 0.5 ? -1 : 1;
+        this.vx = plusOrMinus * 7 * SCALE_FACTOR;
+      }
+    }
     // update local position
     this.px += this.vx * tstep;
     this.py += this.vy * tstep;
@@ -338,16 +347,24 @@ export class Plane extends GameObject {
   }
 
   private moveBallistic(): void {
-    console.log('a/b:', planeGlobals.featherMethod);
-    const angle = (Math.PI * this.direction) / planeGlobals.w0;
+    const w0 = planeGlobals.w0;
+    const angle = (Math.PI * this.direction) / w0;
+    const turnAngle = (Math.PI * this.turnDirection) / w0;
     const feather = planeGlobals.feather;
-    const a = (1 - feather * Math.pow(100, -Math.pow(this.speed / this.minSpeed, 2)));
-    const b = (1 - feather) + feather * Math.abs(this.speed / this.minSpeed);
-    const gravityFeather = planeGlobals.featherMethod ? a : b;
+    const gravityFeather = (1 - feather * Math.pow(100, -Math.pow(this.speed / this.minSpeed, 2)));
     const gravity = planeGlobals.gravity * SCALE_FACTOR * gravityFeather;
-    const dragForce = this.drag * this.freeDrag * Math.pow(this.speed, 2);
-    this.ax = -dragForce * Math.cos(angle);
-    this.ay = -gravity - dragForce * Math.sin(angle);
+    const dragForce = this.drag * this.freeDrag * Math.pow(this.speed, planeGlobals.dragPower);
+    if (this.rotateStatus == PlaneRotationStatus.Up) {
+      this.turnDirection = this.direction + w0 / 2;
+      this.fc = 2 * Math.pow(this.speed, 2) / this.turnRadius;
+    } else if (this.rotateStatus == PlaneRotationStatus.Down) {
+      this.turnDirection = this.direction - w0 / 2;
+      this.fc = 2 * Math.pow(this.speed, 2) / this.turnRadius;
+    } else {
+      this.fc = 0;
+    }
+    this.ax = -dragForce * Math.cos(angle) + this.fc * Math.cos(turnAngle);
+    this.ay = -gravity - dragForce * Math.sin(angle) + this.fc * Math.sin(turnAngle);
   }
 
   private moveFlight(): void {
@@ -371,7 +388,7 @@ export class Plane extends GameObject {
     const angle = (Math.PI * this.direction) / planeGlobals.w0;
     const turnAngle = (Math.PI * this.turnDirection) / planeGlobals.w0;
     const gravityForce = planeGlobals.gravity * SCALE_FACTOR * Math.sin(angle);
-    const dragForce = drag * Math.pow(this.speed, 2);
+    const dragForce = drag * Math.pow(this.speed, planeGlobals.dragPower);
     const engineForce = engine * this.thrust;
     const dv = engineForce - dragForce - gravityForce;
     this.ax = dv * Math.cos(angle) + this.fc * Math.cos(turnAngle);

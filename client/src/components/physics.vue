@@ -8,7 +8,8 @@
       <input type="text" class="statBox" v-model.number="globals.gravity" />
       <label class="statLabel">Gravity Feathering</label>
       <input type="text" class="statBox" v-model.number="globals.feather" />
-      <input type="checkbox" v-model="globals.featherMethod" />
+      <label class="statLabel">Drag Power</label>
+      <input type="text" class="statBox" v-model.number="globals.dragPower" />
       <!-- Current plane physics -->
       <span v-for="(val, index) in HUD" v-bind:key="index">
         {{ index }}:
