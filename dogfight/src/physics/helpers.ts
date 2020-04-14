@@ -1,4 +1,4 @@
-import { ROTATION_DIRECTIONS } from "../constants";
+import { ROTATION_DIRECTIONS, FacingDirection } from "../constants";
 
 export function directionToRadians(direction: number): number {
   return (Math.PI * 2 * direction) / ROTATION_DIRECTIONS;
@@ -21,4 +21,8 @@ export function getAngle(x: number, y: number): number { //input vector, get vec
 export function getInclination(w: number): number { //input angle (0,255), get incline (-64,64)
   const w0 = ROTATION_DIRECTIONS / 2;
   return Math.abs(mod(w - w0 / 2, 2 * w0) - w0) - w0 / 2;
+}
+
+export function getFacingDirection(w: number): FacingDirection {
+  return (2 * Math.floor(w / ROTATION_DIRECTIONS) - Math.floor(2 * w / ROTATION_DIRECTIONS)) + 1;
 }
