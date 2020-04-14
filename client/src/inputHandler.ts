@@ -28,6 +28,7 @@ export class InputHandler {
   public processGameKeyChange: (change: InputChange) => void;
 
   public constructor() {
+
     this.playerInputState = {};
     // initialize all keys to false
     for (const keyIndex in InputKey) {
@@ -40,6 +41,12 @@ export class InputHandler {
     document.addEventListener("keyup", (event): void => {
       this.onKeyUp(event);
     });
+    window.addEventListener("keydown", function (e) {
+      // space and arrow keys
+      if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+        e.preventDefault();
+      }
+    }, false);
   }
 
   private onKeyDown(event: KeyboardEvent): void {
