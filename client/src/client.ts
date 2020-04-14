@@ -14,6 +14,7 @@ import { radarObjects } from "./render/objects/radar";
 import { NetworkHandler } from "./networkHandler";
 import { InputChange } from "../../dogfight/src/input";
 import { PlayerStatus } from "../../dogfight/src/objects/player";
+import { AudioManager } from "./audio";
 
 export class GameClient {
   private renderer: GameRenderer;
@@ -30,6 +31,8 @@ export class GameClient {
   private teamSelector: TeamSelector;
   private takeoffSelector: TakeoffSelector;
 
+  private audio: AudioManager;
+
   public gameObjects: {};
 
   private playerInfo = {
@@ -43,6 +46,8 @@ export class GameClient {
   };
 
   public constructor() {
+    this.audio = new AudioManager();
+
     // Initialize game object container
     this.gameObjects = {};
     for (const key in GameObjectType) {
@@ -186,6 +191,9 @@ export class GameClient {
     if (this.gameObjects[type][id] === undefined) {
       this.gameObjects[type][id] = {};
       console.log("Create", GameObjectType[type], id);
+      if (type == GameObjectType.Explosion) {
+        this.audio.playExplosion();
+      }
     }
     const object = this.gameObjects[type][id];
 
@@ -230,6 +238,11 @@ export class GameClient {
         type: object.controlType,
         id: object.controlID
       };
+      if (this.followObject.type == GameObjectType.Plane) {
+        this.audio.playEngine(true);
+      } else {
+        this.audio.playEngine(false);
+      }
       const status = object.status;
       if (status !== undefined) {
         if (status == PlayerStatus.Playing) {

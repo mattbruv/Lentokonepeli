@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 
 export let spriteSheet: PIXI.Spritesheet;
 
-const sheetPath = "images/images.json";
+const sheetPath = "assets/images/images.json";
 const loader = PIXI.Loader.shared;
 
 loader.onError.add((): void => {

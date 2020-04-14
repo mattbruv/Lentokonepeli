@@ -19,7 +19,7 @@ export class NetworkHandler {
   private clientServer: ClientServer;
 
   public constructor(callback: packetCallback) {
-    console.log("network handler made!");
+    // console.log("network handler made!");
     this.onPacketRecieved = callback;
 
     // create connection to server.
