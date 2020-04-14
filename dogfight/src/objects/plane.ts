@@ -337,9 +337,10 @@ export class Plane extends GameObject {
 
   private moveBallistic(): void {
     const angle = (Math.PI * this.direction) / planeGlobals.w0;
-    //const gravityFeather = (1 - 0.9 * Math.pow(100, -Math.pow(this.speed / this.minSpeed, 2)));
-    const gravityFeather = 0.1 + 0.9 * Math.abs(this.speed / this.minSpeed);
-    let gravity = planeGlobals.gravity * SCALE_FACTOR * gravityFeather;
+    const feather = 0.9; // must be in this range:(0 <= feather < 1) set to 0 for old behaviour
+    //const gravityFeather = (1 - feather * Math.pow(100, -Math.pow(this.speed / this.minSpeed, 2))); //smoother but more intensive
+    const gravityFeather = (1 - feather) + feather * Math.abs(this.speed / this.minSpeed); //much less intensive
+    const gravity = planeGlobals.gravity * SCALE_FACTOR * gravityFeather;
     const dragForce = this.drag * this.freeDrag * Math.pow(this.speed, 2);
     this.ax = -dragForce * Math.cos(angle);
     this.ay = -gravity - dragForce * Math.sin(angle);
