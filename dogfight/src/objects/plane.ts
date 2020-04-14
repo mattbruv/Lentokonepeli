@@ -453,6 +453,7 @@ export class Plane extends GameObject {
   }
 
   public setVelocity(cache: Cache, vx: number, vy: number): void {
+    const w0 = planeGlobals.w0;
     this.vx = vx;
     this.vy = vy;
     this.setDirection(cache, getAngle(vx, vy));
