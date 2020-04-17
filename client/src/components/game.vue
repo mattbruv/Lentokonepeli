@@ -1,7 +1,7 @@
 <template>
   <div id="game">
     <div id="game-canvas"></div>
-    <Debug v-if="isLoaded"></Debug>
+    <Debug v-if="isLoaded && viewDebug"></Debug>
   </div>
 </template>
 
@@ -16,6 +16,11 @@ export default Vue.extend({
   computed: {
     isLoaded() {
       return this.$store.state.client.loadedGame;
+    },
+    viewDebug() {
+      console.log(this.$store.state.viewDebug);
+
+      return this.$store.state.viewDebug;
     }
   }
 });

@@ -1,5 +1,8 @@
 {
   "include": [
     "client/**/*"
-  ]
+  ],
+  "compilerOptions": {
+    "esModuleInterop": true
+  }
 }

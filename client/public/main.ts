@@ -1,5 +1,5 @@
 import { GameClient } from "../src/client";
-// import Cookies from "js-cookie";
+import Cookies from "js-cookie";
 // import { Localizer } from "../src/localization/localizer";
 
 import App from "../src/components/app.vue";
@@ -18,9 +18,20 @@ function init(): void {
     state: {
       client: client,
       planeInfo: planeData,
-      infoHUD: infoHUD
+      infoHUD: infoHUD,
+      viewSettings: false,
+      viewDebug: Cookies.get("debug") == "true"
+    },
+    mutations: {
+      setDebug(state, value): void {
+        Cookies.set("debug", value);
+        console.log(Cookies.get("debug"));
+
+        state.viewDebug = value;
+      }
     }
   });
+  console.log(store);
 
   // create game client engine
   const vm = new Vue({

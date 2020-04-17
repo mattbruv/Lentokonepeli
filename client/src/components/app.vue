@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <!-- <Header></Header> -->
+    <Header></Header>
+    <Settings v-if="viewSettings"></Settings>
     <Game></Game>
   </div>
 </template>
@@ -9,15 +10,20 @@
 import Vue from "vue";
 import Game from "./game.vue";
 import Header from "./header.vue";
+import Settings from "./settings/settings.vue";
 import { GameObjectType } from "../../../dogfight/src/object";
 import { ClientMode } from "../types";
 export default Vue.extend({
   name: "App",
   components: {
     Game,
-    Header
+    Header,
+    Settings
   },
   computed: {
+    viewSettings() {
+      return this.$store.state.viewSettings;
+    },
     status() {
       const mode = this.$store.state.client.mode;
       return ClientMode[mode];

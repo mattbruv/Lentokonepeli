@@ -1,6 +1,8 @@
 <template>
   <div id="header">
-    <h1>{{ gameName }}</h1>
+    <a @click="toggleSettings">
+      <i :class="viewSettings ? 'header-clicked' : ''" class="material-icons">settings</i>
+    </a>
   </div>
 </template>
 
@@ -11,6 +13,14 @@ export default Vue.extend({
   computed: {
     gameName() {
       return Localizer.get("gameName");
+    },
+    viewSettings() {
+      return this.$store.state.viewSettings;
+    }
+  },
+  methods: {
+    toggleSettings() {
+      this.$store.state.viewSettings = !this.$store.state.viewSettings;
     }
   }
 });
@@ -18,6 +28,20 @@ export default Vue.extend({
 
 <style>
 #header {
-  background-color: gray;
+  position: fixed;
+  top: 0;
+  right: 0;
+  margin: 1rem;
+  z-index: 69;
+}
+.material-icons {
+  font-size: 2rem;
+}
+#header a {
+  cursor: pointer;
+}
+.header-clicked {
+  color: white;
+  text-shadow: 0 0 1rem white;
 }
 </style>
