@@ -42,6 +42,19 @@ export default Vue.extend({
 }
 .header-clicked {
   color: white;
-  text-shadow: 0 0 1rem white;
+  animation-name: icon-clicked;
+  font-size: 3rem;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes icon-clicked {
+  50% {
+    text-shadow: 0 0 2rem white;
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>
