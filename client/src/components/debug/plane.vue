@@ -1,49 +1,31 @@
 <template>
   <div>
-    <b>Global physics:</b>
+    <h4>Global Physics</h4>
+    <p>
+      <label>Gravity</label>
+      <input type="text" class="statBox" v-model.number="globals.gravity" />
+      <!-- Current plane physics -->
+    </p>
+    <p>
+      <span v-for="(val, index) in HUD" v-bind:key="index">
+        {{ index }}:
+        <b>{{ val }}</b>
+      </span>
+    </p>
+    <hr />
+    <h4>Plane Physics</h4>
+    <select v-model="editPlane">
+      <option v-for="name in planeNames" :key="name">{{ name }}</option>
+    </select>
     <br />
-    <label class="statLabel">Gravity</label>
-    <input type="text" class="statBox" v-model.number="globals.gravity" />
-    <!-- Current plane physics -->
-    <span v-for="(val, index) in HUD" v-bind:key="index">
-      {{ index }}:
-      <b>{{ val }}</b>
-    </span>
+    <br />
     <div
-      class="planevar"
-      v-for="(value, id) in planeInfo"
-      :key="id"
-      v-bind:class="[isMyPlane(id) ? 'mine' : '']"
-      align="left"
+      v-for="(val, key) in planeInfo[planeID(editPlane)]"
+      :key="key"
+      :class="isMyPlane(editPlane) ? 'mine': ''"
     >
-      <b>{{ planeName(id) }}:</b>
-      <br />
-      <label class="statLabel">Recovery Angle</label>
-      <input type="text" class="statBox" v-model.number="planeInfo[id].recoveryAngle" />
-      <br />
-      <label class="statLabel">Glide Angle</label>
-      <input type="text" class="statBox" v-model.number="planeInfo[id].glideAngle" />
-      <br />
-      <label class="statLabel">Thrust</label>
-      <input type="text" class="statBox" v-model.number="planeInfo[id].thrust" />
-      <br />
-      <label class="statLabel">Drag</label>
-      <input type="text" class="statBox" v-model.number="planeInfo[id].freeDrag" />
-      <br />
-      <label class="statLabel">Max Speed</label>
-      <input type="text" class="statBox" v-model.number="planeInfo[id].maxSpeed" />
-      <br />
-      <label class="statLabel">Stall Speed</label>
-      <input type="text" class="statBox" v-model.number="planeInfo[id].minSpeed" />
-      <br />
-      <label class="statLabel">Turn Radius</label>
-      <input type="text" class="statBox" v-model.number="planeInfo[id].turnRadius" />
-      <br />
-      <label class="statLabel">Max Altitude</label>
-      <input type="text" class="statBox" v-model.number="planeInfo[id].maxAltitude" />
-      <br />
-      <label class="statLabel">Flight Time</label>
-      <input type="text" class="statBox" v-model.number="planeInfo[id].flightTime" />
+      <label>{{ planeVarLabels[key] || key }}:</label>
+      <input type="text" v-model="planeInfo[planeID(editPlane)][key]" />
     </div>
   </div>
 </template>
@@ -59,7 +41,23 @@ import { BuildType } from "../../../../dogfight/src/constants";
 export default Vue.extend({
   data: (): any => {
     return {
-      noServerMode: process.env.BUILD == BuildType.Client
+      noServerMode: process.env.BUILD == BuildType.Client,
+      editPlane: "Albatros",
+      planeVarLabels: {
+        width: "Hitbox Width",
+        height: "Hitbox Height",
+        flightTime: "Flight Time",
+        ammo: "Ammo",
+        fireRate: "Fire Rate",
+        thrust: "Thrust",
+        maxSpeed: "Max Speed",
+        minSpeed: "Stall Speed",
+        turnRadius: "Turn Radius",
+        maxAltitude: "Max Altitude",
+        recoveryAngle: "Recovery Angle",
+        glideAngle: "Glide Angle",
+        freeDrag: "Drag"
+      }
     };
   },
   computed: {
@@ -69,15 +67,19 @@ export default Vue.extend({
     globals() {
       return planeGlobals;
     },
+    planeNames() {
+      return Object.keys(PlaneType).filter(n => isNaN(parseInt(n)));
+    },
     HUD() {
       return this.$store.state.infoHUD;
     }
   },
   methods: {
-    planeName(id: string): string {
-      return PlaneType[id];
+    planeID(name: string): number {
+      return PlaneType[name];
     },
-    isMyPlane(id: string): boolean {
+    isMyPlane(name: string): boolean {
+      const id = PlaneType[name];
       const mine = this.$store.state.client.getFollowObject();
       let isMine = false;
       if (mine !== undefined) {
@@ -93,19 +95,7 @@ export default Vue.extend({
 #debug {
   margin: 1em;
 }
-.statLabel {
-  display: inline-block;
-  width: 100px;
-}
-.statBox {
-  float: "right";
-  width: 80px;
-}
 .mine {
   background-color: lightblue;
-}
-.planevar {
-  padding: 5px;
-  float: left;
 }
 </style>

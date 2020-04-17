@@ -1,6 +1,10 @@
 <template>
   <div id="debug" v-if="noServerMode">
-    <PlaneDebug></PlaneDebug>
+    <label>Debug:</label>
+    <select v-model="menu">
+      <option v-for="item in menuList" :key="item.value" :value="item.value">{{item.name}}</option>
+    </select>
+    <PlaneDebug v-if="menu == 'plane'"></PlaneDebug>
   </div>
 </template>
 
@@ -13,13 +17,21 @@ import {
   infoHUD
 } from "../../../../dogfight/src/objects/plane";
 import { BuildType } from "../../../../dogfight/src/constants";
+
 export default Vue.extend({
   components: {
     PlaneDebug
   },
   data: (): any => {
     return {
-      noServerMode: process.env.BUILD == BuildType.Client
+      noServerMode: process.env.BUILD == BuildType.Client,
+      menu: "plane",
+      menuList: [
+        {
+          name: "Planes",
+          value: "plane"
+        }
+      ]
     };
   },
   computed: {},
