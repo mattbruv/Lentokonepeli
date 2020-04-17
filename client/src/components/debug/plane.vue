@@ -25,7 +25,7 @@
       :class="isMyPlane(editPlane) ? 'mine': ''"
     >
       <label>{{ planeVarLabels[key] || key }}:</label>
-      <input type="text" v-model="planeInfo[planeID(editPlane)][key]" />
+      <input type="text" v-model.number="planeInfo[planeID(editPlane)][key]" />
     </div>
   </div>
 </template>

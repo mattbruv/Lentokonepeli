@@ -30,6 +30,10 @@ export default Vue.extend({
         {
           name: "Planes",
           value: "plane"
+        },
+        {
+          name: "Other",
+          value: "nil"
         }
       ]
     };
@@ -41,6 +45,10 @@ export default Vue.extend({
 
 <style>
 #debug {
-  margin: 1em;
+  width: 100%;
+  border: 1px dashed;
+  background-color: rgb(255, 246, 232);
+  border-radius: 1rem;
+  padding: 1rem;
 }
 </style>

@@ -25,10 +25,14 @@ export default Vue.extend({
 #game {
   margin: 50px;
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
+  align-items: center;
 }
 
 #game-canvas {
+  display: flex;
+  align-content: center;
+  align-self: center;
 }
 
 #game-canvas > canvas {
