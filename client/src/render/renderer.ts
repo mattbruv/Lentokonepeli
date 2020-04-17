@@ -109,6 +109,7 @@ export class GameRenderer {
     // Setup pixi classes
     // Make the screen objects layerable.
     this.entityContainer.sortableChildren = true;
+    this.debug.worldContainer.sortableChildren = true;
 
     this.entityContainer.addChild(this.playerInfo.container);
 
@@ -148,6 +149,9 @@ export class GameRenderer {
       this.sprites[type][id] = this.createSprite(type);
       for (const container of this.sprites[type][id].renderables) {
         this.entityContainer.addChild(container);
+      }
+      for (const debugContainer of this.sprites[type][id].renderablesDebug) {
+        this.debug.worldContainer.addChild(debugContainer);
       }
       if (type == GameObjectType.Plane) {
         console.log(data);

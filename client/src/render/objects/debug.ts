@@ -56,6 +56,7 @@ export class DebugView {
     this.grid.setEnabled(active);
     this.cursorText.visible = active;
     this.dot.visible = active;
+    this.worldContainer.visible = active;
     this.enabled = active;
   }
 

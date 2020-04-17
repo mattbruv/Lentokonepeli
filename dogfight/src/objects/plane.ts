@@ -480,21 +480,6 @@ export class Plane extends GameObject {
     this.vy = vy;
   }
 
-  /**
-   * Returns the collision body for this plane.
-   */
-  public getRect(): RectangleBody {
-    return {
-      width: Math.round(planeData[this.planeType].width * 0.8),
-      height: Math.round(planeData[this.planeType].height * 0.8),
-      center: {
-        x: this.x,
-        y: this.y
-      },
-      direction: this.direction
-    };
-  }
-
   public getState(): CacheEntry {
     return {
       type: this.type,
@@ -510,4 +495,23 @@ export class Plane extends GameObject {
       bombs: this.bombs
     };
   }
+}
+
+/**
+ * Returns the collision body for a plane.
+ */
+export function getPlaneRect(
+  x: number,
+  y: number,
+  direction: number,
+  type: PlaneType
+): RectangleBody {
+  return {
+    // width: Math.round(planeData[type].width * 0.8),
+    // height: Math.round(planeData[type].height * 0.8),
+    width: planeData[type].width,
+    height: planeData[type].height,
+    center: { x, y },
+    direction
+  };
 }

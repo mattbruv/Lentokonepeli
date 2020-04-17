@@ -1,7 +1,10 @@
 import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
-import { PlaneType } from "../../../../dogfight/src/objects/plane";
+import {
+  PlaneType,
+  getPlaneRect
+} from "../../../../dogfight/src/objects/plane";
 import { directionToRadians } from "../../../../dogfight/src/physics/helpers";
 
 const planeImageIDs = {
@@ -61,6 +64,8 @@ export class PlaneSprite extends GameSprite {
   private darkSmoke: PIXI.Container;
   private darkSmokeTimeout: number;
 
+  private debug: PIXI.Graphics;
+
   public constructor(spritesheet: PIXI.Spritesheet) {
     super();
 
@@ -76,6 +81,7 @@ export class PlaneSprite extends GameSprite {
     this.spritesheet = spritesheet;
 
     this.container = new PIXI.Container();
+    this.debug = new PIXI.Graphics();
     this.lightSmoke = new PIXI.Container();
     this.darkSmoke = new PIXI.Container();
 
@@ -98,6 +104,7 @@ export class PlaneSprite extends GameSprite {
     this.renderables.push(this.container);
     this.renderables.push(this.lightSmoke);
     this.renderables.push(this.darkSmoke);
+    this.renderablesDebug.push(this.debug);
   }
 
   private setDirection(): void {
@@ -155,7 +162,24 @@ export class PlaneSprite extends GameSprite {
     this.handleFlip();
     this.setPlaneTexture();
     this.setDirection();
+    this.drawDebug();
     this.container.position.set(this.x, this.y);
+  }
+
+  private drawDebug(): void {
+    // debug
+    this.debug.clear();
+    this.debug.beginFill(0xff00ff);
+    const rect = getPlaneRect(this.x, this.y, this.direction, this.planeType);
+    const halfW = rect.width / 2;
+    const halfH = rect.height / 2;
+    this.debug.lineStyle(1, 0xff00ff);
+    this.debug.beginFill(0x000000, 0);
+    this.debug.drawRect(-halfW, -halfH, rect.width, rect.height);
+    this.debug.drawCircle(0, 0, 2);
+    this.debug.rotation = directionToRadians(this.direction) * -1;
+    this.debug.position.set(this.x, this.y);
+    this.debug.endFill();
   }
 
   private createLightSmoke(): void {

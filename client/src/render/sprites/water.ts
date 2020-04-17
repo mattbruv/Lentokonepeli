@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer, WaterColor } from "../constants";
 import { FacingDirection } from "../../../../dogfight/src/constants";
+import { getWaterRect } from "../../../../dogfight/src/objects/water";
 
 const WAVE_PHASE_TIME = 200; // Milliseconds
 const WATER_HEIGHT = 10000;
@@ -22,6 +23,7 @@ export class WaterSprite extends GameSprite {
   private color: WaterColor;
   private wavePhase: number;
   private windowInterval: number;
+  private debug: PIXI.Graphics;
 
   public constructor(spritesheet: PIXI.Spritesheet) {
     super();
@@ -37,6 +39,8 @@ export class WaterSprite extends GameSprite {
     this.spritesheet = spritesheet;
 
     this.container = new PIXI.Container();
+    this.debug = new PIXI.Graphics();
+    this.debug.zIndex = DrawLayer.Water;
 
     this.water = new PIXI.Graphics();
     const texStr = this.getWaveTextureString();
@@ -55,6 +59,7 @@ export class WaterSprite extends GameSprite {
     }, WAVE_PHASE_TIME);
 
     this.renderables.push(this.container);
+    this.renderablesDebug.push(this.debug);
   }
 
   private phaseWave(): void {
@@ -88,6 +93,19 @@ export class WaterSprite extends GameSprite {
 
     // set water y-offset
     this.container.y = this.y;
+    this.drawDebug();
+  }
+
+  private drawDebug(): void {
+    const rect = getWaterRect(this.x, -this.y, this.width);
+    this.debug.clear();
+    this.debug.beginFill(0x0000ff);
+    const halfW = rect.width / 2;
+    const halfH = rect.height / 2;
+    this.debug.drawRect(-halfW, -halfH, rect.width, rect.height);
+    this.debug.position.set(rect.center.x, rect.center.y * -1);
+    this.debug.endFill();
+    console.log(this.x, this.y, rect);
   }
 
   public destroy(): void {

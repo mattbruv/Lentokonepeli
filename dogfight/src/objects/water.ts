@@ -21,18 +21,6 @@ export class Water extends GameObject {
     });
   }
 
-  public getRect(): RectangleBody {
-    return {
-      direction: 0,
-      width: this.width,
-      height: 1000,
-      center: {
-        x: this.x,
-        y: this.y - 505
-      }
-    };
-  }
-
   public getState(): CacheEntry {
     return {
       type: this.type,
@@ -42,4 +30,20 @@ export class Water extends GameObject {
       direction: this.direction
     };
   }
+}
+
+export function getWaterRect(
+  x: number,
+  y: number,
+  width: number
+): RectangleBody {
+  return {
+    direction: 0,
+    width,
+    height: 1000,
+    center: {
+      x,
+      y: y - 505
+    }
+  };
 }

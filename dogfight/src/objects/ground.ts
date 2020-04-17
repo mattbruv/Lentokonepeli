@@ -20,18 +20,6 @@ export class Ground extends GameObject {
     });
   }
 
-  public getRect(): RectangleBody {
-    return {
-      width: this.width,
-      height: 20,
-      center: {
-        x: this.x,
-        y: this.y - 20
-      },
-      direction: 0
-    };
-  }
-
   public getState(): CacheEntry {
     return {
       type: this.type,
@@ -41,4 +29,20 @@ export class Ground extends GameObject {
       terrain: this.terrain
     };
   }
+}
+
+export function getGroundRect(
+  x: number,
+  y: number,
+  width: number
+): RectangleBody {
+  return {
+    width: width,
+    height: 40,
+    center: {
+      x,
+      y: y - 30
+    },
+    direction: 0
+  };
 }
