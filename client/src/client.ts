@@ -81,7 +81,7 @@ export class GameClient {
     this.renderer.centerCamera(0, 150);
 
     // Draw it to the screen
-    const div = document.getElementById("game");
+    const div = document.getElementById("game-canvas");
     div.appendChild(this.renderer.getView());
 
     // update language

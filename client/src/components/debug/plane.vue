@@ -1,17 +1,14 @@
 <template>
-  <div id="physics" v-if="noServerMode">
-    <!-- Physics shit goes here -->
-    <div align="left" padding="5px">
-      <b>Global physics:</b>
-      <br />
-      <label class="statLabel">Gravity</label>
-      <input type="text" class="statBox" v-model.number="globals.gravity" />
-      <!-- Current plane physics -->
-      <span v-for="(val, index) in HUD" v-bind:key="index">
-        {{ index }}:
-        <b>{{ val }}</b>
-      </span>
-    </div>
+  <div>
+    <b>Global physics:</b>
+    <br />
+    <label class="statLabel">Gravity</label>
+    <input type="text" class="statBox" v-model.number="globals.gravity" />
+    <!-- Current plane physics -->
+    <span v-for="(val, index) in HUD" v-bind:key="index">
+      {{ index }}:
+      <b>{{ val }}</b>
+    </span>
     <div
       class="planevar"
       v-for="(value, id) in planeInfo"
@@ -57,8 +54,8 @@ import {
   PlaneType,
   planeGlobals,
   infoHUD
-} from "../../../dogfight/src/objects/plane";
-import { BuildType } from "../../../dogfight/src/constants";
+} from "../../../../dogfight/src/objects/plane";
+import { BuildType } from "../../../../dogfight/src/constants";
 export default Vue.extend({
   data: (): any => {
     return {
@@ -93,9 +90,8 @@ export default Vue.extend({
 </script>
 
 <style>
-#physics {
+#debug {
   margin: 1em;
-  font-size: 14px;
 }
 .statLabel {
   display: inline-block;
