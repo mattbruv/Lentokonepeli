@@ -26,6 +26,7 @@ function init(): void {
     },
     mutations: {
       setDebug(state, value): void {
+        Cookies.set("debug", value);
         state.viewDebug = value;
       },
       setLanguage(state, newLangID): void {
