@@ -1,7 +1,7 @@
 import { spriteSheet, loadSpriteSheet } from "./render/textures";
 import { GameRenderer } from "./render/renderer";
 import { CanvasEventHandler } from "./render/event";
-import { Localizer } from "./localization/localizer";
+import { Localizer, Language } from "./localization/localizer";
 import { Packet, PacketType } from "../../dogfight/src/network/types";
 import { InputHandler } from "./inputHandler";
 import { ClientMode } from "./types";
@@ -280,7 +280,7 @@ export class GameClient {
     this.renderer.HUD.radar.refreshRadar(this.gameObjects);
   }
 
-  public updateLanguage(language: string): void {
+  public updateLanguage(language: Language): void {
     console.log("Changing language to", language);
     Localizer.setLanguage(language);
     // update strings.

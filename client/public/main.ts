@@ -7,6 +7,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import { VNode } from "vue/types/umd";
 import { planeData, infoHUD } from "../../dogfight/src/objects/plane";
+import { Localizer } from "../src/localization/localizer";
 
 Vue.config.productionTip = false;
 Vue.use(Vuex);
@@ -19,15 +20,16 @@ function init(): void {
       client: client,
       planeInfo: planeData,
       infoHUD: infoHUD,
+      lang: Localizer,
       viewSettings: false,
       viewDebug: Cookies.get("debug") == "true"
     },
     mutations: {
       setDebug(state, value): void {
-        Cookies.set("debug", value);
-        console.log(Cookies.get("debug"));
-
         state.viewDebug = value;
+      },
+      setLanguage(state, newLangID): void {
+        state.client.updateLanguage(newLangID);
       }
     }
   });

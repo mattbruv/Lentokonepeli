@@ -5,6 +5,12 @@ import { Translation } from "./translation";
 // Ö, ö
 
 export const Finnish: Translation = {
+  languageName: "suomi",
+
+  language: "Kieli",
+  settings: "Asetukset",
+  showDebug: "Näytä vianetsintävalikko",
+
   gameName: "Lentokonepeli",
   teamChooserTitle: "Valitse kumpien puolella lennät:",
   teamChooserDescription: `keskusvaltojen vai ympärysvaltojen

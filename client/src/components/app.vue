@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Header></Header>
-    <Settings v-if="viewSettings"></Settings>
+    <Settings v-show="viewSettings"></Settings>
     <Game></Game>
   </div>
 </template>

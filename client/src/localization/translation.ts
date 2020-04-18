@@ -1,4 +1,13 @@
 export interface Translation {
+  /*** UI ***/
+  languageName: string;
+
+  language: string;
+  settings: string;
+  showDebug: string;
+
+  /*** GAME ***/
+
   gameName: string;
 
   teamChooserTitle: string;

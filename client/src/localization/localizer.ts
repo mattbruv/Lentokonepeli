@@ -3,29 +3,34 @@ import { English } from "./english";
 import { Finnish } from "./finnish";
 import { Translation } from "./translation";
 
-interface Dictionary {
-  [key: string]: Translation;
+export enum Language {
+  English = "en",
+  Finnish = "fi"
 }
 
+export const Languages = {
+  [Language.English]: English,
+  [Language.Finnish]: Finnish
+};
+
 class Localize {
-  public dictionary: Dictionary;
-  private language: string;
+  private language: Language;
 
   public constructor() {
-    this.dictionary = {
-      en: English,
-      fi: Finnish
-    };
     const cookie = Cookies.get("language");
-    if (cookie !== undefined) {
-      this.setLanguage(cookie);
-    } else {
-      this.setLanguage("en");
-    }
+    this.setLanguage(cookie as Language);
   }
 
   public get(phrase: keyof Translation, params?: any): string {
-    let str = this.dictionary[this.language][phrase];
+    return this.getString(this.language, phrase, params);
+  }
+
+  public getString(
+    lang: Language,
+    phrase: keyof Translation,
+    params?: any
+  ): string {
+    let str = Languages[lang][phrase];
     if (params !== undefined) {
       for (const key in params) {
         str = str.replace(`{{${key}}}`, params[key]);
@@ -38,9 +43,9 @@ class Localize {
     return this.language;
   }
 
-  public setLanguage(language: string): void {
-    if (this.dictionary[language] === undefined) {
-      this.language = "en";
+  public setLanguage(language: Language): void {
+    if (Languages[language] === undefined) {
+      this.language = Language.English;
     } else {
       this.language = language;
     }

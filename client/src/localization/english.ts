@@ -1,6 +1,11 @@
 import { Translation } from "./translation";
 
 export const English: Translation = {
+  languageName: "English",
+  language: "Language",
+  settings: "Settings",
+  showDebug: "Show Debug Menu",
+
   gameName: "Dogfight",
   teamChooserTitle: "Choose your team:",
   teamChooserDescription: `Central Powers or Allies.
