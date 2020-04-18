@@ -200,6 +200,11 @@ export class GameClient {
       if (type == GameObjectType.Explosion) {
         this.audio.playExplosion();
       }
+      if (type == GameObjectType.Bullet) {
+        if (data.age == 0) {
+          this.audio.playBullet();
+        }
+      }
     }
     const object = this.gameObjects[type][id];
 

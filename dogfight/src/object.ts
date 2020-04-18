@@ -17,7 +17,8 @@ export enum GameObjectType {
   Plane,
   Trooper,
   Player,
-  Explosion
+  Explosion,
+  Bullet
 }
 
 type sendableData = number | string | boolean;

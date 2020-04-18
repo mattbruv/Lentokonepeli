@@ -1,6 +1,7 @@
 import { Cache } from "../network/cache";
 import { Player } from "../objects/player";
 import { Flag } from "../objects/flag";
+import { Bullet } from "../objects/bullet";
 import { Ground } from "../objects/ground";
 import { Hill } from "../objects/hill";
 import { Runway } from "../objects/runway";
@@ -40,6 +41,7 @@ export class GameWorld {
   public planes: Plane[];
   public troopers: Trooper[];
   public explosions: Explosion[];
+  public bullets: Bullet[];
 
   // god please forgive me for this sin
   private objectArrays = {
@@ -52,7 +54,8 @@ export class GameWorld {
     [GameObjectType.Trooper]: "troopers",
     [GameObjectType.Water]: "waters",
     [GameObjectType.Plane]: "planes",
-    [GameObjectType.Explosion]: "explosions"
+    [GameObjectType.Explosion]: "explosions",
+    [GameObjectType.Bullet]: "bullets"
   };
 
   // Next available ID, incremented by 1.
@@ -82,6 +85,7 @@ export class GameWorld {
     this.waters = [];
     this.planes = [];
     this.explosions = [];
+    this.bullets = [];
   }
 
   /**
@@ -98,6 +102,10 @@ export class GameWorld {
     processPlanes(this, deltaTime);
     processExplosions(this, deltaTime);
     processCollision(this);
+    if (Math.random() > 0.99) {
+      // const b = new Bullet(this.nextID(), this.cache);
+      // this.bullets.push(b);
+    }
     return this.cache;
   }
 

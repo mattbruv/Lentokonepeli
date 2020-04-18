@@ -21,6 +21,7 @@ import { TakeoffSelectUI } from "./objects/takeoffSelectUI";
 import { PlaneSprite } from "./sprites/plane";
 import { PlayerInfo } from "./objects/playerInfo";
 import { ExplosionSprite } from "./sprites/explosion";
+import { BulletSprite } from "./sprites/bullet";
 
 /**
  * A class which renders the game world.
@@ -199,6 +200,8 @@ export class GameRenderer {
         return new TrooperSprite(this.spriteSheet);
       case GameObjectType.Explosion:
         return new ExplosionSprite(this.spriteSheet);
+      case GameObjectType.Bullet:
+        return new BulletSprite(this.spriteSheet);
       case GameObjectType.Plane:
         return new PlaneSprite(this.spriteSheet);
       default:

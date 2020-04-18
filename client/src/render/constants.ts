@@ -15,6 +15,7 @@ export enum DrawLayer {
   Runway = 0,
   Trooper = 5,
   Explosion = 50,
+  Bullet = 69,
   Player = 100
 }
 

@@ -24,4 +24,11 @@ export class AudioManager {
     });
     explosion.play();
   }
+
+  public playBullet(): void {
+    const bullet = new Howl({
+      src: ["assets/audio/m16.mp3", "assets/audio/m16.wav"]
+    });
+    bullet.play();
+  }
 }
