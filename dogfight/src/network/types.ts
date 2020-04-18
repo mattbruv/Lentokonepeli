@@ -23,6 +23,7 @@ export enum PacketType {
   RequestJoinTeam,
   RequestTakeoff,
   UserGameInput,
+  ChangeName,
 
   /* User <--> Server */
   Ping,

@@ -6,6 +6,7 @@ import { Team } from "../../dogfight/src/constants";
 import { requestTakeoff } from "../../dogfight/src/world/takeoff";
 import { loadMap } from "../../dogfight/src/world/map";
 import { MAP_CLASSIC_2 } from "../../dogfight/src/maps/classic2";
+import { isNameValid } from "../../dogfight/src/validation";
 
 type messageCallback = (data: Packet) => void;
 
@@ -63,6 +64,15 @@ export class ClientServer {
         requestTakeoff(this.world, this.player, packet.data);
         break;
       }
+      case PacketType.ChangeName: {
+        const newName = packet.data.name;
+        console.log("processing", newName);
+
+        if (isNameValid(newName) && this.player !== undefined) {
+          this.player.setName(this.world.cache, newName);
+        }
+        break;
+      }
       case PacketType.RequestJoinTeam: {
         let selection = packet.data.team;
         switch (selection) {
@@ -77,6 +87,12 @@ export class ClientServer {
             break;
         }
         this.player = this.world.addPlayer(selection);
+        if (packet.data.name !== undefined) {
+          const name = packet.data.name;
+          if (isNameValid(name)) {
+            this.player.setName(this.world.cache, name);
+          }
+        }
         console.log(
           "Created new Player: id",
           this.player.id,
@@ -84,7 +100,11 @@ export class ClientServer {
         );
         const response: Packet = {
           type: PacketType.AssignPlayer,
-          data: { id: this.player.id, team: this.player.team }
+          data: {
+            id: this.player.id,
+            team: this.player.team,
+            name: this.player.name
+          }
         };
         this.serverMsg(response);
         break;

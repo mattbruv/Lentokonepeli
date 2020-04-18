@@ -1,7 +1,7 @@
-import * as path from "path";
-import * as express from "express";
-import * as http from "http";
-import * as WebSocket from "ws";
+import path from "path";
+import express from "express";
+import http from "http";
+import WebSocket from "ws";
 import { PacketType, Packet } from "../dogfight/src/network/types";
 import { Player } from "../dogfight/src/objects/player";
 import { TeamOption } from "../client/src/teamSelector";
@@ -12,6 +12,7 @@ import { GameWorld } from "../dogfight/src/world/world";
 import { requestTakeoff } from "../dogfight/src/world/takeoff";
 import { loadMap } from "../dogfight/src/world/map";
 import { MAP_CLASSIC_2 } from "../dogfight/src/maps/classic2";
+import { isNameValid } from "../dogfight/src/validation";
 
 const PORT = 3259;
 
@@ -93,6 +94,14 @@ wss.on("connection", (ws): void => {
       requestTakeoff(world, player, packet.data);
     }
 
+    if (packet.type == PacketType.ChangeName) {
+      const newName = packet.data.name;
+      if (isNameValid(newName) && player !== undefined) {
+        player.setName(world.cache, newName);
+      }
+      return;
+    }
+
     if (packet.type == PacketType.RequestJoinTeam) {
       // Ignore this if we've already assigned them a player.
       if (player !== undefined) {
@@ -113,11 +122,17 @@ wss.on("connection", (ws): void => {
           break;
       }
       player = world.addPlayer(selection);
+      const name = packet.data.name;
+      if (name !== undefined) {
+        if (isNameValid(name)) {
+          player.setName(world.cache, name);
+        }
+      }
       console.log("Created new Player: id", player.id, Team[player.team]);
 
       const response: Packet = {
         type: PacketType.AssignPlayer,
-        data: { id: player.id, team: player.team }
+        data: { id: player.id, team: player.team, name: player.name }
       };
       ws.send(encodePacket(response));
       return;

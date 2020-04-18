@@ -18,8 +18,6 @@ export default Vue.extend({
       return this.$store.state.client.loadedGame;
     },
     viewDebug() {
-      console.log(this.$store.state.viewDebug);
-
       return this.$store.state.viewDebug;
     }
   }

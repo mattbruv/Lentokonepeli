@@ -34,6 +34,10 @@ export class Player extends GameObject {
     }
   }
 
+  public setName(cache: Cache, name: string): void {
+    this.set(cache, "name", name);
+  }
+
   public setStatus(cache: Cache, status: PlayerStatus): void {
     this.set(cache, "status", status);
   }

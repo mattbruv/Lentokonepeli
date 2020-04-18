@@ -15,6 +15,8 @@ import { NetworkHandler } from "./networkHandler";
 import { InputChange } from "../../dogfight/src/input";
 import { PlayerStatus } from "../../dogfight/src/objects/player";
 import { AudioManager } from "./audio";
+import { isNameValid } from "../../dogfight/src/validation";
+import Cookies from "js-cookie";
 
 export class GameClient {
   private renderer: GameRenderer;
@@ -35,9 +37,10 @@ export class GameClient {
 
   public gameObjects: {};
 
-  private playerInfo = {
+  public playerInfo = {
     id: undefined,
-    team: undefined
+    team: undefined,
+    name: undefined
   };
 
   public followObject = {
@@ -151,9 +154,12 @@ export class GameClient {
     }
     if (type == PacketType.AssignPlayer) {
       console.log("Assigned as player", data.id, "team", Team[data.team]);
+      console.log(data);
+
       this.playerInfo = {
         id: data.id,
-        team: data.team
+        team: data.team,
+        name: data.name
       };
       this.setMode(ClientMode.PreFlight);
       this.renderer.HUD.setTeam(data.team);
@@ -238,6 +244,9 @@ export class GameClient {
         type: object.controlType,
         id: object.controlID
       };
+      if (object.name !== undefined) {
+        this.playerInfo.name = object.name;
+      }
       if (this.followObject.type == GameObjectType.Plane) {
         this.audio.playEngine(true);
       } else {
@@ -278,6 +287,19 @@ export class GameClient {
     this.gameObjects[type].updated = Date.now();
     this.renderer.deleteSprite(type, id);
     this.renderer.HUD.radar.refreshRadar(this.gameObjects);
+  }
+
+  public updateName(newName: string): void {
+    if (isNameValid(newName)) {
+      Cookies.set("name", newName);
+      console.log("updating name, sending packet");
+      this.network.send({
+        type: PacketType.ChangeName,
+        data: {
+          name: newName
+        }
+      });
+    }
   }
 
   public updateLanguage(language: Language): void {

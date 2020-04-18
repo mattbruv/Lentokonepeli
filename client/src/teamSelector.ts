@@ -2,6 +2,7 @@ import { GameRenderer } from "./render/renderer";
 import { Packet, PacketType } from "../../dogfight/src/network/types";
 import { NetworkHandler } from "./networkHandler";
 import { InputChange, InputKey } from "../../dogfight/src/input";
+import Cookies from "js-cookie";
 
 export enum TeamOption {
   Centrals,
@@ -34,7 +35,8 @@ export class TeamSelector {
       const packet: Packet = {
         type: PacketType.RequestJoinTeam,
         data: {
-          team: this.selection
+          team: this.selection,
+          name: Cookies.get("name")
         }
       };
       network.send(packet);

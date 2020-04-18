@@ -25,8 +25,10 @@ export function destroyPlane(
   const y = plane.y;
   // set player info to pre-flight
   const player = world.getPlayerControlling(plane);
-  player.setStatus(world.cache, PlayerStatus.Takeoff);
-  player.setControl(world.cache, GameObjectType.None, 0);
+  if (player != undefined) {
+    player.setStatus(world.cache, PlayerStatus.Takeoff);
+    player.setControl(world.cache, GameObjectType.None, 0);
+  }
   world.removeObject(plane);
   if (doExplosion) {
     const explosion = new Explosion(world.nextID(), world.cache, x, y);

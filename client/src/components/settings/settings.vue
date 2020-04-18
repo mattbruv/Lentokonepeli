@@ -4,10 +4,12 @@
       <h1>{{ phrases.settings }}</h1>
       <div id="settings-container">
         <Language></Language>
-        <div v-if="isClient" id="debug-toggle">
-          <label>{{ phrases.debug }}</label>
-          <input type="checkbox" v-model="debug" />
-        </div>
+        <Name></Name>
+      </div>
+      <div v-if="isClient" id="debug-toggle">
+        <hr />
+        <label>{{ phrases.debug }}</label>
+        <input type="checkbox" v-model="debug" />
       </div>
     </div>
   </div>
@@ -16,11 +18,13 @@
 <script lang="ts">
 import Vue from "vue";
 import Language from "./language.vue";
+import Name from "./name.vue";
 import { BuildType } from "../../../../dogfight/src/constants";
 import { Localizer } from "../../localization/localizer";
 export default Vue.extend({
   components: {
-    Language
+    Language,
+    Name
   },
   computed: {
     debug: {

@@ -31,6 +31,9 @@ function init(): void {
       },
       setLanguage(state, newLangID): void {
         state.client.updateLanguage(newLangID);
+      },
+      updateName(state, newName): void {
+        state.client.updateName(newName);
       }
     }
   });
