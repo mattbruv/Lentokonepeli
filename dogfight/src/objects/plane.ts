@@ -16,7 +16,7 @@ import { Vec2d, magnitude, getAngle, getInclination, getFacingDirection, rotateP
 export const planeGlobals = {
   w0: Math.round(ROTATION_DIRECTIONS / 2),
   gravity: 425,
-  feather: 0.8, // must be in this range:(0 <= feather < 1) set to 0 for old behaviour,
+  feather: 6, // must be in this range:(0 <= feather < 1) set to 0 for old behaviour,
   dragPower: 2
 };
 
@@ -321,7 +321,7 @@ export class Plane extends GameObject {
     }
 
     const engine = this.engineOn && !(stalling) ? 1 : 0;
-    const drag = this.drag;// * (this.freeDrag + engine * (1 - this.freeDrag));
+    const drag = this.drag * (this.freeDrag + engine * (1 - this.freeDrag));
     const angle = (Math.PI * this.direction) / planeGlobals.w0;
     const gravity = planeGlobals.gravity * SCALE_FACTOR;
     const dragForce = drag * Math.pow(this.speed / this.minSpeed, planeGlobals.dragPower);
@@ -339,7 +339,7 @@ export class Plane extends GameObject {
       this.v.y += (this.a.y + this.fc * Math.sin(turnAngle)) * tstep;
     }
     if (stalling) {
-      const rate = 6 - this.speed / this.minSpeed;
+      const rate = (this.minSpeed * planeGlobals.feather) / (this.speed + this.minSpeed);
       const LR = getFacingDirection(this.direction) == FacingDirection.Left ? 1 : -1;
       this.v = rotatePoint(this.v, (rate * LR) / w0);
     }
