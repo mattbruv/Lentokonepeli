@@ -105,7 +105,7 @@ export class WaterSprite extends GameSprite {
     this.debug.drawRect(-halfW, -halfH, rect.width, rect.height);
     this.debug.position.set(rect.center.x, rect.center.y * -1);
     this.debug.endFill();
-    console.log(this.x, this.y, rect);
+    // console.log(this.x, this.y, rect);
   }
 
   public destroy(): void {

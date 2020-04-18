@@ -2,23 +2,36 @@ import Cookies from "js-cookie";
 import { English } from "./english";
 import { Finnish } from "./finnish";
 import { Translation } from "./translation";
+import { German } from "./german";
 
 export enum Language {
   English = "en",
-  Finnish = "fi"
+  Finnish = "fi",
+  German = "de"
 }
 
 export const Languages = {
   [Language.English]: English,
-  [Language.Finnish]: Finnish
+  [Language.Finnish]: Finnish,
+  [Language.German]: German
 };
 
 class Localize {
   private language: Language;
 
   public constructor() {
-    const cookie = Cookies.get("language");
-    this.setLanguage(cookie as Language);
+    const langs = Object.values(Language);
+    const cookieLang = Cookies.get("language") as Language;
+    const browserLang = window.navigator.language.slice(0, 2) as Language;
+    if (langs.includes(cookieLang)) {
+      this.setLanguage(cookieLang);
+    } else {
+      console.log(
+        "Attempting to set language to browser language:",
+        browserLang
+      );
+      this.setLanguage(browserLang);
+    }
   }
 
   public get(phrase: keyof Translation, params?: any): string {
@@ -39,7 +52,7 @@ class Localize {
     return str;
   }
 
-  public getLanguage(): string {
+  public getLanguage(): Language {
     return this.language;
   }
 
@@ -49,7 +62,7 @@ class Localize {
     } else {
       this.language = language;
     }
-    Cookies.set("language", language);
+    Cookies.set("language", this.language, { expires: 9999 });
   }
 }
 
