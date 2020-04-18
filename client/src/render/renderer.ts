@@ -154,7 +154,7 @@ export class GameRenderer {
         this.debug.worldContainer.addChild(debugContainer);
       }
       if (type == GameObjectType.Plane) {
-        console.log(data);
+        // console.log(data);
       }
     }
     this.sprites[type][id].update(data);

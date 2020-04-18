@@ -118,7 +118,7 @@ export class GameClient {
       this.renderer.takeoffSelectUI.setPlane(plane);
     }
     if (this.mode == ClientMode.Playing) {
-      console.log("you are playing now!");
+      // console.log("you are playing now!");
     }
   }
 
@@ -196,7 +196,7 @@ export class GameClient {
     // create if not exists
     if (this.gameObjects[type][id] === undefined) {
       this.gameObjects[type][id] = {};
-      console.log("Create", GameObjectType[type], id);
+      // console.log("Create", GameObjectType[type], id);
       if (type == GameObjectType.Explosion) {
         this.audio.playExplosion();
       }

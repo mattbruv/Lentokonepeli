@@ -55,7 +55,7 @@ export class ClientServer {
       case PacketType.RequestFullSync: {
         const state = this.world.getState();
         const data: Packet = { type: PacketType.FullSync, data: state };
-        console.log(data);
+        // console.log(data);
         this.serverMsg(data);
         this.hasJoined = true;
         break;

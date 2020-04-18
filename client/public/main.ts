@@ -37,7 +37,6 @@ function init(): void {
       }
     }
   });
-  console.log(store);
 
   // create game client engine
   const vm = new Vue({
