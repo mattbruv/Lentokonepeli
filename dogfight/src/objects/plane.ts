@@ -16,7 +16,7 @@ import { Vec2d, magnitude, getAngle, getInclination, getFacingDirection, rotateP
 export const planeGlobals = {
   w0: Math.round(ROTATION_DIRECTIONS / 2),
   gravity: 425,
-  feather: 6, // must be in this range:(0 <= feather < 1) set to 0 for old behaviour,
+  feather: 16, // must be in this range:(0 <= feather < 1) set to 0 for old behaviour,
   dragPower: 2
 };
 
@@ -287,7 +287,7 @@ export class Plane extends GameObject {
 
     infoHUD.maxAscentAngle =
       (Math.asin(
-        (this.thrust - this.drag * Math.pow(this.minSpeed / this.minSpeed, planeGlobals.dragPower)) /
+        (this.thrust - this.thrust / Math.pow(this.maxSpeed / this.minSpeed, planeGlobals.dragPower)) /
         (planeGlobals.gravity * SCALE_FACTOR)
       ) *
         planeGlobals.w0) /
@@ -319,6 +319,9 @@ export class Plane extends GameObject {
       this.turnDirection = this.direction - w0 / 2;
       this.fc = (Math.pow(this.speed, 2) / turnRadius);
     }
+    if (tooSlow && getInclination(this.turnDirection) > 0) {
+      this.fc = 0;
+    }
 
     const engine = this.engineOn && !(stalling) ? 1 : 0;
     const drag = this.drag * (this.freeDrag + engine * (1 - this.freeDrag));
@@ -330,16 +333,17 @@ export class Plane extends GameObject {
     this.a.x = dv * Math.cos(angle);
     this.a.y = dv * Math.sin(angle);
 
-    // update velocity    
-    if (dot(scale(this.a, tstep), this.v) < -Math.pow(this.speed, 2)) { // prevent backwards motion
-      this.v = setSize(this.v, 20 * SCALE_FACTOR);
+    // update velocity
+    const absoluteMinSpeed = this.engineOn ? this.minSpeed / 1.5 : 1 * SCALE_FACTOR;
+    if (dot(this.a, this.v) * tstep < (absoluteMinSpeed - this.speed) * this.speed) { // prevent backwards motion
+      this.v = setSize(this.v, absoluteMinSpeed);
     } else {
       const turnAngle = (Math.PI * this.turnDirection) / w0;
       this.v.x += (this.a.x + this.fc * Math.cos(turnAngle)) * tstep;
       this.v.y += (this.a.y + this.fc * Math.sin(turnAngle)) * tstep;
     }
     if (stalling) {
-      const rate = (this.minSpeed * planeGlobals.feather) / (this.speed + this.minSpeed);
+      const rate = planeGlobals.feather * (1 - (this.speed / this.minSpeed));
       const LR = getFacingDirection(this.direction) == FacingDirection.Left ? 1 : -1;
       this.v = rotatePoint(this.v, (rate * LR) / w0);
     }
