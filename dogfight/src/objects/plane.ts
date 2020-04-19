@@ -303,50 +303,58 @@ export class Plane extends GameObject {
     const tstep = deltaTime / 1000; // deltatime = milliseconds between frames
     const w0 = planeGlobals.w0;
     this.speed = magnitude(this.v);
-    const tooHigh = this.p.y > this.maxAltitude;
-    const tooSlow = this.speed < this.minSpeed;
+
+    // stall detection
     const recoveryAngle = this.engineOn ? this.recoveryAngle : -this.glideAngle;
     const tooSteep = getInclination(this.direction) > recoveryAngle;
+    const tooHigh = this.p.y > this.maxAltitude;
+    const tooSlow = this.speed < this.minSpeed;
     const stalling = tooHigh || (tooSlow && tooSteep);
-    const turnRadius = this.engineOn ? this.turnRadius : this.turnRadius / 1.2;
 
-    if (this.rotateStatus == PlaneRotationStatus.Up) {
+    // calculate turn information
+    const turnRadius = this.engineOn ? this.turnRadius : this.turnRadius / 1.2;
+    const disableUpTurns = ((tooSlow || tooHigh) && getInclination(this.turnDirection) > 0);
+    if (this.rotateStatus == PlaneRotationStatus.Up && !disableUpTurns) {
       this.turnDirection = this.direction + w0 / 2;
       this.fc = (Math.pow(this.speed, 2) / turnRadius);
-    } else if (this.rotateStatus == PlaneRotationStatus.Down) {
+    } else if (this.rotateStatus == PlaneRotationStatus.Down && !disableUpTurns) {
       this.turnDirection = this.direction - w0 / 2;
       this.fc = (Math.pow(this.speed, 2) / turnRadius);
     } else {
       this.fc = 0;
     }
-    if ((tooSlow || tooHigh) && getInclination(this.turnDirection) > 0) {
-      this.fc = 0;
-    }
 
+    // calculate acceleration
     const engine = this.engineOn && !(stalling) ? 1 : 0;
     const drag = this.drag * (this.freeDrag + engine * (1 - this.freeDrag));
     const angle = (Math.PI * this.direction) / planeGlobals.w0;
-    const gravity = planeGlobals.gravity * SCALE_FACTOR;
+    const gravityForce = planeGlobals.gravity * Math.sin(angle) * SCALE_FACTOR;
     const dragForce = drag * Math.pow(this.speed / this.minSpeed, planeGlobals.dragPower);
     const engineForce = engine * this.thrust;
-    const dv = engineForce - dragForce - gravity * Math.sin(angle);
-    this.a.x = dv * Math.cos(angle);
-    this.a.y = dv * Math.sin(angle);
+    const dv = engineForce - dragForce - gravityForce;
+    const turnAngle = (Math.PI * this.turnDirection) / w0;
 
-    // update velocity
-    const absoluteMinSpeed = this.engineOn ? this.minSpeed / 1.5 : 1 * SCALE_FACTOR;
-    if (dot(this.a, this.v) * tstep < (absoluteMinSpeed - this.speed) * this.speed) { // prevent backwards motion
-      this.v = setSize(this.v, absoluteMinSpeed);
+    // update acceleration
+    this.a.x = dv * Math.cos(angle) + this.fc * Math.cos(turnAngle);
+    this.a.y = dv * Math.sin(angle) + this.fc * Math.sin(turnAngle);
+
+    // calculate velocity
+    const absoluteMinSpeed = this.engineOn ? this.minSpeed / 1.5 : 1 * SCALE_FACTOR; // prevent plane from going slower than this
+    if (dot(this.a, this.v) * tstep >= (absoluteMinSpeed - this.speed) * this.speed) { // check if we will end up going too slow
+      // update velocity
+      this.v.x += this.a.x * tstep;
+      this.v.y += this.a.y * tstep;
     } else {
-      const turnAngle = (Math.PI * this.turnDirection) / w0;
-      this.v.x += (this.a.x + this.fc * Math.cos(turnAngle)) * tstep;
-      this.v.y += (this.a.y + this.fc * Math.sin(turnAngle)) * tstep;
+      this.v = setSize(this.v, absoluteMinSpeed);
     }
-    if (stalling) {
+
+    // stall behaviour
+    if (stalling) { // if stalling, force rotation downwards
       const rate = Math.max(0, planeGlobals.feather * (1 - (this.speed / this.minSpeed)));
       const LR = getFacingDirection(this.direction) == FacingDirection.Left ? 1 : -1;
       this.v = rotatePoint(this.v, (rate * LR) / w0);
     }
+
     // update local position
     this.p.x += this.v.x * tstep;
     this.p.y += this.v.y * tstep;
