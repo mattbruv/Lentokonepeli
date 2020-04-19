@@ -310,16 +310,16 @@ export class Plane extends GameObject {
     const stalling = tooHigh || (tooSlow && tooSteep);
     const turnRadius = this.engineOn ? this.turnRadius : this.turnRadius / 1.2;
 
-    if (tooHigh || this.rotateStatus == PlaneRotationStatus.None) {
-      this.fc = 0;
-    } else if (this.rotateStatus == PlaneRotationStatus.Up) {
+    if (this.rotateStatus == PlaneRotationStatus.Up) {
       this.turnDirection = this.direction + w0 / 2;
       this.fc = (Math.pow(this.speed, 2) / turnRadius);
     } else if (this.rotateStatus == PlaneRotationStatus.Down) {
       this.turnDirection = this.direction - w0 / 2;
       this.fc = (Math.pow(this.speed, 2) / turnRadius);
+    } else {
+      this.fc = 0;
     }
-    if (tooSlow && getInclination(this.turnDirection) > 0) {
+    if ((tooSlow || tooHigh) && getInclination(this.turnDirection) > 0) {
       this.fc = 0;
     }
 
@@ -343,7 +343,7 @@ export class Plane extends GameObject {
       this.v.y += (this.a.y + this.fc * Math.sin(turnAngle)) * tstep;
     }
     if (stalling) {
-      const rate = planeGlobals.feather * (1 - (this.speed / this.minSpeed));
+      const rate = Math.max(0, planeGlobals.feather * (1 - (this.speed / this.minSpeed)));
       const LR = getFacingDirection(this.direction) == FacingDirection.Left ? 1 : -1;
       this.v = rotatePoint(this.v, (rate * LR) / w0);
     }
