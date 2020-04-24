@@ -3,16 +3,39 @@ import { Plane } from "../objects/plane";
 import { PlayerStatus } from "../objects/player";
 import { GameObjectType } from "../object";
 import { Explosion } from "../objects/explosion";
+import { mod } from "../physics/helpers";
+import { Bullet } from "../objects/bullet";
 
 export function processPlanes(world: GameWorld, deltaTime: number): void {
   world.planes.forEach((plane): void => {
     plane.tick(world.cache, deltaTime);
 
-    // if fuel has run out, kill entity.
-    /*
-    if (plane.fuel <= 0) {
-      //world.removeObject(plane);
-    }*/
+    // Process machine gun
+    if (plane.isShooting) {
+      // add time elapsed to our shot timer
+      plane.lastShot += deltaTime;
+
+      // is it time to shoot again?
+      if (plane.lastShot >= plane.shotThreshold) {
+        // do we have ammo to shoot?
+        if (plane.ammoCount > 0) {
+          plane.lastShot = mod(plane.lastShot, plane.shotThreshold);
+          plane.ammoCount--;
+          const bullet = new Bullet(
+            world.nextID(GameObjectType.Bullet),
+            world.cache
+          );
+          plane.set(
+            world.cache,
+            "ammo",
+            Math.round((plane.ammoCount / plane.maxAmmo) * 255)
+          );
+
+          bullet.setPos(world.cache, plane.x, plane.y);
+          world.addObject(bullet);
+        }
+      }
+    }
   });
 }
 

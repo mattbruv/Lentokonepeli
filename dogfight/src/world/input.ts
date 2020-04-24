@@ -37,6 +37,10 @@ export function planeInput(
         }
         break;
       }
+      case InputKey.Fire: {
+        plane.isShooting = isPressed;
+        break;
+      }
     }
   }
   if (player.inputState[InputKey.Left] && !player.inputState[InputKey.Right])

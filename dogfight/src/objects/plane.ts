@@ -186,9 +186,16 @@ export class Plane extends GameObject {
   public flipped: boolean;
   public health: number;
   public fuel: number;
-  public ammo: number;
+  private ammo: number;
+  public ammoCount: number;
   public bombs: number;
   public engineOn: boolean;
+
+  // ammo/bullets
+  public isShooting: boolean;
+  public lastShot: number; // ms elapsed since last shot
+  public maxAmmo: number; // total ammo alloted
+  public shotThreshold: number; // cooldown in ms between shots
 
   // plane stats
   private drag: number; // How well the plane's momentum is carried
@@ -205,7 +212,7 @@ export class Plane extends GameObject {
   private rotateStatus: PlaneRotationStatus;
 
   // physics variables
-  private p: Vec2d; // local scaled position
+  public p: Vec2d; // local scaled position
   private v: Vec2d; // velocity
   private a: Vec2d; // acceleration
   private turnDirection: number; // 90 degree angle relative to our current direction and turn path
@@ -256,6 +263,15 @@ export class Plane extends GameObject {
     // degrees per second.
     this.rotationThreshold = planeGlobals.w0 / 10;
 
+    // Ammo counter
+    this.isShooting = false;
+    const maxAmmo = planeData[kind].ammo;
+    this.maxAmmo = maxAmmo;
+    this.ammoCount = maxAmmo;
+    // calculate ms between shots
+    this.shotThreshold = Math.round(1000 / (planeData[kind].fireRate / 60));
+    this.lastShot = 0;
+
     // set networked variables
     this.setData(cache, {
       x: 0,
@@ -267,7 +283,7 @@ export class Plane extends GameObject {
       team: side,
       health: 255,
       fuel: 255,
-      ammo: 255,
+      ammo: Math.round((this.ammoCount / maxAmmo) * 255),
       bombs: 0
     });
     if (bomberPlanes.includes(this.planeType)) {
@@ -280,7 +296,7 @@ export class Plane extends GameObject {
     if (process.env.BUILD == BuildType.Client) {
       this.updateVars(this.planeType);
     }
-    //this.rotate(cache, deltaTime);
+
     this.move(cache, deltaTime);
     this.burnFuel(cache, deltaTime);
   }
