@@ -10,7 +10,16 @@ import { Cache, CacheEntry } from "../network/cache";
 import { mod } from "../physics/helpers";
 import { InputKey } from "../input";
 import { RectangleBody } from "../physics/rectangle";
-import { Vec2d, magnitude, getAngle, getInclination, getFacingDirection, rotatePoint, dot, setSize, scale } from "../physics/vector";
+import {
+  Vec2d,
+  magnitude,
+  getAngle,
+  getInclination,
+  getFacingDirection,
+  rotatePoint,
+  dot,
+  setSize
+} from "../physics/vector";
 
 // Movement Physics
 export const planeGlobals = {
@@ -233,7 +242,9 @@ export class Plane extends GameObject {
     this.turnDirection = 0; // angle towards turn
     this.fc = 0; // centripetal force
     this.speed = magnitude(this.v); // speed
-    this.drag = this.thrust / Math.pow(this.maxSpeed / this.minSpeed, planeGlobals.dragPower); // drag coefficient
+    this.drag =
+      this.thrust /
+      Math.pow(this.maxSpeed / this.minSpeed, planeGlobals.dragPower); // drag coefficient
     this.rotateStatus = PlaneRotationStatus.None;
 
     // set fuel decrement threshold
@@ -282,13 +293,15 @@ export class Plane extends GameObject {
     this.minSpeed = planeData[kind].minSpeed * SCALE_FACTOR; // minimum speed to not stall
     this.turnRadius = planeData[kind].turnRadius * SCALE_FACTOR; // turning radius
     this.maxAltitude = planeData[kind].maxAltitude * SCALE_FACTOR; //Force stall above this height
-    this.drag = this.thrust / Math.pow(this.maxSpeed / this.minSpeed, planeGlobals.dragPower); // drag coefficient
+    this.drag =
+      this.thrust /
+      Math.pow(this.maxSpeed / this.minSpeed, planeGlobals.dragPower); // drag coefficient
     this.freeDrag = planeData[kind].freeDrag; // Drag multiplier with engine off
 
+    const n = Math.pow(this.maxSpeed / this.minSpeed, planeGlobals.dragPower);
     infoHUD.maxAscentAngle =
       (Math.asin(
-        (this.thrust - this.thrust / Math.pow(this.maxSpeed / this.minSpeed, planeGlobals.dragPower)) /
-        (planeGlobals.gravity * SCALE_FACTOR)
+        (this.thrust - this.thrust / n) / (planeGlobals.gravity * SCALE_FACTOR)
       ) *
         planeGlobals.w0) /
       Math.PI;
@@ -313,23 +326,28 @@ export class Plane extends GameObject {
 
     // calculate turn information
     const turnRadius = this.engineOn ? this.turnRadius : this.turnRadius / 1.2;
-    const disableUpTurns = ((tooSlow || tooHigh) && getInclination(this.turnDirection) > 0);
+    const disableUpTurns =
+      (tooSlow || tooHigh) && getInclination(this.turnDirection) > 0;
     if (this.rotateStatus == PlaneRotationStatus.Up && !disableUpTurns) {
       this.turnDirection = this.direction + w0 / 2;
-      this.fc = (Math.pow(this.speed, 2) / turnRadius);
-    } else if (this.rotateStatus == PlaneRotationStatus.Down && !disableUpTurns) {
+      this.fc = Math.pow(this.speed, 2) / turnRadius;
+    } else if (
+      this.rotateStatus == PlaneRotationStatus.Down &&
+      !disableUpTurns
+    ) {
       this.turnDirection = this.direction - w0 / 2;
-      this.fc = (Math.pow(this.speed, 2) / turnRadius);
+      this.fc = Math.pow(this.speed, 2) / turnRadius;
     } else {
       this.fc = 0;
     }
 
     // calculate acceleration
-    const engine = this.engineOn && !(stalling) ? 1 : 0;
+    const engine = this.engineOn && !stalling ? 1 : 0;
     const drag = this.drag * (this.freeDrag + engine * (1 - this.freeDrag));
     const angle = (Math.PI * this.direction) / planeGlobals.w0;
     const gravityForce = planeGlobals.gravity * Math.sin(angle) * SCALE_FACTOR;
-    const dragForce = drag * Math.pow(this.speed / this.minSpeed, planeGlobals.dragPower);
+    const dragForce =
+      drag * Math.pow(this.speed / this.minSpeed, planeGlobals.dragPower);
     const engineForce = engine * this.thrust;
     const dv = engineForce - dragForce - gravityForce;
     const turnAngle = (Math.PI * this.turnDirection) / w0;
@@ -339,8 +357,14 @@ export class Plane extends GameObject {
     this.a.y = dv * Math.sin(angle) + this.fc * Math.sin(turnAngle);
 
     // calculate velocity
-    const absoluteMinSpeed = this.engineOn ? this.minSpeed / 1.5 : 1 * SCALE_FACTOR; // prevent plane from going slower than this
-    if (dot(this.a, this.v) * tstep >= (absoluteMinSpeed - this.speed) * this.speed) { // check if we will end up going too slow
+    const absoluteMinSpeed = this.engineOn
+      ? this.minSpeed / 1.5
+      : 1 * SCALE_FACTOR; // prevent plane from going slower than this
+    if (
+      dot(this.a, this.v) * tstep >=
+      (absoluteMinSpeed - this.speed) * this.speed
+    ) {
+      // check if we will end up going too slow
       // update velocity
       this.v.x += this.a.x * tstep;
       this.v.y += this.a.y * tstep;
@@ -349,9 +373,14 @@ export class Plane extends GameObject {
     }
 
     // stall behaviour
-    if (stalling) { // if stalling, force rotation downwards
-      const rate = Math.max(0, planeGlobals.feather * (1 - (this.speed / this.minSpeed)));
-      const LR = getFacingDirection(this.direction) == FacingDirection.Left ? 1 : -1;
+    if (stalling) {
+      // if stalling, force rotation downwards
+      const rate = Math.max(
+        0,
+        planeGlobals.feather * (1 - this.speed / this.minSpeed)
+      );
+      const LR =
+        getFacingDirection(this.direction) == FacingDirection.Left ? 1 : -1;
       this.v = rotatePoint(this.v, (rate * LR) / w0);
     }
 
@@ -380,12 +409,8 @@ export class Plane extends GameObject {
   }
 
   public rotate(cache: Cache, deltaTime: number): void {
-    const upOrDown =
-      this.rotateStatus == PlaneRotationStatus.None
-        ? 0
-        : this.rotateStatus == PlaneRotationStatus.Up
-          ? 1
-          : -1;
+    let upOrDown = 0;
+    upOrDown = this.rotateStatus == PlaneRotationStatus.Up ? 1 : -1;
     // add time to counter
     this.rotationCounter += deltaTime;
     // if time elapsed is greater than our threshold,
@@ -448,7 +473,6 @@ export class Plane extends GameObject {
   }
 
   public setVelocity(cache: Cache, vx: number, vy: number): void {
-    const w0 = planeGlobals.w0;
     this.v.x = vx;
     this.v.y = vy;
     this.setDirection(cache, getAngle(this.v));

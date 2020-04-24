@@ -47,18 +47,20 @@ export function magnitude(v: Vec2d): number {
   return Math.pow(Math.pow(v.x, 2) + Math.pow(v.y, 2), 0.5);
 }
 
-export function getAngle(v: Vec2d): number { //input vector, get vector angle
+export function getAngle(v: Vec2d): number {
+  //input vector, get vector angle
   const w0 = ROTATION_DIRECTIONS / 2;
   return mod(Math.round((w0 * Math.atan2(v.y, v.x)) / Math.PI), 2 * w0);
 }
 
-export function getInclination(w: number): number { //input angle (0,255), get incline (-64,64)
+export function getInclination(w: number): number {
+  //input angle (0,255), get incline (-64,64)
   const w0 = ROTATION_DIRECTIONS / 2;
   return Math.abs(mod(w - w0 / 2, 2 * w0) - w0) - w0 / 2;
 }
 
 export function getFacingDirection(w: number): FacingDirection {
-  if (w < 3 * ROTATION_DIRECTIONS / 4 && w > ROTATION_DIRECTIONS / 4) {
+  if (w < (3 * ROTATION_DIRECTIONS) / 4 && w > ROTATION_DIRECTIONS / 4) {
     return FacingDirection.Left;
   } else {
     return FacingDirection.Right;
@@ -75,5 +77,5 @@ export function setSize(v: Vec2d, s: number): Vec2d {
 }
 
 export function scale(v: Vec2d, s: number): Vec2d {
-  return { x: v.x * s, y: v.y * s }
+  return { x: v.x * s, y: v.y * s };
 }
