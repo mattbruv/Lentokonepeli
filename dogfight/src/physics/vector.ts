@@ -35,14 +35,6 @@ export function rotatePoint(point: Vec2d, radians: number): Vec2d {
   };
 }
 
-/**
- * Turns our custom defined direction/angle into radians
- * @param direction The angle, between 0 and the maximum rotation directions
- */
-export function directionToRadians(direction: number): number {
-  return (Math.PI * 2 * direction) / ROTATION_DIRECTIONS;
-}
-
 export function magnitude(v: Vec2d): number {
   return Math.pow(Math.pow(v.x, 2) + Math.pow(v.y, 2), 0.5);
 }

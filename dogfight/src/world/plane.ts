@@ -5,6 +5,7 @@ import { GameObjectType } from "../object";
 import { Explosion } from "../objects/explosion";
 import { mod } from "../physics/helpers";
 import { Bullet } from "../objects/bullet";
+import { SCALE_FACTOR } from "../constants";
 
 export function processPlanes(world: GameWorld, deltaTime: number): void {
   world.planes.forEach((plane): void => {
@@ -25,6 +26,12 @@ export function processPlanes(world: GameWorld, deltaTime: number): void {
             world.nextID(GameObjectType.Bullet),
             world.cache
           );
+
+          bullet.setDirection(world.cache, plane.direction);
+          const boost = Math.round(plane.speed / SCALE_FACTOR);
+          bullet.setSpeed(world.cache, bullet.speed + boost);
+
+          // set bullet speed/direction relative to plane.
           plane.set(
             world.cache,
             "ammo",

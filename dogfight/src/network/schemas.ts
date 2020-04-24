@@ -119,6 +119,7 @@ const bulletSchema: GameObjectSchema = {
   numbers: [
     { name: "x", intType: IntType.Int16 },
     { name: "y", intType: IntType.Int16 },
+    { name: "direction", intType: IntType.Uint8 },
     { name: "age", intType: IntType.Uint16 },
     { name: "speed", intType: IntType.Uint16 }
   ],

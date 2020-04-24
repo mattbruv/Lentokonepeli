@@ -217,7 +217,7 @@ export class Plane extends GameObject {
   private a: Vec2d; // acceleration
   private turnDirection: number; // 90 degree angle relative to our current direction and turn path
   private fc: number; // Centripetal force
-  private speed: number; // Current speed of the plane
+  public speed: number; // Current speed of the plane
 
   // number of elapsed milliseconds since last fuel decrease.
   private fuelCounter: number;
@@ -421,25 +421,6 @@ export class Plane extends GameObject {
       this.rotateStatus = PlaneRotationStatus.Up;
     } else {
       this.rotateStatus = PlaneRotationStatus.Down;
-    }
-  }
-
-  public rotate(cache: Cache, deltaTime: number): void {
-    let upOrDown = 0;
-    upOrDown = this.rotateStatus == PlaneRotationStatus.Up ? 1 : -1;
-    // add time to counter
-    this.rotationCounter += deltaTime;
-    // if time elapsed is greater than our threshold,
-    // it's time to rotate
-    if (this.rotationCounter > this.rotationThreshold) {
-      // rotate plane
-      const degreesToRotate = Math.floor(
-        this.rotationCounter / this.rotationThreshold
-      );
-      let newDirection = this.direction + degreesToRotate * upOrDown;
-      newDirection = mod(newDirection, ROTATION_DIRECTIONS);
-      this.rotationCounter = this.rotationCounter % this.rotationThreshold;
-      this.set(cache, "direction", newDirection);
     }
   }
 

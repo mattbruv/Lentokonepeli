@@ -17,6 +17,7 @@ import { processInputs } from "./input";
 import { processCollision } from "./collision";
 import { processTakeoffs, TakeoffEntry } from "./takeoff";
 import { processPlanes } from "./plane";
+import { processBullets } from "./bullet";
 import { processExplosions } from "./explosion";
 
 /**
@@ -107,12 +108,9 @@ export class GameWorld {
     processInputs(this);
     processTakeoffs(this);
     processPlanes(this, deltaTime);
+    processBullets(this, deltaTime);
     processExplosions(this, deltaTime);
     processCollision(this);
-    if (Math.random() > 0.99) {
-      // const b = new Bullet(this.nextID(), this.cache);
-      // this.bullets.push(b);
-    }
     return this.cache;
   }
 

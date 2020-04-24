@@ -5,12 +5,8 @@ import {
   getRotatedRectPoints
 } from "./rectangle";
 import { CircleBody } from "./circle";
-import {
-  Vec2d,
-  rotatePoint,
-  translatePoint,
-  directionToRadians
-} from "./vector";
+import { Vec2d, rotatePoint, translatePoint } from "./vector";
+import { directionToRadians } from "./helpers";
 
 // Collision detection and modeling for rotated rectangles
 // relies on the Separating Axis Theorem described here:

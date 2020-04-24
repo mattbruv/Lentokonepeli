@@ -161,7 +161,6 @@ export class GameClient {
         team: data.team,
         name: data.name
       };
-      console.log(this.playerInfo);
 
       this.setMode(ClientMode.PreFlight);
       this.renderer.HUD.setTeam(data.team);

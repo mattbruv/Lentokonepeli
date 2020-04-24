@@ -1,9 +1,5 @@
-import {
-  Vec2d,
-  rotatePoint,
-  translatePoint,
-  directionToRadians
-} from "./vector";
+import { Vec2d, rotatePoint, translatePoint } from "./vector";
+import { directionToRadians } from "./helpers";
 
 /**
  * A rectangle hitbox model for the purpose of collision detection
