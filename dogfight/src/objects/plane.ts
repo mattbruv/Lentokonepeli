@@ -124,7 +124,7 @@ export const planeData: PlaneInfo = {
     height: 19,
     flightTime: 100,
     ammo: 100,
-    fireRate: 180,
+    fireRate: 333,
     thrust: 300,
     maxSpeed: 271,
     minSpeed: 100,
