@@ -1,7 +1,7 @@
 <template>
   <div id="name-settings">
     <h3>Name</h3>
-    <div v-if="info.id">
+    <div v-if="info.id !== undefined">
       <p>{{ info.name }}</p>
       <div id="username">
         <div class="char-count">{{ clientName.length }}/{{ max }}</div>
