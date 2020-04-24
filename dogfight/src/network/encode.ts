@@ -10,7 +10,7 @@ import { InputChange } from "../input";
 
 function getGameObjectSize(data: any, schema: GameObjectSchema): number {
   const typeBytes = 1;
-  const idBytes = 3;
+  const idBytes = 2;
   let dataBytes = 0;
 
   const propCount =
@@ -217,9 +217,11 @@ export function encodeCache(packet: Packet): ArrayBuffer {
       const t = parseInt(type);
 
       // encode type and ID before data.
-      const header = ((t & 0xff) << 24) | (idNum & 0xffffff);
-      view.setUint32(offset, header);
-      offset += 4;
+      view.setUint8(offset++, t);
+      view.setUint16(offset, idNum);
+      // const header = ((t & 0xff) << 24) | (idNum & 0xffffff);
+      // view.setUint32(offset, header);
+      offset += 2;
       offset = encodeGameObject(view, offset, entry, schemaTypes[t]);
     }
   }
@@ -236,16 +238,21 @@ export function decodeCache(buffer: ArrayBuffer): Packet {
   };
   const maxOffset = view.byteLength;
   while (currentOffset < maxOffset) {
+    /*
     const typeandid = view.getUint32(currentOffset);
     const type = (typeandid >> 24) & 0xff;
     const id = typeandid & 0xffffff;
+    */
+    const type = view.getUint8(currentOffset++);
+    const id = view.getUint16(currentOffset);
+    currentOffset += 2;
+
     if (packet.data[type] == undefined) {
       packet.data[type] = {};
     }
     packet.data[type][id] = {
       type: type
     };
-    currentOffset += 4;
 
     const schema: GameObjectSchema = schemaTypes[type];
     // destructure the binary according to the schema

@@ -220,6 +220,10 @@ export class GameWorld {
   }
 
   public nextID(type: GameObjectType): number {
-    return this.ids[type]++;
+    const id = this.ids[type]++;
+    if (id >= 65535) {
+      this.ids[type] = 0;
+    }
+    return id;
   }
 }
