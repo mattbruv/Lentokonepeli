@@ -31,7 +31,12 @@ export function destroyPlane(
   }
   world.removeObject(plane);
   if (doExplosion) {
-    const explosion = new Explosion(world.nextID(), world.cache, x, y);
+    const explosion = new Explosion(
+      world.nextID(GameObjectType.Explosion),
+      world.cache,
+      x,
+      y
+    );
     world.explosions.push(explosion);
   }
 }

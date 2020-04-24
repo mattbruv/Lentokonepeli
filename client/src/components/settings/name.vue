@@ -1,7 +1,7 @@
 <template>
-  <div id="name-settings">
+  <div id="name-settings" v-if="info.id !== undefined">
     <h3>Name</h3>
-    <div v-if="info.id">
+    <div>
       <p>{{ info.name }}</p>
       <div id="username">
         <div class="char-count">{{ clientName.length }}/{{ max }}</div>
@@ -10,9 +10,6 @@
           <button :disabled="!isValid()" @click="submitName">Update Name</button>
         </div>
       </div>
-    </div>
-    <div v-else>
-      <p>Join the game to change your name.</p>
     </div>
   </div>
 </template>

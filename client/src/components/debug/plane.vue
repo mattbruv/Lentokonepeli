@@ -4,6 +4,12 @@
     <p>
       <label>Gravity</label>
       <input type="text" class="statBox" v-model.number="globals.gravity" />
+      <br />
+      <label>Gravity Feathering</label>
+      <input type="text" class="statBox" v-model.number="globals.feather" />
+      <br />
+      <label>Drag Power</label>
+      <input type="text" class="statBox" v-model.number="globals.dragPower" />
       <!-- Current plane physics -->
     </p>
     <p>

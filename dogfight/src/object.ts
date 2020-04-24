@@ -57,15 +57,18 @@ export abstract class GameObject {
     }
 
     // Check to see if this object exists in our cache right now.
-    if (cache[this.id] === undefined) {
-      cache[this.id] = {
-        type: this.type
-      };
+    if (cache[this.type] === undefined) {
+      cache[this.type] = {};
+    }
+
+    if (cache[this.type][this.id] == undefined) {
+      cache[this.type][this.id] = { type: this.type };
     }
 
     // Update our variable in the object, and the cache.
     this[property] = value;
-    cache[this.id][property] = value;
+
+    cache[this.type][this.id][property] = value;
   }
 
   /**

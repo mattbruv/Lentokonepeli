@@ -161,6 +161,8 @@ export class GameClient {
         team: data.team,
         name: data.name
       };
+      console.log(this.playerInfo);
+
       this.setMode(ClientMode.PreFlight);
       this.renderer.HUD.setTeam(data.team);
       this.renderer.HUD.radar.refreshRadar(this.gameObjects);
@@ -168,8 +170,10 @@ export class GameClient {
   }
 
   private processCache(cache: Cache): void {
-    for (const id in cache) {
-      this.processEntry(cache[id], id);
+    for (const type in cache) {
+      for (const id in cache[type]) {
+        this.processEntry(cache[type][id], id);
+      }
     }
   }
 

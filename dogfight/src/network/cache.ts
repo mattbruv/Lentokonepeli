@@ -9,7 +9,9 @@ import { SendableType } from "./types";
  * Indexed by a unique global object ID.
  */
 export interface Cache {
-  [key: number]: CacheEntry;
+  [key: number]: {
+    [key: number]: CacheEntry;
+  };
 }
 
 /**

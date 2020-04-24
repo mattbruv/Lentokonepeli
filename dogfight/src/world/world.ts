@@ -27,6 +27,9 @@ export class GameWorld {
   // A cache of changes to send, refreshed on every tick.
   public cache: Cache = {};
 
+  // ID increment counter by type
+  private ids = {};
+
   // A queue of takeoff requests to be processed.
   public takeoffQueue: TakeoffEntry[];
   public inputQueue: InputQueue;
@@ -64,10 +67,14 @@ export class GameWorld {
 
   public constructor() {
     this.resetWorld();
+    for (const type in GameObjectType) {
+      this.ids[type] = 0;
+    }
   }
 
   public clearCache(): void {
     this.cache = {};
+    //console.log(this.cache);
   }
 
   private resetWorld(): void {
@@ -129,7 +136,7 @@ export class GameWorld {
    * and returns the information.
    */
   public addPlayer(team: Team): Player {
-    const player = new Player(this.nextID(), this.cache);
+    const player = new Player(this.nextID(GameObjectType.Player), this.cache);
     player.set(this.cache, "team", team);
     this.addObject(player);
     return player;
@@ -164,7 +171,10 @@ export class GameWorld {
     const cache: Cache = {};
     for (const obj in objects) {
       for (const thing of objects[obj]) {
-        cache[thing.id] = thing.getState();
+        if (cache[thing.type] == undefined) {
+          cache[thing.type] = {};
+        }
+        cache[thing.type][thing.id] = thing.getState();
       }
     }
     return cache;
@@ -173,7 +183,7 @@ export class GameWorld {
   public addObject(obj: GameObject): void {
     const arr = this[this.objectArrays[obj.type]];
     arr.push(obj);
-    this.cache[obj.id] = obj.getState();
+    this.cache[obj.type][obj.id] = obj.getState();
   }
 
   public removeObject(obj: GameObject): void {
@@ -189,7 +199,10 @@ export class GameWorld {
 
     // Create an empty update in the cache.
     // The renderer treats an empty update as a deletion.
-    this.cache[id] = {
+    if (this.cache[type] == undefined) {
+      this.cache[type] = {};
+    }
+    this.cache[type][id] = {
       type
     };
   }
@@ -214,7 +227,11 @@ export class GameWorld {
     return index;
   }
 
-  public nextID(): number {
-    return this.idCounter++;
+  public nextID(type: GameObjectType): number {
+    const id = this.ids[type]++;
+    if (id >= 65535) {
+      this.ids[type] = 0;
+    }
+    return id;
   }
 }

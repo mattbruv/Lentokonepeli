@@ -10,7 +10,7 @@ import { InputChange } from "../input";
 
 function getGameObjectSize(data: any, schema: GameObjectSchema): number {
   const typeBytes = 1;
-  const idBytes = 3;
+  const idBytes = 2;
   let dataBytes = 0;
 
   const propCount =
@@ -197,10 +197,11 @@ function encodeGameObject(
 export function encodeCache(packet: Packet): ArrayBuffer {
   const cache = packet.data;
   let size = 1; // packet type
-  for (const id in cache) {
-    const entry = cache[id];
-    const type = entry.type;
-    size += getGameObjectSize(entry, schemaTypes[type]);
+  for (const type in cache) {
+    for (const id in cache[type]) {
+      const entry = cache[type][id];
+      size += getGameObjectSize(entry, schemaTypes[type]);
+    }
   }
   // create arraybuffer with size of info.
   let offset = 0;
@@ -209,16 +210,20 @@ export function encodeCache(packet: Packet): ArrayBuffer {
   // write type
   view.setUint8(offset, packet.type);
   offset++;
-  for (const id in cache) {
-    const entry = cache[id];
-    const type = entry.type;
-    const idNum = parseInt(id);
+  for (const type in cache) {
+    for (const id in cache[type]) {
+      const entry = cache[type][id];
+      const idNum = parseInt(id);
+      const t = parseInt(type);
 
-    // encode type and ID before data.
-    const header = ((type & 0xff) << 24) | (idNum & 0xffffff);
-    view.setUint32(offset, header);
-    offset += 4;
-    offset = encodeGameObject(view, offset, entry, schemaTypes[type]);
+      // encode type and ID before data.
+      view.setUint8(offset++, t);
+      view.setUint16(offset, idNum);
+      // const header = ((t & 0xff) << 24) | (idNum & 0xffffff);
+      // view.setUint32(offset, header);
+      offset += 2;
+      offset = encodeGameObject(view, offset, entry, schemaTypes[t]);
+    }
   }
   return buffer;
 }
@@ -226,20 +231,28 @@ export function encodeCache(packet: Packet): ArrayBuffer {
 export function decodeCache(buffer: ArrayBuffer): Packet {
   let currentOffset = 0;
   const view = new DataView(buffer);
-  const type = view.getUint8(currentOffset++);
+  const packetType = view.getUint8(currentOffset++);
   const packet: Packet = {
-    type,
+    type: packetType,
     data: {}
   };
   const maxOffset = view.byteLength;
   while (currentOffset < maxOffset) {
+    /*
     const typeandid = view.getUint32(currentOffset);
     const type = (typeandid >> 24) & 0xff;
     const id = typeandid & 0xffffff;
-    packet.data[id] = {
+    */
+    const type = view.getUint8(currentOffset++);
+    const id = view.getUint16(currentOffset);
+    currentOffset += 2;
+
+    if (packet.data[type] == undefined) {
+      packet.data[type] = {};
+    }
+    packet.data[type][id] = {
       type: type
     };
-    currentOffset += 4;
 
     const schema: GameObjectSchema = schemaTypes[type];
     // destructure the binary according to the schema
@@ -260,7 +273,7 @@ export function decodeCache(buffer: ArrayBuffer): Packet {
       if (isSet) {
         // read the number, ya dingus
         const value = decodeNumber(view, currentOffset, number.intType);
-        packet.data[id][number.name] = value;
+        packet.data[type][id][number.name] = value;
         currentOffset += IntByteSizes[number.intType];
       }
       // go to next property
@@ -287,7 +300,7 @@ export function decodeCache(buffer: ArrayBuffer): Packet {
       if (isSet) {
         const boolIndex = booleanCounter % 8;
         const value = ((booleanByte >> boolIndex) & 1) == 1;
-        packet.data[id][bool] = value;
+        packet.data[type][id][bool] = value;
         totalBools++;
       }
       currentProperty++;
@@ -318,7 +331,7 @@ export function decodeCache(buffer: ArrayBuffer): Packet {
           strBytes.push(view.getUint8(currentOffset++));
         }
         const strValue = decoder.decode(new Uint8Array(strBytes));
-        packet.data[id][str] = strValue;
+        packet.data[type][id][str] = strValue;
       }
       currentProperty++;
       if (currentProperty % 8 == 0) {
