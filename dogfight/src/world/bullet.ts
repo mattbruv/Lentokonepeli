@@ -6,6 +6,7 @@ export function processBullets(world: GameWorld, deltaTime: number): void {
     // if the bullet is too old, destroy it.
     if (bullet.age > bulletGlobals.lifetime) {
       world.removeObject(bullet);
+      return;
     }
   });
 }

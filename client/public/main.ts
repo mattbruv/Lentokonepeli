@@ -8,6 +8,7 @@ import Vuex from "vuex";
 import { VNode } from "vue/types/umd";
 import { planeData, infoHUD } from "../../dogfight/src/objects/plane";
 import { Localizer } from "../src/localization/localizer";
+import { bulletGlobals } from "../../dogfight/src/objects/bullet";
 
 Vue.config.productionTip = false;
 Vue.use(Vuex);
@@ -19,6 +20,7 @@ function init(): void {
     state: {
       client: client,
       planeInfo: planeData,
+      bulletInfo: bulletGlobals,
       infoHUD: infoHUD,
       lang: Localizer,
       viewSettings: false,

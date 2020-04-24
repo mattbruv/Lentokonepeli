@@ -1,10 +1,14 @@
 import { RectangleBody } from "../physics/rectangle";
-import { isRectangleCollision } from "../physics/collision";
+import {
+  isRectangleCollision,
+  isPointRectCollision
+} from "../physics/collision";
 import { GameWorld } from "./world";
 import { destroyPlane } from "./plane";
 import { getPlaneRect } from "../objects/plane";
 import { getGroundRect } from "../objects/ground";
 import { getWaterRect } from "../objects/water";
+import { Vec2d } from "../physics/vector";
 
 export function processCollision(world: GameWorld): void {
   // get ground hitboxes
@@ -19,6 +23,25 @@ export function processCollision(world: GameWorld): void {
       return getWaterRect(w.x, w.y, w.width);
     }
   );
+
+  // if bullets collide with ground (plane in future)
+  world.bullets.forEach((bullet): void => {
+    // test
+    const point: Vec2d = {
+      x: bullet.x,
+      y: bullet.y
+    };
+    for (const water of waters) {
+      if (isPointRectCollision(point, water)) {
+        world.removeObject(bullet);
+      }
+    }
+    for (const ground of grounds) {
+      if (isPointRectCollision(point, ground)) {
+        world.removeObject(bullet);
+      }
+    }
+  });
 
   // see if planes collide with water/ground
   for (const plane of world.planes) {

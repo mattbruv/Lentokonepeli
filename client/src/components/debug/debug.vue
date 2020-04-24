@@ -5,12 +5,14 @@
       <option v-for="item in menuList" :key="item.value" :value="item.value">{{item.name}}</option>
     </select>
     <PlaneDebug v-if="menu == 'plane'"></PlaneDebug>
+    <BulletDebug v-if="menu == 'bullet'"></BulletDebug>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import PlaneDebug from "./plane.vue";
+import BulletDebug from "./bullet.vue";
 import {
   PlaneType,
   planeGlobals,
@@ -20,7 +22,8 @@ import { BuildType } from "../../../../dogfight/src/constants";
 
 export default Vue.extend({
   components: {
-    PlaneDebug
+    PlaneDebug,
+    BulletDebug
   },
   data: (): any => {
     return {
@@ -32,8 +35,8 @@ export default Vue.extend({
           value: "plane"
         },
         {
-          name: "Other",
-          value: "nil"
+          name: "Bullets",
+          value: "bullet"
         }
       ]
     };
