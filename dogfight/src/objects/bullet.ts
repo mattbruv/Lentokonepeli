@@ -5,26 +5,11 @@ import { Vec2d } from "../physics/vector";
 import { directionToRadians } from "../physics/helpers";
 
 export const bulletGlobals = {
-  speed: 500,
-  lifetime: 2000 // milliseconds
+  speed: 300,
+  lifetime: 2000, // milliseconds
+  gravity: 425,
+  drag: 0.005
 };
-
-export function moveBullet(
-  localX: number,
-  localY: number,
-  direction: number,
-  speed: number,
-  deltaTime: number
-): Vec2d {
-  const speedFactor = (deltaTime / 1000) * speed;
-  const radians = directionToRadians(direction);
-  const deltaX = Math.round(SCALE_FACTOR * speedFactor * Math.cos(radians));
-  const deltaY = Math.round(SCALE_FACTOR * speedFactor * Math.sin(radians));
-  return {
-    x: localX + deltaX,
-    y: localY + deltaY
-  };
-}
 
 export class Bullet extends GameObject {
   public type = GameObjectType.Bullet;
@@ -35,8 +20,8 @@ export class Bullet extends GameObject {
   public y: number;
   public shotBy: number; // ID of player who shot it
   public team: Team; // team of player who shot it
-  public speed: number;
-  public direction: number;
+  public vx: number;
+  public vy: number;
 
   public constructor(id: number, cache: Cache) {
     super(id);
@@ -45,9 +30,7 @@ export class Bullet extends GameObject {
     this.setData(cache, {
       age: 0,
       x: 0,
-      y: 0,
-      direction: 0,
-      speed: bulletGlobals.speed
+      y: 0
     });
   }
 
@@ -62,16 +45,9 @@ export class Bullet extends GameObject {
 
   public move(cache: Cache, deltaTime: number): void {
     // move the bullet...
-    const newPos = moveBullet(
-      this.localX,
-      this.localY,
-      this.direction,
-      this.speed,
-      deltaTime
-    );
-
-    this.localX = newPos.x;
-    this.localY = newPos.y;
+    const tstep = deltaTime / 1000;
+    this.localX += tstep * this.vx;
+    this.localY += tstep * this.vy;
 
     this.setData(cache, {
       x: Math.round(this.localX / SCALE_FACTOR),
@@ -85,12 +61,9 @@ export class Bullet extends GameObject {
     this.setData(cache, { x, y });
   }
 
-  public setSpeed(cache: Cache, newSpeed: number): void {
-    this.set(cache, "speed", newSpeed);
-  }
-
-  public setDirection(cache: Cache, newDirection: number): void {
-    this.set(cache, "direction", newDirection);
+  public setVelocity(cache: Cache, vx: number, vy: number): void {
+    this.set(cache, "vx", vx);
+    this.set(cache, "vy", vy);
   }
 
   public getState(): CacheEntry {
@@ -99,7 +72,76 @@ export class Bullet extends GameObject {
       age: this.age,
       x: this.x,
       y: this.y,
-      speed: this.speed
+    };
+  }
+}
+
+export class Bomb extends GameObject {
+  public type = GameObjectType.Bomb;
+  public age: number;
+  public localX: number;
+  public localY: number;
+  public x: number;
+  public y: number;
+  public shotBy: number; // ID of player who shot it
+  public team: Team; // team of player who shot it
+  public vx: number;
+  public vy: number;
+
+  public constructor(id: number, cache: Cache) {
+    super(id);
+    this.localX = 0;
+    this.localY = 0;
+    this.setData(cache, {
+      age: 0,
+      x: 0,
+      y: 0
+    });
+  }
+
+  public tick(cache: Cache, deltaTime: number): void {
+    this.move(cache, deltaTime);
+    this.ageBomb(cache, deltaTime);
+  }
+
+  private ageBomb(cache: Cache, deltaTime: number): void {
+    this.age += deltaTime;
+  }
+
+  public move(cache: Cache, deltaTime: number): void {
+    // move the bomb...
+    const dragForceX = bulletGlobals.drag * Math.pow(this.vx / SCALE_FACTOR, 2);
+    const dragForceY = bulletGlobals.drag * Math.pow(this.vy / SCALE_FACTOR, 2);
+    this.vx -= Math.sign(this.vx) * dragForceX;
+    this.vy -= (Math.sign(this.vy) * dragForceY + bulletGlobals.gravity);
+
+    const tstep = deltaTime / 1000;
+    this.localX += tstep * this.vx;
+    this.localY += tstep * this.vy;
+
+    this.setData(cache, {
+      x: Math.round(this.localX / SCALE_FACTOR),
+      y: Math.round(this.localY / SCALE_FACTOR)
+    });
+  }
+
+  public setPos(cache: Cache, x: number, y: number): void {
+    this.localX = x * SCALE_FACTOR;
+    this.localY = y * SCALE_FACTOR;
+    this.setData(cache, { x, y });
+  }
+
+  public setVelocity(cache: Cache, vx: number, vy: number): void {
+    this.set(cache, "vx", vx);
+    this.set(cache, "vy", vy);
+  }
+
+  public getState(): CacheEntry {
+    return {
+      type: this.type,
+      age: this.age,
+      x: this.x,
+      y: this.y,
     };
   }
 }

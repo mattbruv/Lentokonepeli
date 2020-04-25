@@ -1,21 +1,23 @@
 import { GameWorld } from "./world";
-import { Plane } from "../objects/plane";
+import { Plane, planeData } from "../objects/plane";
 import { PlayerStatus } from "../objects/player";
 import { GameObjectType } from "../object";
 import { Explosion } from "../objects/explosion";
 import { mod } from "../physics/helpers";
-import { Bullet } from "../objects/bullet";
+import { Bullet, Bomb, bulletGlobals } from "../objects/bullet";
 import { SCALE_FACTOR } from "../constants";
+import { magnitude, scale } from "../physics/vector";
 
 export function processPlanes(world: GameWorld, deltaTime: number): void {
   world.planes.forEach((plane): void => {
     plane.tick(world.cache, deltaTime);
 
     // Process machine gun
-    if (plane.isShooting) {
-      // add time elapsed to our shot timer
+    // add time elapsed to our shot timer
+    if (plane.lastShot <= plane.shotThreshold) {
       plane.lastShot += deltaTime;
-
+    }
+    if (plane.isShooting) {
       // is it time to shoot again?
       if (plane.lastShot >= plane.shotThreshold) {
         // do we have ammo to shoot?
@@ -27,9 +29,10 @@ export function processPlanes(world: GameWorld, deltaTime: number): void {
             world.cache
           );
 
-          bullet.setDirection(world.cache, plane.direction);
-          const boost = Math.round(plane.speed / SCALE_FACTOR);
-          bullet.setSpeed(world.cache, bullet.speed + boost);
+          const vx = plane.v.x / plane.speed;
+          const vy = plane.v.y / plane.speed;
+          const speed = (bulletGlobals.speed + Math.round(plane.speed / SCALE_FACTOR)) * SCALE_FACTOR;
+          bullet.setVelocity(world.cache, speed * vx, speed * vy);
 
           // set bullet speed/direction relative to plane.
           plane.set(
@@ -40,6 +43,38 @@ export function processPlanes(world: GameWorld, deltaTime: number): void {
 
           bullet.setPos(world.cache, plane.x, plane.y);
           world.addObject(bullet);
+        }
+      }
+    }
+
+
+    // add time elapsed to our shot timer
+    if (plane.lastBomb <= plane.bombThreshold) {
+      plane.lastBomb += deltaTime;
+    }
+    if (plane.isBombing) {
+      // is it time to shoot again?
+      if (plane.lastBomb >= plane.bombThreshold) {
+        // do we have ammo to shoot?
+        if (plane.bombs > 0) {
+          plane.lastBomb = mod(plane.lastBomb, plane.bombThreshold);
+          plane.bombs--;
+          const bomb = new Bomb(
+            world.nextID(GameObjectType.Bomb),
+            world.cache
+          );
+
+          bomb.setVelocity(world.cache, plane.v.x, plane.v.y);
+
+          // set bomb speed/direction relative to plane.
+          plane.set(
+            world.cache,
+            "bombs",
+            plane.bombs
+          );
+
+          bomb.setPos(world.cache, plane.x, plane.y);
+          world.addObject(bomb);
         }
       }
     }

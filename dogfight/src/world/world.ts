@@ -1,7 +1,7 @@
 import { Cache } from "../network/cache";
 import { Player } from "../objects/player";
 import { Flag } from "../objects/flag";
-import { Bullet } from "../objects/bullet";
+import { Bullet, Bomb } from "../objects/bullet";
 import { Ground } from "../objects/ground";
 import { Hill } from "../objects/hill";
 import { Runway } from "../objects/runway";
@@ -17,7 +17,7 @@ import { processInputs } from "./input";
 import { processCollision } from "./collision";
 import { processTakeoffs, TakeoffEntry } from "./takeoff";
 import { processPlanes } from "./plane";
-import { processBullets } from "./bullet";
+import { processBullets, processBombs } from "./bullet";
 import { processExplosions } from "./explosion";
 import { processTroopers } from "./trooper";
 
@@ -42,11 +42,12 @@ export class GameWorld {
   public hills: Hill[];
   public runways: Runway[];
   public towers: Tower[];
+  public troopers: Trooper[];
   public waters: Water[];
   public planes: Plane[];
-  public troopers: Trooper[];
   public explosions: Explosion[];
   public bullets: Bullet[];
+  public bombs: Bomb[];
 
   // god please forgive me for this sin
   private objectArrays = {
@@ -60,7 +61,8 @@ export class GameWorld {
     [GameObjectType.Water]: "waters",
     [GameObjectType.Plane]: "planes",
     [GameObjectType.Explosion]: "explosions",
-    [GameObjectType.Bullet]: "bullets"
+    [GameObjectType.Bullet]: "bullets",
+    [GameObjectType.Bomb]: "bombs"
   };
 
   // Next available ID, incremented by 1.
@@ -95,6 +97,7 @@ export class GameWorld {
     this.planes = [];
     this.explosions = [];
     this.bullets = [];
+    this.bombs = [];
   }
 
   /**
@@ -110,6 +113,7 @@ export class GameWorld {
     processTakeoffs(this);
     processPlanes(this, deltaTime);
     processBullets(this, deltaTime);
+    processBombs(this, deltaTime);
     processTroopers(this, deltaTime);
     processExplosions(this, deltaTime);
     processCollision(this);
@@ -163,7 +167,6 @@ export class GameWorld {
       this.hills,
       this.runways,
       this.towers,
-      this.troopers,
       this.waters,
       this.planes,
       this.explosions

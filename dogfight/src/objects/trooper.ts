@@ -2,6 +2,12 @@ import { Team, SCALE_FACTOR } from "../constants";
 import { GameObject, GameObjectType } from "../object";
 import { Cache, CacheEntry } from "../network/cache";
 
+export const trooperGlobals = {
+  gravity: 425,
+  dragFall: 0.005,
+  dragChute: 0.1
+};
+
 export enum TrooperState {
   Parachuting,
   Falling,
@@ -22,6 +28,8 @@ export class Trooper extends GameObject {
   public localY: number;
   public x: number;
   public y: number;
+  public vx: number;
+  public vy: number;
   public health: number;
   public state: TrooperState;
   public direction: TrooperDirection;
@@ -36,8 +44,10 @@ export class Trooper extends GameObject {
       x: 0,
       y: 0,
       ammo: 255,
+      dx: 0,
+      dy: 0,
       health: 255,
-      state: TrooperState.Parachuting,
+      state: TrooperState.Falling,
       direction: TrooperDirection.None,
       team: Team.Spectator
     });
@@ -54,11 +64,40 @@ export class Trooper extends GameObject {
   }
 
   public move(cache: Cache, deltaTime: number): void {
-    const unitsPerSecond = 100 * SCALE_FACTOR;
-    const multiplier = deltaTime / 1000;
-    // const newX = this.x + Math.round(multiplier * unitsPerSecond);
-    this.localX = this.localX + Math.round(multiplier * unitsPerSecond);
+    const tstep = deltaTime / 1000;
+    if (
+      this.state == TrooperState.Falling ||
+      this.state == TrooperState.Parachuting
+    ) {
+      const drag =
+        this.state == TrooperState.Falling
+          ? trooperGlobals.dragFall
+          : trooperGlobals.dragChute;
+      const dragForceX = drag * Math.pow(this.vx / SCALE_FACTOR, 2);
+      const dragForceY = drag * Math.pow(this.vy / SCALE_FACTOR, 2);
+      this.vx -= Math.sign(this.vx) * dragForceX;
+      this.vy -= Math.sign(this.vy) * dragForceY + trooperGlobals.gravity;
+      this.localX += tstep * this.vx;
+      this.localY += tstep * this.vy;
+    } else if (this.state == TrooperState.Standing) {
+      //
+    }
+
+    //const unitsPerSecond = 100 * SCALE_FACTOR;
+    //this.localX = this.localX + Math.round(tstep * unitsPerSecond);
     this.set(cache, "x", Math.round(this.localX / SCALE_FACTOR));
+    this.set(cache, "y", Math.round(this.localY / SCALE_FACTOR));
+  }
+
+  public setVelocity(cache: Cache, vx: number, vy: number): void {
+    this.set(cache, "vx", vx);
+    this.set(cache, "vy", vy);
+  }
+
+  public setState(cache: Cache, state: TrooperState): void {
+    this.setData(cache, {
+      state: state
+    });
   }
 
   public getState(): CacheEntry {
