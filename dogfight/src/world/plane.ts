@@ -13,10 +13,11 @@ export function processPlanes(world: GameWorld, deltaTime: number): void {
     plane.tick(world.cache, deltaTime);
 
     // Process machine gun
-    if (plane.isShooting) {
-      // add time elapsed to our shot timer
+    // add time elapsed to our shot timer
+    if (plane.lastShot <= plane.shotThreshold) {
       plane.lastShot += deltaTime;
-
+    }
+    if (plane.isShooting) {
       // is it time to shoot again?
       if (plane.lastShot >= plane.shotThreshold) {
         // do we have ammo to shoot?
@@ -46,10 +47,12 @@ export function processPlanes(world: GameWorld, deltaTime: number): void {
       }
     }
 
-    if (plane.isBombing) {
-      // add time elapsed to our shot timer
-      plane.lastBomb += deltaTime;
 
+    // add time elapsed to our shot timer
+    if (plane.lastBomb <= plane.bombThreshold) {
+      plane.lastBomb += deltaTime;
+    }
+    if (plane.isBombing) {
       // is it time to shoot again?
       if (plane.lastBomb >= plane.bombThreshold) {
         // do we have ammo to shoot?

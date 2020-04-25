@@ -5,9 +5,10 @@ import { Vec2d } from "../physics/vector";
 import { directionToRadians } from "../physics/helpers";
 
 export const bulletGlobals = {
-  speed: 150,
+  speed: 300,
   lifetime: 2000, // milliseconds
-  gravity: 300
+  gravity: 425,
+  drag: 0.005
 };
 
 export function moveBullet(
@@ -113,8 +114,6 @@ export class Bullet extends GameObject {
   }
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////
-
 export class Bomb extends GameObject {
   public type = GameObjectType.Bomb;
   public age: number;
@@ -150,7 +149,11 @@ export class Bomb extends GameObject {
 
   public move(cache: Cache, deltaTime: number): void {
     // move the bomb...
-    this.vy -= bulletGlobals.gravity;
+    const dragForceX = bulletGlobals.drag * Math.pow(this.vx / SCALE_FACTOR, 2);
+    const dragForceY = bulletGlobals.drag * Math.pow(this.vy / SCALE_FACTOR, 2);
+    this.vx -= Math.sign(this.vx) * dragForceX;
+    this.vy -= (Math.sign(this.vy) * dragForceY + bulletGlobals.gravity);
+
     const newPos = moveBomb(
       this.localX,
       this.localY,

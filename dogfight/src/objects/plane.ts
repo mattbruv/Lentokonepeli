@@ -276,7 +276,7 @@ export class Plane extends GameObject {
     this.ammoCount = maxAmmo;
     // calculate ms between shots
     this.shotThreshold = Math.round(1000 / (planeData[kind].fireRate / 60));
-    this.lastShot = 0;
+    this.lastShot = this.shotThreshold;
 
     // Bomb counter
     this.isBombing = false;
@@ -284,7 +284,7 @@ export class Plane extends GameObject {
       const maxBombs = 5;
       this.bombs = maxBombs;
       this.bombThreshold = 300;
-      this.lastBomb = 0;
+      this.lastBomb = this.bombThreshold;
     }
 
     // set networked variables
