@@ -14,14 +14,14 @@ export const bulletGlobals = {
 export function moveBullet(
   localX: number,
   localY: number,
-  dx: number,
-  dy: number,
+  vx: number,
+  vy: number,
   deltaTime: number
 ): Vec2d {
   const tstep = deltaTime / 1000;
   return {
-    x: localX + tstep * dx,
-    y: localY + tstep * dy
+    x: localX + tstep * vx,
+    y: localY + tstep * vy
   };
 }
 
@@ -48,9 +48,8 @@ export class Bullet extends GameObject {
   public y: number;
   public shotBy: number; // ID of player who shot it
   public team: Team; // team of player who shot it
-  public speed: number;
-  public dx: number;
-  public dy: number;
+  public vx: number;
+  public vy: number;
 
   public constructor(id: number, cache: Cache) {
     super(id);
@@ -59,9 +58,7 @@ export class Bullet extends GameObject {
     this.setData(cache, {
       age: 0,
       x: 0,
-      y: 0,
-      direction: 0,
-      speed: bulletGlobals.speed
+      y: 0
     });
   }
 
@@ -79,8 +76,8 @@ export class Bullet extends GameObject {
     const newPos = moveBullet(
       this.localX,
       this.localY,
-      this.dx,
-      this.dy,
+      this.vx,
+      this.vy,
       deltaTime
     );
 
@@ -99,9 +96,9 @@ export class Bullet extends GameObject {
     this.setData(cache, { x, y });
   }
 
-  public setVelocity(cache: Cache, dx: number, dy: number): void {
-    this.set(cache, "dx", dx);
-    this.set(cache, "dy", dy);
+  public setVelocity(cache: Cache, vx: number, vy: number): void {
+    this.set(cache, "vx", vx);
+    this.set(cache, "vy", vy);
   }
 
   public getState(): CacheEntry {
@@ -133,8 +130,7 @@ export class Bomb extends GameObject {
     this.setData(cache, {
       age: 0,
       x: 0,
-      y: 0,
-      direction: 0,
+      y: 0
     });
   }
 

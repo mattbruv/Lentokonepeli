@@ -4,7 +4,7 @@ import { PlayerStatus } from "../objects/player";
 import { GameObjectType } from "../object";
 import { Explosion } from "../objects/explosion";
 import { mod } from "../physics/helpers";
-import { Bullet, Bomb } from "../objects/bullet";
+import { Bullet, Bomb, bulletGlobals } from "../objects/bullet";
 import { SCALE_FACTOR } from "../constants";
 import { magnitude, scale } from "../physics/vector";
 
@@ -31,7 +31,7 @@ export function processPlanes(world: GameWorld, deltaTime: number): void {
 
           const vx = plane.v.x / plane.speed;
           const vy = plane.v.y / plane.speed;
-          const speed = (bullet.speed + Math.round(plane.speed / SCALE_FACTOR)) * SCALE_FACTOR;
+          const speed = (bulletGlobals.speed + Math.round(plane.speed / SCALE_FACTOR)) * SCALE_FACTOR;
           bullet.setVelocity(world.cache, speed * vx, speed * vy);
 
           // set bullet speed/direction relative to plane.

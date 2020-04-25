@@ -119,9 +119,9 @@ const bulletSchema: GameObjectSchema = {
   numbers: [
     { name: "x", intType: IntType.Int16 },
     { name: "y", intType: IntType.Int16 },
-    { name: "direction", intType: IntType.Uint8 },
-    { name: "age", intType: IntType.Uint16 },
-    { name: "speed", intType: IntType.Uint16 }
+    { name: "vx", intType: IntType.Uint16 },
+    { name: "vy", intType: IntType.Uint16 },
+    { name: "age", intType: IntType.Uint16 }
   ],
   booleans: [],
   strings: []
@@ -131,8 +131,8 @@ const bombSchema: GameObjectSchema = {
   numbers: [
     { name: "x", intType: IntType.Int16 },
     { name: "y", intType: IntType.Int16 },
-    { name: "dx", intType: IntType.Uint16 },
-    { name: "dy", intType: IntType.Uint16 },
+    { name: "vx", intType: IntType.Uint16 },
+    { name: "vy", intType: IntType.Uint16 },
     { name: "age", intType: IntType.Uint16 },
   ],
   booleans: [],
