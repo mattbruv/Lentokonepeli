@@ -4,6 +4,7 @@ import { Player } from "../objects/player";
 import { Plane } from "../objects/plane";
 import { KeyChangeList, InputKey } from "../input";
 import { destroyPlane } from "./plane";
+import { Trooper } from "../objects/trooper";
 
 export function planeInput(
   world: GameWorld,
@@ -33,7 +34,16 @@ export function planeInput(
       }
       case InputKey.Jump: {
         if (isPressed) {
-          destroyPlane(world, plane, true);
+          // destroyPlane(world, plane, true);
+          const trooper = new Trooper(
+            world.nextID(GameObjectType.Trooper),
+            world.cache
+          );
+          trooper.setPos(world.cache, plane.x, plane.y);
+          trooper.set(world.cache, "team", player.team);
+          world.addObject(trooper);
+          player.setControl(world.cache, GameObjectType.Trooper, trooper.id);
+          plane.abandonPlane(world.cache);
         }
         break;
       }

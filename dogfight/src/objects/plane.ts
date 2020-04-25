@@ -7,7 +7,6 @@ import {
   FacingDirection
 } from "../constants";
 import { Cache, CacheEntry } from "../network/cache";
-import { mod } from "../physics/helpers";
 import { InputKey } from "../input";
 import { RectangleBody } from "../physics/rectangle";
 import {
@@ -224,11 +223,6 @@ export class Plane extends GameObject {
   // number of milliseconds elapsed to decrease fuel by 1.
   private fuelThreshold: number;
 
-  // number of elapsed ms since last rotation change
-  private rotationCounter: number;
-  // number of degrees to turn per second.
-  private rotationThreshold: number;
-
   public constructor(id: number, cache: Cache, kind: PlaneType, side: Team) {
     super(id);
     // These 5 variables can be tweaked for diff planes.
@@ -257,11 +251,6 @@ export class Plane extends GameObject {
     // set fuel decrement threshold
     this.fuelCounter = 0;
     this.fuelThreshold = Math.round(1000 / (255 / planeData[kind].flightTime));
-
-    // rotation variables
-    this.rotationCounter = 0;
-    // degrees per second.
-    this.rotationThreshold = planeGlobals.w0 / 10;
 
     // Ammo counter
     this.isShooting = false;
@@ -326,6 +315,12 @@ export class Plane extends GameObject {
     infoHUD.inclination = getInclination(this.direction);
     infoHUD.altitude = this.y;
     infoHUD.speed = Math.round(this.speed / SCALE_FACTOR);
+  }
+
+  public abandonPlane(cache: Cache): void {
+    this.setEngine(cache, false);
+    this.rotateStatus = PlaneRotationStatus.None;
+    this.isShooting = false;
   }
 
   private move(cache: Cache, deltaTime: number): void {
@@ -412,7 +407,6 @@ export class Plane extends GameObject {
   }
 
   public setRotation(cache: Cache, key: InputKey, doRotate: boolean): void {
-    this.rotationCounter = 0;
     if (doRotate == false) {
       this.rotateStatus = PlaneRotationStatus.None;
       return;

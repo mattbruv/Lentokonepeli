@@ -35,10 +35,14 @@ export class Trooper extends GameObject {
       x: 0,
       y: 0,
       health: 255,
-      state: TrooperState.Standing,
+      state: TrooperState.Parachuting,
       direction: TrooperDirection.None,
       team: Team.Spectator
     });
+  }
+
+  public tick(cache: Cache, deltaTime: number): void {
+    this.move(cache, deltaTime);
   }
 
   public setPos(cache: Cache, x: number, y: number): void {
