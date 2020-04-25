@@ -11,34 +11,6 @@ export const bulletGlobals = {
   drag: 0.005
 };
 
-export function moveBullet(
-  localX: number,
-  localY: number,
-  vx: number,
-  vy: number,
-  deltaTime: number
-): Vec2d {
-  const tstep = deltaTime / 1000;
-  return {
-    x: localX + tstep * vx,
-    y: localY + tstep * vy
-  };
-}
-
-export function moveBomb(
-  localX: number,
-  localY: number,
-  vx: number,
-  vy: number,
-  deltaTime: number
-): Vec2d {
-  const tstep = deltaTime / 1000;
-  return {
-    x: localX + tstep * vx,
-    y: localY + tstep * vy
-  }
-}
-
 export class Bullet extends GameObject {
   public type = GameObjectType.Bullet;
   public age: number;
@@ -73,16 +45,9 @@ export class Bullet extends GameObject {
 
   public move(cache: Cache, deltaTime: number): void {
     // move the bullet...
-    const newPos = moveBullet(
-      this.localX,
-      this.localY,
-      this.vx,
-      this.vy,
-      deltaTime
-    );
-
-    this.localX = newPos.x;
-    this.localY = newPos.y;
+    const tstep = deltaTime / 1000;
+    this.localX += tstep * this.vx;
+    this.localY += tstep * this.vy;
 
     this.setData(cache, {
       x: Math.round(this.localX / SCALE_FACTOR),
@@ -150,16 +115,9 @@ export class Bomb extends GameObject {
     this.vx -= Math.sign(this.vx) * dragForceX;
     this.vy -= (Math.sign(this.vy) * dragForceY + bulletGlobals.gravity);
 
-    const newPos = moveBomb(
-      this.localX,
-      this.localY,
-      this.vx,
-      this.vy,
-      deltaTime
-    );
-
-    this.localX = newPos.x;
-    this.localY = newPos.y;
+    const tstep = deltaTime / 1000;
+    this.localX += tstep * this.vx;
+    this.localY += tstep * this.vy;
 
     this.setData(cache, {
       x: Math.round(this.localX / SCALE_FACTOR),
