@@ -44,6 +44,7 @@ export function planeInput(
           world.addObject(trooper);
           player.setControl(world.cache, GameObjectType.Trooper, trooper.id);
           plane.abandonPlane(world.cache);
+          return;
         }
         break;
       }
