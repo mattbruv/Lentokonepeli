@@ -5,24 +5,22 @@ import { Vec2d } from "../physics/vector";
 import { directionToRadians } from "../physics/helpers";
 
 export const bulletGlobals = {
-  speed: 500,
+  speed: 1000,
   lifetime: 2000 // milliseconds
 };
 
 export function moveBullet(
   localX: number,
   localY: number,
-  direction: number,
   speed: number,
+  dx: number,
+  dy: number,
   deltaTime: number
 ): Vec2d {
   const speedFactor = (deltaTime / 1000) * speed;
-  const radians = directionToRadians(direction);
-  const deltaX = Math.round(SCALE_FACTOR * speedFactor * Math.cos(radians));
-  const deltaY = Math.round(SCALE_FACTOR * speedFactor * Math.sin(radians));
   return {
-    x: localX + deltaX,
-    y: localY + deltaY
+    x: localX + speed * dx,
+    y: localY + speed * dy
   };
 }
 
@@ -36,7 +34,8 @@ export class Bullet extends GameObject {
   public shotBy: number; // ID of player who shot it
   public team: Team; // team of player who shot it
   public speed: number;
-  public direction: number;
+  public dx: number;
+  public dy: number;
 
   public constructor(id: number, cache: Cache) {
     super(id);
@@ -65,8 +64,9 @@ export class Bullet extends GameObject {
     const newPos = moveBullet(
       this.localX,
       this.localY,
-      this.direction,
       this.speed,
+      this.dx,
+      this.dy,
       deltaTime
     );
 
@@ -89,8 +89,9 @@ export class Bullet extends GameObject {
     this.set(cache, "speed", newSpeed);
   }
 
-  public setDirection(cache: Cache, newDirection: number): void {
-    this.set(cache, "direction", newDirection);
+  public setUnitVelocity(cache: Cache, dx: number, dy: number): void {
+    this.set(cache, "dx", dx);
+    this.set(cache, "dy", dy);
   }
 
   public getState(): CacheEntry {

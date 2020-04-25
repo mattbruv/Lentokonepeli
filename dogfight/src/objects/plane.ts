@@ -25,7 +25,7 @@ import {
 export const planeGlobals = {
   w0: Math.round(ROTATION_DIRECTIONS / 2),
   gravity: 425,
-  feather: 16, // must be in this range:(0 <= feather < 1) set to 0 for old behaviour,
+  feather: 16,
   dragPower: 2
 };
 
@@ -213,7 +213,7 @@ export class Plane extends GameObject {
 
   // physics variables
   public p: Vec2d; // local scaled position
-  private v: Vec2d; // velocity
+  public v: Vec2d; // velocity
   private a: Vec2d; // acceleration
   private turnDirection: number; // 90 degree angle relative to our current direction and turn path
   private fc: number; // Centripetal force
