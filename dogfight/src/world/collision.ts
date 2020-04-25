@@ -43,6 +43,25 @@ export function processCollision(world: GameWorld): void {
     }
   });
 
+  // if bombs collide with ground (plane in future)
+  world.bombs.forEach((bomb): void => {
+    // test
+    const point: Vec2d = {
+      x: bomb.x,
+      y: bomb.y
+    };
+    for (const water of waters) {
+      if (isPointRectCollision(point, water)) {
+        world.removeObject(bomb);
+      }
+    }
+    for (const ground of grounds) {
+      if (isPointRectCollision(point, ground)) {
+        world.removeObject(bomb);
+      }
+    }
+  });
+
   // see if planes collide with water/ground
   for (const plane of world.planes) {
     let isDead = false;

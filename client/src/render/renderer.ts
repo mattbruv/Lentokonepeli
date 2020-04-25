@@ -22,6 +22,7 @@ import { PlaneSprite } from "./sprites/plane";
 import { PlayerInfo } from "./objects/playerInfo";
 import { ExplosionSprite } from "./sprites/explosion";
 import { BulletSprite } from "./sprites/bullet";
+import { BombSprite } from "./sprites/bomb";
 
 /**
  * A class which renders the game world.
@@ -202,6 +203,8 @@ export class GameRenderer {
         return new ExplosionSprite(this.spriteSheet);
       case GameObjectType.Bullet:
         return new BulletSprite(this.spriteSheet);
+      case GameObjectType.Bomb:
+        return new BombSprite(this.spriteSheet);
       case GameObjectType.Plane:
         return new PlaneSprite(this.spriteSheet);
       default:

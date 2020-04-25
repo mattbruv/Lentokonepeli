@@ -197,6 +197,12 @@ export class Plane extends GameObject {
   public maxAmmo: number; // total ammo alloted
   public shotThreshold: number; // cooldown in ms between shots
 
+  // bombs
+  public isBombing: boolean;
+  public lastBomb: number;
+  public maxBombs: number;
+  public bombThreshold: number;
+
   // plane stats
   private drag: number; // How well the plane's momentum is carried
   private freeDrag: number; // Drag multiplier with engine off
@@ -271,6 +277,15 @@ export class Plane extends GameObject {
     // calculate ms between shots
     this.shotThreshold = Math.round(1000 / (planeData[kind].fireRate / 60));
     this.lastShot = 0;
+
+    // Bomb counter
+    this.isBombing = false;
+    if (kind in bomberPlanes) {
+      const maxBombs = 5;
+      this.bombs = maxBombs;
+      this.bombThreshold = 300;
+      this.lastBomb = 0;
+    }
 
     // set networked variables
     this.setData(cache, {
