@@ -55,7 +55,8 @@ export class BulletSprite extends GameSprite {
   public redraw(): void {
     this.bullet.clear();
     this.bullet.beginFill(bulletColors[this.bulletColorIndex]);
-    this.bullet.drawCircle(this.x, this.y, 1.5);
+    //this.bullet.drawCircle(this.x, this.y, 1.5);
+    this.bullet.drawRect(this.x, this.y, 3, 2);
     this.bullet.endFill();
     // something
   }
