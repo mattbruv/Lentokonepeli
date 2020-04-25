@@ -2,20 +2,20 @@ import { GameObject, GameObjectType } from "../object";
 import { Cache, CacheEntry } from "../network/cache";
 import { Team, SCALE_FACTOR } from "../constants";
 
-export const bulletGlobals = {
-  speed: 400,
-  lifetime: 2000 // milliseconds
+export const bombGlobals = {
+  gravity: 425,
+  drag: 0.005
 };
 
-export class Bullet extends GameObject {
-  public type = GameObjectType.Bullet;
+export class Bomb extends GameObject {
+  public type = GameObjectType.Bomb;
   public age: number;
   public localX: number;
   public localY: number;
   public x: number;
   public y: number;
-  public shotBy: number; // ID of player who shot it
-  public team: Team; // team of player who shot it
+  public droppedBy: number; // ID of player who dropped it
+  public team: Team; // team of player who dropped it
   public vx: number;
   public vy: number;
 
@@ -32,15 +32,20 @@ export class Bullet extends GameObject {
 
   public tick(cache: Cache, deltaTime: number): void {
     this.move(cache, deltaTime);
-    this.ageBullet(cache, deltaTime);
+    this.ageBomb(cache, deltaTime);
   }
 
-  private ageBullet(cache: Cache, deltaTime: number): void {
+  private ageBomb(cache: Cache, deltaTime: number): void {
     this.age += deltaTime;
   }
 
   public move(cache: Cache, deltaTime: number): void {
-    // move the bullet...
+    // move the bomb...
+    const dragForceX = bombGlobals.drag * Math.pow(this.vx / SCALE_FACTOR, 2);
+    const dragForceY = bombGlobals.drag * Math.pow(this.vy / SCALE_FACTOR, 2);
+    this.vx -= Math.sign(this.vx) * dragForceX;
+    this.vy -= Math.sign(this.vy) * dragForceY + bombGlobals.gravity;
+
     const tstep = deltaTime / 1000;
     this.localX += tstep * this.vx;
     this.localY += tstep * this.vy;

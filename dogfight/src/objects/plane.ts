@@ -269,9 +269,11 @@ export class Plane extends GameObject {
 
     // Bomb counter
     this.isBombing = false;
-    if (kind in bomberPlanes) {
+    this.bombs = 0;
+
+    if (bomberPlanes.includes(kind)) {
       const maxBombs = 5;
-      this.bombs = maxBombs;
+      this.setBombs(cache, maxBombs);
       this.bombThreshold = 300;
       this.lastBomb = this.bombThreshold;
     }
@@ -287,12 +289,8 @@ export class Plane extends GameObject {
       team: side,
       health: 255,
       fuel: 255,
-      ammo: Math.round((this.ammoCount / maxAmmo) * 255),
-      bombs: 0
+      ammo: Math.round((this.ammoCount / maxAmmo) * 255)
     });
-    if (bomberPlanes.includes(this.planeType)) {
-      this.set(cache, "bombs", 5);
-    }
   }
 
   // advance the plane simulation
@@ -330,6 +328,10 @@ export class Plane extends GameObject {
     infoHUD.inclination = getInclination(this.direction);
     infoHUD.altitude = this.y;
     infoHUD.speed = Math.round(this.speed / SCALE_FACTOR);
+  }
+
+  public setBombs(cache: Cache, numBombs: number): void {
+    this.set(cache, "bombs", numBombs);
   }
 
   public abandonPlane(cache: Cache): void {

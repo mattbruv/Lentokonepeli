@@ -1,7 +1,8 @@
 import { Cache } from "../network/cache";
 import { Player } from "../objects/player";
 import { Flag } from "../objects/flag";
-import { Bullet, Bomb } from "../objects/bullet";
+import { Bullet } from "../objects/bullet";
+import { Bomb } from "../objects/bomb";
 import { Ground } from "../objects/ground";
 import { Hill } from "../objects/hill";
 import { Runway } from "../objects/runway";
