@@ -42,6 +42,7 @@ export class GameWorld {
   public hills: Hill[];
   public runways: Runway[];
   public towers: Tower[];
+  public troopers: Trooper[];
   public waters: Water[];
   public planes: Plane[];
   public explosions: Explosion[];
@@ -91,6 +92,7 @@ export class GameWorld {
     this.hills = [];
     this.runways = [];
     this.towers = [];
+    this.troopers = [];
     this.waters = [];
     this.planes = [];
     this.explosions = [];
