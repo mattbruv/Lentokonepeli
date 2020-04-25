@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { Team } from "../../../../dogfight/src/constants";
 import { TeamColor, DrawLayer } from "../constants";
+import { GameObjectType } from "../../../../dogfight/src/object";
 
 interface PlayerInfoObject {
   [key: number]: PIXI.Text;
@@ -60,7 +61,12 @@ export class PlayerInfo {
     const { x, y } = gameObj;
     if (name != undefined && x != undefined && y != undefined) {
       text.text = name;
-      text.position.set(x, (y - 25) * -1);
+      if (playerInfo.controlType == GameObjectType.Plane) {
+        text.position.set(x, (y - 25) * -1);
+      } else if (playerInfo.controlType == GameObjectType.Trooper) {
+        text.position.set(x, (y + 48) * -1);
+      }
+
       text.style.fill = color;
     }
   }

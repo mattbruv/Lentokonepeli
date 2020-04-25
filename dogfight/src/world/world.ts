@@ -19,6 +19,7 @@ import { processTakeoffs, TakeoffEntry } from "./takeoff";
 import { processPlanes } from "./plane";
 import { processBullets, processBombs } from "./bullet";
 import { processExplosions } from "./explosion";
+import { processTroopers } from "./trooper";
 
 /**
  * The Game World contains all entites,
@@ -111,6 +112,7 @@ export class GameWorld {
     processPlanes(this, deltaTime);
     processBullets(this, deltaTime);
     processBombs(this, deltaTime);
+    processTroopers(this, deltaTime);
     processExplosions(this, deltaTime);
     processCollision(this);
     return this.cache;
