@@ -6,7 +6,7 @@ import { RectangleBody } from "../physics/rectangle";
 
 export const trooperGlobals = {
   gravity: 425,
-  dragFall: 0.005,
+  dragFall: 0.001,
   dragChute: 0.1,
   walkSpeed: 100,
   crashSurviveSpeed: 200,
@@ -84,14 +84,13 @@ export class Trooper extends GameObject {
       this.direction
     );
     const tstep = deltaTime / 1000;
-    if (
-      this.state == TrooperState.Falling ||
-      this.state == TrooperState.Parachuting
-    ) {
-      const drag =
-        this.state == TrooperState.Falling
-          ? trooperGlobals.dragFall
-          : trooperGlobals.dragChute;
+    if (this.state == TrooperState.Falling) {
+      const drag = trooperGlobals.dragFall;
+      const dragForceY = drag * Math.pow(this.vy / SCALE_FACTOR, 2);
+      this.vy -= Math.sign(this.vy) * dragForceY + trooperGlobals.gravity;
+      this.localY += tstep * this.vy;
+    } else if (this.state == TrooperState.Parachuting) {
+      const drag = trooperGlobals.dragChute;
       const dragForceY = drag * Math.pow(this.vy / SCALE_FACTOR, 2);
       this.vy -= Math.sign(this.vy) * dragForceY + trooperGlobals.gravity;
       const speed = trooperGlobals.walkSpeed * SCALE_FACTOR;
@@ -99,6 +98,8 @@ export class Trooper extends GameObject {
         this.vx = -speed;
       } else if (this.direction == TrooperDirection.Right) {
         this.vx = speed;
+      } else {
+        this.vx = 0;
       }
       this.localX += tstep * this.vx;
       this.localY += tstep * this.vy;

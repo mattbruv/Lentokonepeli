@@ -94,7 +94,9 @@ export function trooperInput(
         }
       }
       case InputKey.Fire: {
-        trooper.isShooting = isPressed;
+        if (trooper.state != TrooperState.Falling) {
+          trooper.isShooting = isPressed;
+        }
         break;
       }
     }
