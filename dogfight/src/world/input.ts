@@ -43,11 +43,7 @@ export function planeInput(
           );
           trooper.setPos(world.cache, plane.x, plane.y);
           trooper.set(world.cache, "team", player.team);
-          trooper.setVelocity(
-            world.cache,
-            plane.v.x,
-            plane.v.y + 200 * SCALE_FACTOR
-          );
+          trooper.setVelocity(world.cache, 0, 0);
           world.addObject(trooper);
           player.setControl(world.cache, GameObjectType.Trooper, trooper.id);
           plane.abandonPlane(world.cache);

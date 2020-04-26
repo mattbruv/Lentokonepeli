@@ -100,23 +100,26 @@ export function processCollision(world: GameWorld): void {
 
   // see if troopers collide with water/ground
   for (const trooper of world.troopers) {
-    if (
+    const onGround =
       trooper.state == TrooperState.Standing ||
-      trooper.state == TrooperState.Walking
-    ) {
-      break;
-    }
+      trooper.state == TrooperState.Walking;
     let isDead = false;
     const trooperRect = getTrooperRect(trooper.x, trooper.y);
     for (const ground of grounds) {
       if (isRectangleCollision(trooperRect, ground)) {
-        if (trooper.vy > -trooperGlobals.crashSurviveSpeed * SCALE_FACTOR) {
-          trooper.setState(world.cache, TrooperState.Standing);
+        const slowEnoughToLand =
+          trooper.vy > -trooperGlobals.crashSurviveSpeed * SCALE_FACTOR;
+        if (slowEnoughToLand) {
+          if (!onGround) {
+            trooper.setState(world.cache, TrooperState.Standing);
+          }
         } else {
           destroyTrooper(world, trooper, false);
           isDead = true;
         }
         break;
+      } else if (onGround) {
+        trooper.setState(world.cache, TrooperState.Falling);
       }
     }
     if (isDead) {

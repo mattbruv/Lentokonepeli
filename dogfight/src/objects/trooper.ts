@@ -92,10 +92,14 @@ export class Trooper extends GameObject {
         this.state == TrooperState.Falling
           ? trooperGlobals.dragFall
           : trooperGlobals.dragChute;
-      const dragForceX = drag * Math.pow(this.vx / SCALE_FACTOR, 2);
       const dragForceY = drag * Math.pow(this.vy / SCALE_FACTOR, 2);
-      this.vx -= Math.sign(this.vx) * dragForceX;
       this.vy -= Math.sign(this.vy) * dragForceY + trooperGlobals.gravity;
+      const speed = trooperGlobals.walkSpeed * SCALE_FACTOR;
+      if (this.direction == TrooperDirection.Left) {
+        this.vx = -speed;
+      } else if (this.direction == TrooperDirection.Right) {
+        this.vx = speed;
+      }
       this.localX += tstep * this.vx;
       this.localY += tstep * this.vy;
     } else if (this.state == TrooperState.Standing) {
