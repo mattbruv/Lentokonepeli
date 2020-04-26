@@ -2,10 +2,12 @@ import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
 import { getAngle, Vec2d } from "../../../../dogfight/src/physics/vector";
+import { directionToRadians } from "../../../../dogfight/src/physics/helpers";
 
 export class BombSprite extends GameSprite {
   public x: number;
   public y: number;
+  public direction: number;
 
   private spritesheet: PIXI.Spritesheet;
 
@@ -18,6 +20,7 @@ export class BombSprite extends GameSprite {
 
     this.x = 0;
     this.y = 0;
+    this.direction = 0;
 
     this.spritesheet = spritesheet;
 
@@ -33,13 +36,12 @@ export class BombSprite extends GameSprite {
 
   public redraw(): void {
     this.bomb.position.set(this.x, this.y);
-    const pos: Vec2d = { x: this.x, y: this.y };
-    const angle = getAngle(pos);
+    const angle = directionToRadians(this.direction);
     console.log(angle);
     /*
     this.bomb has a .angle property for angle, and .rotation property for radians I believe
     */
-    this.bomb.angle = angle;
+    this.bomb.rotation = -angle;
   }
 
   public destroy(): void {
