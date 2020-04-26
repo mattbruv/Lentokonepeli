@@ -123,6 +123,7 @@ export class GameClient {
       ) {
         return;
       }
+      // console.log(bullet.clientVX, bullet.clientVY);
       const localX = x * SCALE_FACTOR;
       const localY = y * SCALE_FACTOR;
       const newPos = moveBullet(localX, localY, vx, vy, deltaTime);
@@ -135,6 +136,7 @@ export class GameClient {
         x: newX,
         y: newY
       });
+      // console.log(newX, newY);
     }
     this.lastTick = now;
 

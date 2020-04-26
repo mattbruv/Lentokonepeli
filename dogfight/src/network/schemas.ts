@@ -121,8 +121,8 @@ const bulletSchema: GameObjectSchema = {
   numbers: [
     { name: "x", intType: IntType.Int16 },
     { name: "y", intType: IntType.Int16 },
-    { name: "clientVX", intType: IntType.Uint16 },
-    { name: "clientVY", intType: IntType.Uint16 },
+    { name: "clientVX", intType: IntType.Int16 },
+    { name: "clientVY", intType: IntType.Int16 },
     { name: "age", intType: IntType.Uint16 }
   ],
   booleans: [],
