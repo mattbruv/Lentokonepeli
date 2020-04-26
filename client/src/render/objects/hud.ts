@@ -89,15 +89,14 @@ export class GameHud {
       this.infoBars.drawRect(290, 86, Math.round((75 * data.ammo) / 255), 12);
     }
     // highlight correct number of bombs
+    const bombCount = data.bombs == undefined ? 0 : data.bombs;
 
-    if (data.bombs !== undefined) {
-      for (let i = 0; i < 5; i++) {
-        const bomb = this.bombs.getChildAt(i) as PIXI.Sprite;
-        if (data.bombs > i) {
-          bomb.texture = this.spritesheet.textures["carrybomb.gif"];
-        } else {
-          bomb.texture = this.spritesheet.textures["droppedbomb.gif"];
-        }
+    for (let i = 0; i < 5; i++) {
+      const bomb = this.bombs.getChildAt(i) as PIXI.Sprite;
+      if (bombCount > i) {
+        bomb.texture = this.spritesheet.textures["carrybomb.gif"];
+      } else {
+        bomb.texture = this.spritesheet.textures["droppedbomb.gif"];
       }
     }
     this.infoBars.endFill();
