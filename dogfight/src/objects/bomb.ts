@@ -6,7 +6,7 @@ import { getAngle } from "../physics/vector";
 export const bombGlobals = {
   gravity: 425,
   drag: 0.005,
-  cooldown: 300
+  cooldown: 500
 };
 
 export class Bomb extends GameObject {
