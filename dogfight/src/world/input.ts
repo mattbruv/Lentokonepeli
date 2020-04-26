@@ -79,7 +79,7 @@ export function trooperInput(
     switch (key) {
       case InputKey.Jump: {
         if (trooper.state == TrooperState.Falling) {
-          trooper.setState(world.cache, TrooperState.Parachuting)
+          trooper.setState(world.cache, TrooperState.Parachuting);
         }
         break;
       }
@@ -105,7 +105,12 @@ export function processInputs(world: GameWorld): void {
           break;
         }
         case GameObjectType.Trooper: {
-          trooperInput(world, player, controlling as Trooper, world.inputQueue[id]);
+          trooperInput(
+            world,
+            player,
+            controlling as Trooper,
+            world.inputQueue[id]
+          );
           break;
         }
       }

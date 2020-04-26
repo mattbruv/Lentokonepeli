@@ -6,7 +6,7 @@ export const trooperGlobals = {
   gravity: 425,
   dragFall: 0.005,
   dragChute: 0.1
-}
+};
 
 export enum TrooperState {
   Parachuting,
@@ -63,16 +63,22 @@ export class Trooper extends GameObject {
 
   public move(cache: Cache, deltaTime: number): void {
     const tstep = deltaTime / 1000;
-    if (this.state == TrooperState.Falling || this.state == TrooperState.Parachuting) {
-      const drag = this.state == TrooperState.Falling ? trooperGlobals.dragFall : trooperGlobals.dragChute;
+    if (
+      this.state == TrooperState.Falling ||
+      this.state == TrooperState.Parachuting
+    ) {
+      const drag =
+        this.state == TrooperState.Falling
+          ? trooperGlobals.dragFall
+          : trooperGlobals.dragChute;
       const dragForceX = drag * Math.pow(this.vx / SCALE_FACTOR, 2);
       const dragForceY = drag * Math.pow(this.vy / SCALE_FACTOR, 2);
       this.vx -= Math.sign(this.vx) * dragForceX;
-      this.vy -= (Math.sign(this.vy) * dragForceY + trooperGlobals.gravity);
+      this.vy -= Math.sign(this.vy) * dragForceY + trooperGlobals.gravity;
       this.localX += tstep * this.vx;
       this.localY += tstep * this.vy;
     } else if (this.state == TrooperState.Standing) {
-      //      
+      //
     }
 
     //const unitsPerSecond = 100 * SCALE_FACTOR;
@@ -88,7 +94,7 @@ export class Trooper extends GameObject {
 
   public setState(cache: Cache, state: TrooperState): void {
     this.setData(cache, {
-      state: state,
+      state: state
     });
   }
 

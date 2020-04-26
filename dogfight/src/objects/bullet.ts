@@ -1,8 +1,6 @@
 import { GameObject, GameObjectType } from "../object";
 import { Cache, CacheEntry } from "../network/cache";
 import { Team, SCALE_FACTOR } from "../constants";
-import { Vec2d } from "../physics/vector";
-import { directionToRadians } from "../physics/helpers";
 
 export const bulletGlobals = {
   speed: 300,
@@ -71,7 +69,7 @@ export class Bullet extends GameObject {
       type: this.type,
       age: this.age,
       x: this.x,
-      y: this.y,
+      y: this.y
     };
   }
 }
@@ -113,7 +111,7 @@ export class Bomb extends GameObject {
     const dragForceX = bulletGlobals.drag * Math.pow(this.vx / SCALE_FACTOR, 2);
     const dragForceY = bulletGlobals.drag * Math.pow(this.vy / SCALE_FACTOR, 2);
     this.vx -= Math.sign(this.vx) * dragForceX;
-    this.vy -= (Math.sign(this.vy) * dragForceY + bulletGlobals.gravity);
+    this.vy -= Math.sign(this.vy) * dragForceY + bulletGlobals.gravity;
 
     const tstep = deltaTime / 1000;
     this.localX += tstep * this.vx;
@@ -141,7 +139,7 @@ export class Bomb extends GameObject {
       type: this.type,
       age: this.age,
       x: this.x,
-      y: this.y,
+      y: this.y
     };
   }
 }

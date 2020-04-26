@@ -31,7 +31,9 @@ export function processPlanes(world: GameWorld, deltaTime: number): void {
 
           const vx = plane.v.x / plane.speed;
           const vy = plane.v.y / plane.speed;
-          const speed = (bulletGlobals.speed + Math.round(plane.speed / SCALE_FACTOR)) * SCALE_FACTOR;
+          const speed =
+            (bulletGlobals.speed + Math.round(plane.speed / SCALE_FACTOR)) *
+            SCALE_FACTOR;
           bullet.setVelocity(world.cache, speed * vx, speed * vy);
 
           // set bullet speed/direction relative to plane.
@@ -41,12 +43,13 @@ export function processPlanes(world: GameWorld, deltaTime: number): void {
             Math.round((plane.ammoCount / plane.maxAmmo) * 255)
           );
 
-          bullet.setPos(world.cache, plane.x, plane.y);
+          const bulletx = plane.x + (plane.width * vx) / 2.1;
+          const bullety = plane.y + (plane.width * vy) / 2.1;
+          bullet.setPos(world.cache, bulletx, bullety);
           world.addObject(bullet);
         }
       }
     }
-
 
     // add time elapsed to our shot timer
     if (plane.lastBomb <= plane.bombThreshold) {
@@ -59,19 +62,12 @@ export function processPlanes(world: GameWorld, deltaTime: number): void {
         if (plane.bombs > 0) {
           plane.lastBomb = mod(plane.lastBomb, plane.bombThreshold);
           plane.bombs--;
-          const bomb = new Bomb(
-            world.nextID(GameObjectType.Bomb),
-            world.cache
-          );
+          const bomb = new Bomb(world.nextID(GameObjectType.Bomb), world.cache);
 
           bomb.setVelocity(world.cache, plane.v.x, plane.v.y);
 
           // set bomb speed/direction relative to plane.
-          plane.set(
-            world.cache,
-            "bombs",
-            plane.bombs
-          );
+          plane.set(world.cache, "bombs", plane.bombs);
 
           bomb.setPos(world.cache, plane.x, plane.y);
           world.addObject(bomb);

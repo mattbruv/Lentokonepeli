@@ -174,6 +174,8 @@ const bomberPlanes: PlaneType[] = [PlaneType.Junkers, PlaneType.Salmson];
 
 export class Plane extends GameObject {
   public type = GameObjectType.Plane;
+  public width: number;
+  public height: number;
 
   public x: number;
   public y: number;
@@ -231,6 +233,8 @@ export class Plane extends GameObject {
 
   public constructor(id: number, cache: Cache, kind: PlaneType, side: Team) {
     super(id);
+    this.width = planeData[kind].width;
+    this.height = planeData[kind].height;
     // These 5 variables can be tweaked for diff planes.
     this.thrust = planeData[kind].thrust * SCALE_FACTOR; // engine acceleration
     this.maxSpeed = planeData[kind].maxSpeed * SCALE_FACTOR; // maximum horizontal speed
