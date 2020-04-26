@@ -41,6 +41,7 @@ export class Trooper extends GameObject {
   public direction: TrooperDirection;
   public team: Team;
   public ammo: number;
+  public bombs: number; // simply for client rendering 1 bomb.
 
   public isShooting: boolean;
   public lastShot: number;
@@ -57,8 +58,7 @@ export class Trooper extends GameObject {
       x: 0,
       y: 0,
       ammo: 255,
-      dx: 0,
-      dy: 0,
+      bombs: 1,
       health: 255,
       state: TrooperState.Falling,
       direction: TrooperDirection.None,
@@ -77,14 +77,6 @@ export class Trooper extends GameObject {
   }
 
   public move(cache: Cache, deltaTime: number): void {
-    /*
-    console.log(
-      "trooperstate:",
-      this.state,
-      "trooperDirection:",
-      this.direction
-    );
-    */
     const tstep = deltaTime / 1000;
     if (this.state == TrooperState.Falling) {
       const drag = trooperGlobals.dragFall;
@@ -132,21 +124,19 @@ export class Trooper extends GameObject {
   }
 
   public setState(cache: Cache, state: TrooperState): void {
-    this.setData(cache, {
-      state: state
-    });
+    this.set(cache, "state", state);
   }
 
   public setDirection(cache: Cache, key: InputKey, doWalk: boolean): void {
-    if (doWalk == false) {
-      this.direction = TrooperDirection.None;
-      return;
+    let newDirection = TrooperDirection.None;
+    if (doWalk) {
+      if (key == InputKey.Left) {
+        newDirection = TrooperDirection.Left;
+      } else {
+        newDirection = TrooperDirection.Right;
+      }
     }
-    if (key == InputKey.Left) {
-      this.direction = TrooperDirection.Left;
-    } else {
-      this.direction = TrooperDirection.Right;
-    }
+    this.set(cache, "direction", newDirection);
   }
 
   public getState(): CacheEntry {
@@ -158,6 +148,7 @@ export class Trooper extends GameObject {
       state: this.state,
       direction: this.direction,
       ammo: this.ammo,
+      bombs: this.bombs,
       team: this.team
     };
   }

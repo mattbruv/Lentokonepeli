@@ -90,6 +90,7 @@ const trooperSchema: GameObjectSchema = {
     { name: "state", intType: IntType.Uint8 },
     { name: "direction", intType: IntType.Uint8 },
     { name: "ammo", intType: IntType.Uint8 },
+    { name: "bombs", intType: IntType.Uint8 },
     { name: "team", intType: IntType.Uint8 }
   ],
   booleans: [],
