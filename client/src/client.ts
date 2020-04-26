@@ -8,7 +8,7 @@ import { ClientMode } from "./types";
 import { CacheEntry } from "../../dogfight/src/network/cache";
 import { GameObjectType } from "../../dogfight/src/object";
 import { TeamSelector } from "./teamSelector";
-import { Team } from "../../dogfight/src/constants";
+import { Team, SCALE_FACTOR } from "../../dogfight/src/constants";
 import { TakeoffSelector } from "./takeoffSelector";
 import { radarObjects } from "./render/objects/radar";
 import { NetworkHandler } from "./networkHandler";
@@ -17,6 +17,7 @@ import { PlayerStatus } from "../../dogfight/src/objects/player";
 import { AudioManager } from "./audio";
 import { isNameValid } from "../../dogfight/src/validation";
 import Cookies from "js-cookie";
+import { moveBullet } from "../../dogfight/src/objects/bullet";
 
 export class GameClient {
   private renderer: GameRenderer;
@@ -28,6 +29,8 @@ export class GameClient {
 
   public loadedGame: boolean = false;
   public mode: ClientMode = ClientMode.SelectTeam;
+
+  private lastTick: number = 0;
 
   // Client UI Logic classes
   private teamSelector: TeamSelector;
@@ -95,6 +98,49 @@ export class GameClient {
     this.input.processGameKeyChange = (change): void => {
       this.processGameInput(change);
     };
+
+    // register/start local movement calculations
+    this.lastTick = Date.now();
+    this.onAnimationFrame();
+  }
+
+  public onAnimationFrame(): void {
+    const bullets = this.gameObjects[GameObjectType.Bullet];
+    const now = Date.now();
+    const deltaTime = now - this.lastTick;
+
+    for (const index of Object.keys(bullets)) {
+      const bullet = bullets[index];
+      const vx = bullet.clientVX * SCALE_FACTOR;
+      const vy = bullet.clientVY * SCALE_FACTOR;
+      const x = bullet.x;
+      const y = bullet.y;
+      if (
+        vx == undefined ||
+        vy == undefined ||
+        x == undefined ||
+        y == undefined
+      ) {
+        return;
+      }
+      const localX = x * SCALE_FACTOR;
+      const localY = y * SCALE_FACTOR;
+      const newPos = moveBullet(localX, localY, vx, vy, deltaTime);
+      const newX = Math.round(newPos.x / SCALE_FACTOR);
+      const newY = Math.round(newPos.y / SCALE_FACTOR);
+      bullet.x = newX;
+      bullet.y = newY;
+      // update sprite coords
+      this.renderer.updateSprite(GameObjectType.Bullet, index, {
+        x: newX,
+        y: newY
+      });
+    }
+    this.lastTick = now;
+
+    window.requestAnimationFrame((): void => {
+      this.onAnimationFrame();
+    });
   }
 
   public getFollowObject(): any | undefined {
@@ -296,7 +342,7 @@ export class GameClient {
       this.renderer.playerInfo.deletePlayer(parseInt(id));
     }
     delete this.gameObjects[type][id];
-    this.gameObjects[type].updated = Date.now();
+    // this.gameObjects[type].updated = Date.now();
     this.renderer.deleteSprite(type, id);
     this.renderer.HUD.radar.refreshRadar(this.gameObjects);
   }

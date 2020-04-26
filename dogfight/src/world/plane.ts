@@ -31,6 +31,7 @@ export function processPlanes(world: GameWorld, deltaTime: number): void {
           // set bullet speed/direction relative to plane.
           const vx = plane.v.x / plane.speed;
           const vy = plane.v.y / plane.speed;
+
           const speed =
             (bulletGlobals.speed + Math.round(plane.speed / SCALE_FACTOR)) *
             SCALE_FACTOR;
@@ -42,8 +43,8 @@ export function processPlanes(world: GameWorld, deltaTime: number): void {
             Math.round((plane.ammoCount / plane.maxAmmo) * 255)
           );
 
-          const bulletx = plane.x + (plane.width * vx) / 2;
-          const bullety = plane.y + (plane.width * vy) / 2;
+          const bulletx = Math.round(plane.x + (plane.width * vx) / 2);
+          const bullety = Math.round(plane.y + (plane.width * vy) / 2);
           bullet.setPos(world.cache, bulletx, bullety);
           world.addObject(bullet);
         }
