@@ -132,7 +132,8 @@ const bombSchema: GameObjectSchema = {
   numbers: [
     { name: "x", intType: IntType.Int16 },
     { name: "y", intType: IntType.Int16 },
-    { name: "age", intType: IntType.Uint16 }
+    { name: "age", intType: IntType.Uint16 },
+    { name: "direction", intType: IntType.Uint8 }
   ],
   booleans: [],
   strings: []

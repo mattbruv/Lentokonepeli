@@ -1,6 +1,7 @@
 import { GameObject, GameObjectType } from "../object";
 import { Cache, CacheEntry } from "../network/cache";
 import { Team, SCALE_FACTOR } from "../constants";
+import { getAngle } from "../physics/vector";
 
 export const bombGlobals = {
   gravity: 425,
@@ -19,6 +20,7 @@ export class Bomb extends GameObject {
   public team: Team; // team of player who dropped it
   public vx: number;
   public vy: number;
+  public direction: number;
 
   public constructor(id: number, cache: Cache) {
     super(id);
@@ -27,7 +29,8 @@ export class Bomb extends GameObject {
     this.setData(cache, {
       age: 0,
       x: 0,
-      y: 0
+      y: 0,
+      direction: 0
     });
   }
 
@@ -53,7 +56,8 @@ export class Bomb extends GameObject {
 
     this.setData(cache, {
       x: Math.round(this.localX / SCALE_FACTOR),
-      y: Math.round(this.localY / SCALE_FACTOR)
+      y: Math.round(this.localY / SCALE_FACTOR),
+      direction: getAngle({ x: this.vx, y: this.vy })
     });
   }
 
@@ -73,7 +77,8 @@ export class Bomb extends GameObject {
       type: this.type,
       age: this.age,
       x: this.x,
-      y: this.y
+      y: this.y,
+      direction: this.direction
     };
   }
 }
