@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
+import { getAngle, Vec2d } from "../../../../dogfight/src/physics/vector";
 
 export class BombSprite extends GameSprite {
   public x: number;
@@ -10,11 +11,7 @@ export class BombSprite extends GameSprite {
 
   private container: PIXI.Container;
 
-  private bomb: PIXI.Graphics;
-
-  private timeout: number;
-
-  private bombColorIndex: number = 0;
+  private bomb: PIXI.Sprite;
 
   public constructor(spritesheet: PIXI.Spritesheet) {
     super();
@@ -25,7 +22,8 @@ export class BombSprite extends GameSprite {
     this.spritesheet = spritesheet;
 
     this.container = new PIXI.Container();
-    this.bomb = new PIXI.Graphics();
+    const tex = this.spritesheet.textures["bomb.gif"];
+    this.bomb = new PIXI.Sprite(tex);
 
     this.container.zIndex = DrawLayer.Bomb;
     this.container.addChild(this.bomb);
@@ -34,15 +32,17 @@ export class BombSprite extends GameSprite {
   }
 
   public redraw(): void {
-    this.bomb.clear();
-    // this.bomb.beginFill(bombColors[this.bombColorIndex]);
-    this.bomb.beginFill(0);
-    this.bomb.drawCircle(this.x, this.y, 3.0);
-    this.bomb.endFill();
-    // something
+    this.bomb.position.set(this.x, this.y);
+    const pos: Vec2d = { x: this.x, y: this.y };
+    const angle = getAngle(pos);
+    console.log(angle);
+    /*
+    this.bomb has a .angle property for angle, and .rotation property for radians I believe
+    */
+    this.bomb.angle = angle;
   }
 
   public destroy(): void {
-    window.clearTimeout(this.timeout);
+    //
   }
 }
