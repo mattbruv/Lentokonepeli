@@ -9,8 +9,8 @@ export const trooperGlobals = {
   dragFall: 0.001,
   dragChute: 0.1,
   walkSpeed: 100,
-  crashSurviveSpeed: 150,
-  fireRate: 100,
+  crashSurviveSpeed: 100,
+  fireRate: 119,
   targetRadius: 300
 };
 

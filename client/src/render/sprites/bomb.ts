@@ -36,12 +36,8 @@ export class BombSprite extends GameSprite {
 
   public redraw(): void {
     this.bomb.position.set(this.x, this.y);
-    const angle = directionToRadians(this.direction);
-    console.log(angle);
-    /*
-    this.bomb has a .angle property for angle, and .rotation property for radians I believe
-    */
-    this.bomb.rotation = -angle;
+    const rotation = directionToRadians(this.direction);
+    this.bomb.rotation = -rotation;
   }
 
   public destroy(): void {
