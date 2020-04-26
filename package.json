@@ -14,7 +14,8 @@
     "watch-client": "parcel watch client/public/index.html",
     "clean": "rm -rf .cache && rm -rf dist",
     "assets": "cp -r ./client/public/assets ./dist/assets",
-    "setup": "npm run clean && mkdir dist && npm run assets"
+    "setup": "npm run clean && mkdir dist && npm run assets",
+    "heroku-postbuild": "npm run setup && npm run build"
   },
   "repository": {
     "type": "git",
