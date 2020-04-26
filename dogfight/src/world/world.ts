@@ -149,6 +149,10 @@ export class GameWorld {
   }
 
   public removePlayer(p: Player): void {
+    const controlling = this.getObject(p.controlType, p.controlID);
+    if (controlling !== undefined) {
+      this.removeObject(controlling);
+    }
     this.removeObject(p);
   }
 
@@ -171,7 +175,10 @@ export class GameWorld {
       this.towers,
       this.waters,
       this.planes,
-      this.explosions
+      this.explosions,
+      this.troopers,
+      this.bombs,
+      this.bullets
     ];
     const cache: Cache = {};
     for (const obj in objects) {
