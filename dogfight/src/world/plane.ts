@@ -87,14 +87,8 @@ export function destroyPlane(
     player.setStatus(world.cache, PlayerStatus.Takeoff);
     player.setControl(world.cache, GameObjectType.None, 0);
   }
-  world.removeObject(plane);
   if (doExplosion) {
-    const explosion = new Explosion(
-      world.nextID(GameObjectType.Explosion),
-      world.cache,
-      x,
-      y
-    );
-    world.explosions.push(explosion);
+    world.createExplosion(x, y, plane.controlledBy, plane.team);
   }
+  world.removeObject(plane);
 }

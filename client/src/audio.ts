@@ -31,4 +31,11 @@ export class AudioManager {
     });
     bullet.play();
   }
+
+  public playBomb(): void {
+    const bomb = new Howl({
+      src: ["assets/audio/bombdrop.mp3", "assets/audio/bombdrop.wav"]
+    });
+    bomb.play();
+  }
 }

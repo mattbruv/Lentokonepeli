@@ -178,6 +178,7 @@ export class Plane extends GameObject {
   public x: number;
   public y: number;
 
+  public controlledBy: number; // ID of controlling player
   public team: Team;
 
   public planeType: PlaneType;
@@ -229,7 +230,13 @@ export class Plane extends GameObject {
   // number of milliseconds elapsed to decrease fuel by 1.
   private fuelThreshold: number;
 
-  public constructor(id: number, cache: Cache, kind: PlaneType, side: Team) {
+  public constructor(
+    id: number,
+    cache: Cache,
+    kind: PlaneType,
+    player: number,
+    side: Team
+  ) {
     super(id);
     // These 5 variables can be tweaked for diff planes.
     this.thrust = planeData[kind].thrust * SCALE_FACTOR; // engine acceleration
@@ -277,6 +284,8 @@ export class Plane extends GameObject {
       this.bombThreshold = 300;
       this.lastBomb = this.bombThreshold;
     }
+
+    this.controlledBy = player;
 
     // set networked variables
     this.setData(cache, {

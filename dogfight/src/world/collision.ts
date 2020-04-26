@@ -45,7 +45,6 @@ export function processCollision(world: GameWorld): void {
 
   // if bombs collide with ground (plane in future)
   world.bombs.forEach((bomb): void => {
-    // test
     const point: Vec2d = {
       x: bomb.x,
       y: bomb.y
@@ -57,6 +56,7 @@ export function processCollision(world: GameWorld): void {
     }
     for (const ground of grounds) {
       if (isPointRectCollision(point, ground)) {
+        world.createExplosion(bomb.x, bomb.y, bomb.droppedBy, bomb.team);
         world.removeObject(bomb);
       }
     }

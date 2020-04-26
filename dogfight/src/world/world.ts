@@ -18,7 +18,8 @@ import { processInputs } from "./input";
 import { processCollision } from "./collision";
 import { processTakeoffs, TakeoffEntry } from "./takeoff";
 import { processPlanes } from "./plane";
-import { processBullets, processBombs } from "./bullet";
+import { processBullets } from "./bullet";
+import { processBombs } from "./bomb";
 import { processExplosions } from "./explosion";
 import { processTroopers } from "./trooper";
 
@@ -182,6 +183,18 @@ export class GameWorld {
       }
     }
     return cache;
+  }
+
+  public createExplosion(x: number, y: number, uid: number, team: Team): void {
+    const explosion = new Explosion(
+      this.nextID(GameObjectType.Explosion),
+      this.cache,
+      x,
+      y
+    );
+    explosion.setPlayerID(this.cache, uid);
+    explosion.setTeam(this.cache, team);
+    this.explosions.push(explosion);
   }
 
   public addObject(obj: GameObject): void {
