@@ -19,6 +19,7 @@ import {
   dot,
   setSize
 } from "../physics/vector";
+import { bombGlobals } from "./bomb";
 
 // Movement Physics
 export const planeGlobals = {
@@ -285,7 +286,7 @@ export class Plane extends GameObject {
     if (bomberPlanes.includes(kind)) {
       const maxBombs = 5;
       this.setBombs(cache, maxBombs);
-      this.bombThreshold = 300;
+      this.bombThreshold = bombGlobals.cooldown;
       this.lastBomb = this.bombThreshold;
     }
 

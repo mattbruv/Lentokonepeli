@@ -1,11 +1,13 @@
 <template>
   <div id="debug" v-if="noServerMode">
-    <label>Debug:</label>
+    <label>Debug Object:</label>
     <select v-model="menu">
       <option v-for="item in menuList" :key="item.value" :value="item.value">{{item.name}}</option>
     </select>
     <PlaneDebug v-if="menu == 'plane'"></PlaneDebug>
     <BulletDebug v-if="menu == 'bullet'"></BulletDebug>
+    <BombDebug v-if="menu == 'bomb'"></BombDebug>
+    <TrooperDebug v-if="menu == 'trooper'"></TrooperDebug>
   </div>
 </template>
 
@@ -13,6 +15,8 @@
 import Vue from "vue";
 import PlaneDebug from "./plane.vue";
 import BulletDebug from "./bullet.vue";
+import BombDebug from "./bomb.vue";
+import TrooperDebug from "./trooper.vue";
 import {
   PlaneType,
   planeGlobals,
@@ -23,7 +27,9 @@ import { BuildType } from "../../../../dogfight/src/constants";
 export default Vue.extend({
   components: {
     PlaneDebug,
-    BulletDebug
+    BulletDebug,
+    TrooperDebug,
+    BombDebug
   },
   data: (): any => {
     return {
@@ -31,12 +37,20 @@ export default Vue.extend({
       menu: "plane",
       menuList: [
         {
-          name: "Planes",
-          value: "plane"
+          name: "Bombs",
+          value: "bomb"
         },
         {
           name: "Bullets",
           value: "bullet"
+        },
+        {
+          name: "Planes",
+          value: "plane"
+        },
+        {
+          name: "Troopers",
+          value: "trooper"
         }
       ]
     };

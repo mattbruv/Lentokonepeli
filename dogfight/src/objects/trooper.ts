@@ -77,12 +77,14 @@ export class Trooper extends GameObject {
   }
 
   public move(cache: Cache, deltaTime: number): void {
+    /*
     console.log(
       "trooperstate:",
       this.state,
       "trooperDirection:",
       this.direction
     );
+    */
     const tstep = deltaTime / 1000;
     if (this.state == TrooperState.Falling) {
       const drag = trooperGlobals.dragFall;
@@ -125,8 +127,8 @@ export class Trooper extends GameObject {
   }
 
   public setVelocity(cache: Cache, vx: number, vy: number): void {
-    this.set(cache, "vx", vx);
-    this.set(cache, "vy", vy);
+    this.vx = vx;
+    this.vy = vy;
   }
 
   public setState(cache: Cache, state: TrooperState): void {
