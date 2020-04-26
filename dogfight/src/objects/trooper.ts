@@ -5,11 +5,11 @@ import { InputKey } from "../input";
 import { RectangleBody } from "../physics/rectangle";
 
 export const trooperGlobals = {
-  gravity: 425,
+  gravity: 500,
   dragFall: 0.001,
   dragChute: 0.1,
   walkSpeed: 100,
-  crashSurviveSpeed: 200,
+  crashSurviveSpeed: 150,
   fireRate: 100,
   targetRadius: 300
 };
