@@ -1,7 +1,5 @@
 import { GameClient } from "../src/client";
 import Cookies from "js-cookie";
-// import { Localizer } from "../src/localization/localizer";
-
 import App from "../src/components/app.vue";
 import Vue from "vue";
 import Vuex from "vuex";
@@ -9,6 +7,8 @@ import { VNode } from "vue/types/umd";
 import { planeData, infoHUD } from "../../dogfight/src/objects/plane";
 import { Localizer } from "../src/localization/localizer";
 import { bulletGlobals } from "../../dogfight/src/objects/bullet";
+import { bombGlobals } from "../../dogfight/src/objects/bomb";
+import { trooperGlobals } from "../../dogfight/src/objects/trooper";
 
 Vue.config.productionTip = false;
 Vue.use(Vuex);
@@ -21,6 +21,8 @@ function init(): void {
       client: client,
       planeInfo: planeData,
       bulletInfo: bulletGlobals,
+      bombInfo: bombGlobals,
+      trooperInfo: trooperGlobals,
       infoHUD: infoHUD,
       lang: Localizer,
       viewSettings: false,

@@ -7,12 +7,6 @@
       <br />
       <label>Duration</label>
       <input type="text" v-model.number="info.lifetime" />
-      <br />
-      <label>Gravity (bombs only)</label>
-      <input type="text" v-model.number="info.gravity" />
-      <br />
-      <label>Drag (bombs only)</label>
-      <input type="text" v-model.number="info.drag" />
     </p>
   </div>
 </template>

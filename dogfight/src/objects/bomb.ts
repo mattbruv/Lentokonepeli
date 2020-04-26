@@ -4,7 +4,8 @@ import { Team, SCALE_FACTOR } from "../constants";
 
 export const bombGlobals = {
   gravity: 425,
-  drag: 0.005
+  drag: 0.005,
+  cooldown: 300
 };
 
 export class Bomb extends GameObject {

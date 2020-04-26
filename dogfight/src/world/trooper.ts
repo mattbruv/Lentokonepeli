@@ -5,7 +5,7 @@ import { mod } from "../physics/helpers";
 import { Trooper, trooperGlobals, TrooperDirection } from "../objects/trooper";
 import { Bullet, bulletGlobals } from "../objects/bullet";
 import { SCALE_FACTOR, ROTATION_DIRECTIONS, Team } from "../constants";
-import { magnitude, distance, getAngle } from "../physics/vector";
+import { distance, getAngle } from "../physics/vector";
 
 function getTarget(world: GameWorld, trooper: Trooper, radius: number): any {
   const runways = world.runways.filter((runway): boolean => {

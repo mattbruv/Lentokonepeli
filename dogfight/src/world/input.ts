@@ -3,9 +3,7 @@ import { GameObjectType } from "../object";
 import { Player } from "../objects/player";
 import { Plane } from "../objects/plane";
 import { KeyChangeList, InputKey } from "../input";
-import { destroyPlane } from "./plane";
-import { Trooper, trooperGlobals, TrooperState } from "../objects/trooper";
-import { SCALE_FACTOR } from "../constants";
+import { Trooper, TrooperState } from "../objects/trooper";
 import { destroyTrooper } from "./trooper";
 
 export function planeInput(
@@ -87,11 +85,20 @@ export function trooperInput(
         if (isPressed) {
           if (trooper.state == TrooperState.Falling) {
             trooper.setState(world.cache, TrooperState.Parachuting);
-          } else {
-            destroyTrooper(world, trooper, true);
           }
           break;
         }
+      }
+      case InputKey.Bomb: {
+        if (isPressed) {
+          if (
+            trooper.state == TrooperState.Standing ||
+            trooper.state == TrooperState.Walking
+          ) {
+            destroyTrooper(world, trooper, true);
+          }
+        }
+        break;
       }
       case InputKey.Fire: {
         if (trooper.state != TrooperState.Falling) {
