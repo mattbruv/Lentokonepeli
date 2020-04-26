@@ -30,7 +30,7 @@ function init(): void {
     },
     mutations: {
       setDebug(state, value): void {
-        Cookies.set("debug", value);
+        Cookies.set("debug", value, { expires: 9999 });
         state.viewDebug = value;
       },
       setLanguage(state, newLangID): void {

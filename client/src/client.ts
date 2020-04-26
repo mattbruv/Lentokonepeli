@@ -303,7 +303,7 @@ export class GameClient {
 
   public updateName(newName: string): void {
     if (isNameValid(newName)) {
-      Cookies.set("name", newName);
+      Cookies.set("name", newName, { expires: 9999 });
       console.log("updating name, sending packet");
       this.network.send({
         type: PacketType.ChangeName,
