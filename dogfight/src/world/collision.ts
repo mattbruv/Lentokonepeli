@@ -5,10 +5,17 @@ import {
 } from "../physics/collision";
 import { GameWorld } from "./world";
 import { destroyPlane } from "./plane";
+import {
+  getTrooperRect,
+  TrooperState,
+  trooperGlobals
+} from "../objects/trooper";
 import { getPlaneRect } from "../objects/plane";
 import { getGroundRect } from "../objects/ground";
 import { getWaterRect } from "../objects/water";
 import { Vec2d } from "../physics/vector";
+import { destroyTrooper } from "./trooper";
+import { SCALE_FACTOR } from "../constants";
 
 export function processCollision(world: GameWorld): void {
   // get ground hitboxes
@@ -85,6 +92,43 @@ export function processCollision(world: GameWorld): void {
     for (const water of waters) {
       if (isRectangleCollision(planeRect, water)) {
         destroyPlane(world, plane, false);
+        isDead = true;
+        break;
+      }
+    }
+  }
+
+  // see if troopers collide with water/ground
+  for (const trooper of world.troopers) {
+    const onGround =
+      trooper.state == TrooperState.Standing ||
+      trooper.state == TrooperState.Walking;
+    let isDead = false;
+    const trooperRect = getTrooperRect(trooper.x, trooper.y);
+    for (const ground of grounds) {
+      if (isRectangleCollision(trooperRect, ground)) {
+        const slowEnoughToLand =
+          trooper.vy > -trooperGlobals.crashSurviveSpeed * SCALE_FACTOR;
+        if (slowEnoughToLand) {
+          if (!onGround) {
+            trooper.setState(world.cache, TrooperState.Standing);
+          }
+        } else {
+          destroyTrooper(world, trooper, false);
+          isDead = true;
+        }
+        break;
+      } else if (onGround) {
+        trooper.setState(world.cache, TrooperState.Falling);
+      }
+    }
+    if (isDead) {
+      continue;
+    }
+    // process water collisions.
+    for (const water of waters) {
+      if (isRectangleCollision(trooperRect, water)) {
+        destroyTrooper(world, trooper, false);
         isDead = true;
         break;
       }

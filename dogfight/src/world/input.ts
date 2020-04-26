@@ -5,6 +5,8 @@ import { Plane } from "../objects/plane";
 import { KeyChangeList, InputKey } from "../input";
 import { destroyPlane } from "./plane";
 import { Trooper, trooperGlobals, TrooperState } from "../objects/trooper";
+import { SCALE_FACTOR } from "../constants";
+import { destroyTrooper } from "./trooper";
 
 export function planeInput(
   world: GameWorld,
@@ -41,7 +43,7 @@ export function planeInput(
           );
           trooper.setPos(world.cache, plane.x, plane.y);
           trooper.set(world.cache, "team", player.team);
-          trooper.setVelocity(world.cache, plane.v.x, plane.v.y);
+          trooper.setVelocity(world.cache, 0, 0);
           world.addObject(trooper);
           player.setControl(world.cache, GameObjectType.Trooper, trooper.id);
           plane.abandonPlane(world.cache);
@@ -77,13 +79,33 @@ export function trooperInput(
     const key: InputKey = parseInt(keyType);
     const isPressed = changes[keyType];
     switch (key) {
+      case InputKey.Left:
+      case InputKey.Right: {
+        break;
+      }
       case InputKey.Jump: {
-        if (trooper.state == TrooperState.Falling) {
-          trooper.setState(world.cache, TrooperState.Parachuting)
+        if (isPressed) {
+          if (trooper.state == TrooperState.Falling) {
+            trooper.setState(world.cache, TrooperState.Parachuting);
+          } else {
+            destroyTrooper(world, trooper, true);
+          }
+          break;
+        }
+      }
+      case InputKey.Fire: {
+        if (trooper.state != TrooperState.Falling) {
+          trooper.isShooting = isPressed;
         }
         break;
       }
     }
+    if (player.inputState[InputKey.Left] && !player.inputState[InputKey.Right])
+      trooper.setDirection(world.cache, InputKey.Left, true);
+    if (!player.inputState[InputKey.Left] && player.inputState[InputKey.Right])
+      trooper.setDirection(world.cache, InputKey.Right, true);
+    if (player.inputState[InputKey.Left] == player.inputState[InputKey.Right])
+      trooper.setDirection(world.cache, InputKey.Right, false);
   }
 }
 
@@ -105,7 +127,12 @@ export function processInputs(world: GameWorld): void {
           break;
         }
         case GameObjectType.Trooper: {
-          trooperInput(world, player, controlling as Trooper, world.inputQueue[id]);
+          trooperInput(
+            world,
+            player,
+            controlling as Trooper,
+            world.inputQueue[id]
+          );
           break;
         }
       }

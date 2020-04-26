@@ -39,6 +39,12 @@ export function magnitude(v: Vec2d): number {
   return Math.pow(Math.pow(v.x, 2) + Math.pow(v.y, 2), 0.5);
 }
 
+export function distance(v: Vec2d, u: Vec2d): number {
+  const x = Math.abs(v.x - u.x);
+  const y = Math.abs(v.y - u.y);
+  return magnitude({ x: x, y: y });
+}
+
 export function getAngle(v: Vec2d): number {
   //input vector, get vector angle
   const w0 = ROTATION_DIRECTIONS / 2;

@@ -45,8 +45,8 @@ export class GameWorld {
   public runways: Runway[];
   public towers: Tower[];
   public troopers: Trooper[];
-  public waters: Water[];
   public planes: Plane[];
+  public waters: Water[];
   public explosions: Explosion[];
   public bullets: Bullet[];
   public bombs: Bomb[];
