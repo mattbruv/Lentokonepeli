@@ -132,9 +132,7 @@ const bombSchema: GameObjectSchema = {
   numbers: [
     { name: "x", intType: IntType.Int16 },
     { name: "y", intType: IntType.Int16 },
-    { name: "vx", intType: IntType.Uint16 },
-    { name: "vy", intType: IntType.Uint16 },
-    { name: "age", intType: IntType.Uint16 },
+    { name: "age", intType: IntType.Uint16 }
   ],
   booleans: [],
   strings: []
@@ -151,5 +149,6 @@ export const schemaTypes = {
   [GameObjectType.Player]: playerSchema,
   [GameObjectType.Water]: waterSchema,
   [GameObjectType.Explosion]: explosionSchema,
-  [GameObjectType.Bullet]: bulletSchema
+  [GameObjectType.Bullet]: bulletSchema,
+  [GameObjectType.Bomb]: bombSchema
 };

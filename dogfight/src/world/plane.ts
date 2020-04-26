@@ -2,7 +2,6 @@ import { GameWorld } from "./world";
 import { Plane } from "../objects/plane";
 import { PlayerStatus } from "../objects/player";
 import { GameObjectType } from "../object";
-import { Explosion } from "../objects/explosion";
 import { mod } from "../physics/helpers";
 import { Bullet, bulletGlobals } from "../objects/bullet";
 import { SCALE_FACTOR } from "../constants";
