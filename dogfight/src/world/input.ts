@@ -85,11 +85,20 @@ export function trooperInput(
         if (isPressed) {
           if (trooper.state == TrooperState.Falling) {
             trooper.setState(world.cache, TrooperState.Parachuting);
-          } else {
-            destroyTrooper(world, trooper, true);
           }
           break;
         }
+      }
+      case InputKey.Bomb: {
+        if (isPressed) {
+          if (
+            trooper.state == TrooperState.Standing ||
+            trooper.state == TrooperState.Walking
+          ) {
+            destroyTrooper(world, trooper, true);
+          }
+        }
+        break;
       }
       case InputKey.Fire: {
         if (trooper.state != TrooperState.Falling) {
