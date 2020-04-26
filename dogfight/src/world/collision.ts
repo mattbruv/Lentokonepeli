@@ -5,7 +5,11 @@ import {
 } from "../physics/collision";
 import { GameWorld } from "./world";
 import { destroyPlane } from "./plane";
-import { getTrooperRect, TrooperState } from "../objects/trooper";
+import {
+  getTrooperRect,
+  TrooperState,
+  trooperGlobals
+} from "../objects/trooper";
 import { getPlaneRect } from "../objects/plane";
 import { getGroundRect } from "../objects/ground";
 import { getWaterRect } from "../objects/water";
@@ -106,7 +110,7 @@ export function processCollision(world: GameWorld): void {
     const trooperRect = getTrooperRect(trooper.x, trooper.y);
     for (const ground of grounds) {
       if (isRectangleCollision(trooperRect, ground)) {
-        if (trooper.vy > -200 * SCALE_FACTOR) {
+        if (trooper.vy > -trooperGlobals.crashSurviveSpeed * SCALE_FACTOR) {
           trooper.setState(world.cache, TrooperState.Standing);
         } else {
           destroyTrooper(world, trooper, false);

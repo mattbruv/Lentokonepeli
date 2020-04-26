@@ -8,7 +8,10 @@ export const trooperGlobals = {
   gravity: 425,
   dragFall: 0.005,
   dragChute: 0.1,
-  walkSpeed: 100
+  walkSpeed: 100,
+  crashSurviveSpeed: 200,
+  fireRate: 100,
+  targetRadius: 300
 };
 
 export enum TrooperState {
@@ -39,10 +42,17 @@ export class Trooper extends GameObject {
   public team: Team;
   public ammo: number;
 
+  public isShooting: boolean;
+  public lastShot: number;
+  public shotThreshold: number;
+
   public constructor(id: number, cache: Cache) {
     super(id);
     this.localX = 0;
     this.localY = 0;
+    this.isShooting = false;
+    this.shotThreshold = Math.round(1000 / (trooperGlobals.fireRate / 60));
+    this.lastShot = this.shotThreshold;
     this.setData(cache, {
       x: 0,
       y: 0,
@@ -150,8 +160,8 @@ export function getTrooperRect(x: number, y: number): RectangleBody {
   return {
     // width: Math.round(planeData[type].width * 0.8),
     // height: Math.round(planeData[type].height * 0.8),
-    width: 10,
-    height: 10,
+    width: 1,
+    height: 1,
     center: { x, y },
     direction: 0
   };

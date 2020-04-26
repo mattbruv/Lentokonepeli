@@ -97,6 +97,10 @@ export function trooperInput(
           break;
         }
       }
+      case InputKey.Fire: {
+        trooper.isShooting = isPressed;
+        break;
+      }
     }
     if (player.inputState[InputKey.Left] && !player.inputState[InputKey.Right])
       trooper.setDirection(world.cache, InputKey.Left, true);
