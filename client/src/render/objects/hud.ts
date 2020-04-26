@@ -89,6 +89,7 @@ export class GameHud {
       this.infoBars.drawRect(290, 86, Math.round((75 * data.ammo) / 255), 12);
     }
     // highlight correct number of bombs
+
     if (data.bombs !== undefined) {
       for (let i = 0; i < 5; i++) {
         const bomb = this.bombs.getChildAt(i) as PIXI.Sprite;

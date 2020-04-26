@@ -3,10 +3,8 @@ import { Cache, CacheEntry } from "../network/cache";
 import { Team, SCALE_FACTOR } from "../constants";
 
 export const bulletGlobals = {
-  speed: 300,
-  lifetime: 2000, // milliseconds
-  gravity: 425,
-  drag: 0.005
+  speed: 400,
+  lifetime: 2000 // milliseconds
 };
 
 export class Bullet extends GameObject {
@@ -60,8 +58,8 @@ export class Bullet extends GameObject {
   }
 
   public setVelocity(cache: Cache, vx: number, vy: number): void {
-    this.set(cache, "vx", vx);
-    this.set(cache, "vy", vy);
+    this.vx = vx;
+    this.vy = vy;
   }
 
   public getState(): CacheEntry {
@@ -73,6 +71,7 @@ export class Bullet extends GameObject {
     };
   }
 }
+<<<<<<< HEAD
 
 export class Bomb extends GameObject {
   public type = GameObjectType.Bomb;
@@ -143,3 +142,5 @@ export class Bomb extends GameObject {
     };
   }
 }
+=======
+>>>>>>> 31089ee4b685f12fb7e365f8471e3eafb158717f

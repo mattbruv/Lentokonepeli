@@ -64,6 +64,7 @@ export function doTakeoff(world: GameWorld, takeoff: TakeoffEntry): void {
     world.nextID(GameObjectType.Plane),
     world.cache,
     takeoff.request.plane,
+    player.id,
     player.team
   );
   let offsetX = 100;

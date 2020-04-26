@@ -180,6 +180,7 @@ export class Plane extends GameObject {
   public x: number;
   public y: number;
 
+  public controlledBy: number; // ID of controlling player
   public team: Team;
 
   public planeType: PlaneType;
@@ -231,7 +232,13 @@ export class Plane extends GameObject {
   // number of milliseconds elapsed to decrease fuel by 1.
   private fuelThreshold: number;
 
-  public constructor(id: number, cache: Cache, kind: PlaneType, side: Team) {
+  public constructor(
+    id: number,
+    cache: Cache,
+    kind: PlaneType,
+    player: number,
+    side: Team
+  ) {
     super(id);
     this.width = planeData[kind].width;
     this.height = planeData[kind].height;
@@ -273,12 +280,16 @@ export class Plane extends GameObject {
 
     // Bomb counter
     this.isBombing = false;
-    if (kind in bomberPlanes) {
+    this.bombs = 0;
+
+    if (bomberPlanes.includes(kind)) {
       const maxBombs = 5;
-      this.bombs = maxBombs;
+      this.setBombs(cache, maxBombs);
       this.bombThreshold = 300;
       this.lastBomb = this.bombThreshold;
     }
+
+    this.controlledBy = player;
 
     // set networked variables
     this.setData(cache, {
@@ -291,12 +302,8 @@ export class Plane extends GameObject {
       team: side,
       health: 255,
       fuel: 255,
-      ammo: Math.round((this.ammoCount / maxAmmo) * 255),
-      bombs: 0
+      ammo: Math.round((this.ammoCount / maxAmmo) * 255)
     });
-    if (bomberPlanes.includes(this.planeType)) {
-      this.set(cache, "bombs", 5);
-    }
   }
 
   // advance the plane simulation
@@ -334,6 +341,10 @@ export class Plane extends GameObject {
     infoHUD.inclination = getInclination(this.direction);
     infoHUD.altitude = this.y;
     infoHUD.speed = Math.round(this.speed / SCALE_FACTOR);
+  }
+
+  public setBombs(cache: Cache, numBombs: number): void {
+    this.set(cache, "bombs", numBombs);
   }
 
   public abandonPlane(cache: Cache): void {

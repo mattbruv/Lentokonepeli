@@ -10,14 +10,3 @@ export function processBullets(world: GameWorld, deltaTime: number): void {
     }
   });
 }
-
-export function processBombs(world: GameWorld, deltaTime: number): void {
-  world.bombs.forEach((bomb): void => {
-    bomb.tick(world.cache, deltaTime);
-    // if the bullet is too old, destroy it.
-    if (bomb.age > bulletGlobals.lifetime) {
-      world.removeObject(bomb);
-      return;
-    }
-  });
-}

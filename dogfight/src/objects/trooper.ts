@@ -34,6 +34,7 @@ export class Trooper extends GameObject {
   public state: TrooperState;
   public direction: TrooperDirection;
   public team: Team;
+  public ammo: number;
 
   public constructor(id: number, cache: Cache) {
     super(id);
@@ -42,6 +43,7 @@ export class Trooper extends GameObject {
     this.setData(cache, {
       x: 0,
       y: 0,
+      ammo: 255,
       dx: 0,
       dy: 0,
       health: 255,
@@ -106,6 +108,7 @@ export class Trooper extends GameObject {
       health: this.health,
       state: this.state,
       direction: this.direction,
+      ammo: this.ammo,
       team: this.team
     };
   }
