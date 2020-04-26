@@ -147,6 +147,6 @@ wss.on("connection", (ws): void => {
   });
 });
 
-server.listen(PORT, (): void => {
-  console.log("Server started on port", PORT);
+server.listen(process.env.PORT || PORT, (): void => {
+  console.log("Server started!");
 });
