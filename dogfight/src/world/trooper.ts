@@ -7,20 +7,15 @@ import { Bullet, bulletGlobals } from "../objects/bullet";
 import { SCALE_FACTOR, ROTATION_DIRECTIONS, Team } from "../constants";
 import { magnitude, distance, getAngle } from "../physics/vector";
 
-function getTarget(
-  world: GameWorld,
-  trooper: Trooper,
-  radius: number,
-  team: Team
-): any {
+function getTarget(world: GameWorld, trooper: Trooper, radius: number): any {
   const runways = world.runways.filter((runway): boolean => {
-    return runway.team != team;
+    return runway.team != trooper.team;
   });
   const troopers = world.troopers.filter((trooper): boolean => {
-    return trooper.team != team;
+    return trooper.team != trooper.team;
   });
   const planes = world.planes.filter((plane): boolean => {
-    return plane.team != team;
+    return plane.team != trooper.team;
   });
   const targetables = [].concat(runways, troopers, planes);
   let chosenTarget: GameObject;
@@ -62,12 +57,7 @@ export function processTroopers(world: GameWorld, deltaTime: number): void {
         // set bullet speed/direction relative to trooper.
         const w0 = ROTATION_DIRECTIONS / 2;
         let shotAngle: number;
-        const target = getTarget(
-          world,
-          trooper,
-          trooperGlobals.targetRadius,
-          trooper.team
-        );
+        const target = getTarget(world, trooper, trooperGlobals.targetRadius);
         if (target != null) {
           shotAngle = getAngle({
             x: target.x - trooper.x,
