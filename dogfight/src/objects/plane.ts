@@ -352,6 +352,7 @@ export class Plane extends GameObject {
     this.setEngine(cache, false);
     this.rotateStatus = PlaneRotationStatus.None;
     this.isShooting = false;
+    this.isBombing = false;
   }
 
   private move(cache: Cache, deltaTime: number): void {
