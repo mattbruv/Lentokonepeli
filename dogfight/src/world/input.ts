@@ -5,6 +5,8 @@ import { Plane } from "../objects/plane";
 import { KeyChangeList, InputKey } from "../input";
 import { destroyPlane } from "./plane";
 import { Trooper, trooperGlobals, TrooperState } from "../objects/trooper";
+import { SCALE_FACTOR } from "../constants";
+import { destroyTrooper } from "./trooper";
 
 export function planeInput(
   world: GameWorld,
@@ -41,7 +43,11 @@ export function planeInput(
           );
           trooper.setPos(world.cache, plane.x, plane.y);
           trooper.set(world.cache, "team", player.team);
-          trooper.setVelocity(world.cache, plane.v.x, plane.v.y);
+          trooper.setVelocity(
+            world.cache,
+            plane.v.x,
+            plane.v.y + 200 * SCALE_FACTOR
+          );
           world.addObject(trooper);
           player.setControl(world.cache, GameObjectType.Trooper, trooper.id);
           plane.abandonPlane(world.cache);
@@ -77,13 +83,27 @@ export function trooperInput(
     const key: InputKey = parseInt(keyType);
     const isPressed = changes[keyType];
     switch (key) {
-      case InputKey.Jump: {
-        if (trooper.state == TrooperState.Falling) {
-          trooper.setState(world.cache, TrooperState.Parachuting);
-        }
+      case InputKey.Left:
+      case InputKey.Right: {
         break;
       }
+      case InputKey.Jump: {
+        if (isPressed) {
+          if (trooper.state == TrooperState.Falling) {
+            trooper.setState(world.cache, TrooperState.Parachuting);
+          } else {
+            destroyTrooper(world, trooper, true);
+          }
+          break;
+        }
+      }
     }
+    if (player.inputState[InputKey.Left] && !player.inputState[InputKey.Right])
+      trooper.setDirection(world.cache, InputKey.Left, true);
+    if (!player.inputState[InputKey.Left] && player.inputState[InputKey.Right])
+      trooper.setDirection(world.cache, InputKey.Right, true);
+    if (player.inputState[InputKey.Left] == player.inputState[InputKey.Right])
+      trooper.setDirection(world.cache, InputKey.Right, false);
   }
 }
 

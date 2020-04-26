@@ -43,12 +43,14 @@ export function processPlanes(world: GameWorld, deltaTime: number): void {
             Math.round((plane.ammoCount / plane.maxAmmo) * 255)
           );
 
-          const bulletx = plane.x + (plane.width * vx) / 2.1;
-          const bullety = plane.y + (plane.width * vy) / 2.1;
+          const bulletx = plane.x + (plane.width * vx) / 2;
+          const bullety = plane.y + (plane.width * vy) / 2;
           bullet.setPos(world.cache, bulletx, bullety);
           world.addObject(bullet);
         }
       }
+    } else if (plane.lastShot < plane.shotThreshold) {
+      plane.lastShot += deltaTime;
     }
 
     // add time elapsed to our bomb timer
