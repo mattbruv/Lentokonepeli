@@ -40,6 +40,10 @@ export class GameClient {
 
   public gameObjects: {};
 
+  // strictly for vue, needs to know when
+  // objects are updated.
+  public playersUpdated: number = 0;
+
   public playerInfo = {
     id: undefined,
     team: undefined,
@@ -268,6 +272,9 @@ export class GameClient {
       let value = data[key];
       object[key] = value;
     }
+    if (type == GameObjectType.Player) {
+      this.playersUpdated = Date.now();
+    }
     // this.gameObjects[type].updated = Date.now();
 
     this.renderer.updateSprite(type, id, data);
@@ -344,6 +351,9 @@ export class GameClient {
       this.renderer.playerInfo.deletePlayer(parseInt(id));
     }
     delete this.gameObjects[type][id];
+    if (type == GameObjectType.Player) {
+      this.playersUpdated = Date.now();
+    }
     // this.gameObjects[type].updated = Date.now();
     this.renderer.deleteSprite(type, id);
     this.renderer.HUD.radar.refreshRadar(this.gameObjects);

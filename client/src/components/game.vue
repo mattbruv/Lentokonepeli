@@ -1,6 +1,9 @@
 <template>
   <div id="game">
-    <div id="game-canvas"></div>
+    <div id="game-view">
+      <Players></Players>
+      <div id="game-canvas"></div>
+    </div>
     <Debug v-if="isLoaded && viewDebug"></Debug>
   </div>
 </template>
@@ -8,9 +11,11 @@
 <script lang="ts">
 import Vue from "vue";
 import Debug from "./debug/debug.vue";
+import Players from "./players.vue";
 
 export default Vue.extend({
   components: {
+    Players,
     Debug
   },
   computed: {
@@ -25,6 +30,10 @@ export default Vue.extend({
 </script>
 
 <style>
+#game-view {
+  position: relative;
+}
+
 #game {
   margin: 50px;
   display: flex;
