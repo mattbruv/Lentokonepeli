@@ -11,16 +11,15 @@
         <tr
           v-for="player in players"
           v-bind:key="player.id"
-          :class="player.team == myTeam ? 'my-team': 'enemy-team'"
+          :class="[teamClass(myTeam, player.team), myID == player.id ? 'my-player' : '']"
         >
-          {{ player }}
           <!--<td>{{ side(player.team) }}</td>-->
           <td>
             <img :src="getFlag(player.team)" />
           </td>
           <td
             :class="isAlive(player.status) ? 'player-alive' : 'player-dead'"
-            :title="'Player ID #' + id"
+            :title="'Player ID #' + player.id"
           >{{ player.name }}</td>
         </tr>
       </tbody>
@@ -53,6 +52,9 @@ export default Vue.extend({
     },
     myTeam() {
       return this.$store.state.client.playerInfo.team;
+    },
+    myID() {
+      return this.$store.state.client.playerInfo.id;
     }
   },
   methods: {
@@ -61,6 +63,17 @@ export default Vue.extend({
     },
     isAlive(status: PlayerStatus) {
       return status == PlayerStatus.Playing ? true : false;
+    },
+    teamClass(me: Team, them: Team): string {
+      console.log(me, them);
+
+      if (me == undefined) {
+        return "";
+      }
+      if (them == me) {
+        return "my-team";
+      }
+      return "enemy-team";
     }
   },
   watch: {
@@ -75,8 +88,9 @@ export default Vue.extend({
         playerArray.push(player);
       }
       playerArray.sort((p1, p2) => {
-        return p2.id;
+        return p1.team - p2.team;
       });
+      console.log(playerArray);
       this.players = playerArray;
     }
   }
@@ -96,17 +110,21 @@ export default Vue.extend({
   color: #0000ff;
 }
 
+.my-player {
+  font-weight: bold;
+}
+
 .enemy-team {
   background-color: #ffb574;
   color: #ff0000;
 }
 
 .player-alive {
-  font-weight: bold;
 }
 
 .player-dead {
-  /*text-decoration: line-through;*/
+  text-decoration: line-through;
+  /*font-style: italic;*/
 }
 
 #players table {
