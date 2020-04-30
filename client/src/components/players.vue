@@ -9,10 +9,11 @@
       </thead>
       <tbody>
         <tr
-          v-for="(player, id) in players"
-          v-bind:key="id"
+          v-for="player in players"
+          v-bind:key="player.id"
           :class="player.team == myTeam ? 'my-team': 'enemy-team'"
         >
+          {{ player }}
           <!--<td>{{ side(player.team) }}</td>-->
           <td>
             <img :src="getFlag(player.team)" />
@@ -40,7 +41,7 @@ const flags = {
 export default Vue.extend({
   data() {
     return {
-      players: {}
+      players: []
     };
   },
   computed: {
@@ -64,9 +65,19 @@ export default Vue.extend({
   },
   watch: {
     updated() {
-      this.players = this.$store.state.client.gameObjects[
+      const players = this.$store.state.client.gameObjects[
         GameObjectType.Player
       ];
+      const playerArray = [];
+      for (const p in players) {
+        const player = players[p];
+        player.id = parseInt(p);
+        playerArray.push(player);
+      }
+      playerArray.sort((p1, p2) => {
+        return p2.id;
+      });
+      this.players = playerArray;
     }
   }
 });
