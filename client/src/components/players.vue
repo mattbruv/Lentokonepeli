@@ -1,5 +1,5 @@
 <template>
-  <div v-if="showPlayers" id="players">
+  <div v-show="showPlayers" id="players">
     <table>
       <thead>
         <tr>
@@ -105,9 +105,20 @@ export default Vue.extend({
   background: rgba(85, 85, 85, 0.8);
 }
 
+/*
+@keyframes slide {
+  0% {
+    height: 0px;
+  }
+  100% {
+    height: 100%;
+  }
+}*/
+
 .my-team {
   background-color: #8ecbff;
   color: #0000ff;
+  border: 1px solid #0000ff;
 }
 
 .my-player {
@@ -116,6 +127,7 @@ export default Vue.extend({
 
 .enemy-team {
   background-color: #ffb574;
+  border: 1px solid #ff0000;
   color: #ff0000;
 }
 

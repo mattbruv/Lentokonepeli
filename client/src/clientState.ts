@@ -1,3 +1,3 @@
 export const ClientState = {
-  showPlayers: true
+  showPlayers: false
 };
