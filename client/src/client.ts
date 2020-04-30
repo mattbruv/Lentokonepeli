@@ -24,7 +24,7 @@ export class GameClient {
 
   private network: NetworkHandler;
 
-  private input: InputHandler;
+  public input: InputHandler;
   private canvasHandler: CanvasEventHandler;
 
   public loadedGame: boolean = false;

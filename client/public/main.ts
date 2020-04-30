@@ -9,6 +9,7 @@ import { Localizer } from "../src/localization/localizer";
 import { bulletGlobals } from "../../dogfight/src/objects/bullet";
 import { bombGlobals } from "../../dogfight/src/objects/bomb";
 import { trooperGlobals } from "../../dogfight/src/objects/trooper";
+import { ClientState } from "../src/clientState";
 
 Vue.config.productionTip = false;
 Vue.use(Vuex);
@@ -19,6 +20,7 @@ function init(): void {
   const store = new Vuex.Store({
     state: {
       client: client,
+      clientState: ClientState,
       planeInfo: planeData,
       bulletInfo: bulletGlobals,
       bombInfo: bombGlobals,

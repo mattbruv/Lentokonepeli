@@ -1,5 +1,5 @@
 <template>
-  <div id="players">
+  <div v-if="showPlayers" id="players">
     <table>
       <thead>
         <tr>
@@ -8,9 +8,19 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(player, id) in players" v-bind:key="id">
-          <td>{{ side(player.team) }}</td>
-          <td>{{ player.name }}</td>
+        <tr
+          v-for="(player, id) in players"
+          v-bind:key="id"
+          :class="player.team == myTeam ? 'my-team': 'enemy-team'"
+        >
+          <!--<td>{{ side(player.team) }}</td>-->
+          <td>
+            <img :src="getFlag(player.team)" />
+          </td>
+          <td
+            :class="isAlive(player.status) ? 'player-alive' : 'player-dead'"
+            :title="'Player ID #' + id"
+          >{{ player.name }}</td>
         </tr>
       </tbody>
     </table>
@@ -22,6 +32,11 @@
 import Vue from "vue";
 import { GameObjectType } from "../../../dogfight/src/object";
 import { Team } from "../../../dogfight/src/constants";
+import { PlayerStatus, Player } from "../../../dogfight/src/objects/player";
+const flags = {
+  [Team.Centrals]: "germanflag_small.gif",
+  [Team.Allies]: "raf_flag_small.gif"
+};
 export default Vue.extend({
   data() {
     return {
@@ -29,13 +44,22 @@ export default Vue.extend({
     };
   },
   computed: {
+    showPlayers() {
+      return this.$store.state.clientState.showPlayers;
+    },
     updated() {
       return this.$store.state.client.playersUpdated;
+    },
+    myTeam() {
+      return this.$store.state.client.playerInfo.team;
     }
   },
   methods: {
-    side(team: number) {
-      return Team[team];
+    getFlag(team: number) {
+      return "assets/images/" + flags[team];
+    },
+    isAlive(status: PlayerStatus) {
+      return status == PlayerStatus.Playing ? true : false;
     }
   },
   watch: {
@@ -53,16 +77,39 @@ export default Vue.extend({
   position: absolute;
   width: 100%;
   height: 100%;
-  background: rgba(85, 85, 85, 0.9);
+  background: rgba(85, 85, 85, 0.8);
+}
+
+.my-team {
+  background-color: #8ecbff;
+  color: #0000ff;
+}
+
+.enemy-team {
+  background-color: #ffb574;
+  color: #ff0000;
+}
+
+.player-alive {
+  font-weight: bold;
+}
+
+.player-dead {
+  /*text-decoration: line-through;*/
 }
 
 #players table {
   width: 100%;
   background-color: white;
+  border-collapse: collapse;
 }
 
 #players table thead {
   color: white;
   background-color: black;
+}
+
+#players table td {
+  text-align: center;
 }
 </style>

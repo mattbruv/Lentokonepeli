@@ -1,4 +1,5 @@
 import { InputChange, PlayerInput, InputKey } from "../../dogfight/src/input";
+import { ClientState } from "./clientState";
 
 const keyMap = {
   Space: InputKey.Jump,
@@ -51,6 +52,10 @@ export class InputHandler {
         this.processGameKeyChange({ key, isPressed: true });
       }
     }
+    if (event.key == "Tab") {
+      ClientState.showPlayers = true;
+      event.preventDefault();
+    }
     // eventually do something with client keys here,
     // things like typing a chat, etc.
   }
@@ -63,6 +68,10 @@ export class InputHandler {
         this.playerInputState[key] = false;
         this.processGameKeyChange({ key, isPressed: false });
       }
+    }
+    if (event.key == "Tab") {
+      ClientState.showPlayers = false;
+      event.preventDefault();
     }
   }
 
