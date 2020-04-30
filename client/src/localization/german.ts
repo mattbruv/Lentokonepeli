@@ -6,6 +6,10 @@ export const German: Translation = {
   settings: "Einstellungen",
   showDebug: "Debug-Menü anzeigen",
 
+  name: "Name",
+  team: "Mannschaft",
+  updateName: "Name aktualisieren",
+
   gameName: "Dogfight",
   teamChooserTitle: "Wählen Sie Ihr Team:",
   teamChooserDescription: `Mittelmächte oder Verbündete.

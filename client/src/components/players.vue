@@ -3,8 +3,8 @@
     <table>
       <thead>
         <tr>
-          <th>Team</th>
-          <th>Name</th>
+          <th>{{ lang.team }}</th>
+          <th>{{ lang.name }}</th>
         </tr>
       </thead>
       <tbody>
@@ -33,6 +33,7 @@ import Vue from "vue";
 import { GameObjectType } from "../../../dogfight/src/object";
 import { Team } from "../../../dogfight/src/constants";
 import { PlayerStatus, Player } from "../../../dogfight/src/objects/player";
+import { Localizer } from "../localization/localizer";
 const flags = {
   [Team.Centrals]: "germanflag_small.gif",
   [Team.Allies]: "raf_flag_small.gif"
@@ -44,6 +45,12 @@ export default Vue.extend({
     };
   },
   computed: {
+    lang() {
+      return {
+        name: Localizer.get("name"),
+        team: Localizer.get("team")
+      };
+    },
     showPlayers() {
       return this.$store.state.clientState.showPlayers;
     },
@@ -65,8 +72,6 @@ export default Vue.extend({
       return status == PlayerStatus.Playing ? true : false;
     },
     teamClass(me: Team, them: Team): string {
-      console.log(me, them);
-
       if (me == undefined) {
         return "";
       }
@@ -90,7 +95,6 @@ export default Vue.extend({
       playerArray.sort((p1, p2) => {
         return p1.team - p2.team;
       });
-      console.log(playerArray);
       this.players = playerArray;
     }
   }

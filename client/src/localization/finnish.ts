@@ -11,6 +11,10 @@ export const Finnish: Translation = {
   settings: "Asetukset",
   showDebug: "Näytä vianetsintävalikko",
 
+  name: "Nimi",
+  team: "Tiimi",
+  updateName: "Päivitä nimi",
+
   gameName: "Lentokonepeli",
   teamChooserTitle: "Valitse kumpien puolella lennät:",
   teamChooserDescription: `keskusvaltojen vai ympärysvaltojen

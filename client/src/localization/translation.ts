@@ -6,6 +6,10 @@ export interface Translation {
   settings: string;
   showDebug: string;
 
+  team: string;
+  name: string;
+  updateName: string;
+
   /*** GAME ***/
 
   gameName: string;

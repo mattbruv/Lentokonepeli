@@ -1,13 +1,13 @@
 <template>
   <div id="name-settings" v-if="info.id !== undefined">
-    <h3>Name</h3>
+    <h3>{{ lang.name }}</h3>
     <div>
       <p>{{ info.name }}</p>
       <div id="username">
         <div class="char-count">{{ clientName.length }}/{{ max }}</div>
         <input :class="isValid() ? '' : 'bad-name'" v-model.trim="clientName" />
         <div>
-          <button :disabled="!isValid()" @click="submitName">Update Name</button>
+          <button :disabled="!isValid()" @click="submitName">{{ lang.updateName }}</button>
         </div>
       </div>
     </div>
@@ -21,6 +21,7 @@ import {
   isNameValid,
   NAME_LENGTH_MAX
 } from "../../../../dogfight/src/validation";
+import { Localizer } from "../../localization/localizer";
 export default Vue.extend({
   data: () => {
     return {
@@ -29,6 +30,12 @@ export default Vue.extend({
     };
   },
   computed: {
+    lang() {
+      return {
+        updateName: Localizer.get("updateName"),
+        name: Localizer.get("name")
+      };
+    },
     info() {
       return this.$store.state.client.playerInfo;
     }
