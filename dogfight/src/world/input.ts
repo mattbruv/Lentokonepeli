@@ -13,6 +13,9 @@ export function planeInput(
   changes: KeyChangeList
 ): void {
   for (const keyType in changes) {
+    if (plane.isAbandoned) {
+      return;
+    }
     const key: InputKey = parseInt(keyType);
     const isPressed = changes[keyType];
     switch (key) {
@@ -58,9 +61,6 @@ export function planeInput(
         break;
       }
     }
-  }
-  if (plane.isAbandoned) {
-    return;
   }
   if (player.inputState[InputKey.Left] && !player.inputState[InputKey.Right])
     plane.setRotation(world.cache, InputKey.Left, true);

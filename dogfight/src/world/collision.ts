@@ -117,7 +117,7 @@ export function processCollision(world: GameWorld): void {
       );
       if (isPointRectCollision(point, planeRect)) {
         destroyPlane(world, plane, true);
-        world.createExplosion(bomb.x, bomb.y, bomb.droppedBy, bomb.team);
+        // world.createExplosion(bomb.x, bomb.y, bomb.droppedBy, bomb.team);
         world.removeObject(bomb);
         return;
       }
