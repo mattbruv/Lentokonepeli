@@ -67,7 +67,12 @@ export function processPlanes(world: GameWorld, deltaTime: number): void {
           plane.lastBomb = mod(plane.lastBomb, plane.bombThreshold);
           plane.setBombs(world.cache, plane.bombs - 1);
 
-          const bomb = new Bomb(world.nextID(GameObjectType.Bomb), world.cache);
+          const bomb = new Bomb(
+            world.nextID(GameObjectType.Bomb),
+            world.cache,
+            plane.controlledBy,
+            plane.team
+          );
 
           // set bomb speed/direction relative to plane.
           bomb.setVelocity(world.cache, plane.v.x, plane.v.y);

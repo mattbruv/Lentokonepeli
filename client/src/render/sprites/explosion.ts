@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
-import { EXPLOSION_TIME } from "../../../../dogfight/src/objects/explosion";
+import { explosionGlobals } from "../../../../dogfight/src/objects/explosion";
 
 export class ExplosionSprite extends GameSprite {
   public x: number;
@@ -13,6 +13,7 @@ export class ExplosionSprite extends GameSprite {
   private phase: number;
   private timeout: number;
   private animating: boolean = false;
+  private debug: PIXI.Graphics;
 
   public constructor(spritesheet: PIXI.Spritesheet) {
     super();
@@ -26,6 +27,9 @@ export class ExplosionSprite extends GameSprite {
     const tex = this.getTextureString();
     const texture = spritesheet.textures[tex];
 
+    this.debug = new PIXI.Graphics();
+    this.debug.zIndex = DrawLayer.Explosion;
+
     this.explosion = new PIXI.Sprite(texture);
     this.explosion.anchor.set(0.5);
 
@@ -34,6 +38,15 @@ export class ExplosionSprite extends GameSprite {
 
     this.container.addChild(this.explosion);
     this.renderables.push(this.container);
+    this.renderablesDebug.push(this.debug);
+  }
+
+  private drawDebug(): void {
+    this.debug.clear();
+    this.debug.lineStyle(1);
+    this.debug.beginFill(0xffa500, 0.5);
+    this.debug.drawCircle(this.x, this.y, explosionGlobals.radius);
+    this.debug.endFill();
   }
 
   private nextFrame(): void {
@@ -48,7 +61,7 @@ export class ExplosionSprite extends GameSprite {
     }
     this.timeout = window.setTimeout((): void => {
       this.nextFrame();
-    }, EXPLOSION_TIME / 8);
+    }, explosionGlobals.duration / 8);
   }
 
   private getTextureString(): string {
@@ -57,6 +70,7 @@ export class ExplosionSprite extends GameSprite {
 
   public redraw(): void {
     this.explosion.position.set(this.x, this.y);
+    this.drawDebug();
     if (!this.animating) {
       this.animating = true;
       this.nextFrame();

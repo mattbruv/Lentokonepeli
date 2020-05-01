@@ -2,8 +2,11 @@ import { GameObject, GameObjectType } from "../object";
 import { Cache, CacheEntry } from "../network/cache";
 import { Team } from "../constants";
 
-// Maximum explosion time.
-export const EXPLOSION_TIME = 560;
+export const explosionGlobals = {
+  duration: 500, // damage duration in milliseconds
+  despawnTime: 1000, // time before explosion entity despawns.
+  radius: 45 // explosion radius
+};
 
 export class Explosion extends GameObject {
   public type = GameObjectType.Explosion;

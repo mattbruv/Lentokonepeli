@@ -1,7 +1,8 @@
 import { RectangleBody } from "../physics/rectangle";
 import {
   isRectangleCollision,
-  isPointRectCollision
+  isPointRectCollision,
+  isCircleRectCollision
 } from "../physics/collision";
 import { GameWorld } from "./world";
 import { destroyPlane } from "./plane";
@@ -16,6 +17,8 @@ import { getWaterRect } from "../objects/water";
 import { Vec2d } from "../physics/vector";
 import { destroyTrooper } from "./trooper";
 import { SCALE_FACTOR } from "../constants";
+import { CircleBody } from "../physics/circle";
+import { explosionGlobals } from "../objects/explosion";
 
 export function processCollision(world: GameWorld): void {
   // get ground hitboxes
@@ -70,15 +73,63 @@ export function processCollision(world: GameWorld): void {
     for (const water of waters) {
       if (isPointRectCollision(point, water)) {
         world.removeObject(bomb);
+        return;
       }
     }
     for (const ground of grounds) {
       if (isPointRectCollision(point, ground)) {
         world.createExplosion(bomb.x, bomb.y, bomb.droppedBy, bomb.team);
         world.removeObject(bomb);
+        return;
+      }
+    }
+
+    for (const plane of world.planes) {
+      if (bomb.team == plane.team) {
+        continue;
+      }
+      const planeRect = getPlaneRect(
+        plane.x,
+        plane.y,
+        plane.direction,
+        plane.planeType
+      );
+      if (isPointRectCollision(point, planeRect)) {
+        destroyPlane(world, plane, true);
+        world.createExplosion(bomb.x, bomb.y, bomb.droppedBy, bomb.team);
+        world.removeObject(bomb);
+        return;
+      }
+    }
+
+    for (const trooper of world.troopers) {
+      if (bomb.team == trooper.team) {
+        continue;
+      }
+      const troopRect = getTrooperRect(trooper.x, trooper.y, trooper.state);
+      if (isPointRectCollision(point, troopRect)) {
+        destroyTrooper(world, trooper, false);
+        world.createExplosion(bomb.x, bomb.y, bomb.droppedBy, bomb.team);
+        world.removeObject(bomb);
+        return;
       }
     }
   });
+
+  // Explosion damage/collision
+  for (const explosion of world.explosions) {
+    const explosionCircle: CircleBody = {
+      center: { x: explosion.x, y: explosion.y },
+      radius: explosionGlobals.radius
+    };
+
+    for (const t of world.troopers) {
+      const tRect = getTrooperRect(t.x, t.y, t.state);
+      if (isCircleRectCollision(explosionCircle, tRect)) {
+        destroyTrooper(world, t, false);
+      }
+    }
+  }
 
   // see if planes collide with entities
   for (const plane of world.planes) {

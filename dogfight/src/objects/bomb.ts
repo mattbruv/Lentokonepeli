@@ -22,7 +22,7 @@ export class Bomb extends GameObject {
   public vy: number;
   public direction: number;
 
-  public constructor(id: number, cache: Cache) {
+  public constructor(id: number, cache: Cache, droppedBy: number, team: Team) {
     super(id);
     this.localX = 0;
     this.localY = 0;
@@ -30,7 +30,9 @@ export class Bomb extends GameObject {
       age: 0,
       x: 0,
       y: 0,
-      direction: 0
+      direction: 0,
+      droppedBy,
+      team
     });
   }
 
