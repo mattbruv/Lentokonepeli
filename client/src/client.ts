@@ -199,19 +199,18 @@ export class GameClient {
       if (this.loadedGame == false) {
         this.loadedGame = true;
         this.setMode(ClientMode.SelectTeam);
+        window.setInterval((): void => {
+          this.network.send({
+            type: PacketType.Ping,
+            data: {
+              time: Date.now()
+            }
+          });
+        }, 5000);
       }
     }
     if (type == PacketType.ChangeSync) {
       this.processCache(data);
-    }
-    if (type == PacketType.Ping) {
-      const time = Date.now();
-      this.network.send({
-        type: PacketType.Ping,
-        data: {
-          time
-        }
-      });
     }
     if (type == PacketType.AssignPlayer) {
       console.log("Assigned as player", data.id, "team", Team[data.team]);

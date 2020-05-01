@@ -52,16 +52,7 @@ function loop(): void {
   lastTick = currentTick;
 }
 
-function ping(): void {
-  wss.clients.forEach((client): void => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(encodePacket({ type: PacketType.Ping }));
-    }
-  });
-}
-
 setInterval(loop, 1000 / 60);
-setInterval(ping, 1000 * 10);
 
 wss.on("connection", (ws): void => {
   console.log("New connection!");
@@ -78,7 +69,16 @@ wss.on("connection", (ws): void => {
         return;
       }
       const time = parseInt(packet.data.time);
-      const diff = Date.now() - time;
+      let diff = Date.now() - time;
+      if (diff < 0) {
+        diff = 0;
+      }
+      if (diff > 65535) {
+        diff = 65535;
+      }
+      if (time == NaN) {
+        diff = 42069;
+      }
       player.setPing(world.cache, diff);
     }
 
