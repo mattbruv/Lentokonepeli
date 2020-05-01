@@ -13,9 +13,6 @@ export function planeInput(
   changes: KeyChangeList
 ): void {
   for (const keyType in changes) {
-    if (plane.isAbandoned) {
-      return;
-    }
     const key: InputKey = parseInt(keyType);
     const isPressed = changes[keyType];
     switch (key) {
@@ -24,13 +21,13 @@ export function planeInput(
         break;
       }
       case InputKey.Up: {
-        if (isPressed) {
+        if (isPressed && !plane.isAbandoned) {
           plane.setFlipped(world.cache, !plane.flipped);
         }
         break;
       }
       case InputKey.Down: {
-        if (isPressed) {
+        if (isPressed && !plane.isAbandoned) {
           plane.setEngine(world.cache, !plane.engineOn);
         }
         break;
@@ -53,14 +50,21 @@ export function planeInput(
         break;
       }
       case InputKey.Fire: {
-        plane.isShooting = isPressed;
+        if (!plane.isAbandoned) {
+          plane.isShooting = isPressed;
+        }
         break;
       }
       case InputKey.Bomb: {
-        plane.isBombing = isPressed;
+        if (!plane.isAbandoned) {
+          plane.isBombing = isPressed;
+        }
         break;
       }
     }
+  }
+  if (plane.isAbandoned) {
+    return;
   }
   if (player.inputState[InputKey.Left] && !player.inputState[InputKey.Right])
     plane.setRotation(world.cache, InputKey.Left, true);
