@@ -14,6 +14,16 @@ export const trooperGlobals = {
   targetRadius: 300
 };
 
+export const TrooperHitboxNormal = {
+  width: 10,
+  height: 10
+};
+
+export const TrooperHitboxParachute = {
+  width: 20,
+  height: 32
+};
+
 export enum TrooperState {
   Parachuting,
   Falling,
@@ -154,13 +164,24 @@ export class Trooper extends GameObject {
   }
 }
 
-export function getTrooperRect(x: number, y: number): RectangleBody {
+export function getTrooperRect(
+  x: number,
+  y: number,
+  state: TrooperState
+): RectangleBody {
+  let hboxWidth = TrooperHitboxNormal.width;
+  let hboxHeight = TrooperHitboxNormal.height;
+  if (state == TrooperState.Parachuting) {
+    hboxWidth = TrooperHitboxParachute.width;
+    hboxHeight = TrooperHitboxParachute.height;
+  }
   return {
-    // width: Math.round(planeData[type].width * 0.8),
-    // height: Math.round(planeData[type].height * 0.8),
-    width: 1,
-    height: 1,
-    center: { x, y },
+    width: hboxWidth,
+    height: hboxHeight,
+    center: {
+      x,
+      y: y + Math.round(hboxHeight / 2)
+    },
     direction: 0
   };
 }

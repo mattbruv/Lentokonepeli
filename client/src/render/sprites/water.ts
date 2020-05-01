@@ -50,6 +50,7 @@ export class WaterSprite extends GameSprite {
 
     this.container = new PIXI.Container();
     this.container.zIndex = DrawLayer.Water;
+    this.debug.zIndex = DrawLayer.Water;
 
     this.container.addChild(this.water);
     this.container.addChild(this.waves);

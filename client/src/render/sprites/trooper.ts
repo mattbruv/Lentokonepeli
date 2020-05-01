@@ -3,7 +3,8 @@ import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
 import {
   TrooperState,
-  TrooperDirection
+  TrooperDirection,
+  getTrooperRect
 } from "../../../../dogfight/src/objects/trooper";
 import { Team } from "../../../../dogfight/src/constants";
 
@@ -25,6 +26,8 @@ export class TrooperSprite extends GameSprite {
   private interval: number;
   private walkIndex: number = 0;
 
+  private debug: PIXI.Graphics;
+
   public constructor(spritesheet: PIXI.Spritesheet) {
     super();
 
@@ -38,6 +41,7 @@ export class TrooperSprite extends GameSprite {
     this.spritesheet = spritesheet;
 
     this.container = new PIXI.Container();
+    this.debug = new PIXI.Graphics();
 
     const texture = spritesheet.textures[this.getTexture()];
     this.trooper = new PIXI.Sprite(texture);
@@ -48,8 +52,10 @@ export class TrooperSprite extends GameSprite {
 
     this.container.addChild(this.trooper);
     this.container.zIndex = DrawLayer.Trooper;
+    this.debug.zIndex = DrawLayer.Trooper;
 
     this.renderables.push(this.container);
+    this.renderablesDebug.push(this.debug);
 
     this.interval = window.setInterval((): void => {
       this.pimpWalk();
@@ -74,6 +80,20 @@ export class TrooperSprite extends GameSprite {
     }
   }
 
+  private drawDebug(): void {
+    const rect = getTrooperRect(this.x, this.y, this.state);
+    this.debug.clear();
+    this.debug.beginFill(0xff00ff);
+    const halfW = rect.width / 2;
+    const halfH = rect.height / 2;
+    this.debug.lineStyle(1, 0xff00ff);
+    this.debug.beginFill(0x000000, 0);
+    this.debug.drawRect(-halfW, -halfH, rect.width, rect.height);
+    this.debug.drawCircle(0, halfH, 1);
+    this.debug.position.set(this.x, this.y - halfH);
+    this.debug.endFill();
+  }
+
   public redraw(): void {
     // update texture state
     this.trooper.texture = this.spritesheet.textures[this.getTexture()];
@@ -86,7 +106,7 @@ export class TrooperSprite extends GameSprite {
     } else {
       this.trooper.scale.x = 1;
     }
-
+    this.drawDebug();
     this.container.position.set(this.x, this.y);
   }
 

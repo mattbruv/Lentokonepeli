@@ -104,7 +104,7 @@ export function processCollision(world: GameWorld): void {
       trooper.state == TrooperState.Standing ||
       trooper.state == TrooperState.Walking;
     let isDead = false;
-    const trooperRect = getTrooperRect(trooper.x, trooper.y);
+    const trooperRect = getTrooperRect(trooper.x, trooper.y, trooper.state);
     for (const ground of grounds) {
       if (isRectangleCollision(trooperRect, ground)) {
         const slowEnoughToLand =
@@ -125,7 +125,8 @@ export function processCollision(world: GameWorld): void {
     if (isDead) {
       continue;
     }
-    // process water collisions.
+
+    // process trooper/water collisions.
     for (const water of waters) {
       if (isRectangleCollision(trooperRect, water)) {
         destroyTrooper(world, trooper, false);
