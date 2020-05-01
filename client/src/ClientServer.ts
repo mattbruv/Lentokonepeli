@@ -7,6 +7,7 @@ import { requestTakeoff } from "../../dogfight/src/world/takeoff";
 import { loadMap } from "../../dogfight/src/world/map";
 import { MAP_CLASSIC_2 } from "../../dogfight/src/maps/classic2";
 import { isNameValid } from "../../dogfight/src/validation";
+import { ClientState, ConnectionState } from "./clientState";
 
 type messageCallback = (data: Packet) => void;
 
@@ -32,6 +33,7 @@ export class ClientServer {
     console.log("Local game server started!");
 
     this.serverMsg = callback;
+    ClientState.connection = ConnectionState.OPEN;
 
     this.world = new GameWorld();
     loadMap(this.world, MAP_CLASSIC_2);

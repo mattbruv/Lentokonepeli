@@ -11,6 +11,8 @@ export interface Translation {
   updateName: string;
   ping: string;
   pingDescription: string;
+  connecting: string;
+  connectionError: string;
 
   /*** GAME ***/
 

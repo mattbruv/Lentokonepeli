@@ -12,6 +12,9 @@ export const English: Translation = {
   ping: "Ping",
   pingDescription:
     "The time in milliseconds before your input arrives at the server.",
+  connecting: "Connecting to the game server...",
+  connectionError: `Connection to the game server has been closed.
+Please reload the webpage to connect again.`,
 
   gameName: "Dogfight",
   teamChooserTitle: "Choose your team:",

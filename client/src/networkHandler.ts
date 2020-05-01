@@ -2,6 +2,7 @@ import { PacketType, Packet } from "../../dogfight/src/network/types";
 import { encodePacket, decodePacket } from "../../dogfight/src/network/encode";
 import { ClientServer } from "./ClientServer";
 import { BuildType } from "../../dogfight/src/constants";
+import { ClientState, ConnectionState } from "./clientState";
 
 const wssPath = "ws://" + location.host;
 
@@ -35,8 +36,13 @@ export class NetworkHandler {
       this.ws.binaryType = "arraybuffer";
 
       this.ws.onopen = (): void => {
+        ClientState.connection = ConnectionState.OPEN;
         const syncRequest = { type: PacketType.RequestFullSync };
         this.send(syncRequest);
+      };
+
+      this.ws.onclose = (): void => {
+        ClientState.connection = ConnectionState.CLOSED;
       };
 
       this.ws.onmessage = (event): void => {
