@@ -19,6 +19,7 @@ import { destroyTrooper } from "./trooper";
 import { SCALE_FACTOR } from "../constants";
 import { CircleBody } from "../physics/circle";
 import { explosionGlobals } from "../objects/explosion";
+import { bulletGlobals } from "../objects/bullet";
 
 export function processCollision(world: GameWorld): void {
   // get ground hitboxes
@@ -44,11 +45,13 @@ export function processCollision(world: GameWorld): void {
     for (const water of waters) {
       if (isPointRectCollision(point, water)) {
         world.removeObject(bullet);
+        return;
       }
     }
     for (const ground of grounds) {
       if (isPointRectCollision(point, ground)) {
         world.removeObject(bullet);
+        return;
       }
     }
     for (const trooper of world.troopers) {
@@ -60,6 +63,24 @@ export function processCollision(world: GameWorld): void {
       if (isPointRectCollision(point, rect)) {
         world.removeObject(bullet);
         destroyTrooper(world, trooper, false);
+        return;
+      }
+    }
+    for (const plane of world.planes) {
+      // don't harm our own planes
+      if (bullet.team == plane.team) {
+        continue;
+      }
+      const rect = getPlaneRect(
+        plane.x,
+        plane.y,
+        plane.direction,
+        plane.planeType
+      );
+      if (isPointRectCollision(point, rect)) {
+        plane.damagePlane(world.cache, bulletGlobals.damage);
+        world.removeObject(bullet);
+        return;
       }
     }
   });

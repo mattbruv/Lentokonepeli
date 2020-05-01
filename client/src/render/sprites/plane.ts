@@ -37,6 +37,7 @@ const flipAnimation = [
 
 // How long smoke stays on the screen, in milliseconds.
 const SMOKE_DURATION = 200;
+const BLACK_SMOKE_DURATION = 300;
 
 export class PlaneSprite extends GameSprite {
   public x: number;
@@ -219,7 +220,21 @@ export class PlaneSprite extends GameSprite {
       // callback time based on how damaged plane is.
       const smoketex = this.spritesheet.textures["smoke2.gif"];
       const smoke = new PIXI.Sprite(smoketex);
-      smoke.position.set(this.x, this.y);
+
+      // direction = 0 -> 256   2^8
+      const radians = directionToRadians(this.direction);
+      const halfWidth = Math.round(this.plane.width / 2);
+      const offset = Math.round(halfWidth / 6);
+
+      const r = halfWidth + offset;
+      const theta = radians * -1;
+      const deltaX = r * Math.cos(theta);
+      const deltaY = r * Math.sin(theta);
+      const newX = this.x - deltaX;
+      const newY = this.y - deltaY;
+      smoke.position.set(newX, newY);
+      smoke.alpha = 0.9;
+
       this.darkSmoke.addChild(smoke);
 
       if (percentage <= 0.66) {
@@ -231,7 +246,7 @@ export class PlaneSprite extends GameSprite {
       // destroy it after a while
       window.setTimeout((): void => {
         this.darkSmoke.removeChild(smoke);
-      }, SMOKE_DURATION);
+      }, BLACK_SMOKE_DURATION);
     }
 
     this.darkSmokeTimeout = window.setTimeout((): void => {

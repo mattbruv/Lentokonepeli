@@ -61,6 +61,7 @@ interface PlaneInfo {
     height: number; // Plane height for collision
     flightTime: number; // seconds flying
     ammo: number;
+    health: number; // HP for this plane
     fireRate: number; // shots per minute
     thrust: number; // engine acceleration
     maxSpeed: number; // maximum horizontal speed
@@ -75,6 +76,7 @@ interface PlaneInfo {
 
 export const planeData: PlaneInfo = {
   [PlaneType.Albatros]: {
+    health: 125,
     width: 30,
     height: 16,
     flightTime: 80,
@@ -90,6 +92,7 @@ export const planeData: PlaneInfo = {
     freeDrag: 1.2
   },
   [PlaneType.Bristol]: {
+    health: 125,
     width: 36,
     height: 19,
     flightTime: 70,
@@ -105,6 +108,7 @@ export const planeData: PlaneInfo = {
     freeDrag: 1
   },
   [PlaneType.Fokker]: {
+    health: 125,
     width: 38,
     height: 20,
     flightTime: 90,
@@ -120,6 +124,7 @@ export const planeData: PlaneInfo = {
     freeDrag: 1.2
   },
   [PlaneType.Junkers]: {
+    health: 150,
     width: 42,
     height: 19,
     flightTime: 100,
@@ -135,6 +140,7 @@ export const planeData: PlaneInfo = {
     freeDrag: 1.2
   },
   [PlaneType.Salmson]: {
+    health: 100,
     width: 40,
     height: 15,
     flightTime: 60,
@@ -150,6 +156,7 @@ export const planeData: PlaneInfo = {
     freeDrag: 1.2
   },
   [PlaneType.Sopwith]: {
+    health: 125,
     width: 37,
     height: 20,
     flightTime: 80,
@@ -187,14 +194,19 @@ export class Plane extends GameObject {
   public planeType: PlaneType;
   public direction: number;
   public flipped: boolean;
-  public health: number;
   public fuel: number;
   private ammo: number;
   public ammoCount: number;
   public bombs: number;
   public engineOn: boolean;
 
+  // Internal health used in simulation
+  public currentHealth: number;
+  // Health to display to client.
+  private health: number;
+
   // ammo/bullets
+  public isAbandoned: boolean;
   public isShooting: boolean;
   public lastShot: number; // ms elapsed since last shot
   public maxAmmo: number; // total ammo alloted
@@ -291,6 +303,8 @@ export class Plane extends GameObject {
     }
 
     this.controlledBy = player;
+    this.currentHealth = planeData[kind].health;
+    this.isAbandoned = false;
 
     // set networked variables
     this.setData(cache, {
@@ -348,7 +362,18 @@ export class Plane extends GameObject {
     this.set(cache, "bombs", numBombs);
   }
 
+  public damagePlane(cache: Cache, damageAmount: number): void {
+    let newHP = this.currentHealth - damageAmount;
+    if (newHP < 0) {
+      newHP = 0;
+    }
+    this.currentHealth = newHP;
+    const maxHealth = planeData[this.planeType].health;
+    this.set(cache, "health", Math.round((newHP / maxHealth) * 255));
+  }
+
   public abandonPlane(cache: Cache): void {
+    this.isAbandoned = true;
     this.setEngine(cache, false);
     this.rotateStatus = PlaneRotationStatus.None;
     this.isShooting = false;

@@ -11,6 +11,11 @@ export function processPlanes(world: GameWorld, deltaTime: number): void {
   world.planes.forEach((plane): void => {
     plane.tick(world.cache, deltaTime);
 
+    // if below health, lose control
+    if (plane.currentHealth <= 0 && !plane.isAbandoned) {
+      plane.abandonPlane(world.cache);
+    }
+
     // Process machine gun
     if (plane.isShooting) {
       // add time elapsed to our shot timer

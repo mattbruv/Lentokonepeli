@@ -59,6 +59,9 @@ export function planeInput(
       }
     }
   }
+  if (plane.isAbandoned) {
+    return;
+  }
   if (player.inputState[InputKey.Left] && !player.inputState[InputKey.Right])
     plane.setRotation(world.cache, InputKey.Left, true);
   if (!player.inputState[InputKey.Left] && player.inputState[InputKey.Right])

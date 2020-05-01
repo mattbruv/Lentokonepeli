@@ -5,6 +5,7 @@ import { Vec2d } from "../physics/vector";
 
 export const bulletGlobals = {
   speed: 400,
+  damage: 25,
   lifetime: 2000 // milliseconds
 };
 
