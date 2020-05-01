@@ -25,7 +25,9 @@ export function processPlanes(world: GameWorld, deltaTime: number): void {
 
           const bullet = new Bullet(
             world.nextID(GameObjectType.Bullet),
-            world.cache
+            world.cache,
+            plane.id,
+            plane.team
           );
 
           // set bullet speed/direction relative to plane.

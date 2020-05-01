@@ -51,7 +51,9 @@ export function processTroopers(world: GameWorld, deltaTime: number): void {
 
         const bullet = new Bullet(
           world.nextID(GameObjectType.Bullet),
-          world.cache
+          world.cache,
+          trooper.id,
+          trooper.team
         );
 
         // set bullet speed/direction relative to trooper.

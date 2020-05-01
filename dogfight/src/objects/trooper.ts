@@ -5,7 +5,7 @@ import { InputKey } from "../input";
 import { RectangleBody } from "../physics/rectangle";
 
 export const trooperGlobals = {
-  gravity: 500,
+  gravity: 0,
   dragFall: 0.001,
   dragChute: 0.1,
   walkSpeed: 100,

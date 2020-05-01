@@ -31,7 +31,7 @@ export function processCollision(world: GameWorld): void {
     }
   );
 
-  // if bullets collide with ground (plane in future)
+  // if bullets collide with entities, damage them.
   world.bullets.forEach((bullet): void => {
     // test
     const point: Vec2d = {
@@ -46,6 +46,17 @@ export function processCollision(world: GameWorld): void {
     for (const ground of grounds) {
       if (isPointRectCollision(point, ground)) {
         world.removeObject(bullet);
+      }
+    }
+    for (const trooper of world.troopers) {
+      // don't kill our own teammates
+      if (bullet.team == trooper.team) {
+        continue;
+      }
+      const rect = getTrooperRect(trooper.x, trooper.y, trooper.state);
+      if (isPointRectCollision(point, rect)) {
+        world.removeObject(bullet);
+        destroyTrooper(world, trooper, false);
       }
     }
   });
@@ -69,7 +80,7 @@ export function processCollision(world: GameWorld): void {
     }
   });
 
-  // see if planes collide with water/ground
+  // see if planes collide with entities
   for (const plane of world.planes) {
     let isDead = false;
     const planeRect = getPlaneRect(
@@ -94,6 +105,18 @@ export function processCollision(world: GameWorld): void {
         destroyPlane(world, plane, false);
         isDead = true;
         break;
+      }
+    }
+
+    // trooper collisions
+    for (const trooper of world.troopers) {
+      // don't kill teammates
+      if (plane.team == trooper.team) {
+        continue;
+      }
+      const rect = getTrooperRect(trooper.x, trooper.y, trooper.state);
+      if (isRectangleCollision(planeRect, rect)) {
+        destroyTrooper(world, trooper, false);
       }
     }
   }

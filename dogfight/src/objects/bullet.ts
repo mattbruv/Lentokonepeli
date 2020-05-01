@@ -37,7 +37,7 @@ export class Bullet extends GameObject {
   public clientVX: number;
   public clientVY: number;
 
-  public constructor(id: number, cache: Cache) {
+  public constructor(id: number, cache: Cache, shotBy: number, team: Team) {
     super(id);
     this.localX = 0;
     this.localY = 0;
@@ -46,7 +46,9 @@ export class Bullet extends GameObject {
     this.clientVX = 0;
     this.clientVY = 0;
     this.setData(cache, {
-      age: 0
+      age: 0,
+      shotBy,
+      team
     });
   }
 
