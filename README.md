@@ -1,6 +1,8 @@
 # Lentokonepeli
 > Fly your planes to victory as you re-create the aerial battles of the First World War!
 
+![Gameplay Screenshot](./docs/images/remake/demo.png)
+
 This is a modern remake of the competitive 2D multiplayer airplane game [Lentokonepeli](https://www.youtube.com/watch?v=qCCCUXUwlT8)
 (*Literal translation: "airplane game", also known as Dogfight*).
 
