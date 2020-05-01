@@ -204,6 +204,15 @@ export class GameClient {
     if (type == PacketType.ChangeSync) {
       this.processCache(data);
     }
+    if (type == PacketType.Ping) {
+      const time = Date.now();
+      this.network.send({
+        type: PacketType.Ping,
+        data: {
+          time
+        }
+      });
+    }
     if (type == PacketType.AssignPlayer) {
       console.log("Assigned as player", data.id, "team", Team[data.team]);
       console.log(data);

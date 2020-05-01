@@ -53,6 +53,7 @@ const playerSchema: GameObjectSchema = {
     { name: "team", intType: IntType.Uint8 },
     { name: "controlType", intType: IntType.Uint8 },
     { name: "controlID", intType: IntType.Uint16 },
+    { name: "ping", intType: IntType.Uint16 },
     { name: "status", intType: IntType.Uint8 }
   ],
   booleans: [],

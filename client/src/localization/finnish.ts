@@ -14,6 +14,9 @@ export const Finnish: Translation = {
   name: "Nimi",
   team: "Tiimi",
   updateName: "Päivitä nimi",
+  ping: "Ping",
+  pingDescription:
+    "Aika millisekunnissa ennen syötteesi saapumista palvelimelle.",
 
   gameName: "Lentokonepeli",
   teamChooserTitle: "Valitse kumpien puolella lennät:",

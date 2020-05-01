@@ -9,6 +9,9 @@ export const German: Translation = {
   name: "Name",
   team: "Mannschaft",
   updateName: "Name aktualisieren",
+  ping: "Klingeln",
+  pingDescription:
+    "Die Zeit in Millisekunden, bevor Ihre Eingabe auf dem Server eintrifft.",
 
   gameName: "Dogfight",
   teamChooserTitle: "Wählen Sie Ihr Team:",

@@ -9,6 +9,8 @@ export interface Translation {
   team: string;
   name: string;
   updateName: string;
+  ping: string;
+  pingDescription: string;
 
   /*** GAME ***/
 

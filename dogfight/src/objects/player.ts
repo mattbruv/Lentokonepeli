@@ -16,6 +16,7 @@ export class Player extends GameObject {
   public controlType: GameObjectType;
   public controlID: number;
   public status: PlayerStatus;
+  public ping: number;
 
   public inputState: PlayerInput;
 
@@ -26,6 +27,7 @@ export class Player extends GameObject {
     this.controlID = 0;
     this.team = Team.Spectator;
     this.setStatus(cache, PlayerStatus.Takeoff);
+    this.setPing(cache, 0);
 
     // initialize player input to all false.
     this.inputState = {};
@@ -36,6 +38,10 @@ export class Player extends GameObject {
 
   public setName(cache: Cache, name: string): void {
     this.set(cache, "name", name);
+  }
+
+  public setPing(cache: Cache, ping: number): void {
+    this.set(cache, "ping", ping);
   }
 
   public setStatus(cache: Cache, status: PlayerStatus): void {
@@ -56,6 +62,7 @@ export class Player extends GameObject {
       type: this.type,
       name: this.name,
       team: this.team,
+      ping: this.ping,
       controlType: this.controlType,
       controlID: this.controlID,
       status: this.status

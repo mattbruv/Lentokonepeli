@@ -5,6 +5,7 @@
         <tr>
           <th>{{ lang.team }}</th>
           <th>{{ lang.name }}</th>
+          <th :title="lang.pingDesc">{{ lang.ping }}</th>
         </tr>
       </thead>
       <tbody>
@@ -21,6 +22,7 @@
             :class="isAlive(player.status) ? 'player-alive' : 'player-dead'"
             :title="'Player ID #' + player.id"
           >{{ player.name }}</td>
+          <td :style="{ backgroundColor: getPingColor(player.ping) }">{{ player.ping }}</td>
         </tr>
       </tbody>
     </table>
@@ -38,6 +40,13 @@ const flags = {
   [Team.Centrals]: "germanflag_small.gif",
   [Team.Allies]: "raf_flag_small.gif"
 };
+
+const pingMax = 500;
+
+function clamp(number, min, max): number {
+  return Math.round(Math.max(min, Math.min(number, max)));
+}
+
 export default Vue.extend({
   data() {
     return {
@@ -48,7 +57,9 @@ export default Vue.extend({
     lang() {
       return {
         name: Localizer.get("name"),
-        team: Localizer.get("team")
+        team: Localizer.get("team"),
+        ping: Localizer.get("ping"),
+        pingDesc: Localizer.get("pingDescription")
       };
     },
     showPlayers() {
@@ -65,6 +76,15 @@ export default Vue.extend({
     }
   },
   methods: {
+    getPingColor(ping: number): string {
+      console.log(ping);
+      const hueMax = 120;
+      const percentage = ping / pingMax;
+      const hue = clamp(hueMax - percentage * hueMax, 0, hueMax);
+      console.log(`hsl(${hue}, 100%, 50%)`);
+
+      return `hsl(${hue}, 100%, 50%)`;
+    },
     getFlag(team: number) {
       return "assets/images/" + flags[team];
     },

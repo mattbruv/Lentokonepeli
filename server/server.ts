@@ -52,7 +52,16 @@ function loop(): void {
   lastTick = currentTick;
 }
 
+function ping(): void {
+  wss.clients.forEach((client): void => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(encodePacket({ type: PacketType.Ping }));
+    }
+  });
+}
+
 setInterval(loop, 1000 / 60);
+setInterval(ping, 1000 * 10);
 
 wss.on("connection", (ws): void => {
   console.log("New connection!");
@@ -63,6 +72,15 @@ wss.on("connection", (ws): void => {
   ws.on("message", (message): void => {
     // parse into packet structure
     const packet = decodePacket(message as string | ArrayBuffer);
+
+    if (packet.type == PacketType.Ping) {
+      if (player == undefined) {
+        return;
+      }
+      const time = parseInt(packet.data.time);
+      const diff = Date.now() - time;
+      player.setPing(world.cache, diff);
+    }
 
     // process user input
     if (packet.type == PacketType.UserGameInput) {
