@@ -150,6 +150,23 @@ export function processCollision(world: GameWorld): void {
         destroyTrooper(world, t, false);
       }
     }
+
+    for (const plane of world.planes) {
+      // make sure this explosion hasn't harmed this plane before.
+      if (plane.explosionHits.includes(explosion.id)) {
+        break;
+      }
+      const pRect = getPlaneRect(
+        plane.x,
+        plane.y,
+        plane.direction,
+        plane.planeType
+      );
+      if (isCircleRectCollision(explosionCircle, pRect)) {
+        plane.damagePlane(world.cache, explosionGlobals.damage);
+        plane.explosionHits.push(explosion.id);
+      }
+    }
   }
 
   // see if planes collide with entities

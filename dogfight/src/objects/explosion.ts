@@ -5,6 +5,7 @@ import { Team } from "../constants";
 export const explosionGlobals = {
   duration: 500, // damage duration in milliseconds
   despawnTime: 1000, // time before explosion entity despawns.
+  damage: 50, // damage in HP from colliding with the explosion.
   radius: 45 // explosion radius
 };
 

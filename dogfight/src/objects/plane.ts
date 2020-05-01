@@ -205,6 +205,9 @@ export class Plane extends GameObject {
   // Health to display to client.
   private health: number;
 
+  // An array of explosion ID's that have already harmed this plane.
+  public explosionHits: number[] = [];
+
   // ammo/bullets
   public isAbandoned: boolean;
   public isShooting: boolean;
