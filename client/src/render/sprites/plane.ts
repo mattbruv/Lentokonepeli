@@ -6,6 +6,7 @@ import {
   getPlaneRect
 } from "../../../../dogfight/src/objects/plane";
 import { directionToRadians } from "../../../../dogfight/src/physics/helpers";
+import { Vec2d, setSize } from "../../../../dogfight/src/physics/vector";
 
 const planeImageIDs = {
   [PlaneType.Albatros]: 4,
@@ -189,19 +190,10 @@ export class PlaneSprite extends GameSprite {
     }
     const smoketex = this.spritesheet.textures["smoke1.gif"];
     const smoke = new PIXI.Sprite(smoketex);
+    const smokePos = this.getSmokePosition();
 
-    // direction = 0 -> 256   2^8
-    const radians = directionToRadians(this.direction);
-    const halfWidth = Math.round(this.plane.width / 2);
-    const offset = Math.round(halfWidth / 6);
-
-    const r = halfWidth + offset;
-    const theta = radians * -1;
-    const deltaX = r * Math.cos(theta);
-    const deltaY = r * Math.sin(theta);
-    const newX = this.x - deltaX;
-    const newY = this.y - deltaY;
-    smoke.position.set(newX, newY);
+    smoke.anchor.set(0.5, 0.5);
+    smoke.position.set(smokePos.x, smokePos.y);
 
     this.lightSmoke.addChild(smoke);
     setTimeout((): void => {
@@ -220,19 +212,10 @@ export class PlaneSprite extends GameSprite {
       // callback time based on how damaged plane is.
       const smoketex = this.spritesheet.textures["smoke2.gif"];
       const smoke = new PIXI.Sprite(smoketex);
+      const smokePos = this.getSmokePosition();
 
-      // direction = 0 -> 256   2^8
-      const radians = directionToRadians(this.direction);
-      const halfWidth = Math.round(this.plane.width / 2);
-      const offset = Math.round(halfWidth / 6);
-
-      const r = halfWidth + offset;
-      const theta = radians * -1;
-      const deltaX = r * Math.cos(theta);
-      const deltaY = r * Math.sin(theta);
-      const newX = this.x - deltaX;
-      const newY = this.y - deltaY;
-      smoke.position.set(newX, newY);
+      smoke.anchor.set(0.5, 0.5);
+      smoke.position.set(smokePos.x, smokePos.y);
       smoke.alpha = 0.9;
 
       this.darkSmoke.addChild(smoke);
@@ -252,6 +235,21 @@ export class PlaneSprite extends GameSprite {
     this.darkSmokeTimeout = window.setTimeout((): void => {
       this.createDarkSmoke();
     }, smokeFrequency);
+  }
+
+  private getSmokePosition(): Vec2d {
+    // direction = 0 -> 256   2^8
+    const radians = directionToRadians(this.direction);
+    const halfWidth = Math.round(this.plane.width / 2);
+    const offset = Math.round(halfWidth / 6);
+
+    const r = halfWidth + offset;
+    const theta = radians * -1;
+    const deltaX = r * Math.cos(theta);
+    const deltaY = r * Math.sin(theta);
+    const newX = this.x - deltaX;
+    const newY = this.y - deltaY;
+    return { x: newX, y: newY };
   }
 
   public destroy(): void {
