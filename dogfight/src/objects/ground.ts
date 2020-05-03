@@ -41,7 +41,7 @@ export function getGroundRect(
     height: 40,
     center: {
       x,
-      y: y - 30
+      y: y - 25
     },
     direction: 0
   };

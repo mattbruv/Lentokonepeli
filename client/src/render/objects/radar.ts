@@ -83,10 +83,6 @@ export class Radar {
     for (const id in grounds) {
       this.renderGround(grounds[id]);
     }
-    const runways = gameObjects[GameObjectType.Runway];
-    for (const id in runways) {
-      this.renderRunway(runways[id]);
-    }
     const troopers = gameObjects[GameObjectType.Trooper];
     for (const id in troopers) {
       this.renderObject(troopers[id]);
@@ -95,11 +91,15 @@ export class Radar {
     for (const id in planes) {
       this.renderObject(planes[id]);
     }
+    const runways = gameObjects[GameObjectType.Runway];
+    for (const id in runways) {
+      this.renderRunway(runways[id]);
+    }
   }
 
   private renderObject(obj: any): void {
-    const startX = Math.round((obj.x * RADAR_HEIGHT) / 1000) - 1;
-    const startY = Math.round((obj.y * -1 * RADAR_HEIGHT) / 1000) - 1;
+    let startX = Math.round((obj.x * RADAR_HEIGHT) / 1000) - 1;
+    let startY = Math.round((obj.y * -1 * RADAR_HEIGHT) / 1000) - 1;
     let color;
     if (this.myTeam == Team.Spectator || obj.team == Team.Spectator) {
       color = NEUTRAL_COLOR;
@@ -111,7 +111,7 @@ export class Radar {
       }
     }
     this.radarGraphics.beginFill(color);
-    this.radarGraphics.drawRect(startX, startY, 3, 3);
+    this.radarGraphics.drawRect(startX, startY - 1, 3, 3);
     this.radarGraphics.endFill();
   }
 
@@ -122,7 +122,7 @@ export class Radar {
     const startX = Math.round((runway.x * RADAR_HEIGHT) / 1000) - 1;
     const startY = Math.round((runway.y * -1 * RADAR_HEIGHT) / 1000) - 1;
     this.radarGraphics.beginFill(0xffffff);
-    this.radarGraphics.drawRect(startX, startY, 3, 3);
+    this.radarGraphics.drawRect(startX, startY + 1, 3, 3);
     this.radarGraphics.endFill();
   }
 
@@ -132,8 +132,8 @@ export class Radar {
     );
     const startY = Math.round((ground.y * -1 * RADAR_HEIGHT) / 1000);
     const rGroundWidth = Math.round((ground.width * RADAR_HEIGHT) / 1000);
-    this.radarGraphics.beginFill(0x0);
-    this.radarGraphics.drawRect(startX, startY, rGroundWidth, 2);
+    this.radarGraphics.beginFill(0x111111);
+    this.radarGraphics.drawRect(startX, startY + 1, rGroundWidth, 2);
     this.radarGraphics.endFill();
   }
 }
