@@ -139,6 +139,9 @@ export function processCollision(world: GameWorld): void {
 
   // Explosion damage/collision
   for (const explosion of world.explosions) {
+    if (explosion.age > explosionGlobals.duration) {
+      continue;
+    }
     const explosionCircle: CircleBody = {
       center: { x: explosion.x, y: explosion.y },
       radius: explosionGlobals.radius

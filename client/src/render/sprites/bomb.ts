@@ -1,7 +1,6 @@
 import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
-import { getAngle, Vec2d } from "../../../../dogfight/src/physics/vector";
 import { directionToRadians } from "../../../../dogfight/src/physics/helpers";
 
 export class BombSprite extends GameSprite {

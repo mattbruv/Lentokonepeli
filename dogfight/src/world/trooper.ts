@@ -4,7 +4,7 @@ import { GameObjectType, GameObject } from "../object";
 import { mod } from "../physics/helpers";
 import { Trooper, trooperGlobals, TrooperDirection } from "../objects/trooper";
 import { Bullet, bulletGlobals } from "../objects/bullet";
-import { SCALE_FACTOR, ROTATION_DIRECTIONS, Team } from "../constants";
+import { SCALE_FACTOR, ROTATION_DIRECTIONS } from "../constants";
 import { distance, getAngle } from "../physics/vector";
 
 function getTarget(world: GameWorld, trooper: Trooper, radius: number): any {

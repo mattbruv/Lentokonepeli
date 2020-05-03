@@ -3,6 +3,8 @@ import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
 import { explosionGlobals } from "../../../../dogfight/src/objects/explosion";
 
+const ANIMATION_DURATION = 500;
+
 export class ExplosionSprite extends GameSprite {
   public x: number;
   public y: number;
@@ -61,7 +63,7 @@ export class ExplosionSprite extends GameSprite {
     }
     this.timeout = window.setTimeout((): void => {
       this.nextFrame();
-    }, explosionGlobals.duration / 8);
+    }, ANIMATION_DURATION / 8);
   }
 
   private getTextureString(): string {
