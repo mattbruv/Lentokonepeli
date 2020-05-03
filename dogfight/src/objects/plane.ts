@@ -377,6 +377,7 @@ export class Plane extends GameObject {
 
   public abandonPlane(cache: Cache): void {
     this.isAbandoned = true;
+    this.damagePlane(cache, 99909);
     this.setEngine(cache, false);
     this.rotateStatus = PlaneRotationStatus.None;
     this.isShooting = false;
