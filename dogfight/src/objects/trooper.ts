@@ -11,7 +11,7 @@ export const trooperGlobals = {
   walkSpeed: 100,
   crashSurviveSpeed: 175,
   fireRate: 119,
-  targetRadius: 300
+  targetRadius: 500
 };
 
 export const TrooperHitboxNormal = {

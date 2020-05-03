@@ -430,7 +430,7 @@ export class Plane extends GameObject {
     // calculate velocity
     const absoluteMinSpeed = this.engineOn
       ? this.minSpeed / 1.5
-      : 1 * SCALE_FACTOR; // prevent plane from going slower than this
+      : 30 * SCALE_FACTOR; // prevent plane from going slower than this
     if (
       dot(this.a, this.v) * tstep >=
       (absoluteMinSpeed - this.speed) * this.speed
