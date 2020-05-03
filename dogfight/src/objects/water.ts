@@ -43,7 +43,7 @@ export function getWaterRect(
     height: 1000,
     center: {
       x,
-      y: y - 505
+      y: y - 510
     }
   };
 }
