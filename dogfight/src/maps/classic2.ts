@@ -42,7 +42,7 @@ export const MAP_CLASSIC_2: GameMap = {
       team: Team.Centrals
     },
     {
-      x: 2696,
+      x: 1696,
       y: 0,
       direction: FacingDirection.Left,
       team: Team.Allies
@@ -54,7 +54,7 @@ export const MAP_CLASSIC_2: GameMap = {
       team: Team.Allies
     },
     {
-      x: 1696,
+      x: 2696,
       y: 0,
       direction: FacingDirection.Left,
       team: Team.Allies

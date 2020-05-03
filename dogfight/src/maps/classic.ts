@@ -36,13 +36,13 @@ export const MAP_CLASSIC: GameMap = {
       team: Team.Centrals
     },
     {
-      x: 2096,
+      x: 1596,
       y: 0,
       direction: FacingDirection.Left,
       team: Team.Allies
     },
     {
-      x: 1596,
+      x: 2096,
       y: 0,
       direction: FacingDirection.Left,
       team: Team.Allies
