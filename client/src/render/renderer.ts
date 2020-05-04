@@ -24,6 +24,8 @@ import { ExplosionSprite } from "./sprites/explosion";
 import { BulletSprite } from "./sprites/bullet";
 import { BombSprite } from "./sprites/bomb";
 
+PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+
 /**
  * A class which renders the game world.
  * Uses PIXI.js for 2d Rendering.
