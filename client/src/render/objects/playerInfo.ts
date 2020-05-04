@@ -27,6 +27,7 @@ export class PlayerInfo {
   private createText(): PIXI.Text {
     const text = new PIXI.Text("", {
       fontSize: 10,
+      fontWeight: "bold",
       fill: TeamColor.SpectatorBackground
     });
     text.anchor.x = 0.5;
