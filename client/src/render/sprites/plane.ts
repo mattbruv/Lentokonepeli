@@ -190,7 +190,7 @@ export class PlaneSprite extends GameSprite {
     }
     const smoketex = this.spritesheet.textures["smoke1.gif"];
     const smoke = new PIXI.Sprite(smoketex);
-    const smokePos = this.getSmokePosition();
+    const smokePos = this.getSmokePosition(false);
 
     smoke.anchor.set(0.5, 0.5);
     smoke.position.set(smokePos.x, smokePos.y);
@@ -212,7 +212,7 @@ export class PlaneSprite extends GameSprite {
       // callback time based on how damaged plane is.
       const smoketex = this.spritesheet.textures["smoke2.gif"];
       const smoke = new PIXI.Sprite(smoketex);
-      const smokePos = this.getSmokePosition();
+      const smokePos = this.getSmokePosition(true);
 
       smoke.anchor.set(0.5, 0.5);
       smoke.position.set(smokePos.x, smokePos.y);
@@ -237,7 +237,7 @@ export class PlaneSprite extends GameSprite {
     }, smokeFrequency);
   }
 
-  private getSmokePosition(): Vec2d {
+  private getSmokePosition(center: boolean): Vec2d {
     // direction = 0 -> 256   2^8
     const radians = directionToRadians(this.direction);
     const halfWidth = Math.round(this.plane.width / 2);
@@ -247,8 +247,14 @@ export class PlaneSprite extends GameSprite {
     const theta = radians * -1;
     const deltaX = r * Math.cos(theta);
     const deltaY = r * Math.sin(theta);
-    const newX = this.x - deltaX;
-    const newY = this.y - deltaY;
+    let newX: number, newY: number;
+    if (center) {
+      newX = this.x;
+      newY = this.y;
+    } else {
+      newX = this.x - deltaX;
+      newY = this.y - deltaY;
+    }
     return { x: newX, y: newY };
   }
 
