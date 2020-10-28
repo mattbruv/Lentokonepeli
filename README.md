@@ -1,3 +1,8 @@
+# UPDATE 2020-10-28
+## WE HAVE THE ORIGINAL SOURCE CODE!
+Yes, you read that right. We have the original source code as of October 28th, 2020.
+Using the original source code as a reference, I plan to fully re-create the game in the coming months. Stay tuned! Join our discord to stay up to date.
+
 # Lentokonepeli
 > Fly your planes to victory as you re-create the aerial battles of the First World War!
 
