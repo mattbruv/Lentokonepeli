@@ -52,12 +52,15 @@ export class Bomb extends GameObject {
 
   public move(cache: Cache, deltaTime: number): void {
     // move the bomb...
-    return;
+    //console.log(this.x, this.y, this.xSpeed);
     const tstep = deltaTime / 1000;
+    const xDelta = tstep * 1; // 0.01 * 100 tps in original
+    const yDelta = tstep * 333; // 3.33 * 100 tps in original
+
     this.localX += this.xSpeed;
     this.localY += this.ySpeed;
-    this.xSpeed -= this.xSpeed * 0.01;
-    this.ySpeed += 3.3333333333333335;
+    this.xSpeed -= this.xSpeed * xDelta;
+    this.ySpeed -= yDelta;
     this.radians = Math.atan2(this.ySpeed, this.xSpeed);
 
     this.setData(cache, {
@@ -67,9 +70,11 @@ export class Bomb extends GameObject {
     });
   }
 
-  public setSpeed(cache: Cache, speed: number): void {
-    this.xSpeed = Math.cos(this.radians) * speed * SCALE_FACTOR;
-    this.ySpeed = Math.sin(this.radians) * speed * SCALE_FACTOR;
+  public setSpeed(cache: Cache, scaledSpeed: number): void {
+    this.xSpeed =
+      Math.cos(this.radians) * Math.round(scaledSpeed / SCALE_FACTOR);
+    this.ySpeed =
+      Math.sin(this.radians) * Math.round(scaledSpeed / SCALE_FACTOR);
   }
 
   public setDirection(cache: Cache, dir: number): void {
@@ -78,11 +83,12 @@ export class Bomb extends GameObject {
   }
 
   public setPos(cache: Cache, x: number, y: number): void {
+    // console.log(x, y);
     this.localX = x * SCALE_FACTOR;
     this.localY = y * SCALE_FACTOR;
-    console.log(this.localX / 100, this.localY / 100);
+    // console.log(this.localX / 100, this.localY / 100);
     this.setData(cache, { x, y });
-    console.log(this.x, this.y);
+    // console.log(this.x, this.y);
   }
 
   public getState(): CacheEntry {
