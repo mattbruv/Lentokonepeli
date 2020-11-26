@@ -7,7 +7,9 @@
         <div class="char-count">{{ clientName.length }}/{{ max }}</div>
         <input :class="isValid() ? '' : 'bad-name'" v-model.trim="clientName" />
         <div>
-          <button :disabled="!isValid()" @click="submitName">{{ lang.updateName }}</button>
+          <button :disabled="!isValid()" @click="submitName">
+            {{ lang.updateName }}
+          </button>
         </div>
       </div>
     </div>
@@ -19,26 +21,30 @@ import Vue from "vue";
 import Cookies from "js-cookie";
 import {
   isNameValid,
-  NAME_LENGTH_MAX
+  NAME_LENGTH_MAX,
 } from "../../../../dogfight/src/validation";
 import { Localizer } from "../../localization/localizer";
 export default Vue.extend({
   data: () => {
+    let name = Cookies.get("name");
+    if (name === undefined) {
+      name = "";
+    }
     return {
-      clientName: Cookies.get("name") ?? "",
-      max: NAME_LENGTH_MAX
+      clientName: name,
+      max: NAME_LENGTH_MAX,
     };
   },
   computed: {
     lang() {
       return {
         updateName: Localizer.get("updateName"),
-        name: Localizer.get("name")
+        name: Localizer.get("name"),
       };
     },
     info() {
       return this.$store.state.client.playerInfo;
-    }
+    },
   },
   methods: {
     isValid() {
@@ -49,8 +55,8 @@ export default Vue.extend({
       if (isNameValid(name)) {
         this.$store.commit("updateName", name);
       }
-    }
-  }
+    },
+  },
 });
 </script>
 
