@@ -80,9 +80,9 @@ export function processPlanes(world: GameWorld, deltaTime: number): void {
           );
 
           // set bomb speed/direction relative to plane.
-          bomb.setVelocity(world.cache, plane.v.x, plane.v.y);
-
           bomb.setPos(world.cache, plane.x, plane.y - plane.height / 2);
+          bomb.setSpeed(world.cache, plane.speed);
+          bomb.setDirection(world.cache, plane.direction);
           world.addObject(bomb);
         }
       }

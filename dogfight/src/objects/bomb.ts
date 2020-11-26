@@ -1,7 +1,7 @@
 import { GameObject, GameObjectType } from "../object";
 import { Cache, CacheEntry } from "../network/cache";
 import { Team, SCALE_FACTOR } from "../constants";
-import { getAngle } from "../physics/vector";
+import { radiansToDirection, directionToRadians } from "../physics/helpers";
 
 export const bombGlobals = {
   gravity: 425,
@@ -18,14 +18,19 @@ export class Bomb extends GameObject {
   public y: number;
   public droppedBy: number; // ID of player who dropped it
   public team: Team; // team of player who dropped it
-  public vx: number;
-  public vy: number;
+
+  public xSpeed: number;
+  public ySpeed: number;
+  public radians: number;
   public direction: number;
 
   public constructor(id: number, cache: Cache, droppedBy: number, team: Team) {
     super(id);
+    this.radians = directionToRadians(0);
     this.localX = 0;
     this.localY = 0;
+    this.xSpeed = 0;
+    this.ySpeed = 0;
     this.setData(cache, {
       age: 0,
       x: 0,
@@ -47,31 +52,37 @@ export class Bomb extends GameObject {
 
   public move(cache: Cache, deltaTime: number): void {
     // move the bomb...
-    const dragForceX = bombGlobals.drag * Math.pow(this.vx / SCALE_FACTOR, 2);
-    const dragForceY = bombGlobals.drag * Math.pow(this.vy / SCALE_FACTOR, 2);
-    this.vx -= Math.sign(this.vx) * dragForceX;
-    this.vy -= Math.sign(this.vy) * dragForceY + bombGlobals.gravity;
-
+    return;
     const tstep = deltaTime / 1000;
-    this.localX += tstep * this.vx;
-    this.localY += tstep * this.vy;
+    this.localX += this.xSpeed;
+    this.localY += this.ySpeed;
+    this.xSpeed -= this.xSpeed * 0.01;
+    this.ySpeed += 3.3333333333333335;
+    this.radians = Math.atan2(this.ySpeed, this.xSpeed);
 
     this.setData(cache, {
       x: Math.round(this.localX / SCALE_FACTOR),
       y: Math.round(this.localY / SCALE_FACTOR),
-      direction: getAngle({ x: this.vx, y: this.vy })
+      direction: radiansToDirection(this.radians)
     });
+  }
+
+  public setSpeed(cache: Cache, speed: number): void {
+    this.xSpeed = Math.cos(this.radians) * speed * SCALE_FACTOR;
+    this.ySpeed = Math.sin(this.radians) * speed * SCALE_FACTOR;
+  }
+
+  public setDirection(cache: Cache, dir: number): void {
+    this.radians = directionToRadians(dir);
+    this.set(cache, "direction", dir);
   }
 
   public setPos(cache: Cache, x: number, y: number): void {
     this.localX = x * SCALE_FACTOR;
     this.localY = y * SCALE_FACTOR;
+    console.log(this.localX / 100, this.localY / 100);
     this.setData(cache, { x, y });
-  }
-
-  public setVelocity(cache: Cache, vx: number, vy: number): void {
-    this.vx = vx;
-    this.vy = vy;
+    console.log(this.x, this.y);
   }
 
   public getState(): CacheEntry {
