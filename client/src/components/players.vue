@@ -80,7 +80,7 @@ export default Vue.extend({
       const hueMax = 120;
       const percentage = ping / pingMax;
       const hue = clamp(hueMax - percentage * hueMax, 0, hueMax);
-      console.log(`hsl(${hue}, 100%, 50%)`, ping);
+      // console.log(`hsl(${hue}, 100%, 50%)`, ping);
       return `hsl(${hue}, 100%, 50%)`;
     },
     getFlag(team: number) {
