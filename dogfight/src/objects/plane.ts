@@ -209,12 +209,15 @@ export class Plane extends GameObject {
     super(id);
 
     this.controlledBy = player;
-    this.team = side;
-    this.planeType = kind;
 
     this.setData(cache, {
       x: 0,
       y: 0,
+      direction: 0,
+      health: 255,
+      fuel: 255,
+      ammo: 255,
+      team: side,
       planeType: kind
     });
   }
