@@ -8,7 +8,7 @@ import {
 import { Cache, CacheEntry } from "../network/cache";
 import { InputKey } from "../input";
 import { RectangleBody } from "../physics/rectangle";
-import { radiansToDirection } from "../physics/helpers";
+import { directionToRadians, radiansToDirection } from "../physics/helpers";
 
 export enum PlaneType {
   Albatros,
@@ -217,6 +217,10 @@ export class Plane extends GameObject {
     this.speedModifier = planeData[kind].speedModifier;
 
     this.mode = PlaneMode.Flying;
+    this.speed = 0;
+    this.radians = 0;
+    this.localX = 0;
+    this.localY = 0;
 
     this.setData(cache, {
       x: 0,
@@ -336,7 +340,7 @@ export class Plane extends GameObject {
       );
     }
     const x = Math.round(this.localX / SCALE_FACTOR);
-    const y = Math.round(this.localX / SCALE_FACTOR);
+    const y = Math.round(this.localY / SCALE_FACTOR);
     this.setData(cache, { x, y });
     this.set(cache, "direction", radiansToDirection(this.radians));
   }
@@ -347,13 +351,14 @@ export class Plane extends GameObject {
   }
 
   private moveFlying(cache: Cache, deltaTime: number): void {
-    console.log(this.localX, this.localY, this.x, this.y);
+    // console.log(this.speed, this.localX, this.localY, this.x, this.y);
     // if motor on, subtract fuel
     // if fuel = 0, turn engine off
     // if motor on, accelerate
     if (this.motorOn) {
       this.accelerate(deltaTime);
     }
+
     this.run(deltaTime);
     this.movePlane(cache);
   }
@@ -386,6 +391,7 @@ export class Plane extends GameObject {
 
   public setDirection(cache: Cache, direction: number): void {
     this.set(cache, "direction", direction);
+    this.radians = directionToRadians(direction);
   }
 
   /*
