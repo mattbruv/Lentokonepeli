@@ -160,6 +160,7 @@ export class Plane extends GameObject {
   public type = GameObjectType.Plane;
   public controlledBy: number;
   public team: Team;
+  public planeType: PlaneType;
 
   public localX: number;
   public localY: number;
@@ -182,6 +183,7 @@ export class Plane extends GameObject {
   public health: number;
   public ammo: number;
   public bombs: number;
+  public fuel: number;
 
   public maxHealth: number;
   public maxAmmo: number;
@@ -208,8 +210,13 @@ export class Plane extends GameObject {
 
     this.controlledBy = player;
     this.team = side;
+    this.planeType = kind;
 
-    this.setData(cache, {});
+    this.setData(cache, {
+      x: 0,
+      y: 0,
+      planeType: kind
+    });
   }
 
   // advance the plane simulation
@@ -240,12 +247,38 @@ export class Plane extends GameObject {
   }
 
   public setPos(cache: Cache, x: number, y: number): void {
-    return;
+    this.localX = x * SCALE_FACTOR;
+    this.localY = y * SCALE_FACTOR;
+    this.setData(cache, { x, y });
   }
 
+  public setDirection(cache: Cache, direction: number): void {
+    this.set(cache, "direction", direction);
+  }
+
+  /*
+    { name: "x", intType: IntType.Int16 },
+    { name: "y", intType: IntType.Int16 },
+    { name: "planeType", intType: IntType.Uint8 },
+    { name: "team", intType: IntType.Uint8 },
+    { name: "direction", intType: IntType.Uint8 },
+    { name: "health", intType: IntType.Uint8 },
+    { name: "fuel", intType: IntType.Uint8 },
+    { name: "ammo", intType: IntType.Uint8 },
+    { name: "bombs", intType: IntType.Uint8 }
+    */
   public getState(): CacheEntry {
     return {
-      type: this.type
+      type: this.type,
+      direction: this.direction,
+      planeType: this.planeType,
+      team: this.team,
+      health: this.health,
+      fuel: this.fuel,
+      ammo: this.ammo,
+      bombs: this.bombs,
+      x: this.x,
+      y: this.y
     };
   }
 }

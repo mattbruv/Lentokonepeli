@@ -21,15 +21,16 @@ export function planeInput(
         break;
       }
       case InputKey.Up: {
+        /*
         if (isPressed && !plane.isAbandoned) {
           plane.setFlipped(world.cache, !plane.flipped);
-        }
+        }*/
         break;
       }
       case InputKey.Down: {
-        if (isPressed && !plane.isAbandoned) {
+        /*if (isPressed && !plane.isAbandoned) {
           plane.setEngine(world.cache, !plane.engineOn);
-        }
+        }*/
         break;
       }
       case InputKey.Jump: {
@@ -50,19 +51,20 @@ export function planeInput(
         break;
       }
       case InputKey.Fire: {
-        if (!plane.isAbandoned) {
+        /*if (!plane.isAbandoned) {
           plane.isShooting = isPressed;
-        }
+        }*/
         break;
       }
       case InputKey.Bomb: {
-        if (!plane.isAbandoned) {
+        /*if (!plane.isAbandoned) {
           plane.isBombing = isPressed;
-        }
+        }*/
         break;
       }
     }
   }
+  /*
   if (plane.isAbandoned) {
     return;
   }
@@ -72,6 +74,7 @@ export function planeInput(
     plane.setRotation(world.cache, InputKey.Right, true);
   if (player.inputState[InputKey.Left] == player.inputState[InputKey.Right])
     plane.setRotation(world.cache, InputKey.Right, false);
+    */
 }
 
 export function trooperInput(
