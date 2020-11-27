@@ -232,6 +232,10 @@ export class Plane extends GameObject {
     this.set(cache, "bombs", numBombs);
   }
 
+  public setFlipped(cache: Cache, value: boolean): void {
+    this.set(cache, "flipped", value);
+  }
+
   public damagePlane(cache: Cache, damageAmount: number): void {
     return;
   }
@@ -280,6 +284,7 @@ export class Plane extends GameObject {
       fuel: this.fuel,
       ammo: this.ammo,
       bombs: this.bombs,
+      flipped: this.flipped,
       x: this.x,
       y: this.y
     };

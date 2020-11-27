@@ -76,8 +76,8 @@ export function doTakeoff(world: GameWorld, takeoff: TakeoffEntry): void {
   plane.setPos(world.cache, runway.x + offsetX, 30);
   /*
   plane.setVelocity(world.cache, plane.minSpeed * simpleDirection * 1.1, 0);
-  plane.setFlipped(world.cache, runway.direction == FacingDirection.Left);
   */
+  plane.setFlipped(world.cache, runway.direction == FacingDirection.Left);
   const direction =
     runway.direction == FacingDirection.Left
       ? Math.round(ROTATION_DIRECTIONS / 2)
