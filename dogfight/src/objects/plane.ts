@@ -8,6 +8,7 @@ import {
 import { Cache, CacheEntry } from "../network/cache";
 import { InputKey } from "../input";
 import { RectangleBody } from "../physics/rectangle";
+import { radiansToDirection } from "../physics/helpers";
 
 export enum PlaneType {
   Albatros,
@@ -169,6 +170,7 @@ export class Plane extends GameObject {
 
   public direction: number;
   private flipped: boolean;
+  private motorOn: boolean;
 
   private timerShot: number;
   private timerFlip: number;
@@ -190,14 +192,14 @@ export class Plane extends GameObject {
   public maxFuel: number;
 
   private shootDelay: number;
-  private accelerationSpeed: number;
-
   private maxY: number;
   private turnStep: number;
-  private speedModifier: number;
+
+  private readonly accelerationSpeed: number;
+  private readonly speedModifier: number;
 
   private speed: number;
-  private angle: number;
+  private radians: number;
 
   public constructor(
     id: number,
@@ -210,6 +212,12 @@ export class Plane extends GameObject {
 
     this.controlledBy = player;
 
+    // set plane specific data
+    this.accelerationSpeed = planeData[kind].accelerationSpeed;
+    this.speedModifier = planeData[kind].speedModifier;
+
+    this.mode = PlaneMode.Flying;
+
     this.setData(cache, {
       x: 0,
       y: 0,
@@ -218,6 +226,8 @@ export class Plane extends GameObject {
       fuel: 255,
       ammo: 255,
       team: side,
+      flipped: false,
+      motorOn: true,
       planeType: kind
     });
   }
@@ -225,7 +235,6 @@ export class Plane extends GameObject {
   // advance the plane simulation
   public tick(cache: Cache, deltaTime: number): void {
     this.move(cache, deltaTime);
-    this.burnFuel(cache, deltaTime);
   }
 
   public setBombs(cache: Cache, numBombs: number): void {
@@ -245,12 +254,128 @@ export class Plane extends GameObject {
   }
 
   private move(cache: Cache, deltaTime: number): void {
-    // deltatime = milliseconds between frames
+    switch (this.mode) {
+      case PlaneMode.Flying: {
+        this.moveFlying(cache, deltaTime);
+        break;
+      }
+      case PlaneMode.Falling: {
+        this.moveFalling(cache, deltaTime);
+        break;
+      }
+    }
+  }
+
+  private getHeightMultiplier(): number {
+    // TODO: this entire function
+    /*
+      double d = (Plane.this.y / 100 - (64966 + Plane.this.getMaxY())) / 150.0D;
+      if (d > 1.0D) {
+        d = 1.0D;
+      }
+      return d; */
+
+    return 1.0;
+  }
+
+  private accelerate(deltaTime: number): void {
+    // TODO: normalize this for deltatime
+    this.speed += this.accelerationSpeed * this.getHeightMultiplier();
+  }
+
+  private gravity(deltaTime: number): void {
+    let d1 = (1.0 - this.speed / 150) * GRAVITY_PULL;
+
+    if (d1 < 0) {
+      d1 = 0;
+    }
+
+    if (this.radians >= Math.PI * 0.5 && this.radians <= Math.PI * 1.5) {
+      d1 = -d1;
+    }
+
+    this.radians += d1;
+
+    if (this.radians < 0) {
+      this.radians += Math.PI * 2;
+    } else if (this.radians >= Math.PI * 2) {
+      this.radians -= Math.PI * 2;
+    }
+
+    const d2 = GRAVITY * Math.sin(this.radians);
+    this.speed += d2;
+
+    if (this.speed < 0) {
+      this.speed = 0;
+    }
+  }
+
+  private airResistance(deltaTime: number): void {
+    const s = this.speed - this.speedModifier;
+    // TODO: calculate the following constant: 0.00005
+    let d = s * s * 5.0e-5;
+
+    if (d < AIR_RESISTANCE) {
+      d = AIR_RESISTANCE;
+    }
+
+    this.speed -= d;
+
+    if (this.speed < 0) {
+      this.speed = 0;
+    }
+  }
+
+  private movePlane(cache: Cache): void {
+    if (this.speed != 0) {
+      this.localX += Math.round(
+        (SCALE_FACTOR * Math.cos(this.radians) * this.speed) / SCALE_FACTOR
+      );
+      this.localY += Math.round(
+        (SCALE_FACTOR * Math.sin(this.radians) * this.speed) / SCALE_FACTOR
+      );
+    }
+    const x = Math.round(this.localX / SCALE_FACTOR);
+    const y = Math.round(this.localX / SCALE_FACTOR);
+    this.setData(cache, { x, y });
+    this.set(cache, "direction", radiansToDirection(this.radians));
+  }
+
+  private run(deltaTime: number): void {
+    this.gravity(deltaTime);
+    this.airResistance(deltaTime);
+  }
+
+  private moveFlying(cache: Cache, deltaTime: number): void {
+    console.log(this.localX, this.localY, this.x, this.y);
+    // if motor on, subtract fuel
+    // if fuel = 0, turn engine off
+    // if motor on, accelerate
+    if (this.motorOn) {
+      this.accelerate(deltaTime);
+    }
+    this.run(deltaTime);
+    this.movePlane(cache);
+  }
+
+  private moveLanding(cache: Cache, deltaTime: number): void {
     const tstep = deltaTime / 1000;
   }
 
-  private burnFuel(cache: Cache, deltaTime: number): void {
-    return;
+  private moveLanded(cache: Cache, deltaTime: number): void {
+    const tstep = deltaTime / 1000;
+  }
+
+  private moveTakeoff(cache: Cache, deltaTime: number): void {
+    const tstep = deltaTime / 1000;
+  }
+
+  private moveFalling(cache: Cache, deltaTime: number): void {
+    const tstep = deltaTime / 1000;
+  }
+
+  private moveDodging(cache: Cache, deltaTime: number): void {
+    const tstep = deltaTime / 1000;
   }
 
   public setPos(cache: Cache, x: number, y: number): void {
