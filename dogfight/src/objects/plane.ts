@@ -169,8 +169,8 @@ export class Plane extends GameObject {
   public y: number;
 
   public direction: number;
-  private flipped: boolean;
-  private motorOn: boolean;
+  public flipped: boolean;
+  public motorOn: boolean;
 
   private timerShot: number;
   private timerFlip: number;
@@ -201,6 +201,8 @@ export class Plane extends GameObject {
   private speed: number;
   private radians: number;
 
+  public isAbandoned: boolean;
+
   public constructor(
     id: number,
     cache: Cache,
@@ -211,6 +213,7 @@ export class Plane extends GameObject {
     super(id);
 
     this.controlledBy = player;
+    this.isAbandoned = false;
 
     // set plane specific data
     this.accelerationSpeed = planeData[kind].accelerationSpeed;
@@ -253,8 +256,17 @@ export class Plane extends GameObject {
     return;
   }
 
+  public setMotor(cache: Cache, value: boolean): void {
+    this.mode = value ? PlaneMode.Flying : PlaneMode.Falling;
+    this.set(cache, "motorOn", value);
+  }
+
   public abandonPlane(cache: Cache): void {
-    return;
+    this.isAbandoned = true;
+    this.damagePlane(cache, 99999);
+    this.setMotor(cache, false);
+    // this.isShooting = false;
+    // this.isBombing = false;
   }
 
   private move(cache: Cache, deltaTime: number): void {

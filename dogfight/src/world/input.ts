@@ -5,6 +5,7 @@ import { Plane } from "../objects/plane";
 import { KeyChangeList, InputKey } from "../input";
 import { Trooper, TrooperState } from "../objects/trooper";
 import { destroyTrooper } from "./trooper";
+import { destroyPlane } from "./plane";
 
 export function planeInput(
   world: GameWorld,
@@ -21,16 +22,15 @@ export function planeInput(
         break;
       }
       case InputKey.Up: {
-        /*
         if (isPressed && !plane.isAbandoned) {
           plane.setFlipped(world.cache, !plane.flipped);
-        }*/
+        }
         break;
       }
       case InputKey.Down: {
-        /*if (isPressed && !plane.isAbandoned) {
-          plane.setEngine(world.cache, !plane.engineOn);
-        }*/
+        if (isPressed && !plane.isAbandoned) {
+          plane.setMotor(world.cache, !plane.motorOn);
+        }
         break;
       }
       case InputKey.Jump: {
@@ -64,10 +64,10 @@ export function planeInput(
       }
     }
   }
-  /*
   if (plane.isAbandoned) {
     return;
   }
+  /*
   if (player.inputState[InputKey.Left] && !player.inputState[InputKey.Right])
     plane.setRotation(world.cache, InputKey.Left, true);
   if (!player.inputState[InputKey.Left] && player.inputState[InputKey.Right])
