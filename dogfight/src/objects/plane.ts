@@ -375,6 +375,12 @@ export class Plane extends GameObject {
     this.movePlane(cache);
   }
 
+  private moveFalling(cache: Cache, deltaTime: number): void {
+    const tstep = deltaTime / 1000;
+    this.run(deltaTime);
+    this.movePlane(cache);
+  }
+
   private moveLanding(cache: Cache, deltaTime: number): void {
     const tstep = deltaTime / 1000;
   }
@@ -384,10 +390,6 @@ export class Plane extends GameObject {
   }
 
   private moveTakeoff(cache: Cache, deltaTime: number): void {
-    const tstep = deltaTime / 1000;
-  }
-
-  private moveFalling(cache: Cache, deltaTime: number): void {
     const tstep = deltaTime / 1000;
   }
 
