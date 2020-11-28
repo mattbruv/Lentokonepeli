@@ -148,9 +148,10 @@ const SKY_HEIGHT = 500;
 
 // Plane physics variables
 const AIR_RESISTANCE = 1.0;
-const GRAVITY = 6.0; // NOT ADJUSTED
+const GRAVITY = -6.0; // sign switched to negative
+// I think the y direction is reversed in the original
 // TODO: convert to mathematical calculation based on scale
-const GRAVITY_PULL = 4.908738521234052; // per second
+const GRAVITY_PULL = -4.908738521234052; // per second
 
 // delays in milliseconds
 const flipDelay = 200;
@@ -316,7 +317,7 @@ export class Plane extends GameObject {
       d1 = -d1;
     }
 
-    this.radians += d1;
+    this.radians -= d1;
 
     if (this.radians < 0) {
       this.radians += Math.PI * 2;
