@@ -148,9 +148,9 @@ const SKY_HEIGHT = 500;
 
 // Plane physics variables
 const AIR_RESISTANCE = 1.0;
-const GRAVITY = 6.0;
+const GRAVITY = 6.0; // NOT ADJUSTED
 // TODO: convert to mathematical calculation based on scale
-const GRAVITY_PULL = 0.04908738521234052; // large scale
+const GRAVITY_PULL = 4.908738521234052; // per second
 
 // delays in milliseconds
 const flipDelay = 200;
@@ -259,6 +259,7 @@ export class Plane extends GameObject {
   public setMotor(cache: Cache, value: boolean): void {
     this.mode = value ? PlaneMode.Flying : PlaneMode.Falling;
     this.set(cache, "motorOn", value);
+    // console.log("motorOn", this.motorOn);
   }
 
   public abandonPlane(cache: Cache): void {
@@ -295,12 +296,17 @@ export class Plane extends GameObject {
   }
 
   private accelerate(deltaTime: number): void {
-    // TODO: normalize this for deltatime
-    this.speed += this.accelerationSpeed * this.getHeightMultiplier();
+    const tstep = deltaTime / 1000;
+    const accel = this.accelerationSpeed * SCALE_FACTOR;
+    this.speed += accel * tstep * this.getHeightMultiplier();
   }
 
   private gravity(deltaTime: number): void {
-    let d1 = (1.0 - this.speed / 150) * GRAVITY_PULL;
+    const tstep = deltaTime / 1000;
+    const pull = GRAVITY_PULL * tstep;
+
+    let d1 = (1.0 - this.speed / 150) * pull;
+    // console.log(1.0 - this.speed / 150, d1);
 
     if (d1 < 0) {
       d1 = 0;
@@ -327,7 +333,8 @@ export class Plane extends GameObject {
   }
 
   private airResistance(deltaTime: number): void {
-    const s = this.speed - this.speedModifier;
+    const tstep = deltaTime / 1000;
+    const s = this.speed - this.speedModifier * tstep;
     // TODO: calculate the following constant: 0.00005
     let d = s * s * 5.0e-5;
 
