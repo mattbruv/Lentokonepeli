@@ -19,6 +19,9 @@ export class Explosion extends GameObject {
   // counter of how long explosion has been active
   public age: number;
 
+  // Hash table to keep track of entities this has affected
+  public affectedObjects = {};
+
   public constructor(id: number, cache: Cache, x: number, y: number) {
     super(id);
     this.setData(cache, {

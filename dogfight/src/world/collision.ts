@@ -11,7 +11,7 @@ import {
   TrooperState,
   trooperGlobals
 } from "../objects/trooper";
-import { getPlaneRect } from "../objects/plane";
+import { getPlaneRect, Plane } from "../objects/plane";
 import { getGroundRect } from "../objects/ground";
 import { getWaterRect } from "../objects/water";
 import { Vec2d } from "../physics/vector";
@@ -20,6 +20,7 @@ import { SCALE_FACTOR } from "../constants";
 import { CircleBody } from "../physics/circle";
 import { explosionGlobals } from "../objects/explosion";
 import { bulletGlobals } from "../objects/bullet";
+import { gameObjectHash } from "../object";
 
 export function processCollision(world: GameWorld): void {
   // get ground hitboxes
@@ -156,7 +157,8 @@ export function processCollision(world: GameWorld): void {
 
     for (const plane of world.planes) {
       // make sure this explosion hasn't harmed this plane before.
-      if (plane.explosionHits.includes(explosion.id)) {
+      const hash = gameObjectHash(plane);
+      if (hash in explosion.affectedObjects) {
         break;
       }
       const pRect = getPlaneRect(
@@ -167,7 +169,7 @@ export function processCollision(world: GameWorld): void {
       );
       if (isCircleRectCollision(explosionCircle, pRect)) {
         plane.damagePlane(world.cache, explosionGlobals.damage);
-        plane.explosionHits.push(explosion.id);
+        explosion.affectedObjects[hash] = true;
       }
     }
   }

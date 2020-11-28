@@ -24,6 +24,10 @@ export enum GameObjectType {
 
 type sendableData = number | string | boolean;
 
+export function gameObjectHash(obj: GameObject): string {
+  return obj.type + "/" + obj.id;
+}
+
 /**
  * A generic game object class.
  *
