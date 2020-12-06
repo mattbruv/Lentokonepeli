@@ -46,7 +46,7 @@ interface PlaneInfo {
     maxFuel: number;
     maxBombs: number;
     maxHealth: number;
-    accelerationSpeed: number;
+    accelerationSpeed: number; // units per second, original code runs every ~100ms
     maxY: number;
     turnStep: number; // TODO: figure out how these were calculated
     shootDelay: number; // Cooldown time in milliseconds
@@ -62,7 +62,7 @@ export const planeData: PlaneInfo = {
     maxFuel: 80,
     maxBombs: 0,
     maxHealth: 135,
-    accelerationSpeed: 4.75,
+    accelerationSpeed: 475,
     maxY: -50,
     turnStep: 0.031415926535897934, // Math.PI / SCALE_FACTOR,
     shootDelay: 118,
@@ -75,7 +75,7 @@ export const planeData: PlaneInfo = {
     maxFuel: 60,
     maxBombs: 0,
     maxHealth: 135,
-    accelerationSpeed: 4.85,
+    accelerationSpeed: 485,
     maxY: -20,
     turnStep: 0.036110260386089575,
     shootDelay: 97,
@@ -88,7 +88,7 @@ export const planeData: PlaneInfo = {
     maxFuel: 90,
     maxBombs: 0,
     maxHealth: 120,
-    accelerationSpeed: 5.0,
+    accelerationSpeed: 500,
     maxY: 0,
     turnStep: 0.0483321946706122,
     shootDelay: 120,
@@ -101,7 +101,7 @@ export const planeData: PlaneInfo = {
     maxFuel: 100,
     maxBombs: 5,
     maxHealth: 160,
-    accelerationSpeed: 4.65,
+    accelerationSpeed: 465,
     maxY: 10,
     turnStep: 0.028559933214452663,
     shootDelay: 170,
@@ -114,7 +114,7 @@ export const planeData: PlaneInfo = {
     maxFuel: 60,
     maxBombs: 5,
     maxHealth: 90,
-    accelerationSpeed: 4.7,
+    accelerationSpeed: 470,
     maxY: 65396, // what??
     turnStep: 0.031415926535897934,
     shootDelay: 180,
@@ -127,7 +127,7 @@ export const planeData: PlaneInfo = {
     maxFuel: 80,
     maxBombs: 0,
     maxHealth: 120,
-    accelerationSpeed: 5.0,
+    accelerationSpeed: 500,
     maxY: 20,
     turnStep: 0.04487989505128276,
     shootDelay: 130,
@@ -151,7 +151,7 @@ const AIR_RESISTANCE = 1.0;
 const GRAVITY = -6.0; // sign switched to negative
 // I think the y direction is reversed in the original
 // TODO: convert to mathematical calculation based on scale
-const GRAVITY_PULL = -4.908738521234052; // per second
+const GRAVITY_PULL = 4.908738521234052; // per second
 
 // delays in milliseconds
 const flipDelay = 200;
@@ -298,16 +298,16 @@ export class Plane extends GameObject {
 
   private accelerate(deltaTime: number): void {
     const tstep = deltaTime / 1000;
-    const accel = this.accelerationSpeed * SCALE_FACTOR;
-    this.speed += accel * tstep * this.getHeightMultiplier();
+    const accel = this.accelerationSpeed * this.getHeightMultiplier();
+    this.speed += accel * tstep;
   }
 
   private gravity(deltaTime: number): void {
     const tstep = deltaTime / 1000;
     const pull = GRAVITY_PULL * tstep;
+    console.log(this.speed);
 
     let d1 = (1.0 - this.speed / 150) * pull;
-    // console.log(1.0 - this.speed / 150, d1);
 
     if (d1 < 0) {
       d1 = 0;
@@ -375,6 +375,7 @@ export class Plane extends GameObject {
     // if motor on, subtract fuel
     // if fuel = 0, turn engine off
     // if motor on, accelerate
+    //console.log("move flying");
     if (this.motorOn) {
       this.accelerate(deltaTime);
     }
@@ -385,6 +386,7 @@ export class Plane extends GameObject {
 
   private moveFalling(cache: Cache, deltaTime: number): void {
     const tstep = deltaTime / 1000;
+    // console.log("move falling");
     this.run(deltaTime);
     this.movePlane(cache);
   }
