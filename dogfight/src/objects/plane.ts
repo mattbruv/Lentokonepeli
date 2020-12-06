@@ -28,7 +28,7 @@ export enum PlaneMode {
   Dodging,
 }
 
-export enum PlaneRotationStatus {
+export enum PlaneRotation {
   None,
   Up,
   Down,
@@ -202,6 +202,8 @@ export class Plane extends GameObject {
   private speed: number;
   private radians: number;
 
+  private rotateStatus: PlaneRotation;
+
   public isAbandoned: boolean;
 
   public constructor(
@@ -215,10 +217,12 @@ export class Plane extends GameObject {
 
     this.controlledBy = player;
     this.isAbandoned = false;
+    this.rotateStatus = PlaneRotation.None;
 
     // set plane specific data
     this.accelerationSpeed = planeData[kind].accelerationSpeed;
     this.speedModifier = planeData[kind].speedModifier;
+    this.turnStep = planeData[kind].turnStep;
 
     this.mode = PlaneMode.Flying;
     this.speed = 0;
@@ -260,7 +264,6 @@ export class Plane extends GameObject {
   public setMotor(cache: Cache, value: boolean): void {
     this.mode = value ? PlaneMode.Flying : PlaneMode.Falling;
     this.set(cache, "motorOn", value);
-    // console.log("motorOn", this.motorOn);
   }
 
   public abandonPlane(cache: Cache): void {
@@ -284,9 +287,39 @@ export class Plane extends GameObject {
     }
   }
 
-  private steer(): void {
-    //const delta = this.speed / SCALE_FACTOR / 4 *
-    //console.log("steering plane!");
+  public setRotation(key: InputKey, doRotate: boolean): void {
+    if (doRotate == false) {
+      this.rotateStatus = PlaneRotation.None;
+      return;
+    }
+    if (key == InputKey.Left) {
+      this.rotateStatus = PlaneRotation.Up;
+    } else if (key == InputKey.Right) {
+      this.rotateStatus = PlaneRotation.Down;
+    }
+  }
+
+  private steer(deltaTime: number): void {
+    const tstep = deltaTime / 1000;
+    const turnRate = this.turnStep;
+    const delta = (this.speed / SCALE_FACTOR / 4) * turnRate * tstep;
+    // console.log(delta);
+    switch (this.rotateStatus) {
+      case PlaneRotation.Up: {
+        this.radians += delta;
+        if (this.radians >= Math.PI * 2) {
+          this.radians -= Math.PI * 2;
+        }
+        break;
+      }
+      case PlaneRotation.Down: {
+        this.radians -= delta;
+        if (this.radians < 0) {
+          this.radians += Math.PI * 2;
+        }
+        break;
+      }
+    }
   }
 
   private getHeightMultiplier(): number {
@@ -310,7 +343,7 @@ export class Plane extends GameObject {
   private gravity(deltaTime: number): void {
     const tstep = deltaTime / 1000;
     const pull = GRAVITY_PULL * tstep;
-    console.log(this.speed);
+    //console.log(this.speed);
 
     let d1 = (1.0 - this.speed / 150) * pull;
 
@@ -371,16 +404,12 @@ export class Plane extends GameObject {
   }
 
   private run(deltaTime: number): void {
+    this.steer(deltaTime);
     this.gravity(deltaTime);
     this.airResistance(deltaTime);
   }
 
   private moveFlying(cache: Cache, deltaTime: number): void {
-    // console.log(this.speed, this.localX, this.localY, this.x, this.y);
-    // if motor on, subtract fuel
-    // if fuel = 0, turn engine off
-    // if motor on, accelerate
-    //console.log("move flying");
     if (this.motorOn) {
       this.accelerate(deltaTime);
     }
@@ -391,7 +420,6 @@ export class Plane extends GameObject {
 
   private moveFalling(cache: Cache, deltaTime: number): void {
     const tstep = deltaTime / 1000;
-    // console.log("move falling");
     this.run(deltaTime);
     this.movePlane(cache);
   }

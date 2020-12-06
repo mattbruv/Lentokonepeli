@@ -67,14 +67,12 @@ export function planeInput(
   if (plane.isAbandoned) {
     return;
   }
-  /*
   if (player.inputState[InputKey.Left] && !player.inputState[InputKey.Right])
-    plane.setRotation(world.cache, InputKey.Left, true);
+    plane.setRotation(InputKey.Left, true);
   if (!player.inputState[InputKey.Left] && player.inputState[InputKey.Right])
-    plane.setRotation(world.cache, InputKey.Right, true);
+    plane.setRotation(InputKey.Right, true);
   if (player.inputState[InputKey.Left] == player.inputState[InputKey.Right])
-    plane.setRotation(world.cache, InputKey.Right, false);
-    */
+    plane.setRotation(InputKey.Right, false);
 }
 
 export function trooperInput(
