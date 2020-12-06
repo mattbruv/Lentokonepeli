@@ -3,7 +3,7 @@ import {
   Team,
   SCALE_FACTOR,
   ROTATION_DIRECTIONS,
-  FacingDirection
+  FacingDirection,
 } from "../constants";
 import { Cache, CacheEntry } from "../network/cache";
 import { InputKey } from "../input";
@@ -16,7 +16,7 @@ export enum PlaneType {
   Fokker,
   Bristol,
   Salmson,
-  Sopwith
+  Sopwith,
 }
 
 export enum PlaneMode {
@@ -25,13 +25,13 @@ export enum PlaneMode {
   Landed,
   TakingOff,
   Falling,
-  Dodging
+  Dodging,
 }
 
 export enum PlaneRotationStatus {
   None,
   Up,
-  Down
+  Down,
 }
 
 interface TeamPlanes {
@@ -66,7 +66,7 @@ export const planeData: PlaneInfo = {
     maxY: -50,
     turnStep: 0.031415926535897934, // Math.PI / SCALE_FACTOR,
     shootDelay: 118,
-    speedModifier: 55.0
+    speedModifier: 55.0,
   },
   [PlaneType.Bristol]: {
     width: 36,
@@ -79,7 +79,7 @@ export const planeData: PlaneInfo = {
     maxY: -20,
     turnStep: 0.036110260386089575,
     shootDelay: 97,
-    speedModifier: 0.0
+    speedModifier: 0.0,
   },
   [PlaneType.Fokker]: {
     width: 38,
@@ -92,7 +92,7 @@ export const planeData: PlaneInfo = {
     maxY: 0,
     turnStep: 0.0483321946706122,
     shootDelay: 120,
-    speedModifier: 0.0
+    speedModifier: 0.0,
   },
   [PlaneType.Junkers]: {
     width: 42,
@@ -105,7 +105,7 @@ export const planeData: PlaneInfo = {
     maxY: 10,
     turnStep: 0.028559933214452663,
     shootDelay: 170,
-    speedModifier: 0.0
+    speedModifier: 0.0,
   },
   [PlaneType.Salmson]: {
     width: 30,
@@ -118,7 +118,7 @@ export const planeData: PlaneInfo = {
     maxY: 65396, // what??
     turnStep: 0.031415926535897934,
     shootDelay: 180,
-    speedModifier: 50.0
+    speedModifier: 50.0,
   },
   [PlaneType.Sopwith]: {
     width: 37,
@@ -131,13 +131,13 @@ export const planeData: PlaneInfo = {
     maxY: 20,
     turnStep: 0.04487989505128276,
     shootDelay: 130,
-    speedModifier: 50.0
-  }
+    speedModifier: 50.0,
+  },
 };
 
 export const teamPlanes: TeamPlanes = {
   [Team.Centrals]: [PlaneType.Albatros, PlaneType.Fokker, PlaneType.Junkers],
-  [Team.Allies]: [PlaneType.Bristol, PlaneType.Sopwith, PlaneType.Salmson]
+  [Team.Allies]: [PlaneType.Bristol, PlaneType.Sopwith, PlaneType.Salmson],
 };
 
 const bomberPlanes: PlaneType[] = [PlaneType.Junkers, PlaneType.Salmson];
@@ -236,7 +236,7 @@ export class Plane extends GameObject {
       team: side,
       flipped: false,
       motorOn: true,
-      planeType: kind
+      planeType: kind,
     });
   }
 
@@ -282,6 +282,11 @@ export class Plane extends GameObject {
         break;
       }
     }
+  }
+
+  private steer(): void {
+    //const delta = this.speed / SCALE_FACTOR / 4 *
+    //console.log("steering plane!");
   }
 
   private getHeightMultiplier(): number {
@@ -441,7 +446,7 @@ export class Plane extends GameObject {
       bombs: this.bombs,
       flipped: this.flipped,
       x: this.x,
-      y: this.y
+      y: this.y,
     };
   }
 }
@@ -458,6 +463,6 @@ export function getPlaneRect(
     width: planeData[type].width,
     height: planeData[type].height,
     center: { x, y },
-    direction
+    direction,
   };
 }
