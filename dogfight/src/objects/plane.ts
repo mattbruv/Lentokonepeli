@@ -325,15 +325,11 @@ export class Plane extends GameObject {
   }
 
   private getHeightMultiplier(): number {
-    // TODO: this entire function
-    // /*
-    let d = -(this.localY / 100 - (64966 / 100 + this.maxY)) / 150.0; // -431.44
+    let d = -(this.localY / 100 - (64966 / 100 - this.maxY)) / 150.0;
     if (d > 1.0) {
       d = 1.0;
     }
-    return d; //*/
-
-    return 1.0;
+    return d;
   }
 
   private accelerate(deltaTime: number): void {
