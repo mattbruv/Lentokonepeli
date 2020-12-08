@@ -115,7 +115,7 @@ export const planeData: PlaneInfo = {
     maxBombs: 5,
     maxHealth: 90,
     accelerationSpeed: 470,
-    maxY: 65396, // what??
+    maxY: -150,//65396, // what??
     turnStep: Math.PI,
     shootDelay: 180,
     speedModifier: 50.0,
@@ -325,7 +325,8 @@ export class Plane extends GameObject {
   }
 
   private getHeightMultiplier(): number {
-    let d = -(this.localY / 100 - (64966 / 100 - this.maxY)) / 150.0;
+    let d = -(this.localY / 100 - (570 - this.maxY)) / 150.0;
+    //console.log(this.localY);
     if (d > 1.0) {
       d = 1.0;
     }
@@ -371,7 +372,7 @@ export class Plane extends GameObject {
 
   private airResistance(deltaTime: number): void {
     const tstep = deltaTime / 1000;
-    const s = this.speed - this.speedModifier * tstep;
+    const s = this.speed - this.speedModifier;
     // TODO: calculate the following constant: 0.00005
     let d = s * s * 5.0e-5;
 
@@ -379,7 +380,7 @@ export class Plane extends GameObject {
       d = AIR_RESISTANCE;
     }
 
-    this.speed -= d;
+    this.speed -= d * tstep * 100;
 
     if (this.speed < 0) {
       this.speed = 0;
