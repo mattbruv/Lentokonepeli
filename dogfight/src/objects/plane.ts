@@ -223,6 +223,7 @@ export class Plane extends GameObject {
     this.accelerationSpeed = planeData[kind].accelerationSpeed;
     this.speedModifier = planeData[kind].speedModifier;
     this.turnStep = planeData[kind].turnStep;
+    this.maxY = planeData[kind].maxY;
 
     this.mode = PlaneMode.Flying;
     this.speed = 0;
@@ -324,15 +325,11 @@ export class Plane extends GameObject {
   }
 
   private getHeightMultiplier(): number {
-    // TODO: this entire function
-    /*
-      double d = (Plane.this.y / 100 - (64966 + Plane.this.getMaxY())) / 150.0D;
-      if (d > 1.0D) {
-        d = 1.0D;
-      }
-      return d; */
-
-    return 1.0;
+    let d = -(this.localY / 100 - (64966 / 100 - this.maxY)) / 150.0;
+    if (d > 1.0) {
+      d = 1.0;
+    }
+    return d;
   }
 
   private accelerate(deltaTime: number): void {
