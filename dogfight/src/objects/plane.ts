@@ -326,7 +326,7 @@ export class Plane extends GameObject {
 
   private getHeightMultiplier(): number {
     let d = -(this.localY / 100 - (570 - this.maxY)) / 150.0;
-    //console.log(this.localY);
+    console.log(d);
     if (d > 1.0) {
       d = 1.0;
     }
@@ -387,13 +387,14 @@ export class Plane extends GameObject {
     }
   }
 
-  private movePlane(cache: Cache): void {
+  private movePlane(cache: Cache, deltaTime: number): void {
+    const tstep = deltaTime / 1000;
     if (this.speed != 0) {
       this.localX += Math.round(
-        (SCALE_FACTOR * Math.cos(this.radians) * this.speed) / SCALE_FACTOR
+        (SCALE_FACTOR * Math.cos(this.radians) * this.speed) * tstep
       );
       this.localY += Math.round(
-        (SCALE_FACTOR * Math.sin(this.radians) * this.speed) / SCALE_FACTOR
+        (SCALE_FACTOR * Math.sin(this.radians) * this.speed) * tstep
       );
     }
     const x = Math.round(this.localX / SCALE_FACTOR);
@@ -414,13 +415,13 @@ export class Plane extends GameObject {
     }
 
     this.run(deltaTime);
-    this.movePlane(cache);
+    this.movePlane(cache, deltaTime);
   }
 
   private moveFalling(cache: Cache, deltaTime: number): void {
     const tstep = deltaTime / 1000;
     this.run(deltaTime);
-    this.movePlane(cache);
+    this.movePlane(cache, deltaTime);
   }
 
   private moveLanding(cache: Cache, deltaTime: number): void {
