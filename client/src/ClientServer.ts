@@ -39,7 +39,7 @@ export class ClientServer {
     loadMap(this.world, MAP_CLASSIC_2);
     setInterval((): void => {
       this.loop();
-    }, 1000 / 60);
+    }, 1000 / 100);
   }
 
   public packetRecieved(packet: Packet): void {

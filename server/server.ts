@@ -36,7 +36,7 @@ let lastTick = 0;
 function loop(): void {
   const currentTick = Date.now() - startTime;
   const deltaTime = currentTick - lastTick;
-  // console.log(lastTick, currentTick, deltaTime);
+  //const deltaTime = 10;
   const updates = world.tick(deltaTime);
   world.clearCache();
 

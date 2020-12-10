@@ -51,15 +51,15 @@ export function planeInput(
         break;
       }
       case InputKey.Fire: {
-        /*if (!plane.isAbandoned) {
+        if (!plane.isAbandoned) {
           plane.isShooting = isPressed;
-        }*/
+        }
         break;
       }
       case InputKey.Bomb: {
-        /*if (!plane.isAbandoned) {
+        if (!plane.isAbandoned) {
           plane.isBombing = isPressed;
-        }*/
+        }
         break;
       }
     }

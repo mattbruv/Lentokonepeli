@@ -5,7 +5,7 @@ export class AudioManager {
   public constructor() {
     this.engine = new Howl({
       src: ["assets/audio/motor.mp3", "assets/audio/motor.wav"],
-      volume: 0.5,
+      volume: 0.0,
       loop: true
     });
   }

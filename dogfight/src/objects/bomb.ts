@@ -2,6 +2,7 @@ import { GameObject, GameObjectType } from "../object";
 import { Cache, CacheEntry } from "../network/cache";
 import { Team, SCALE_FACTOR } from "../constants";
 import { radiansToDirection, directionToRadians } from "../physics/helpers";
+import { RectangleBody } from "../physics/rectangle";
 
 export const bombGlobals = {
   gravity: 425,
@@ -22,7 +23,7 @@ export class Bomb extends GameObject {
   public xSpeed: number;
   public ySpeed: number;
   public radians: number;
-  public direction: number;
+  //public direction: number;
 
   public constructor(id: number, cache: Cache, droppedBy: number, team: Team) {
     super(id);
@@ -57,8 +58,8 @@ export class Bomb extends GameObject {
     const xDelta = tstep * 1; // 0.01 * 100 tps in original
     const yDelta = tstep * 333; // 3.33 * 100 tps in original
 
-    this.localX += this.xSpeed;
-    this.localY += this.ySpeed;
+    this.localX += this.xSpeed * tstep * SCALE_FACTOR;
+    this.localY += this.ySpeed * tstep * SCALE_FACTOR;
     this.xSpeed -= this.xSpeed * xDelta;
     this.ySpeed -= yDelta;
     this.radians = Math.atan2(this.ySpeed, this.xSpeed);
@@ -72,9 +73,9 @@ export class Bomb extends GameObject {
 
   public setSpeed(cache: Cache, scaledSpeed: number): void {
     this.xSpeed =
-      Math.cos(this.radians) * Math.round(scaledSpeed / SCALE_FACTOR);
+      Math.cos(this.radians) * Math.round(scaledSpeed);
     this.ySpeed =
-      Math.sin(this.radians) * Math.round(scaledSpeed / SCALE_FACTOR);
+      Math.sin(this.radians) * Math.round(scaledSpeed);
   }
 
   public setDirection(cache: Cache, dir: number): void {
@@ -97,7 +98,23 @@ export class Bomb extends GameObject {
       age: this.age,
       x: this.x,
       y: this.y,
-      direction: this.direction
+      direction: radiansToDirection(this.radians)
     };
   }
+}
+
+export function getBombRect(
+  x: number,
+  y: number,
+  direction: number,
+): RectangleBody {
+  return {
+    // width: Math.round(planeData[type].width * 0.8),
+    // height: Math.round(planeData[type].height * 0.8),
+    // TODO get from image
+    width: 7,
+    height: 10,
+    center: { x, y },
+    direction,
+  };
 }

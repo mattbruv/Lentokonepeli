@@ -155,9 +155,8 @@ const GRAVITY_PULL = 4.908738521234052; // per second
 
 // delays in milliseconds
 const flipDelay = 200;
-const bombDelay = 500;
 const motorOnDelay = 200;
-
+const bombDelay = 500;
 export class Plane extends GameObject {
   public type = GameObjectType.Plane;
   public controlledBy: number;
@@ -168,6 +167,8 @@ export class Plane extends GameObject {
   public localY: number;
   public x: number;
   public y: number;
+  public width: number;
+  public height: number;
 
   public direction: number;
   public flipped: boolean;
@@ -192,19 +193,26 @@ export class Plane extends GameObject {
   public maxAmmo: number;
   public maxFuel: number;
 
-  private shootDelay: number;
+  public shotDelay: number;
+  public bombDelay: number;
+
   private maxY: number;
   private turnStep: number;
 
   private readonly accelerationSpeed: number;
   private readonly speedModifier: number;
 
-  private speed: number;
+  public speed: number;
   private radians: number;
 
   private rotateStatus: PlaneRotation;
 
   public isAbandoned: boolean;
+  public isBombing: boolean;
+  public isShooting: boolean;
+
+  public lastBomb: number;
+  public lastShot: number;
 
   public constructor(
     id: number,
@@ -219,11 +227,20 @@ export class Plane extends GameObject {
     this.isAbandoned = false;
     this.rotateStatus = PlaneRotation.None;
 
+
+    this.lastBomb = 0;
+    this.lastShot = 0;
     // set plane specific data
     this.accelerationSpeed = planeData[kind].accelerationSpeed;
     this.speedModifier = planeData[kind].speedModifier;
     this.turnStep = planeData[kind].turnStep;
     this.maxY = planeData[kind].maxY;
+    this.shotDelay = planeData[kind].shootDelay;
+    this.bombDelay = bombDelay;
+    this.width = planeData[kind].width;
+    this.height = planeData[kind].height;
+    this.bombs = planeData[kind].maxBombs;
+    this.ammo = planeData[kind].maxAmmo;
 
     this.mode = PlaneMode.Flying;
     this.speed = 0;
@@ -305,7 +322,7 @@ export class Plane extends GameObject {
     const tstep = deltaTime / 1000;
     const turnRate = this.turnStep;
     const delta = (this.speed / SCALE_FACTOR / 4) * turnRate * tstep;
-    // console.log(delta);
+    //console.log(tstep);
     switch (this.rotateStatus) {
       case PlaneRotation.Up: {
         this.radians += delta;
@@ -325,8 +342,8 @@ export class Plane extends GameObject {
   }
 
   private getHeightMultiplier(): number {
-    let d = -(this.localY / 100 - (570 - this.maxY)) / 150.0;
-    console.log(d);
+    let d = -(this.localY / SCALE_FACTOR - (570 - this.maxY)) / 150.0;
+    //console.log(d);
     if (d > 1.0) {
       d = 1.0;
     }
@@ -380,7 +397,7 @@ export class Plane extends GameObject {
       d = AIR_RESISTANCE;
     }
 
-    this.speed -= d * tstep * 100;
+    this.speed -= d * tstep * SCALE_FACTOR;
 
     if (this.speed < 0) {
       this.speed = 0;
@@ -391,10 +408,10 @@ export class Plane extends GameObject {
     const tstep = deltaTime / 1000;
     if (this.speed != 0) {
       this.localX += Math.round(
-        (SCALE_FACTOR * Math.cos(this.radians) * this.speed) * tstep
+        (SCALE_FACTOR * Math.cos(this.radians) * this.speed * tstep)
       );
       this.localY += Math.round(
-        (SCALE_FACTOR * Math.sin(this.radians) * this.speed) * tstep
+        (SCALE_FACTOR * Math.sin(this.radians) * this.speed * tstep)
       );
     }
     const x = Math.round(this.localX / SCALE_FACTOR);
@@ -405,6 +422,7 @@ export class Plane extends GameObject {
 
   private run(deltaTime: number): void {
     this.steer(deltaTime);
+
     this.gravity(deltaTime);
     this.airResistance(deltaTime);
   }
@@ -413,7 +431,6 @@ export class Plane extends GameObject {
     if (this.motorOn) {
       this.accelerate(deltaTime);
     }
-
     this.run(deltaTime);
     this.movePlane(cache, deltaTime);
   }

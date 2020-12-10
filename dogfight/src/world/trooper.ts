@@ -103,7 +103,7 @@ export function processTroopers(world: GameWorld, deltaTime: number): void {
         const bulletSpeed = bulletGlobals.speed * SCALE_FACTOR;
         const vx = bulletSpeed * Math.cos((Math.PI * shotAngle) / w0);
         const vy = bulletSpeed * Math.sin((Math.PI * shotAngle) / w0);
-        bullet.setVelocity(world.cache, vx, vy);
+        //bullet.setVelocity(world.cache, vx, vy);
 
         bullet.setPos(world.cache, trooper.x, trooper.y + 7);
         world.addObject(bullet);

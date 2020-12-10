@@ -74,6 +74,8 @@ export function doTakeoff(world: GameWorld, takeoff: TakeoffEntry): void {
     simpleDirection = 1;
   }
   plane.setPos(world.cache, runway.x + offsetX, 200);
+  plane.setMotor(world.cache, false);
+  //plane.setVelocity(world.cache, 0, 0);
   /*
   plane.setVelocity(world.cache, plane.minSpeed * simpleDirection * 1.1, 0);
   */
