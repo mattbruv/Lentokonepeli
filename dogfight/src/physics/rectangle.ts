@@ -1,6 +1,41 @@
 import { Vec2d, rotatePoint, translatePoint } from "./vector";
 import { directionToRadians } from "./helpers";
+import { isRectangleCollision } from "./collision";
 
+export class Rectangle {
+  public width: number;
+  public height: number;
+  public y: number;
+  public x: number;
+  public constructor(x: number, y: number, width: number, height: number) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+  }
+
+  public body(): RectangleBody {
+    return {
+      center: { x: this.x, y: this.y },
+      direction: 0,
+      height: this.height,
+      width: this.width
+    };
+  }
+
+  public intersects(r: Rectangle): boolean {
+    return isRectangleCollision(this.body(), r.body())
+  }
+  public intersection(r: Rectangle): Rectangle {
+    const x1 = Math.max(this.x - this.width / 2, r.x - r.width / 2);
+    const y1 = Math.max(this.y - this.height / 2, r.y - r.height / 2);
+
+    const x2 = Math.min(this.x + this.width / 2, r.x + r.width / 2);
+    const y2 = Math.min(this.y + this.height / 2, r.y + r.height / 2);
+
+    return new Rectangle(x1 + (x2 - x1) / 2, y1 + (y2 - y1) / 2, x2 - x1, y2 - y1);
+  }
+}
 /**
  * A rectangle hitbox model for the purpose of collision detection
  */

@@ -1,5 +1,5 @@
 import { GameWorld } from "./world";
-import { explosionGlobals } from "../objects/explosion";
+import { explosionGlobals } from "../entities/explosion";
 
 export function processExplosions(world: GameWorld, deltaTime: number): void {
   world.explosions.forEach((explosion): void => {

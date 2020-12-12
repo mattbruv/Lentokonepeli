@@ -6,18 +6,18 @@ import { Packet, PacketType } from "../../dogfight/src/network/types";
 import { InputHandler } from "./inputHandler";
 import { ClientMode } from "./types";
 import { CacheEntry } from "../../dogfight/src/network/cache";
-import { GameObjectType } from "../../dogfight/src/object";
+import { EntityType } from "../../dogfight/src/TypedEntity";
 import { TeamSelector } from "./teamSelector";
 import { Team, SCALE_FACTOR } from "../../dogfight/src/constants";
 import { TakeoffSelector } from "./takeoffSelector";
-import { radarObjects } from "./render/objects/radar";
+import { radarObjects } from "./render/entities/radar";
 import { NetworkHandler } from "./networkHandler";
 import { InputChange } from "../../dogfight/src/input";
-import { PlayerStatus } from "../../dogfight/src/objects/player";
+import { PlayerStatus } from "../../dogfight/src/entities/player";
 import { AudioManager } from "./audio";
 import { isNameValid } from "../../dogfight/src/validation";
 import Cookies from "js-cookie";
-import { moveBullet } from "../../dogfight/src/objects/bullet";
+import { moveBullet } from "../../dogfight/src/entities/bullet";
 
 export class GameClient {
   private renderer: GameRenderer;
@@ -51,7 +51,7 @@ export class GameClient {
   };
 
   public followObject = {
-    type: GameObjectType.None,
+    type: EntityType.None,
     id: undefined
   };
 
@@ -60,7 +60,7 @@ export class GameClient {
 
     // Initialize game object container
     this.gameObjects = {};
-    for (const key in GameObjectType) {
+    for (const key in EntityType) {
       this.gameObjects[key] = {};
     }
 
@@ -109,7 +109,7 @@ export class GameClient {
   }
 
   public onAnimationFrame(): void {
-    const bullets = this.gameObjects[GameObjectType.Bullet];
+    const bullets = this.gameObjects[EntityType.Bullet];
     const now = Date.now();
     const deltaTime = now - this.lastTick;
 
@@ -135,7 +135,7 @@ export class GameClient {
       bullet.x = newX;
       bullet.y = newY;
       // update sprite coords
-      this.renderer.updateSprite(GameObjectType.Bullet, index, {
+      this.renderer.updateSprite(EntityType.Bullet, index, {
         x: newX,
         y: newY
       });
@@ -162,7 +162,7 @@ export class GameClient {
     }
     if (this.mode == ClientMode.PreFlight) {
       this.takeoffSelector.setTeam(this.playerInfo.team);
-      const runways = this.gameObjects[GameObjectType.Runway];
+      const runways = this.gameObjects[EntityType.Runway];
       this.takeoffSelector.updateRunways(runways, this.renderer, true);
       const plane = this.takeoffSelector.getPlaneSelection();
       this.renderer.takeoffSelectUI.setPlane(plane);
@@ -179,7 +179,7 @@ export class GameClient {
         break;
       }
       case ClientMode.PreFlight: {
-        const runways = this.gameObjects[GameObjectType.Runway];
+        const runways = this.gameObjects[EntityType.Runway];
         this.takeoffSelector.updateRunways(runways, this.renderer, false);
         this.takeoffSelector.processInput(change, this.renderer, this.network);
         break;
@@ -234,10 +234,10 @@ export class GameClient {
     }
   }
 
-  private getControllingPlayer(type: GameObjectType, objid: string): number {
+  private getControllingPlayer(type: EntityType, objid: string): number {
     // check if this ia followed object.
-    for (const id in this.gameObjects[GameObjectType.Player]) {
-      const p = this.gameObjects[GameObjectType.Player][id];
+    for (const id in this.gameObjects[EntityType.Player]) {
+      const p = this.gameObjects[EntityType.Player][id];
       if (p.controlType == type && p.controlID == objid) {
         return parseInt(id);
       }
@@ -258,14 +258,14 @@ export class GameClient {
     if (this.gameObjects[type][id] === undefined) {
       this.gameObjects[type][id] = {};
       // console.log("Create", GameObjectType[type], id);
-      if (type == GameObjectType.Explosion) {
+      if (type == EntityType.Explosion) {
         this.audio.playExplosion();
       }
-      if (type == GameObjectType.Bullet) {
+      if (type == EntityType.Bullet) {
         if (data.age == 0) {
           this.audio.playBullet();
         }
-      } else if (type == GameObjectType.Bomb) {
+      } else if (type == EntityType.Bomb) {
         if (data.age == 0) {
           this.audio.playBomb();
         }
@@ -278,7 +278,7 @@ export class GameClient {
       let value = data[key];
       object[key] = value;
     }
-    if (type == GameObjectType.Player) {
+    if (type == EntityType.Player) {
       this.playersUpdated = Date.now();
     }
     // this.gameObjects[type].updated = Date.now();
@@ -289,7 +289,7 @@ export class GameClient {
     const controllerID = this.getControllingPlayer(type, id);
     if (controllerID >= 0) {
       // console.log(GameObjectType[type], id, "is controlled by", controllerID);
-      const player = this.gameObjects[GameObjectType.Player][controllerID];
+      const player = this.gameObjects[EntityType.Player][controllerID];
       this.renderer.playerInfo.setInfo(
         this.playerInfo.team,
         controllerID,
@@ -304,14 +304,14 @@ export class GameClient {
     }
 
     // If the player is not following anything, don't display name.
-    if (type == GameObjectType.Player) {
-      if (object.controlType == GameObjectType.None) {
+    if (type == EntityType.Player) {
+      if (object.controlType == EntityType.None) {
         this.renderer.playerInfo.deletePlayer(parseInt(id));
       }
     }
 
     // check if change to our player or followobject
-    if (type == GameObjectType.Player && this.playerInfo.id == id) {
+    if (type == EntityType.Player && this.playerInfo.id == id) {
       // set following
       this.followObject = {
         type: object.controlType,
@@ -320,7 +320,7 @@ export class GameClient {
       if (object.name !== undefined) {
         this.playerInfo.name = object.name;
       }
-      if (this.followObject.type == GameObjectType.Plane) {
+      if (this.followObject.type == EntityType.Plane) {
         this.audio.playEngine(true);
       } else {
         this.audio.playEngine(false);
@@ -349,15 +349,15 @@ export class GameClient {
   private deleteObject(type: number, id: string): void {
     if (this.followObject.type == type && this.followObject.id == id) {
       this.followObject = {
-        type: GameObjectType.None,
+        type: EntityType.None,
         id: undefined
       };
     }
-    if (type == GameObjectType.Player) {
+    if (type == EntityType.Player) {
       this.renderer.playerInfo.deletePlayer(parseInt(id));
     }
     delete this.gameObjects[type][id];
-    if (type == GameObjectType.Player) {
+    if (type == EntityType.Player) {
       this.playersUpdated = Date.now();
     }
     // this.gameObjects[type].updated = Date.now();

@@ -1,10 +1,10 @@
 import { FacingDirection } from "../constants";
-import { GameObject, GameObjectType } from "../object";
+import { TypedEntity, EntityType } from "../TypedEntity";
 import { Cache, CacheEntry } from "../network/cache";
 import { RectangleBody } from "../physics/rectangle";
 
-export class Water extends GameObject {
-  public type = GameObjectType.Water;
+export class Water extends TypedEntity {
+  public type = EntityType.Water;
 
   public x: number;
   public y: number;

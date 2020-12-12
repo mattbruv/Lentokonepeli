@@ -4,11 +4,11 @@ import App from "../src/components/app.vue";
 import Vue from "vue";
 import Vuex from "vuex";
 import { VNode } from "vue/types/umd";
-import { planeData, infoHUD } from "../../dogfight/src/objects/plane";
+import { planeData, infoHUD } from "../../dogfight/src/entities/plane";
 import { Localizer } from "../src/localization/localizer";
-import { bulletGlobals } from "../../dogfight/src/objects/bullet";
-import { bombGlobals } from "../../dogfight/src/objects/bomb";
-import { trooperGlobals } from "../../dogfight/src/objects/trooper";
+import { bulletGlobals } from "../../dogfight/src/entities/bullet";
+import { bombGlobals } from "../../dogfight/src/entities/bomb";
+import { trooperGlobals } from "../../dogfight/src/entities/trooper";
 import { ClientState } from "../src/clientState";
 
 Vue.config.productionTip = false;

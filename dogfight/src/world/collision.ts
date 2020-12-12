@@ -10,19 +10,19 @@ import {
   getTrooperRect,
   TrooperState,
   trooperGlobals
-} from "../objects/trooper";
-import { getPlaneRect, Plane } from "../objects/plane";
-import { getGroundRect } from "../objects/ground";
-import { getWaterRect } from "../objects/water";
+} from "../entities/trooper";
+import { getPlaneRect, Plane } from "../entities/plane";
+import { getGroundRect } from "../entities/ground";
+import { getWaterRect } from "../entities/water";
 import { Vec2d } from "../physics/vector";
 import { destroyTrooper } from "./trooper";
 import { SCALE_FACTOR } from "../constants";
 import { CircleBody } from "../physics/circle";
-import { explosionGlobals } from "../objects/explosion";
-import { bulletGlobals } from "../objects/bullet";
-import { gameObjectHash } from "../object";
+import { explosionGlobals } from "../entities/explosion";
+import { bulletGlobals } from "../entities/bullet";
+import { entityHash } from "../TypedEntity";
 import { radiansToDirection } from "../physics/helpers";
-import { getBombRect } from "../objects/bomb";
+import { getBombRect } from "../entities/bomb";
 
 export function processCollision(world: GameWorld): void {
   // get ground hitboxes
@@ -177,7 +177,7 @@ export function processCollision(world: GameWorld): void {
 
     for (const plane of world.planes) {
       // make sure this explosion hasn't harmed this plane before.
-      const hash = gameObjectHash(plane);
+      const hash = entityHash(plane);
       if (hash in explosion.affectedObjects) {
         break;
       }

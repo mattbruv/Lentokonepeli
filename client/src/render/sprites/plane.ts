@@ -4,7 +4,7 @@ import { DrawLayer } from "../constants";
 import {
   PlaneType,
   getPlaneRect
-} from "../../../../dogfight/src/objects/plane";
+} from "../../../../dogfight/src/entities/plane";
 import { directionToRadians } from "../../../../dogfight/src/physics/helpers";
 import { Vec2d, setSize } from "../../../../dogfight/src/physics/vector";
 

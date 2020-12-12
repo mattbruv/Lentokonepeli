@@ -6,7 +6,13 @@ import { Cache, CacheEntry } from "./network/cache";
  * These could be physical entities, or just containers
  * for game information.
  */
-export enum GameObjectType {
+/**
+ * Constants for each type of object in the game.
+ *
+ * These could be physical entities, or just containers
+ * for game information.
+ */
+export enum EntityType {
   None,
   Ground,
   Water,
@@ -19,12 +25,12 @@ export enum GameObjectType {
   Player,
   Explosion,
   Bullet,
-  Bomb
+  Bomb,
 }
 
 type sendableData = number | string | boolean;
 
-export function gameObjectHash(obj: GameObject): string {
+export function entityHash(obj: TypedEntity): string {
   return obj.type + "/" + obj.id;
 }
 
@@ -35,12 +41,16 @@ export function gameObjectHash(obj: GameObject): string {
  *
  * It also has a method to retrieve its current state.
  */
-export abstract class GameObject {
-  public abstract type: GameObjectType;
+export abstract class TypedEntity {
+  public abstract type: EntityType;
   public id: number;
 
   public constructor(id: number) {
     this.id = id;
+  }
+
+  public getType() {
+    return this.type;
   }
 
   /**

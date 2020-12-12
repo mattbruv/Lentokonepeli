@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer, WaterColor } from "../constants";
 import { FacingDirection } from "../../../../dogfight/src/constants";
-import { getWaterRect } from "../../../../dogfight/src/objects/water";
+import { getWaterRect } from "../../../../dogfight/src/entities/water";
 
 const WAVE_PHASE_TIME = 200; // Milliseconds
 const WATER_HEIGHT = 10000;

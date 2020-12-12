@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
-import { bulletGlobals } from "../../../../dogfight/src/objects/bullet";
+import { bulletGlobals } from "../../../../dogfight/src/entities/bullet";
 
 const bulletColors = [0, 1118481, 3355443, 6316128, 10066329];
 

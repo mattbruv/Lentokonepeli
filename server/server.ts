@@ -3,7 +3,7 @@ import express from "express";
 import http from "http";
 import WebSocket from "ws";
 import { PacketType, Packet } from "../dogfight/src/network/types";
-import { Player } from "../dogfight/src/objects/player";
+import { Player } from "../dogfight/src/entities/player";
 import { TeamOption } from "../client/src/teamSelector";
 import { Team } from "../dogfight/src/constants";
 import { decodePacket, encodePacket } from "../dogfight/src/network/encode";

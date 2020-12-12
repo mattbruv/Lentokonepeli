@@ -1,9 +1,9 @@
 import { GameWorld } from "./world";
-import { PlayerStatus } from "../objects/player";
-import { GameObjectType, GameObject } from "../object";
+import { PlayerStatus } from "../entities/player";
+import { EntityType, TypedEntity } from "../TypedEntity";
 import { mod } from "../physics/helpers";
-import { Trooper, trooperGlobals, TrooperDirection } from "../objects/trooper";
-import { Bullet, bulletGlobals } from "../objects/bullet";
+import { Trooper, trooperGlobals, TrooperDirection } from "../entities/trooper";
+import { Bullet, bulletGlobals } from "../entities/bullet";
 import { SCALE_FACTOR, ROTATION_DIRECTIONS } from "../constants";
 import { distance, getAngle } from "../physics/vector";
 
@@ -11,7 +11,7 @@ function getTarget(world: GameWorld, trooper: Trooper, radius: number): any {
   const troopers = world.troopers.filter((troop): boolean => {
     return troop.team != trooper.team;
   });
-  let closestTrooper: GameObject;
+  let closestTrooper: TypedEntity;
   let trooperDistance = Infinity;
   troopers.forEach((target): void => {
     const objDistance = distance(
@@ -29,7 +29,7 @@ function getTarget(world: GameWorld, trooper: Trooper, radius: number): any {
   const planes = world.planes.filter((plane): boolean => {
     return plane.team != trooper.team;
   });
-  let closestPlane: GameObject;
+  let closestPlane: TypedEntity;
   let planeDistance = Infinity;
   planes.forEach((target): void => {
     const objDistance = distance(
@@ -47,7 +47,7 @@ function getTarget(world: GameWorld, trooper: Trooper, radius: number): any {
   const runways = world.runways.filter((runway): boolean => {
     return runway.team != trooper.team;
   });
-  let closestRunway: GameObject;
+  let closestRunway: TypedEntity;
   let runwayDistance = Infinity;
   runways.forEach((target): void => {
     const objDistance = distance(
@@ -79,7 +79,7 @@ export function processTroopers(world: GameWorld, deltaTime: number): void {
         trooper.lastShot = mod(trooper.lastShot, trooper.shotThreshold);
 
         const bullet = new Bullet(
-          world.nextID(GameObjectType.Bullet),
+          world.nextID(EntityType.Bullet),
           world.cache,
           trooper.id,
           trooper.team
@@ -123,7 +123,7 @@ export function destroyTrooper(
   const player = world.getPlayerControlling(trooper);
   if (player != undefined) {
     player.setStatus(world.cache, PlayerStatus.Takeoff);
-    player.setControl(world.cache, GameObjectType.None, 0);
+    player.setControl(world.cache, EntityType.None, 0);
   }
   if (doExplosion) {
     world.createExplosion(trooper.x, trooper.y, player.id, trooper.team);

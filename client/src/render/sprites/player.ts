@@ -1,12 +1,12 @@
 import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
-import { GameObjectType } from "../../../../dogfight/src/object";
+import { EntityType } from "../../../../dogfight/src/TypedEntity";
 
 export class PlayerSprite extends GameSprite {
   public name: string;
   public controlID: number;
-  public controlType: GameObjectType;
+  public controlType: EntityType;
 
   private spritesheet: PIXI.Spritesheet;
 

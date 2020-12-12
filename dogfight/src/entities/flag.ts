@@ -1,9 +1,9 @@
 import { Team } from "../constants";
-import { GameObject, GameObjectType } from "../object";
+import { TypedEntity, EntityType } from "../TypedEntity";
 import { CacheEntry, Cache } from "../network/cache";
 
-export class Flag extends GameObject {
-  public type = GameObjectType.Flag;
+export class Flag extends TypedEntity {
+  public type = EntityType.Flag;
   public x: number;
   public y: number;
   public team: Team;

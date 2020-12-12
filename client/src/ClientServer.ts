@@ -1,6 +1,6 @@
 import { GameWorld } from "../../dogfight/src/world/world";
 import { PacketType, Packet } from "../../dogfight/src/network/types";
-import { Player } from "../../dogfight/src/objects/player";
+import { Player } from "../../dogfight/src/entities/player";
 import { TeamOption } from "./teamSelector";
 import { Team } from "../../dogfight/src/constants";
 import { requestTakeoff } from "../../dogfight/src/world/takeoff";

@@ -1,5 +1,5 @@
 import { IntType, GameObjectSchema } from "./types";
-import { GameObjectType } from "../object";
+import { EntityType } from "../TypedEntity";
 
 const planeSchema: GameObjectSchema = {
   numbers: [
@@ -142,16 +142,16 @@ const bombSchema: GameObjectSchema = {
 };
 
 export const schemaTypes = {
-  [GameObjectType.Plane]: planeSchema,
-  [GameObjectType.Ground]: groundSchema,
-  [GameObjectType.Hill]: hillSchema,
-  [GameObjectType.Flag]: flagSchema,
-  [GameObjectType.Runway]: runwaySchema,
-  [GameObjectType.ControlTower]: towerSchema,
-  [GameObjectType.Trooper]: trooperSchema,
-  [GameObjectType.Player]: playerSchema,
-  [GameObjectType.Water]: waterSchema,
-  [GameObjectType.Explosion]: explosionSchema,
-  [GameObjectType.Bullet]: bulletSchema,
-  [GameObjectType.Bomb]: bombSchema
+  [EntityType.Plane]: planeSchema,
+  [EntityType.Ground]: groundSchema,
+  [EntityType.Hill]: hillSchema,
+  [EntityType.Flag]: flagSchema,
+  [EntityType.Runway]: runwaySchema,
+  [EntityType.ControlTower]: towerSchema,
+  [EntityType.Trooper]: trooperSchema,
+  [EntityType.Player]: playerSchema,
+  [EntityType.Water]: waterSchema,
+  [EntityType.Explosion]: explosionSchema,
+  [EntityType.Bullet]: bulletSchema,
+  [EntityType.Bomb]: bombSchema
 };

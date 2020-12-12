@@ -1,8 +1,8 @@
 import { GameWorld } from "./world";
-import { PlaneType, Plane, teamPlanes } from "../objects/plane";
-import { Player, PlayerStatus } from "../objects/player";
-import { GameObjectType } from "../object";
-import { Runway } from "../objects/runway";
+import { PlaneType, Plane, teamPlanes } from "../entities/plane";
+import { Player, PlayerStatus } from "../entities/player";
+import { EntityType } from "../TypedEntity";
+import { Runway } from "../entities/runway";
 import { FacingDirection, ROTATION_DIRECTIONS } from "../constants";
 
 export interface TakeoffEntry {
@@ -25,7 +25,7 @@ export function requestTakeoff(
   if (!teamPlanes[team].includes(plane)) {
     return;
   }
-  const runwayID = world.getObjectIndex(GameObjectType.Runway, runway);
+  const runwayID = world.getObjectIndex(EntityType.Runway, runway);
   // if runway exists, add request to queue to be processed.
   if (runwayID >= 0) {
     world.takeoffQueue.push({
@@ -38,18 +38,18 @@ export function requestTakeoff(
 export function doTakeoff(world: GameWorld, takeoff: TakeoffEntry): void {
   // test if player exists
   const player = world.getObject(
-    GameObjectType.Player,
+    EntityType.Player,
     takeoff.playerID
   ) as Player;
   if (player === undefined) {
     return;
   }
   // make sure he's not controlling anything
-  if (player.controlType !== GameObjectType.None) {
+  if (player.controlType !== EntityType.None) {
     return;
   }
   const runway = world.getObject(
-    GameObjectType.Runway,
+    EntityType.Runway,
     takeoff.request.runway
   ) as Runway;
   if (runway === undefined) {
@@ -61,7 +61,7 @@ export function doTakeoff(world: GameWorld, takeoff: TakeoffEntry): void {
   }
   // create plane
   const plane = new Plane(
-    world.nextID(GameObjectType.Plane),
+    world.nextID(EntityType.Plane),
     world.cache,
     takeoff.request.plane,
     player.id,

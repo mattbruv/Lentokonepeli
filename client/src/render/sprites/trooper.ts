@@ -5,7 +5,7 @@ import {
   TrooperState,
   TrooperDirection,
   getTrooperRect
-} from "../../../../dogfight/src/objects/trooper";
+} from "../../../../dogfight/src/entities/trooper";
 import { Team } from "../../../../dogfight/src/constants";
 
 const frameDelay = 100; // milliseconds to update walk

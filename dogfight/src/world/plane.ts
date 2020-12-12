@@ -1,11 +1,11 @@
 import { GameWorld } from "./world";
-import { Plane } from "../objects/plane";
-import { PlayerStatus } from "../objects/player";
-import { GameObjectType } from "../object";
+import { Plane } from "../entities/plane";
+import { PlayerStatus } from "../entities/player";
+import { EntityType } from "../TypedEntity";
 import { mod, directionToRadians } from "../physics/helpers";
-import { Bullet, bulletGlobals } from "../objects/bullet";
+import { Bullet, bulletGlobals } from "../entities/bullet";
 import { SCALE_FACTOR } from "../constants";
-import { Bomb } from "../objects/bomb";
+import { Bomb } from "../entities/bomb";
 
 export function processPlanes(world: GameWorld, deltaTime: number): void {
   world.planes.forEach((plane): void => {
@@ -30,7 +30,7 @@ export function processPlanes(world: GameWorld, deltaTime: number): void {
           plane.ammo--;
 
           const bullet = new Bullet(
-            world.nextID(GameObjectType.Bullet),
+            world.nextID(EntityType.Bullet),
             world.cache,
             plane.id,
             plane.team
@@ -77,7 +77,7 @@ export function processPlanes(world: GameWorld, deltaTime: number): void {
           plane.setBombs(world.cache, plane.bombs - 1);
 
           const bomb = new Bomb(
-            world.nextID(GameObjectType.Bomb),
+            world.nextID(EntityType.Bomb),
             world.cache,
             plane.controlledBy,
             plane.team
@@ -106,7 +106,7 @@ export function destroyPlane(
   const player = world.getPlayerControlling(plane);
   if (player != undefined) {
     player.setStatus(world.cache, PlayerStatus.Takeoff);
-    player.setControl(world.cache, GameObjectType.None, 0);
+    player.setControl(world.cache, EntityType.None, 0);
   }
   if (doExplosion) {
     world.createExplosion(x, y, plane.controlledBy, plane.team);

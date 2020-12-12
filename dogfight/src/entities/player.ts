@@ -1,4 +1,4 @@
-import { GameObject, GameObjectType } from "../object";
+import { TypedEntity, EntityType } from "../TypedEntity";
 import { CacheEntry, Cache } from "../network/cache";
 import { Team } from "../constants";
 import { PlayerInput, InputKey } from "../input";
@@ -9,11 +9,11 @@ export enum PlayerStatus {
   Spectating
 }
 
-export class Player extends GameObject {
-  public type = GameObjectType.Player;
+export class Player extends TypedEntity {
+  public type = EntityType.Player;
   public name: string;
   public team: Team;
-  public controlType: GameObjectType;
+  public controlType: EntityType;
   public controlID: number;
   public status: PlayerStatus;
   public ping: number;
@@ -23,7 +23,7 @@ export class Player extends GameObject {
   public constructor(id: number, cache: Cache) {
     super(id);
     this.name = "Player_" + this.id;
-    this.controlType = GameObjectType.None;
+    this.controlType = EntityType.None;
     this.controlID = 0;
     this.team = Team.Spectator;
     this.setStatus(cache, PlayerStatus.Takeoff);
@@ -50,7 +50,7 @@ export class Player extends GameObject {
 
   public setControl(
     cache: Cache,
-    controlType: GameObjectType,
+    controlType: EntityType,
     controlID: number
   ): void {
     this.set(cache, "controlType", controlType);

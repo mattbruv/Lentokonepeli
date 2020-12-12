@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { Localizer } from "../../localization/localizer";
 import { GameScreen } from "../constants";
-import { PlaneType } from "../../../../dogfight/src/objects/plane";
+import { PlaneType } from "../../../../dogfight/src/entities/plane";
 import { Translation } from "../../localization/translation";
 
 const planeImages = {

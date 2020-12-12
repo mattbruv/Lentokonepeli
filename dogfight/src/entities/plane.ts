@@ -1,4 +1,4 @@
-import { GameObjectType, GameObject } from "../object";
+import { EntityType, TypedEntity } from "../TypedEntity";
 import {
   Team,
   SCALE_FACTOR,
@@ -157,8 +157,8 @@ const GRAVITY_PULL = 4.908738521234052; // per second
 const flipDelay = 200;
 const motorOnDelay = 200;
 const bombDelay = 500;
-export class Plane extends GameObject {
-  public type = GameObjectType.Plane;
+export class Plane extends TypedEntity {
+  public type = EntityType.Plane;
   public controlledBy: number;
   public team: Team;
   public planeType: PlaneType;

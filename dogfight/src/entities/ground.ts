@@ -1,10 +1,10 @@
 import { Terrain } from "../constants";
-import { GameObject, GameObjectType } from "../object";
+import { TypedEntity, EntityType } from "../TypedEntity";
 import { CacheEntry, Cache } from "../network/cache";
 import { RectangleBody } from "../physics/rectangle";
 
-export class Ground extends GameObject {
-  public type = GameObjectType.Ground;
+export class Ground extends TypedEntity {
+  public type = EntityType.Ground;
   public x: number;
   public y: number;
   public width: number;

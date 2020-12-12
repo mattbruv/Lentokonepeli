@@ -1,18 +1,18 @@
 import { Cache } from "../network/cache";
-import { Player } from "../objects/player";
-import { Flag } from "../objects/flag";
-import { Bullet } from "../objects/bullet";
-import { Bomb } from "../objects/bomb";
-import { Ground } from "../objects/ground";
-import { Hill } from "../objects/hill";
-import { Runway } from "../objects/runway";
-import { Tower } from "../objects/tower";
-import { Trooper } from "../objects/trooper";
-import { Water } from "../objects/water";
-import { Explosion } from "../objects/explosion";
-import { GameObject, GameObjectType } from "../object";
+import { Player } from "../entities/player";
+import { Flag } from "../entities/flag";
+import { Bullet } from "../entities/bullet";
+import { Bomb } from "../entities/bomb";
+import { Ground } from "../entities/ground";
+import { Hill } from "../entities/hill";
+import { Runway } from "../entities/runway";
+import { Tower } from "../entities/tower";
+import { Trooper } from "../entities/trooper";
+import { Water } from "../entities/water";
+import { Explosion } from "../entities/explosion";
+import { TypedEntity, EntityType } from "../TypedEntity";
 import { Team } from "../constants";
-import { Plane } from "../objects/plane";
+import { Plane } from "../entities/plane";
 import { InputQueue, InputKey } from "../input";
 import { processInputs } from "./input";
 import { processCollision } from "./collision";
@@ -22,6 +22,7 @@ import { processBullets } from "./bullet";
 import { processBombs } from "./bomb";
 import { processExplosions } from "./explosion";
 import { processTroopers } from "./trooper";
+import { loadSpriteSheet } from "../../../client/src/render/textures";
 
 /**
  * The Game World contains all entites,
@@ -53,18 +54,18 @@ export class GameWorld {
 
   // god please forgive me for this sin
   private objectArrays = {
-    [GameObjectType.Player]: "players",
-    [GameObjectType.Flag]: "flags",
-    [GameObjectType.Ground]: "grounds",
-    [GameObjectType.Hill]: "hills",
-    [GameObjectType.Runway]: "runways",
-    [GameObjectType.ControlTower]: "towers",
-    [GameObjectType.Trooper]: "troopers",
-    [GameObjectType.Water]: "waters",
-    [GameObjectType.Plane]: "planes",
-    [GameObjectType.Explosion]: "explosions",
-    [GameObjectType.Bullet]: "bullets",
-    [GameObjectType.Bomb]: "bombs"
+    [EntityType.Player]: "players",
+    [EntityType.Flag]: "flags",
+    [EntityType.Ground]: "grounds",
+    [EntityType.Hill]: "hills",
+    [EntityType.Runway]: "runways",
+    [EntityType.ControlTower]: "towers",
+    [EntityType.Trooper]: "troopers",
+    [EntityType.Water]: "waters",
+    [EntityType.Plane]: "planes",
+    [EntityType.Explosion]: "explosions",
+    [EntityType.Bullet]: "bullets",
+    [EntityType.Bomb]: "bombs"
   };
 
   // Next available ID, incremented by 1.
@@ -73,11 +74,14 @@ export class GameWorld {
 
   public constructor() {
     this.resetWorld();
-    for (const type in GameObjectType) {
+    for (const type in EntityType) {
       this.ids[type] = 0;
     }
+    loadSpriteSheet((): void => { });
   }
-
+  public getEntities(): TypedEntity[][] {
+    return [this.planes, this.troopers, this.bombs, this.bullets, this.runways, this.waters, this.players, this.towers, this.hills, this.flags, this.explosions];
+  }
   public clearCache(): void {
     this.cache = {};
     //console.log(this.cache);
@@ -122,7 +126,7 @@ export class GameWorld {
     return this.cache;
   }
 
-  public getPlayerControlling(object: GameObject): Player {
+  public getPlayerControlling(object: TypedEntity): Player {
     for (const player of this.players) {
       if (player.controlID == object.id && player.controlType == object.type) {
         return player;
@@ -142,7 +146,7 @@ export class GameWorld {
    * and returns the information.
    */
   public addPlayer(team: Team): Player {
-    const player = new Player(this.nextID(GameObjectType.Player), this.cache);
+    const player = new Player(this.nextID(EntityType.Player), this.cache);
     player.set(this.cache, "team", team);
     this.addObject(player);
     return player;
@@ -156,7 +160,7 @@ export class GameWorld {
     this.removeObject(p);
   }
 
-  public getObject(type: GameObjectType, id: number): GameObject | undefined {
+  public getObject(type: EntityType, id: number): TypedEntity | undefined {
     const index = this.getObjectIndex(type, id);
     if (index < 0) {
       return undefined;
@@ -194,7 +198,7 @@ export class GameWorld {
 
   public createExplosion(x: number, y: number, uid: number, team: Team): void {
     const explosion = new Explosion(
-      this.nextID(GameObjectType.Explosion),
+      this.nextID(EntityType.Explosion),
       this.cache,
       x,
       y
@@ -204,13 +208,13 @@ export class GameWorld {
     this.explosions.push(explosion);
   }
 
-  public addObject(obj: GameObject): void {
+  public addObject(obj: TypedEntity): void {
     const arr = this[this.objectArrays[obj.type]];
     arr.push(obj);
     this.cache[obj.type][obj.id] = obj.getState();
   }
 
-  public removeObject(obj: GameObject): void {
+  public removeObject(obj: TypedEntity): void {
     const index = this.getObjectIndex(obj.type, obj.id);
     if (index < 0) {
       return;
@@ -236,9 +240,9 @@ export class GameWorld {
    * @param arr Array of game objects to search through.
    * @param id The ID of the object to find.
    */
-  public getObjectIndex(type: GameObjectType, id: number): number {
+  public getObjectIndex(type: EntityType, id: number): number {
     let index = -1;
-    if (type === GameObjectType.None) {
+    if (type === EntityType.None) {
       return index;
     }
     const array = this[this.objectArrays[type]];
@@ -251,7 +255,7 @@ export class GameWorld {
     return index;
   }
 
-  public nextID(type: GameObjectType): number {
+  public nextID(type: EntityType): number {
     const id = this.ids[type]++;
     if (id >= 65535) {
       this.ids[type] = 0;

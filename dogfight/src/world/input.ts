@@ -1,9 +1,9 @@
 import { GameWorld } from "./world";
-import { GameObjectType } from "../object";
-import { Player } from "../objects/player";
-import { Plane } from "../objects/plane";
+import { EntityType } from "../TypedEntity";
+import { Player } from "../entities/player";
+import { Plane } from "../entities/plane";
 import { KeyChangeList, InputKey } from "../input";
-import { Trooper, TrooperState } from "../objects/trooper";
+import { Trooper, TrooperState } from "../entities/trooper";
 import { destroyTrooper } from "./trooper";
 import { destroyPlane } from "./plane";
 
@@ -37,14 +37,14 @@ export function planeInput(
         if (isPressed) {
           // destroyPlane(world, plane, true);
           const trooper = new Trooper(
-            world.nextID(GameObjectType.Trooper),
+            world.nextID(EntityType.Trooper),
             world.cache
           );
           trooper.setPos(world.cache, plane.x, plane.y);
           trooper.set(world.cache, "team", player.team);
           trooper.setVelocity(world.cache, 0, 0);
           world.addObject(trooper);
-          player.setControl(world.cache, GameObjectType.Trooper, trooper.id);
+          player.setControl(world.cache, EntityType.Trooper, trooper.id);
           plane.abandonPlane(world.cache);
           return;
         }
@@ -128,7 +128,7 @@ export function processInputs(world: GameWorld): void {
   // process input...
   for (const playerID in world.inputQueue) {
     const id = parseInt(playerID);
-    const player = world.getObject(GameObjectType.Player, id) as Player;
+    const player = world.getObject(EntityType.Player, id) as Player;
     if (player === undefined) {
       return;
     }
@@ -137,11 +137,11 @@ export function processInputs(world: GameWorld): void {
     const controlling = world.getObject(cType, cID);
     if (controlling !== undefined) {
       switch (cType) {
-        case GameObjectType.Plane: {
+        case EntityType.Plane: {
           planeInput(world, player, controlling as Plane, world.inputQueue[id]);
           break;
         }
-        case GameObjectType.Trooper: {
+        case EntityType.Trooper: {
           trooperInput(
             world,
             player,

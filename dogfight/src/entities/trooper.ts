@@ -1,5 +1,5 @@
 import { Team, SCALE_FACTOR } from "../constants";
-import { GameObject, GameObjectType } from "../object";
+import { TypedEntity, EntityType } from "../TypedEntity";
 import { Cache, CacheEntry } from "../network/cache";
 import { InputKey } from "../input";
 import { RectangleBody } from "../physics/rectangle";
@@ -37,8 +37,8 @@ export enum TrooperDirection {
   Right
 }
 
-export class Trooper extends GameObject {
-  public type = GameObjectType.Trooper;
+export class Trooper extends TypedEntity {
+  public type = EntityType.Trooper;
 
   public localX: number;
   public localY: number;

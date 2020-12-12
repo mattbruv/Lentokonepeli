@@ -1,4 +1,4 @@
-import { GameObject, GameObjectType } from "../object";
+import { TypedEntity, EntityType } from "../TypedEntity";
 import { Cache, CacheEntry } from "../network/cache";
 import { Team } from "../constants";
 
@@ -9,8 +9,8 @@ export const explosionGlobals = {
   radius: 35 // explosion radius
 };
 
-export class Explosion extends GameObject {
-  public type = GameObjectType.Explosion;
+export class Explosion extends TypedEntity {
+  public type = EntityType.Explosion;
   public x: number;
   public y: number;
   public playerID: number;

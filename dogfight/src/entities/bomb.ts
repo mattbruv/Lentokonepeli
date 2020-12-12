@@ -1,4 +1,4 @@
-import { GameObject, GameObjectType } from "../object";
+import { TypedEntity, EntityType } from "../TypedEntity";
 import { Cache, CacheEntry } from "../network/cache";
 import { Team, SCALE_FACTOR } from "../constants";
 import { radiansToDirection, directionToRadians } from "../physics/helpers";
@@ -10,8 +10,8 @@ export const bombGlobals = {
   cooldown: 500
 };
 
-export class Bomb extends GameObject {
-  public type = GameObjectType.Bomb;
+export class Bomb extends TypedEntity {
+  public type = EntityType.Bomb;
   public age: number;
   public localX: number;
   public localY: number;
@@ -56,7 +56,7 @@ export class Bomb extends GameObject {
     //console.log(this.x, this.y, this.xSpeed);
     const tstep = deltaTime / 1000;
     const xDelta = tstep * 1; // 0.01 * 100 tps in original
-    const yDelta = tstep * 333; // 3.33 * 100 tps in original
+    const yDelta = tstep * 1000 / 3; // 3.33 * 100 tps in original
 
     this.localX += this.xSpeed * tstep * SCALE_FACTOR;
     this.localY += this.ySpeed * tstep * SCALE_FACTOR;

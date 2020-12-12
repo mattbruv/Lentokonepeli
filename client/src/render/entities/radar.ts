@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { GameObjectType } from "../../../../dogfight/src/object";
+import { EntityType } from "../../../../dogfight/src/TypedEntity";
 import { Team } from "../../../../dogfight/src/constants";
 
 const BackgroundColor = 0xc7d3df;
@@ -15,10 +15,10 @@ const centerX = halfX + offsetX;
 const centerY = halfY + offsetY;
 
 export const radarObjects = [
-  GameObjectType.Ground,
-  GameObjectType.Runway,
-  GameObjectType.Plane,
-  GameObjectType.Trooper
+  EntityType.Ground,
+  EntityType.Runway,
+  EntityType.Plane,
+  EntityType.Trooper
 ];
 
 const ENEMY_COLOR = 0xff0000;
@@ -79,19 +79,19 @@ export class Radar {
 
   public refreshRadar(gameObjects: any): void {
     this.radarGraphics.clear();
-    const grounds = gameObjects[GameObjectType.Ground];
+    const grounds = gameObjects[EntityType.Ground];
     for (const id in grounds) {
       this.renderGround(grounds[id]);
     }
-    const troopers = gameObjects[GameObjectType.Trooper];
+    const troopers = gameObjects[EntityType.Trooper];
     for (const id in troopers) {
       this.renderObject(troopers[id]);
     }
-    const planes = gameObjects[GameObjectType.Plane];
+    const planes = gameObjects[EntityType.Plane];
     for (const id in planes) {
       this.renderObject(planes[id]);
     }
-    const runways = gameObjects[GameObjectType.Runway];
+    const runways = gameObjects[EntityType.Runway];
     for (const id in runways) {
       this.renderRunway(runways[id]);
     }

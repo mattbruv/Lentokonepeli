@@ -1,4 +1,4 @@
-import { GameObject, GameObjectType } from "../object";
+import { TypedEntity, EntityType } from "../TypedEntity";
 import { Cache, CacheEntry } from "../network/cache";
 import { Team, SCALE_FACTOR } from "../constants";
 import { Vec2d } from "../physics/vector";
@@ -24,8 +24,8 @@ export function moveBullet(
   };
 }
 
-export class Bullet extends GameObject {
-  public type = GameObjectType.Bullet;
+export class Bullet extends TypedEntity {
+  public type = EntityType.Bullet;
   public age: number;
   public localX: number;
   public localY: number;

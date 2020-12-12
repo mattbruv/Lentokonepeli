@@ -1,9 +1,9 @@
 import * as PIXI from "pixi.js";
-import { GameObjectType } from "../../../dogfight/src/object";
+import { EntityType } from "../../../dogfight/src/TypedEntity";
 
 export abstract class GameSprite {
   public id: number;
-  public type: GameObjectType;
+  public type: EntityType;
   public renderables: PIXI.Container[];
   public renderablesDebug: PIXI.Container[];
 
