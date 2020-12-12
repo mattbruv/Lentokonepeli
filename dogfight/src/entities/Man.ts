@@ -1,8 +1,13 @@
 import { Team, SCALE_FACTOR } from "../constants";
-import { TypedEntity, EntityType } from "../TypedEntity";
+import { Entity, EntityType } from "../entity";
 import { Cache, CacheEntry } from "../network/cache";
 import { InputKey } from "../input";
-import { RectangleBody } from "../physics/rectangle";
+import { RectangleBody, Rectangle } from "../physics/rectangle";
+import { GameWorld } from "../world/world";
+import { SolidEntity } from "./SolidEntity";
+import { Ownable } from "../ownable";
+import { PlayerInfo } from "./PlayerInfo";
+
 
 export const trooperGlobals = {
   gravity: 500,
@@ -37,7 +42,8 @@ export enum TrooperDirection {
   Right
 }
 
-export class Trooper extends TypedEntity {
+export class Man extends SolidEntity implements Ownable {
+
   public type = EntityType.Trooper;
 
   public localX: number;
@@ -46,6 +52,8 @@ export class Trooper extends TypedEntity {
   public y: number;
   public vx: number;
   public vy: number;
+  public width: number;
+  public height: number;
   public health: number;
   public state: TrooperState;
   public direction: TrooperDirection;
@@ -57,10 +65,25 @@ export class Trooper extends TypedEntity {
   public lastShot: number;
   public shotThreshold: number;
 
-  public constructor(id: number, cache: Cache) {
-    super(id);
+  public playerinfo;
+  public image;
+  public imageWidth;
+  public imageHeight;
+
+
+
+  public constructor(id: number, world: GameWorld, cache: Cache, x: number, y: number, player: PlayerInfo) {
+    super(id, world, player.getTeam());
+    this.playerinfo = player;
     this.localX = 0;
     this.localY = 0;
+
+    this.image = [world.getSprite("parachuter0.gif"), world.getSprite("parachuter1.gif")];
+    this.imageWidth = [this.image[0].width, this.image[1].width];
+    this.imageHeight = [this.image[0].height, this.image[1].height];
+
+    this.width = this.image[0].getWidth();
+    this.height = this.image[0].getHeight();
     this.isShooting = false;
     this.shotThreshold = Math.round(1000 / (trooperGlobals.fireRate / 60));
     this.lastShot = this.shotThreshold;
@@ -74,6 +97,18 @@ export class Trooper extends TypedEntity {
       direction: TrooperDirection.None,
       team: Team.Spectator
     });
+  }
+  public getCollisionBounds(): import("../physics/rectangle").Rectangle {
+    return new Rectangle(this.x, this.x, this.width, this.height);
+    //throw new Error("Method not implemented.");
+  }
+  getPlayerInfo(): import("./PlayerInfo").PlayerInfo {
+    return this.playerinfo;
+    //throw new Error("Method not implemented.");
+  }
+  getRootOwner(): Ownable {
+    return this;
+    //throw new Error("Method not implemented.");
   }
 
   public tick(cache: Cache, deltaTime: number): void {

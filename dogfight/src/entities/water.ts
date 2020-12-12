@@ -1,9 +1,10 @@
 import { FacingDirection } from "../constants";
-import { TypedEntity, EntityType } from "../TypedEntity";
+import { Entity, EntityType } from "../entity";
 import { Cache, CacheEntry } from "../network/cache";
 import { RectangleBody } from "../physics/rectangle";
+import { GameWorld } from "../world/world";
 
-export class Water extends TypedEntity {
+export class Water extends Entity {
   public type = EntityType.Water;
 
   public x: number;
@@ -11,8 +12,8 @@ export class Water extends TypedEntity {
   public width: number;
   public direction: FacingDirection;
 
-  public constructor(id: number, cache: Cache) {
-    super(id);
+  public constructor(id: number, world: GameWorld, cache: Cache) {
+    super(id, world);
     this.setData(cache, {
       x: 0,
       y: 0,

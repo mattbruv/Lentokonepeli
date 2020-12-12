@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
-import { EntityType } from "../../../../dogfight/src/TypedEntity";
+import { EntityType } from "../../../../dogfight/src/entity";
 
 export class PlayerSprite extends GameSprite {
   public name: string;

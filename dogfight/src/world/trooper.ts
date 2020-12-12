@@ -1,17 +1,17 @@
 import { GameWorld } from "./world";
-import { PlayerStatus } from "../entities/player";
-import { EntityType, TypedEntity } from "../TypedEntity";
+import { PlayerStatus } from "../entities/PlayerInfo";
+import { EntityType, Entity } from "../entity";
 import { mod } from "../physics/helpers";
-import { Trooper, trooperGlobals, TrooperDirection } from "../entities/trooper";
+import { Man, trooperGlobals, TrooperDirection } from "../entities/Man";
 import { Bullet, bulletGlobals } from "../entities/bullet";
 import { SCALE_FACTOR, ROTATION_DIRECTIONS } from "../constants";
 import { distance, getAngle } from "../physics/vector";
 
-function getTarget(world: GameWorld, trooper: Trooper, radius: number): any {
+function getTarget(world: GameWorld, trooper: Man, radius: number): any {
   const troopers = world.troopers.filter((troop): boolean => {
     return troop.team != trooper.team;
   });
-  let closestTrooper: TypedEntity;
+  let closestTrooper: Entity;
   let trooperDistance = Infinity;
   troopers.forEach((target): void => {
     const objDistance = distance(
@@ -29,7 +29,7 @@ function getTarget(world: GameWorld, trooper: Trooper, radius: number): any {
   const planes = world.planes.filter((plane): boolean => {
     return plane.team != trooper.team;
   });
-  let closestPlane: TypedEntity;
+  let closestPlane: Entity;
   let planeDistance = Infinity;
   planes.forEach((target): void => {
     const objDistance = distance(
@@ -47,7 +47,7 @@ function getTarget(world: GameWorld, trooper: Trooper, radius: number): any {
   const runways = world.runways.filter((runway): boolean => {
     return runway.team != trooper.team;
   });
-  let closestRunway: TypedEntity;
+  let closestRunway: Entity;
   let runwayDistance = Infinity;
   runways.forEach((target): void => {
     const objDistance = distance(
@@ -80,8 +80,9 @@ export function processTroopers(world: GameWorld, deltaTime: number): void {
 
         const bullet = new Bullet(
           world.nextID(EntityType.Bullet),
+          world,
           world.cache,
-          trooper.id,
+          trooper,
           trooper.team
         );
 
@@ -116,7 +117,7 @@ export function processTroopers(world: GameWorld, deltaTime: number): void {
 
 export function destroyTrooper(
   world: GameWorld,
-  trooper: Trooper,
+  trooper: Man,
   doExplosion: boolean
 ): void {
   // set player info to pre-flight
@@ -128,5 +129,5 @@ export function destroyTrooper(
   if (doExplosion) {
     world.createExplosion(trooper.x, trooper.y, player.id, trooper.team);
   }
-  world.removeObject(trooper);
+  world.removeEntity(trooper);
 }

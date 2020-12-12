@@ -1,6 +1,6 @@
 import { GameWorld } from "../../dogfight/src/world/world";
 import { PacketType, Packet } from "../../dogfight/src/network/types";
-import { Player } from "../../dogfight/src/entities/player";
+import { PlayerInfo } from "../../dogfight/src/entities/PlayerInfo";
 import { TeamOption } from "./teamSelector";
 import { Team } from "../../dogfight/src/constants";
 import { requestTakeoff } from "../../dogfight/src/world/takeoff";
@@ -25,7 +25,7 @@ export class ClientServer {
   public startTime = Date.now();
   public lastTick = 0;
   private serverMsg: messageCallback;
-  private player: Player;
+  private player: PlayerInfo;
   private hasJoined = false;
 
   // Game loop function

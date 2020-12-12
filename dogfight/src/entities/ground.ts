@@ -1,17 +1,18 @@
 import { Terrain } from "../constants";
-import { TypedEntity, EntityType } from "../TypedEntity";
+import { Entity, EntityType } from "../entity";
 import { CacheEntry, Cache } from "../network/cache";
 import { RectangleBody } from "../physics/rectangle";
+import { GameWorld } from "../world/world";
 
-export class Ground extends TypedEntity {
+export class Ground extends Entity {
   public type = EntityType.Ground;
   public x: number;
   public y: number;
   public width: number;
   public terrain: Terrain;
 
-  public constructor(id: number, cache: Cache) {
-    super(id);
+  public constructor(id: number, world: GameWorld, cache: Cache) {
+    super(id, world);
     this.setData(cache, {
       x: 0,
       y: 0,

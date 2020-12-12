@@ -8,7 +8,7 @@ import { planeData, infoHUD } from "../../dogfight/src/entities/plane";
 import { Localizer } from "../src/localization/localizer";
 import { bulletGlobals } from "../../dogfight/src/entities/bullet";
 import { bombGlobals } from "../../dogfight/src/entities/bomb";
-import { trooperGlobals } from "../../dogfight/src/entities/trooper";
+import { trooperGlobals } from "../../dogfight/src/entities/Man";
 import { ClientState } from "../src/clientState";
 
 Vue.config.productionTip = false;

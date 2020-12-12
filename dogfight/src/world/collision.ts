@@ -10,7 +10,7 @@ import {
   getTrooperRect,
   TrooperState,
   trooperGlobals
-} from "../entities/trooper";
+} from "../entities/Man";
 import { getPlaneRect, Plane } from "../entities/plane";
 import { getGroundRect } from "../entities/ground";
 import { getWaterRect } from "../entities/water";
@@ -20,7 +20,7 @@ import { SCALE_FACTOR } from "../constants";
 import { CircleBody } from "../physics/circle";
 import { explosionGlobals } from "../entities/explosion";
 import { bulletGlobals } from "../entities/bullet";
-import { entityHash } from "../TypedEntity";
+import { entityHash } from "../entity";
 import { radiansToDirection } from "../physics/helpers";
 import { getBombRect } from "../entities/bomb";
 
@@ -47,20 +47,20 @@ export function processCollision(world: GameWorld): void {
     };
     for (const bomb of world.bombs) {
       if (isPointRectCollision(point, getBombRect(bomb.x, bomb.y, radiansToDirection(bomb.radians)))) {
-        world.createExplosion(bomb.x, bomb.y, bomb.droppedBy, bomb.team);
-        world.removeObject(bomb);
-        world.removeObject(bullet);
+        world.createExplosion(bomb.x, bomb.y, bomb.droppedBy.getPlayerInfo().getId(), bomb.team);
+        world.removeEntity(bomb);
+        world.removeEntity(bullet);
       }
     }
     for (const water of waters) {
       if (isPointRectCollision(point, water)) {
-        world.removeObject(bullet);
+        world.removeEntity(bullet);
         return;
       }
     }
     for (const ground of grounds) {
       if (isPointRectCollision(point, ground)) {
-        world.removeObject(bullet);
+        world.removeEntity(bullet);
         return;
       }
     }
@@ -71,7 +71,7 @@ export function processCollision(world: GameWorld): void {
       }
       const rect = getTrooperRect(trooper.x, trooper.y, trooper.state);
       if (isPointRectCollision(point, rect)) {
-        world.removeObject(bullet);
+        world.removeEntity(bullet);
         destroyTrooper(world, trooper, false);
         return;
       }
@@ -89,7 +89,7 @@ export function processCollision(world: GameWorld): void {
       );
       if (isPointRectCollision(point, rect)) {
         plane.damagePlane(world.cache, bulletGlobals.damage);
-        world.removeObject(bullet);
+        world.removeEntity(bullet);
         return;
       }
     }
@@ -105,23 +105,23 @@ export function processCollision(world: GameWorld): void {
     for (const bomb2 of world.bombs) {
       if (!(bomb2.droppedBy == bomb.droppedBy && bomb2.age == bomb.age)) {
         if (isRectangleCollision(rectb, getBombRect(bomb2.x, bomb2.y, radiansToDirection(bomb2.radians)))) {
-          world.createExplosion(bomb.x, bomb.y, bomb.droppedBy, bomb.team);
-          world.createExplosion(bomb2.x, bomb2.y, bomb2.droppedBy, bomb2.team);
-          world.removeObject(bomb2);
-          world.removeObject(bomb);
+          world.createExplosion(bomb.x, bomb.y, bomb.droppedBy.getPlayerInfo().getId(), bomb.team);
+          world.createExplosion(bomb2.x, bomb2.y, bomb2.droppedBy.getPlayerInfo().getId(), bomb2.team);
+          world.removeEntity(bomb2);
+          world.removeEntity(bomb);
         }
       }
     }
     for (const water of waters) {
       if (isRectangleCollision(rectb, water)) {
-        world.removeObject(bomb);
+        world.removeEntity(bomb);
         return;
       }
     }
     for (const ground of grounds) {
       if (isRectangleCollision(rectb, ground)) {
-        world.createExplosion(bomb.x, bomb.y, bomb.droppedBy, bomb.team);
-        world.removeObject(bomb);
+        world.createExplosion(bomb.x, bomb.y, bomb.droppedBy.getPlayerInfo().getId(), bomb.team);
+        world.removeEntity(bomb);
         return;
       }
     }
@@ -139,7 +139,7 @@ export function processCollision(world: GameWorld): void {
       if (isRectangleCollision(rectb, planeRect)) {
         destroyPlane(world, plane, true);
         // world.createExplosion(bomb.x, bomb.y, bomb.droppedBy, bomb.team);
-        world.removeObject(bomb);
+        world.removeEntity(bomb);
         return;
       }
     }
@@ -151,8 +151,8 @@ export function processCollision(world: GameWorld): void {
       const troopRect = getTrooperRect(trooper.x, trooper.y, trooper.state);
       if (isRectangleCollision(rectb, troopRect)) {
         destroyTrooper(world, trooper, false);
-        world.createExplosion(bomb.x, bomb.y, bomb.droppedBy, bomb.team);
-        world.removeObject(bomb);
+        world.createExplosion(bomb.x, bomb.y, bomb.droppedBy.getPlayerInfo().getId(), bomb.team);
+        world.removeEntity(bomb);
         return;
       }
     }

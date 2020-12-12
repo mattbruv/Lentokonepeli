@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { Team } from "../../../../dogfight/src/constants";
 import { TeamColor, DrawLayer } from "../constants";
-import { EntityType } from "../../../../dogfight/src/TypedEntity";
+import { EntityType } from "../../../../dogfight/src/entity";
 
 interface PlayerInfoObject {
   [key: number]: PIXI.Text;

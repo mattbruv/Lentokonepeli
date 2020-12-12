@@ -1,7 +1,7 @@
 import { GameWorld } from "./world";
 import { Plane } from "../entities/plane";
-import { PlayerStatus } from "../entities/player";
-import { EntityType } from "../TypedEntity";
+import { PlayerStatus } from "../entities/PlayerInfo";
+import { EntityType } from "../entity";
 import { mod, directionToRadians } from "../physics/helpers";
 import { Bullet, bulletGlobals } from "../entities/bullet";
 import { SCALE_FACTOR } from "../constants";
@@ -31,8 +31,9 @@ export function processPlanes(world: GameWorld, deltaTime: number): void {
 
           const bullet = new Bullet(
             world.nextID(EntityType.Bullet),
+            world,
             world.cache,
-            plane.id,
+            plane,
             plane.team
           );
           const vx = Math.cos(directionToRadians(plane.direction));
@@ -78,8 +79,9 @@ export function processPlanes(world: GameWorld, deltaTime: number): void {
 
           const bomb = new Bomb(
             world.nextID(EntityType.Bomb),
+            world,
             world.cache,
-            plane.controlledBy,
+            plane,
             plane.team
           );
 
@@ -109,7 +111,7 @@ export function destroyPlane(
     player.setControl(world.cache, EntityType.None, 0);
   }
   if (doExplosion) {
-    world.createExplosion(x, y, plane.controlledBy, plane.team);
+    world.createExplosion(x, y, plane.controlledBy.getId(), plane.team);
   }
-  world.removeObject(plane);
+  world.removeEntity(plane);
 }

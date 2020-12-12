@@ -1,7 +1,9 @@
-import { TypedEntity, EntityType } from "../TypedEntity";
+import { Entity, EntityType } from "../entity";
 import { CacheEntry, Cache } from "../network/cache";
 import { Team } from "../constants";
 import { PlayerInput, InputKey } from "../input";
+import { GameWorld } from "../world/world";
+import { teamPlanes } from "./plane";
 
 export enum PlayerStatus {
   Playing,
@@ -9,7 +11,7 @@ export enum PlayerStatus {
   Spectating
 }
 
-export class Player extends TypedEntity {
+export class PlayerInfo extends Entity {
   public type = EntityType.Player;
   public name: string;
   public team: Team;
@@ -20,8 +22,8 @@ export class Player extends TypedEntity {
 
   public inputState: PlayerInput;
 
-  public constructor(id: number, cache: Cache) {
-    super(id);
+  public constructor(id: number, world: GameWorld, cache: Cache) {
+    super(id, world);
     this.name = "Player_" + this.id;
     this.controlType = EntityType.None;
     this.controlID = 0;
@@ -34,6 +36,10 @@ export class Player extends TypedEntity {
     for (const keyIndex in InputKey) {
       this.inputState[keyIndex] = false;
     }
+  }
+
+  public getTeam(): Team {
+    return this.team;
   }
 
   public setName(cache: Cache, name: string): void {

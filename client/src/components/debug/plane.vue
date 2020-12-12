@@ -42,7 +42,7 @@ import {
   PlaneType,
   planeGlobals,
   infoHUD
-} from "../../../../dogfight/src/objects/plane";
+} from "../../../../dogfight/src/entities/plane";
 import { BuildType } from "../../../../dogfight/src/constants";
 export default Vue.extend({
   data: (): any => {

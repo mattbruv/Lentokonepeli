@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { EntityType } from "../../../../dogfight/src/TypedEntity";
+import { EntityType } from "../../../../dogfight/src/entity";
 import { Team } from "../../../../dogfight/src/constants";
 
 const BackgroundColor = 0xc7d3df;

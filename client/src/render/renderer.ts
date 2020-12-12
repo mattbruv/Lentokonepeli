@@ -6,7 +6,7 @@ import { Vec2d } from "../../../dogfight/src/physics/vector";
 import { toPixiCoords } from "./coords";
 import { SkyBackground } from "./entities/sky";
 import { GameHud } from "./entities/hud";
-import { EntityType } from "../../../dogfight/src/TypedEntity";
+import { EntityType } from "../../../dogfight/src/entity";
 import { FlagSprite } from "./sprites/flag";
 import { GroundSprite } from "./sprites/ground";
 import { WaterSprite } from "./sprites/water";

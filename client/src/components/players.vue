@@ -32,9 +32,9 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { GameObjectType } from "../../../dogfight/src/object";
+import { EntityType } from "../../../dogfight/src/entity";
 import { Team } from "../../../dogfight/src/constants";
-import { PlayerStatus, Player } from "../../../dogfight/src/objects/player";
+import { PlayerStatus, PlayerInfo } from "../../../dogfight/src/entities/PlayerInfo";
 import { Localizer } from "../localization/localizer";
 const flags = {
   [Team.Centrals]: "germanflag_small.gif",

@@ -1,4 +1,5 @@
-import { EntityType, TypedEntity } from "../TypedEntity";
+import { EntityType, Entity } from "../entity";
+import { Ownable, isOwnable } from "../ownable";
 import {
   Team,
   SCALE_FACTOR,
@@ -7,8 +8,15 @@ import {
 } from "../constants";
 import { Cache, CacheEntry } from "../network/cache";
 import { InputKey } from "../input";
-import { RectangleBody } from "../physics/rectangle";
+import { RectangleBody, Rectangle } from "../physics/rectangle";
 import { directionToRadians, radiansToDirection } from "../physics/helpers";
+import { SolidEntity } from "./SolidEntity";
+import { Runway } from "./Runway";
+import { GameWorld } from "../world/world";
+import { PlayerInfo } from "./PlayerInfo";
+import { trooperGlobals, Man } from "./Man";
+import { Bullet } from "./bullet";
+import { Bomb } from "./bomb";
 
 export enum PlaneType {
   Albatros,
@@ -18,6 +26,7 @@ export enum PlaneType {
   Salmson,
   Sopwith,
 }
+import { FrameStatus, frameTextureString, planeImageIDs } from "../../../client/src/render/sprites/plane";
 
 export enum PlaneMode {
   Flying,
@@ -157,9 +166,15 @@ const GRAVITY_PULL = 4.908738521234052; // per second
 const flipDelay = 200;
 const motorOnDelay = 200;
 const bombDelay = 500;
-export class Plane extends TypedEntity {
+
+//require("pixi-shim");
+
+//const PIXI = require("node-pixi.js");
+//import { PIXI } from 'node-pixi';
+//const app = new PIXI.Application({ forceCanvas: true });
+export class Plane extends SolidEntity implements Ownable {
   public type = EntityType.Plane;
-  public controlledBy: number;
+  public controlledBy: PlayerInfo;
   public team: Team;
   public planeType: PlaneType;
 
@@ -214,14 +229,26 @@ export class Plane extends TypedEntity {
   public lastBomb: number;
   public lastShot: number;
 
+
+  public bottomHeight = -1;
+  public image;
+  private runway;
+  private lastMotorOn;
+  private motorOnDelay = 200;
+  private takeoffCounter = 0;
+  private fuelCounter = 0;
+  private dodgeCounter = 0;
+
   public constructor(
     id: number,
+    world: GameWorld,
     cache: Cache,
     kind: PlaneType,
-    player: number,
-    side: Team
+    player: PlayerInfo,
+    side: Team,
+    runway: Runway
   ) {
-    super(id);
+    super(id, world, side);
 
     this.controlledBy = player;
     this.isAbandoned = false;
@@ -248,6 +275,11 @@ export class Plane extends TypedEntity {
     this.localX = 0;
     this.localY = 0;
 
+
+
+    this.image = world.getSprite(frameTextureString[FrameStatus.Normal].replace("X", planeImageIDs[kind].toString()));
+    this.runway = runway;
+
     this.setData(cache, {
       x: 0,
       y: 0,
@@ -261,10 +293,79 @@ export class Plane extends TypedEntity {
       planeType: kind,
     });
   }
+  getPlayerInfo(): PlayerInfo {
+    return this.controlledBy;
+  }
+  getRootOwner(): Ownable {
+    return this;
+  }
+
+  private park(paramRunway: Runway): void {
+    this.x = (paramRunway.getStartX());
+    this.y = ((paramRunway.getStartY() - this.getBottomHeight()));
+    if (paramRunway.getDirection() == 0) {
+      this.radians = Math.PI;
+      this.flipped = true;
+    }
+    else {
+      this.radians = 0.0;
+      this.flipped = false;
+    }
+    this.speed = 0.0;
+    this.direction = Math.round((this.radians * 256.0 / 2 * Math.PI));
+    // TODO handle this
+    //this.playerInfo.setHealth(getMaxHealth());
+    //this.playerInfo.setAmmo(getMaxAmmo());
+    //this.playerInfo.setFuel(getMaxFuel());
+    //this.playerInfo.setBombs(getMaxBombs());
+    //this.fuelCounter = 100;
+  }
+
+  public getCollisionBounds(): Rectangle {
+    return new Rectangle(this.x, this.y, this.width, this.height);
+  }
+
+  private getBottomHeight(): number {
+    if (this.bottomHeight == -1) {
+
+      let arrayOfInt = this.world.getApp().renderer.plugins.Extract.image(this.image);
+      //int[] arrayOfInt = this.image.getRGB(0, 0, this.image.getWidth(), this.image.getHeight(), null, 0, this.image.getHeight());
+      for (let i = this.image.getHeight() - 1; i >= 0; i--) {
+        for (let j = 0; j < this.image.getWidth(); j++) {
+          if (arrayOfInt[(i * this.image.getWidth() + j)] < 0) {
+            this.bottomHeight = (i + 1);
+            return this.bottomHeight;
+          }
+        }
+      }
+      this.bottomHeight = 0;
+      return this.bottomHeight;
+    }
+    return this.bottomHeight;
+  }
 
   // advance the plane simulation
   public tick(cache: Cache, deltaTime: number): void {
-    this.move(cache, deltaTime);
+    switch (this.mode) {
+      case PlaneMode.Landing:
+        this.moveLanding(cache, deltaTime);
+        break;
+      case PlaneMode.Landed:
+        this.moveLanded(cache, deltaTime);
+        break;
+      case PlaneMode.TakingOff:
+        this.moveTakeoff(cache, deltaTime);
+        break;
+      case PlaneMode.Flying:
+        this.move(cache, deltaTime);
+        break;
+      case PlaneMode.Dodging:
+        this.moveDodging(cache, deltaTime);
+        break;
+      case PlaneMode.Falling:
+        this.moveFalling(cache, deltaTime);
+        break;
+    }
   }
 
   public setBombs(cache: Cache, numBombs: number): void {
@@ -317,6 +418,27 @@ export class Plane extends TypedEntity {
       this.rotateStatus = PlaneRotation.Down;
     }
   }
+
+  private steerUp(deltaTime): void {
+    const tstep = deltaTime / 1000;
+    const turnRate = this.turnStep;
+    const delta = (this.speed / SCALE_FACTOR / 4) * turnRate * tstep;
+    this.radians += delta;
+    if (this.radians >= Math.PI * 2) {
+      this.radians -= Math.PI * 2;
+    }
+  }
+  private steerDown(deltaTime): void {
+    const tstep = deltaTime / 1000;
+    const turnRate = this.turnStep;
+    const delta = (this.speed / SCALE_FACTOR / 4) * turnRate * tstep;
+    this.radians -= delta;
+    if (this.radians < 0) {
+      this.radians += Math.PI * 2;
+    }
+  }
+
+
 
   private steer(deltaTime: number): void {
     const tstep = deltaTime / 1000;
@@ -421,8 +543,6 @@ export class Plane extends TypedEntity {
   }
 
   private run(deltaTime: number): void {
-    this.steer(deltaTime);
-
     this.gravity(deltaTime);
     this.airResistance(deltaTime);
   }
@@ -431,6 +551,7 @@ export class Plane extends TypedEntity {
     if (this.motorOn) {
       this.accelerate(deltaTime);
     }
+    this.steer(deltaTime);
     this.run(deltaTime);
     this.movePlane(cache, deltaTime);
   }
@@ -443,18 +564,138 @@ export class Plane extends TypedEntity {
 
   private moveLanding(cache: Cache, deltaTime: number): void {
     const tstep = deltaTime / 1000;
+    if (this.speed > 100) {
+      //?
+    }
+    if (this.speed < 100) {
+      //?
+    }
+    if (Math.abs(this.speed - 100) < 3) {
+      this.speed = 100;
+    }
+    if (this.speed != 0) // TODO weird check
+    {
+      this.x += Math.cos(this.radians) * this.speed;
+    }
+    if (!this.checkCollision() || (this.runway.getDirection() == 1 && this.localX < this.runway.getStartX()) || this.runway.getDirection() == 0 && this.x >= this.runway.getStartX()) {
+      this.landed();
+    }
+    this.setChanged(true);
+
   }
 
   private moveLanded(cache: Cache, deltaTime: number): void {
     const tstep = deltaTime / 1000;
+    if (this.motorOn && this.lastMotorOn + this.motorOnDelay < Date.now()) {
+      this.motorOn = !this.motorOn;
+      this.lastMotorOn = Date.now();
+      this.mode = PlaneMode.TakingOff;
+    }
+  }
+
+  private landed(): void {
+    if (this.controlledBy.controlID == this.id) {
+      this.world.removeEntity(this);
+      // TODO set world.landed
+      // getDogfightToolkit().landed(this, this.runway, true);
+    }
+  }
+
+  private sink(): void {
+    this.suicide();
+  }
+
+  protected suicide(): void {
+    if (this.controlledBy.controlID == this.id) {
+      //getDogfightToolkit().killed(new Man(0, 0, this.playerInfo), null, 2);
+      //this.world.killed(new Trooper(), null, 2);
+      //this.playerInfo.removeKeyListener(this);
+      this.world.died(this.controlledBy, this.x, this.y);
+    }
+    this.world.removeEntity(this);
   }
 
   private moveTakeoff(cache: Cache, deltaTime: number): void {
     const tstep = deltaTime / 1000;
+    if (this.checkCollision) { }
+    this.accelerate(deltaTime);
+    this.takeoffCounter += 1;
+    if (this.takeoffCounter == 65 || this.takeoffCounter == 75) {
+      if (this.flipped) {
+        this.steerUp(deltaTime);
+      }
+      else {
+        this.steerDown(deltaTime);
+      }
+    }
+    if (this.takeoffCounter == 60 || this.takeoffCounter == 70) {
+      if (this.flipped) {
+        this.steerUp(deltaTime);
+      }
+      else {
+        this.steerDown(deltaTime);
+      }
+      this.localY -= 100;
+    }
+    if (this.takeoffCounter >= 70) {
+      this.mode = 0;
+      this.runway = null;
+      this.takeoffCounter = 0;
+    }
+    this.direction = radiansToDirection(this.radians);
+    if (this.speed != 0) {
+      this.localX += Math.cos(this.radians) * this.speed;
+    }
+    this.setChanged(true);
   }
 
   private moveDodging(cache: Cache, deltaTime: number): void {
     const tstep = deltaTime / 1000;
+    this.movePlane(cache, deltaTime);
+    if (this.motorOn) {
+      if (this.fuelCounter > 0) {
+        this.fuelCounter -= 1;
+      }
+      if (this.fuelCounter == 0) {
+        if (this.fuel == 0) {
+          this.motorOn = false;
+        }
+        else {
+          this.fuel -= 1;
+          this.fuelCounter = 100;
+        }
+      }
+      this.accelerate(deltaTime);
+    }
+    if (this.health < this.maxHealth) {
+      //TODO smoke
+    }
+    let d2 = this.direction;
+    this.run(deltaTime);
+    this.movePlane(cache, deltaTime);
+    this.direction = radiansToDirection(this.radians);
+    let i = 0;
+    if (this.direction != d2) {
+      i = 1;
+    }
+    if (++this.dodgeCounter > 40) {
+      this.mode = 0;
+      this.dodgeCounter = 0;
+    }
+    else if (this.dodgeCounter == 10) {
+      this.flipped = (!this.flipped);
+    }
+    else if (this.dodgeCounter == 20) {
+      this.flipped = (!this.flipped);
+    }
+    else if (this.dodgeCounter == 30) {
+      this.flipped = (!this.flipped);
+    }
+    if (i != 0) {
+      if (this.checkCollision()) { }
+      i = 0;
+    }
+    //setChanged(True);
   }
 
   public setPos(cache: Cache, x: number, y: number): void {
@@ -467,6 +708,111 @@ export class Plane extends TypedEntity {
     this.set(cache, "direction", direction);
     this.radians = directionToRadians(direction);
   }
+
+  public hit(se: SolidEntity) {
+    if ((this.mode == PlaneMode.Landing || this.mode == PlaneMode.Landed || this.mode == PlaneMode.TakingOff) && se == this.runway) {
+      return;
+    }
+    if (this.mode == PlaneMode.Falling) {
+      // TODO check for owned by whom => ownable
+      if (se.getType() == EntityType.Water) {
+        this.sink();
+      }
+    }
+    if (se.getType() == EntityType.Runway) {
+      let localRunway: Runway = se as Runway;
+      if (this.mode != 1 && this.x > localRunway.getLandableX() && this.x + this.width < localRunway.getLandableX() && !this.motorOn &&
+        this.speed < 250 + this.speedModifier &&
+        (!this.flipped && (this.radians < 0.8975979010256552 || this.radians > 5.385587406153931)) ||
+        this.flipped && (this.radians < 4.039190554615448 && this.radians > 2.243994752564138)) {
+        if (this.flipped) {
+          this.radians = Math.PI;
+        }
+        else {
+          this.radians = 0;
+        }
+        this.direction = radiansToDirection(this.radians);
+        this.localY = localRunway.getLandableY() - this.getBottomHeight();
+        if (localRunway.getTeam() == this.getTeam() && ((localRunway.getDirection() == 1 && this.radians == Math.PI) || (localRunway.getDirection() == 0 && this.radians == 0)) && localRunway.reserveFor(2)) {
+          this.runway = localRunway;
+          this.mode = PlaneMode.Landing;
+        }
+        return;
+      }
+      localRunway.planeCrash();
+    }
+    if (isOwnable(se)) {
+      if (se instanceof Plane && se.getType() == EntityType.Plane) { // equivalent  check
+        this.damagePlane
+        this.health -= 50;
+        if (this.health <= 0) {
+          this.fraggedBy(se as Ownable);
+          this.explode(se as Ownable);
+        }
+      }
+      else if (se instanceof Bullet) {
+        let b = se as Bullet;
+        this.health -= 30 * b.getDamageFactor();
+        if (this.health <= 0) {
+          this.fraggedBy(b);
+          this.mode = PlaneMode.Falling;
+        }
+      }
+      else if (se instanceof Bomb) {
+        let b = se as Bomb;
+        this.fraggedBy(b);
+        this.explode(b);
+      }
+      else if (se instanceof Plane) {
+        if (this.mode == PlaneMode.Flying) {
+          this.mode = PlaneMode.Dodging;
+          this.radians += (Math.random() - 0.5) * 0.7853981633974483;
+          this.health -= 25;
+          this.flipped = !this.flipped;
+          if (this.health <= 0) {
+            this.fraggedBy(se);
+            this.mode = PlaneMode.Falling;
+          }
+          this.setChanged(true);
+        }
+      }
+      else {
+        //this.fraggedBy(se);
+        //this.explodeBy(se);
+      }
+    }
+    else if (se.getType() == EntityType.Water) {
+      this.fraggedBy(null);
+      this.sink();
+    }
+    else {
+      if (this.mode != 4) {
+        this.fraggedBy(null);
+      }
+      this.explode(null);
+    }
+  }
+
+  public fraggedBy(e: Ownable) {
+    if (this.getPlayerInfo().controlID == this.id) {
+      this.world.killed(this, e, 1);
+    }
+  }
+
+  public explode(e: Ownable) {
+    if (e == null) {
+      this.suicide();
+    }
+    else {
+      if (this.controlledBy.controlID == this.id) {
+        this.world.killed(this, e, 2);
+        this.world.died(this.controlledBy, this.x, this.y);
+      }
+      this.world.removeEntity(this);
+    }
+    this.world.createExplosion(this.x, this.y, this.controlledBy.getId(), this.team);
+  }
+
 
   /*
     { name: "x", intType: IntType.Int16 },

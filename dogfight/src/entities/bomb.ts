@@ -1,8 +1,12 @@
-import { TypedEntity, EntityType } from "../TypedEntity";
+import { Entity, EntityType } from "../entity";
 import { Cache, CacheEntry } from "../network/cache";
 import { Team, SCALE_FACTOR } from "../constants";
 import { radiansToDirection, directionToRadians } from "../physics/helpers";
-import { RectangleBody } from "../physics/rectangle";
+import { RectangleBody, Rectangle } from "../physics/rectangle";
+import { GameWorld } from "../world/world";
+import { PlayerInfo } from "./PlayerInfo";
+import { SolidEntity } from "./SolidEntity";
+import { Ownable } from "../ownable";
 
 export const bombGlobals = {
   gravity: 425,
@@ -10,38 +14,59 @@ export const bombGlobals = {
   cooldown: 500
 };
 
-export class Bomb extends TypedEntity {
+export class Bomb extends SolidEntity implements Ownable {
+
   public type = EntityType.Bomb;
   public age: number;
   public localX: number;
   public localY: number;
   public x: number;
   public y: number;
-  public droppedBy: number; // ID of player who dropped it
+  public droppedBy: Ownable; // ID of player who dropped it
   public team: Team; // team of player who dropped it
+
+  public image;
+  public width;
+  public height;
 
   public xSpeed: number;
   public ySpeed: number;
   public radians: number;
   //public direction: number;
 
-  public constructor(id: number, cache: Cache, droppedBy: number, team: Team) {
-    super(id);
+  public constructor(id: number, world: GameWorld, cache: Cache, droppedBy: Ownable, team: Team) {
+    super(id, world, team);
     this.radians = directionToRadians(0);
     this.localX = 0;
     this.localY = 0;
     this.xSpeed = 0;
     this.ySpeed = 0;
+    this.image = world.getSprite("bomb.gif");
+    this.width = this.image.getWidth();
+    this.height = this.image.getHeight();
+
+
     this.setData(cache, {
       age: 0,
       x: 0,
       y: 0,
       direction: 0,
-      droppedBy,
+      droppedBy: droppedBy.getPlayerInfo().id,
       team
     });
   }
-
+  public getPlayerInfo(): PlayerInfo {
+    return this.droppedBy.getPlayerInfo();
+    //throw new Error("Method not implemented.");
+  }
+  public getRootOwner(): Ownable {
+    return this.droppedBy.getRootOwner();
+    //throw new Error("Method not implemented.");
+  }
+  public getCollisionBounds(): import("../physics/rectangle").Rectangle {
+    //throw new Error("Method not implemented.");
+    return new Rectangle(this.x, this.y, this.width, this.height);
+  }
   public tick(cache: Cache, deltaTime: number): void {
     this.move(cache, deltaTime);
     this.ageBomb(cache, deltaTime);

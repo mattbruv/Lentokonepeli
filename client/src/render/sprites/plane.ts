@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+//import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
 import {
@@ -8,7 +8,7 @@ import {
 import { directionToRadians } from "../../../../dogfight/src/physics/helpers";
 import { Vec2d, setSize } from "../../../../dogfight/src/physics/vector";
 
-const planeImageIDs = {
+export const planeImageIDs = {
   [PlaneType.Albatros]: 4,
   [PlaneType.Fokker]: 6,
   [PlaneType.Junkers]: 5,
@@ -17,13 +17,13 @@ const planeImageIDs = {
   [PlaneType.Salmson]: 8
 };
 
-enum FrameStatus {
+export enum FrameStatus {
   Normal,
   Flip1,
   Flip2
 }
 
-const frameTextureString = {
+export const frameTextureString = {
   [FrameStatus.Normal]: "planeX.gif",
   [FrameStatus.Flip1]: "planeX_flip1.gif",
   [FrameStatus.Flip2]: "planeX_flip2.gif"

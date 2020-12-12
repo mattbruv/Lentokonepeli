@@ -1,4 +1,5 @@
 import { Cache, CacheEntry } from "./network/cache";
+import { GameWorld } from "./world/world";
 
 /**
  * Constants for each type of object in the game.
@@ -15,22 +16,22 @@ import { Cache, CacheEntry } from "./network/cache";
 export enum EntityType {
   None,
   Ground,
-  Water,
-  Runway,
+  Water, // 28
+  Runway, // 16
   Flag,
   ControlTower,
   Hill,
-  Plane,
+  Plane, // 27
   Trooper,
   Player,
   Explosion,
-  Bullet,
-  Bomb,
+  Bullet, // 12
+  Bomb, // 17
 }
 
 type sendableData = number | string | boolean;
 
-export function entityHash(obj: TypedEntity): string {
+export function entityHash(obj: Entity): string {
   return obj.type + "/" + obj.id;
 }
 
@@ -41,16 +42,29 @@ export function entityHash(obj: TypedEntity): string {
  *
  * It also has a method to retrieve its current state.
  */
-export abstract class TypedEntity {
+export abstract class Entity {
   public abstract type: EntityType;
   public id: number;
+  public world: GameWorld;
+  //public removed: boolean = false;
+  public changed: boolean;
 
-  public constructor(id: number) {
+  public constructor(id: number, world: GameWorld) {
     this.id = id;
+    this.world = world;
   }
 
+  public getId() {
+    return this.id;
+  }
   public getType() {
     return this.type;
+  }
+  public isChanged() {
+    return this.changed;
+  }
+  public setChanged(v: boolean) {
+    this.changed = v
   }
 
   /**

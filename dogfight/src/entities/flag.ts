@@ -1,15 +1,16 @@
 import { Team } from "../constants";
-import { TypedEntity, EntityType } from "../TypedEntity";
+import { Entity, EntityType } from "../entity";
 import { CacheEntry, Cache } from "../network/cache";
+import { GameWorld } from "../world/world";
 
-export class Flag extends TypedEntity {
+export class Flag extends Entity {
   public type = EntityType.Flag;
   public x: number;
   public y: number;
   public team: Team;
 
-  public constructor(id: number, cache: Cache) {
-    super(id);
+  public constructor(id: number, world: GameWorld, cache: Cache) {
+    super(id, world);
     this.setData(cache, {
       x: 0,
       y: 0,

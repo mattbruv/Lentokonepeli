@@ -1,8 +1,8 @@
 import { GameWorld } from "./world";
 import { PlaneType, Plane, teamPlanes } from "../entities/plane";
-import { Player, PlayerStatus } from "../entities/player";
-import { EntityType } from "../TypedEntity";
-import { Runway } from "../entities/runway";
+import { PlayerInfo, PlayerStatus } from "../entities/PlayerInfo";
+import { EntityType } from "../entity";
+import { Runway } from "../entities/Runway";
 import { FacingDirection, ROTATION_DIRECTIONS } from "../constants";
 
 export interface TakeoffEntry {
@@ -17,7 +17,7 @@ export interface TakeoffRequest {
 
 export function requestTakeoff(
   world: GameWorld,
-  player: Player,
+  player: PlayerInfo,
   takeoffRequest: TakeoffRequest
 ): void {
   const team = player.team;
@@ -40,7 +40,7 @@ export function doTakeoff(world: GameWorld, takeoff: TakeoffEntry): void {
   const player = world.getObject(
     EntityType.Player,
     takeoff.playerID
-  ) as Player;
+  ) as PlayerInfo;
   if (player === undefined) {
     return;
   }
@@ -62,10 +62,12 @@ export function doTakeoff(world: GameWorld, takeoff: TakeoffEntry): void {
   // create plane
   const plane = new Plane(
     world.nextID(EntityType.Plane),
+    world,
     world.cache,
     takeoff.request.plane,
-    player.id,
-    player.team
+    player,
+    player.team,
+    runway
   );
   let offsetX = 100;
   let simpleDirection = -1;

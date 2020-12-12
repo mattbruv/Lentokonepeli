@@ -1,6 +1,7 @@
-import { TypedEntity, EntityType } from "../TypedEntity";
+import { Entity, EntityType } from "../entity";
 import { Cache, CacheEntry } from "../network/cache";
 import { Team } from "../constants";
+import { GameWorld } from "../world/world";
 
 export const explosionGlobals = {
   duration: 500, // damage duration in milliseconds
@@ -9,7 +10,7 @@ export const explosionGlobals = {
   radius: 35 // explosion radius
 };
 
-export class Explosion extends TypedEntity {
+export class Explosion extends Entity {
   public type = EntityType.Explosion;
   public x: number;
   public y: number;
@@ -22,8 +23,8 @@ export class Explosion extends TypedEntity {
   // Hash table to keep track of entities this has affected
   public affectedObjects = {};
 
-  public constructor(id: number, cache: Cache, x: number, y: number) {
-    super(id);
+  public constructor(id: number, world: GameWorld, cache: Cache, x: number, y: number) {
+    super(id, world);
     this.setData(cache, {
       x,
       y,

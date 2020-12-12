@@ -1,4 +1,4 @@
-import { EntityType } from "../TypedEntity";
+import { EntityType } from "../entity";
 import { SendableType } from "./types";
 
 /**

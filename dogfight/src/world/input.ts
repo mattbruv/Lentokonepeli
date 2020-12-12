@@ -1,15 +1,15 @@
 import { GameWorld } from "./world";
-import { EntityType } from "../TypedEntity";
-import { Player } from "../entities/player";
+import { EntityType } from "../entity";
+import { PlayerInfo } from "../entities/PlayerInfo";
 import { Plane } from "../entities/plane";
 import { KeyChangeList, InputKey } from "../input";
-import { Trooper, TrooperState } from "../entities/trooper";
+import { Man, TrooperState } from "../entities/Man";
 import { destroyTrooper } from "./trooper";
 import { destroyPlane } from "./plane";
 
 export function planeInput(
   world: GameWorld,
-  player: Player,
+  player: PlayerInfo,
   plane: Plane,
   changes: KeyChangeList
 ): void {
@@ -36,9 +36,13 @@ export function planeInput(
       case InputKey.Jump: {
         if (isPressed) {
           // destroyPlane(world, plane, true);
-          const trooper = new Trooper(
+          const trooper = new Man(
             world.nextID(EntityType.Trooper),
-            world.cache
+            world,
+            world.cache,
+            plane.x,
+            plane.y,
+            player
           );
           trooper.setPos(world.cache, plane.x, plane.y);
           trooper.set(world.cache, "team", player.team);
@@ -77,8 +81,8 @@ export function planeInput(
 
 export function trooperInput(
   world: GameWorld,
-  player: Player,
-  trooper: Trooper,
+  player: PlayerInfo,
+  trooper: Man,
   changes: KeyChangeList
 ): void {
   for (const keyType in changes) {
@@ -128,7 +132,7 @@ export function processInputs(world: GameWorld): void {
   // process input...
   for (const playerID in world.inputQueue) {
     const id = parseInt(playerID);
-    const player = world.getObject(EntityType.Player, id) as Player;
+    const player = world.getObject(EntityType.Player, id) as PlayerInfo;
     if (player === undefined) {
       return;
     }
@@ -145,7 +149,7 @@ export function processInputs(world: GameWorld): void {
           trooperInput(
             world,
             player,
-            controlling as Trooper,
+            controlling as Man,
             world.inputQueue[id]
           );
           break;

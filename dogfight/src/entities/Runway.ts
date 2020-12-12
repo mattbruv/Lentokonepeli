@@ -1,10 +1,11 @@
 import { FacingDirection, Team } from "../constants";
-import { TypedEntity, EntityType } from "../TypedEntity";
+import { Entity, EntityType } from "../entity";
 import { Cache, CacheEntry } from "../network/cache";
 import { SolidEntity } from "./SolidEntity";
-import { spriteSheet } from "../../../client/src/render/textures";
 import { Rectangle } from "../physics/rectangle";
-import { SimplePlane } from "pixi.js";
+import { Bullet } from "./bullet";
+import { PlayerInfo } from "./PlayerInfo";
+import { GameWorld } from "../world/world";
 
 const RESERVE_TAKEOFF_LANDING_DELAY = 1000;
 const RESERVE_LANDING_TAKEOFF_DELAY = 2000;
@@ -27,14 +28,19 @@ export class Runway extends SolidEntity {
   public lastReserve: number;
   public reserveTimer: number;
   public healthTimer: number;
+  private playersInside = [];
 
 
-  public image = [spriteSheet.textures["runway.gif"], spriteSheet.textures["runway2.gif"]];
-  public imageWidth = [this.image[0].width, this.image[1].width];
-  public imageHeight = [this.image[0].height, this.image[1].height];
+  public image;
+  public imageWidth;
+  public imageHeight;
 
-  public constructor(id: number, cache: Cache, team: number, x: number, y: number, direction: number) {
-    super(id, team);
+  public constructor(id: number, world: GameWorld, cache: Cache, team: number, x: number, y: number, direction: number) {
+    super(id, world, team);
+    this.image = [world.getSprite("runway.gif"), world.getSprite("runway2.gif")];
+    this.imageWidth = [this.image[0].width, this.image[1].width];
+    this.imageHeight = [this.image[0].height, this.image[1].height];
+
     this.setData(cache, {
       x: x,
       y: y,
@@ -122,7 +128,7 @@ export class Runway extends SolidEntity {
       if (this.healthTimer == 0) {
         this.health += 1;
         if (this.health * 255 % 1530 == 0) {
-          //setChanged(true);
+          this.setChanged(true);
         }
       }
     }
@@ -133,13 +139,15 @@ export class Runway extends SolidEntity {
       return;
     }
     switch (paramSolidEntity.getType()) {
-      case 17:
+      // TODO check vs src if ids correct
+      case EntityType.Bomb:
         this.health -= 30;
         break;
       case EntityType.Bullet:
-        this.health -= (int)(4.0D * ((Bullet)paramSolidEntity).getDamageFactor());
+        let b: Bullet = paramSolidEntity as Bullet;
+        this.health -= (4.0 * b.getDamageFactor());
         break;
-      case 27:
+      case EntityType.Plane:
         this.health -= 17;
         break;
       default:
@@ -149,7 +157,66 @@ export class Runway extends SolidEntity {
       this.health = 0;
       this.destroyed(paramSolidEntity.getTeam());
     }
-    setChanged(true);
+    this.setChanged(true);
+  }
+
+  public planeCrash(): void {
+    if (this.health <= 0) {
+      return;
+    }
+    this.health -= 17;
+    if (this.health <= 0) {
+      this.health = 0;
+      this.destroyed(this.getTeam());
+    }
+    this.setChanged(true);
+  }
+
+  /**
+   * 
+   * @param paramInt Team id
+   */
+  private destroyed(paramInt: number): void {
+    let i = paramInt;
+    if (i == this.getTeam()) {
+      i = 1 - i;
+    }
+    //getDogfightToolkit().adjustScore(i, 100);
+    //this.toolkit.pushText(3, "team" + getTeam() + " runway destroyed.");
+    console.log("Destroyed")
+    /*
+    synchronized(this.playersInside)
+    {
+      Iterator localIterator = this.playersInside.iterator();
+      while (localIterator.hasNext()) {
+        PlayerInfo localPlayerInfo = (PlayerInfo)localIterator.next();
+        getDogfightToolkit().killedWithoutAvatar(localPlayerInfo, 2);
+        localPlayerInfo.removeAvatar();
+        getDogfightToolkit().diedWithoutAvatar(localPlayerInfo, getStartX() + imageWidth[(1 - this.direction)], getStartY());
+        localIterator.remove();
+      }
+    }
+    */
+  }
+
+  public isAlive() {
+    return this.health > 0;
+  }
+
+  public addPlayerInside(pi: PlayerInfo): void {
+    if (!this.isAlive()) {
+      console.log("Tryied to join dead runway");
+    }
+    else {
+      this.playersInside.push(pi);
+    }
+  }
+
+  public removePlayerInside(pi: PlayerInfo): void {
+    const index = this.playersInside.indexOf(pi, 0);
+    if (index > -1) {
+      this.playersInside.splice(index, 1);
+    }
   }
 
   public getState(): CacheEntry {

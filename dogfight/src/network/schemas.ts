@@ -1,5 +1,5 @@
 import { IntType, GameObjectSchema } from "./types";
-import { EntityType } from "../TypedEntity";
+import { EntityType } from "../entity";
 
 const planeSchema: GameObjectSchema = {
   numbers: [

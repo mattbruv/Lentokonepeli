@@ -1,7 +1,11 @@
-import { TypedEntity, EntityType } from "../TypedEntity";
+import { Entity, EntityType } from "../entity";
 import { Cache, CacheEntry } from "../network/cache";
 import { Team, SCALE_FACTOR } from "../constants";
 import { Vec2d } from "../physics/vector";
+import { SolidEntity } from "./SolidEntity";
+import { Rectangle } from "../physics/rectangle";
+import { Ownable } from "../ownable";
+import { GameWorld } from "../world/world";
 
 export const bulletGlobals = {
   speed: 400,
@@ -24,22 +28,24 @@ export function moveBullet(
   };
 }
 
-export class Bullet extends TypedEntity {
+export class Bullet extends SolidEntity implements Ownable {
   public type = EntityType.Bullet;
   public age: number;
   public localX: number;
   public localY: number;
   public x: number;
   public y: number;
-  public shotBy: number; // ID of player who shot it
+  public width: number = 2;
+  public height: number = 2;
+  public shotBy: Ownable; // ID of player who shot it
   public team: Team; // team of player who shot it
   public vx: number;
   public vy: number;
   public clientVX: number;
   public clientVY: number;
 
-  public constructor(id: number, cache: Cache, shotBy: number, team: Team) {
-    super(id);
+  public constructor(id: number, world: GameWorld, cache: Cache, shotBy: Ownable, team: Team) {
+    super(id, world, team);
     this.localX = 0;
     this.localY = 0;
     this.vx = 0;
@@ -48,9 +54,19 @@ export class Bullet extends TypedEntity {
     this.clientVY = 0;
     this.setData(cache, {
       age: 0,
-      shotBy,
+      shotBy: shotBy.getPlayerInfo().getId(),
       team
     });
+  }
+  getPlayerInfo(): import("./PlayerInfo").PlayerInfo {
+    return this.shotBy.getPlayerInfo();
+  }
+  getRootOwner(): Ownable {
+    return this.shotBy.getRootOwner();
+  }
+
+  public getCollisionBounds(): Rectangle {
+    return new Rectangle(this.x, this.y, this.width, this.height);
   }
 
   public tick(cache: Cache, deltaTime: number): void {
@@ -58,8 +74,20 @@ export class Bullet extends TypedEntity {
     this.ageBullet(cache, deltaTime);
   }
 
+  public getDamageFactor(): number {
+    if (this.age > 175 * 10) {
+      return 0.0;
+    }
+    let d = this.age / 175.0 * 10;
+    d *= d;
+    return 1.0 - d;
+  }
+
   private ageBullet(cache: Cache, deltaTime: number): void {
     this.age += deltaTime;
+    if (this.age >= 175) {
+      this.hit(null);
+    }
   }
 
   public move(cache: Cache, deltaTime: number): void {

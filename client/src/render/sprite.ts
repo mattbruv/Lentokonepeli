@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { EntityType } from "../../../dogfight/src/TypedEntity";
+import { EntityType } from "../../../dogfight/src/entity";
 
 export abstract class GameSprite {
   public id: number;

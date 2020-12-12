@@ -1,17 +1,17 @@
-import { TypedEntity, EntityType } from "../TypedEntity";
+import { Entity, EntityType } from "../entity";
 import { RectangleBody, Rectangle } from "../physics/rectangle";
 import { GameWorld } from "../world/world"
-import { spriteSheet } from "../../../client/src/render/textures";
+import { spriteSheet } from "../../../server/textures";
 
-export abstract class SolidEntity extends TypedEntity {
+export abstract class SolidEntity extends Entity {
   public team: number;
 
-  public constructor(id: number, team: number) {
-    super(id);
+  public constructor(id: number, world: GameWorld, team: number) {
+    super(id, world);
     this.team = team;
   }
   public abstract getCollisionBounds(): Rectangle;
-  public getCollisionImage() { return spriteSheet }; //TODO pixel perfect check
+  public getCollisionImage() { return null }; //TODO pixel perfect check
 
   public checkCollisionWith(paramSolidEntity: SolidEntity): boolean {
     if ((paramSolidEntity.isAlive()) && (this.getCollisionBounds().intersects(paramSolidEntity.getCollisionBounds()))) {
@@ -59,9 +59,9 @@ export abstract class SolidEntity extends TypedEntity {
     return null;
   }
 
-  public checkCollision(world: GameWorld): boolean {
+  public checkCollision(): boolean {
     let bool = false;
-    let entities = world.getEntities();
+    let entities = this.world.getEntities();
 
     entities.forEach((list): void => {
       list.forEach((entity): void => {
