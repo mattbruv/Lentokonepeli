@@ -3,10 +3,18 @@ import { Entity, EntityType } from "../entity";
 import { Cache, CacheEntry } from "../network/cache";
 import { InputKey } from "../input";
 import { RectangleBody, Rectangle } from "../physics/rectangle";
-import { GameWorld } from "../world/world";
+import { GameWorld, } from "../world/world";
 import { SolidEntity } from "./SolidEntity";
 import { Ownable } from "../ownable";
 import { PlayerInfo } from "./PlayerInfo";
+import * as json from "../../../dist/assets/images/images.json";
+import sharp from 'sharp';
+import { OwnableSolidEntity } from "./OwnableSolidEntity";
+
+const info = [json.frames["parachuter0.gif"].frame, json.frames["parachuter1.gif"].frame];
+const image = [null, null]
+//const image = [sharp("./dist/assets/images/images.png").extract({ left: info[0].x, top: info[0].y, width: info[0].w, height: info[0].h }).toFormat('raw').toBuffer()
+//  , sharp("./dist/assets/images/images.png").extract({ left: info[1].x, top: info[1].y, width: info[1].w, height: info[1].h }).toFormat('raw').toBuffer()];
 
 
 export const trooperGlobals = {
@@ -30,8 +38,8 @@ export const TrooperHitboxParachute = {
 };
 
 export enum TrooperState {
-  Parachuting,
   Falling,
+  Parachuting,
   Standing,
   Walking
 }
@@ -42,7 +50,7 @@ export enum TrooperDirection {
   Right
 }
 
-export class Man extends SolidEntity implements Ownable {
+export class Man extends OwnableSolidEntity {
 
   public type = EntityType.Trooper;
 
@@ -71,34 +79,33 @@ export class Man extends SolidEntity implements Ownable {
   public imageHeight;
 
 
+  public speedPerPixel = 100;
+
+
 
   public constructor(id: number, world: GameWorld, cache: Cache, x: number, y: number, player: PlayerInfo) {
     super(id, world, player.getTeam());
     this.playerinfo = player;
-    this.localX = 0;
-    this.localY = 0;
-
-    this.image = [world.getSprite("parachuter0.gif"), world.getSprite("parachuter1.gif")];
-    this.imageWidth = [this.image[0].width, this.image[1].width];
-    this.imageHeight = [this.image[0].height, this.image[1].height];
-
-    this.width = this.image[0].getWidth();
-    this.height = this.image[0].getHeight();
+    this.localX = x * SCALE_FACTOR;
+    this.localY = y * SCALE_FACTOR;
+    this.image = [world.getImage("parachuter0.gif"), world.getImage("parachuter1.gif")];
+    this.width = this.image[0].width;
+    this.height = this.image[0].height;
     this.isShooting = false;
     this.shotThreshold = Math.round(1000 / (trooperGlobals.fireRate / 60));
     this.lastShot = this.shotThreshold;
     this.setData(cache, {
-      x: 0,
-      y: 0,
+      x: x,
+      y: y,
       ammo: 255,
       bombs: 1,
       health: 255,
       state: TrooperState.Falling,
       direction: TrooperDirection.None,
-      team: Team.Spectator
+      team: player.getTeam()
     });
   }
-  public getCollisionBounds(): import("../physics/rectangle").Rectangle {
+  public getCollisionBounds(): Rectangle {
     return new Rectangle(this.x, this.x, this.width, this.height);
     //throw new Error("Method not implemented.");
   }
@@ -106,9 +113,12 @@ export class Man extends SolidEntity implements Ownable {
     return this.playerinfo;
     //throw new Error("Method not implemented.");
   }
-  getRootOwner(): Ownable {
+  getRootOwner(): OwnableSolidEntity {
     return this;
     //throw new Error("Method not implemented.");
+  }
+  public parachute(): void {
+    this.setState(this.world.cache, TrooperState.Parachuting);
   }
 
   public tick(cache: Cache, deltaTime: number): void {
@@ -182,6 +192,37 @@ export class Man extends SolidEntity implements Ownable {
       }
     }
     this.set(cache, "direction", newDirection);
+  }
+
+  public hit(se: SolidEntity): void {
+    if (se.getType() == EntityType.Ground && (this.state == TrooperState.Falling || this.state == TrooperState.Parachuting)) {
+      if (this.vy < this.speedPerPixel * 1.5) {
+        this.setState(this.world.cache, TrooperState.Standing);
+        this.localY = (se.getCollisionBounds().y - image[0].getHeight() / 2) * 100;
+      }
+      else {
+        this.fraggedBy(null);
+        this.removeSelf();
+      }
+    }
+    else if (se.getType() != EntityType.Ground || (this.state!=TrooperState.Standing) && this.state!= TrooperState.Walking) {
+      if(se.getType() == )
+
+    }
+  }
+
+  public fraggedBy(o: Ownable): void {
+    if (this.getPlayerInfo().getControlId() == this.id) {
+      this.world.killed(this, o, 2);
+    }
+  }
+
+  public removeSelf(): void {
+    if (this.getPlayerInfo().controlID == this.id) {
+      this.world.removeEntity(this);
+      let r = this.getCollisionBounds();
+      this.world.died(this, r.x, r.y);
+    }
   }
 
   public getState(): CacheEntry {

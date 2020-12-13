@@ -1,5 +1,23 @@
+/*
+//import * as PIXI from "pixi.js";
 import { PIXI } from 'node-pixi';
-const app = new PIXI.Application({ forceCanvas: true });
+//const PIXI = require("pixi-shim");
+// this will make pixi-shim not shim pixi
+//global.window = require("pixi-shim/polyfills/window");
+////global.window.PIXI = true;
+//require("pixi-shim");
+//
+//// `npm install canvas@^2 --save`
+//require("pixi-shim/polyfills/canvas-lib");
+//// `npm install gl node-addon-api node-gles --save`
+//require("pixi-shim/polyfills/webgl");
+//
+//// now fill with what it should be
+//global.window.PIXI = require("pixi.js");
+////const app = new PIXI.Application({ forceCanvas: true });
+
+
+//module.exports = window.PIXI;
 
 export let spriteSheet: PIXI.spriteSheet;
 
@@ -29,3 +47,5 @@ export function loadSpriteSheet(callback: () => void, sheetPat = sheetPath) {
   //spriteSheet = { textures: { width: 0, height: 0 } };
   //callback();
 }
+
+*/

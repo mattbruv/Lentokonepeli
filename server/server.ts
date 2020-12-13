@@ -8,12 +8,16 @@ import { TeamOption } from "../client/src/teamSelector";
 import { Team } from "../dogfight/src/constants";
 import { decodePacket, encodePacket } from "../dogfight/src/network/encode";
 import { InputChange, InputKey } from "../dogfight/src/input";
-import { GameWorld } from "../dogfight/src/world/world";
+import { GameWorld, } from "../dogfight/src/world/world";
 import { requestTakeoff } from "../dogfight/src/world/takeoff";
 import { loadMap } from "../dogfight/src/world/map";
 import { MAP_CLASSIC_2 } from "../dogfight/src/maps/classic2";
 import { isNameValid } from "../dogfight/src/validation";
-import { loadSpriteSheet, spriteSheet } from "./textures";
+//import { loadSpriteSheet, spriteSheet } from "./textures";
+import { BufferedImage } from "../dogfight/src/BufferedImage";
+import { loadImages } from "./images";
+
+const sharp = require('sharp');
 
 const PORT = 3259;
 
@@ -25,11 +29,14 @@ app.use(express.static(filepath));
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
+loadImages().then((img) => {
 
-loadSpriteSheet((): void => {
+  //for (let key in img)
+  //console.log(key);
   // Initialize game world.
-  const world = new GameWorld(spriteSheet.textures, new PIXI.Application({ forceCanvas: true }));
+  const world = new GameWorld(img);
   loadMap(world, MAP_CLASSIC_2);
+
 
   // Game loop timing variables
   let startTime = Date.now();

@@ -1,24 +1,32 @@
 import { Terrain } from "../constants";
 import { Entity, EntityType } from "../entity";
 import { CacheEntry, Cache } from "../network/cache";
-import { RectangleBody } from "../physics/rectangle";
+import { RectangleBody, Rectangle } from "../physics/rectangle";
 import { GameWorld } from "../world/world";
+import { SolidEntity } from "./SolidEntity";
 
-export class Ground extends Entity {
+export class Ground extends SolidEntity {
   public type = EntityType.Ground;
   public x: number;
   public y: number;
   public width: number;
   public terrain: Terrain;
+  public image;
+  private yHitOffset = 7;
 
   public constructor(id: number, world: GameWorld, cache: Cache) {
-    super(id, world);
+    super(id, world, -1);
+    this.image = world.getImage("ground1.gif");
     this.setData(cache, {
       x: 0,
       y: 0,
       width: 0,
       terrain: Terrain.Normal
     });
+  }
+
+  public getCollisionBounds(): import("../physics/rectangle").Rectangle {
+    return new Rectangle(this.x, this.y - this.yHitOffset, this.width, this.image.getHeight() - this.yHitOffset);
   }
 
   public getState(): CacheEntry {

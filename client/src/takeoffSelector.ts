@@ -1,7 +1,7 @@
 import { Team, FacingDirection } from "../../dogfight/src/constants";
 import { GameRenderer } from "./render/renderer";
 import { Packet, PacketType } from "../../dogfight/src/network/types";
-import { PlaneType } from "../../dogfight/src/entities/plane";
+import { PlaneType } from "../../dogfight/src/entities/Plane";
 import { NetworkHandler } from "./networkHandler";
 import { InputChange, InputKey } from "../../dogfight/src/input";
 

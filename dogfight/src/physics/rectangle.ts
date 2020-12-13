@@ -22,16 +22,36 @@ export class Rectangle {
       width: this.width
     };
   }
+  public getHeight() {
+    return this.height;
+  }
+  public getWidth() {
+    return this.width;
+    }
+
+  public getMinX() {
+    return this.x - this.width / 2;
+  }
+  public getMaxX() {
+    return this.x + this.width / 2;
+  }
+  public getMinY() {
+    return this.y - this.height / 2;
+  }
+  public getMaxY() {
+    return this.y + this.height / 2;
+  }
 
   public intersects(r: Rectangle): boolean {
     return isRectangleCollision(this.body(), r.body())
   }
   public intersection(r: Rectangle): Rectangle {
-    const x1 = Math.max(this.x - this.width / 2, r.x - r.width / 2);
-    const y1 = Math.max(this.y - this.height / 2, r.y - r.height / 2);
+    const x1 = Math.max(this.getMinX(), r.getMinX());
+    //const x1 = Math.max(this.x - this.width / 2, r.x - r.width / 2);
+    const y1 = Math.max(this.getMinY(), r.getMinY());
 
-    const x2 = Math.min(this.x + this.width / 2, r.x + r.width / 2);
-    const y2 = Math.min(this.y + this.height / 2, r.y + r.height / 2);
+    const x2 = Math.min(this.getMaxX(), r.getMaxX());
+    const y2 = Math.min(this.getMaxY(), r.getMaxY());
 
     return new Rectangle(x1 + (x2 - x1) / 2, y1 + (y2 - y1) / 2, x2 - x1, y2 - y1);
   }

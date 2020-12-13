@@ -6,7 +6,7 @@
     "plugin:prettier/recommended"
   ],
   "parserOptions": {
-    "ecmaVersion": 2018,
+    "target": "es2020",
     "sourceType": "module"
   },
   "rules": {

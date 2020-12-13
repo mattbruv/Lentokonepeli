@@ -1,11 +1,12 @@
-import { FacingDirection, Team } from "../constants";
+import { FacingDirection, Team, SCALE_FACTOR } from "../constants";
 import { Entity, EntityType } from "../entity";
 import { Cache, CacheEntry } from "../network/cache";
 import { SolidEntity } from "./SolidEntity";
 import { Rectangle } from "../physics/rectangle";
-import { Bullet } from "./bullet";
+import { Bullet } from "./Bullet";
 import { PlayerInfo } from "./PlayerInfo";
 import { GameWorld } from "../world/world";
+
 
 const RESERVE_TAKEOFF_LANDING_DELAY = 1000;
 const RESERVE_LANDING_TAKEOFF_DELAY = 2000;
@@ -15,6 +16,7 @@ const TAKEOFF = 1;
 const LANDING = 1;
 const HEALTH_MAX = 1530;
 const HEALTH_TIMER_MAX = 50;
+
 
 export class Runway extends SolidEntity {
   public type = EntityType.Runway;
@@ -37,10 +39,9 @@ export class Runway extends SolidEntity {
 
   public constructor(id: number, world: GameWorld, cache: Cache, team: number, x: number, y: number, direction: number) {
     super(id, world, team);
-    this.image = [world.getSprite("runway.gif"), world.getSprite("runway2.gif")];
+    this.image = [world.getImage("runway.gif"), world.getImage("runway2.gif")];
     this.imageWidth = [this.image[0].width, this.image[1].width];
     this.imageHeight = [this.image[0].height, this.image[1].height];
-
     this.setData(cache, {
       x: x,
       y: y,
@@ -48,14 +49,23 @@ export class Runway extends SolidEntity {
       team: team, //Team.Centrals,
       health: 1530
     });
+
+    console.log(this.getCollisionBounds());
+
   }
 
   public getImageWidth(paramInt: number): number {
     return this.imageWidth[paramInt];
   }
+  public getImageHeight(paramInt: number): number {
+    return this.imageHeight[paramInt];
+  }
 
   public getCollisionBounds(): Rectangle {
-    return new Rectangle(this.x, this.y, this.imageWidth[1 - this.direction], this.imageHeight[1 - this.direction]);
+    return new Rectangle(this.x, this.y + this.imageHeight[1 - this.direction] / 4, this.imageWidth[1 - this.direction], this.imageHeight[1 - this.direction]);
+  }
+  public getCollisionImage() {
+    return this.image[1 - this.direction];
   }
 
   public getImage() {
@@ -63,23 +73,23 @@ export class Runway extends SolidEntity {
   }
 
   public getLandableWidth(): number {
-    return this.imageWidth[1 - this.direction] - 65;
+    return (this.imageWidth[1 - this.direction] - 65);
   }
 
   public getLandableX(): number {
     if (this.direction == 1) {
-      return 65 + this.x;
+      return 65 + this.x - this.getImageWidth(0) / 2;
     }
-    return this.x;
+    return this.x - this.getImageWidth(0) / 2;
   }
   public getLandableY(): number {
-    return 23 + this.y;
+    return 23 + this.y + this.getImageHeight(0) / 2;
   }
   public getStartX(): number {
     if (this.direction == 1) {
-      return 15 + this.x;
+      return 15 + this.x - this.getImageWidth(0) / 2;
     }
-    return this.x + 230;
+    return this.x + 230 - this.getImageWidth(0) / 2;
   }
   public getStartY(): number {
     return this.getLandableY();
@@ -146,9 +156,10 @@ export class Runway extends SolidEntity {
       case EntityType.Bullet:
         let b: Bullet = paramSolidEntity as Bullet;
         this.health -= (4.0 * b.getDamageFactor());
+        //console.log("bullet hit");
         break;
       case EntityType.Plane:
-        this.health -= 17;
+        //this.health -= 17;
         break;
       default:
         return;

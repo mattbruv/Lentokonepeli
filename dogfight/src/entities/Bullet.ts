@@ -6,6 +6,10 @@ import { SolidEntity } from "./SolidEntity";
 import { Rectangle } from "../physics/rectangle";
 import { Ownable } from "../ownable";
 import { GameWorld } from "../world/world";
+import { Plane } from "./Plane";
+import { Man } from "./Man";
+import { Runway } from "./Runway";
+import { OwnableSolidEntity } from "./OwnableSolidEntity";
 
 export const bulletGlobals = {
   speed: 400,
@@ -28,7 +32,7 @@ export function moveBullet(
   };
 }
 
-export class Bullet extends SolidEntity implements Ownable {
+export class Bullet extends OwnableSolidEntity {
   public type = EntityType.Bullet;
   public age: number;
   public localX: number;
@@ -37,14 +41,15 @@ export class Bullet extends SolidEntity implements Ownable {
   public y: number;
   public width: number = 2;
   public height: number = 2;
-  public shotBy: Ownable; // ID of player who shot it
+  public origin: OwnableSolidEntity; // ID of player who shot it
+  public shotBy: number; // ID of player who shot it
   public team: Team; // team of player who shot it
   public vx: number;
   public vy: number;
   public clientVX: number;
   public clientVY: number;
 
-  public constructor(id: number, world: GameWorld, cache: Cache, shotBy: Ownable, team: Team) {
+  public constructor(id: number, world: GameWorld, cache: Cache, origin: OwnableSolidEntity, team: Team) {
     super(id, world, team);
     this.localX = 0;
     this.localY = 0;
@@ -52,17 +57,18 @@ export class Bullet extends SolidEntity implements Ownable {
     this.vy = 0;
     this.clientVX = 0;
     this.clientVY = 0;
+    this.origin = origin;
     this.setData(cache, {
-      age: 0,
-      shotBy: shotBy.getPlayerInfo().getId(),
+      age: -1000000,
+      shotBy: origin.getPlayerInfo().getId(),
       team
     });
   }
   getPlayerInfo(): import("./PlayerInfo").PlayerInfo {
-    return this.shotBy.getPlayerInfo();
+    return this.origin.getPlayerInfo();
   }
-  getRootOwner(): Ownable {
-    return this.shotBy.getRootOwner();
+  getRootOwner(): OwnableSolidEntity {
+    return this.origin.getRootOwner();
   }
 
   public getCollisionBounds(): Rectangle {
@@ -85,7 +91,7 @@ export class Bullet extends SolidEntity implements Ownable {
 
   private ageBullet(cache: Cache, deltaTime: number): void {
     this.age += deltaTime;
-    if (this.age >= 175) {
+    if (this.age >= 175 * 10) {
       this.hit(null);
     }
   }
@@ -105,6 +111,7 @@ export class Bullet extends SolidEntity implements Ownable {
     // because it's easy enough to calculate client side.
     this.x = Math.round(this.localX / SCALE_FACTOR);
     this.y = Math.round(this.localY / SCALE_FACTOR);
+    this.checkCollision();
     /*
     this.setData(cache, {
       x: Math.round(this.localX / SCALE_FACTOR),
@@ -126,6 +133,24 @@ export class Bullet extends SolidEntity implements Ownable {
       clientVX: Math.round(this.vx / SCALE_FACTOR),
       clientVY: Math.round(this.vy / SCALE_FACTOR)
     });
+  }
+
+  public hit(se: SolidEntity): void {
+    let rm: boolean = true;
+    if (se instanceof Plane || se instanceof Man) {
+      if (this.origin.getPlayerInfo().getId() == se.getPlayerInfo().getId()) {
+        //rm = false;
+      }
+    }
+    if (se instanceof Runway) {
+      //console.log("WTF");
+    }
+    if (rm) {
+      //if (se != null) console.log("hit");
+      //console.log("rm");
+      //this.world.submitBullet()
+      this.world.removeEntity(this);
+    }
   }
 
   public getState(): CacheEntry {

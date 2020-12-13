@@ -17,7 +17,7 @@ import { PlayerStatus } from "../../dogfight/src/entities/PlayerInfo";
 import { AudioManager } from "./audio";
 import { isNameValid } from "../../dogfight/src/validation";
 import Cookies from "js-cookie";
-import { moveBullet } from "../../dogfight/src/entities/bullet";
+import { moveBullet } from "../../dogfight/src/entities/Bullet";
 
 export class GameClient {
   private renderer: GameRenderer;

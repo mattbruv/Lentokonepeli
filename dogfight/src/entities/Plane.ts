@@ -8,15 +8,18 @@ import {
 } from "../constants";
 import { Cache, CacheEntry } from "../network/cache";
 import { InputKey } from "../input";
-import { RectangleBody, Rectangle } from "../physics/rectangle";
-import { directionToRadians, radiansToDirection } from "../physics/helpers";
+import { RectangleBody, Rectangle, isCollisionOnAxis } from "../physics/rectangle";
+import { directionToRadians, radiansToDirection, mod } from "../physics/helpers";
 import { SolidEntity } from "./SolidEntity";
 import { Runway } from "./Runway";
 import { GameWorld } from "../world/world";
-import { PlayerInfo } from "./PlayerInfo";
+import { PlayerInfo, PlayerStatus } from "./PlayerInfo";
 import { trooperGlobals, Man } from "./Man";
-import { Bullet } from "./bullet";
-import { Bomb } from "./bomb";
+import { Bullet, bulletGlobals } from "./Bullet";
+import { Bomb } from "./Bomb";
+import { BufferedImage } from "../BufferedImage";
+import { isRectangleCollision } from "../physics/collision";
+import { OwnableSolidEntity } from "./OwnableSolidEntity";
 
 export enum PlaneType {
   Albatros,
@@ -26,8 +29,34 @@ export enum PlaneType {
   Salmson,
   Sopwith,
 }
-import { FrameStatus, frameTextureString, planeImageIDs } from "../../../client/src/render/sprites/plane";
 
+export const planeImageIDs = {
+  [PlaneType.Albatros]: 4,
+  [PlaneType.Fokker]: 6,
+  [PlaneType.Junkers]: 5,
+  [PlaneType.Bristol]: 7,
+  [PlaneType.Sopwith]: 9,
+  [PlaneType.Salmson]: 8
+};
+
+export enum FrameStatus {
+  Normal,
+  Flip1,
+  Flip2
+}
+
+export const frameTextureString = {
+  [FrameStatus.Normal]: "planeX.gif",
+  [FrameStatus.Flip1]: "planeX_flip1.gif",
+  [FrameStatus.Flip2]: "planeX_flip2.gif"
+};
+
+export const flipAnimation = [
+  FrameStatus.Flip1,
+  FrameStatus.Flip2,
+  FrameStatus.Flip1,
+  FrameStatus.Normal
+];
 export enum PlaneMode {
   Flying,
   Landing,
@@ -167,12 +196,31 @@ const flipDelay = 200;
 const motorOnDelay = 200;
 const bombDelay = 500;
 
+export function destroyPlane(
+  world: GameWorld,
+  plane: Plane,
+  doExplosion: boolean = false
+): void {
+  const x = plane.x;
+  const y = plane.y;
+  // set player info to pre-flight
+  //const player = world.getPlayerControlling(plane);
+  let player = plane.getPlayerInfo();
+  if (player != undefined) {
+    player.setStatus(world.cache, PlayerStatus.Takeoff);
+    player.setControl(world.cache, EntityType.None, 0);
+  }
+  if (doExplosion) {
+    world.createExplosion(x, y, plane.controlledBy.getId(), plane.team);
+  }
+  world.removeEntity(plane);
+}
 //require("pixi-shim");
 
 //const PIXI = require("node-pixi.js");
 //import { PIXI } from 'node-pixi';
 //const app = new PIXI.Application({ forceCanvas: true });
-export class Plane extends SolidEntity implements Ownable {
+export class Plane extends OwnableSolidEntity {
   public type = EntityType.Plane;
   public controlledBy: PlayerInfo;
   public team: Team;
@@ -231,7 +279,8 @@ export class Plane extends SolidEntity implements Ownable {
 
 
   public bottomHeight = -1;
-  public image;
+  public image: BufferedImage;
+  public imagename: string;
   private runway;
   private lastMotorOn;
   private motorOnDelay = 200;
@@ -276,8 +325,9 @@ export class Plane extends SolidEntity implements Ownable {
     this.localY = 0;
 
 
+    this.imagename = frameTextureString[FrameStatus.Normal].replace("X", planeImageIDs[kind].toString());
+    this.image = world.getImage(this.imagename);
 
-    this.image = world.getSprite(frameTextureString[FrameStatus.Normal].replace("X", planeImageIDs[kind].toString()));
     this.runway = runway;
 
     this.setData(cache, {
@@ -290,19 +340,54 @@ export class Plane extends SolidEntity implements Ownable {
       team: side,
       flipped: false,
       motorOn: true,
+      mode: this.mode,
       planeType: kind,
     });
+    /*
+        let x0 = -30;
+        let y0 = 200;
+        let lx = 100;
+        let ly = 100;
+        for (let x = x0; x < x0 + lx; x += 5) {
+          for (let y = y0; y < y0 + ly; y += 5) {
+            const bullet = new Bullet(
+              this.world.nextID(EntityType.Bullet),
+              this.world,
+              this.world.cache,
+              this,
+              this.team
+            );
+            bullet.setPos(world.cache, this.runway.getStartX() + x, this.runway.getStartY() + y)
+            world.addObject(bullet);
+          }
+        }
+        */
+
   }
   getPlayerInfo(): PlayerInfo {
     return this.controlledBy;
   }
-  getRootOwner(): Ownable {
+  getRootOwner(): OwnableSolidEntity {
     return this;
   }
 
+  public init(): void {
+    this.park(this.runway);
+    this.mode = PlaneMode.TakingOff;
+    //this.mode = PlaneMode.Flying;
+    this.motorOn = true;
+
+    // Update cache
+    const x = Math.round(this.localX);
+    const y = Math.round(this.localY);
+    this.setData(this.world.cache, { x, y });
+    this.set(this.world.cache, "direction", radiansToDirection(this.radians));
+
+  }
+
   private park(paramRunway: Runway): void {
-    this.x = (paramRunway.getStartX());
-    this.y = ((paramRunway.getStartY() - this.getBottomHeight()));
+    this.localX = (paramRunway.getStartX()) * SCALE_FACTOR;
+    this.localY = ((paramRunway.getStartY() - this.getBottomHeight() / 2)) * SCALE_FACTOR;
     if (paramRunway.getDirection() == 0) {
       this.radians = Math.PI;
       this.flipped = true;
@@ -322,17 +407,24 @@ export class Plane extends SolidEntity implements Ownable {
   }
 
   public getCollisionBounds(): Rectangle {
-    return new Rectangle(this.x, this.y, this.width, this.height);
+    let tmp = this.getCollisionImage();
+    let r = new Rectangle(this.x, this.y, tmp.width, tmp.height);
+    //console.log(r);
+    return r;
+  }
+
+  public getCollisionImage(): BufferedImage {
+    return this.world.getImage(this.imagename + "_rot" + Math.round(this.direction));
   }
 
   private getBottomHeight(): number {
     if (this.bottomHeight == -1) {
 
-      let arrayOfInt = this.world.getApp().renderer.plugins.Extract.image(this.image);
+      let arrayOfInt = this.image.data;
       //int[] arrayOfInt = this.image.getRGB(0, 0, this.image.getWidth(), this.image.getHeight(), null, 0, this.image.getHeight());
-      for (let i = this.image.getHeight() - 1; i >= 0; i--) {
-        for (let j = 0; j < this.image.getWidth(); j++) {
-          if (arrayOfInt[(i * this.image.getWidth() + j)] < 0) {
+      for (let i = this.image.height - 1; i >= 0; i--) {
+        for (let j = 0; j < this.image.width; j++) {
+          if (arrayOfInt[(i * this.image.width + j)] < 0) {
             this.bottomHeight = (i + 1);
             return this.bottomHeight;
           }
@@ -341,11 +433,18 @@ export class Plane extends SolidEntity implements Ownable {
       this.bottomHeight = 0;
       return this.bottomHeight;
     }
+    console.log("bottom height: " + this.bottomHeight);
     return this.bottomHeight;
   }
 
   // advance the plane simulation
   public tick(cache: Cache, deltaTime: number): void {
+    //console.log("Mode: " + this.mode + " X: " + this.x + " Y: " + this.y);
+    //this.speed = 0;
+    //this.setPos(cache, this.localX / 100, this.localY / 100);
+    //this.setDirection(cache, (this.direction + 1) % 256);
+    //this.checkCollision();
+    //return;
     switch (this.mode) {
       case PlaneMode.Landing:
         this.moveLanding(cache, deltaTime);
@@ -357,7 +456,7 @@ export class Plane extends SolidEntity implements Ownable {
         this.moveTakeoff(cache, deltaTime);
         break;
       case PlaneMode.Flying:
-        this.move(cache, deltaTime);
+        this.moveFlying(cache, deltaTime);
         break;
       case PlaneMode.Dodging:
         this.moveDodging(cache, deltaTime);
@@ -381,7 +480,7 @@ export class Plane extends SolidEntity implements Ownable {
   }
 
   public setMotor(cache: Cache, value: boolean): void {
-    this.mode = value ? PlaneMode.Flying : PlaneMode.Falling;
+    this.mode = PlaneMode.Flying; // value ? PlaneMode.Flying : PlaneMode.Falling;
     this.set(cache, "motorOn", value);
   }
 
@@ -392,19 +491,6 @@ export class Plane extends SolidEntity implements Ownable {
     this.rotateStatus = PlaneRotation.None;
     // this.isShooting = false;
     // this.isBombing = false;
-  }
-
-  private move(cache: Cache, deltaTime: number): void {
-    switch (this.mode) {
-      case PlaneMode.Flying: {
-        this.moveFlying(cache, deltaTime);
-        break;
-      }
-      case PlaneMode.Falling: {
-        this.moveFalling(cache, deltaTime);
-        break;
-      }
-    }
   }
 
   public setRotation(key: InputKey, doRotate: boolean): void {
@@ -548,12 +634,15 @@ export class Plane extends SolidEntity implements Ownable {
   }
 
   private moveFlying(cache: Cache, deltaTime: number): void {
+    this.steer(deltaTime);
     if (this.motorOn) {
       this.accelerate(deltaTime);
     }
-    this.steer(deltaTime);
     this.run(deltaTime);
     this.movePlane(cache, deltaTime);
+    if (this.checkCollision()) { };
+    this.shoot(cache, deltaTime);
+    this.bomb(cache, deltaTime);
   }
 
   private moveFalling(cache: Cache, deltaTime: number): void {
@@ -561,42 +650,103 @@ export class Plane extends SolidEntity implements Ownable {
     this.run(deltaTime);
     this.movePlane(cache, deltaTime);
   }
+  private bomb(cache: Cache, deltaTime: number) {
+    // add time elapsed to our bomb timer
+    if (this.lastBomb <= this.bombDelay) {
+      this.lastBomb += deltaTime;
+    }
+    if (this.isBombing) {
+      //console.log("bomb" + plane.lastBomb + " " + plane.bombDelay)
+      // is it time to bomb again?
+      if (this.lastBomb >= this.bombDelay) {
+        // do we have bombs to drop?
+        if (this.bombs > 0) {
+          this.lastBomb = mod(this.lastBomb, this.bombDelay);
+          this.setBombs(cache, this.bombs - 1);
 
-  private moveLanding(cache: Cache, deltaTime: number): void {
-    const tstep = deltaTime / 1000;
-    if (this.speed > 100) {
-      //?
-    }
-    if (this.speed < 100) {
-      //?
-    }
-    if (Math.abs(this.speed - 100) < 3) {
-      this.speed = 100;
-    }
-    if (this.speed != 0) // TODO weird check
-    {
-      this.x += Math.cos(this.radians) * this.speed;
-    }
-    if (!this.checkCollision() || (this.runway.getDirection() == 1 && this.localX < this.runway.getStartX()) || this.runway.getDirection() == 0 && this.x >= this.runway.getStartX()) {
-      this.landed();
-    }
-    this.setChanged(true);
+          const bomb = new Bomb(
+            this.world.nextID(EntityType.Bomb),
+            this.world,
+            this.world.cache,
+            this,
+            this.team
+          );
 
+          // set bomb speed/direction relative to plane.
+          bomb.setPos(this.world.cache, this.x, this.y);
+          bomb.setDirection(this.world.cache, this.direction);
+          bomb.setSpeed(this.world.cache, this.speed);
+          this.world.addObject(bomb);
+        }
+      }
+    }
   }
+  private shoot(cache: Cache, deltaTime: number) {
+    // Process machine gun
+    if (this.isShooting) {
+      // add time elapsed to our shot timer
+      this.lastShot += deltaTime;
+
+      // is it time to shoot again?
+      if (this.lastShot >= this.shotDelay) {
+        // do we have ammo to shoot?
+        if (this.ammo > 0) {
+          this.lastShot = mod(this.lastShot, this.shotDelay);
+          this.ammo--;
+
+          const bullet = new Bullet(
+            this.world.nextID(EntityType.Bullet),
+            this.world,
+            this.world.cache,
+            this,
+            this.team
+          );
+          const vx = Math.cos(directionToRadians(this.direction));
+          const vy = Math.sin(directionToRadians(this.direction));
+
+          const speed =
+            (bulletGlobals.speed + this.speed) *
+            SCALE_FACTOR;
+          bullet.setVelocity(this.world.cache, speed * vx, speed * vy);
+
+          //plane.set(
+          //  world.cache,
+          //  "ammo",
+          //  Math.round((plane.ammo / plane.maxAmmo) * 255)
+          //);
+
+          //const bulletx = Math.round(plane.x + (plane.width * vx) / 2);
+          //const bullety = Math.round(plane.y + (plane.width * vy) / 2);
+
+          // set bullet speed/direction relative to plane.
+          bullet.setPos(this.world.cache, this.x + Math.cos(directionToRadians(this.direction)) * (this.width / 2 + 2),
+            this.y + Math.sin(directionToRadians(this.direction)) * (this.width / 2 + 2));
+          this.world.addObject(bullet);
+        }
+      }
+    } else if (this.lastShot < this.shotDelay) {
+      this.lastShot += deltaTime;
+    }
+  }
+
 
   private moveLanded(cache: Cache, deltaTime: number): void {
     const tstep = deltaTime / 1000;
     if (this.motorOn && this.lastMotorOn + this.motorOnDelay < Date.now()) {
-      this.motorOn = !this.motorOn;
+      this.setMotor(cache, !this.motorOn);
       this.lastMotorOn = Date.now();
-      this.mode = PlaneMode.TakingOff;
+      //this.mode = PlaneMode.TakingOff;
+      this.setMode(PlaneMode.TakingOff);
     }
   }
 
   private landed(): void {
     if (this.controlledBy.controlID == this.id) {
-      this.world.removeEntity(this);
+      destroyPlane(this.world, this);
+      console.log("rm plane");
+      //this.world.removeEntity(this);
       // TODO set world.landed
+
       // getDogfightToolkit().landed(this, this.runway, true);
     }
   }
@@ -617,36 +767,44 @@ export class Plane extends SolidEntity implements Ownable {
 
   private moveTakeoff(cache: Cache, deltaTime: number): void {
     const tstep = deltaTime / 1000;
-    if (this.checkCollision) { }
+    if (this.checkCollision()) { }
     this.accelerate(deltaTime);
     this.takeoffCounter += 1;
     if (this.takeoffCounter == 65 || this.takeoffCounter == 75) {
       if (this.flipped) {
-        this.steerUp(deltaTime);
+        this.steerDown(deltaTime);
       }
       else {
-        this.steerDown(deltaTime);
+        this.steerUp(deltaTime);
       }
     }
     if (this.takeoffCounter == 60 || this.takeoffCounter == 70) {
       if (this.flipped) {
-        this.steerUp(deltaTime);
-      }
-      else {
         this.steerDown(deltaTime);
       }
-      this.localY -= 100;
+      else {
+        this.steerUp(deltaTime);
+      }
+      this.localY += 100;
     }
     if (this.takeoffCounter >= 70) {
-      this.mode = 0;
+      this.setMode(PlaneMode.Flying)
       this.runway = null;
       this.takeoffCounter = 0;
+      console.log("takenoff");
     }
     this.direction = radiansToDirection(this.radians);
     if (this.speed != 0) {
-      this.localX += Math.cos(this.radians) * this.speed;
+      this.localX += Math.cos(this.radians) * this.speed * tstep * SCALE_FACTOR;
     }
     this.setChanged(true);
+
+
+    // Update cache
+    const x = Math.round(this.localX / SCALE_FACTOR);
+    const y = Math.round(this.localY / SCALE_FACTOR);
+    this.setData(cache, { x, y });
+    this.set(cache, "direction", radiansToDirection(this.radians));
   }
 
   private moveDodging(cache: Cache, deltaTime: number): void {
@@ -696,6 +854,12 @@ export class Plane extends SolidEntity implements Ownable {
       i = 0;
     }
     //setChanged(True);
+
+    // Update cache
+    const x = Math.round(this.localX / SCALE_FACTOR);
+    const y = Math.round(this.localY / SCALE_FACTOR);
+    this.setData(cache, { x, y });
+    this.set(cache, "direction", radiansToDirection(this.radians));
   }
 
   public setPos(cache: Cache, x: number, y: number): void {
@@ -708,11 +872,49 @@ export class Plane extends SolidEntity implements Ownable {
     this.set(cache, "direction", direction);
     this.radians = directionToRadians(direction);
   }
+  public setMode(mode: number): void {
+    this.set(this.world.cache, "direction", mode);
+    this.mode = mode;
+  }
 
+  private moveLanding(cache: Cache, deltaTime: number): void {
+    const tstep = deltaTime / 1000;
+    console.log("landing " + this.radians);
+    if (this.speed > 100) {
+      //?
+      this.speed -= 3;
+    }
+    if (this.speed < 100) {
+      //?
+      this.speed += 3;
+    }
+    if (Math.abs(this.speed - 100) < 3) {
+      this.speed = 100;
+    }
+    if (this.speed != 0) // TODO weird check
+    {
+      this.localX += Math.cos(this.radians) * this.speed;
+    }
+    const x = Math.round(this.localX / SCALE_FACTOR);
+    const y = Math.round(this.localY / SCALE_FACTOR);
+
+    if (!this.checkCollision() || (this.runway.getDirection() == 1 && this.x <= this.runway.getStartX()) || (this.runway.getDirection() == 0 && this.x >= this.runway.getStartX())) {
+      console.log("landed");
+      console.log(x)
+      console.log(this.runway.getStartX())
+      console.log(this.runway.getDirection())
+      this.landed();
+    }
+
+    this.setChanged(true);
+    this.setData(cache, { x, y });
+    this.set(cache, "direction", radiansToDirection(this.radians));
+  }
   public hit(se: SolidEntity) {
     if ((this.mode == PlaneMode.Landing || this.mode == PlaneMode.Landed || this.mode == PlaneMode.TakingOff) && se == this.runway) {
       return;
     }
+    //console.log("HHIITT");
     if (this.mode == PlaneMode.Falling) {
       // TODO check for owned by whom => ownable
       if (se.getType() == EntityType.Water) {
@@ -721,7 +923,8 @@ export class Plane extends SolidEntity implements Ownable {
     }
     if (se.getType() == EntityType.Runway) {
       let localRunway: Runway = se as Runway;
-      if (this.mode != 1 && this.x > localRunway.getLandableX() && this.x + this.width < localRunway.getLandableX() && !this.motorOn &&
+      console.log("HHIITT - Runway");
+      if (this.mode != PlaneMode.Landing && this.x > localRunway.getLandableX() && this.x + this.width < localRunway.getLandableX() + localRunway.getLandableWidth() && !this.motorOn &&
         this.speed < 250 + this.speedModifier &&
         (!this.flipped && (this.radians < 0.8975979010256552 || this.radians > 5.385587406153931)) ||
         this.flipped && (this.radians < 4.039190554615448 && this.radians > 2.243994752564138)) {
@@ -732,46 +935,58 @@ export class Plane extends SolidEntity implements Ownable {
           this.radians = 0;
         }
         this.direction = radiansToDirection(this.radians);
-        this.localY = localRunway.getLandableY() - this.getBottomHeight();
+        this.localY = localRunway.getLandableY() - this.getBottomHeight() / 2;
+        console.log("HHIITT - PrLanding!!!");
         if (localRunway.getTeam() == this.getTeam() && ((localRunway.getDirection() == 1 && this.radians == Math.PI) || (localRunway.getDirection() == 0 && this.radians == 0)) && localRunway.reserveFor(2)) {
           this.runway = localRunway;
           this.mode = PlaneMode.Landing;
+          this.setMode(PlaneMode.Landing);
+          console.log("HHIITT - Landing!!!");
         }
+        this.setPos(this.world.cache, Math.round(this.localX / 100), Math.round(this.localY / 100));
+        this.setDirection(this.world.cache, this.direction);
         return;
       }
+      console.log("crashed " + this.x + " landable" + localRunway.getLandableX());
       localRunway.planeCrash();
+      this.fraggedBy(null);
+      this.explode(null);
     }
     if (isOwnable(se)) {
       if (se instanceof Plane && se.getType() == EntityType.Plane) { // equivalent  check
-        this.damagePlane
         this.health -= 50;
         if (this.health <= 0) {
           this.fraggedBy(se as Ownable);
           this.explode(se as Ownable);
         }
       }
-      else if (se instanceof Bullet) {
+      if (se instanceof Bullet) {
         let b = se as Bullet;
-        this.health -= 30 * b.getDamageFactor();
-        if (this.health <= 0) {
-          this.fraggedBy(b);
-          this.mode = PlaneMode.Falling;
+        if (b.getPlayerInfo().getId() != this.getId()) {
+          this.health -= 30 * b.getDamageFactor();
+          if (this.health <= 0) {
+            this.fraggedBy(b);
+            this.setMode(PlaneMode.Falling)
+          }
         }
       }
       else if (se instanceof Bomb) {
         let b = se as Bomb;
-        this.fraggedBy(b);
-        this.explode(b);
+        if (b.getPlayerInfo().getId() != this.getId()) {
+          this.fraggedBy(b);
+          this.explode(b);
+          console.log("bomb kill");
+        }
       }
       else if (se instanceof Plane) {
         if (this.mode == PlaneMode.Flying) {
-          this.mode = PlaneMode.Dodging;
+          this.setMode(PlaneMode.Dodging);
           this.radians += (Math.random() - 0.5) * 0.7853981633974483;
           this.health -= 25;
           this.flipped = !this.flipped;
           if (this.health <= 0) {
             this.fraggedBy(se);
-            this.mode = PlaneMode.Falling;
+            this.setMode(PlaneMode.Falling)
           }
           this.setChanged(true);
         }
@@ -785,8 +1000,8 @@ export class Plane extends SolidEntity implements Ownable {
       this.fraggedBy(null);
       this.sink();
     }
-    else {
-      if (this.mode != 4) {
+    else if (se.getType() == EntityType.Ground) {
+      if (this.mode != PlaneMode.Falling) {
         this.fraggedBy(null);
       }
       this.explode(null);
@@ -836,6 +1051,7 @@ export class Plane extends SolidEntity implements Ownable {
       ammo: this.ammo,
       bombs: this.bombs,
       flipped: this.flipped,
+      mode: this.mode,
       x: this.x,
       y: this.y,
     };

@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
 import { Terrain } from "../../../../dogfight/src/constants";
-import { getGroundRect } from "../../../../dogfight/src/entities/ground";
+import { getGroundRect } from "../../../../dogfight/src/entities/Ground";
 
 export class GroundSprite extends GameSprite {
   public x: number;

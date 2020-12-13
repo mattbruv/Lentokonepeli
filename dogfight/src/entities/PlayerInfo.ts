@@ -3,7 +3,8 @@ import { CacheEntry, Cache } from "../network/cache";
 import { Team } from "../constants";
 import { PlayerInput, InputKey } from "../input";
 import { GameWorld } from "../world/world";
-import { teamPlanes } from "./plane";
+import { teamPlanes } from "./Plane";
+import { Ownable } from "../ownable";
 
 export enum PlayerStatus {
   Playing,
@@ -42,6 +43,10 @@ export class PlayerInfo extends Entity {
     return this.team;
   }
 
+  public getControlId() : number {
+    return this.controlID;
+  }
+
   public setName(cache: Cache, name: string): void {
     this.set(cache, "name", name);
   }
@@ -62,6 +67,13 @@ export class PlayerInfo extends Entity {
     this.set(cache, "controlType", controlType);
     this.set(cache, "controlID", controlID);
   }
+
+  // STAT handling functions
+  //public submitBullet(p: Ownable, b1: boolean, b2: boolean): void { }
+  public submitBomb(p: Ownable, b1: boolean, b2: boolean): void { }
+  public submitTeamBomb(p: Ownable, b1: boolean): void { }
+  public submitKill(p: Ownable, p2: Ownable): void { }
+  public submitTeamKill(p: Ownable, p2: Ownable): void { }
 
   public getState(): CacheEntry {
     return {

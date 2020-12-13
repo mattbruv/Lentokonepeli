@@ -1,40 +1,17 @@
-//import * as PIXI from "pixi.js";
+import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
 import {
   PlaneType,
-  getPlaneRect
-} from "../../../../dogfight/src/entities/plane";
+  getPlaneRect,
+  FrameStatus,
+  planeImageIDs,
+  frameTextureString,
+  flipAnimation
+} from "../../../../dogfight/src/entities/Plane";
 import { directionToRadians } from "../../../../dogfight/src/physics/helpers";
 import { Vec2d, setSize } from "../../../../dogfight/src/physics/vector";
 
-export const planeImageIDs = {
-  [PlaneType.Albatros]: 4,
-  [PlaneType.Fokker]: 6,
-  [PlaneType.Junkers]: 5,
-  [PlaneType.Bristol]: 7,
-  [PlaneType.Sopwith]: 9,
-  [PlaneType.Salmson]: 8
-};
-
-export enum FrameStatus {
-  Normal,
-  Flip1,
-  Flip2
-}
-
-export const frameTextureString = {
-  [FrameStatus.Normal]: "planeX.gif",
-  [FrameStatus.Flip1]: "planeX_flip1.gif",
-  [FrameStatus.Flip2]: "planeX_flip2.gif"
-};
-
-const flipAnimation = [
-  FrameStatus.Flip1,
-  FrameStatus.Flip2,
-  FrameStatus.Flip1,
-  FrameStatus.Normal
-];
 
 // How long smoke stays on the screen, in milliseconds.
 const SMOKE_DURATION = 200;

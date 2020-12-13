@@ -1,9 +1,9 @@
 import { Cache } from "../network/cache";
 import { PlayerInfo, PlayerStatus } from "../entities/PlayerInfo";
 import { Flag } from "../entities/flag";
-import { Bullet } from "../entities/bullet";
-import { Bomb } from "../entities/bomb";
-import { Ground } from "../entities/ground";
+import { Bullet } from "../entities/Bullet";
+import { Bomb } from "../entities/Bomb";
+import { Ground } from "../entities/Ground";
 import { Hill } from "../entities/hill";
 import { Runway } from "../entities/Runway";
 import { Tower } from "../entities/tower";
@@ -12,7 +12,7 @@ import { Water } from "../entities/water";
 import { Explosion } from "../entities/explosion";
 import { Entity, EntityType } from "../entity";
 import { Team } from "../constants";
-import { Plane, teamPlanes } from "../entities/plane";
+import { Plane, teamPlanes } from "../entities/Plane";
 import { InputQueue, InputKey } from "../input";
 import { processInputs } from "./input";
 import { processCollision } from "./collision";
@@ -23,6 +23,7 @@ import { processBombs } from "./bomb";
 import { processExplosions } from "./explosion";
 import { processTroopers } from "./trooper";
 import { Ownable } from "../ownable";
+import { BufferedImage } from "../BufferedImage";
 
 
 /**
@@ -84,15 +85,15 @@ export class GameWorld {
     }
     //cont();
   }
-  public getSprite(name: string) {
+
+  public getImage(name: string) {
+
     return this.textures[name];
   }
-  public getApp() {
-    return this.app;
-  }
+
 
   public getEntities(): Entity[][] {
-    return [this.planes, this.troopers, this.bombs, this.bullets, this.runways, this.waters, this.players, this.towers, this.hills, this.flags, this.explosions];
+    return [this.planes, this.troopers, this.bombs, this.bullets, this.runways, this.grounds, this.waters, this.players, this.towers, this.hills, this.flags, this.explosions];
   }
   public clearCache(): void {
     this.cache = {};
@@ -276,7 +277,8 @@ export class GameWorld {
     return id;
   }
 
-  public died(p: PlayerInfo, x: number, y: number): void {
+  public died(o: Ownable, x: number, y: number): void {
+    let p = o.getPlayerInfo();
     p.setStatus(p.world.cache, PlayerStatus.Takeoff);
     p.setControl(p.world.cache, EntityType.None, 0);
     /*
@@ -299,4 +301,5 @@ export class GameWorld {
   public killed(p: Ownable, e: Ownable, c: number) {
     // TODO handle scores
   }
+
 }

@@ -15,14 +15,14 @@ import { GameWorld } from "./world/world";
  */
 export enum EntityType {
   None,
-  Ground,
+  Ground, // 13
   Water, // 28
   Runway, // 16
   Flag,
   ControlTower,
   Hill,
   Plane, // 27
-  Trooper,
+  Trooper, // 42 ? 
   Player,
   Explosion,
   Bullet, // 12

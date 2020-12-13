@@ -3,10 +3,14 @@ import { Cache, CacheEntry } from "../network/cache";
 import { Team, SCALE_FACTOR } from "../constants";
 import { radiansToDirection, directionToRadians } from "../physics/helpers";
 import { RectangleBody, Rectangle } from "../physics/rectangle";
-import { GameWorld } from "../world/world";
+import { GameWorld, } from "../world/world";
 import { PlayerInfo } from "./PlayerInfo";
 import { SolidEntity } from "./SolidEntity";
 import { Ownable } from "../ownable";
+import { BufferedImage } from "../BufferedImage";
+import { Runway } from "./Runway";
+import { Plane } from "./Plane";
+import { OwnableSolidEntity } from "./OwnableSolidEntity";
 
 export const bombGlobals = {
   gravity: 425,
@@ -14,7 +18,7 @@ export const bombGlobals = {
   cooldown: 500
 };
 
-export class Bomb extends SolidEntity implements Ownable {
+export class Bomb extends OwnableSolidEntity {
 
   public type = EntityType.Bomb;
   public age: number;
@@ -22,7 +26,7 @@ export class Bomb extends SolidEntity implements Ownable {
   public localY: number;
   public x: number;
   public y: number;
-  public droppedBy: Ownable; // ID of player who dropped it
+  public droppedBy: number; // ID of player who dropped it
   public team: Team; // team of player who dropped it
 
   public image;
@@ -32,18 +36,21 @@ export class Bomb extends SolidEntity implements Ownable {
   public xSpeed: number;
   public ySpeed: number;
   public radians: number;
+  public origin: OwnableSolidEntity;
+  public filename = "bomb.gif";
   //public direction: number;
 
-  public constructor(id: number, world: GameWorld, cache: Cache, droppedBy: Ownable, team: Team) {
+  public constructor(id: number, world: GameWorld, cache: Cache, origin: OwnableSolidEntity, team: Team) {
     super(id, world, team);
     this.radians = directionToRadians(0);
     this.localX = 0;
     this.localY = 0;
     this.xSpeed = 0;
     this.ySpeed = 0;
-    this.image = world.getSprite("bomb.gif");
-    this.width = this.image.getWidth();
-    this.height = this.image.getHeight();
+    this.image = world.getImage(this.filename);
+    this.width = this.image.width;
+    this.height = this.image.height;
+    this.origin = origin;
 
 
     this.setData(cache, {
@@ -51,29 +58,66 @@ export class Bomb extends SolidEntity implements Ownable {
       x: 0,
       y: 0,
       direction: 0,
-      droppedBy: droppedBy.getPlayerInfo().id,
+      droppedBy: origin.getPlayerInfo().id,
       team
     });
   }
   public getPlayerInfo(): PlayerInfo {
-    return this.droppedBy.getPlayerInfo();
+    return this.origin.getPlayerInfo();
     //throw new Error("Method not implemented.");
   }
-  public getRootOwner(): Ownable {
-    return this.droppedBy.getRootOwner();
+  public getRootOwner(): OwnableSolidEntity {
+    return this.origin.getRootOwner();
     //throw new Error("Method not implemented.");
   }
   public getCollisionBounds(): import("../physics/rectangle").Rectangle {
     //throw new Error("Method not implemented.");
     return new Rectangle(this.x, this.y, this.width, this.height);
   }
+  public getCollisionImage(): BufferedImage {
+    return this.world.getImage(this.filename + "_rot" + radiansToDirection(this.radians));
+  }
   public tick(cache: Cache, deltaTime: number): void {
     this.move(cache, deltaTime);
     this.ageBomb(cache, deltaTime);
+    this.checkCollision();
   }
 
   private ageBomb(cache: Cache, deltaTime: number): void {
     this.age += deltaTime;
+  }
+
+  public hit(se: SolidEntity): void {
+    if (se == null) {
+      this.getPlayerInfo().submitBomb(this, false, false);
+      this.world.removeEntity(this);
+    }
+    else if (this.origin == null || !(this.origin === se)) { //&& !this.isRemoved()) 
+      if (se.getType() == EntityType.Trooper || se.getType() == EntityType.Runway) {
+        if (se.getTeam() == this.getTeam()) {
+          this.getPlayerInfo().submitTeamBomb(this, true);
+        }
+        else {
+          this.getPlayerInfo().submitBomb(this, true, true);
+        }
+      }
+      else if (se instanceof Plane) {
+        if (se.getTeam() == this.getTeam()) {
+          this.getPlayerInfo().submitTeamBomb(this, false);
+        }
+        else {
+          this.getPlayerInfo().submitBomb(this, true, false);
+        }
+      }
+      else {
+        this.getPlayerInfo().submitBomb(this, false, false);
+      }
+      this.world.removeEntity(this);
+      if (se.getType() != EntityType.Water) {
+        this.world.createExplosion(this.x, this.y, this.getPlayerInfo().getId(), this.team);
+      }
+    }
+
   }
 
   public move(cache: Cache, deltaTime: number): void {

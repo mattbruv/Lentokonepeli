@@ -3,7 +3,7 @@ import { PlayerStatus } from "../entities/PlayerInfo";
 import { EntityType, Entity } from "../entity";
 import { mod } from "../physics/helpers";
 import { Man, trooperGlobals, TrooperDirection } from "../entities/Man";
-import { Bullet, bulletGlobals } from "../entities/bullet";
+import { Bullet, bulletGlobals } from "../entities/Bullet";
 import { SCALE_FACTOR, ROTATION_DIRECTIONS } from "../constants";
 import { distance, getAngle } from "../physics/vector";
 

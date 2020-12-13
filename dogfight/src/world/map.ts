@@ -1,5 +1,5 @@
 import { GameWorld } from "./world";
-import { Ground } from "../entities/ground";
+import { Ground } from "../entities/Ground";
 import { Flag } from "../entities/flag";
 import { Hill } from "../entities/hill";
 import { Runway } from "../entities/Runway";

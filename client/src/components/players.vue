@@ -102,7 +102,7 @@ export default Vue.extend({
   watch: {
     updated() {
       const players = this.$store.state.client.gameObjects[
-        GameObjectType.Player
+        EntityType.Player
       ];
       const playerArray = [];
       for (const p in players) {

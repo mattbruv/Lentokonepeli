@@ -4,10 +4,10 @@ import App from "../src/components/app.vue";
 import Vue from "vue";
 import Vuex from "vuex";
 import { VNode } from "vue/types/umd";
-import { planeData, infoHUD } from "../../dogfight/src/entities/plane";
+import { planeData, infoHUD } from "../../dogfight/src/entities/Plane";
 import { Localizer } from "../src/localization/localizer";
-import { bulletGlobals } from "../../dogfight/src/entities/bullet";
-import { bombGlobals } from "../../dogfight/src/entities/bomb";
+import { bulletGlobals } from "../../dogfight/src/entities/Bullet";
+import { bombGlobals } from "../../dogfight/src/entities/Bomb";
 import { trooperGlobals } from "../../dogfight/src/entities/Man";
 import { ClientState } from "../src/clientState";
 

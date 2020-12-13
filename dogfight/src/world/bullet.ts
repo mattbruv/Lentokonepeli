@@ -1,5 +1,5 @@
 import { GameWorld } from "./world";
-import { bulletGlobals } from "../entities/bullet";
+import { bulletGlobals } from "../entities/Bullet";
 export function processBullets(world: GameWorld, deltaTime: number): void {
   world.bullets.forEach((bullet): void => {
     bullet.tick(world.cache, deltaTime);
