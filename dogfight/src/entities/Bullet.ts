@@ -17,6 +17,7 @@ export const bulletGlobals = {
   lifetime: 2000 // milliseconds
 };
 
+// Like Bullet Engine
 export function moveBullet(
   localX: number,
   localY: number,
@@ -28,7 +29,7 @@ export function moveBullet(
   const tstep = deltaTime / 1000;
   return {
     x: localX + tstep * vx,
-    y: localY + tstep * vy
+    y: localY + tstep * vy,
   };
 }
 
@@ -49,19 +50,29 @@ export class Bullet extends OwnableSolidEntity {
   public clientVX: number;
   public clientVY: number;
 
-  public constructor(id: number, world: GameWorld, cache: Cache, origin: OwnableSolidEntity, team: Team) {
-    super(id, world, team);
-    this.localX = 0;
-    this.localY = 0;
-    this.vx = 0;
-    this.vy = 0;
-    this.clientVX = 0;
-    this.clientVY = 0;
+  public speed: number;
+
+  public constructor(id: number, world: GameWorld, cache: Cache, x: number, y: number, angle: number, speed: number, origin: OwnableSolidEntity) {
+    super(id, world, origin.getTeam());
+    this.localX = x * SCALE_FACTOR;
+    this.localY = y * SCALE_FACTOR;
+    this.speed = (speed + 4) * SCALE_FACTOR * SCALE_FACTOR;
+    if (this.speed > 200 * SCALE_FACTOR * SCALE_FACTOR / 25) {
+      this.speed = 200 * SCALE_FACTOR * SCALE_FACTOR / 25;
+    }
+    this.vx = Math.cos(angle) * this.speed;
+    this.vy = Math.sin(angle) * this.speed;
+    this.clientVX = Math.round(this.vx / SCALE_FACTOR);
+    this.clientVY = Math.round(this.vy / SCALE_FACTOR);
     this.origin = origin;
     this.setData(cache, {
+      x: x,
+      y: y,
       age: -1000000,
       shotBy: origin.getPlayerInfo().getId(),
-      team
+      team: origin.getTeam(),
+      clientVX: this.clientVX,
+      clientVY: this.clientVY
     });
   }
   getPlayerInfo(): import("./PlayerInfo").PlayerInfo {
@@ -111,7 +122,8 @@ export class Bullet extends OwnableSolidEntity {
     // because it's easy enough to calculate client side.
     this.x = Math.round(this.localX / SCALE_FACTOR);
     this.y = Math.round(this.localY / SCALE_FACTOR);
-    this.checkCollision();
+
+    if (!this.checkCollision()) { };
     /*
     this.setData(cache, {
       x: Math.round(this.localX / SCALE_FACTOR),
@@ -126,6 +138,7 @@ export class Bullet extends OwnableSolidEntity {
     this.setData(cache, { x, y });
   }
 
+  //TODO consistency with setPos ? ? either scaled or not
   public setVelocity(cache: Cache, vx: number, vy: number): void {
     this.vx = Math.round(vx);
     this.vy = Math.round(vy);
@@ -139,7 +152,7 @@ export class Bullet extends OwnableSolidEntity {
     let rm: boolean = true;
     if (se instanceof Plane || se instanceof Man) {
       if (this.origin.getPlayerInfo().getId() == se.getPlayerInfo().getId()) {
-        //rm = false;
+        rm = false;
       }
     }
     if (se instanceof Runway) {

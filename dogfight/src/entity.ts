@@ -19,10 +19,10 @@ export enum EntityType {
   Water, // 28
   Runway, // 16
   Flag,
-  ControlTower,
+  ControlTower, // 42 ?!
   Hill,
   Plane, // 27
-  Trooper, // 42 ? 
+  Trooper,//18 ?
   Player,
   Explosion,
   Bullet, // 12
@@ -46,7 +46,7 @@ export abstract class Entity {
   public abstract type: EntityType;
   public id: number;
   public world: GameWorld;
-  //public removed: boolean = false;
+  public removed: boolean = false;
   public changed: boolean;
 
   public constructor(id: number, world: GameWorld) {
@@ -62,6 +62,9 @@ export abstract class Entity {
   }
   public isChanged() {
     return this.changed;
+  }
+  public isRemoved() {
+    return this.removed;
   }
   public setChanged(v: boolean) {
     this.changed = v

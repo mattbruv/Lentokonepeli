@@ -46,7 +46,9 @@ export function planeInput(
           trooper.setPos(world.cache, plane.x, plane.y);
           trooper.set(world.cache, "team", player.team);
           trooper.setVelocity(world.cache, 0, 0);
-          world.addObject(trooper);
+          world.addEntity(trooper);
+          console.log(player.controlID);
+          console.log(trooper.id);
           player.setControl(world.cache, EntityType.Trooper, trooper.id);
           plane.abandonPlane(world.cache);
           return;

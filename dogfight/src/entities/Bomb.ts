@@ -88,12 +88,13 @@ export class Bomb extends OwnableSolidEntity {
   }
 
   public hit(se: SolidEntity): void {
+    console.log("bomb - hit");
     if (se == null) {
       this.getPlayerInfo().submitBomb(this, false, false);
       this.world.removeEntity(this);
     }
     else if (this.origin == null || !(this.origin === se)) { //&& !this.isRemoved()) 
-      if (se.getType() == EntityType.Trooper || se.getType() == EntityType.Runway) {
+      if (se.getType() == EntityType.ControlTower || se.getType() == EntityType.Runway) {
         if (se.getTeam() == this.getTeam()) {
           this.getPlayerInfo().submitTeamBomb(this, true);
         }

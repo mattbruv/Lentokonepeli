@@ -161,7 +161,7 @@ export class GameWorld {
   public addPlayer(team: Team): PlayerInfo {
     const player = new PlayerInfo(this.nextID(EntityType.Player), this, this.cache);
     player.set(this.cache, "team", team);
-    this.addObject(player);
+    this.addEntity(player);
     return player;
   }
 
@@ -222,7 +222,7 @@ export class GameWorld {
     this.explosions.push(explosion);
   }
 
-  public addObject(obj: Entity): void {
+  public addEntity(obj: Entity): void {
     const arr = this[this.objectArrays[obj.type]];
     arr.push(obj);
     this.cache[obj.type][obj.id] = obj.getState();
@@ -241,6 +241,7 @@ export class GameWorld {
 
     // Create an empty update in the cache.
     // The renderer treats an empty update as a deletion.
+    obj.removed = true;
     if (this.cache[type] == undefined) {
       this.cache[type] = {};
     }
@@ -291,10 +292,10 @@ export class GameWorld {
 
     //*/
   }
-  public landed(p: Plane, r: Runway, bol: boolean) {
-    p.controlledBy.setStatus(p.world.cache, PlayerStatus.Takeoff);
-    p.controlledBy.setControl(p.world.cache, EntityType.None, 0);
-    this.removeEntity(p);
+  public landed(o: Ownable, r: Runway, bol: boolean = false) {
+    let p: PlayerInfo = o.getPlayerInfo();
+    p.setStatus(p.world.cache, PlayerStatus.Takeoff);
+    p.setControl(p.world.cache, EntityType.None, 0);
 
   }
 

@@ -63,7 +63,7 @@ loadImages().then((img) => {
   }
 
   setInterval(loop, 1000 / 100);
-  console.log("hiho");
+
   wss.on("connection", (ws): void => {
     console.log("New connection!");
     ws.binaryType = "arraybuffer";

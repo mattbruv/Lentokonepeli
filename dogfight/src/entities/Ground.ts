@@ -12,7 +12,7 @@ export class Ground extends SolidEntity {
   public width: number;
   public terrain: Terrain;
   public image;
-  private yHitOffset = 7;
+  private yHitOffset = 7; // 7
 
   public constructor(id: number, world: GameWorld, cache: Cache) {
     super(id, world, -1);

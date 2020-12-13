@@ -211,7 +211,7 @@ export function destroyPlane(
     player.setControl(world.cache, EntityType.None, 0);
   }
   if (doExplosion) {
-    world.createExplosion(x, y, plane.controlledBy.getId(), plane.team);
+    world.createExplosion(x, y, plane.playerInfo.getId(), plane.team);
   }
   world.removeEntity(plane);
 }
@@ -222,7 +222,7 @@ export function destroyPlane(
 //const app = new PIXI.Application({ forceCanvas: true });
 export class Plane extends OwnableSolidEntity {
   public type = EntityType.Plane;
-  public controlledBy: PlayerInfo;
+  public playerInfo: PlayerInfo;
   public team: Team;
   public planeType: PlaneType;
 
@@ -299,7 +299,7 @@ export class Plane extends OwnableSolidEntity {
   ) {
     super(id, world, side);
 
-    this.controlledBy = player;
+    this.playerInfo = player;
     this.isAbandoned = false;
     this.rotateStatus = PlaneRotation.None;
 
@@ -344,28 +344,28 @@ export class Plane extends OwnableSolidEntity {
       planeType: kind,
     });
     /*
-        let x0 = -30;
-        let y0 = 200;
-        let lx = 100;
-        let ly = 100;
-        for (let x = x0; x < x0 + lx; x += 5) {
-          for (let y = y0; y < y0 + ly; y += 5) {
-            const bullet = new Bullet(
-              this.world.nextID(EntityType.Bullet),
-              this.world,
-              this.world.cache,
-              this,
-              this.team
-            );
-            bullet.setPos(world.cache, this.runway.getStartX() + x, this.runway.getStartY() + y)
-            world.addObject(bullet);
-          }
-        }
-        */
+    let x0 = -30;
+    let y0 = 200;
+    let lx = 50;
+    let ly = 50;
+    for (let x = x0; x < x0 + lx; x += 5) {
+      for (let y = y0; y < y0 + ly; y += 5) {
+        const bullet = new Bullet(
+          this.world.nextID(EntityType.Bullet),
+          this.world,
+          this.world.cache,
+          this.runway.getStartX() + x, this.runway.getStartY() + y,
+          0, -4,
+          this,
+        );
+        world.addEntity(bullet);
+      }
+    }
+    //*/
 
   }
   getPlayerInfo(): PlayerInfo {
-    return this.controlledBy;
+    return this.playerInfo;
   }
   getRootOwner(): OwnableSolidEntity {
     return this;
@@ -489,6 +489,7 @@ export class Plane extends OwnableSolidEntity {
     this.damagePlane(cache, 99999);
     this.setMotor(cache, false);
     this.rotateStatus = PlaneRotation.None;
+    //this.controlledBy = null;
     // this.isShooting = false;
     // this.isBombing = false;
   }
@@ -676,7 +677,7 @@ export class Plane extends OwnableSolidEntity {
           bomb.setPos(this.world.cache, this.x, this.y);
           bomb.setDirection(this.world.cache, this.direction);
           bomb.setSpeed(this.world.cache, this.speed);
-          this.world.addObject(bomb);
+          this.world.addEntity(bomb);
         }
       }
     }
@@ -698,30 +699,13 @@ export class Plane extends OwnableSolidEntity {
             this.world.nextID(EntityType.Bullet),
             this.world,
             this.world.cache,
+            this.x + Math.cos(directionToRadians(this.direction)) * (this.width / 2 + 2),
+            this.y + Math.sin(directionToRadians(this.direction)) * (this.width / 2 + 2),
+            this.radians,
+            this.speed / SCALE_FACTOR,
             this,
-            this.team
           );
-          const vx = Math.cos(directionToRadians(this.direction));
-          const vy = Math.sin(directionToRadians(this.direction));
-
-          const speed =
-            (bulletGlobals.speed + this.speed) *
-            SCALE_FACTOR;
-          bullet.setVelocity(this.world.cache, speed * vx, speed * vy);
-
-          //plane.set(
-          //  world.cache,
-          //  "ammo",
-          //  Math.round((plane.ammo / plane.maxAmmo) * 255)
-          //);
-
-          //const bulletx = Math.round(plane.x + (plane.width * vx) / 2);
-          //const bullety = Math.round(plane.y + (plane.width * vy) / 2);
-
-          // set bullet speed/direction relative to plane.
-          bullet.setPos(this.world.cache, this.x + Math.cos(directionToRadians(this.direction)) * (this.width / 2 + 2),
-            this.y + Math.sin(directionToRadians(this.direction)) * (this.width / 2 + 2));
-          this.world.addObject(bullet);
+          this.world.addEntity(bullet);
         }
       }
     } else if (this.lastShot < this.shotDelay) {
@@ -741,10 +725,10 @@ export class Plane extends OwnableSolidEntity {
   }
 
   private landed(): void {
-    if (this.controlledBy.controlID == this.id) {
+    if (this.getPlayerInfo().isControling(this)) {
       destroyPlane(this.world, this);
-      console.log("rm plane");
-      //this.world.removeEntity(this);
+      console.log("rm landed plane");
+      this.world.removeEntity(this);
       // TODO set world.landed
 
       // getDogfightToolkit().landed(this, this.runway, true);
@@ -756,11 +740,12 @@ export class Plane extends OwnableSolidEntity {
   }
 
   protected suicide(): void {
-    if (this.controlledBy.controlID == this.id) {
+    if (this.getPlayerInfo().isControling(this)) {
+      console.log("suicide - sitting");
       //getDogfightToolkit().killed(new Man(0, 0, this.playerInfo), null, 2);
       //this.world.killed(new Trooper(), null, 2);
       //this.playerInfo.removeKeyListener(this);
-      this.world.died(this.controlledBy, this.x, this.y);
+      this.world.died(this, this.x, this.y);
     }
     this.world.removeEntity(this);
   }
@@ -905,10 +890,11 @@ export class Plane extends OwnableSolidEntity {
       console.log(this.runway.getDirection())
       this.landed();
     }
-
     this.setChanged(true);
-    this.setData(cache, { x, y });
-    this.set(cache, "direction", radiansToDirection(this.radians));
+    if (!this.isRemoved()) {
+      this.setData(cache, { x, y });
+      this.set(cache, "direction", radiansToDirection(this.radians));
+    }
   }
   public hit(se: SolidEntity) {
     if ((this.mode == PlaneMode.Landing || this.mode == PlaneMode.Landed || this.mode == PlaneMode.TakingOff) && se == this.runway) {
@@ -1009,7 +995,7 @@ export class Plane extends OwnableSolidEntity {
   }
 
   public fraggedBy(e: Ownable) {
-    if (this.getPlayerInfo().controlID == this.id) {
+    if (this.getPlayerInfo().isControling(this)) {
       this.world.killed(this, e, 1);
     }
   }
@@ -1019,13 +1005,13 @@ export class Plane extends OwnableSolidEntity {
       this.suicide();
     }
     else {
-      if (this.controlledBy.controlID == this.id) {
+      if (this.getPlayerInfo().isControling(this)) {
         this.world.killed(this, e, 2);
-        this.world.died(this.controlledBy, this.x, this.y);
+        this.world.died(this, this.x, this.y);
       }
       this.world.removeEntity(this);
     }
-    this.world.createExplosion(this.x, this.y, this.controlledBy.getId(), this.team);
+    this.world.createExplosion(this.x, this.y, this.playerInfo.getId(), this.team);
   }
 
 

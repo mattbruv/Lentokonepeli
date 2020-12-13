@@ -43,8 +43,14 @@ export class PlayerInfo extends Entity {
     return this.team;
   }
 
-  public getControlId() : number {
+  public getControlId(): number {
     return this.controlID;
+  }
+  public getControlType(): number {
+    return this.controlType;
+  }
+  public isControling(e : Entity) : boolean {
+    return e.getId() == this.getControlId() && e.getType() == this.getControlType();
   }
 
   public setName(cache: Cache, name: string): void {

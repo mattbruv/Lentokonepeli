@@ -66,14 +66,14 @@ export class TrooperSprite extends GameSprite {
     if (this.state == TrooperState.Parachuting) {
       return "parachuter1.gif";
     }
-    if (this.state == TrooperState.Walking) {
+    if (this.state == TrooperState.Walking_LEFT || this.state == TrooperState.Walking_RIGHT) {
       return walkFrames[this.walkIndex];
     }
     return "parachuter0.gif";
   }
 
   private pimpWalk(): void {
-    if (this.state == TrooperState.Walking) {
+    if (this.state == TrooperState.Walking_LEFT || this.state == TrooperState.Walking_RIGHT) {
       this.walkIndex = this.walkIndex ? 0 : 1;
       const tex = this.spritesheet.textures[walkFrames[this.walkIndex]];
       this.trooper.texture = tex;
@@ -97,7 +97,7 @@ export class TrooperSprite extends GameSprite {
   public redraw(): void {
     // update texture state
     this.trooper.texture = this.spritesheet.textures[this.getTexture()];
-    if (this.state == TrooperState.Walking) {
+    if (this.state == TrooperState.Walking_LEFT || this.state == TrooperState.Walking_RIGHT) {
       const dir = this.direction == TrooperDirection.Left ? 1 : -1;
       // const d = TrooperDirection[this.direction];
       // console.log(dir, d);

@@ -69,6 +69,8 @@ function getTarget(world: GameWorld, trooper: Man, radius: number): any {
 export function processTroopers(world: GameWorld, deltaTime: number): void {
   world.troopers.forEach((trooper): void => {
     trooper.tick(world.cache, deltaTime);
+    return;
+    /*
 
     if (trooper.isShooting) {
       // add time elapsed to our shot timer
@@ -107,11 +109,12 @@ export function processTroopers(world: GameWorld, deltaTime: number): void {
         //bullet.setVelocity(world.cache, vx, vy);
 
         bullet.setPos(world.cache, trooper.x, trooper.y + 7);
-        world.addObject(bullet);
+        world.addEntity(bullet);
       }
     } else if (trooper.lastShot < trooper.shotThreshold) {
       trooper.lastShot += deltaTime;
     }
+  //*/
   });
 }
 
@@ -121,6 +124,7 @@ export function destroyTrooper(
   doExplosion: boolean
 ): void {
   // set player info to pre-flight
+  console.log("destroy");
   const player = world.getPlayerControlling(trooper);
   if (player != undefined) {
     player.setStatus(world.cache, PlayerStatus.Takeoff);

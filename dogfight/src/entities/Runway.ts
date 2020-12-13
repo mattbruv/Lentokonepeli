@@ -159,7 +159,7 @@ export class Runway extends SolidEntity {
         //console.log("bullet hit");
         break;
       case EntityType.Plane:
-        //this.health -= 17;
+        this.health -= 17;
         break;
       default:
         return;
