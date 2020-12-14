@@ -12,7 +12,7 @@ export class Ground extends SolidEntity {
   public width: number;
   public terrain: Terrain;
   public image;
-  private yHitOffset = 20; // 7
+  private yHitOffset = 2; // 7
 
   public constructor(id: number, world: GameWorld, cache: Cache) {
     super(id, world, -1);
@@ -26,7 +26,7 @@ export class Ground extends SolidEntity {
   }
 
   public getCollisionBounds(): import("../physics/rectangle").Rectangle {
-    return new Rectangle(this.x, this.y - this.yHitOffset, this.width, this.image.getHeight() - this.yHitOffset);
+    return new Rectangle(this.x, this.y - this.image.getHeight() / 2 - this.yHitOffset, this.width, this.image.getHeight());
   }
 
   public getState(): CacheEntry {

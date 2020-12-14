@@ -26,6 +26,7 @@ import { Ownable } from "../ownable";
 import { BufferedImage } from "../BufferedImage";
 
 
+
 /**
  * The Game World contains all entites,
  * World state, etc. of a game.

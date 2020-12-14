@@ -1,7 +1,7 @@
 import { Team, SCALE_FACTOR } from "../constants";
 import { Entity, EntityType } from "../entity";
 import { Cache, CacheEntry } from "../network/cache";
-import { InputKey } from "../input";
+import { InputKey, GameKey } from "../input";
 import { RectangleBody, Rectangle } from "../physics/rectangle";
 import { GameWorld, } from "../world/world";
 import { SolidEntity } from "./SolidEntity";
@@ -67,7 +67,7 @@ export class Man extends OwnableSolidEntity {
   public height: number;
   public health: number;
   public state: TrooperState;
-  public direction: TrooperDirection;
+  //public direction: TrooperDirection;
   public team: Team;
   public ammo: number;
   public bombs: number; // simply for client rendering 1 bomb.
@@ -88,7 +88,7 @@ export class Man extends OwnableSolidEntity {
   private invulnerabilityTime = 200;
   private invulnerabilityTimer;
   private shootTimer = 0;
-  private lastX;
+  private lastX = 0;
 
 
 
@@ -114,7 +114,7 @@ export class Man extends OwnableSolidEntity {
       bombs: 1,
       health: 255,
       state: TrooperState.Falling,
-      direction: TrooperDirection.None,
+      //direction: TrooperDirection.None,
       team: player.getTeam()
     });
   }
@@ -156,6 +156,9 @@ export class Man extends OwnableSolidEntity {
         this.vx -= Math.round((this.vx * 0.01) * tstep * SCALE_FACTOR);
         this.vy += this.speedPerPixel / 30 * tstep * SCALE_FACTOR;
         // TODO parachute condition
+        if (this.isKeyPressed(GameKey.MAN_PARACHUTE)) {
+          this.parachute();
+        }
         if (!this.checkCollision()) { }
         break;
       case TrooperState.Parachuting:
@@ -166,13 +169,13 @@ export class Man extends OwnableSolidEntity {
         if (this.vy < this.speedPerPixel) {
           this.vy = this.speedPerPixel;
         }
-        if (this.direction == TrooperDirection.Left) {
+        if (this.isKeyPressed(GameKey.MAN_LEFT)) { //this.direction == TrooperDirection.Left) {
           this.localX -= 100 * tstep * SCALE_FACTOR;
         }
-        if (this.direction == TrooperDirection.Right) {
+        if (this.isKeyPressed(GameKey.MAN_RIGHT)) { //this.direction == TrooperDirection.Right) {
           this.localX += 100 * tstep * SCALE_FACTOR;
         }
-        if (this.isShooting && this.shootTimer + this.shootDelay < Date.now()) {
+        if (this.isKeyPressed(GameKey.MAN_SHOOT) && this.shootTimer + this.shootDelay < Date.now()) {
           this.shootTimer = Date.now();
           this.shoot();
         }
@@ -185,31 +188,30 @@ export class Man extends OwnableSolidEntity {
         let i = this.state;
         this.state = TrooperState.Standing;
         this.lastX = this.localX;
-        if (this.direction == TrooperDirection.Left) { // todo here key pressed?
+        if (this.isKeyPressed(GameKey.MAN_LEFT)) { //this.direction == TrooperDirection.Left) { // todo here key pressed?
           this.localX -= 100 * tstep * SCALE_FACTOR;
           if (this.localX / 100 < -45536) { // random bound {
             //this.fraggedBy(null);
             //this.removeSelf();
           }
-          this.state = TrooperState.Walking_LEFT;
+          this.setState(cache, TrooperState.Walking_LEFT);
         }
-        if (this.direction == TrooperDirection.Right) {
+        if (this.isKeyPressed(GameKey.MAN_RIGHT)) {
           this.localX += 100 * tstep * SCALE_FACTOR;
           if (this.localX / 100 > 45536) { // random bound {
             //this.fraggedBy(null);
             //this.removeSelf();
           }
-          this.state = TrooperState.Walking_RIGHT;
+          this.setState(cache, TrooperState.Walking_RIGHT);
         }
-        else if (this.direction == TrooperDirection.None) {
-          this.state = TrooperState.Standing;
-        }
-        if (this.isShooting && this.shootTimer + this.shootDelay < Date.now()) {
+        if (this.isKeyPressed(GameKey.MAN_SHOOT) && this.shootTimer + this.shootDelay < Date.now()) {
           this.shootTimer = Date.now();
           this.shoot();
         }
-        else if (this.isBombing) {
+        else if (this.isKeyPressed(GameKey.MAN_SUICIDE)) {
           this.world.createExplosion(this.x, this.y, this.getPlayerInfo().getId(), this.team)
+          this.fraggedBy(null);
+          this.removeSelf();
         }
         if (this.checkCollision()) { }
         //console.log("endstep");
@@ -295,6 +297,7 @@ export class Man extends OwnableSolidEntity {
     return Math.atan2(j - m, i - k);
   }
 
+  /*
   public move_old(cache: Cache, deltaTime: number): void {
     const tstep = deltaTime / 1000;
     if (this.state == TrooperState.Falling) {
@@ -338,6 +341,7 @@ export class Man extends OwnableSolidEntity {
       this.set(cache, "y", Math.round(this.localY / SCALE_FACTOR));
     }
   }
+  */
 
   public setVelocity(cache: Cache, vx: number, vy: number): void {
     this.vx = vx;
@@ -426,21 +430,21 @@ export class Man extends OwnableSolidEntity {
   }
 
   public respawn(r: Runway): void {
-    if (this.getPlayerInfo().isControling(this)) {
+    if (this.getPlayerInfo().isControlling(this)) {
       this.world.removeEntity(this);
       this.world.landed(this, r);
     }
   }
 
   public fraggedBy(o: Ownable): void {
-    if (this.getPlayerInfo().isControling(this)) {
+    if (this.getPlayerInfo().isControlling(this)) {
       console.log("fragged - self")
       this.world.killed(this, o, 2);
     }
   }
 
   public removeSelf(): void {
-    if (this.getPlayerInfo().isControling(this)) {
+    if (this.getPlayerInfo().isControlling(this)) {
       console.log("rm - self")
       this.world.removeEntity(this);
       let r = this.getCollisionBounds();
@@ -455,7 +459,7 @@ export class Man extends OwnableSolidEntity {
       y: this.y,
       health: this.health,
       state: this.state,
-      direction: this.direction,
+      //direction: this.direction,
       ammo: this.ammo,
       bombs: this.bombs,
       team: this.team

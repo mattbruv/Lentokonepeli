@@ -3,8 +3,9 @@ import { CacheEntry, Cache } from "../network/cache";
 import { Team } from "../constants";
 import { PlayerInput, InputKey } from "../input";
 import { GameWorld } from "../world/world";
-import { teamPlanes } from "./Plane";
+import { teamPlanes, Plane } from "./Plane";
 import { Ownable } from "../ownable";
+import { Man } from "./Man";
 
 export enum PlayerStatus {
   Playing,
@@ -23,6 +24,17 @@ export class PlayerInfo extends Entity {
 
   public inputState: PlayerInput;
 
+
+  private fuelMax = 255;
+  private healthMax = 255;
+  private ammoMax = 255;
+  private teamKills = 0;
+  private shots = 0;
+  private hits = 0;
+  private fuel = this.fuelMax;
+  private health = this.healthMax;
+  private ammo = this.ammoMax;
+  private bombs = this.ammoMax;
   public constructor(id: number, world: GameWorld, cache: Cache) {
     super(id, world);
     this.name = "Player_" + this.id;
@@ -49,8 +61,39 @@ export class PlayerInfo extends Entity {
   public getControlType(): number {
     return this.controlType;
   }
-  public isControling(e : Entity) : boolean {
+  public isControlling(e: Entity): boolean {
     return e.getId() == this.getControlId() && e.getType() == this.getControlType();
+  }
+
+  public getFuel() {
+    return this.fuel;
+  }
+  public setFuel(fuel: number) {
+    this.fuel = fuel;
+    //this.set(this.world.cache, "fuel", fuel);
+  }
+
+  public getHealth() {
+    return this.health;
+  }
+  public setHealth(health: number) {
+    this.health = health;
+    //this.set(this.world.cache, "health", health);
+  }
+
+  public getAmmo() {
+    return this.ammo;
+  }
+  public setAmmo(ammo: number) {
+    this.ammo = ammo;
+    //this.set(this.world.cache, "ammo", ammo);
+  }
+  public getBombs() {
+    return this.bombs;
+  }
+  public setBombs(bombs: number) {
+    this.bombs = bombs;
+    //this.set(this.world.cache, "bombs", bombs);
   }
 
   public setName(cache: Cache, name: string): void {
@@ -80,6 +123,8 @@ export class PlayerInfo extends Entity {
   public submitTeamBomb(p: Ownable, b1: boolean): void { }
   public submitKill(p: Ownable, p2: Ownable): void { }
   public submitTeamKill(p: Ownable, p2: Ownable): void { }
+  public submitParachute(p: Plane, p2: Man): void { }
+
 
   public getState(): CacheEntry {
     return {
@@ -89,7 +134,11 @@ export class PlayerInfo extends Entity {
       ping: this.ping,
       controlType: this.controlType,
       controlID: this.controlID,
-      status: this.status
+      status: this.status,
+      //fuel: this.fuel,
+      //ammo: this.ammo,
+      //health: this.health,
+      //bombs: this.bombs,
     };
   }
 }

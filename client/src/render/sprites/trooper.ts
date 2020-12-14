@@ -98,7 +98,7 @@ export class TrooperSprite extends GameSprite {
     // update texture state
     this.trooper.texture = this.spritesheet.textures[this.getTexture()];
     if (this.state == TrooperState.Walking_LEFT || this.state == TrooperState.Walking_RIGHT) {
-      const dir = this.direction == TrooperDirection.Left ? 1 : -1;
+      const dir = this.state == TrooperState.Walking_LEFT ? 1 : -1;
       // const d = TrooperDirection[this.direction];
       // console.log(dir, d);
       // this.trooper.anchor.x = dir;

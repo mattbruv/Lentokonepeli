@@ -40,13 +40,14 @@ export class Bomb extends OwnableSolidEntity {
   public filename = "bomb.gif";
   //public direction: number;
 
-  public constructor(id: number, world: GameWorld, cache: Cache, origin: OwnableSolidEntity, team: Team) {
-    super(id, world, team);
-    this.radians = directionToRadians(0);
-    this.localX = 0;
-    this.localY = 0;
-    this.xSpeed = 0;
-    this.ySpeed = 0;
+  public constructor(id: number, world: GameWorld, cache: Cache, x: number, y: number, direction: number, speed: number, origin: OwnableSolidEntity) {
+    super(id, world, origin.getTeam());
+    //this.radians = directionToRadians(direction);
+    this.setDirection(cache, direction);
+    this.setPos(cache, x, y);
+    //this.localX = x * SCALE_FACTOR;
+    //this.localY = y * SCALE_FACTOR;
+    this.setSpeed(cache, speed * SCALE_FACTOR); // needs radians to be set
     this.image = world.getImage(this.filename);
     this.width = this.image.width;
     this.height = this.image.height;
@@ -55,11 +56,11 @@ export class Bomb extends OwnableSolidEntity {
 
     this.setData(cache, {
       age: 0,
-      x: 0,
-      y: 0,
-      direction: 0,
+      x: x,
+      y: y,
+      direction: direction,
       droppedBy: origin.getPlayerInfo().id,
-      team
+      team: origin.getTeam()
     });
   }
   public getPlayerInfo(): PlayerInfo {
