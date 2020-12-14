@@ -37,6 +37,8 @@ export class Runway extends SolidEntity {
   public imageWidth;
   public imageHeight;
 
+  public yOffset = 7;
+
   public constructor(id: number, world: GameWorld, cache: Cache, team: number, x: number, y: number, direction: number) {
     super(id, world, team);
     this.image = [world.getImage("runway.gif"), world.getImage("runway2.gif")];
@@ -62,7 +64,7 @@ export class Runway extends SolidEntity {
   }
 
   public getCollisionBounds(): Rectangle {
-    return new Rectangle(this.x, this.y + this.imageHeight[1 - this.direction] / 4, this.imageWidth[1 - this.direction], this.imageHeight[1 - this.direction]);
+    return new Rectangle(this.x, this.y + this.yOffset, this.imageWidth[1 - this.direction], this.imageHeight[1 - this.direction]);
   }
   public getCollisionImage() {
     return this.image[1 - this.direction];
@@ -83,7 +85,7 @@ export class Runway extends SolidEntity {
     return this.x - this.getImageWidth(0) / 2;
   }
   public getLandableY(): number {
-    return 23 + this.y + this.getImageHeight(0) / 2;
+    return -23 + this.y + this.getImageHeight(0) / 2 + this.yOffset;
   }
   public getStartX(): number {
     if (this.direction == 1) {
@@ -158,7 +160,8 @@ export class Runway extends SolidEntity {
         this.health -= (4.0 * b.getDamageFactor());
         //console.log("bullet hit");
         break;
-      case EntityType.Plane:
+      case EntityType.Explosion:
+        //TODO reenable plane hit damage
         this.health -= 17;
         break;
       default:

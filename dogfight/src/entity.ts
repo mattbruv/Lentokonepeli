@@ -21,10 +21,10 @@ export enum EntityType {
   Flag,
   ControlTower, // 42 ?!
   Hill,
-  Plane, // 27
+  Plane, 
   Trooper,//18 ?
   Player,
-  Explosion,
+  Explosion,// 27
   Bullet, // 12
   Bomb, // 17
 }

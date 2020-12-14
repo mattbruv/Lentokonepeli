@@ -8,6 +8,7 @@ import { loadMap } from "../../dogfight/src/world/map";
 import { MAP_CLASSIC_2 } from "../../dogfight/src/maps/classic2";
 import { isNameValid } from "../../dogfight/src/validation";
 import { ClientState, ConnectionState } from "./clientState";
+import { spriteSheet } from "./render/textures";
 
 type messageCallback = (data: Packet) => void;
 
@@ -35,7 +36,7 @@ export class ClientServer {
     this.serverMsg = callback;
     ClientState.connection = ConnectionState.OPEN;
 
-    this.world = new GameWorld();
+    this.world = new GameWorld(spriteSheet.textures);
     loadMap(this.world, MAP_CLASSIC_2);
     setInterval((): void => {
       this.loop();
