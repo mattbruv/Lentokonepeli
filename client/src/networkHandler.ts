@@ -19,14 +19,14 @@ export class NetworkHandler {
   private clientOnly = process.env.BUILD == BuildType.Client;
   private clientServer: ClientServer;
 
-  public constructor(callback: packetCallback) {
+  public constructor(callback: packetCallback, img) {
     // console.log("network handler made!");
     this.onPacketRecieved = callback;
 
     // create connection to server.
     // If we are in client only mode, fake a "server" locally.
     if (this.clientOnly == true) {
-      this.clientServer = new ClientServer(this.onPacketRecieved);
+      this.clientServer = new ClientServer(this.onPacketRecieved, img);
       const syncRequest = { type: PacketType.RequestFullSync };
       this.send(syncRequest);
     }

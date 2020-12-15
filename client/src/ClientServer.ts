@@ -30,13 +30,13 @@ export class ClientServer {
   private hasJoined = false;
 
   // Game loop function
-  public constructor(callback: messageCallback) {
+  public constructor(callback: messageCallback, img) {
     console.log("Local game server started!");
 
     this.serverMsg = callback;
     ClientState.connection = ConnectionState.OPEN;
 
-    this.world = new GameWorld(spriteSheet.textures);
+    this.world = new GameWorld(img);
     loadMap(this.world, MAP_CLASSIC_2);
     setInterval((): void => {
       this.loop();

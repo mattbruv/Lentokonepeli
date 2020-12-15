@@ -397,7 +397,7 @@ export class Plane extends OwnableSolidEntity {
       world.addEntity(bullet);
     }
 
-    ///*
+    /*
     x0 = -30;
     y0 = 200;
     lx = 50;

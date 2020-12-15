@@ -18,6 +18,7 @@ import { AudioManager } from "./audio";
 import { isNameValid } from "../../dogfight/src/validation";
 import Cookies from "js-cookie";
 import { moveBullet } from "../../dogfight/src/entities/Bullet";
+import { loadImages } from "../../dogfight/src/images";
 
 export class GameClient {
   private renderer: GameRenderer;
@@ -37,6 +38,7 @@ export class GameClient {
   private takeoffSelector: TakeoffSelector;
 
   private audio: AudioManager;
+  private images;
 
   public gameObjects: {};
 
@@ -69,7 +71,10 @@ export class GameClient {
     this.takeoffSelector = new TakeoffSelector();
 
     loadSpriteSheet((): void => {
-      this.initRenderer();
+      loadImages("./assets/images/images.png").then((i) => {
+        this.images = i;
+        this.initRenderer();
+      });
     });
   }
 
@@ -85,7 +90,7 @@ export class GameClient {
     // create network handler
     this.network = new NetworkHandler((data): void => {
       this.processPacket(data);
-    });
+    }, this.images);
 
     // center camera
     this.renderer.centerCamera(0, 150);

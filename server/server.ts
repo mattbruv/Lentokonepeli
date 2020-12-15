@@ -15,7 +15,7 @@ import { MAP_CLASSIC_2 } from "../dogfight/src/maps/classic2";
 import { isNameValid } from "../dogfight/src/validation";
 //import { loadSpriteSheet, spriteSheet } from "./textures";
 import { BufferedImage } from "../dogfight/src/BufferedImage";
-import { loadImages } from "./images";
+import { loadImages } from "../dogfight/src/images";
 
 const sharp = require('sharp');
 

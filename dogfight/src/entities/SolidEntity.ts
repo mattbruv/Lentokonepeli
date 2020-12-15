@@ -31,7 +31,7 @@ export abstract class SolidEntity extends Entity {
         let arrayOfInt1 = this.getPix(localBufferedImage2, localRectangle3, localRectangle1);
         //console.log("RGB : " + arrayOfInt1[1])
         for (i = 0; i < arrayOfInt1.length; i++) {
-          if ((arrayOfInt1[i] == 0)) {
+          if ((arrayOfInt1[i] == 255)) {
             //console.log("GOOOOD " + arrayOfInt1.length + " vs " + localRectangle3.height * localRectangle3.width + " " + localBufferedImage2.getDataLength());
             if (localRectangle2.x != localRectangle3.x || localRectangle2.y != localRectangle3.y) {
               console.log(localRectangle2);
@@ -47,7 +47,7 @@ export abstract class SolidEntity extends Entity {
       if (localBufferedImage2 == null) {
         let arrayOfInt1 = this.getPix(localBufferedImage1, localRectangle3, localRectangle2);
         for (i = 0; i < arrayOfInt1.length; i++) {
-          if ((arrayOfInt1[i] == 0)) {
+          if ((arrayOfInt1[i] == 255)) {
             //console.log("GOOOOD");
             return true;
           }
@@ -55,10 +55,10 @@ export abstract class SolidEntity extends Entity {
         return false;
       }
       if (localRectangle2.x != localRectangle3.x || localRectangle2.y != localRectangle3.y) {
-        console.log(localRectangle2);
-        console.log(localRectangle1);
-        console.log(localRectangle3);
-        console.log();
+        //console.log(localRectangle2);
+        //console.log(localRectangle1);
+        //console.log(localRectangle3);
+        //console.log();
       }
       let arrayOfInt1 = this.getPix(localBufferedImage1, localRectangle3, localRectangle2);
       let arrayOfInt2 = this.getPix(localBufferedImage2, localRectangle3, localRectangle1);
@@ -83,7 +83,7 @@ export abstract class SolidEntity extends Entity {
     //console.log(paramRectangle1.width * paramRectangle1.height);
     for (let y = y0; y < y0 + paramRectangle1.height; y++) {
       for (let x = x0; x < x0 + paramRectangle1.width; x++) {
-        datan.push(arrayOfInt[4 * (x + y * paramRectangle2.width) + 0]);
+        datan.push(arrayOfInt[4 * (x + y * paramRectangle2.width) + 3]);
       }
     }
     //console.log(x0, y0, datan[0]);
@@ -95,7 +95,7 @@ export abstract class SolidEntity extends Entity {
   private checkPix(paramRectangle: Rectangle, paramArrayOfInt1: number[], paramArrayOfInt2: number[]): boolean {
     for (let i = 0; i < paramRectangle.getHeight(); i++) {
       for (let j = 0; j < paramRectangle.getWidth(); j++) {
-        if (((paramArrayOfInt1[(i * paramRectangle.width + j)] == 0)) && ((paramArrayOfInt2[(i * paramRectangle.width + j)] == 0))) {
+        if (((paramArrayOfInt1[(i * paramRectangle.width + j)] == 255)) && ((paramArrayOfInt2[(i * paramRectangle.width + j)] == 255))) {
           return true;
         }
       }
