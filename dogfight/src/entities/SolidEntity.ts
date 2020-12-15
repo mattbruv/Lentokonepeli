@@ -34,10 +34,10 @@ export abstract class SolidEntity extends Entity {
           if ((arrayOfInt1[i] == 255)) {
             //console.log("GOOOOD " + arrayOfInt1.length + " vs " + localRectangle3.height * localRectangle3.width + " " + localBufferedImage2.getDataLength());
             if (localRectangle2.x != localRectangle3.x || localRectangle2.y != localRectangle3.y) {
-              console.log(localRectangle2);
-              console.log(localRectangle1);
-              console.log(localRectangle3);
-              console.log();
+              //console.log(localRectangle2);
+              //console.log(localRectangle1);
+              //console.log(localRectangle3);
+              //console.log();
             }
             return true;
           }

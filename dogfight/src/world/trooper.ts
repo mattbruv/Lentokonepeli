@@ -131,7 +131,7 @@ export function destroyTrooper(
     player.setControl(world.cache, EntityType.None, 0);
   }
   if (doExplosion) {
-    world.createExplosion(trooper.x, trooper.y, player.id, trooper.team);
+    world.createExplosion(trooper.x, trooper.y, trooper);
   }
   world.removeEntity(trooper);
 }

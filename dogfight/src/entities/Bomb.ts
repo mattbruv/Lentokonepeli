@@ -67,7 +67,7 @@ export class Bomb extends OwnableSolidEntity {
     return this.origin.getPlayerInfo();
     //throw new Error("Method not implemented.");
   }
-  public getRootOwner(): OwnableSolidEntity {
+  public getRootOwner(): Ownable {
     return this.origin.getRootOwner();
     //throw new Error("Method not implemented.");
   }
@@ -116,7 +116,7 @@ export class Bomb extends OwnableSolidEntity {
       }
       this.world.removeEntity(this);
       if (se.getType() != EntityType.Water) {
-        this.world.createExplosion(this.x, this.y, this.getPlayerInfo().getId(), this.team);
+        this.world.createExplosion(this.x, this.y, this);
       }
     }
 

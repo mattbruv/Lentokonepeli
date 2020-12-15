@@ -78,7 +78,7 @@ export class Bullet extends OwnableSolidEntity {
   getPlayerInfo(): import("./PlayerInfo").PlayerInfo {
     return this.origin.getPlayerInfo();
   }
-  getRootOwner(): OwnableSolidEntity {
+  getRootOwner(): Ownable {
     return this.origin.getRootOwner();
   }
 
@@ -152,7 +152,7 @@ export class Bullet extends OwnableSolidEntity {
     let rm: boolean = true;
     if (se instanceof Plane || se instanceof Man) {
       if (this.origin.getPlayerInfo().getId() == se.getPlayerInfo().getId()) {
-        rm = false;
+        //rm = false;
       }
     }
     if (se instanceof Runway) {

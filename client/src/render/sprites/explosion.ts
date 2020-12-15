@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { GameSprite } from "../sprite";
 import { DrawLayer } from "../constants";
-import { explosionGlobals } from "../../../../dogfight/src/entities/explosion";
+import { explosionGlobals } from "../../../../dogfight/src/entities/Explosion";
 
 const ANIMATION_DURATION = 500;
 

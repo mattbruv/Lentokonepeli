@@ -20,7 +20,7 @@ import { Bomb } from "./Bomb";
 import { BufferedImage } from "../BufferedImage";
 import { isRectangleCollision } from "../physics/collision";
 import { OwnableSolidEntity } from "./OwnableSolidEntity";
-import { Explosion } from "./explosion";
+import { Explosion } from "./Explosion";
 
 
 export enum PlaneType {
@@ -213,7 +213,7 @@ export function destroyPlane(
     player.setControl(world.cache, EntityType.None, 0);
   }
   if (doExplosion) {
-    world.createExplosion(x, y, plane.playerInfo.getId(), plane.team);
+    world.createExplosion(x, y, plane);
   }
   world.removeEntity(plane);
 }
@@ -397,7 +397,7 @@ export class Plane extends OwnableSolidEntity {
       world.addEntity(bullet);
     }
 
-    /*
+    ///*
     x0 = -30;
     y0 = 200;
     lx = 50;
@@ -1140,7 +1140,7 @@ export class Plane extends OwnableSolidEntity {
       }
       this.world.removeEntity(this);
     }
-    this.world.createExplosion(this.x, this.y, this.playerInfo.getId(), this.team);
+    this.world.createExplosion(this.x, this.y, this);
   }
 
 

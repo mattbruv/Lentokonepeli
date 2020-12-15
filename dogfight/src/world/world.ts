@@ -9,7 +9,7 @@ import { Runway } from "../entities/Runway";
 import { Tower } from "../entities/tower";
 import { Man } from "../entities/Man";
 import { Water } from "../entities/water";
-import { Explosion } from "../entities/explosion";
+import { Explosion } from "../entities/Explosion";
 import { Entity, EntityType } from "../entity";
 import { Team } from "../constants";
 import { Plane, teamPlanes } from "../entities/Plane";
@@ -210,16 +210,17 @@ export class GameWorld {
     return cache;
   }
 
-  public createExplosion(x: number, y: number, uid: number, team: Team): void {
+  public createExplosion(x: number, y: number, o: Ownable): void {
     const explosion = new Explosion(
       this.nextID(EntityType.Explosion),
       this,
       this.cache,
+      o,
       x,
       y
     );
-    explosion.setPlayerID(this.cache, uid);
-    explosion.setTeam(this.cache, team);
+    //explosion.setPlayerID(this.cache, uid);
+    //explosion.setTeam(this.cache, team);
     this.explosions.push(explosion);
   }
 

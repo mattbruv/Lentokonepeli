@@ -209,7 +209,7 @@ export class Man extends OwnableSolidEntity {
           this.shoot();
         }
         else if (this.isKeyPressed(GameKey.MAN_SUICIDE)) {
-          this.world.createExplosion(this.x, this.y, this.getPlayerInfo().getId(), this.team)
+          this.world.createExplosion(this.x, this.y, this)
           this.fraggedBy(null);
           this.removeSelf();
         }

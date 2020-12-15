@@ -17,7 +17,7 @@ import { Vec2d } from "../physics/vector";
 import { destroyTrooper } from "./trooper";
 import { SCALE_FACTOR } from "../constants";
 import { CircleBody } from "../physics/circle";
-import { explosionGlobals } from "../entities/explosion";
+import { explosionGlobals } from "../entities/Explosion";
 import { bulletGlobals } from "../entities/Bullet";
 import { entityHash } from "../entity";
 import { radiansToDirection } from "../physics/helpers";
