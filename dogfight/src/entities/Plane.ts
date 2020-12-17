@@ -350,73 +350,75 @@ export class Plane extends OwnableSolidEntity {
       mode: this.mode,
       planeType: kind,
     });
-    let x0 = -30;
-    let y0 = 400;
-    let lx = 50;
-    let ly = 50;
+    //return;
+    if (runway != null) {
+      let x0 = -30;
+      let y0 = 400;
+      let lx = 50;
+      let ly = 50;
 
-    let x = this.runway.getStartX();
-    y0 = this.runway.getStartY();
-    for (let y = y0; y < y0 + ly; y += 5) {
-      const bullet = new Bullet(
-        this.world.nextID(EntityType.Bullet),
-        this.world,
-        this.world.cache,
-        x, y,
-        0, -4,
-        this,
-      );
-      world.addEntity(bullet);
-    }
-
-    x = this.runway.getLandableX();
-    y0 = this.runway.getLandableY();
-    for (let y = y0; y < y0 + ly; y += 5) {
-      const bullet = new Bullet(
-        this.world.nextID(EntityType.Bullet),
-        this.world,
-        this.world.cache,
-        x, y,
-        0, -4,
-        this,
-      );
-      world.addEntity(bullet);
-    }
-
-    x = runway.getLandableX() + runway.getLandableWidth()
-    y0 = this.runway.getLandableY();
-    for (let y = y0; y < y0 + ly; y += 5) {
-      const bullet = new Bullet(
-        this.world.nextID(EntityType.Bullet),
-        this.world,
-        this.world.cache,
-        x, y,
-        0, -4,
-        this,
-      );
-      world.addEntity(bullet);
-    }
-
-    ///*
-    x0 = -30;
-    y0 = 200;
-    lx = 50;
-    ly = 50;
-    for (let x = x0; x < x0 + lx; x += 5) {
+      let x = this.runway.getStartX();
+      y0 = this.runway.getStartY();
       for (let y = y0; y < y0 + ly; y += 5) {
         const bullet = new Bullet(
           this.world.nextID(EntityType.Bullet),
           this.world,
           this.world.cache,
-          this.runway.getStartX() + x, this.runway.getStartY() + y,
+          x, y,
           0, -4,
           this,
         );
         world.addEntity(bullet);
       }
-    }
-    //*/
 
+      x = this.runway.getLandableX();
+      y0 = this.runway.getLandableY();
+      for (let y = y0; y < y0 + ly; y += 5) {
+        const bullet = new Bullet(
+          this.world.nextID(EntityType.Bullet),
+          this.world,
+          this.world.cache,
+          x, y,
+          0, -4,
+          this,
+        );
+        world.addEntity(bullet);
+      }
+
+      x = runway.getLandableX() + runway.getLandableWidth()
+      y0 = this.runway.getLandableY();
+      for (let y = y0; y < y0 + ly; y += 5) {
+        const bullet = new Bullet(
+          this.world.nextID(EntityType.Bullet),
+          this.world,
+          this.world.cache,
+          x, y,
+          0, -4,
+          this,
+        );
+        world.addEntity(bullet);
+      }
+
+      ///*
+      x0 = -30;
+      y0 = 200;
+      lx = 50;
+      ly = 50;
+      for (let x = x0; x < x0 + lx; x += 5) {
+        for (let y = y0; y < y0 + ly; y += 5) {
+          const bullet = new Bullet(
+            this.world.nextID(EntityType.Bullet),
+            this.world,
+            this.world.cache,
+            this.runway.getStartX() + x, this.runway.getStartY() + y,
+            0, -4,
+            this,
+          );
+          world.addEntity(bullet);
+        }
+      }
+      //*/
+    }
   }
   getPlayerInfo(): PlayerInfo {
     return this.playerInfo;
@@ -481,7 +483,8 @@ export class Plane extends OwnableSolidEntity {
 
   public getCollisionImage(): BufferedImage {
     //console.log("get image " + this.imagename + "_rot" + Math.round(this.direction));
-    return this.world.getImage(this.imagename + "_rot" + Math.round(this.direction));
+    console.log("rot: " + Math.round(this.direction), " flip:" + this.flipped);
+    return this.world.getImage(this.imagename + "_rot_" + Math.round(this.direction) + "_flip_" + this.flipped);
   }
 
   private getBottomHeight(): number {

@@ -99,7 +99,6 @@ export async function loadImages(path = "./dist/assets/images/images.png") {
        */
     let ma = 256;
 
-    let image3 = image2;
     //image3 = image3.crop(info.x, info.y, info.w, info.h);
     if ([
       "bomb.gif",
@@ -111,25 +110,34 @@ export async function loadImages(path = "./dist/assets/images/images.png") {
       "plane8.gif",
       "plane9.gif",
     ].indexOf(key) >= 0) {
-      for (let a = 0; a < ma + 1; ++a) {
-        //console.log(a);
-        image3.rotate(-1 / ma * 360)
-          .autocrop();
-        let d = image3.bitmap.data;
-        images[key + "_rot" + a] = new BufferedImage(Buffer.from(d), { w: image3.bitmap.width, h: image3.bitmap.height });
-        /*
-        const ret2 = await sharp("./dist/assets/images/images.png")
-          .ensureAlpha()
-          .extractChannel(3)
-          .extract({ left: info.x, top: info.y, width: info.w, height: info.h })
-          .negate()
-          .rotate(-a / ma * 360)
-          .raw()
-          .toBuffer((e, d, i) => {
-            //images[key + "_rot" + a] = new BufferedImage(d, { w: i.width, h: i.height });
-            //console.log(i.width + " x " + i.height);
-          });
-          */
+      let f: boolean = false;
+      for (f of [true, false]) {
+        for (let a = 0; a < ma + 1; ++a) {
+          let image3 = image2.clone().flip(false, !f);//.clone();
+          //console.log(a);
+          image3
+            .rotate(-a / ma * 360)
+            .autocrop()
+            ;
+          let d = image3.bitmap.data;
+          images[key + "_rot_" + a + "_flip_" + f] = new BufferedImage(Buffer.from(d), { w: image3.bitmap.width, h: image3.bitmap.height });
+          if (a == 64 && key == "plane8.gif") image3.getBase64(jimp.MIME_PNG, (err, res) => {
+            console.log(res)
+          })
+          /*
+          const ret2 = await sharp("./dist/assets/images/images.png")
+            .ensureAlpha()
+            .extractChannel(3)
+            .extract({ left: info.x, top: info.y, width: info.w, height: info.h })
+            .negate()
+            .rotate(-a / ma * 360)
+            .raw()
+            .toBuffer((e, d, i) => {
+              //images[key + "_rot" + a] = new BufferedImage(d, { w: i.width, h: i.height });
+              //console.log(i.width + " x " + i.height);
+            });
+            */
+        }
       }
 
     }

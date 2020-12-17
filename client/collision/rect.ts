@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { directionToRadians, Vec2d } from "../../dogfight/src/physics/vector";
+import { Vec2d } from "../../dogfight/src/physics/vector";
 import {
   RectangleBody,
   RectanglePoints,
@@ -15,6 +15,7 @@ import {
   Rotateable,
   Renderable
 } from "./helper";
+import { directionToRadians } from "../../dogfight/src/physics/helpers";
 
 const RECT_MIN = 20;
 const RECT_MAX = 100;
@@ -83,7 +84,7 @@ export class RectangleSprite implements Renderable, Draggable, Rotateable {
   private callback: () => void;
 
   public constructor() {
-    this.callback = (): void => {};
+    this.callback = (): void => { };
     this.container = new PIXI.Container();
     this.debugSprite = new RectangleSpriteDebug();
     this.rectObj = {

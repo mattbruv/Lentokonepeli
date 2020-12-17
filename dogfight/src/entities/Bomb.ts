@@ -76,7 +76,7 @@ export class Bomb extends OwnableSolidEntity {
     return new Rectangle(this.x, this.y, this.width, this.height);
   }
   public getCollisionImage(): BufferedImage {
-    return this.world.getImage(this.filename + "_rot" + radiansToDirection(this.radians));
+    return this.world.getImage(this.filename + "_rot_" + radiansToDirection(this.radians) + "_flip_" + false);
   }
   public tick(cache: Cache, deltaTime: number): void {
     this.move(cache, deltaTime);

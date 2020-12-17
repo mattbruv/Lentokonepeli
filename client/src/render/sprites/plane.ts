@@ -32,10 +32,10 @@ export class PlaneSprite extends GameSprite {
 
   private frameStatus: FrameStatus;
 
-  private container: PIXI.Container;
+  protected container: PIXI.Container;
   private spritesheet: PIXI.Spritesheet;
 
-  private plane: PIXI.Sprite;
+  protected plane: PIXI.Sprite;
 
   private lightSmoke: PIXI.Container;
   private lightSmokeInterval: number;
