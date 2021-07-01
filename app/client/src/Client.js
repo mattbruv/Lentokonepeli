@@ -1,32 +1,50 @@
 import React from "react";
 
 class Client extends React.Component {
-
-  ws = null
+  ws = null;
 
   constructor(props) {
     super(props);
     this.state = {
-      connection: null
+      data: null,
     };
   }
 
   componentDidMount() {
-    this.ws = new WebSocket("ws://localhost:420");
+    this.ws = new WebSocket("ws://localhost:6969");
 
     this.ws.onopen = () => {
       console.log("connected");
-    }
+    };
 
-    this.ws.onmessage = evt => {
+    this.ws.onmessage = (evt) => {
       const message = evt.data;
       console.log(message);
-    }
+    };
+  }
 
+  updateText(value) {
+    this.setState({ data: value });
+  }
+
+  sendData() {
+    this.ws.send(this.state.data);
   }
 
   render() {
-    return <b>Hello World!</b>;
+    return (
+      <div>
+        <input type="text" onChange={(e) => this.updateText(e.target.value)} />{" "}
+        <input
+          type="Button"
+          onClick={() => this.sendData()}
+          readOnly
+          value="Send"
+        />
+        <br />
+        {this.state.data}
+      </div>
+    );
   }
 }
 
