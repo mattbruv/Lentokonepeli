@@ -1,6 +1,7 @@
 node_modules/
 package-lock.json
 lentokonepeli/target
+lentokonepeli/dependency-reduced-pom.xml
 .classpath
 .project
 .settings
