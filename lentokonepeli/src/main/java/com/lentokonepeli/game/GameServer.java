@@ -2,6 +2,7 @@ package com.lentokonepeli.game;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.util.Properties;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -9,8 +10,12 @@ import org.java_websocket.server.WebSocketServer;
 
 public class GameServer extends WebSocketServer {
 
-    public GameServer(InetSocketAddress address) {
+    Properties config;
+    WebSocket mainServerSocket;
+
+    public GameServer(Properties conf, InetSocketAddress address) {
         super(address);
+        this.config = conf;
     }
 
     @Override
@@ -41,7 +46,7 @@ public class GameServer extends WebSocketServer {
 
     @Override
     public void onStart() {
-        System.out.println("server started successfully");
+        System.out.println("server started successfully on " + this.getAddress());
     }
 
 }
