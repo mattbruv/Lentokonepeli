@@ -6,3 +6,5 @@ lentokonepeli/dependency-reduced-pom.xml
 .project
 .settings
 app.config
+target
+dependency-reduced-pom.xml

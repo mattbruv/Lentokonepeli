@@ -1,5 +1,2 @@
-url=
-port=
-
-main.url=
-main.port=
+url=localhost
+port=80
