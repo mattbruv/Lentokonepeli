@@ -1,0 +1,20 @@
+GameServer.java - Listens forever*(unless commanded otherwise) and accepts
+incoming user requests for processing (what type of protocol are we using here custom?)
+Can have many 'Game' references.
+Spawns ClientConnection objects and has an ArrayList of them or some such referencing solution.
+
+ClientConnection.java implements Runnable and is a Thread that is spawned on each connection,
+this processes and handles incoming requests.
+Should be assigned a 'Game' reference somehow.
+(a user that is logged in sends a "joinGame,{id}" request?)
+
+GameState.java this is a single 'Game's data persistence,
+where a single or more users (up to cap) can access this object inorder to play a 'Game'
+
+Game.java
+this is the overall architect of the game that uses the data stored in it's
+singular reference to a GameState in order to make decisions about players moves(*requests as before),
+and broadcast reactions to those moves. 
+(sends out updates to the GameState)
+
+probably a factory for Game and a factory for GameState. You probably want a 'default' state for both Game and GameState.

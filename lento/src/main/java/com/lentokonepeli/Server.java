@@ -1,4 +1,4 @@
-package com.lentokonepeli.game;
+package com.lentokonepeli;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -8,12 +8,11 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
-public class GameServer extends WebSocketServer {
+public class Server extends WebSocketServer {
 
     Properties config;
-    WebSocket mainServerSocket;
 
-    public GameServer(Properties conf, InetSocketAddress address) {
+    public Server(Properties conf, InetSocketAddress address) {
         super(address);
         this.config = conf;
     }

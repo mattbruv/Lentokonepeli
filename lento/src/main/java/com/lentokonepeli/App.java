@@ -1,4 +1,4 @@
-package com.lentokonepeli.game;
+package com.lentokonepeli;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,7 +22,7 @@ public class App {
     String host = config.getProperty("url");
     int port = Integer.parseInt(config.getProperty("port"));
 
-    WebSocketServer server = new GameServer(config, new InetSocketAddress(host, port));
+    WebSocketServer server = new Server(config, new InetSocketAddress(host, port));
 
     server.run();
   }
