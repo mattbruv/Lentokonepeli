@@ -11,19 +11,23 @@ import org.java_websocket.server.WebSocketServer;
 public class Server extends WebSocketServer {
 
     Properties config;
+    Game game;
 
     public Server(Properties conf, InetSocketAddress address) {
         super(address);
         this.config = conf;
+        this.game = new Game();
     }
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
+        this.game.addConnection(conn);
         System.out.println("New connection to " + conn.getRemoteSocketAddress());
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+        this.game.removeConnection(conn);
         System.out.println(
                 "closed " + conn.getRemoteSocketAddress() + " with exit code " + code + " additional info: " + reason);
     }
@@ -46,6 +50,7 @@ public class Server extends WebSocketServer {
     @Override
     public void onStart() {
         System.out.println("server started successfully on " + this.getAddress());
+        (new Thread(this.game)).start();
     }
 
 }
