@@ -11,7 +11,7 @@ class Client extends React.Component {
   }
 
   componentDidMount() {
-    this.ws = new WebSocket("ws://localhost:6969");
+    this.ws = new WebSocket("ws://localhost:3259");
 
     this.ws.onopen = () => {
       console.log("connected");
@@ -19,7 +19,7 @@ class Client extends React.Component {
 
     this.ws.onmessage = (evt) => {
       const message = evt.data;
-      console.log(message);
+      this.updateText(message);
     };
   }
 
@@ -34,7 +34,7 @@ class Client extends React.Component {
   render() {
     return (
       <div>
-        <input type="text" onChange={(e) => this.updateText(e.target.value)} />{" "}
+        <input value={this.state.data} type="text" onChange={(e) => this.updateText(e.target.value)} />{" "}
         <input
           type="Button"
           onClick={() => this.sendData()}
