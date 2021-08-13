@@ -2,6 +2,7 @@ import React from "react";
 import { About } from "./About";
 import { Users } from "./Users";
 import { Home } from "./Home";
+import { Login } from "./Login";
 
 import "./sass/main.scss";
 
@@ -11,6 +12,7 @@ import {
   Route,
   Link
 } from "react-router-dom";
+import { Register } from "./Register";
 
 class Client extends React.Component {
 
@@ -37,6 +39,12 @@ class Client extends React.Component {
               <li>
                 <Link to="/users">Users</Link>
               </li>
+              <li>
+                <Link to="/login">Login</Link>
+              </li>
+              <li>
+                <Link to="/register">Register</Link>
+              </li>
             </ul>
           </nav>
           <Switch>
@@ -45,6 +53,12 @@ class Client extends React.Component {
             </Route>
             <Route path="/users">
               <Users />
+            </Route>
+            <Route path="/login">
+              <Login />
+            </Route>
+            <Route path="/register">
+              <Register />
             </Route>
             <Route path="/">
               <Home />
