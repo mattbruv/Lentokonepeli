@@ -1,4 +1,5 @@
 import React from "react";
+import { postData } from "./fetch";
 
 export class Register extends React.Component {
 
@@ -44,6 +45,14 @@ export class Register extends React.Component {
         this.setState({ OK, errors });
     }
 
+    submitForm() {
+        postData("/register", {
+            hello: "world!"
+        }).then((res) => {
+            console.log(res)
+        });
+    }
+
     handleChange(prop, event) {
         // console.log(prop, event.target.value);
         this.setState({ [prop]: event.target.value }, () => {
@@ -58,7 +67,13 @@ export class Register extends React.Component {
                 <div>Username: <input onChange={(e) => this.handleChange("username", e)} type="text" /></div>
                 <div>Password: <input onChange={(e) => this.handleChange("pass1", e)} type="password" /></div>
                 <div>Repeat Password: <input onChange={(e) => this.handleChange("pass2", e)} type="password" /></div>
-                <div><input disabled={!this.state.OK} type="button" value="Register" /></div>
+                <div>
+                    <input
+                        onClick={() => this.submitForm()}
+                        disabled={!this.state.OK}
+                        type="button" value="Register"
+                    />
+                </div>
                 {this.state.errors.map(e => {
                     return <div className="error" key={e}>{e}</div>
                 })}
