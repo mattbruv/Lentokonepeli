@@ -1,6 +1,6 @@
 import React from "react";
 import { ServerList } from "./ServerList";
-
+import { Game } from "./Game";
 
 export class Home extends React.Component {
 
@@ -26,15 +26,36 @@ export class Home extends React.Component {
         this.gameSocket = new WebSocket(conn);
 
         this.gameSocket.onopen = (e) => {
-            console.log(e);
+            // console.log(e);
             this.setState({ connected: true });
         }
     }
 
+    componentWillUnmount() {
+        if (this.state.connected) {
+            if (this.gameSocket) {
+                this.gameSocket.close();
+            }
+        }
+    }
+
+    renderGame() {
+        return (
+            <Game ws={this.gameSocket} />
+        );
+    }
+
+    renderServers() {
+        return (
+            <ServerList
+                joinCallback={(s) => { this.joinServer(s) }}
+            />
+        );
+    }
+
     render() {
         return <div>
-            {this.state.connected ? "true" : "false"}
-            <ServerList joinCallback={(s) => this.joinServer(s)} />
+            {this.state.connected ? this.renderGame() : this.renderServers()}
         </div>
     }
 }

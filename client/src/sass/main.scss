@@ -7,6 +7,11 @@ body {
   background-color: lightblue;
 }
 
+nav ul li {
+  display: inline;
+  margin-left: 1rem;
+}
+
 .error {
   color: red;
 }
