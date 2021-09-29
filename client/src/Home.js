@@ -1,11 +1,14 @@
 import React from "react";
 import { ServerList } from "./ServerList";
 import { Game } from "./Game";
+import { TestLib, sum } from "lento-gui";
 
 export class Home extends React.Component {
 
     constructor(props) {
         super(props);
+
+        console.log(sum(3, 4));
 
         this.gameSocket = null;
 
@@ -55,7 +58,10 @@ export class Home extends React.Component {
 
     render() {
         return <div>
+            test
+            {/* 
             {this.state.connected ? this.renderGame() : this.renderServers()}
+            */}
         </div>
     }
 }
