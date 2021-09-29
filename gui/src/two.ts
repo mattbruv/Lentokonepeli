@@ -8,7 +8,6 @@ export class TestLib {
 }
 
 export function sum(a: number, b: number) {
-    console.log(3 / 0);
     return a + b;
 }
 
