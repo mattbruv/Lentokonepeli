@@ -6,10 +6,12 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown"
 import Container from "react-bootstrap/Container";
+import Polyglot from "node-polyglot";
+import { Languages } from "./lang";
 
 type MyProps = {
-    // using `interface` is also ok
-    message: string;
+    lang: Polyglot;
+    langUpdate: (lang: string) => void
 };
 
 type MyState = {
@@ -21,20 +23,25 @@ export default class Header extends React.Component<MyProps, MyState> {
         count: 0
     }
     render() {
+        const _ = this.props.lang;
         return (
             <Navbar bg="light" expand="sm">
                 <Container>
-                    <Navbar.Brand as={Link} to="/">Lentokonepeli</Navbar.Brand>
+                    <Navbar.Brand as={Link} to="/">{_.t("name")}</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
-                            <Nav.Link as={Link} to="about">About</Nav.Link>
-                            <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                                <NavDropdown.Divider />
-                                <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+                            <Nav.Link as={Link} to="about">{_.t("about")}</Nav.Link>
+                            <NavDropdown title={_.t("language")} id="nav-dropdown">
+                                {Languages.map((lang) => {
+                                    return (
+                                        <NavDropdown.Item
+                                            onClick={() => { this.props.langUpdate(lang.tag) }}
+                                            key={lang.tag}>
+                                            {lang.name}
+                                        </NavDropdown.Item>
+                                    );
+                                })}
                             </NavDropdown>
                         </Nav>
                     </Navbar.Collapse>
