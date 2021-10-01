@@ -7,11 +7,14 @@ import {
 } from "react-router-dom";
 
 import Polyglot from "node-polyglot";
+import Cookies from "js-cookie";
 
 import Header from "./Header";
 import Home from "./Home";
 import About from "./About";
 import { SocketConnection } from "./socket";
+import { Languages } from "./lang";
+import { APIPacketOut, APIPacketOutType, ServerInfo } from "lento-gui";
 
 /*
   This socket connection has to be defined outside of the
@@ -23,6 +26,7 @@ const api = new SocketConnection("ws://localhost:8080");
 
 type AppState = {
   lang: Polyglot;
+  servers: ServerInfo[];
 }
 
 export default class App extends React.Component<{}, AppState> {
@@ -30,37 +34,50 @@ export default class App extends React.Component<{}, AppState> {
   state = {
     lang: new Polyglot({
       allowMissing: true
-    })
+    }),
+    servers: []
   };
 
   constructor(props: {}) {
     super(props);
 
     api.socket.onmessage = (ev) => {
-      console.log(ev.data);
-      console.log(Date.now())
+      const packet: APIPacketOut = JSON.parse(ev.data);
+      switch (packet.type) {
+        case APIPacketOutType.SERVER_INFO: {
+          this.setState({ servers: packet.servers });
+          break;
+        }
+      }
     }
 
     api.socket.onopen = (ev) => {
-      console.log("connection open!");
-      api.socket.send(ev.type);
     }
 
   }
 
-  updateLang(lang: string) {
-    fetch("/lang/" + lang + ".json")
-      .then((val) => {
-        return val.json()
-      }).then((data) => {
-        const lang = new Polyglot();
-        lang.extend(data);
-        this.setState({ lang });
-      });
+  async updateLang(lang: string) {
+    const val = await fetch("/lang/" + lang + ".json");
+    const data = await val.json();
+    const p = new Polyglot();
+    p.extend(data);
+    p.extend({ lang });
+    this.setState({ lang: p })
+    Cookies.set("lang", lang);
   }
 
   componentDidMount() {
-    this.updateLang("en");
+    // const defaultLang = Cookies.get("lang") || "en";
+    const browserLang = navigator.language.substring(0, 2);
+    let defaultLang = "en";
+
+    if (Languages.map((lang) => lang.tag).includes(browserLang)) {
+      defaultLang = browserLang;
+    }
+
+    defaultLang = Cookies.get("lang") || defaultLang;
+
+    this.updateLang(defaultLang);
   }
 
   render() {
@@ -77,7 +94,8 @@ export default class App extends React.Component<{}, AppState> {
               <About />
             </Route>
             <Route path="/">
-              <Home />
+              <Home servers={this.state.servers} lang={this.state.lang} />
+              {/* elysia */}
             </Route>
           </Switch>
         </div>

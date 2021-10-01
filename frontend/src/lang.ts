@@ -23,7 +23,7 @@ export const Languages: LanguageEntry[] = [
 ]
 
 Languages.sort((a, b) => {
-    if (b.tag == "en") {
+    if (b.tag === "en") {
         return 1;
     }
     return a.tag.localeCompare(b.tag);

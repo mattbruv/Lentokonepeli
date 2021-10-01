@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "express": "^4.17.1",
+    "lento-gui": "file:../gui",
     "ws": "^8.2.2"
   }
 }

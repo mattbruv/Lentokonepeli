@@ -30,16 +30,16 @@ export default class Header extends React.Component<MyProps, MyState> {
                     <Navbar.Brand as={Link} to="/">{_.t("name")}</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="me-auto">
+                        <Nav>
                             <Nav.Link as={Link} to="about">{_.t("about")}</Nav.Link>
-                            <NavDropdown title={_.t("language")} id="nav-dropdown">
+                            <NavDropdown className="ml-auto" title={_.t("language")} id="nav-dropdown">
                                 {Languages.map((lang) => {
                                     return (
                                         <NavDropdown.Item
                                             onClick={() => { this.props.langUpdate(lang.tag) }}
-                                            key={lang.tag}>
-                                            {lang.name}
-                                        </NavDropdown.Item>
+                                            key={lang.tag}
+                                            active={_.t("lang") === lang.tag}
+                                        >{lang.name}</NavDropdown.Item>
                                     );
                                 })}
                             </NavDropdown>

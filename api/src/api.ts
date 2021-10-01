@@ -1,5 +1,7 @@
 import express from "express";
 import { WebSocketServer } from "ws";
+import { APIPacketOut, APIPacketOutType } from "lento-gui"
+import { getServers } from "./servers";
 
 const app = express();
 app.use("/lang", express.static("lang"))
@@ -11,9 +13,12 @@ wss.on("connection", (ws) => {
     ws.on("message", (data) => {
     });
 
-    ws.send("hello from API server!");
+    const servers: APIPacketOut = {
+        type: APIPacketOutType.SERVER_INFO,
+        servers: getServers()
+    }
+    ws.send(JSON.stringify(servers));
 });
-
 
 app.listen(3259, () => {
     console.log("Listening at http://localhost:3259");
