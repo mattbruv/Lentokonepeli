@@ -15,11 +15,11 @@ export const Languages: LanguageEntry[] = [
     {
         tag: "fi",
         name: "suomi"
-    },
+    },/*
     {
         tag: "de",
         name: "Deutsch"
-    }
+    }*/
 ]
 
 Languages.sort((a, b) => {
