@@ -7,7 +7,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import { SocketConnection } from "./socket";
-import { GameClient } from "lento-gui/lib/client";
+import { GameClient, loadResources } from "lento-gui/lib/client";
 
 type HomeProps = {
     lang: Polyglot;
@@ -15,17 +15,21 @@ type HomeProps = {
 }
 
 let gameSocket: SocketConnection;
+let gameClient: GameClient;
 
 type HomeState = {
     gameConnection: boolean
-    gameClient: GameClient
 }
 
 export default class Home extends React.Component<HomeProps, HomeState> {
 
     state = {
-        gameConnection: false,
-        gameClient: new GameClient(),
+        gameConnection: false
+    }
+
+    constructor(props: HomeProps) {
+        super(props);
+        loadResources("assets/images/images.json");
     }
 
     closeGameSocket() {
@@ -47,7 +51,8 @@ export default class Home extends React.Component<HomeProps, HomeState> {
         gameSocket.socket.onopen = (ev) => {
             console.log("connected!");
             this.setState({ gameConnection: true }, () => {
-                this.state.gameClient.initialize("assets/images/images.json", "#gameCanvas")
+                gameClient = new GameClient();
+                gameClient.appendCanvas("#gameCanvas");
             });
         };
 
