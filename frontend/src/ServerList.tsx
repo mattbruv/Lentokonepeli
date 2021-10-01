@@ -10,6 +10,7 @@ import Button from "react-bootstrap/Button";
 type ServerListProps = {
     lang: Polyglot;
     servers: ServerInfo[];
+    joinServerCB: (url: string) => void;
 }
 
 type ServerListState = {
@@ -23,7 +24,11 @@ export default class ServerList extends React.Component<ServerListProps, ServerL
             <Row>
                 <Col><strong>{server.region}</strong></Col>
                 <Col>
-                    <Button variant="primary">{_.t("join")}</Button>
+                    <Button
+                        onClick={() => this.props.joinServerCB(server.url)}
+                        variant="primary">
+                        {_.t("join")}
+                    </Button>
                 </Col>
             </Row>
         );
