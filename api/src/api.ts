@@ -4,7 +4,7 @@ import { APIPacketOut, APIPacketOutType } from "lento-gui"
 import { getServers } from "./servers";
 
 const app = express();
-app.use("/lang", express.static("lang"))
+app.use(express.static("public"))
 app.use(express.json());
 
 const wss = new WebSocketServer({ port: 8080 });

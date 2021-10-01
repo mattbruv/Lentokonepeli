@@ -67,7 +67,6 @@ export default class App extends React.Component<{}, AppState> {
   }
 
   componentDidMount() {
-    // const defaultLang = Cookies.get("lang") || "en";
     const browserLang = navigator.language.substring(0, 2);
     let defaultLang = "en";
 
