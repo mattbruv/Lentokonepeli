@@ -68,6 +68,9 @@ public final class GameToolkit {
     }
 
     public void addEntity(Entity entity) {
+        if (this.addedMap.containsValue(entity) || this.entityMap.containsValue(entity)) {
+            return;
+        }
         entity.setToolkit(this);
         entity.setId(getFreeID());
         this.addedMap.put(Integer.valueOf(entity.getId()), entity);
@@ -75,6 +78,27 @@ public final class GameToolkit {
 
     public Entity getEntity(int paramInt) {
         return this.entityMap.get(Integer.valueOf(paramInt));
+    }
+
+    // Called once at the end of every game tick.
+    public void applyAddedEntities() {
+        HashMap<Integer, Entity> localHashMap;
+
+        synchronized (this.addedMap) {
+            localHashMap = new HashMap<>(this.addedMap);
+            this.addedMap.clear();
+        }
+
+        if (localHashMap.size() == 0) {
+            return;
+        }
+
+        for (var entry : localHashMap.entrySet()) {
+            // TODO: make this write new entity's full data
+            // this may not even be necessary
+        }
+
+        this.entityMap.putAll(localHashMap);
     }
 
 }

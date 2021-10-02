@@ -6,6 +6,10 @@ public abstract class Entity {
     protected int id;
     protected EntityType type;
 
+    public Entity(EntityType type) {
+        this.type = type;
+    }
+
     public void setToolkit(GameToolkit toolkit) {
         this.toolkit = toolkit;
     }

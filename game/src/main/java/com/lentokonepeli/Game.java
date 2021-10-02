@@ -1,7 +1,11 @@
 package com.lentokonepeli;
 
 import java.util.List;
+
+import com.lentokonepeli.entities.Man;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.java_websocket.WebSocket;
 
@@ -18,6 +22,17 @@ public class Game implements Runnable {
     public Game() {
         this.connections = new ArrayList<>();
         this.toolkit = new GameToolkit();
+        this.test();
+        this.toolkit.applyAddedEntities();
+        System.out.println(this.toolkit.getEntities());
+    }
+
+    private void test() {
+        Man m = new Man();
+        Man m2 = new Man();
+        this.toolkit.addEntity(m);
+        this.toolkit.addEntity(m2);
+        this.toolkit.addEntity(m);
     }
 
     public void run() {
