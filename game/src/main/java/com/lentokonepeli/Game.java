@@ -24,6 +24,7 @@ public class Game implements Runnable {
         this.test();
         this.toolkit.applyAddedEntities();
         System.out.println(this.toolkit.getEntities());
+        this.testSleep();
     }
 
     private void test() {
@@ -36,16 +37,17 @@ public class Game implements Runnable {
 
     public void run() {
 
-        long sumOfDeltas = 0;
+        // long sumOfDeltas = 0;
 
         while (true) {
             tick++;
             long t1 = System.currentTimeMillis();
             long deltaMS = t1 - lastTick;
-            sumOfDeltas += deltaMS;
-            System.out.println("delta: " + deltaMS);
-            System.out.println("desired delay (ms): " + tickRate + ", ticks " + tick + ", avg delay (ms): "
-                    + ((double) sumOfDeltas / (double) tick));
+            // sumOfDeltas += deltaMS;
+            // System.out.println("delta: " + deltaMS);
+            // System.out.println("desired delay (ms): " + tickRate + ", ticks " + tick + ",
+            // avg delay (ms): "
+            // + ((double) sumOfDeltas / (double) tick));
             lastTick = t1;
             long nextTick = t1 + this.tickRate;
 
@@ -59,6 +61,16 @@ public class Game implements Runnable {
                     long diff = nextTick - t2;
                     // System.out.println("sleep for " + diff);
                     Thread.sleep(diff);
+                    /*
+                     * A note about sleep time: Thread.sleep() in Java (at least on my laptop and
+                     * according to other people on stackoverflow seems to be consistently off by
+                     * anywhere from 2-10ms. It doesn't look like the original game compensated for
+                     * this. It always set the sleep delay to ((start_time + 10 ms) - end_time) It
+                     * appears that 10MS is the original expected time between ticks which all
+                     * physics and timing is based off of.
+                     * 
+                     * May need to adjust this down the line to make it more consistent to 10MS
+                     */
                 } catch (InterruptedException e) {
                 }
             }
@@ -86,6 +98,27 @@ public class Game implements Runnable {
         boolean res = this.connections.remove(conn);
         System.out.println(this.connections.size() + " connections");
         return res;
+    }
+
+    /*
+     * Original function the Aapeli servers used to test sleep accuracy. On my
+     * machine, this averages out to 150, whree they only seem to call it
+     * "innacurate" if it's more than 200.
+     */
+    protected void testSleep() {
+        System.out.println("Testing sleep accuracy...");
+        long l = System.currentTimeMillis();
+        for (int i = 0; i < 100; i++) {
+            try {
+                Thread.sleep(1L);
+            } catch (InterruptedException localInterruptedException) {
+            }
+        }
+        l = System.currentTimeMillis() - l;
+        System.out.println("Sleep test result: 100x1ms -> " + l + "ms");
+        if (l > 200L) {
+            System.out.println("WARNING, sleeping is not accurate!");
+        }
     }
 
 }
