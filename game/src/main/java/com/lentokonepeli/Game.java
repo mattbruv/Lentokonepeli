@@ -8,7 +8,8 @@ import org.java_websocket.WebSocket;
 public class Game implements Runnable {
 
     private List<WebSocket> connections;
-    private GameState state;
+    private GameToolkit toolkit;
+
     private long tick = 0;
 
     // 1000 / 100 = 10 ticks per second
@@ -16,7 +17,7 @@ public class Game implements Runnable {
 
     public Game() {
         this.connections = new ArrayList<>();
-        this.state = new GameState();
+        this.toolkit = new GameToolkit();
     }
 
     public void run() {
