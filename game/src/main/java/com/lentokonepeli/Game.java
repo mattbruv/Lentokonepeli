@@ -107,12 +107,7 @@ public class Game implements Runnable {
     private String getChangesAsJSON() {
         StringPacker packer = new StringPacker();
         var entities = this.toolkit.getEntities();
-        for (var entry : entities.entrySet()) {
-            var entity = entry.getValue();
-            if (entity instanceof Networkable) {
-                packer.packObjectChanges((Networkable) entity);
-            }
-        }
+        packer.packState(entities, true);
         return packer.getJSON();
     }
 
