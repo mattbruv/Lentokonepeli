@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import org.java_websocket.WebSocket;
 
 import com.lentokonepeli.entities.Man;
+import com.lentokonepeli.network.Networkable;
+import com.lentokonepeli.network.json.StringPacker;
 
 public class Game implements Runnable {
 
@@ -54,6 +56,8 @@ public class Game implements Runnable {
             // game loop, do stuff here...
             this.performGameTick(deltaMS);
 
+            this.broadcastChanges();
+
             long t2 = System.currentTimeMillis();
 
             if (t2 < nextTick) {
@@ -86,6 +90,30 @@ public class Game implements Runnable {
                 ((Tickable) entity).tick(deltaMS);
             }
         }
+    }
+
+    private void broadcastChanges() {
+        var packet = getChangesAsJSON();
+
+        if (packet == null) {
+            return;
+        }
+
+        for (var ws : connections) {
+            ws.send(packet);
+        }
+    }
+
+    private String getChangesAsJSON() {
+        StringPacker packer = new StringPacker();
+        var entities = this.toolkit.getEntities();
+        for (var entry : entities.entrySet()) {
+            var entity = entry.getValue();
+            if (entity instanceof Networkable) {
+                packer.packObjectChanges((Networkable) entity);
+            }
+        }
+        return packer.getJSON();
     }
 
     public boolean addConnection(WebSocket conn) {

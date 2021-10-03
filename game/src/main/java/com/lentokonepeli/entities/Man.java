@@ -1,7 +1,6 @@
 package com.lentokonepeli.entities;
 
 import java.util.LinkedHashSet;
-import java.util.Map;
 
 import com.lentokonepeli.Entity;
 import com.lentokonepeli.EntityType;
@@ -15,18 +14,36 @@ public class Man extends Entity implements Networkable, Tickable {
     private static final int COORDINATE_RESOLUTION = 100;
     private int x;
     private int y;
-    private NetProp<Integer> clientX = new NetProp<>("clientX", NetType.i16);
-    private NetProp<Integer> clientY = new NetProp<>("clientY", NetType.i16);
+    private NetProp<Integer> clientX = new NetProp<>("x", NetType.i16);
+    private NetProp<Integer> clientY = new NetProp<>("y", NetType.i16);
+    private NetProp<Integer> test = new NetProp<>("f", NetType.i16);
     private final LinkedHashSet<NetProp<?>> props = new LinkedHashSet<>();
 
     public Man() {
         super(EntityType.MAN);
         props.add(clientX);
         props.add(clientY);
+        props.add(test);
+        clientX.set(Integer.valueOf(0));
+        clientY.set(Integer.valueOf(10));
+        test.set(Integer.valueOf(0));
     }
 
     public void tick(long deltaMS) {
-        // System.out.println(deltaMS);
+        if (Math.random() > 0.5) {
+            return;
+        }
+        int newX = this.clientX.get() + 1;
+        if (newX > 250) {
+            newX = 0;
+            test.set(test.get() + 1);
+        }
+        setX(newX);
+    }
+
+    public void setX(int clientX) {
+        this.clientX.set(Integer.valueOf(clientX));
+        this.x = clientX * COORDINATE_RESOLUTION;
     }
 
     public LinkedHashSet<NetProp<?>> getProps() {
