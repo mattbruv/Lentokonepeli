@@ -4,7 +4,7 @@ public abstract class Entity {
     protected GameToolkit toolkit;
     private boolean removed = false;
     protected int id;
-    protected EntityType type;
+    protected final EntityType type;
 
     public Entity(EntityType type) {
         this.type = type;
