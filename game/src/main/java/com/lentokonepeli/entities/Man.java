@@ -17,6 +17,7 @@ public class Man extends Entity implements Networkable, Tickable {
     private NetProp<Integer> clientX = new NetProp<>("x", NetType.i16);
     private NetProp<Integer> clientY = new NetProp<>("y", NetType.i16);
     private NetProp<Integer> test = new NetProp<>("f", NetType.i16);
+    private NetProp<String> name = new NetProp<>("name", NetType.STRING);
     private final LinkedHashSet<NetProp<?>> props = new LinkedHashSet<>();
 
     public Man() {
@@ -24,17 +25,19 @@ public class Man extends Entity implements Networkable, Tickable {
         props.add(clientX);
         props.add(clientY);
         props.add(test);
+        props.add(name);
         clientX.set(Integer.valueOf(0));
         clientY.set(Integer.valueOf(10));
         test.set(Integer.valueOf(0));
+        name.set("test" + Math.random());
     }
 
     public void tick(long deltaMS) {
-        if (Math.random() > 0.5) {
+        if (Math.random() < 0.99) {
             return;
         }
         int newX = this.clientX.get() + 1;
-        if (newX > 250) {
+        if (newX > 25) {
             newX = 0;
             test.set(test.get() + 1);
         }

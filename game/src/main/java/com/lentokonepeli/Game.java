@@ -25,16 +25,14 @@ public class Game implements Runnable {
         this.toolkit = new GameToolkit();
         this.test();
         this.toolkit.applyAddedEntities();
-        System.out.println(this.toolkit.getEntities());
         this.testSleep();
     }
 
     private void test() {
-        Man m = new Man();
-        Man m2 = new Man();
-        this.toolkit.addEntity(m);
-        this.toolkit.addEntity(m2);
-        this.toolkit.addEntity(m);
+        for (int i = 0; i < 5; i++) {
+            Man m = new Man();
+            this.toolkit.addEntity(m);
+        }
     }
 
     public void run() {
@@ -104,6 +102,13 @@ public class Game implements Runnable {
         }
     }
 
+    private String getAllStateAsJSON() {
+        StringPacker packer = new StringPacker();
+        var entities = this.toolkit.getEntities();
+        packer.packState(entities, false);
+        return packer.getJSON();
+    }
+
     private String getChangesAsJSON() {
         StringPacker packer = new StringPacker();
         var entities = this.toolkit.getEntities();
@@ -114,6 +119,10 @@ public class Game implements Runnable {
     public boolean addConnection(WebSocket conn) {
         boolean res = this.connections.add(conn);
         System.out.println(this.connections.size() + " connections");
+        var state = getAllStateAsJSON();
+        if (state != null) {
+            conn.send(state);
+        }
         return res;
     }
 
