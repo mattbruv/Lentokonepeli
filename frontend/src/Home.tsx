@@ -57,7 +57,14 @@ export default class Home extends React.Component<HomeProps, HomeState> {
         };
 
         gameSocket.socket.onmessage = (ev) => {
-            const data = JSON.parse(ev.data);
+            let data;
+            if (ev.data instanceof Blob) {
+                data = ev.data;
+            }
+            else {
+                data = JSON.parse(ev.data);
+            }
+
             console.log(data);
         }
 

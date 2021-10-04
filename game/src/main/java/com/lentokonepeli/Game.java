@@ -7,10 +7,12 @@ import org.java_websocket.WebSocket;
 
 import com.lentokonepeli.entities.Man;
 import com.lentokonepeli.network.Networkable;
+import com.lentokonepeli.network.binary.BinaryPacker;
 import com.lentokonepeli.network.json.StringPacker;
 
 public class Game implements Runnable {
 
+    private boolean debug = false;
     private List<WebSocket> connections;
     private GameToolkit toolkit;
 
@@ -91,14 +93,21 @@ public class Game implements Runnable {
     }
 
     private void broadcastChanges() {
-        var packet = getChangesAsJSON();
+        if (this.debug) {
+            var packet = getChangesAsJSON();
 
-        if (packet == null) {
-            return;
-        }
-
-        for (var ws : connections) {
-            ws.send(packet);
+            if (packet != null) {
+                for (var ws : connections) {
+                    ws.send(packet);
+                }
+            }
+        } else {
+            var packet = getChangesAsBinary();
+            if (packet.length > 1) {
+                for (var ws : connections) {
+                    ws.send(packet);
+                }
+            }
         }
     }
 
@@ -107,6 +116,20 @@ public class Game implements Runnable {
         var entities = this.toolkit.getEntities();
         packer.packState(entities, false);
         return packer.getJSON();
+    }
+
+    private byte[] getAllStateAsBinary() {
+        BinaryPacker packer = new BinaryPacker();
+        var entities = this.toolkit.getEntities();
+        packer.packState(entities, false);
+        return packer.getBinary();
+    }
+
+    private byte[] getChangesAsBinary() {
+        BinaryPacker packer = new BinaryPacker();
+        var entities = this.toolkit.getEntities();
+        packer.packState(entities, true);
+        return packer.getBinary();
     }
 
     private String getChangesAsJSON() {
@@ -119,9 +142,16 @@ public class Game implements Runnable {
     public boolean addConnection(WebSocket conn) {
         boolean res = this.connections.add(conn);
         System.out.println(this.connections.size() + " connections");
-        var state = getAllStateAsJSON();
-        if (state != null) {
-            conn.send(state);
+        if (this.debug) {
+            var state = getAllStateAsJSON();
+            if (state != null) {
+                conn.send(state);
+            }
+        } else {
+            var state = getAllStateAsBinary();
+            if (state.length > 1) {
+                conn.send(state);
+            }
         }
         return res;
     }
@@ -151,6 +181,11 @@ public class Game implements Runnable {
         if (l > 200L) {
             System.out.println("WARNING, sleeping is not accurate!");
         }
+    }
+
+    public void setDebug(boolean debug) {
+        System.out.println("Debug: " + debug);
+        this.debug = debug;
     }
 
 }

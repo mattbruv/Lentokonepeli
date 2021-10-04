@@ -17,6 +17,8 @@ public class Server extends WebSocketServer {
         super(address);
         this.config = conf;
         this.game = new Game();
+        var debug = Boolean.parseBoolean(conf.getProperty("debug"));
+        this.game.setDebug(debug);
     }
 
     @Override
