@@ -5,7 +5,9 @@ import java.util.ArrayList;
 
 import org.java_websocket.WebSocket;
 
+import com.lentokonepeli.entities.Ground;
 import com.lentokonepeli.entities.Man;
+import com.lentokonepeli.entities.Ground.GroundType;
 import com.lentokonepeli.network.binary.BinaryPacker;
 import com.lentokonepeli.network.json.StringPacker;
 
@@ -25,15 +27,17 @@ public class Game implements Runnable {
         this.connections = new ArrayList<>();
         this.toolkit = new GameToolkit();
         this.test();
-        this.toolkit.applyAddedEntities();
         this.testSleep();
     }
 
     private void test() {
+        var g = new Ground(0, 0, 200, GroundType.NORMAL);
+        this.toolkit.addEntity(g);
         for (int i = 0; i < 1; i++) {
             Man m = new Man();
             this.toolkit.addEntity(m);
         }
+        this.toolkit.applyAddedEntities();
     }
 
     public void run() {

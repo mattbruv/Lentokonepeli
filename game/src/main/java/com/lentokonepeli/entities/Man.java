@@ -23,11 +23,6 @@ public class Man extends Entity implements Tickable {
     }
 
     public void tick(long deltaMS) {
-        if (Math.random() < 0.99) {
-            return;
-        }
-        int newX = this.clientX.get() + 1;
-        setX(newX);
     }
 
     public void setX(int clientX) {

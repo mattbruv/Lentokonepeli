@@ -25,7 +25,9 @@ export class GameClient {
     }
 
     public applyGameState(state: EntityState[]) {
-        console.log(state);
+        for (const s of state) {
+            //console.log(s);
+        }
     }
 
 }
