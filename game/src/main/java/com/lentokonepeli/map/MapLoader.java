@@ -7,7 +7,9 @@ import com.lentokonepeli.Direction;
 import com.lentokonepeli.GameToolkit;
 import com.lentokonepeli.Team;
 import com.lentokonepeli.TerrainType;
+import com.lentokonepeli.entities.Coast;
 import com.lentokonepeli.entities.Ground;
+import com.lentokonepeli.entities.Water;
 import com.lentokonepeli.map.json.MapJSON;
 
 import java.io.FileReader;
@@ -43,6 +45,22 @@ public class MapLoader {
             }
         }
 
+        if (map.entities.water != null) {
+            for (var w : map.entities.water) {
+                var t = stringToTerrain(w.type);
+                var d = stringToDirection(w.direction);
+                var water = new Water(w.x, w.y, w.width, t, d);
+                toolkit.addEntity(water);
+            }
+        }
+
+        if (map.entities.coast != null) {
+            for (var c : map.entities.coast) {
+                var t = stringToTerrain(c.type);
+                var coast = new Coast(c.x, c.y, t);
+                toolkit.addEntity(coast);
+            }
+        }
     }
 
     private static TerrainType stringToTerrain(String terrain) {
