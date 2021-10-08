@@ -1,0 +1,222 @@
+{
+    "name": "bunkers",
+    "designer": "polofel",
+    "entities": {
+        "water": [
+            {
+                "x": 43536,
+                "y": 25,
+                "width": 19800,
+                "direction": "left",
+                "type": "desert"
+            },
+            {
+                "x": -1100,
+                "y": 25,
+                "width": 700,
+                "direction": "left",
+                "type": "desert"
+            },
+            {
+                "x": 200,
+                "y": 25,
+                "width": 700,
+                "direction": "right",
+                "type": "desert"
+            },
+            {
+                "x": 2200,
+                "y": 25,
+                "width": 22000,
+                "direction": "right",
+                "type": "desert"
+            }
+        ],
+        "ground": [
+            {
+                "x": -2100,
+                "y": 0,
+                "width": 900,
+                "type": "desert"
+            },
+            {
+                "x": -300,
+                "y": 0,
+                "width": 400,
+                "type": "desert"
+            },
+            {
+                "x": 1000,
+                "y": 0,
+                "width": 1100,
+                "type": "desert"
+            }
+        ],
+        "coast": [
+            {
+                "x": -2214,
+                "y": 0,
+                "direction": "left",
+                "type": "desert"
+            },
+            {
+                "x": -1200,
+                "y": 0,
+                "direction": "right",
+                "type": "desert"
+            },
+            {
+                "x": -414,
+                "y": 0,
+                "direction": "left",
+                "type": "desert"
+            },
+            {
+                "x": 100,
+                "y": 0,
+                "direction": "right",
+                "type": "desert"
+            },
+            {
+                "x": 886,
+                "y": 0,
+                "direction": "left",
+                "type": "desert"
+            },
+            {
+                "x": 2100,
+                "y": 0,
+                "direction": "right",
+                "type": "desert"
+            }
+        ],
+        "runway": [
+            {
+                "team": "centrals",
+                "x": -1491,
+                "y": -25,
+                "direction": "right"
+            },
+            {
+                "team": "centrals",
+                "x": -2091,
+                "y": -25,
+                "direction": "right"
+            },
+            {
+                "team": "allies",
+                "x": 1005,
+                "y": -25,
+                "direction": "left"
+            },
+            {
+                "team": "allies",
+                "x": 1605,
+                "y": -25,
+                "direction": "left"
+            }
+        ],
+        "bunker": [
+            {
+                "x": -281,
+                "y": -18,
+                "team": "centrals"
+            },
+            {
+                "x": 19,
+                "y": -18,
+                "team": "allies"
+            }
+        ],
+        "tower": [
+            {
+                "x": -1750,
+                "y": 5,
+                "direction": "left",
+                "type": "desert"
+            },
+            {
+                "x": 1650,
+                "y": 5,
+                "direction": "right",
+                "type": "desert"
+            }
+        ],
+        "flag": [
+            {
+                "x": -1575,
+                "y": -90,
+                "team": "centrals"
+            },
+            {
+                "x": -275,
+                "y": -90,
+                "team": "centrals"
+            },
+            {
+                "x": 25,
+                "y": -90,
+                "team": "allies"
+            },
+            {
+                "x": 1425,
+                "y": -90,
+                "team": "allies"
+            }
+        ],
+        "palm": [
+            {
+                "x": -1850,
+                "y": 5,
+                "direction": "right"
+            },
+            {
+                "x": -1350,
+                "y": 5,
+                "direction": "right"
+            },
+            {
+                "x": -150,
+                "y": 5,
+                "direction": "right"
+            },
+            {
+                "x": -50,
+                "y": 5,
+                "direction": "left"
+            },
+            {
+                "x": 1150,
+                "y": 5,
+                "direction": "left"
+            },
+            {
+                "x": 1750,
+                "y": 5,
+                "direction": "right"
+            }
+        ],
+        "hill": [
+            {
+                "x": -1560,
+                "y": -45,
+                "type": "desert"
+            },
+            {
+                "x": -1240,
+                "y": -45,
+                "type": "desert"
+            },
+            {
+                "x": 1160,
+                "y": -45,
+                "type": "desert"
+            },
+            {
+                "x": 1560,
+                "y": -45,
+                "type": "desert"
+            }
+        ]
+    }
+}

@@ -1,0 +1,128 @@
+{
+    "name": "islands",
+    "designer": "polofel",
+    "entities": {
+        "water": [
+            {
+                "x": 43536,
+                "y": 25,
+                "width": 20600,
+                "direction": "right",
+                "type": "normal"
+            },
+            {
+                "x": -900,
+                "y": 25,
+                "width": 1800,
+                "direction": "left",
+                "type": "normal"
+            },
+            {
+                "x": 1400,
+                "y": 25,
+                "width": 22000,
+                "direction": "left",
+                "type": "normal"
+            }
+        ],
+        "ground": [
+            {
+                "x": -1300,
+                "y": 0,
+                "width": 300,
+                "type": "normal"
+            },
+            {
+                "x": 1000,
+                "y": 0,
+                "width": 300,
+                "type": "normal"
+            }
+        ],
+        "coast": [
+            {
+                "x": -1410,
+                "y": 0,
+                "direction": "left",
+                "type": "normal"
+            },
+            {
+                "x": -1000,
+                "y": 0,
+                "direction": "right",
+                "type": "normal"
+            },
+            {
+                "x": 890,
+                "y": 0,
+                "direction": "left",
+                "type": "normal"
+            },
+            {
+                "x": 1300,
+                "y": 0,
+                "direction": "right",
+                "type": "normal"
+            }
+        ],
+        "runway": [
+            {
+                "team": "centrals",
+                "x": -1291,
+                "y": -25,
+                "direction": "right"
+            },
+            {
+                "team": "allies",
+                "x": 1005,
+                "y": -25,
+                "direction": "left"
+            }
+        ],
+        "bunker": [],
+        "tower": [
+            {
+                "x": -1050,
+                "y": 5,
+                "direction": "left",
+                "type": "normal"
+            },
+            {
+                "x": 1050,
+                "y": 5,
+                "direction": "right",
+                "type": "normal"
+            }
+        ],
+        "flag": [
+            {
+                "x": -1275,
+                "y": -90,
+                "team": "centrals"
+            },
+            {
+                "x": 1225,
+                "y": -90,
+                "team": "allies"
+            }
+        ],
+        "palm": [],
+        "hill": [
+            {
+                "x": -920,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": 40,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": 1080,
+                "y": -40,
+                "type": "normal"
+            }
+        ]
+    }
+}

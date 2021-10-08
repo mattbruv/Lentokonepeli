@@ -1,0 +1,351 @@
+{
+    "name": "jungle",
+    "designer": "polofel",
+    "entities": {
+        "water": [
+            {
+                "x": 43536,
+                "y": 25,
+                "width": 19550,
+                "direction": "left",
+                "type": "desert"
+            },
+            {
+                "x": -1750,
+                "y": 25,
+                "width": 100,
+                "direction": "right",
+                "type": "desert"
+            },
+            {
+                "x": -1650,
+                "y": 25,
+                "width": 100,
+                "direction": "left",
+                "type": "desert"
+            },
+            {
+                "x": -550,
+                "y": 25,
+                "width": 100,
+                "direction": "right",
+                "type": "desert"
+            },
+            {
+                "x": -450,
+                "y": 25,
+                "width": 200,
+                "direction": "left",
+                "type": "desert"
+            },
+            {
+                "x": 350,
+                "y": 25,
+                "width": 100,
+                "direction": "right",
+                "type": "desert"
+            },
+            {
+                "x": 450,
+                "y": 25,
+                "width": 100,
+                "direction": "left",
+                "type": "desert"
+            },
+            {
+                "x": 1450,
+                "y": 25,
+                "width": 200,
+                "direction": "right",
+                "type": "desert"
+            },
+            {
+                "x": 1650,
+                "y": 25,
+                "width": 100,
+                "direction": "left",
+                "type": "desert"
+            },
+            {
+                "x": 2450,
+                "y": 25,
+                "width": 22000,
+                "direction": "right",
+                "type": "desert"
+            }
+        ],
+        "ground": [
+            {
+                "x": -2350,
+                "y": 0,
+                "width": 500,
+                "type": "desert"
+            },
+            {
+                "x": -1450,
+                "y": 0,
+                "width": 800,
+                "type": "desert"
+            },
+            {
+                "x": -150,
+                "y": 0,
+                "width": 400,
+                "type": "desert"
+            },
+            {
+                "x": 650,
+                "y": 0,
+                "width": 700,
+                "type": "desert"
+            },
+            {
+                "x": 1850,
+                "y": 0,
+                "width": 500,
+                "type": "desert"
+            }
+        ],
+        "coast": [
+            {
+                "x": -2464,
+                "y": 0,
+                "direction": "left",
+                "type": "desert"
+            },
+            {
+                "x": -1850,
+                "y": 0,
+                "direction": "right",
+                "type": "desert"
+            },
+            {
+                "x": -1564,
+                "y": 0,
+                "direction": "left",
+                "type": "desert"
+            },
+            {
+                "x": -650,
+                "y": 0,
+                "direction": "right",
+                "type": "desert"
+            },
+            {
+                "x": -264,
+                "y": 0,
+                "direction": "left",
+                "type": "desert"
+            },
+            {
+                "x": 250,
+                "y": 0,
+                "direction": "right",
+                "type": "desert"
+            },
+            {
+                "x": 536,
+                "y": 0,
+                "direction": "left",
+                "type": "desert"
+            },
+            {
+                "x": 1350,
+                "y": 0,
+                "direction": "right",
+                "type": "desert"
+            },
+            {
+                "x": 1736,
+                "y": 0,
+                "direction": "left",
+                "type": "desert"
+            },
+            {
+                "x": 2350,
+                "y": 0,
+                "direction": "right",
+                "type": "desert"
+            }
+        ],
+        "runway": [
+            {
+                "team": "centrals",
+                "x": -1441,
+                "y": -25,
+                "direction": "right"
+            },
+            {
+                "team": "allies",
+                "x": 1055,
+                "y": -25,
+                "direction": "left"
+            },
+            {
+                "team": "centrals",
+                "x": -2341,
+                "y": -25,
+                "direction": "right"
+            },
+            {
+                "team": "allies",
+                "x": 1855,
+                "y": -25,
+                "direction": "left"
+            }
+        ],
+        "bunker": [],
+        "tower": [],
+        "flag": [
+            {
+                "x": -1425,
+                "y": -90,
+                "team": "centrals"
+            },
+            {
+                "x": 1275,
+                "y": -90,
+                "team": "allies"
+            }
+        ],
+        "palm": [
+            {
+                "x": -2300,
+                "y": 5,
+                "direction": "right"
+            },
+            {
+                "x": -2000,
+                "y": 5,
+                "direction": "right"
+            },
+            {
+                "x": -1300,
+                "y": 5,
+                "direction": "left"
+            },
+            {
+                "x": -1100,
+                "y": 5,
+                "direction": "left"
+            },
+            {
+                "x": -1000,
+                "y": 5,
+                "direction": "right"
+            },
+            {
+                "x": -800,
+                "y": 5,
+                "direction": "right"
+            },
+            {
+                "x": -700,
+                "y": 5,
+                "direction": "right"
+            },
+            {
+                "x": -100,
+                "y": 5,
+                "direction": "left"
+            },
+            {
+                "x": 0,
+                "y": 5,
+                "direction": "right"
+            },
+            {
+                "x": 100,
+                "y": 5,
+                "direction": "left"
+            },
+            {
+                "x": 700,
+                "y": 5,
+                "direction": "left"
+            },
+            {
+                "x": 800,
+                "y": 5,
+                "direction": "right"
+            },
+            {
+                "x": 1000,
+                "y": 5,
+                "direction": "right"
+            },
+            {
+                "x": 1200,
+                "y": 5,
+                "direction": "right"
+            },
+            {
+                "x": 1900,
+                "y": 5,
+                "direction": "left"
+            },
+            {
+                "x": 2100,
+                "y": 5,
+                "direction": "right"
+            },
+            {
+                "x": 2200,
+                "y": 5,
+                "direction": "left"
+            }
+        ],
+        "hill": [
+            {
+                "x": -1760,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": -1360,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": -960,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": -480,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": -160,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": 320,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": 640,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": 1200,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": 1520,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": 1920,
+                "y": -40,
+                "type": "normal"
+            }
+        ]
+    }
+}

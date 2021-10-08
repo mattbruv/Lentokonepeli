@@ -1,0 +1,205 @@
+{
+    "name": "sahara",
+    "designer": "polofel",
+    "entities": {
+        "water": [
+            {
+                "x": -5550,
+                "y": 25,
+                "width": 100,
+                "direction": "right",
+                "type": "desert"
+            },
+            {
+                "x": 5250,
+                "y": 25,
+                "width": 100,
+                "direction": "left",
+                "type": "desert"
+            }
+        ],
+        "ground": [
+            {
+                "x": 43536,
+                "y": 0,
+                "width": 16350,
+                "type": "desert"
+            },
+            {
+                "x": -5350,
+                "y": 0,
+                "width": 10500,
+                "type": "desert"
+            },
+            {
+                "x": 5450,
+                "y": 0,
+                "width": 22000,
+                "type": "desert"
+            }
+        ],
+        "coast": [
+            {
+                "x": -5650,
+                "y": 0,
+                "direction": "right",
+                "type": "desert"
+            },
+            {
+                "x": -5464,
+                "y": 0,
+                "direction": "left",
+                "type": "desert"
+            },
+            {
+                "x": 5150,
+                "y": 0,
+                "direction": "right",
+                "type": "desert"
+            },
+            {
+                "x": 5336,
+                "y": 0,
+                "direction": "left",
+                "type": "desert"
+            }
+        ],
+        "runway": [
+            {
+                "team": "centrals",
+                "x": -4241,
+                "y": -25,
+                "direction": "right"
+            },
+            {
+                "team": "centrals",
+                "x": -4841,
+                "y": -25,
+                "direction": "right"
+            },
+            {
+                "team": "allies",
+                "x": 3655,
+                "y": -25,
+                "direction": "left"
+            },
+            {
+                "team": "allies",
+                "x": 4255,
+                "y": -25,
+                "direction": "left"
+            }
+        ],
+        "bunker": [],
+        "tower": [
+            {
+                "x": -4500,
+                "y": 5,
+                "direction": "left",
+                "type": "desert"
+            },
+            {
+                "x": 4200,
+                "y": 5,
+                "direction": "right",
+                "type": "desert"
+            }
+        ],
+        "flag": [
+            {
+                "x": -4425,
+                "y": -90,
+                "team": "centrals"
+            },
+            {
+                "x": 4075,
+                "y": -90,
+                "team": "allies"
+            }
+        ],
+        "palm": [
+            {
+                "x": -5800,
+                "y": 5,
+                "direction": "left"
+            },
+            {
+                "x": -5700,
+                "y": 5,
+                "direction": "left"
+            },
+            {
+                "x": -5300,
+                "y": 5,
+                "direction": "right"
+            },
+            {
+                "x": -5200,
+                "y": 5,
+                "direction": "right"
+            },
+            {
+                "x": -5100,
+                "y": 5,
+                "direction": "right"
+            },
+            {
+                "x": 5000,
+                "y": 5,
+                "direction": "left"
+            },
+            {
+                "x": 5100,
+                "y": 5,
+                "direction": "left"
+            },
+            {
+                "x": 5500,
+                "y": 5,
+                "direction": "right"
+            },
+            {
+                "x": 5600,
+                "y": 5,
+                "direction": "right"
+            },
+            {
+                "x": 5700,
+                "y": 5,
+                "direction": "left"
+            }
+        ],
+        "hill": [
+            {
+                "x": -3360,
+                "y": -45,
+                "type": "desert"
+            },
+            {
+                "x": -1360,
+                "y": -45,
+                "type": "desert"
+            },
+            {
+                "x": -720,
+                "y": -45,
+                "type": "desert"
+            },
+            {
+                "x": -240,
+                "y": -45,
+                "type": "desert"
+            },
+            {
+                "x": 0,
+                "y": -45,
+                "type": "desert"
+            },
+            {
+                "x": 3440,
+                "y": -45,
+                "type": "desert"
+            }
+        ]
+    }
+}

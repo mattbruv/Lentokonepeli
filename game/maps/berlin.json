@@ -1,0 +1,226 @@
+{
+    "name": "berlin",
+    "designer": "polofel",
+    "time_winner": "centrals",
+    "entities": {
+        "water": [
+            {
+                "x": 1000,
+                "y": 25,
+                "width": 1800,
+                "direction": "left",
+                "type": "normal"
+            },
+            {
+                "x": 3700,
+                "y": 25,
+                "width": 22000,
+                "direction": "left",
+                "type": "normal"
+            }
+        ],
+        "ground": [
+            {
+                "x": 43536,
+                "y": 0,
+                "width": 22900,
+                "type": "normal"
+            },
+            {
+                "x": 2900,
+                "y": 0,
+                "width": 700,
+                "type": "normal"
+            }
+        ],
+        "coast": [
+            {
+                "x": 900,
+                "y": 0,
+                "direction": "right",
+                "type": "normal"
+            },
+            {
+                "x": 2790,
+                "y": 0,
+                "direction": "left",
+                "type": "normal"
+            },
+            {
+                "x": 3600,
+                "y": 0,
+                "direction": "right",
+                "type": "normal"
+            }
+        ],
+        "runway": [
+            {
+                "team": "centrals",
+                "x": -3191,
+                "y": -25,
+                "direction": "right"
+            },
+            {
+                "team": "centrals",
+                "x": -2491,
+                "y": -25,
+                "direction": "right"
+            },
+            {
+                "team": "centrals",
+                "x": -1891,
+                "y": -25,
+                "direction": "right"
+            },
+            {
+                "team": "allies",
+                "x": 3305,
+                "y": -25,
+                "direction": "left"
+            }
+        ],
+        "bunker": [
+            {
+                "x": -2781,
+                "y": -18,
+                "team": "centrals"
+            },
+            {
+                "x": -881,
+                "y": -18,
+                "team": "centrals"
+            }
+        ],
+        "tower": [
+            {
+                "x": -3250,
+                "y": 5,
+                "direction": "left",
+                "type": "normal"
+            },
+            {
+                "x": -2550,
+                "y": 5,
+                "direction": "right",
+                "type": "normal"
+            },
+            {
+                "x": -2150,
+                "y": 5,
+                "direction": "left",
+                "type": "normal"
+            },
+            {
+                "x": -1950,
+                "y": 5,
+                "direction": "left",
+                "type": "normal"
+            },
+            {
+                "x": -1450,
+                "y": 5,
+                "direction": "left",
+                "type": "normal"
+            },
+            {
+                "x": -950,
+                "y": 5,
+                "direction": "left",
+                "type": "normal"
+            },
+            {
+                "x": -350,
+                "y": 5,
+                "direction": "right",
+                "type": "normal"
+            },
+            {
+                "x": -50,
+                "y": 5,
+                "direction": "right",
+                "type": "normal"
+            },
+            {
+                "x": 250,
+                "y": 5,
+                "direction": "right",
+                "type": "normal"
+            }
+        ],
+        "flag": [
+            {
+                "x": -3775,
+                "y": -90,
+                "team": "centrals"
+            },
+            {
+                "x": -3675,
+                "y": -90,
+                "team": "centrals"
+            },
+            {
+                "x": -3575,
+                "y": -90,
+                "team": "centrals"
+            },
+            {
+                "x": -3175,
+                "y": -90,
+                "team": "centrals"
+            },
+            {
+                "x": -2475,
+                "y": -90,
+                "team": "centrals"
+            },
+            {
+                "x": -1875,
+                "y": -90,
+                "team": "centrals"
+            },
+            {
+                "x": -1375,
+                "y": -90,
+                "team": "centrals"
+            },
+            {
+                "x": -675,
+                "y": -90,
+                "team": "centrals"
+            },
+            {
+                "x": 525,
+                "y": -90,
+                "team": "centrals"
+            },
+            {
+                "x": 625,
+                "y": -90,
+                "team": "centrals"
+            },
+            {
+                "x": 725,
+                "y": -90,
+                "team": "centrals"
+            },
+            {
+                "x": 3225,
+                "y": -90,
+                "team": "allies"
+            }
+        ],
+        "palm": [],
+        "hill": [
+            {
+                "x": 2440,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": 2760,
+                "y": -40,
+                "type": "normal"
+            }
+        ]
+    }
+}

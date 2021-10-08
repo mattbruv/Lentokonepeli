@@ -1,0 +1,204 @@
+{
+    "name": "divided",
+    "designer": "polofel",
+    "time_winner": "no",
+    "entities": {
+        "water": [
+            {
+                "x": 43536,
+                "y": 25,
+                "width": 19400,
+                "direction": "right",
+                "type": "normal"
+            },
+            {
+                "x": -1800,
+                "y": 25,
+                "width": 900,
+                "direction": "right",
+                "type": "normal"
+            },
+            {
+                "x": 800,
+                "y": 25,
+                "width": 1000,
+                "direction": "left",
+                "type": "normal"
+            },
+            {
+                "x": 2600,
+                "y": 25,
+                "width": 22000,
+                "direction": "left",
+                "type": "normal"
+            }
+        ],
+        "ground": [
+            {
+                "x": -2500,
+                "y": 0,
+                "width": 600,
+                "type": "normal"
+            },
+            {
+                "x": -800,
+                "y": 0,
+                "width": 1500,
+                "type": "normal"
+            },
+            {
+                "x": 1900,
+                "y": 0,
+                "width": 600,
+                "type": "normal"
+            }
+        ],
+        "coast": [
+            {
+                "x": -2610,
+                "y": 0,
+                "direction": "left",
+                "type": "normal"
+            },
+            {
+                "x": -1900,
+                "y": 0,
+                "direction": "right",
+                "type": "normal"
+            },
+            {
+                "x": -910,
+                "y": 0,
+                "direction": "left",
+                "type": "normal"
+            },
+            {
+                "x": 700,
+                "y": 0,
+                "direction": "right",
+                "type": "normal"
+            },
+            {
+                "x": 1790,
+                "y": 0,
+                "direction": "left",
+                "type": "normal"
+            },
+            {
+                "x": 2500,
+                "y": 0,
+                "direction": "right",
+                "type": "normal"
+            }
+        ],
+        "runway": [
+            {
+                "team": "centrals",
+                "x": -791,
+                "y": -25,
+                "direction": "right"
+            },
+            {
+                "team": "allies",
+                "x": 405,
+                "y": -25,
+                "direction": "left"
+            },
+            {
+                "team": "centrals",
+                "x": -2291,
+                "y": -25,
+                "direction": "right"
+            },
+            {
+                "team": "allies",
+                "x": 2005,
+                "y": -25,
+                "direction": "left"
+            }
+        ],
+        "bunker": [
+            {
+                "x": -2481,
+                "y": -18,
+                "team": "centrals"
+            },
+            {
+                "x": 2419,
+                "y": -18,
+                "team": "allies"
+            }
+        ],
+        "tower": [],
+        "flag": [
+            {
+                "x": -2375,
+                "y": -90,
+                "team": "centrals"
+            },
+            {
+                "x": -675,
+                "y": -90,
+                "team": "centrals"
+            },
+            {
+                "x": 525,
+                "y": -90,
+                "team": "allies"
+            },
+            {
+                "x": 2325,
+                "y": -90,
+                "team": "allies"
+            }
+        ],
+        "palm": [],
+        "hill": [
+            {
+                "x": -2040,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": -1640,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": -760,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": -440,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": -120,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": 280,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": 600,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": 1400,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": 1720,
+                "y": -40,
+                "type": "normal"
+            }
+        ]
+    }
+}

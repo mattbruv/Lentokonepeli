@@ -1,0 +1,202 @@
+{
+    "name": "long",
+    "designer": "polofel",
+    "time_winner": "no",
+    "entities": {
+        "water": [
+            {
+                "x": 43536,
+                "y": 25,
+                "width": 17600,
+                "direction": "right",
+                "type": "normal"
+            },
+            {
+                "x": -4100,
+                "y": 25,
+                "width": 2800,
+                "direction": "left",
+                "type": "normal"
+            },
+            {
+                "x": -600,
+                "y": 25,
+                "width": 1400,
+                "direction": "right",
+                "type": "normal"
+            },
+            {
+                "x": 1500,
+                "y": 25,
+                "width": 2600,
+                "direction": "left",
+                "type": "normal"
+            },
+            {
+                "x": 4400,
+                "y": 25,
+                "width": 22000,
+                "direction": "left",
+                "type": "normal"
+            }
+        ],
+        "ground": [
+            {
+                "x": -4300,
+                "y": 0,
+                "width": 100,
+                "type": "normal"
+            },
+            {
+                "x": -1200,
+                "y": 0,
+                "width": 500,
+                "type": "normal"
+            },
+            {
+                "x": 900,
+                "y": 0,
+                "width": 500,
+                "type": "normal"
+            },
+            {
+                "x": 4200,
+                "y": 0,
+                "width": 100,
+                "type": "normal"
+            }
+        ],
+        "coast": [
+            {
+                "x": -4410,
+                "y": 0,
+                "direction": "left",
+                "type": "normal"
+            },
+            {
+                "x": -4200,
+                "y": 0,
+                "direction": "right",
+                "type": "normal"
+            },
+            {
+                "x": -1310,
+                "y": 0,
+                "direction": "left",
+                "type": "normal"
+            },
+            {
+                "x": -700,
+                "y": 0,
+                "direction": "right",
+                "type": "normal"
+            },
+            {
+                "x": 790,
+                "y": 0,
+                "direction": "left",
+                "type": "normal"
+            },
+            {
+                "x": 1400,
+                "y": 0,
+                "direction": "right",
+                "type": "normal"
+            },
+            {
+                "x": 4090,
+                "y": 0,
+                "direction": "left",
+                "type": "normal"
+            },
+            {
+                "x": 4300,
+                "y": 0,
+                "direction": "right",
+                "type": "normal"
+            }
+        ],
+        "runway": [
+            {
+                "team": "centrals",
+                "x": -1191,
+                "y": -25,
+                "direction": "right"
+            },
+            {
+                "team": "allies",
+                "x": 1105,
+                "y": -25,
+                "direction": "left"
+            }
+        ],
+        "bunker": [
+            {
+                "x": -4281,
+                "y": -18,
+                "team": "centrals"
+            },
+            {
+                "x": 4219,
+                "y": -18,
+                "team": "allies"
+            }
+        ],
+        "tower": [],
+        "flag": [
+            {
+                "x": -775,
+                "y": -90,
+                "team": "centrals"
+            },
+            {
+                "x": 925,
+                "y": -90,
+                "team": "allies"
+            },
+            {
+                "x": -4275,
+                "y": -90,
+                "team": "centrals"
+            },
+            {
+                "x": 4225,
+                "y": -90,
+                "team": "allies"
+            }
+        ],
+        "palm": [],
+        "hill": [
+            {
+                "x": -3320,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": -1000,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": -680,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": 680,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": 1080,
+                "y": -40,
+                "type": "normal"
+            },
+            {
+                "x": 3240,
+                "y": -40,
+                "type": "normal"
+            }
+        ]
+    }
+}
