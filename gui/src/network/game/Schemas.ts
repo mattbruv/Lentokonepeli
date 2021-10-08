@@ -31,6 +31,13 @@ const WaterSchema: NetObjectSchema = {
     direction: NetType.u8
 }
 
+const RunwaySchema: NetObjectSchema = {
+    x: NetType.i16,
+    y: NetType.i16,
+    team: NetType.u8,
+    direction: NetType.u8
+}
+
 export function getSchema(type: EntityType): NetObjectSchema {
     switch (type) {
         case EntityType.MAN:
@@ -41,6 +48,8 @@ export function getSchema(type: EntityType): NetObjectSchema {
             return WaterSchema;
         case EntityType.COAST:
             return CoastSchema;
+        case EntityType.RUNWAY:
+            return RunwaySchema;
         default:
             throw new Error("Unimplemented Schema type: " + type);
     }

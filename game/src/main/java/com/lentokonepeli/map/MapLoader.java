@@ -9,6 +9,7 @@ import com.lentokonepeli.Team;
 import com.lentokonepeli.TerrainType;
 import com.lentokonepeli.entities.Coast;
 import com.lentokonepeli.entities.Ground;
+import com.lentokonepeli.entities.Runway;
 import com.lentokonepeli.entities.Water;
 import com.lentokonepeli.map.json.MapJSON;
 
@@ -59,6 +60,15 @@ public class MapLoader {
                 var t = stringToTerrain(c.type);
                 var coast = new Coast(c.x, c.y, t);
                 toolkit.addEntity(coast);
+            }
+        }
+
+        if (map.entities.runway != null) {
+            for (var r : map.entities.runway) {
+                var t = stringToTeam(r.team);
+                var d = stringToDirection(r.direction);
+                var runway = new Runway(r.x, r.y, t, d);
+                toolkit.addEntity(runway);
             }
         }
     }
