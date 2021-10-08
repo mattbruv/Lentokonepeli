@@ -1,3 +1,4 @@
+import { EntityType } from "./EntityType";
 import { NetType } from "./NetType";
 
 export interface NetObjectSchema {
@@ -9,4 +10,13 @@ export const ManSchema: NetObjectSchema = {
     y: NetType.i16,
     f: NetType.i16,
     name: NetType.STRING
+}
+
+export function getSchema(type: EntityType): NetObjectSchema {
+    switch (type) {
+        case EntityType.MAN:
+            return ManSchema;
+        default:
+            throw new Error("Unimplemented Schema type: " + type);
+    }
 }

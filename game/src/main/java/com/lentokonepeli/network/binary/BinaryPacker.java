@@ -26,7 +26,7 @@ public class BinaryPacker {
     public void packState(Map<Integer, Entity> entities, boolean onlyChanges) {
         try {
             // write packet type
-            dos.writeByte(NetPacket.GAME_STATE.ordinal());
+            // dos.writeByte(NetPacket.GAME_STATE.ordinal());
 
             for (var ent : entities.values()) {
                 if (ent instanceof Networkable) {

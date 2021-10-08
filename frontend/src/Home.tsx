@@ -7,7 +7,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import { SocketConnection } from "./socket";
-import { GameClient, loadResources } from "lento-gui/lib/client";
+import { GameClient, loadResources, readBinaryPacket } from "lento-gui/lib/client";
 
 type HomeProps = {
     lang: Polyglot;
@@ -58,8 +58,8 @@ export default class Home extends React.Component<HomeProps, HomeState> {
 
         gameSocket.socket.onmessage = (ev) => {
             let data;
-            if (ev.data instanceof Blob) {
-                data = ev.data;
+            if (ev.data instanceof ArrayBuffer) {
+                data = readBinaryPacket(ev.data);
             }
             else {
                 data = JSON.parse(ev.data);

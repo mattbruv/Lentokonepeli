@@ -6,5 +6,6 @@ export class SocketConnection {
 
     constructor(url: string) {
         this.socket = new WebSocket(url);
+        this.socket.binaryType = "arraybuffer";
     }
 }
