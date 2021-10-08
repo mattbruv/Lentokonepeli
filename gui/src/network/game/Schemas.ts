@@ -38,6 +38,19 @@ const RunwaySchema: NetObjectSchema = {
     direction: NetType.u8
 }
 
+const BunkerSchema: NetObjectSchema = {
+    x: NetType.i16,
+    y: NetType.i16,
+    team: NetType.u8
+}
+
+const TowerSchema: NetObjectSchema = {
+    x: NetType.i16,
+    y: NetType.i16,
+    type: NetType.u8,
+    direction: NetType.u8
+}
+
 export function getSchema(type: EntityType): NetObjectSchema {
     switch (type) {
         case EntityType.MAN:
@@ -50,6 +63,10 @@ export function getSchema(type: EntityType): NetObjectSchema {
             return CoastSchema;
         case EntityType.RUNWAY:
             return RunwaySchema;
+        case EntityType.IMPORTANT_BUILDING:
+            return BunkerSchema;
+        case EntityType.TOWER:
+            return TowerSchema;
         default:
             throw new Error("Unimplemented Schema type: " + type);
     }

@@ -13,6 +13,8 @@ public enum EntityType {
     // PLANE_CHOOSER, //
     COAST, //
     HILL, //
+    TOWER, //
+    PALM, //
     // BACKGROUND_ITEM, //
     // TEAM_INFO, //
     EXPLOSION, //
