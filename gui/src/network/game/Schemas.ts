@@ -8,9 +8,6 @@ export interface NetObjectSchema {
 export const ManSchema: NetObjectSchema = {
     x: NetType.i16,
     y: NetType.i16,
-    name: NetType.STRING,
-    test: NetType.i16,
-    test2: NetType.u16,
 }
 
 export function getSchema(type: EntityType): NetObjectSchema {

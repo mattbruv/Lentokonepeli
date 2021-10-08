@@ -30,7 +30,7 @@ public class Game implements Runnable {
     }
 
     private void test() {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 1; i++) {
             Man m = new Man();
             this.toolkit.addEntity(m);
         }

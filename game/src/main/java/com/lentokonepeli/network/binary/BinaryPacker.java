@@ -7,14 +7,6 @@ import java.util.Map;
 
 import com.lentokonepeli.Entity;
 import com.lentokonepeli.network.NetProp;
-import com.lentokonepeli.network.Networkable;
-
-/*
-ByteArrayOutputStream baos = new ByteArrayOutputStream();
-DataOutputStream dos = new DataOutputStream(baos);
-dos.writeInt(1);
-byte[] result = dos.toByteArray();
-*/
 
 public class BinaryPacker {
 
@@ -23,45 +15,46 @@ public class BinaryPacker {
 
     public void packState(Map<Integer, Entity> entities, boolean onlyChanges) {
         try {
-            // write packet type
-            // dos.writeByte(NetPacket.GAME_STATE.ordinal());
-
             for (var ent : entities.values()) {
-                if (ent instanceof Networkable) {
-                    boolean wroteData = false;
-                    var propBytes = new ByteArrayOutputStream();
-                    var propStream = new DataOutputStream(propBytes);
 
-                    var props = ((Networkable) ent).getProps();
-                    int headerBytes = (int) Math.ceil((float) props.size() / 8);
-                    var header = new byte[headerBytes];
+                var props = ent.getProps();
 
-                    int propIndex = 0;
+                if (props.size() == 0) {
+                    continue;
+                }
 
-                    for (var prop : props) {
-                        // do we actually care about this?
-                        if (prop.isSet()) {
-                            if ((onlyChanges && prop.isDirty()) || (onlyChanges == false)) {
-                                int headerByte = propIndex / 8;
-                                int headerBit = propIndex % 8;
-                                // record this prop
-                                header[headerByte] |= (1 << headerBit);
-                                writePropToStream(propStream, prop);
-                                wroteData = true;
+                boolean wroteData = false;
+                var propBytes = new ByteArrayOutputStream();
+                var propStream = new DataOutputStream(propBytes);
 
-                                if (onlyChanges) {
-                                    prop.setClean();
-                                }
+                int headerBytes = (int) Math.ceil((float) props.size() / 8);
+                var header = new byte[headerBytes];
+
+                int propIndex = 0;
+
+                for (var prop : props) {
+                    // do we actually care about this?
+                    if (prop.isSet()) {
+                        if ((onlyChanges && prop.isDirty()) || (onlyChanges == false)) {
+                            int headerByte = propIndex / 8;
+                            int headerBit = propIndex % 8;
+                            // record this prop
+                            header[headerByte] |= (1 << headerBit);
+                            writePropToStream(propStream, prop);
+                            wroteData = true;
+
+                            if (onlyChanges) {
+                                prop.setClean();
                             }
                         }
-                        propIndex++;
                     }
-                    if (wroteData) {
-                        dos.writeShort(ent.getId());
-                        dos.writeByte(ent.getType().ordinal());
-                        dos.write(header);
-                        dos.write(propBytes.toByteArray());
-                    }
+                    propIndex++;
+                }
+                if (wroteData) {
+                    dos.writeShort(ent.getId());
+                    dos.writeByte(ent.getType().ordinal());
+                    dos.write(header);
+                    dos.write(propBytes.toByteArray());
                 }
             }
 

@@ -1,21 +1,20 @@
 package com.lentokonepeli.entities;
 
-import java.util.LinkedHashSet;
-
 import com.lentokonepeli.Entity;
 import com.lentokonepeli.EntityType;
 import com.lentokonepeli.network.NetProp;
-import com.lentokonepeli.network.Networkable;
+import com.lentokonepeli.network.NetType;
 
-public class Ground extends Entity implements Networkable {
+public class Ground extends Entity {
 
-    private final LinkedHashSet<NetProp<?>> props = new LinkedHashSet<>();
+    private NetProp<Integer> x = new NetProp<>("x", NetType.i16);
+    private NetProp<Integer> y = new NetProp<>("y", NetType.i16);
+    private NetProp<Integer> width = new NetProp<>("width", NetType.i16);
 
     public Ground() {
         super(EntityType.GROUND);
-    }
-
-    public LinkedHashSet<NetProp<?>> getProps() {
-        return this.props;
+        props.add(x);
+        props.add(y);
+        props.add(width);
     }
 }
