@@ -44,10 +44,28 @@ const BunkerSchema: NetObjectSchema = {
     team: NetType.u8
 }
 
+const FlagSchema: NetObjectSchema = {
+    x: NetType.i16,
+    y: NetType.i16,
+    team: NetType.u8
+}
+
 const TowerSchema: NetObjectSchema = {
     x: NetType.i16,
     y: NetType.i16,
     type: NetType.u8,
+    direction: NetType.u8
+}
+
+const HillSchema: NetObjectSchema = {
+    x: NetType.i16,
+    y: NetType.i16,
+    type: NetType.u8
+}
+
+const PalmSchema: NetObjectSchema = {
+    x: NetType.i16,
+    y: NetType.i16,
     direction: NetType.u8
 }
 
@@ -67,6 +85,12 @@ export function getSchema(type: EntityType): NetObjectSchema {
             return BunkerSchema;
         case EntityType.TOWER:
             return TowerSchema;
+        case EntityType.FLAG:
+            return FlagSchema;
+        case EntityType.HILL:
+            return HillSchema;
+        case EntityType.PALM:
+            return PalmSchema;
         default:
             throw new Error("Unimplemented Schema type: " + type);
     }
