@@ -127,6 +127,44 @@ def parseLevelLayer(entry, layer):
             })
             j = arrayOfInt[2]
 
+        if char == "<":
+            beachwidth = 110
+            k = (j + 1) * 100 - beachwidth
+            ents["coast"].append({
+                "x": i + k,
+                "y": 0,
+                "direction": "left",
+                "type": "normal"
+            })
+
+        if char == ">":
+            k = j * 100
+            ents["coast"].append({
+                "x": i + k,
+                "y": 0,
+                "direction": "right",
+                "type": "normal"
+            })
+
+        if char == "[":
+            beachwidth = 114
+            k = (j + 1) * 100 - beachwidth
+            ents["coast"].append({
+                "x": i + k,
+                "y": 0,
+                "direction": "left",
+                "type": "desert"
+            })
+
+        if char == "]":
+            k = j * 100
+            ents["coast"].append({
+                "x": i + k,
+                "y": 0,
+                "direction": "right",
+                "type": "desert"
+            })
+
             pass
 
         # end of while loop
