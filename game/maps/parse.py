@@ -280,6 +280,24 @@ def parseLevelLayer(entry, layer):
                 "team": "allies",
             })
 
+        if char == "I":
+            bunkerWidth = 62
+            bunkerHeight = 25
+            ents["bunker"].append({
+                "x": int(i + j * 100 + 50 - bunkerWidth / 2),
+                "y": 0 - bunkerHeight + 7,
+                "team": "centrals",
+            })
+
+        if char == "i":
+            bunkerWidth = 62
+            bunkerHeight = 25
+            ents["bunker"].append({
+                "x": int(i + j * 100 + 50 - bunkerWidth / 2),
+                "y": 0 - bunkerHeight + 7,
+                "team": "allies",
+            })
+
             pass
 
         # end of while loop
@@ -295,10 +313,10 @@ def parseLevel(entry):
         "ground": [],
         "coast": [],
         "runway": [],
+        "bunker": [],
         "tower": [],
         "flag": [],
         "palm": [],
-        "bunker": [],
         "hill": [],
     }
 
