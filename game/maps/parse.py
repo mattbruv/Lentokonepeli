@@ -218,6 +218,52 @@ def parseLevelLayer(entry, layer):
                 #
             })
 
+        if char == "T":
+            ents["tower"].append({
+                "x": i + j * 100 + 50,
+                "y": 5,
+                "direction": "left",
+                "type": "normal"
+            })
+
+        if char == "t":
+            ents["tower"].append({
+                "x": i + j * 100 + 50,
+                "y": 5,
+                "direction": "right",
+                "type": "normal"
+            })
+
+        if char == "D":
+            ents["tower"].append({
+                "x": i + j * 100 + 50,
+                "y": 5,
+                "direction": "left",
+                "type": "desert"
+            })
+
+        if char == "d":
+            ents["tower"].append({
+                "x": i + j * 100 + 50,
+                "y": 5,
+                "direction": "right",
+                "type": "desert"
+            })
+
+        if char == "P":
+            ents["palm"].append({
+                "x": i + j * 100 + 50,
+                "y": 5,
+                "direction": "left"
+            })
+
+        if char == "p":
+            ents["palm"].append({
+                "x": i + j * 100 + 50,
+                "y": 5,
+                "direction": "right",
+            })
+
             pass
 
         # end of while loop
@@ -233,6 +279,8 @@ def parseLevel(entry):
         "ground": [],
         "coast": [],
         "runway": [],
+        "tower": [],
+        "palm": [],
         "flag": [],
         "bunker": [],
         "hill": [],
