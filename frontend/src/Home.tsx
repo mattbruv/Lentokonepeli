@@ -60,12 +60,11 @@ export default class Home extends React.Component<HomeProps, HomeState> {
             let data;
             if (ev.data instanceof ArrayBuffer) {
                 data = readBinaryPacket(ev.data);
+                gameClient.applyGameState(data);
             }
             else {
                 data = JSON.parse(ev.data);
             }
-
-            console.log(data);
         }
 
         gameSocket.socket.onclose = (ev) => {

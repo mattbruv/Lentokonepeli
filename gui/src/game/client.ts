@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import { EntityState } from "src/client";
 import { Background } from "./background";
 import { World } from "./world";
 
@@ -21,6 +22,10 @@ export class GameClient {
         if (el) {
             el.appendChild(this.app.view);
         }
+    }
+
+    public applyGameState(state: EntityState[]) {
+        // console.log(state);
     }
 
 }
