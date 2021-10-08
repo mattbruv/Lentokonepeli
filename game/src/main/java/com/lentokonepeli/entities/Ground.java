@@ -2,21 +2,18 @@ package com.lentokonepeli.entities;
 
 import com.lentokonepeli.Entity;
 import com.lentokonepeli.EntityType;
+import com.lentokonepeli.TerrainType;
 import com.lentokonepeli.network.NetProp;
 import com.lentokonepeli.network.NetType;
 
 public class Ground extends Entity {
-
-    public enum GroundType {
-        NORMAL, DESERT
-    }
 
     private NetProp<Integer> x = new NetProp<>("x", NetType.i16);
     private NetProp<Integer> y = new NetProp<>("y", NetType.i16);
     private NetProp<Integer> width = new NetProp<>("width", NetType.u16);
     private NetProp<Integer> type = new NetProp<>("type", NetType.u8);
 
-    public Ground(int x, int y, int width, GroundType type) {
+    public Ground(int x, int y, int width, TerrainType type) {
         super(EntityType.GROUND);
 
         props.add(this.x);
