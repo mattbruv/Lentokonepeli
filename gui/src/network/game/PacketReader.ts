@@ -49,8 +49,12 @@ function getProperty(view: DataView, offset: number, type: NetType): NetData {
             result.bytes = 4;
             break;
         case NetType.STRING:
-            throw new Error("Can't read strings yet!");
-            break;
+            const numBytes = view.getUint16(offset);
+            const decoder = new TextDecoder();
+            const start = offset + 2;
+            const slice = view.buffer.slice(start, start + numBytes);
+            result.data = decoder.decode(slice);
+            result.bytes = numBytes + 2;
     }
 
     return result;
@@ -60,13 +64,15 @@ export function readBinaryPacket(buffer: ArrayBuffer): EntityState[] {
     let index = 0;
     const view = new DataView(buffer);
     const state: EntityState[] = [];
-    const entityState: EntityState = {
-        id: 0,
-        type: 0,
-        data: {}
-    }
 
     while (index < buffer.byteLength) {
+
+        const entityState: EntityState = {
+            id: 0,
+            type: 0,
+            data: {}
+        }
+
         const id = view.getUint16(index);
         entityState.id = id;
         index += 2;
@@ -94,16 +100,14 @@ export function readBinaryPacket(buffer: ArrayBuffer): EntityState[] {
                     const propType = schema[propKey];
                     const prop = getProperty(view, index, propType);
                     entityState.data[propKey] = prop.data;
-                    console.log(JSON.stringify(entityState));
                     index += prop.bytes;
+                    //console.log(index, buffer.byteLength)
                 }
             }
         }
 
         state.push(entityState);
-        console.log(state);
-
-        break;
+        // console.log(state);
     }
 
     return state;

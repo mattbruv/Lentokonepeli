@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import com.lentokonepeli.Entity;
-import com.lentokonepeli.network.NetPacket;
 import com.lentokonepeli.network.NetProp;
-import com.lentokonepeli.network.NetType;
 import com.lentokonepeli.network.Networkable;
 
 /*

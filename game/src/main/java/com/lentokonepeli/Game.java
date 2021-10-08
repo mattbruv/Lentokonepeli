@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import org.java_websocket.WebSocket;
 
 import com.lentokonepeli.entities.Man;
-import com.lentokonepeli.network.Networkable;
 import com.lentokonepeli.network.binary.BinaryPacker;
 import com.lentokonepeli.network.json.StringPacker;
 

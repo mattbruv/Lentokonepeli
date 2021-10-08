@@ -93,10 +93,10 @@ public final class GameToolkit {
             return;
         }
 
-        for (var entry : localHashMap.entrySet()) {
-            // TODO: make this write new entity's full data
-            // this may not even be necessary
-        }
+        // for (var entry : localHashMap.entrySet()) {
+        // TODO: make this write new entity's full data
+        // this may not even be necessary
+        // }
 
         this.entityMap.putAll(localHashMap);
     }
