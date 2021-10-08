@@ -179,6 +179,45 @@ def parseLevelLayer(entry, layer):
                 "type": "desert"
             })
 
+        if char == "L":
+            imageWidth = 290
+            ents["runway"].append({
+                "team": "centrals",
+                "x": int(i + j * 100 + 50 - imageWidth / 2),
+                "y": -25,
+                "direction": "left"
+                #
+            })
+
+        if char == "R":
+            imageWidth = 282
+            ents["runway"].append({
+                "team": "centrals",
+                "x": int(i + j * 100 + 50 - imageWidth / 2),
+                "y": -25,
+                "direction": "right"
+                #
+            })
+        if char == "l":
+            imageWidth = 290
+            ents["runway"].append({
+                "team": "allies",
+                "x": int(i + j * 100 + 50 - imageWidth / 2),
+                "y": -25,
+                "direction": "left"
+                #
+            })
+
+        if char == "r":
+            imageWidth = 282
+            ents["runway"].append({
+                "team": "allies",
+                "x": int(i + j * 100 + 50 - imageWidth / 2),
+                "y": -25,
+                "direction": "right"
+                #
+            })
+
             pass
 
         # end of while loop
@@ -190,13 +229,13 @@ def parseLevel(entry):
     layers = list(map(lambda x: entry[x], layers))
 
     entry["entities"] = {
-        "ground": [],
         "water": [],
+        "ground": [],
         "coast": [],
-        "hill": [],
         "runway": [],
         "flag": [],
         "bunker": [],
+        "hill": [],
     }
 
     for layer in layers:
