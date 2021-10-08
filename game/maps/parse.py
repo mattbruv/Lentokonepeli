@@ -165,6 +165,20 @@ def parseLevelLayer(entry, layer):
                 "type": "desert"
             })
 
+        if char == "H":
+            ents["hill"].append({
+                "x": int((i + j * 100 + 50) * 8 / 10),
+                "y": -40,
+                "type": "normal"
+            })
+
+        if char == "S":
+            ents["hill"].append({
+                "x": int((i + j * 100 + 50) * 8 / 10),
+                "y": -45,
+                "type": "desert"
+            })
+
             pass
 
         # end of while loop
