@@ -69,6 +69,64 @@ def parseLevelLayer(entry, layer):
             })
             j = arrayOfInt[2]
 
+        if char == "_":
+            arrayOfInt = parseContinuedPiece(layer, j, "_", i)
+            ents["ground"].append({
+                "x": arrayOfInt[0],
+                "y": 0,
+                "width": arrayOfInt[1],
+                "type": "desert"
+            })
+            j = arrayOfInt[2]
+
+        if char == "/":
+            arrayOfInt = parseContinuedPiece(layer, j, "/", i)
+            #Water(arrayOfInt[0], 25, arrayOfInt[1], 0));
+            ents["water"].append({
+                "x": arrayOfInt[0],
+                "y": 25,
+                "width": arrayOfInt[1],
+                "direction": "left",
+                "type": "normal"
+            })
+            j = arrayOfInt[2]
+
+        if char == "\\":
+            arrayOfInt = parseContinuedPiece(layer, j, "\\", i)
+            #Water(arrayOfInt[0], 25, arrayOfInt[1], 0));
+            ents["water"].append({
+                "x": arrayOfInt[0],
+                "y": 25,
+                "width": arrayOfInt[1],
+                "direction": "right",
+                "type": "normal"
+            })
+            j = arrayOfInt[2]
+
+        if char == "(":
+            arrayOfInt = parseContinuedPiece(layer, j, "(", i)
+            #Water(arrayOfInt[0], 25, arrayOfInt[1], 0));
+            ents["water"].append({
+                "x": arrayOfInt[0],
+                "y": 25,
+                "width": arrayOfInt[1],
+                "direction": "left",
+                "type": "desert"
+            })
+            j = arrayOfInt[2]
+
+        if char == ")":
+            arrayOfInt = parseContinuedPiece(layer, j, ")", i)
+            #Water(arrayOfInt[0], 25, arrayOfInt[1], 0));
+            ents["water"].append({
+                "x": arrayOfInt[0],
+                "y": 25,
+                "width": arrayOfInt[1],
+                "direction": "right",
+                "type": "desert"
+            })
+            j = arrayOfInt[2]
+
             pass
 
         # end of while loop
