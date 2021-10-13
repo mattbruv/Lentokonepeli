@@ -79,8 +79,7 @@ public class Game implements Runnable {
     private void performGameTick(long deltaMS) {
         var entities = this.toolkit.getEntities();
 
-        for (var entry : entities.entrySet()) {
-            var entity = entry.getValue();
+        for (var entity : entities.values()) {
             if (entity instanceof Tickable) {
                 ((Tickable) entity).tick(deltaMS);
             }
