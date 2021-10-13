@@ -7,7 +7,6 @@ import org.java_websocket.WebSocket;
 
 import com.lentokonepeli.map.MapLoader;
 import com.lentokonepeli.network.binary.BinaryPacker;
-import com.lentokonepeli.network.json.StringPacker;
 
 public class Game implements Runnable {
 
@@ -89,66 +88,38 @@ public class Game implements Runnable {
     }
 
     private void broadcastChanges() {
-        if (this.debug) {
-            var packet = getChangesAsJSON();
-
-            if (packet != null) {
-                for (var ws : connections) {
-                    ws.send(packet);
-                }
-            }
-        } else {
-            var packet = getChangesAsBinary();
-            if (packet.length > 1) {
-                for (var ws : connections) {
-                    ws.send(packet);
-                }
+        var packet = getChanges();
+        if (packet.length > 0) {
+            for (var ws : connections) {
+                ws.send(packet);
             }
         }
     }
 
-    private String getAllStateAsJSON() {
-        StringPacker packer = new StringPacker();
-        var entities = this.toolkit.getEntities();
-        packer.packState(entities, false);
-        return packer.getJSON();
-    }
-
-    private byte[] getAllStateAsBinary() {
+    private byte[] getAllState() {
         BinaryPacker packer = new BinaryPacker();
         var entities = this.toolkit.getEntities();
         packer.packState(entities, false);
         return packer.getBinary();
     }
 
-    private byte[] getChangesAsBinary() {
+    private byte[] getChanges() {
         BinaryPacker packer = new BinaryPacker();
         var entities = this.toolkit.getEntities();
         packer.packState(entities, true);
         return packer.getBinary();
-    }
-
-    private String getChangesAsJSON() {
-        StringPacker packer = new StringPacker();
-        var entities = this.toolkit.getEntities();
-        packer.packState(entities, true);
-        return packer.getJSON();
     }
 
     public boolean addConnection(WebSocket conn) {
+
         boolean res = this.connections.add(conn);
         System.out.println(this.connections.size() + " connections");
-        if (this.debug) {
-            var state = getAllStateAsJSON();
-            if (state != null) {
-                conn.send(state);
-            }
-        } else {
-            var state = getAllStateAsBinary();
-            if (state.length > 1) {
-                conn.send(state);
-            }
+
+        var state = getAllState();
+        if (state.length > 1) {
+            conn.send(state);
         }
+
         return res;
     }
 
