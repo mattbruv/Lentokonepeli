@@ -1,4 +1,6 @@
 import * as PIXI from "pixi.js";
+import { Viewport } from "pixi-viewport";
+
 import { EntityState } from "src/client";
 import { EntityType } from "src/network/game/EntityType";
 import { Background } from "./background";
@@ -9,16 +11,28 @@ import { World } from "./world";
 export class GameClient {
 
     private app: PIXI.Application;
+    private viewport: Viewport;
 
     private background = new Background();
     private world = new World();
 
     constructor() {
         this.app = new PIXI.Application();
-        this.app.stage.addChild(this.background.container);
-        this.app.stage.addChild(this.world.container);
 
-        this.world.container.position.set(100, 100);
+        this.viewport = new Viewport({
+            screenWidth: window.innerWidth,
+            screenHeight: window.innerHeight,
+            worldWidth: 1000,
+            worldHeight: 1000,
+
+            interaction: this.app.renderer.plugins.interaction
+        });
+
+        this.viewport.drag().pinch().wheel(); //.decelerate();
+
+        this.app.stage.addChild(this.background.container);
+        this.app.stage.addChild(this.viewport);
+        this.viewport.addChild(this.world.container);
     }
 
     public appendCanvas(element: string) {
