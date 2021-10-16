@@ -36,23 +36,20 @@ export class GameClient {
         this.app.stage.addChild(this.background.container);
         this.app.stage.addChild(this.viewport);
         this.viewport.addChild(this.world.container);
-        // this.viewport.addChild(this.grid.container);
         this.app.stage.addChild(this.grid.container);
 
-        // debug center point
-        const g = new PIXI.Graphics();
-        g.beginFill();
-        g.drawCircle(0, 0, 5);
-        g.endFill();
-        this.world.container.addChild(g)
-
-        this.viewport.addListener("moved", (event) => {
-            const box = event.viewport.hitArea;
-            console.log(box);
-            this.grid.setPos(-box.x, -box.y);
-        });
+        this.viewport.addListener("moved", (event) => { this.updateGrid(event); });
 
         this.grid.setSize(this.app.view.width, this.app.view.height);
+    }
+
+    private updateGrid(event: any) {
+        const view = event.viewport;
+        const box = view.hitArea;
+        //console.log(view)
+        this.grid.setScale(event.viewport.scale);
+        this.grid.setSize(box.width, box.height);
+        this.grid.setPos(-box.x, -box.y);
     }
 
     public appendCanvas(element: string) {
