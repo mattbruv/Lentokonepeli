@@ -1,6 +1,6 @@
 import express from "express";
 import { WebSocketServer } from "ws";
-import { APIPacketOut, APIPacketOutType } from "lento-gui"
+import { APIPacketOut, APIPacketOutType } from "lento-client";
 import { getServers } from "./servers";
 
 const app = express();

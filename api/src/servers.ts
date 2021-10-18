@@ -1,4 +1,4 @@
-import { ServerInfo } from "lento-gui";
+import { ServerInfo } from "lento-client";
 
 export function getServers(): ServerInfo[] {
     return [{

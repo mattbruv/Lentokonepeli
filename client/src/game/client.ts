@@ -1,13 +1,15 @@
 import * as PIXI from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
-import { EntityState } from "src/client";
+import { EntityState, readBinaryPacket } from "../client";
 import { EntityType } from "src/network/game/EntityType";
 import { Background } from "./background";
 import { Ground } from "./entities/ground";
 import { World } from "./world";
 import { Grid } from "./grid";
+import { SocketConnection } from "../network/socket";
 
+let conn: SocketConnection;
 
 export class GameClient {
 
@@ -19,6 +21,7 @@ export class GameClient {
     private world = new World();
 
     constructor() {
+
         this.app = new PIXI.Application({
             antialias: false
         });
@@ -49,6 +52,33 @@ export class GameClient {
         this.viewport.addListener("moved", (event) => { this.updateGrid(event); });
 
         this.grid.setSize(this.app.view.width, this.app.view.height);
+    }
+
+    public disconnect() {
+        if (conn) {
+            conn.socket.close();
+        }
+    }
+
+    public connect(url: string, onConnect: () => void) {
+
+        conn = new SocketConnection(url);
+
+        conn.socket.onopen = (ev) => {
+            console.log("Connected to " + url);
+            onConnect();
+        }
+
+        conn.socket.onmessage = (ev) => {
+            let data;
+            if (ev.data instanceof ArrayBuffer) {
+                data = readBinaryPacket(ev.data);
+                this.applyGameState(data);
+            }
+            else {
+                data = JSON.parse(ev.data);
+            }
+        }
     }
 
     private updateGrid(event: any) {

@@ -12,9 +12,8 @@ import Cookies from "js-cookie";
 import Header from "./Header";
 import Home from "./Home";
 import About from "./About";
-import { SocketConnection } from "./socket";
 import { Languages } from "./lang";
-import { APIPacketOut, APIPacketOutType, ServerInfo } from "lento-gui";
+import { APIPacketOut, APIPacketOutType, ServerInfo, SocketConnection } from "lento-client";
 
 /*
   This socket connection has to be defined outside of the

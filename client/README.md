@@ -8,8 +8,8 @@ rendering of a game instance and user input.
 ### Initial Setup
 
 1. Run `npm link` in this root folder.
-This will add this package (named `lento-gui` to your global NPM packages via symlink.
-2. CD into `frontend` root folder and run `npm link lento-gui`
+This will add this package (named `lento-client` to your global NPM packages via symlink.
+2. CD into `frontend` root folder and run `npm link lento-client`
 
 This makes it so that any changes to this library during development are reflected in the dependency of `frontend`, which consumes this library.
 

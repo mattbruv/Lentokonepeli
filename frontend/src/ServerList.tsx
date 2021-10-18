@@ -1,6 +1,6 @@
 import Polyglot from "node-polyglot";
 import React from "react";
-import { ServerInfo } from "lento-gui";
+import { ServerInfo } from "lento-client";
 
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";

@@ -1,20 +1,18 @@
 import Polyglot from "node-polyglot";
 import React from "react";
-import { ServerInfo } from "lento-gui";
+import { ServerInfo } from "lento-client";
 import ServerList from "./ServerList";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import { SocketConnection } from "./socket";
-import { GameClient, loadResources, readBinaryPacket } from "lento-gui/lib/client";
+import { GameClient, loadResources } from "lento-client/lib/client";
 
 type HomeProps = {
     lang: Polyglot;
     servers: ServerInfo[];
 }
 
-let gameSocket: SocketConnection;
 let gameClient: GameClient;
 
 type HomeState = {
@@ -33,9 +31,7 @@ export default class Home extends React.Component<HomeProps, HomeState> {
     }
 
     closeGameSocket() {
-        if (gameSocket && gameSocket.socket.OPEN) {
-            gameSocket.socket.close();
-        }
+        gameClient.disconnect();
     }
 
     leaveServer() {
@@ -46,29 +42,13 @@ export default class Home extends React.Component<HomeProps, HomeState> {
     joinServer(url: string) {
 
         console.log("joining server " + url);
-        gameSocket = new SocketConnection(url);
-
-        gameSocket.socket.onopen = (ev) => {
-            console.log("connected!");
+        gameClient = new GameClient();
+        gameClient.connect(url, () => {
             this.setState({ gameConnection: true }, () => {
-                gameClient = new GameClient();
                 gameClient.appendCanvas("#gameCanvas");
             });
-        };
+        });
 
-        gameSocket.socket.onmessage = (ev) => {
-            let data;
-            if (ev.data instanceof ArrayBuffer) {
-                data = readBinaryPacket(ev.data);
-                gameClient.applyGameState(data);
-            }
-            else {
-                data = JSON.parse(ev.data);
-            }
-        }
-
-        gameSocket.socket.onclose = (ev) => {
-        };
     }
 
     componentWillUnmount() {
