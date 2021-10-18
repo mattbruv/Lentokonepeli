@@ -36,7 +36,10 @@ export class GameClient {
             interaction: this.app.renderer.plugins.interaction
         });
 
-        this.viewport.drag().pinch().wheel(); //.decelerate();
+        this.viewport.drag().pinch().wheel().clampZoom({
+            minWidth: 100,
+            maxWidth: 3000,
+        });
 
         this.app.stage.addChild(this.background.container);
         this.app.stage.addChild(this.viewport);
