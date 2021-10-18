@@ -1,9 +1,5 @@
 import * as PIXI from "pixi.js";
 
-const GRID_WIDTH = 100;
-const GRID_HEIGHT = 100;
-const GRID_COLOR = 0x000000;
-const GRID_OPACITY = 0.35;
 
 /** The maximum distance in pixels to draw the x,y axis line */
 const AXIS_BOUNDS = Math.pow(2, 16 - 1);
@@ -21,9 +17,31 @@ export class Grid {
 
         const graphics = new PIXI.Graphics();
 
-        graphics.lineStyle(1, GRID_COLOR, GRID_OPACITY);
-        graphics.beginFill(GRID_COLOR, 0);
-        graphics.drawRect(0, 0, GRID_HEIGHT, GRID_WIDTH);
+        graphics.lineStyle(1, 0x555555, 1);
+        graphics.beginFill(0x000000, 0);
+
+        for (let i = 0; i < 10; i++) {
+            graphics.moveTo(0, i * 100);
+            graphics.lineTo(1000, i * 100);
+            graphics.moveTo(i * 100, 0);
+            graphics.lineTo(i * 100, 1000);
+        }
+
+        graphics.lineStyle(1, 0xff0000, 1);
+        graphics.moveTo(0, 0);
+        graphics.lineTo(0, 1000);
+
+        graphics.lineStyle(1, 0x0000ff, 1);
+        graphics.moveTo(500, 0);
+        graphics.lineTo(500, 1000);
+        graphics.moveTo(0, 500);
+        graphics.lineTo(1000, 500);
+
+        graphics.lineStyle(1, 0x00ff00, 1);
+        graphics.moveTo(0, 0);
+        graphics.lineTo(1000, 0);
+
+        // graphics.drawRect(0, 0, 100, 100);
         graphics.endFill();
 
         const renderTex = renderer.generateTexture(graphics);

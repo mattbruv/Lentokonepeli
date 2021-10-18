@@ -19,8 +19,13 @@ export class GameClient {
     private world = new World();
 
     constructor() {
-        this.app = new PIXI.Application();
+        this.app = new PIXI.Application({
+            antialias: false
+        });
+
         this.grid = new Grid(this.app.renderer);
+
+        PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
         this.viewport = new Viewport({
             screenWidth: window.innerWidth,
