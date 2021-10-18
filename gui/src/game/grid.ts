@@ -35,16 +35,19 @@ export class Grid {
     }
 
     public setPos(x: number, y: number) {
+        //console.log("pos: ", x, y)
         this.gridSprite.tilePosition.set(x, y);
     }
 
     public setScale(scale: PIXI.ObservablePoint) {
+        //console.log("scale: ", scale.x, scale.y)
         this.gridSprite.scale = scale;
+        // this.gridSprite.tileScale = scale;
     }
 
     public setSize(width: number, height: number) {
+        //console.log("size: ", width, height);
         this.gridSprite.width = width;
         this.gridSprite.height = height;
     }
-
 }

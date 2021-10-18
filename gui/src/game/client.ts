@@ -48,8 +48,10 @@ export class GameClient {
         const box = view.hitArea;
         //console.log(view)
         this.grid.setScale(event.viewport.scale);
-        this.grid.setSize(box.width, box.height);
-        this.grid.setPos(-box.x, -box.y);
+        const height = view.screenHeightInWorldPixels;
+        const width = view.screenWidthInWorldPixels;
+        this.grid.setSize(width, height);
+        this.grid.setPos(-view.left, -view.top);
     }
 
     public appendCanvas(element: string) {
