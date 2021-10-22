@@ -15,7 +15,7 @@ export class Debug {
 
     setCoords(_x: number, _y: number) {
         const x = Math.floor(_x);
-        const y = Math.floor(_y);
+        const y = -Math.floor(_y);
         this.coords.text = "(" + x + ", " + y + ")";
     }
 }
