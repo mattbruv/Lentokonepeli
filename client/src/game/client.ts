@@ -6,16 +6,18 @@ import { EntityType } from "src/network/game/EntityType";
 import { Background } from "./background";
 import { Ground } from "./entities/ground";
 import { World } from "./world";
-import { Grid } from "./grid";
 import { SocketConnection } from "../network/socket";
+import { Debug } from "./debug";
 
 let conn: SocketConnection;
+
+PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
 export class GameClient {
 
     private app: PIXI.Application;
     private viewport: Viewport;
-    private grid: Grid;
+    private debug: Debug;
 
     private background = new Background();
     private world = new World();
@@ -26,9 +28,9 @@ export class GameClient {
             antialias: false
         });
 
-        this.grid = new Grid(this.app.renderer);
+        this.app.stage.interactive = true;
 
-        PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+        this.debug = new Debug(this.app.renderer);
 
         this.viewport = new Viewport({
             screenWidth: window.innerWidth,
@@ -47,11 +49,20 @@ export class GameClient {
         this.app.stage.addChild(this.background.container);
         this.app.stage.addChild(this.viewport);
         this.viewport.addChild(this.world.container);
-        this.app.stage.addChild(this.grid.container);
+
+        // Debug info
+        this.app.stage.addChild(this.debug.grid.container);
+        this.app.stage.addChild(this.debug.container);
+        console.log(this.debug)
 
         this.viewport.addListener("moved", (event) => { this.updateGrid(event); });
+        this.debug.grid.setSize(this.app.view.width, this.app.view.height);
 
-        this.grid.setSize(this.app.view.width, this.app.view.height);
+        this.app.stage.on("mousemove", (ev: PIXI.InteractionEvent) => {
+            const pos = this.viewport.toLocal(ev.data.global);
+            this.debug.setCoords(pos.x, pos.y);
+        });
+
     }
 
     public disconnect() {
@@ -85,11 +96,11 @@ export class GameClient {
         const view = event.viewport;
         const box = view.hitArea;
         //console.log(view)
-        this.grid.setScale(event.viewport.scale);
+        this.debug.grid.setScale(event.viewport.scale);
         const height = view.screenHeightInWorldPixels;
         const width = view.screenWidthInWorldPixels;
-        this.grid.setSize(width, height);
-        this.grid.setPos(-view.left, -view.top);
+        this.debug.grid.setSize(width, height);
+        this.debug.grid.setPos(-view.left, -view.top);
     }
 
     public appendCanvas(element: string) {

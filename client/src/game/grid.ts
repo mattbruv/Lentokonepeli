@@ -54,7 +54,7 @@ export class Grid {
 
     public setPos(x: number, y: number) {
         //console.log("pos: ", x, y)
-        this.gridSprite.tilePosition.set(Math.round(x), Math.round(y));
+        this.gridSprite.tilePosition.set(x, y);
     }
 
     public setScale(scale: PIXI.ObservablePoint) {
