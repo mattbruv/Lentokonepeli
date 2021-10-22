@@ -1,4 +1,6 @@
 import * as PIXI from "pixi.js";
+import { EntityType } from "../../network/game/EntityType";
+import { Entity } from "../entity";
 import { getTexture } from "../resources";
 
 export interface GroundProps {
@@ -8,13 +10,17 @@ export interface GroundProps {
     type?: number;
 }
 
-export class Ground {
+export class Ground implements Entity {
+
+    type = EntityType.GROUND;
 
     sprite = new PIXI.TilingSprite(getTexture("ground1.gif")!);
 
     constructor() {
         this.sprite.height = this.sprite.texture.height;
     }
+
+    destroy() { }
 
     update(props: GroundProps) {
         console.log(props);

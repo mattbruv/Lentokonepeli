@@ -8,10 +8,15 @@ import { Ground } from "./entities/ground";
 import { World } from "./world";
 import { SocketConnection } from "../network/socket";
 import { Debug } from "./debug";
+import { Entity } from "./entity";
 
 let conn: SocketConnection;
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+
+interface EntityMap {
+    [key: number]: Entity
+}
 
 export class GameClient {
 
@@ -21,6 +26,7 @@ export class GameClient {
 
     private background = new Background();
     private world = new World();
+    private entities: EntityMap = {}
 
     constructor() {
 
@@ -110,15 +116,43 @@ export class GameClient {
         }
     }
 
+    private addEntity(id: number, ent: Entity) {
+        if (this.entities[id] !== undefined) {
+            console.log("Entity alread exists with id", id);
+        }
+        this.entities[id] = ent;
+    }
+
+    private getEntity(id: number): Entity {
+        return this.entities[id];
+    }
+
+    private removeEntity(id: number) {
+        if (this.entities[id] == undefined) {
+            console.log("Attempted to remove non-existing entity:", id);
+            return;
+        }
+        this.entities[id].destroy();
+        delete this.entities[id];
+    }
+
     public applyGameState(state: EntityState[]) {
         for (const s of state) {
             const id = s.id;
             const type = s.type;
 
+            const ent = this.getEntity(id);
+
+            if (ent) {
+                ent.update(s.data);
+                continue;
+            }
+
             switch (type) {
                 case EntityType.GROUND: {
                     const g = new Ground();
                     g.update(s.data);
+                    this.addEntity(id, g);
                     this.world.container.addChild(g.sprite);
                 }
             }
