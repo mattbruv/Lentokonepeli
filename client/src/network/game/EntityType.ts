@@ -1,5 +1,5 @@
 
-export const enum EntityType {
+export enum EntityType {
     PLANE, //
     BULLET, //
     GROUND, //

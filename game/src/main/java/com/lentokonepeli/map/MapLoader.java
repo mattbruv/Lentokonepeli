@@ -1,6 +1,7 @@
 package com.lentokonepeli.map;
 
 import java.io.Reader;
+import java.util.Arrays;
 
 import com.google.gson.Gson;
 import com.lentokonepeli.Direction;
@@ -63,7 +64,8 @@ public class MapLoader {
         if (map.entities.coast != null) {
             for (var c : map.entities.coast) {
                 var t = stringToTerrain(c.type);
-                var coast = new Coast(c.x, c.y, t);
+                var d = (c.direction.equals("left")) ? Direction.LEFT : Direction.RIGHT;
+                var coast = new Coast(c.x, c.y, t, d);
                 toolkit.addEntity(coast);
             }
         }
@@ -121,28 +123,28 @@ public class MapLoader {
 
     private static TerrainType stringToTerrain(String terrain) {
         switch (terrain) {
-            case "desert":
-                return TerrainType.DESERT;
-            default:
-                return TerrainType.NORMAL;
+        case "desert":
+            return TerrainType.DESERT;
+        default:
+            return TerrainType.NORMAL;
         }
     }
 
     private static Direction stringToDirection(String dir) {
         switch (dir) {
-            case "left":
-                return Direction.LEFT;
-            default:
-                return Direction.RIGHT;
+        case "left":
+            return Direction.LEFT;
+        default:
+            return Direction.RIGHT;
         }
     }
 
     private static Team stringToTeam(String team) {
         switch (team) {
-            case "allies":
-                return Team.ALLIES;
-            default:
-                return Team.CENTRALS;
+        case "allies":
+            return Team.ALLIES;
+        default:
+            return Team.CENTRALS;
         }
     }
 }

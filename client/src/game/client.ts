@@ -2,13 +2,14 @@ import * as PIXI from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
 import { EntityState, readBinaryPacket } from "../client";
-import { EntityType } from "src/network/game/EntityType";
+import { EntityType } from "../network/game/EntityType";
 import { Background } from "./background";
 import { Ground } from "./entities/ground";
 import { World } from "./world";
 import { SocketConnection } from "../network/socket";
 import { Debug } from "./debug";
 import { Entity } from "./entity";
+import { Coast } from "./entities/coast";
 
 let conn: SocketConnection;
 
@@ -140,6 +141,7 @@ export class GameClient {
         for (const s of state) {
             const id = s.id;
             const type = s.type;
+            console.log("apply", "id:", id, "type:", EntityType[type]);
 
             const ent = this.getEntity(id);
 
@@ -154,6 +156,14 @@ export class GameClient {
                     g.update(s.data);
                     this.addEntity(id, g);
                     this.world.container.addChild(g.sprite);
+                    break;
+                }
+                case EntityType.COAST: {
+                    const c = new Coast();
+                    c.update(s.data);
+                    this.addEntity(id, c);
+                    this.world.container.addChild(c.sprite);
+                    break;
                 }
             }
         }
