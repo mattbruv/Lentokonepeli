@@ -16,7 +16,8 @@ public class Runway extends Entity implements Tickable {
     private NetProp<Integer> direction = new NetProp<>("direction", NetType.u8);
     private NetProp<Integer> health = new NetProp<>("health", NetType.u8);
 
-    private int deadTimer = 0;
+    private int timer = 0;
+    private int inc = 1;
 
     public Runway(int x, int y, Team team, Direction direction) {
         super(EntityType.RUNWAY);
@@ -35,5 +36,26 @@ public class Runway extends Entity implements Tickable {
     }
 
     public void tick(long deltaMS) {
+        if (Math.random() > 0.5) {
+            return;
+        }
+        int hp = this.health.get();
+        if (hp == 255) {
+            timer++;
+            if (timer > 100) {
+                timer = 0;
+                inc = -1;
+                this.health.set(hp + inc);
+            }
+        } else if (hp == 0) {
+            timer++;
+            if (timer > 500) {
+                timer = 0;
+                inc = 1;
+                this.health.set(hp + inc);
+            }
+        } else {
+            this.health.set(hp + inc);
+        }
     }
 }
