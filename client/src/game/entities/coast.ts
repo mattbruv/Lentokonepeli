@@ -23,19 +23,19 @@ export class Coast implements Entity {
     destroy() { }
 
     update(props: CoastProps) {
-        if (props.x) {
+        if (props.x !== undefined) {
             this.sprite.position.x = props.x;
         }
-        if (props.y) {
+        if (props.y !== undefined) {
             this.sprite.position.y = props.y;
         }
-        if (props.direction) {
+        if (props.direction !== undefined) {
             if (props.direction == Direction.RIGHT) {
                 this.sprite.anchor.x = 1;
                 this.sprite.scale.x *= -1;
             }
         }
-        if (props.type) {
+        if (props.type !== undefined) {
             console.log("change coast type!");
         }
     }

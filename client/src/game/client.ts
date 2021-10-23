@@ -10,6 +10,7 @@ import { SocketConnection } from "../network/socket";
 import { Debug } from "./debug";
 import { Entity } from "./entity";
 import { Coast } from "./entities/coast";
+import { Runway } from "./entities/runway";
 
 let conn: SocketConnection;
 
@@ -141,7 +142,7 @@ export class GameClient {
         for (const s of state) {
             const id = s.id;
             const type = s.type;
-            console.log("apply", "id:", id, "type:", EntityType[type]);
+            //console.log("apply", "id:", id, "type:", EntityType[type]);
 
             const ent = this.getEntity(id);
 
@@ -163,6 +164,13 @@ export class GameClient {
                     c.update(s.data);
                     this.addEntity(id, c);
                     this.world.container.addChild(c.sprite);
+                    break;
+                }
+                case EntityType.RUNWAY: {
+                    const r = new Runway();
+                    r.update(s.data);
+                    this.addEntity(id, r);
+                    this.world.container.addChild(r.container);
                     break;
                 }
             }
