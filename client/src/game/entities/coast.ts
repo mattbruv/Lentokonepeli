@@ -23,7 +23,6 @@ export class Coast implements Entity {
     destroy() { }
 
     update(props: CoastProps) {
-        console.log(props);
         if (props.x) {
             this.sprite.position.x = props.x;
         }
@@ -31,7 +30,6 @@ export class Coast implements Entity {
             this.sprite.position.y = props.y;
         }
         if (props.direction) {
-            console.log("CHANGE DIRECTION", props.direction)
             if (props.direction == Direction.RIGHT) {
                 this.sprite.anchor.x = 1;
                 this.sprite.scale.x *= -1;

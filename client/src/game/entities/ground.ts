@@ -23,7 +23,6 @@ export class Ground implements Entity {
     destroy() { }
 
     update(props: GroundProps) {
-        console.log(props);
         if (props.x) {
             this.sprite.position.x = props.x;
         }
