@@ -36,7 +36,8 @@ const RunwaySchema: NetObjectSchema = {
     x: NetType.i16,
     y: NetType.i16,
     team: NetType.u8,
-    direction: NetType.u8
+    direction: NetType.u8,
+    health: NetType.u8,
 }
 
 const BunkerSchema: NetObjectSchema = {

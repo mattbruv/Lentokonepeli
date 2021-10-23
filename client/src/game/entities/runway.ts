@@ -8,6 +8,7 @@ export interface RunwayProps {
     y?: number;
     team?: number;
     direction?: number;
+    health?: number;
 }
 
 export class Runway implements Entity {
@@ -18,6 +19,7 @@ export class Runway implements Entity {
 
     sprite = new PIXI.Sprite(getTexture("runway.gif"));
     back = new PIXI.Sprite(getTexture("runway2b.gif"));
+    direction = Direction.LEFT;
 
     constructor() {
         this.sprite.height = this.sprite.texture.height;
@@ -39,9 +41,23 @@ export class Runway implements Entity {
             this.back.y = props.y;
         }
         if (props.direction !== undefined) {
+            this.direction = props.direction;
             if (props.direction == Direction.LEFT) {
                 this.back.visible = true;
                 this.sprite.texture = getTexture("runway2.gif")!;
+            }
+        }
+        if (props.health !== undefined) {
+            if (props.health == 0) {
+                const tex = this.direction == Direction.RIGHT ? "runway_broke.gif" : "runway2_broke.gif";
+                this.back.visible = false;
+                this.sprite.texture = getTexture(tex)!;
+            } else {
+                const tex = this.direction == Direction.RIGHT ? "runway.gif" : "runway2.gif";
+                if (this.direction == Direction.LEFT) {
+                    this.back.visible = true;
+                }
+                this.sprite.texture = getTexture(tex)!;
             }
         }
     }
