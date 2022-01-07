@@ -1,8 +1,18 @@
 import "../css/style.css";
 
-const app = document.querySelector<HTMLDivElement>("#app")!;
+// must add ?url for vite to import URL as string
+import spriteSheetJSONUrl from "../images/images.json?url";
 
-app.innerHTML = `
-  <h1>Hello Vite!</h1>
-  hi
-`;
+import { GameClient, loadResources } from "lento-client/lib/client";
+import ServerList from "../servers.json";
+
+const SERVER = ServerList.dev[0];
+
+let gameClient: GameClient;
+
+loadResources(spriteSheetJSONUrl, () => {
+  gameClient = new GameClient();
+  gameClient.connect(SERVER, () => {
+    gameClient.appendCanvas("#app");
+  });
+});
