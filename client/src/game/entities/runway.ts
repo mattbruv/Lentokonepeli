@@ -16,6 +16,7 @@ export class Runway implements Entity {
 
   container = new PIXI.Container();
   healthBar = new PIXI.Graphics();
+  currentTexture: string = "runway.gif";
 
   sprite = new PIXI.Sprite(getTexture("runway.gif"));
   back = new PIXI.Sprite(getTexture("runway2b.gif"));
@@ -59,7 +60,10 @@ export class Runway implements Entity {
             ? "runway_broke.gif"
             : "runway2_broke.gif";
         this.back.visible = false;
-        this.sprite.texture = getTexture(tex)!;
+        if (this.currentTexture != tex) {
+          this.sprite.texture = getTexture(tex)!;
+          this.currentTexture = tex;
+        }
       } else {
         // draw health bar
         this.healthBar.visible = true;
@@ -80,7 +84,10 @@ export class Runway implements Entity {
         if (this.direction == Direction.LEFT) {
           this.back.visible = true;
         }
-        this.sprite.texture = getTexture(tex)!;
+        if (this.currentTexture != tex) {
+          this.sprite.texture = getTexture(tex)!;
+          this.currentTexture = tex;
+        }
       }
     }
   }

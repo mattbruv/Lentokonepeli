@@ -10,13 +10,10 @@ export function loadResources(url: string, doneCB?: () => void) {
       if (doneCB) doneCB();
     });
   } else {
-    console.log("FAILED TO LOAD RESOURCE: " + url);
+    console.log("Failed to load resource: " + url);
   }
 }
 
 export function getTexture(texture: string) {
-  console.log(
-    PIXI.Loader.shared.resources[root].spritesheet?.textures[texture]
-  );
   return PIXI.Loader.shared.resources[root].spritesheet?.textures[texture];
 }
