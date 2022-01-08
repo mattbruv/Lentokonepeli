@@ -19,6 +19,8 @@ export class Ground implements Entity {
     this.sprite.height = this.sprite.texture.height;
   }
 
+  redraw() {}
+
   destroy() {}
 
   update(props: GroundProps) {

@@ -4,40 +4,33 @@ import { Direction, Entity } from "../entity";
 import { getTexture } from "../resources";
 
 export interface CoastProps {
-    x?: number;
-    y?: number;
-    type?: number;
-    direction?: number;
+  x?: number;
+  y?: number;
+  type?: number;
+  direction?: number;
 }
 
-export class Coast implements Entity {
+export class Coast extends Entity {
+  x = 0;
+  y = 0;
+  direction = Direction.LEFT;
+  type = EntityType.COAST;
 
-    type = EntityType.COAST;
+  sprite = new PIXI.Sprite(getTexture("beach-l.gif")!);
 
-    sprite = new PIXI.Sprite(getTexture("beach-l.gif")!);
+  constructor() {
+    super();
+    this.sprite.height = this.sprite.texture.height;
+  }
 
-    constructor() {
-        this.sprite.height = this.sprite.texture.height;
+  redraw() {
+    this.sprite.position.set(this.x, this.y);
+    if (this.direction == Direction.RIGHT) {
+      this.sprite.anchor.x = 1;
+      this.sprite.scale.x *= -1;
     }
+    // TODO: coast type
+  }
 
-    destroy() { }
-
-    update(props: CoastProps) {
-        if (props.x !== undefined) {
-            this.sprite.position.x = props.x;
-        }
-        if (props.y !== undefined) {
-            this.sprite.position.y = props.y;
-        }
-        if (props.direction !== undefined) {
-            if (props.direction == Direction.RIGHT) {
-                this.sprite.anchor.x = 1;
-                this.sprite.scale.x *= -1;
-            }
-        }
-        if (props.type !== undefined) {
-            console.log("change coast type!");
-        }
-    }
-
+  destroy() {}
 }

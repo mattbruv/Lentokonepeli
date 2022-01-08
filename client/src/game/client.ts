@@ -172,6 +172,9 @@ export class GameClient {
           this.world.container.addChild(r.container);
           break;
         }
+        default: {
+          console.log("Unimplemented entity type: " + EntityType[type]);
+        }
       }
     }
   }

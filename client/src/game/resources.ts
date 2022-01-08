@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import { Resource } from "pixi.js";
 
 let root: string;
 
@@ -14,6 +15,6 @@ export function loadResources(url: string, doneCB?: () => void) {
   }
 }
 
-export function getTexture(texture: string) {
-  return PIXI.Loader.shared.resources[root].spritesheet?.textures[texture];
+export function getTexture(texture: string): PIXI.Texture<Resource> {
+  return PIXI.Loader.shared.resources[root].spritesheet?.textures[texture]!;
 }
