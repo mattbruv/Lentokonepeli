@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
-import { EntityState, readBinaryPacket } from "../client";
+import { EntityState, readBinaryPacket } from "../network/game/PacketReader";
 import { EntityType } from "../network/game/EntityType";
 import { Background } from "./background";
 import { Ground } from "./entities/ground";

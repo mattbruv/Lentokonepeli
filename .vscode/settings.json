@@ -1,5 +1,0 @@
-{
-    "editor.codeLens": false,
-    "java.configuration.updateBuildConfiguration": "automatic",
-    "python.formatting.provider": "yapf"
-}

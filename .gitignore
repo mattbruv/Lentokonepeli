@@ -5,6 +5,7 @@ game/dependency-reduced-pom.xml
 .classpath
 .project
 .settings
+.vscode
 app.config
 target
 dependency-reduced-pom.xml

@@ -3,7 +3,7 @@ import "../css/style.css";
 // must add ?url for vite to import URL as string
 import spriteSheetJSONUrl from "../images/images.json?url";
 
-import { GameClient, loadResources } from "lento-client/lib/client";
+import { GameClient, loadResources } from "lento-client";
 import ServerList from "../servers.json";
 
 const SERVER = ServerList.dev[0];

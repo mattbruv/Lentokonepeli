@@ -8,7 +8,6 @@
   },
   "devDependencies": {
     "typescript": "^4.4.4",
-    "lento-client": "file:../client",
     "vite": "^2.7.2"
   }
 }
