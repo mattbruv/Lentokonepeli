@@ -20,7 +20,7 @@ export class Runway extends Entity {
 
   type = EntityType.RUNWAY;
 
-  container = new PIXI.Container();
+  private container = new PIXI.Container();
   healthBar = new PIXI.Graphics();
   currentTexture: string = "runway.gif";
 
@@ -34,6 +34,10 @@ export class Runway extends Entity {
     this.container.addChild(this.back);
     this.container.addChild(this.sprite);
     this.container.addChild(this.healthBar);
+  }
+
+  getContainer(): PIXI.Container {
+      return this.container;
   }
 
   redraw() {

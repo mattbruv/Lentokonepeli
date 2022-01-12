@@ -1,7 +1,6 @@
 package com.lentokonepeli.map;
 
 import java.io.Reader;
-import java.util.Arrays;
 
 import com.google.gson.Gson;
 import com.lentokonepeli.Direction;

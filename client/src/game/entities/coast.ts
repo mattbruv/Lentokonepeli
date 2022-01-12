@@ -16,11 +16,17 @@ export class Coast extends Entity {
   direction = Direction.LEFT;
   type = EntityType.COAST;
 
+  container = new PIXI.Container();
   sprite = new PIXI.Sprite(getTexture("beach-l.gif")!);
 
   constructor() {
     super();
     this.sprite.height = this.sprite.texture.height;
+    this.container.addChild(this.sprite);
+  }
+
+  getContainer(): PIXI.Container {
+      return this.container;
   }
 
   redraw() {

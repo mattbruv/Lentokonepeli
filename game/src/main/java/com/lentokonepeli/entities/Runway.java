@@ -36,20 +36,17 @@ public class Runway extends Entity implements Tickable {
     }
 
     public void tick(long deltaMS) {
-        if (Math.random() > 0.5) {
-            return;
-        }
         int hp = this.health.get();
         if (hp == 255) {
             timer++;
-            if (timer > 100) {
+            if (timer > 30) {
                 timer = 0;
                 inc = -1;
                 this.health.set(hp + inc);
             }
         } else if (hp == 0) {
             timer++;
-            if (timer > 500) {
+            if (timer > 60 * 2) {
                 timer = 0;
                 inc = 1;
                 this.health.set(hp + inc);

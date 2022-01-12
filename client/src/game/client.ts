@@ -11,6 +11,7 @@ import { Debug } from "./debug";
 import { Entity } from "./entity";
 import { Coast } from "./entities/coast";
 import { Runway } from "./entities/runway";
+import { Water } from "./entities/water";
 
 let conn: SocketConnection;
 
@@ -137,44 +138,39 @@ export class GameClient {
     delete this.entities[id];
   }
 
+  private createEntity(type: EntityType): Entity | undefined {
+      switch (type) {
+        case EntityType.GROUND:
+          return new Ground();
+        case EntityType.COAST:
+          return new Coast();
+        case EntityType.RUNWAY:
+          return new Runway();
+        case EntityType.WATER: 
+          return new Water();
+        default: {
+          console.log("Unimplemented entity type: " + EntityType[type]);
+        }
+      }
+  }
+
   public applyGameState(state: EntityState[]) {
     for (const s of state) {
       const id = s.id;
       const type = s.type;
-      //console.log("apply", "id:", id, "type:", EntityType[type]);
 
-      const ent = this.getEntity(id);
+      const existing = this.getEntity(id);
 
-      if (ent) {
-        ent.update(s.data);
+      if (existing) {
+        existing.update(s.data);
         continue;
       }
 
-      switch (type) {
-        case EntityType.GROUND: {
-          const g = new Ground();
-          g.update(s.data);
-          this.addEntity(id, g);
-          this.world.container.addChild(g.sprite);
-          break;
-        }
-        case EntityType.COAST: {
-          const c = new Coast();
-          c.update(s.data);
-          this.addEntity(id, c);
-          this.world.container.addChild(c.sprite);
-          break;
-        }
-        case EntityType.RUNWAY: {
-          const r = new Runway();
-          r.update(s.data);
-          this.addEntity(id, r);
-          this.world.container.addChild(r.container);
-          break;
-        }
-        default: {
-          console.log("Unimplemented entity type: " + EntityType[type]);
-        }
+      const ent = this.createEntity(type);
+      if (ent !== undefined) {
+        ent.update(s.data);
+        this.addEntity(id, ent);
+        this.world.container.addChild(ent.getContainer());
       }
     }
   }

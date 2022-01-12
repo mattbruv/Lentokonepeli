@@ -1,3 +1,4 @@
+import * as PIXI from "pixi.js";
 import { EntityType } from "../network/game/EntityType";
 
 export enum Direction {
@@ -21,6 +22,8 @@ export abstract class Entity {
     }
     this.redraw();
   }
+
   abstract redraw(): void;
   abstract destroy(): void;
+  abstract getContainer(): PIXI.Container;
 }

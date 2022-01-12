@@ -14,6 +14,7 @@ export interface WaterProps {
 export class Water extends Entity {
   type = EntityType.WATER;
 
+  container = new PIXI.Container();
   sprite = new PIXI.TilingSprite(getTexture("ground1.gif")!);
 
   constructor() {
@@ -21,7 +22,13 @@ export class Water extends Entity {
     this.sprite.height = this.sprite.texture.height;
   }
 
-  redraw() {}
+  redraw() {
+    console.log("Redraw water called!");
+  }
+
+  getContainer(): PIXI.Container {
+      return this.container;
+  }
 
   destroy() {}
 }

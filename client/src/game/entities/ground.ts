@@ -10,31 +10,31 @@ export interface GroundProps {
   type?: number;
 }
 
-export class Ground implements Entity {
+export class Ground extends Entity {
+  x = 0;
+  y = 0;
+  width = 100;
   type = EntityType.GROUND;
 
+  container = new PIXI.Container();
   sprite = new PIXI.TilingSprite(getTexture("ground1.gif")!);
 
   constructor() {
+    super();
     this.sprite.height = this.sprite.texture.height;
+    this.container.addChild(this.sprite);
   }
 
-  redraw() {}
+  getContainer(): PIXI.Container {
+      return this.container;
+  }
+
+  redraw() {
+    this.sprite.position.set(this.x, this.y);
+    this.sprite.width = this.width;
+    // TODO: change ground type
+  }
 
   destroy() {}
 
-  update(props: GroundProps) {
-    if (props.x !== undefined) {
-      this.sprite.position.x = props.x;
-    }
-    if (props.y !== undefined) {
-      this.sprite.position.y = props.y;
-    }
-    if (props.width !== undefined) {
-      this.sprite.width = props.width;
-    }
-    if (props.type !== undefined) {
-      console.log("change ground type!");
-    }
-  }
 }
