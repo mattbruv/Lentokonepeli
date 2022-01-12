@@ -31,6 +31,8 @@ export class Runway extends Entity {
     super();
     this.sprite.height = this.sprite.texture.height;
     this.back.visible = false;
+
+    this.container.sortableChildren = true;
     this.container.addChild(this.back);
     this.container.addChild(this.sprite);
     this.container.addChild(this.healthBar);

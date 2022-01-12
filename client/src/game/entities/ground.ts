@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { EntityType } from "../../network/game/EntityType";
-import { Entity } from "../entity";
+import { DrawLayer, Entity } from "../entity";
 import { getTexture } from "../resources";
 
 export interface GroundProps {
@@ -22,7 +22,10 @@ export class Ground extends Entity {
   constructor() {
     super();
     this.sprite.height = this.sprite.texture.height;
+
+    this.container.sortableChildren = true;
     this.container.addChild(this.sprite);
+    this.container.zIndex = DrawLayer.LAYER_14;
   }
 
   getContainer(): PIXI.Container {

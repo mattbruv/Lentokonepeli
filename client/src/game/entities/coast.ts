@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { EntityType } from "../../network/game/EntityType";
-import { Direction, Entity } from "../entity";
+import { Direction, DrawLayer, Entity } from "../entity";
 import { getTexture } from "../resources";
 
 export interface CoastProps {
@@ -17,12 +17,13 @@ export class Coast extends Entity {
   type = EntityType.COAST;
 
   container = new PIXI.Container();
-  sprite = new PIXI.Sprite(getTexture("beach-l.gif")!);
+  sprite = new PIXI.Sprite(getTexture("beach-l.gif"));
 
   constructor() {
     super();
     this.sprite.height = this.sprite.texture.height;
     this.container.addChild(this.sprite);
+    this.container.zIndex = DrawLayer.LAYER_14;
   }
 
   getContainer(): PIXI.Container {

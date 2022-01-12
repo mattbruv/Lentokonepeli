@@ -1,7 +1,14 @@
 import * as PIXI from "pixi.js";
 import { EntityType } from "../../network/game/EntityType";
-import { Entity } from "../entity";
+import { Direction, DrawLayer, Entity } from "../entity";
 import { getTexture } from "../resources";
+
+const COLOR = 3051728;
+const DESERT_COLOR = 2344139;
+const WATER_HEIGHT = 5000;
+
+const WAVE_PHASE_TIME = 200; // Milliseconds
+const WAVE_TEXTURE_STRING = "wave-l_{n}.gif"; // replace {n}
 
 export interface WaterProps {
   x?: number;
@@ -12,23 +19,72 @@ export interface WaterProps {
 }
 
 export class Water extends Entity {
+  x = 0
+  y = 0
+  width = 100
+  direction = Direction.RIGHT;
   type = EntityType.WATER;
 
-  container = new PIXI.Container();
-  sprite = new PIXI.TilingSprite(getTexture("ground1.gif")!);
+  private container = new PIXI.Container();
+  private water = new PIXI.Graphics();
+  private waves: PIXI.TilingSprite; 
+
+  private wavePhase = 1;
+  private windowInterval = 0;
 
   constructor() {
     super();
-    this.sprite.height = this.sprite.texture.height;
-  }
 
-  redraw() {
-    console.log("Redraw water called!");
+    // do the wave
+    const tex = this.getWaveTexture();
+    this.waves = new PIXI.TilingSprite(tex);
+    this.waves.height = tex.height;
+
+    // Start wave animation
+    this.windowInterval = window.setInterval(() => {
+      this.phaseWave();
+    }, WAVE_PHASE_TIME);
+
+    this.container.sortableChildren = true;
+    this.container.addChild(this.water);
+    this.container.addChild(this.waves);
+    this.container.zIndex = DrawLayer.LAYER_11;
+
   }
 
   getContainer(): PIXI.Container {
-      return this.container;
+    return this.container;
   }
 
-  destroy() {}
+  private phaseWave() {
+    this.wavePhase = this.wavePhase == 7 ? 1 : this.wavePhase + 1;
+    this.waves.texture = this.getWaveTexture();
+  }
+
+  private getWaveTexture() {
+    const tex = WAVE_TEXTURE_STRING.replace("{n}", this.wavePhase.toString())
+    return getTexture(tex);
+  }
+
+  redraw() {
+    console.log(this.x, this.y, this.width);
+    //this.water.beginFill(DESERT_COLOR);
+    const randColor = Math.round(Math.random() * 0xffffff);
+    this.water.beginFill(randColor);
+    this.water.drawRect(this.x, this.y, this.width, WATER_HEIGHT);
+    this.water.endFill();
+
+    this.waves.width = this.width;
+    this.waves.position.set(this.x, this.y);
+    this.waves.position.x = this.x;
+
+    if (this.direction == Direction.RIGHT) {
+      this.waves.scale.x = -1;
+      this.waves.position.x = this.x + this.width;
+    }
+  }
+
+  destroy() {
+    window.clearInterval(this.windowInterval);
+  }
 }
