@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { EntityType } from "../../network/game/EntityType";
-import { Direction, Entity } from "../entity";
+import { Direction, DrawLayer, Entity } from "../entity";
 import { getTexture } from "../resources";
 
 export interface RunwayProps {
@@ -40,7 +40,17 @@ export class Runway extends Entity {
       return this.container;
   }
 
+  getDrawLayer() {
+    return DrawLayer.LAYER_13;
+  }
+
   redraw() {
+
+    // TODO: DrawLayer depends on health
+    this.sprite.zIndex = this.getDrawLayer();
+    this.back.zIndex = this.getDrawLayer();
+    this.healthBar.zIndex = DrawLayer.LAYER_07;
+
     // x
     this.sprite.position.x = this.x;
     this.back.x = this.x + 217;

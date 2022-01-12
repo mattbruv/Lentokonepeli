@@ -139,19 +139,19 @@ export class GameClient {
   }
 
   private createEntity(type: EntityType): Entity | undefined {
-      switch (type) {
-        case EntityType.GROUND:
-          return new Ground();
-        case EntityType.COAST:
-          return new Coast();
-        case EntityType.RUNWAY:
-          return new Runway();
-        case EntityType.WATER: 
-          return new Water();
-        default: {
-          console.log("Unimplemented entity type: " + EntityType[type]);
-        }
+    switch (type) {
+      case EntityType.GROUND:
+        return new Ground();
+      case EntityType.COAST:
+        return new Coast();
+      case EntityType.RUNWAY:
+        return new Runway();
+      case EntityType.WATER:
+        return new Water();
+      default: {
+        console.log("Unimplemented entity type: " + EntityType[type]);
       }
+    }
   }
 
   public applyGameState(state: EntityState[]) {
