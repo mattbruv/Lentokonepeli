@@ -6,20 +6,31 @@ export enum Direction {
   RIGHT,
 }
 
-// in PIXI.js, a lower value = further back
-// 14 is before 11
+// in PIXI.js, a higher value = closer to camera
+
+// in original game:
+
+// RUNWAY =  > 14
+// ground = 14 ABOVE WATER
+// water = 11  BEHIND GROUND
+
+
 export enum DrawLayer {
-  LAYER_07, // = 1000,
-  LAYER_08, // = 990,
-  LAYER_09, // = 980,
-  LAYER_10, // = 970,
-  LAYER_11, // = 960,
-  LAYER_12, // = 950,
-  LAYER_13, // = 940,
-  LAYER_14, // = 930,
-  LAYER_15, // = 920,
-  LAYER_16, // = 910,
-  LAYER_17, // = 900,
+  Hill = -120,
+  Water = -100,
+  Flag = -70,
+  ControlTower = -60,
+  Ground = -50,
+  RunwayBack = -10,
+  LightSmoke = -7,
+  Plane = -5,
+  DarkSmoke = -3,
+  Runway = 0,
+  Trooper = 5,
+  Explosion = 50,
+  Bomb = 60,
+  Bullet = 69,
+  Player = 100
 }
 
 export abstract class Entity {
@@ -30,7 +41,7 @@ export abstract class Entity {
     for (const key in data) {
       let value = data[key];
       //if (key == "y") {
-        // value *= -1;
+      // value *= -1;
       //}
 
       // @ts-ignore

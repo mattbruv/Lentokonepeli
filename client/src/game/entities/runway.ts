@@ -36,6 +36,7 @@ export class Runway extends Entity {
     this.container.addChild(this.back);
     this.container.addChild(this.sprite);
     this.container.addChild(this.healthBar);
+    this.container.zIndex = DrawLayer.Runway;
   }
 
   getContainer(): PIXI.Container {
@@ -43,7 +44,7 @@ export class Runway extends Entity {
   }
 
   getDrawLayer() {
-    return DrawLayer.LAYER_13;
+    return DrawLayer.Runway;
   }
 
   redraw() {
@@ -51,7 +52,7 @@ export class Runway extends Entity {
     // TODO: DrawLayer depends on health
     this.sprite.zIndex = this.getDrawLayer();
     this.back.zIndex = this.getDrawLayer();
-    this.healthBar.zIndex = DrawLayer.LAYER_07;
+    this.healthBar.zIndex = DrawLayer.Runway;
 
     // x
     this.sprite.position.x = this.x;

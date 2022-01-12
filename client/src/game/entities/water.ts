@@ -48,7 +48,7 @@ export class Water extends Entity {
     this.container.sortableChildren = true;
     this.container.addChild(this.water);
     this.container.addChild(this.waves);
-    this.container.zIndex = DrawLayer.LAYER_11;
+    this.container.zIndex = DrawLayer.Water;
 
   }
 
@@ -68,9 +68,9 @@ export class Water extends Entity {
 
   redraw() {
     console.log(this.x, this.y, this.width);
-    //this.water.beginFill(DESERT_COLOR);
-    const randColor = Math.round(Math.random() * 0xffffff);
-    this.water.beginFill(randColor);
+    this.water.beginFill(COLOR);
+    //const randColor = Math.round(Math.random() * 0xffffff);
+    //this.water.beginFill(randColor);
     this.water.drawRect(this.x, this.y, this.width, WATER_HEIGHT);
     this.water.endFill();
 

@@ -25,7 +25,7 @@ export class Ground extends Entity {
 
     this.container.sortableChildren = true;
     this.container.addChild(this.sprite);
-    this.container.zIndex = DrawLayer.LAYER_14;
+    this.container.zIndex = DrawLayer.Ground;
   }
 
   getContainer(): PIXI.Container {

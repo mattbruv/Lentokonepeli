@@ -23,7 +23,7 @@ export class Coast extends Entity {
     super();
     this.sprite.height = this.sprite.texture.height;
     this.container.addChild(this.sprite);
-    this.container.zIndex = DrawLayer.LAYER_14;
+    this.container.zIndex = DrawLayer.Ground;
   }
 
   getContainer(): PIXI.Container {
