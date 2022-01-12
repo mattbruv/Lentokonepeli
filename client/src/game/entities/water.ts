@@ -3,9 +3,9 @@ import { EntityType } from "../../network/game/EntityType";
 import { Direction, DrawLayer, Entity } from "../entity";
 import { getTexture } from "../resources";
 
-const COLOR = 3051728;
-const DESERT_COLOR = 2344139;
-const WATER_HEIGHT = 5000;
+export const WATER_COLOR = 3051728;
+export const WATER_DESERT_COLOR = 2344139;
+export const WATER_HEIGHT = 5000;
 
 const WAVE_PHASE_TIME = 200; // Milliseconds
 const WAVE_TEXTURE_STRING = "wave-l_{n}.gif"; // replace {n}
@@ -68,7 +68,7 @@ export class Water extends Entity {
 
   redraw() {
     console.log(this.x, this.y, this.width);
-    this.water.beginFill(COLOR);
+    this.water.beginFill(WATER_COLOR);
     //const randColor = Math.round(Math.random() * 0xffffff);
     //this.water.beginFill(randColor);
     this.water.drawRect(this.x, this.y, this.width, WATER_HEIGHT);
