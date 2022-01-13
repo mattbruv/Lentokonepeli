@@ -5,4 +5,8 @@ export class Sky {
 
     sprite = new PIXI.Sprite(getTexture("sky3b.jpg"));
 
+    constructor() {
+        this.sprite.position.y -= 200;
+    }
+
 }

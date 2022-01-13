@@ -12,6 +12,7 @@ import { Entity } from "./entity";
 import { Coast } from "./entities/coast";
 import { Runway } from "./entities/runway";
 import { Water } from "./entities/water";
+import { Flag } from "./entities/flag";
 
 let conn: SocketConnection;
 
@@ -148,6 +149,8 @@ export class GameClient {
         return new Runway();
       case EntityType.WATER:
         return new Water();
+      case EntityType.FLAG:
+        return new Flag();
       default: {
         console.log("Unimplemented entity type: " + EntityType[type]);
       }

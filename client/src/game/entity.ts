@@ -6,6 +6,12 @@ export enum Direction {
   RIGHT,
 }
 
+export enum Team {
+  CENTRALS,
+  ALLIES,
+  NEUTRAL,
+}
+
 // in PIXI.js, a higher value = closer to camera
 
 // in original game:
