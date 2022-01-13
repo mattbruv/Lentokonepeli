@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
 import { EntityType } from "../../network/game/EntityType";
-import { DrawLayer, Entity } from "../entity";
+import { DrawLayer, Entity, TerrainType } from "../entity";
 import { getTexture } from "../resources";
-import { WATER_COLOR, WATER_HEIGHT } from "./water";
+import { WATER_COLOR, WATER_DESERT_COLOR, WATER_HEIGHT } from "./water";
 
 export interface GroundProps {
   x?: number;
@@ -16,6 +16,7 @@ export class Ground extends Entity {
   y = 0;
   width = 100;
   type = EntityType.GROUND;
+  subType = TerrainType.NORMAL;
 
   container = new PIXI.Container();
   sprite = new PIXI.TilingSprite(getTexture("ground1.gif"));
@@ -39,7 +40,12 @@ export class Ground extends Entity {
     this.sprite.position.set(this.x, this.y);
     this.sprite.width = this.width;
 
-    this.water.beginFill(WATER_COLOR);
+    if (this.subType == TerrainType.DESERT) {
+      this.sprite.texture = getTexture("groundDesert.gif");
+    }
+
+    const color = (this.subType == TerrainType.NORMAL) ? WATER_COLOR : WATER_DESERT_COLOR;
+    this.water.beginFill(color);
     this.water.drawRect(this.x, this.y + this.sprite.height, this.width, WATER_HEIGHT);
     this.water.endFill();
 

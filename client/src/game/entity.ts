@@ -6,6 +6,11 @@ export enum Direction {
   RIGHT,
 }
 
+export enum TerrainType {
+  NORMAL,
+  DESERT,
+}
+
 export enum Team {
   CENTRALS,
   ALLIES,

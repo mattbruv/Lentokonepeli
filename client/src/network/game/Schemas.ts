@@ -14,13 +14,13 @@ const GroundSchema: NetObjectSchema = {
     x: NetType.i16,
     y: NetType.i16,
     width: NetType.u16,
-    type: NetType.u8
+    subType: NetType.u8
 }
 
 const CoastSchema: NetObjectSchema = {
     x: NetType.i16,
     y: NetType.i16,
-    type: NetType.u8,
+    subType: NetType.u8,
     direction: NetType.u8
 }
 
@@ -28,7 +28,7 @@ const WaterSchema: NetObjectSchema = {
     x: NetType.i16,
     y: NetType.i16,
     width: NetType.u16,
-    type: NetType.u8,
+    subType: NetType.u8,
     direction: NetType.u8
 }
 

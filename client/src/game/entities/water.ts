@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { EntityType } from "../../network/game/EntityType";
-import { Direction, DrawLayer, Entity } from "../entity";
+import { Direction, DrawLayer, Entity, TerrainType } from "../entity";
 import { getTexture } from "../resources";
 
 export const WATER_COLOR = 3051728;
@@ -24,6 +24,7 @@ export class Water extends Entity {
   width = 100
   direction = Direction.RIGHT;
   type = EntityType.WATER;
+  subType = TerrainType.NORMAL;
 
   private container = new PIXI.Container();
   private water = new PIXI.Graphics();
@@ -68,7 +69,9 @@ export class Water extends Entity {
 
   redraw() {
     console.log(this.x, this.y, this.width);
-    this.water.beginFill(WATER_COLOR);
+
+    const color = (this.subType == TerrainType.NORMAL) ? WATER_COLOR : WATER_DESERT_COLOR;
+    this.water.beginFill(color);
     //const randColor = Math.round(Math.random() * 0xffffff);
     //this.water.beginFill(randColor);
     this.water.drawRect(this.x, this.y, this.width, WATER_HEIGHT);
@@ -82,6 +85,7 @@ export class Water extends Entity {
       this.waves.scale.x = -1;
       this.waves.position.x = this.x + this.width;
     }
+
   }
 
   destroy() {

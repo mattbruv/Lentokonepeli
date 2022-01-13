@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
 import { EntityType } from "../../network/game/EntityType";
-import { Direction, DrawLayer, Entity } from "../entity";
+import { Direction, DrawLayer, Entity, TerrainType } from "../entity";
 import { getTexture } from "../resources";
-import { WATER_COLOR, WATER_HEIGHT } from "./water";
+import { WATER_COLOR, WATER_DESERT_COLOR, WATER_HEIGHT } from "./water";
 
 export interface CoastProps {
   x?: number;
@@ -16,6 +16,7 @@ export class Coast extends Entity {
   y = 0;
   direction = Direction.LEFT;
   type = EntityType.COAST;
+  subType = TerrainType.NORMAL;
 
   container = new PIXI.Container();
   sprite = new PIXI.Sprite(getTexture("beach-l.gif"));
@@ -36,15 +37,23 @@ export class Coast extends Entity {
   }
 
   redraw() {
-    this.sprite.position.set(this.x, this.y);
-    if (this.direction == Direction.RIGHT) {
-      this.sprite.anchor.x = 1;
-      this.sprite.scale.x *= -1;
+    if (this.subType == TerrainType.DESERT) {
+      this.sprite.texture = getTexture("beach-l_desert.gif");
+    } else {
+      this.sprite.texture = getTexture("beach-l.gif");
     }
 
-    this.water.beginFill(WATER_COLOR);
+    this.sprite.position.set(this.x, this.y);
+
+    if (this.direction == Direction.RIGHT) {
+      this.sprite.scale.x = -1;
+      this.sprite.position.x += this.sprite.width;
+      // miror sprite
+    }
+
+    const color = (this.subType == TerrainType.NORMAL) ? WATER_COLOR : WATER_DESERT_COLOR;
+    this.water.beginFill(color);
     this.water.drawRect(this.x, this.y + this.sprite.height, this.sprite.width, WATER_HEIGHT);
-    // TODO: coast type
   }
 
   destroy() {}

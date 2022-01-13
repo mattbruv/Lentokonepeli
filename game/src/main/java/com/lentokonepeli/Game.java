@@ -28,7 +28,7 @@ public class Game implements Runnable {
     }
 
     private void test() {
-        MapLoader.loadMapFromFile("maps/classic.json", this.toolkit);
+        MapLoader.loadMapFromFile("maps/africa.json", this.toolkit);
         this.toolkit.applyAddedEntities();
     }
 
