@@ -80,12 +80,12 @@
             }
         ],
         "bunker": [],
-        "tower": [
+        "bgitem": [
             {
                 "x": 1500,
                 "y": 5,
                 "direction": "right",
-                "type": "normal"
+                "type": "tower-normal"
             }
         ],
         "flag": [
@@ -100,7 +100,6 @@
                 "team": "allies"
             }
         ],
-        "palm": [],
         "hill": [
             {
                 "x": -1200,

@@ -68,7 +68,7 @@ export class Water extends Entity {
   }
 
   redraw() {
-    console.log(this.x, this.y, this.width);
+    //console.log(this.x, this.y, this.width);
 
     const color = (this.subType == TerrainType.NORMAL) ? WATER_COLOR : WATER_DESERT_COLOR;
     this.water.beginFill(color);

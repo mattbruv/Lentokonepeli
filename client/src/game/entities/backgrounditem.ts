@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { EntityType } from "../../network/game/EntityType";
-import { Direction, DrawLayer, Entity } from "../entity";
+import { BackgroundItemType, Direction, DrawLayer, Entity } from "../entity";
 import { getTexture } from "../resources";
 
 export interface TowerProps {
@@ -10,11 +10,12 @@ export interface TowerProps {
   direction?: number;
 }
 
-export class Tower extends Entity {
+export class BackgroundItem extends Entity {
   x = 0;
   y = 0;
   direction = Direction.LEFT;
-  type = EntityType.TOWER;
+  type = EntityType.BACKGROUND_ITEM;
+  subType = BackgroundItemType.NORMAL_TOWER;
 
   container = new PIXI.Container();
   sprite = new PIXI.Sprite(getTexture("controlTower.gif"));
@@ -27,12 +28,21 @@ export class Tower extends Entity {
   }
 
   getContainer(): PIXI.Container {
-      return this.container;
+    return this.container;
   }
 
   redraw() {
-    console.log("redraw tower!");
-    console.log(this.x, this.y)
+
+    switch (this.subType) {
+      case BackgroundItemType.DESERT_TOWER:
+        this.sprite.texture = getTexture("controlTowerDesert.gif");
+        break;
+      case BackgroundItemType.PALM_TREE:
+        this.sprite.texture = getTexture("palmtree.gif");
+      default: {
+      }
+    }
+
     const xPos = this.x - Math.round(this.sprite.width / 2);
     const yPos = this.y - this.sprite.height;
     this.sprite.position.set(xPos, yPos);
@@ -43,5 +53,5 @@ export class Tower extends Entity {
     }
   }
 
-  destroy() {}
+  destroy() { }
 }

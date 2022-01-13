@@ -91,60 +91,60 @@
                 "team": "centrals"
             }
         ],
-        "tower": [
+        "bgitem": [
             {
                 "x": -3250,
                 "y": 5,
                 "direction": "left",
-                "type": "normal"
+                "type": "tower-normal"
             },
             {
                 "x": -2550,
                 "y": 5,
                 "direction": "right",
-                "type": "normal"
+                "type": "tower-normal"
             },
             {
                 "x": -2150,
                 "y": 5,
                 "direction": "left",
-                "type": "normal"
+                "type": "tower-normal"
             },
             {
                 "x": -1950,
                 "y": 5,
                 "direction": "left",
-                "type": "normal"
+                "type": "tower-normal"
             },
             {
                 "x": -1450,
                 "y": 5,
                 "direction": "left",
-                "type": "normal"
+                "type": "tower-normal"
             },
             {
                 "x": -950,
                 "y": 5,
                 "direction": "left",
-                "type": "normal"
+                "type": "tower-normal"
             },
             {
                 "x": -350,
                 "y": 5,
                 "direction": "right",
-                "type": "normal"
+                "type": "tower-normal"
             },
             {
                 "x": -50,
                 "y": 5,
                 "direction": "right",
-                "type": "normal"
+                "type": "tower-normal"
             },
             {
                 "x": 250,
                 "y": 5,
                 "direction": "right",
-                "type": "normal"
+                "type": "tower-normal"
             }
         ],
         "flag": [
@@ -209,7 +209,6 @@
                 "team": "allies"
             }
         ],
-        "palm": [],
         "hill": [
             {
                 "x": 2440,

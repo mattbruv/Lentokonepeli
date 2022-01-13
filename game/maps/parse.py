@@ -219,48 +219,50 @@ def parseLevelLayer(entry, layer):
             })
 
         if char == "T":
-            ents["tower"].append({
+            ents["bgitem"].append({
                 "x": i + j * 100 + 50,
                 "y": 5,
                 "direction": "left",
-                "type": "normal"
+                "type": "tower-normal"
             })
 
         if char == "t":
-            ents["tower"].append({
+            ents["bgitem"].append({
                 "x": i + j * 100 + 50,
                 "y": 5,
                 "direction": "right",
-                "type": "normal"
+                "type": "tower-normal"
             })
 
         if char == "D":
-            ents["tower"].append({
+            ents["bgitem"].append({
                 "x": i + j * 100 + 50,
                 "y": 5,
                 "direction": "left",
-                "type": "desert"
+                "type": "tower-desert"
             })
 
         if char == "d":
-            ents["tower"].append({
+            ents["bgitem"].append({
                 "x": i + j * 100 + 50,
                 "y": 5,
                 "direction": "right",
-                "type": "desert"
+                "type": "tower-desert"
             })
 
         if char == "P":
-            ents["palm"].append({
+            ents["bgitem"].append({
                 "x": i + j * 100 + 50,
                 "y": 5,
+                "type": "palm",
                 "direction": "left"
             })
 
         if char == "p":
-            ents["palm"].append({
+            ents["bgitem"].append({
                 "x": i + j * 100 + 50,
                 "y": 5,
+                "type": "palm",
                 "direction": "right",
             })
 
@@ -314,9 +316,9 @@ def parseLevel(entry):
         "coast": [],
         "runway": [],
         "bunker": [],
-        "tower": [],
+        "bgitem": [],
         "flag": [],
-        "palm": [],
+        "bgitem": [],
         "hill": [],
     }
 

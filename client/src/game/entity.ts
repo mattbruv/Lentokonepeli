@@ -6,6 +6,12 @@ export enum Direction {
   RIGHT,
 }
 
+export enum BackgroundItemType {
+    NORMAL_TOWER,
+    DESERT_TOWER,
+    PALM_TREE,
+}
+
 export enum TerrainType {
   NORMAL,
   DESERT,

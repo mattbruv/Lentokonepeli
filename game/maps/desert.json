@@ -78,18 +78,66 @@
                 "team": "allies"
             }
         ],
-        "tower": [
+        "bgitem": [
+            {
+                "x": -1900,
+                "y": 5,
+                "type": "palm",
+                "direction": "left"
+            },
+            {
+                "x": -1300,
+                "y": 5,
+                "type": "palm",
+                "direction": "left"
+            },
+            {
+                "x": -800,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
+            {
+                "x": -500,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
+            {
+                "x": 0,
+                "y": 5,
+                "type": "palm",
+                "direction": "left"
+            },
+            {
+                "x": 800,
+                "y": 5,
+                "type": "palm",
+                "direction": "left"
+            },
+            {
+                "x": 1700,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
+            {
+                "x": 1800,
+                "y": 5,
+                "type": "palm",
+                "direction": "left"
+            },
             {
                 "x": -1400,
                 "y": 5,
                 "direction": "left",
-                "type": "desert"
+                "type": "tower-desert"
             },
             {
                 "x": 1400,
                 "y": 5,
                 "direction": "right",
-                "type": "desert"
+                "type": "tower-desert"
             }
         ],
         "flag": [
@@ -102,48 +150,6 @@
                 "x": 1775,
                 "y": -90,
                 "team": "allies"
-            }
-        ],
-        "palm": [
-            {
-                "x": -1900,
-                "y": 5,
-                "direction": "left"
-            },
-            {
-                "x": -1300,
-                "y": 5,
-                "direction": "left"
-            },
-            {
-                "x": -800,
-                "y": 5,
-                "direction": "right"
-            },
-            {
-                "x": -500,
-                "y": 5,
-                "direction": "right"
-            },
-            {
-                "x": 0,
-                "y": 5,
-                "direction": "left"
-            },
-            {
-                "x": 800,
-                "y": 5,
-                "direction": "left"
-            },
-            {
-                "x": 1700,
-                "y": 5,
-                "direction": "right"
-            },
-            {
-                "x": 1800,
-                "y": 5,
-                "direction": "left"
             }
         ],
         "hill": [

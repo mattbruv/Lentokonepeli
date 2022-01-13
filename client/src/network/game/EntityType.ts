@@ -12,7 +12,7 @@ export enum EntityType {
     // PLANE_CHOOSER, //
     COAST, //
     HILL, //
-    TOWER, //
+    BACKGROUND_ITEM, //
     PALM, //
     // BACKGROUND_ITEM, //
     // TEAM_INFO, //

@@ -98,18 +98,162 @@
                 "team": "allies"
             }
         ],
-        "tower": [
+        "bgitem": [
+            {
+                "x": -2900,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
+            {
+                "x": -2700,
+                "y": 5,
+                "type": "palm",
+                "direction": "left"
+            },
+            {
+                "x": -2600,
+                "y": 5,
+                "type": "palm",
+                "direction": "left"
+            },
+            {
+                "x": -2500,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
+            {
+                "x": -2400,
+                "y": 5,
+                "type": "palm",
+                "direction": "left"
+            },
+            {
+                "x": -2200,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
+            {
+                "x": -1400,
+                "y": 5,
+                "type": "palm",
+                "direction": "left"
+            },
+            {
+                "x": -1300,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
+            {
+                "x": -800,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
+            {
+                "x": -700,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
+            {
+                "x": -400,
+                "y": 5,
+                "type": "palm",
+                "direction": "left"
+            },
+            {
+                "x": -200,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
+            {
+                "x": 200,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
+            {
+                "x": 400,
+                "y": 5,
+                "type": "palm",
+                "direction": "left"
+            },
+            {
+                "x": 1100,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
+            {
+                "x": 1200,
+                "y": 5,
+                "type": "palm",
+                "direction": "left"
+            },
+            {
+                "x": 1400,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
+            {
+                "x": 2200,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
+            {
+                "x": 2400,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
+            {
+                "x": 2500,
+                "y": 5,
+                "type": "palm",
+                "direction": "left"
+            },
+            {
+                "x": 2600,
+                "y": 5,
+                "type": "palm",
+                "direction": "left"
+            },
+            {
+                "x": 2700,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
+            {
+                "x": 2800,
+                "y": 5,
+                "type": "palm",
+                "direction": "left"
+            },
+            {
+                "x": 2900,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
             {
                 "x": -1700,
                 "y": 5,
                 "direction": "left",
-                "type": "desert"
+                "type": "tower-desert"
             },
             {
                 "x": 1700,
                 "y": 5,
                 "direction": "right",
-                "type": "desert"
+                "type": "tower-desert"
             }
         ],
         "flag": [
@@ -132,128 +276,6 @@
                 "x": 1775,
                 "y": -90,
                 "team": "allies"
-            }
-        ],
-        "palm": [
-            {
-                "x": -2900,
-                "y": 5,
-                "direction": "right"
-            },
-            {
-                "x": -2700,
-                "y": 5,
-                "direction": "left"
-            },
-            {
-                "x": -2600,
-                "y": 5,
-                "direction": "left"
-            },
-            {
-                "x": -2500,
-                "y": 5,
-                "direction": "right"
-            },
-            {
-                "x": -2400,
-                "y": 5,
-                "direction": "left"
-            },
-            {
-                "x": -2200,
-                "y": 5,
-                "direction": "right"
-            },
-            {
-                "x": -1400,
-                "y": 5,
-                "direction": "left"
-            },
-            {
-                "x": -1300,
-                "y": 5,
-                "direction": "right"
-            },
-            {
-                "x": -800,
-                "y": 5,
-                "direction": "right"
-            },
-            {
-                "x": -700,
-                "y": 5,
-                "direction": "right"
-            },
-            {
-                "x": -400,
-                "y": 5,
-                "direction": "left"
-            },
-            {
-                "x": -200,
-                "y": 5,
-                "direction": "right"
-            },
-            {
-                "x": 200,
-                "y": 5,
-                "direction": "right"
-            },
-            {
-                "x": 400,
-                "y": 5,
-                "direction": "left"
-            },
-            {
-                "x": 1100,
-                "y": 5,
-                "direction": "right"
-            },
-            {
-                "x": 1200,
-                "y": 5,
-                "direction": "left"
-            },
-            {
-                "x": 1400,
-                "y": 5,
-                "direction": "right"
-            },
-            {
-                "x": 2200,
-                "y": 5,
-                "direction": "right"
-            },
-            {
-                "x": 2400,
-                "y": 5,
-                "direction": "right"
-            },
-            {
-                "x": 2500,
-                "y": 5,
-                "direction": "left"
-            },
-            {
-                "x": 2600,
-                "y": 5,
-                "direction": "left"
-            },
-            {
-                "x": 2700,
-                "y": 5,
-                "direction": "right"
-            },
-            {
-                "x": 2800,
-                "y": 5,
-                "direction": "left"
-            },
-            {
-                "x": 2900,
-                "y": 5,
-                "direction": "right"
             }
         ],
         "hill": [

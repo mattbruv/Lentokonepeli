@@ -3,6 +3,7 @@ package com.lentokonepeli.map;
 import java.io.Reader;
 
 import com.google.gson.Gson;
+import com.lentokonepeli.BackgroundItemType;
 import com.lentokonepeli.Direction;
 import com.lentokonepeli.GameToolkit;
 import com.lentokonepeli.Team;
@@ -14,7 +15,7 @@ import com.lentokonepeli.entities.Ground;
 import com.lentokonepeli.entities.Hill;
 import com.lentokonepeli.entities.Palm;
 import com.lentokonepeli.entities.Runway;
-import com.lentokonepeli.entities.Tower;
+import com.lentokonepeli.entities.BackgroundItem;
 import com.lentokonepeli.entities.Water;
 import com.lentokonepeli.map.json.MapJSON;
 
@@ -86,11 +87,11 @@ public class MapLoader {
             }
         }
 
-        if (map.entities.tower != null) {
-            for (var t : map.entities.tower) {
-                var type = stringToTerrain(t.type);
+        if (map.entities.bgitem != null) {
+            for (var t : map.entities.bgitem) {
+                var type = stringToBGType(t.type);
                 var d = stringToDirection(t.direction);
-                var tower = new Tower(t.x, t.y, type, d);
+                var tower = new BackgroundItem(t.x, t.y, type, d);
                 toolkit.addEntity(tower);
             }
         }
@@ -122,28 +123,39 @@ public class MapLoader {
 
     private static TerrainType stringToTerrain(String terrain) {
         switch (terrain) {
-        case "desert":
-            return TerrainType.DESERT;
-        default:
-            return TerrainType.NORMAL;
+            case "desert":
+                return TerrainType.DESERT;
+            default:
+                return TerrainType.NORMAL;
+        }
+    }
+
+    private static BackgroundItemType stringToBGType(String bgtype) {
+        switch (bgtype) {
+            case "tower-desert":
+                return BackgroundItemType.DESERT_TOWER;
+            case "palm":
+                return BackgroundItemType.PALM_TREE;
+            default:
+                return BackgroundItemType.NORMAL_TOWER;
         }
     }
 
     private static Direction stringToDirection(String dir) {
         switch (dir) {
-        case "left":
-            return Direction.LEFT;
-        default:
-            return Direction.RIGHT;
+            case "left":
+                return Direction.LEFT;
+            default:
+                return Direction.RIGHT;
         }
     }
 
     private static Team stringToTeam(String team) {
         switch (team) {
-        case "allies":
-            return Team.ALLIES;
-        default:
-            return Team.CENTRALS;
+            case "allies":
+                return Team.ALLIES;
+            default:
+                return Team.CENTRALS;
         }
     }
 }

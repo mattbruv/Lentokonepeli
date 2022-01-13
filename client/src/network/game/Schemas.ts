@@ -52,10 +52,10 @@ const FlagSchema: NetObjectSchema = {
     team: NetType.u8
 }
 
-const TowerSchema: NetObjectSchema = {
+const BackgroundItemSchema: NetObjectSchema = {
     x: NetType.i16,
     y: NetType.i16,
-    type: NetType.u8,
+    subType: NetType.u8,
     direction: NetType.u8
 }
 
@@ -85,8 +85,8 @@ export function getSchema(type: EntityType): NetObjectSchema {
             return RunwaySchema;
         case EntityType.IMPORTANT_BUILDING:
             return BunkerSchema;
-        case EntityType.TOWER:
-            return TowerSchema;
+        case EntityType.BACKGROUND_ITEM:
+            return BackgroundItemSchema;
         case EntityType.FLAG:
             return FlagSchema;
         case EntityType.HILL:

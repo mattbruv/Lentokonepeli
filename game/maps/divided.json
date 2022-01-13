@@ -129,7 +129,7 @@
                 "team": "allies"
             }
         ],
-        "tower": [],
+        "bgitem": [],
         "flag": [
             {
                 "x": -2375,
@@ -152,7 +152,6 @@
                 "team": "allies"
             }
         ],
-        "palm": [],
         "hill": [
             {
                 "x": -2040,

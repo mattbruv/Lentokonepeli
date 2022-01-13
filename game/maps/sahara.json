@@ -91,18 +91,78 @@
             }
         ],
         "bunker": [],
-        "tower": [
+        "bgitem": [
             {
                 "x": -4500,
                 "y": 5,
                 "direction": "left",
-                "type": "desert"
+                "type": "tower-desert"
             },
             {
                 "x": 4200,
                 "y": 5,
                 "direction": "right",
-                "type": "desert"
+                "type": "tower-desert"
+            },
+            {
+                "x": -5800,
+                "y": 5,
+                "type": "palm",
+                "direction": "left"
+            },
+            {
+                "x": -5700,
+                "y": 5,
+                "type": "palm",
+                "direction": "left"
+            },
+            {
+                "x": -5300,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
+            {
+                "x": -5200,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
+            {
+                "x": -5100,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
+            {
+                "x": 5000,
+                "y": 5,
+                "type": "palm",
+                "direction": "left"
+            },
+            {
+                "x": 5100,
+                "y": 5,
+                "type": "palm",
+                "direction": "left"
+            },
+            {
+                "x": 5500,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
+            {
+                "x": 5600,
+                "y": 5,
+                "type": "palm",
+                "direction": "right"
+            },
+            {
+                "x": 5700,
+                "y": 5,
+                "type": "palm",
+                "direction": "left"
             }
         ],
         "flag": [
@@ -115,58 +175,6 @@
                 "x": 4075,
                 "y": -90,
                 "team": "allies"
-            }
-        ],
-        "palm": [
-            {
-                "x": -5800,
-                "y": 5,
-                "direction": "left"
-            },
-            {
-                "x": -5700,
-                "y": 5,
-                "direction": "left"
-            },
-            {
-                "x": -5300,
-                "y": 5,
-                "direction": "right"
-            },
-            {
-                "x": -5200,
-                "y": 5,
-                "direction": "right"
-            },
-            {
-                "x": -5100,
-                "y": 5,
-                "direction": "right"
-            },
-            {
-                "x": 5000,
-                "y": 5,
-                "direction": "left"
-            },
-            {
-                "x": 5100,
-                "y": 5,
-                "direction": "left"
-            },
-            {
-                "x": 5500,
-                "y": 5,
-                "direction": "right"
-            },
-            {
-                "x": 5600,
-                "y": 5,
-                "direction": "right"
-            },
-            {
-                "x": 5700,
-                "y": 5,
-                "direction": "left"
             }
         ],
         "hill": [

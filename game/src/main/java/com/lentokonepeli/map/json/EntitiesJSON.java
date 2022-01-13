@@ -8,7 +8,7 @@ public class EntitiesJSON {
     public List<CoastJSON> coast;
     public List<RunwayJSON> runway;
     public List<BunkerJSON> bunker;
-    public List<TowerJSON> tower;
+    public List<BGItemJSON> bgitem;
     public List<FlagJSON> flag;
     public List<PalmJSON> palm;
     public List<HillJSON> hill;

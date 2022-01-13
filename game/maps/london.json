@@ -108,30 +108,30 @@
                 "team": "allies"
             }
         ],
-        "tower": [
+        "bgitem": [
             {
                 "x": -1100,
                 "y": 5,
                 "direction": "right",
-                "type": "normal"
+                "type": "tower-normal"
             },
             {
                 "x": -200,
                 "y": 5,
                 "direction": "right",
-                "type": "normal"
+                "type": "tower-normal"
             },
             {
                 "x": 200,
                 "y": 5,
                 "direction": "left",
-                "type": "normal"
+                "type": "tower-normal"
             },
             {
                 "x": 1100,
                 "y": 5,
                 "direction": "left",
-                "type": "normal"
+                "type": "tower-normal"
             }
         ],
         "flag": [
@@ -196,7 +196,6 @@
                 "team": "centrals"
             }
         ],
-        "palm": [],
         "hill": [
             {
                 "x": -2000,
