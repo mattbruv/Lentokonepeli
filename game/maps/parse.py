@@ -1,4 +1,5 @@
 import json
+import ctypes
 
 # beware all ye who enter this file
 
@@ -44,8 +45,11 @@ def parseContinuedPiece(paramString: str, paramInt1: int, paramChar: str,
     if paramInt1 + 1 == len(paramString):
         i = 22000
 
-    return [j, i, paramInt1]
+    # we want to show these as signed shorts, or else it doesn't make sense
+    return [short(j), short(i), short(paramInt1)]
 
+def short(number):
+    return ctypes.c_short(number).value
 
 def parseLevelLayer(entry, layer):
     ents = entry["entities"]

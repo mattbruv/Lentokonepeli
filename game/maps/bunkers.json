@@ -4,7 +4,7 @@
     "entities": {
         "water": [
             {
-                "x": 43536,
+                "x": -22000,
                 "y": 25,
                 "width": 19800,
                 "direction": "left",
