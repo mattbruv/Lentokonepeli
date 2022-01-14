@@ -40,7 +40,7 @@ export class Runway extends Entity {
   }
 
   getContainer(): PIXI.Container {
-      return this.container;
+    return this.container;
   }
 
   getDrawLayer() {
@@ -104,11 +104,11 @@ export class Runway extends Entity {
         this.back.visible = true;
       }
       if (this.currentTexture != tex) {
-        this.sprite.texture = getTexture(tex)!;
+        this.sprite.texture = getTexture(tex);
         this.currentTexture = tex;
       }
     }
   }
 
-  destroy() {}
+  destroy() { }
 }

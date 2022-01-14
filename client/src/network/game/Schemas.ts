@@ -43,7 +43,8 @@ const RunwaySchema: NetObjectSchema = {
 const BunkerSchema: NetObjectSchema = {
     x: NetType.i16,
     y: NetType.i16,
-    team: NetType.u8
+    team: NetType.u8,
+    health: NetType.u8,
 }
 
 const FlagSchema: NetObjectSchema = {

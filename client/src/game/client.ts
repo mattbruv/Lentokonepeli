@@ -14,6 +14,7 @@ import { Runway } from "./entities/runway";
 import { Water } from "./entities/water";
 import { Flag } from "./entities/flag";
 import { BackgroundItem } from "./entities/backgrounditem";
+import { ImportantBuilding } from "./entities/importantbuilding";
 
 let conn: SocketConnection;
 
@@ -152,10 +153,10 @@ export class GameClient {
         return new Water();
       case EntityType.FLAG:
         return new Flag();
-      case EntityType.BACKGROUND_ITEM: {
-        console.log("CREATE NEW BG ITEM");
+      case EntityType.BACKGROUND_ITEM:
         return new BackgroundItem();
-      }
+      case EntityType.IMPORTANT_BUILDING:
+        return new ImportantBuilding();
       default: {
         console.log("Unimplemented entity type: " + EntityType[type]);
       }

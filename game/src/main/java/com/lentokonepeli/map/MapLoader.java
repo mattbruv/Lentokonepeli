@@ -8,12 +8,11 @@ import com.lentokonepeli.Direction;
 import com.lentokonepeli.GameToolkit;
 import com.lentokonepeli.Team;
 import com.lentokonepeli.TerrainType;
-import com.lentokonepeli.entities.Bunker;
 import com.lentokonepeli.entities.Coast;
 import com.lentokonepeli.entities.Flag;
 import com.lentokonepeli.entities.Ground;
 import com.lentokonepeli.entities.Hill;
-import com.lentokonepeli.entities.Palm;
+import com.lentokonepeli.entities.ImportantBuilding;
 import com.lentokonepeli.entities.Runway;
 import com.lentokonepeli.entities.BackgroundItem;
 import com.lentokonepeli.entities.Water;
@@ -82,7 +81,7 @@ public class MapLoader {
         if (map.entities.bunker != null) {
             for (var b : map.entities.bunker) {
                 var t = stringToTeam(b.team);
-                var bunker = new Bunker(b.x, b.y, t);
+                var bunker = new ImportantBuilding(b.x, b.y, t);
                 toolkit.addEntity(bunker);
             }
         }
@@ -109,14 +108,6 @@ public class MapLoader {
                 var t = stringToTerrain(h.type);
                 var hill = new Hill(h.x, h.y, t);
                 toolkit.addEntity(hill);
-            }
-        }
-
-        if (map.entities.palm != null) {
-            for (var p : map.entities.palm) {
-                var d = stringToDirection(p.direction);
-                var palm = new Palm(p.x, p.y, d);
-                toolkit.addEntity(palm);
             }
         }
     }
