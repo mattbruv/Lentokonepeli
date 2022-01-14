@@ -19,6 +19,11 @@ public class Server extends WebSocketServer {
         this.game = new Game();
         var debug = Boolean.parseBoolean(conf.getProperty("debug"));
         this.game.setDebug(debug);
+        this.game.loadMap(conf.getProperty("map"));
+    }
+
+    public void loadMap(String path) {
+        this.game.loadMap(path);
     }
 
     @Override

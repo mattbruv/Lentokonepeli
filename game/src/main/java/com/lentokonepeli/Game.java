@@ -23,12 +23,11 @@ public class Game implements Runnable {
     public Game() {
         this.connections = new ArrayList<>();
         this.toolkit = new GameToolkit();
-        this.test();
         this.testSleep();
     }
 
-    private void test() {
-        MapLoader.loadMapFromFile("maps/africa.json", this.toolkit);
+    public void loadMap(String path) {
+        MapLoader.loadMapFromFile(path, this.toolkit);
         this.toolkit.applyAddedEntities();
     }
 
