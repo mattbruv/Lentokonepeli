@@ -72,8 +72,17 @@ const PalmSchema: NetObjectSchema = {
     direction: NetType.u8
 }
 
+const PlaneSchema: NetObjectSchema = {
+    clientX: NetType.i16,
+    clientY: NetType.i16,
+    direction: NetType.u8,
+    planeType: NetType.u8,
+}
+
 export function getSchema(type: EntityType): NetObjectSchema {
     switch (type) {
+        case EntityType.PLANE:
+            return PlaneSchema;
         case EntityType.MAN:
             return ManSchema;
         case EntityType.GROUND:

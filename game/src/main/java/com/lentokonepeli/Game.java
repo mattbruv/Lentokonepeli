@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.java_websocket.WebSocket;
 
+import com.lentokonepeli.entities.Plane;
 import com.lentokonepeli.map.MapLoader;
 import com.lentokonepeli.network.binary.BinaryPacker;
 
@@ -24,6 +25,14 @@ public class Game implements Runnable {
         this.connections = new ArrayList<>();
         this.toolkit = new GameToolkit();
         this.testSleep();
+    }
+
+    public void testSetup() {
+        // lets start with planes
+        System.out.println("DEBUG FUNCTION CALLED...");
+        var p = new Plane();
+        this.toolkit.addEntity(p);
+        this.toolkit.applyAddedEntities();
     }
 
     public void loadMap(String path) {

@@ -15,6 +15,7 @@ import { Water } from "./entities/water";
 import { Flag } from "./entities/flag";
 import { BackgroundItem } from "./entities/backgrounditem";
 import { ImportantBuilding } from "./entities/importantbuilding";
+import { Plane } from "./entities/plane";
 
 let conn: SocketConnection;
 
@@ -143,6 +144,8 @@ export class GameClient {
 
   private createEntity(type: EntityType): Entity | undefined {
     switch (type) {
+      case EntityType.PLANE:
+        return new Plane();
       case EntityType.GROUND:
         return new Ground();
       case EntityType.COAST:
