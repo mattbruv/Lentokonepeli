@@ -14,5 +14,8 @@ fn main() {
         c: "foo".to_string(),
     };
 
+    println!("my generated enum: {:?}", MacroEnum::Matt);
+
     println!("The name of the struct: {}", foo.name());
+    println!("The fields of the struct: {:?}", foo.field_names());
 }
