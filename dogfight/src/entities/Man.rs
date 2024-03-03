@@ -1,7 +1,7 @@
-use dogfight_macros::show_streams;
+use dogfight_macros::lento_test;
 use ts_rs::TS;
 
-#[show_streams]
+#[lento_test]
 pub struct ManState {
     x: i16,
     y: i16,
