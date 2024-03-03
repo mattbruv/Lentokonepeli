@@ -5,8 +5,6 @@
 This is a modern remake of the competitive 2D multiplayer airplane game [Lentokonepeli](https://www.youtube.com/watch?v=qCCCUXUwlT8)
 (_Literal translation from Finnish: "airplane game", also known in English as Dogfight_).
 
-Since Lentokonepeli is not fully open-source<sup>[?](#why-closed-source)</sup>, this repository serves as a place for bug reports, feature requests, and general discussion.
-
 ## NOTE
 
 ⚠️ **CURRENTLY IN DEVELOPMENT** ⚠️
