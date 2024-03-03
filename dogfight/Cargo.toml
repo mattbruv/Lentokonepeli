@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 dogfight-macros = { path = "dogfight-macros" }
+ts-rs = "7.1.1"

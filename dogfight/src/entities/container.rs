@@ -10,7 +10,7 @@ pub struct EntityContainer<T> {
 impl<T> EntityContainer<T> {
     pub fn new() -> EntityContainer<T> {
         EntityContainer {
-            ids: (0..(2 as EntityId).pow(10)).rev().collect(),
+            ids: (0..(2 as EntityId).pow(10)).rev().collect(), // generate list of 0 to 2^10 = 1024 Ids
             map: HashMap::new(),
         }
     }
