@@ -1,4 +1,4 @@
-pub struct ManProperties {
+pub struct ManState {
     x: i16,
     y: i16,
 }
@@ -6,5 +6,5 @@ pub struct ManProperties {
 pub struct Man {
     x: i16,
     y: i16,
-    client: ManProperties,
+    client: ManState,
 }
