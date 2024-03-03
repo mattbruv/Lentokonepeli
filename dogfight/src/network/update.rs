@@ -1,14 +1,8 @@
-use crate::entities::man::ManState;
+use crate::entities::{man::*, EntityId};
+use ts_rs::TS;
 
-pub struct EntityStateEntry {
-    id: u16,
-    state: EntityState,
+pub enum FullState {
+    Man(EntityId, ManState),
 }
 
-pub enum EntityState {
-    Man(ManState),
-}
-
-pub enum EntityUpdate {
-    Man(ManState),
-}
+pub enum PartialState {}
