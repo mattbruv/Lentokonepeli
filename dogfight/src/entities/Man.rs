@@ -1,7 +1,7 @@
 use dogfight_macros::lento_test;
 use ts_rs::TS;
 
-#[lento_test]
+#[lento_test(foo)]
 pub struct ManState {
     x: i16,
     y: i16,
