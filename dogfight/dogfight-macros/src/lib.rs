@@ -17,6 +17,7 @@ pub fn lento_test(attr: TokenStream, item: TokenStream) -> TokenStream {
         #[derive(TS)]
         #[ts(export)]
         #input
+        println!("{:?}", attr);
     };
 
     TokenStream::from(new_attrs)
