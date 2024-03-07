@@ -1,8 +1,7 @@
-use dogfight_macros::lento_test;
-use ts_rs::TS;
+use dogfight_macros::PartialState;
 
-#[lento_test(foo)]
-pub struct ManState {
+#[derive(PartialState)]
+pub struct FullManState {
     x: i16,
     y: i16,
 }
@@ -10,5 +9,5 @@ pub struct ManState {
 pub struct Man {
     x: i16,
     y: i16,
-    client: ManState,
+    client: FullManState,
 }

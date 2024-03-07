@@ -1,7 +1,6 @@
 use crate::entities::{man::*, EntityId};
 
 pub mod entity_props;
-pub mod update;
 
 trait NetworkedEntity {
     fn get_full_state(&self) -> EntityState;
@@ -14,7 +13,7 @@ pub enum EntityState {
 }
 
 pub enum ChangedState {
-    Man(EntityId, ChangedManState),
+    //Man(EntityId, ChangedManState),
 }
 
 pub enum FullState {
