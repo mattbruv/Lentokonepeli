@@ -1,12 +1,7 @@
-use dogfight_macros::Networkable;
+use dogfight_macros::networkable;
 
-#[derive(Networkable)]
+#[networkable]
 pub struct Man {
-    #[client(i16)]
     x: i32,
-
-    #[client(i16)]
     y: i32,
-
-    z: hey,
 }
