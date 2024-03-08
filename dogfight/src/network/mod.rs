@@ -17,5 +17,5 @@ pub enum ChangedState {
 }
 
 pub enum FullState {
-    Man(EntityId, FullManState),
+    //Man(EntityId, ),
 }
