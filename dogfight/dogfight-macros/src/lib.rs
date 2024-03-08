@@ -1,17 +1,18 @@
 use proc_macro::TokenStream;
-use quote::quote;
+use quote::{format_ident, quote};
 use syn::{
     parse_macro_input, spanned::Spanned, AngleBracketedGenericArguments, Attribute, Data,
     DeriveInput, Fields, GenericArgument, Ident, PathArguments, Token, Type,
 };
 
-#[proc_macro_derive(Networkable, attributes(client))]
-pub fn derive_networkable(input: TokenStream) -> TokenStream {
-    quote!(
-        pub enum hey {
-            foo,
-        }
-    )
+#[proc_macro_attribute]
+pub fn networkable(attr: TokenStream, input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as DeriveInput);
+
+    quote! {
+        #input
+        #input
+    }
     .into()
 }
 
