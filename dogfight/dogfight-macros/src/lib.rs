@@ -5,6 +5,16 @@ use syn::{
     DeriveInput, Fields, GenericArgument, Ident, PathArguments, Token, Type,
 };
 
+#[proc_macro_derive(Networkable, attributes(client))]
+pub fn derive_networkable(input: TokenStream) -> TokenStream {
+    quote!(
+        pub enum hey {
+            foo,
+        }
+    )
+    .into()
+}
+
 #[proc_macro_derive(PartialState)]
 pub fn partial_state(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);

@@ -1,13 +1,12 @@
-use dogfight_macros::PartialState;
+use dogfight_macros::Networkable;
 
-#[derive(PartialState)]
-pub struct FullManState {
-    x: i16,
-    y: i16,
-}
-
+#[derive(Networkable)]
 pub struct Man {
-    x: i16,
-    y: i16,
-    client: FullManState,
+    #[client(i16)]
+    x: i32,
+
+    #[client(i16)]
+    y: i32,
+
+    z: hey,
 }
