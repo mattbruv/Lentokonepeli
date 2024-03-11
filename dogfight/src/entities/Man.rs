@@ -8,7 +8,7 @@ use dogfight_macros::networkable;
 // fn to reset the boolean flag
 
 #[networkable]
-pub struct ManState {
+struct ManState {
     x: i16,
     y: i16,
 }
@@ -16,4 +16,6 @@ pub struct ManState {
 pub struct Man {
     x: i32,
     y: i32,
+
+    state: ManState,
 }
