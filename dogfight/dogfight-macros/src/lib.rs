@@ -29,11 +29,11 @@ pub fn networkable(_attr: TokenStream, input: TokenStream) -> TokenStream {
         colon_token: fields.named[0].colon_token,
         vis: fields.named[0].vis.clone(),
         mutability: syn::FieldMutability::None,
-        ident: Some(Ident::new("test", fields.named[0].ident.span())),
+        ident: Some(Ident::new("foo", fields.named[0].ident.span())),
         ty: fields.named[0].ty.clone(),
     });
 
-    input.fields = Fields::Named(fields);
+    let named = &fields.named;
 
     let generated = quote! {
         #input
