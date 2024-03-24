@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use crate::network::NetworkedEntity;
+
 use super::EntityId;
 
 pub struct EntityContainer<T> {
@@ -7,7 +9,10 @@ pub struct EntityContainer<T> {
     map: HashMap<EntityId, T>,
 }
 
-impl<T> EntityContainer<T> {
+impl<T> EntityContainer<T>
+where
+    T: NetworkedEntity,
+{
     pub fn new() -> EntityContainer<T> {
         EntityContainer {
             ids: (0..(2 as EntityId).pow(10)).rev().collect(), // generate list of 0 to 2^10 = 1024 Ids
