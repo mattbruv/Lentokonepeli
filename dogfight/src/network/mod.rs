@@ -1,4 +1,7 @@
-use crate::entities::{EntityId, EntityType};
+use crate::entities::{
+    man::{Man, ManChangedState, ManFullState},
+    EntityId, EntityType,
+};
 
 pub struct EntityTag {
     ent_type: EntityType,
@@ -12,20 +15,21 @@ pub trait NetworkedEntity {
 
 pub struct EntityState {
     tag: EntityTag,
-    data: EntityData,
+    update: EntityUpdate,
 }
 
-pub enum EntityData {
+pub enum EntityUpdate {
     Full(FullState),
     Changed(ChangedState),
+    Deleted,
 }
 
 pub enum ChangedState {
-    Man,
+    Man(ManChangedState),
     Plane,
 }
 
 pub enum FullState {
-    Man,
+    Man(ManFullState),
     Plane,
 }

@@ -1,4 +1,4 @@
-use crate::world::World;
+use crate::{entities::container::EntityContainer, world::World};
 
 pub struct Game {
     world: World,
@@ -7,12 +7,10 @@ pub struct Game {
 impl Game {
     pub fn new() -> Game {
         Game {
-            world: World {
-                name: "Foo bar baz".to_string(),
-            },
+            world: World::new(),
         }
     }
     pub fn tick(&mut self) {
-        println!("tick! {}", self.world.name)
+        println!("tick!")
     }
 }
