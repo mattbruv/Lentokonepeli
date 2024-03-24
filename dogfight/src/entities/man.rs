@@ -1,3 +1,5 @@
+use serde::Serialize;
+
 use crate::{
     network::{ChangedState, FullState, NetworkedEntity},
     world::RESOLUTION,
@@ -26,11 +28,13 @@ impl Man {
     }
 }
 
+#[derive(Serialize)]
 pub struct ManChangedState {
     delta_x: i8,
     delta_y: i8,
 }
 
+#[derive(Serialize)]
 pub struct ManFullState {
     team: Team,
     x: i16,
