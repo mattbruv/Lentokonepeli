@@ -1,15 +1,31 @@
-struct EntityTag {}
+use crate::entities::{EntityId, EntityType};
 
-trait NetworkedEntity {
-    fn get_full_state(&self) -> EntityState;
-    fn get_changed_state(&self) -> EntityState;
+pub struct EntityTag {
+    ent_type: EntityType,
+    id: EntityId,
 }
 
-pub enum EntityState {
+pub trait NetworkedEntity {
+    fn get_full_state(&self) -> FullState;
+    fn get_changed_state(&self) -> ChangedState;
+}
+
+pub struct EntityState {
+    tag: EntityTag,
+    data: EntityData,
+}
+
+pub enum EntityData {
     Full(FullState),
     Changed(ChangedState),
 }
 
-pub enum ChangedState {}
+pub enum ChangedState {
+    Man,
+    Plane,
+}
 
-pub enum FullState {}
+pub enum FullState {
+    Man,
+    Plane,
+}
