@@ -1,5 +1,3 @@
-use std::os::macos::raw::stat;
-
 use serde::{Deserialize, Serialize};
 
 use crate::entities::{

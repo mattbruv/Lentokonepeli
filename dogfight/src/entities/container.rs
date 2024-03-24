@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
-use crate::network::{EntityState, EntityTag, FullState, NetworkedEntity};
+use crate::network::{EntityState, EntityTag, EntityUpdate, FullState, NetworkedEntity};
 
-use super::{EntityId, EntityType};
+use super::{man::Man, EntityId, EntityType};
 
 pub struct EntityContainer<T> {
     ent_type: EntityType,
@@ -22,6 +22,22 @@ where
         }
     }
 
+    pub fn insert(&mut self, ent: T) -> Option<&T> {
+        // Try to get an available ID
+        if let Some(id) = self.ids.pop() {
+            // If the entity is inserted, return it
+            if let Some(_) = self.map.insert(id, ent) {
+                return self.get(id);
+            }
+            return None;
+        }
+        None
+    }
+
+    pub fn remove(&mut self, id: EntityId) -> Option<T> {
+        self.map.remove(&id)
+    }
+
     pub fn get_mut(&mut self, id: EntityId) -> Option<&mut T> {
         self.map.get_mut(&id)
     }
@@ -38,7 +54,7 @@ where
                     ent_type: self.ent_type,
                     id: *id,
                 },
-                update: crate::network::EntityUpdate::Full(ent.get_full_state()),
+                update: EntityUpdate::Full(ent.get_full_state()),
             })
             .collect()
     }

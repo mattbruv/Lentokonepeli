@@ -1,5 +1,5 @@
 use crate::{
-    entities::{container::EntityContainer, man::Man, plane::Plane, EntityType},
+    entities::{container::EntityContainer, man::Man, plane::Plane, EntityType, Team},
     network::EntityState,
 };
 
@@ -12,13 +12,19 @@ pub struct World {
 
 impl World {
     pub fn new() -> Self {
-        World {
+        let mut w = World {
             men: EntityContainer::new(EntityType::Man),
             planes: EntityContainer::new(EntityType::Plane),
-        }
+        };
+
+        w.men.insert(Man::new(Team::Allies));
+        //w.men.insert(Man::new(Team::Centrals));
+        //w.men.insert(Man::new(Team::Centrals));
+
+        w
     }
 
-    pub fn get_state() -> Vec<EntityState> {
-        vec![]
+    pub fn get_state(&self) -> Vec<EntityState> {
+        self.men.get_all_full_state()
     }
 }
