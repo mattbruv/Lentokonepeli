@@ -1,3 +1,5 @@
+pub mod watched;
+
 use serde::{Deserialize, Serialize};
 
 use crate::entities::{
