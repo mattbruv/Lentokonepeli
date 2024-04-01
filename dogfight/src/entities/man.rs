@@ -1,13 +1,12 @@
 use serde::Serialize;
 
 use crate::{
-    network::{ChangedState, FullState, NetworkedEntity},
+    network::{self, NetworkedEntity},
     world::RESOLUTION,
 };
 
 use super::Team;
 
-pub enum ManState {}
 pub struct Man {
     team: Team,
     x: i32,
@@ -29,31 +28,18 @@ impl Man {
 }
 
 #[derive(Serialize)]
-pub struct ManChangedState {
-    delta_x: i8,
-    delta_y: i8,
-}
-
-#[derive(Serialize)]
-pub struct ManFullState {
-    team: Team,
-    x: i16,
-    y: i16,
+pub struct ManProperties {
+    team: Option<Team>,
+    x: Option<i16>,
+    y: Option<i16>,
 }
 
 impl NetworkedEntity for Man {
-    fn get_full_state(&self) -> FullState {
-        FullState::Man(ManFullState {
-            team: self.team,
-            x: (self.x / RESOLUTION) as i16,
-            y: (self.y / RESOLUTION) as i16,
-        })
+    fn get_full_properties(&self) -> network::EntityProperties {
+        todo!()
     }
 
-    fn get_changed_state(&self) -> ChangedState {
-        ChangedState::Man(ManChangedState {
-            delta_x: -10,
-            delta_y: 10,
-        })
+    fn get_changed_properties(&self) -> network::EntityProperties {
+        todo!()
     }
 }

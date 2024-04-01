@@ -5,17 +5,6 @@ struct Test {
     b: Watched<bool>,
 }
 
-impl Foo for i16 {
-    fn testing(&self) -> String {
-        "i16_test".into()
-    }
-}
-impl Foo for bool {
-    fn testing(&self) -> String {
-        "boolfoo".to_owned()
-    }
-}
-
 impl Test {
     pub fn test(&self) {
         let items: Vec<&Watched<bool>> = vec![&self.b, &self.b];
@@ -27,18 +16,14 @@ impl Test {
 }
 
 #[derive(Debug)]
-struct Watched<T: Eq + Foo + Debug> {
+struct Watched<T: Eq + Debug> {
     value: T,
     dirty: bool,
 }
 
-trait Foo {
-    fn testing(&self) -> String;
-}
-
 impl<T> Watched<T>
 where
-    T: Eq + Foo + Debug,
+    T: Eq + Debug,
 {
     pub fn new(value: T) -> Self {
         Self {
