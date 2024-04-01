@@ -2,20 +2,11 @@ pub mod watched;
 
 use serde::{Deserialize, Serialize};
 
-use crate::entities::{
-    man::{Man, ManChangedState, ManFullState},
-    EntityId, EntityType,
-};
-
-#[derive(Serialize)]
-pub struct EntityTag {
-    pub ent_type: EntityType,
-    pub id: EntityId,
-}
+use crate::entities::{man::ManProperties, EntityId, EntityType};
 
 pub trait NetworkedEntity {
-    fn get_full_state(&self) -> FullState;
-    fn get_changed_state(&self) -> ChangedState;
+    fn get_full_properties(&self) -> EntityProperties;
+    fn get_changed_properties(&self) -> EntityProperties;
 }
 
 pub fn state_to_json(state: Vec<EntityState>) -> String {
@@ -28,25 +19,19 @@ pub fn state_to_bytes(state: Vec<EntityState>) -> Vec<u8> {
 
 #[derive(Serialize)]
 pub struct EntityState {
-    pub tag: EntityTag,
+    pub ent_type: EntityType,
+    pub id: EntityId,
     pub update: EntityUpdate,
 }
 
 #[derive(Serialize)]
 pub enum EntityUpdate {
-    Full(FullState),
-    Changed(ChangedState),
+    Properties(EntityProperties),
     Deleted,
 }
 
 #[derive(Serialize)]
-pub enum ChangedState {
-    Man(ManChangedState),
-    Plane,
-}
-
-#[derive(Serialize)]
-pub enum FullState {
-    Man(ManFullState),
+pub enum EntityProperties {
+    Man(ManProperties),
     Plane,
 }

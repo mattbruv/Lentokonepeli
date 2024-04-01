@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
-use crate::network::{EntityState, EntityTag, EntityUpdate, FullState, NetworkedEntity};
+use crate::network::{EntityState, EntityUpdate, NetworkedEntity};
 
-use super::{man::Man, EntityId, EntityType};
+use super::{EntityId, EntityType};
 
 pub struct EntityContainer<T> {
     ent_type: EntityType,
@@ -50,11 +50,9 @@ where
         self.map
             .iter()
             .map(|(id, ent)| EntityState {
-                tag: EntityTag {
-                    ent_type: self.ent_type,
-                    id: *id,
-                },
-                update: EntityUpdate::Full(ent.get_full_state()),
+                ent_type: self.ent_type,
+                id: *id,
+                update: EntityUpdate::Properties(ent.get_full_properties()),
             })
             .collect()
     }
