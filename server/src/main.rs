@@ -7,9 +7,15 @@ fn main() {
 
     let time = Instant::now();
 
-    world.get_full_state();
-
+    for _ in 1..1000 {
+        world.test()
+    }
     let elapsed = time.elapsed();
+    println!("{:?} elapsed", elapsed);
+
+    println!("{:?}", world.get_full_state());
+    println!("{:?}", time.elapsed());
+    println!("{:?}", world.get_changed_state());
 
     println!("{:?} elapsed", elapsed)
 }

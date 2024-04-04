@@ -27,7 +27,15 @@ impl World {
     }
 
     pub fn test(&mut self) -> () {
-        //
+        if let Some(m) = self.men.get_mut(1) {
+            m.set_x(m.get_x() + 100);
+            m.set_x(m.get_x() + 100);
+            m.set_x(m.get_x() + 100);
+            m.set_x(m.get_x() + 100);
+            m.set_x(m.get_x() + 100);
+            m.set_x(m.get_x() + 100);
+            m.set_x(m.get_x() + 100);
+        }
     }
 
     pub fn get_full_state(&self) -> Vec<EntityChange> {

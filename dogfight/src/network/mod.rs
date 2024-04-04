@@ -17,20 +17,20 @@ pub fn state_to_bytes(state: Vec<EntityChange>) -> Vec<u8> {
     bincode::serialize(&state).unwrap()
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub struct EntityChange {
     pub ent_type: EntityType,
     pub id: EntityId,
     pub update: EntityChangeType,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub enum EntityChangeType {
     Properties(EntityProperties),
     Deleted,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub enum EntityProperties {
     Man(ManProperties),
     Plane,
