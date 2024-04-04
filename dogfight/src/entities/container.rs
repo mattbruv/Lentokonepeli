@@ -15,11 +15,15 @@ where
     T: NetworkedEntity,
 {
     pub fn new(ent_type: EntityType) -> EntityContainer<T> {
-        EntityContainer {
+        let container = EntityContainer {
             ent_type: ent_type,
             ids: (0..(2 as EntityId).pow(10)).rev().collect(), // generate list of 0 to 2^10 = 1024 Ids
             map: HashMap::new(),
-        }
+        };
+
+        assert!(container.ids.len() <= 1024);
+
+        container
     }
 
     pub fn insert(&mut self, ent: T) -> Option<&T> {

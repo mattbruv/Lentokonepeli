@@ -13,7 +13,7 @@ pub enum Team {
     Centrals,
 }
 
-#[derive(Serialize, Clone, Copy)]
+#[derive(Serialize, Clone, Copy, Debug)]
 pub enum EntityType {
     Man,
     Plane,
