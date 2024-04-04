@@ -6,7 +6,7 @@ pub mod plane;
 
 pub type EntityId = u16;
 
-#[derive(Serialize, Clone, Copy)]
+#[derive(Serialize, Clone, Copy, PartialEq, Eq, Debug)]
 pub enum Team {
     None,
     Allies,

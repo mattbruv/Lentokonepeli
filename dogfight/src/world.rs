@@ -1,6 +1,6 @@
 use crate::{
     entities::{container::EntityContainer, man::Man, plane::Plane, EntityType, Team},
-    network::EntityState,
+    network::EntityChange,
 };
 
 pub const RESOLUTION: i32 = 100;
@@ -24,7 +24,7 @@ impl World {
         w
     }
 
-    pub fn get_state(&self) -> Vec<EntityState> {
+    pub fn get_state(&self) -> Vec<EntityChange> {
         self.men.get_all_full_state()
     }
 }

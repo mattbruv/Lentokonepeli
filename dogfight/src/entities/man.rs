@@ -1,28 +1,29 @@
 use serde::Serialize;
 
 use crate::{
-    network::{self, NetworkedEntity},
+    entities::Team,
+    network::{property::*, EntityProperties, NetworkedEntity},
     world::RESOLUTION,
 };
 
-use super::Team;
-
 pub struct Man {
-    team: Team,
     x: i32,
     y: i32,
-    client_x: i16,
-    client_y: i16,
+
+    team: Property<Team>,
+    client_x: Property<i16>,
+    client_y: Property<i16>,
 }
 
 impl Man {
+    pub fn test(&mut self) {}
     pub fn new(team: Team) -> Self {
         Man {
-            team: team,
+            team: Property::new(team),
             x: 0,
             y: 0,
-            client_x: 0,
-            client_y: 0,
+            client_x: Property::new(0),
+            client_y: Property::new(0),
         }
     }
 }
@@ -35,11 +36,19 @@ pub struct ManProperties {
 }
 
 impl NetworkedEntity for Man {
-    fn get_full_properties(&self) -> network::EntityProperties {
-        todo!()
+    fn get_full_properties(&self) -> EntityProperties {
+        EntityProperties::Man(ManProperties {
+            team: self.team.get_full(),
+            x: self.client_x.get_full(),
+            y: self.client_y.get_full(),
+        })
     }
 
-    fn get_changed_properties(&self) -> network::EntityProperties {
-        todo!()
+    fn get_changed_properties_and_reset(&mut self) -> EntityProperties {
+        EntityProperties::Man(ManProperties {
+            team: self.team.get_changed(),
+            x: self.client_x.get_changed(),
+            y: self.client_y.get_changed(),
+        })
     }
 }

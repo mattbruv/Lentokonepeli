@@ -9,7 +9,7 @@ impl NetworkedEntity for Plane {
         todo!()
     }
 
-    fn get_changed_properties(&self) -> network::EntityProperties {
+    fn get_changed_properties_and_reset(&mut self) -> network::EntityProperties {
         todo!()
     }
 }

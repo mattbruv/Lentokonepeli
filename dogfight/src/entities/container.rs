@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::network::{EntityState, EntityUpdate, NetworkedEntity};
+use crate::network::{EntityChange, EntityChangeType, NetworkedEntity};
 
 use super::{EntityId, EntityType};
 
@@ -46,13 +46,24 @@ where
         self.map.get(&id)
     }
 
-    pub fn get_all_full_state(&self) -> Vec<EntityState> {
+    pub fn get_all_full_state(&self) -> Vec<EntityChange> {
         self.map
             .iter()
-            .map(|(id, ent)| EntityState {
+            .map(|(id, ent)| EntityChange {
                 ent_type: self.ent_type,
                 id: *id,
-                update: EntityUpdate::Properties(ent.get_full_properties()),
+                update: EntityChangeType::Properties(ent.get_full_properties()),
+            })
+            .collect()
+    }
+
+    pub fn get_all_changed_state(&mut self) -> Vec<EntityChange> {
+        self.map
+            .iter_mut()
+            .map(|(id, ent)| EntityChange {
+                ent_type: self.ent_type,
+                id: *id,
+                update: EntityChangeType::Properties(ent.get_changed_properties_and_reset()),
             })
             .collect()
     }

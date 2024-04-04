@@ -1,29 +1,14 @@
 use std::fmt::Debug;
 
-struct Test {
-    a: Watched<i16>,
-    b: Watched<bool>,
-}
-
-impl Test {
-    pub fn test(&self) {
-        let items: Vec<&Watched<bool>> = vec![&self.b, &self.b];
-
-        for x in items {
-            println!("{:?}", x);
-        }
-    }
-}
-
 #[derive(Debug)]
-struct Watched<T: Eq + Debug> {
+pub struct Property<T: Eq + Debug> {
     value: T,
     dirty: bool,
 }
 
-impl<T> Watched<T>
+impl<T> Property<T>
 where
-    T: Eq + Debug,
+    T: Eq + Debug + Copy,
 {
     pub fn new(value: T) -> Self {
         Self {
@@ -46,8 +31,19 @@ where
         self.dirty
     }
 
-    pub fn get_and_reset(&mut self) -> &T {
+    fn get_and_reset(&mut self) -> T {
         self.dirty = false;
-        &self.value
+        self.value
+    }
+
+    pub fn get_full(&self) -> Option<T> {
+        Some(self.value)
+    }
+
+    pub fn get_changed(&mut self) -> Option<T> {
+        match self.dirty {
+            true => Some(self.get_and_reset()),
+            false => None,
+        }
     }
 }
