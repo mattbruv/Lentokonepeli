@@ -1,3 +1,5 @@
+use std::{os::macos::raw::stat, vec};
+
 use crate::{
     entities::{container::EntityContainer, man::Man, plane::Plane, EntityType, Team},
     network::EntityChange,
@@ -18,13 +20,27 @@ impl World {
         };
 
         w.men.insert(Man::new(Team::Allies));
-        //w.men.insert(Man::new(Team::Centrals));
-        //w.men.insert(Man::new(Team::Centrals));
+        w.men.insert(Man::new(Team::Centrals));
+        w.men.insert(Man::new(Team::Centrals));
 
         w
     }
 
-    pub fn get_state(&self) -> Vec<EntityChange> {
-        self.men.get_all_full_state()
+    pub fn test(&mut self) -> () {
+        //
+    }
+
+    pub fn get_full_state(&self) -> Vec<EntityChange> {
+        let mut state = vec![];
+        state.extend(self.men.get_all_full_state());
+        state.extend(self.planes.get_all_full_state());
+        state
+    }
+
+    pub fn get_changed_state(&mut self) -> Vec<EntityChange> {
+        let mut state = vec![];
+        state.extend(self.men.get_all_changed_state());
+        state.extend(self.planes.get_all_changed_state());
+        state
     }
 }
