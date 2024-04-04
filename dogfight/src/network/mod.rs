@@ -1,6 +1,6 @@
 pub mod property;
 
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 use crate::entities::{man::ManProperties, EntityId, EntityType};
 
