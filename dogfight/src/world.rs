@@ -1,4 +1,4 @@
-use std::{os::macos::raw::stat, vec};
+use std::vec;
 
 use crate::{
     entities::{container::EntityContainer, man::Man, plane::Plane, EntityType, Team},
