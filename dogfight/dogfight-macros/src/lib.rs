@@ -1,3 +1,5 @@
+use std::process::id;
+
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{
@@ -6,15 +8,87 @@ use syn::{
 };
 
 #[proc_macro_derive(Networked)]
-pub fn partial_state(input: TokenStream) -> TokenStream {
+pub fn networked(input: TokenStream) -> TokenStream {
+    // Parse the input tokens into a syntax tree
     let input = parse_macro_input!(input as DeriveInput);
 
-    let name = &input.ident;
-    let partial_name = Ident::new(&format!("Partial{}", name), name.span());
+    // Extract the name of the struct
+    let struct_name = &input.ident;
 
-    let output = quote! {
-        hello
+    // Extract fields from the struct
+    let fields = match input.data {
+        Data::Struct(data_struct) => {
+            if let Fields::Named(fields) = data_struct.fields {
+                fields.named
+            } else {
+                panic!("OH SHit");
+            }
+        }
+        _ => {
+            return syn::Error::new_spanned(input, "Expected a struct with named fields")
+                .to_compile_error()
+                .into();
+        }
     };
 
-    TokenStream::from(output)
+    // Iterate through the fields and collect identifiers and types
+    let mut property_fields = Vec::new();
+    for field in fields {
+        if let Some((field_ident, property_type)) = extract_property_info(&field) {
+            property_fields.push((field_ident, property_type));
+        }
+    }
+
+    // Generate the new struct definition
+    let properties_struct_name =
+        Ident::new(&format!("{}Properties", struct_name), struct_name.span());
+    let properties_fields = property_fields.iter().map(|(ident, ty)| {
+        quote! {
+            #ident: Option<#ty>
+        }
+    });
+
+    // Generate the implementation of Networked trait for the original struct
+    let mut expanded = quote! {
+        #[derive(Serialize, Debug, TS)]
+        #[ts(export)]
+        pub struct #properties_struct_name {
+            #(#properties_fields),*
+        }
+    };
+
+    // Implement default values for the properties
+
+    //    expanded.extend(defaults_impl);
+
+    // Return the generated implementation
+    TokenStream::from(expanded)
 }
+
+// Helper function to extract the type inside Property<T>
+fn extract_property_type(field: &syn::Field) -> Option<syn::Type> {
+    let ty = &field.ty;
+    if let syn::Type::Path(type_path) = ty {
+        if let Some(segment) = type_path.path.segments.first() {
+            if segment.ident == "Property" {
+                if let syn::PathArguments::AngleBracketed(args) = &segment.arguments {
+                    if let Some(syn::GenericArgument::Type(inner_type)) = args.args.first() {
+                        return Some(inner_type.clone());
+                    }
+                }
+            }
+        }
+    }
+    None
+}
+
+fn extract_property_info(field: &syn::Field) -> Option<(syn::Ident, syn::Type)> {
+    if let Some(ident) = &field.ident {
+        if let Some(t) = extract_property_type(field) {
+            return Some((ident.clone(), t));
+        }
+    }
+    None
+}
+
+// Helper function to extract the identifier and type inside Property<T>
