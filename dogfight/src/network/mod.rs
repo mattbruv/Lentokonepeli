@@ -3,23 +3,40 @@ pub mod property;
 use serde::Serialize;
 use ts_rs::TS;
 
-use crate::entities::{man::ManProperties, plane::PlaneProperties, EntityId, EntityType};
+use crate::entities::{man::ManProperties, plane::PlaneProperties, EntityId, EntityType, Team};
 
 pub trait NetworkedEntity {
     fn get_full_properties(&self) -> EntityProperties;
     fn get_changed_properties_and_reset(&mut self) -> EntityProperties;
 }
 
-pub trait NetworkedProperties {
+pub trait NetworkedBytes {
     fn to_bytes(&self) -> Vec<u8>;
     // fn from_bytes(bytes: Vec<u8>) -> Self;
+}
+
+impl NetworkedBytes for Team {
+    fn to_bytes(&self) -> Vec<u8> {
+        vec![*self as u8]
+    }
+}
+
+impl NetworkedBytes for i16 {
+    fn to_bytes(&self) -> Vec<u8> {
+        i16::to_le_bytes(*self).into()
+    }
+}
+
+impl NetworkedBytes for i32 {
+    fn to_bytes(&self) -> Vec<u8> {
+        i32::to_le_bytes(*self).into()
+    }
 }
 
 /**
  * This funciton is used to create the header bytes to tell
  * if properties of an object are changed/included in the binary data or not.
- * It takes a vector of properties in order,
- * each boolean representing if that property is set or not
+ * It takes a vector of booleans represeting the set state of each property in order,
  * and returns this data smushed into bytes
  */
 pub fn property_header_bytes(is_property_set_vector: Vec<bool>) -> Vec<u8> {
