@@ -1,11 +1,6 @@
-use std::process::id;
-
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{
-    parse_macro_input, spanned::Spanned, AngleBracketedGenericArguments, Attribute, Data,
-    DeriveInput, Fields, GenericArgument, Ident, PathArguments, Token, Type,
-};
+use syn::{parse_macro_input, Data, DeriveInput, Fields, Ident};
 
 #[proc_macro_derive(Networked)]
 pub fn networked(input: TokenStream) -> TokenStream {
@@ -57,9 +52,36 @@ pub fn networked(input: TokenStream) -> TokenStream {
         }
     };
 
-    // Implement default values for the properties
+    let full_code = property_fields.iter().map(|(ident, ty)| {
+        quote! {
+            #ident: self.#ident.get_full()
+        }
+    });
 
-    //    expanded.extend(defaults_impl);
+    let changed_code = property_fields.iter().map(|(ident, ty)| {
+        quote! {
+            #ident: self.#ident.get_changed()
+        }
+    });
+
+    // Implement default values for the properties
+    let networked_impl = quote! {
+        impl NetworkedEntity for #struct_name {
+            fn get_full_properties(&self) -> EntityProperties {
+                EntityProperties::#struct_name(#properties_struct_name {
+                    #(#full_code),*
+                })
+            }
+
+            fn get_changed_properties_and_reset(&mut self) -> EntityProperties {
+                EntityProperties::#struct_name(#properties_struct_name {
+                    #(#changed_code),*
+                })
+            }
+        }
+    };
+
+    expanded.extend(networked_impl);
 
     // Return the generated implementation
     TokenStream::from(expanded)

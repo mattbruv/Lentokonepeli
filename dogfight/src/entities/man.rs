@@ -49,16 +49,6 @@ impl Man {
     }
 }
 
-impl NetworkedEntity for Man {
-    fn get_full_properties(&self) -> EntityProperties {
-        todo!()
-    }
-
-    fn get_changed_properties_and_reset(&mut self) -> EntityProperties {
-        todo!()
-    }
-}
-
 /*
 #[derive(Serialize, Debug, TS)]
 #[ts(export)]
