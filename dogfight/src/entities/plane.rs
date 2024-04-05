@@ -2,9 +2,7 @@ use dogfight_macros::Networked;
 use serde::Serialize;
 use ts_rs::TS;
 
-use crate::network::{self, property::Property, EntityProperties, NetworkedEntity};
-
-use super::man::ManProperties;
+use crate::network::{property::Property, EntityProperties, NetworkedEntity};
 
 #[derive(Networked)]
 pub struct Plane {
@@ -17,6 +15,4 @@ impl Plane {
             style: Property::new(320),
         }
     }
-
-    pub fn test(&self) {}
 }
