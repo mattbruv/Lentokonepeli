@@ -106,9 +106,11 @@ pub fn networked(input: TokenStream) -> TokenStream {
 
                 #(#to_bytes)*
 
-                let header_bytes = property_header_bytes(is_set);
+                let mut header_bytes = property_header_bytes(is_set);
 
-                bytes
+                // combine header + property bytes and return that
+                header_bytes.extend(bytes);
+                header_bytes
             }
         }
     };
