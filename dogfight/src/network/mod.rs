@@ -10,6 +10,10 @@ pub trait NetworkedEntity {
     fn get_changed_properties_and_reset(&mut self) -> EntityProperties;
 }
 
+pub trait NetworkedProperties {
+    fn to_bytes(&self) -> Vec<u8>;
+}
+
 pub fn state_to_json(state: Vec<EntityChange>) -> String {
     serde_json::to_string(&state).unwrap()
 }

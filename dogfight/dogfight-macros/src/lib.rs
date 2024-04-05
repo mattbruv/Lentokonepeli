@@ -45,6 +45,9 @@ pub fn networked(input: TokenStream) -> TokenStream {
 
     // Generate the implementation of Networked trait for the original struct
     let mut expanded = quote! {
+        use serde::Serialize;
+        use ts_rs::TS;
+
         #[derive(Serialize, Debug, TS)]
         #[ts(export)]
         pub struct #properties_struct_name {
@@ -82,6 +85,16 @@ pub fn networked(input: TokenStream) -> TokenStream {
     };
 
     expanded.extend(networked_impl);
+
+    let property_impl = quote! {
+        use crate::network::NetworkedProperties;
+
+        impl NetworkedProperties for #properties_struct_name {
+
+        }
+    };
+
+    expanded.extend(property_impl);
 
     // Return the generated implementation
     TokenStream::from(expanded)

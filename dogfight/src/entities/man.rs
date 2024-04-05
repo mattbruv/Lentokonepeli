@@ -1,6 +1,4 @@
 use dogfight_macros::Networked;
-use serde::Serialize;
-use ts_rs::TS;
 
 use crate::{
     entities::Team,

@@ -15,4 +15,8 @@ impl Plane {
             style: Property::new(320),
         }
     }
+
+    pub fn test(&self) -> () {
+        Plane::to_bytes();
+    }
 }
