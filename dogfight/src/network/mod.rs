@@ -3,7 +3,7 @@ pub mod property;
 use serde::Serialize;
 use ts_rs::TS;
 
-use crate::entities::{man::ManProperties, EntityId, EntityType};
+use crate::entities::{man::ManProperties, plane::PlaneProperties, EntityId, EntityType};
 
 pub trait NetworkedEntity {
     fn get_full_properties(&self) -> EntityProperties;
@@ -37,5 +37,5 @@ pub enum EntityChangeType {
 #[ts(export)]
 pub enum EntityProperties {
     Man(ManProperties),
-    Plane,
+    Plane(PlaneProperties),
 }
