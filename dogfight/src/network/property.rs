@@ -1,5 +1,11 @@
 use std::fmt::Debug;
 
+/**
+ * The Property struct wraps a networked value that is shared
+ * between the server and the client.
+ *
+ * It basically just holds a flag to see if it changed and needs to be sent out
+ */
 #[derive(Debug)]
 pub struct Property<T: Eq + Debug> {
     value: T,
