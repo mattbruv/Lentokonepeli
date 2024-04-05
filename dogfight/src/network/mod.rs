@@ -1,6 +1,7 @@
 pub mod property;
 
 use serde::Serialize;
+use ts_rs::TS;
 
 use crate::entities::{man::ManProperties, EntityId, EntityType};
 
@@ -17,20 +18,23 @@ pub fn state_to_bytes(state: Vec<EntityChange>) -> Vec<u8> {
     bincode::serialize(&state).unwrap()
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, TS)]
+#[ts(export)]
 pub struct EntityChange {
     pub ent_type: EntityType,
     pub id: EntityId,
     pub update: EntityChangeType,
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, TS)]
+#[ts(export)]
 pub enum EntityChangeType {
     Properties(EntityProperties),
     Deleted,
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, TS)]
+#[ts(export)]
 pub enum EntityProperties {
     Man(ManProperties),
     Plane,
