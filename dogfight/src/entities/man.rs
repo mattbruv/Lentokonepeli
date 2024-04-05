@@ -1,4 +1,5 @@
 use serde::Serialize;
+use ts_rs::TS;
 
 use crate::{
     entities::Team,
@@ -46,7 +47,8 @@ impl Man {
     }
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, TS)]
+#[ts(export)]
 pub struct ManProperties {
     team: Option<Team>,
     x: Option<i16>,
