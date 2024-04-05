@@ -12,6 +12,34 @@ pub trait NetworkedEntity {
 
 pub trait NetworkedProperties {
     fn to_bytes(&self) -> Vec<u8>;
+    // fn from_bytes(bytes: Vec<u8>) -> Self;
+}
+
+/**
+ * This funciton is used to create the header bytes to tell
+ * if properties of an object are changed/included in the binary data or not.
+ * It takes a vector of properties in order,
+ * each boolean representing if that property is set or not
+ * and returns this data smushed into bytes
+ */
+pub fn property_header_bytes(is_property_set_vector: Vec<bool>) -> Vec<u8> {
+    let byte_vector: Vec<u8> = is_property_set_vector
+        .chunks(8)
+        .map(|chunk| {
+            chunk.iter().enumerate().fold(
+                0u8,
+                |acc, (i, &bit)| {
+                    if bit {
+                        acc | (1 << i)
+                    } else {
+                        acc
+                    }
+                },
+            )
+        })
+        .collect();
+
+    byte_vector
 }
 
 pub fn state_to_json(state: Vec<EntityChange>) -> String {
