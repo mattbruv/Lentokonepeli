@@ -22,7 +22,11 @@ fn main() {
     match &first.update {
         dogfight::network::EntityChangeType::Properties(p) => match p {
             dogfight::network::EntityProperties::Man(man) => {
-                println!("{:?}", man.to_bytes());
+                let t1 = Instant::now();
+                let bytes = man.to_bytes();
+                let t1diff = t1.elapsed();
+                println!("{:?}", bytes);
+                println!("{:?}", t1diff);
             }
             _ => {}
         },
