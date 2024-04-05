@@ -86,11 +86,29 @@ pub fn networked(input: TokenStream) -> TokenStream {
 
     expanded.extend(networked_impl);
 
-    let property_impl = quote! {
-        use crate::network::NetworkedProperties;
+    let to_bytes = property_fields.iter().map(|(ident, _)| {
+        quote! {
+            is_set.push(self.#ident.is_some());
+            if let Some(val) = self.#ident {
+                bytes.extend(val.to_bytes());
+            }
+        }
+    });
 
-        impl NetworkedProperties for #properties_struct_name {
+    let property_impl = quote! {
+        use crate::network::NetworkedBytes;
+        use crate::network::property_header_bytes;
+
+        impl NetworkedBytes for #properties_struct_name {
             fn to_bytes(&self) -> Vec<u8> {
+                let mut bytes = vec![];
+                let mut is_set = vec![];
+
+                #(#to_bytes)*
+
+                let header_bytes = property_header_bytes(is_set);
+
+                bytes
             }
         }
     };

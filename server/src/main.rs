@@ -22,22 +22,6 @@ fn main() {
         true, false, true, false, true, false, true, false, false, true,
     ]; // Example vector of bools
 
-    let byte_vector: Vec<u8> = bool_vector
-        .chunks(8)
-        .map(|chunk| {
-            chunk.iter().enumerate().fold(
-                0u8,
-                |acc, (i, &bit)| {
-                    if bit {
-                        acc | (1 << i)
-                    } else {
-                        acc
-                    }
-                },
-            )
-        })
-        .collect();
-
     println!("Resulting bytes: {:?}", byte_vector);
     println!("{}", 0u8.to_foo());
 
