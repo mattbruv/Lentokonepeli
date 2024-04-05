@@ -90,7 +90,8 @@ pub fn networked(input: TokenStream) -> TokenStream {
         use crate::network::NetworkedProperties;
 
         impl NetworkedProperties for #properties_struct_name {
-
+            fn to_bytes(&self) -> Vec<u8> {
+            }
         }
     };
 
