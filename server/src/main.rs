@@ -1,3 +1,4 @@
+use dogfight::network::NetworkedBytes;
 use std::time::Instant;
 
 use dogfight::{network::state_to_json, world::World};
@@ -14,26 +15,18 @@ fn main() {
     let elapsed = time.elapsed();
     println!("{:?} elapsed", elapsed);
 
-    let full = state_to_json(world.get_changed_state());
-
-    let changed = state_to_json(world.get_changed_state());
-    println!("{}", changed);
-    let bool_vector = vec![
-        true, false, true, false, true, false, true, false, false, true,
-    ]; // Example vector of bools
-
-    println!("Resulting bytes: {:?}", byte_vector);
-    println!("{}", 0u8.to_foo());
-
-    trait MyShit {
-        fn to_foo(&self) -> String;
+    let mut full = world.get_changed_state();
+    world.test();
+    full = world.get_changed_state();
+    let first = &full[0];
+    match &first.update {
+        dogfight::network::EntityChangeType::Properties(p) => match p {
+            dogfight::network::EntityProperties::Man(man) => {
+                println!("{:?}", man.to_bytes());
+            }
+            _ => {}
+        },
+        _ => {}
     }
-
-    impl MyShit for u8 {
-        fn to_foo(&self) -> String {
-            "foo".to_owned()
-        }
-    }
+    println!("{:?}", first);
 }
-
-// se me detiene el corazon
