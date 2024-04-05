@@ -26,16 +26,16 @@ pub fn property_header_bytes(is_property_set_vector: Vec<bool>) -> Vec<u8> {
     let byte_vector: Vec<u8> = is_property_set_vector
         .chunks(8)
         .map(|chunk| {
-            chunk.iter().enumerate().fold(
-                0u8,
-                |acc, (i, &bit)| {
-                    if bit {
-                        acc | (1 << i)
+            chunk
+                .iter()
+                .enumerate()
+                .fold(0u8, |byte, (i, &property_is_set)| {
+                    if property_is_set {
+                        byte | (1 << i)
                     } else {
-                        acc
+                        byte
                     }
-                },
-            )
+                })
         })
         .collect();
 
