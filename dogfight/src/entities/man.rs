@@ -1,3 +1,4 @@
+use dogfight_macros::Networked;
 use serde::Serialize;
 use ts_rs::TS;
 
@@ -7,6 +8,7 @@ use crate::{
     world::RESOLUTION,
 };
 
+#[derive(Networked)]
 pub struct Man {
     x: i32,
     y: i32,
