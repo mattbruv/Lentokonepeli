@@ -52,13 +52,13 @@ pub fn networked(input: TokenStream) -> TokenStream {
         }
     };
 
-    let full_code = property_fields.iter().map(|(ident, ty)| {
+    let full_code = property_fields.iter().map(|(ident, _)| {
         quote! {
             #ident: self.#ident.get_full()
         }
     });
 
-    let changed_code = property_fields.iter().map(|(ident, ty)| {
+    let changed_code = property_fields.iter().map(|(ident, _)| {
         quote! {
             #ident: self.#ident.get_changed()
         }

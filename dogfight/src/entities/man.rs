@@ -48,32 +48,3 @@ impl Man {
         self.client_y.set((y / RESOLUTION) as i16);
     }
 }
-
-/*
-#[derive(Serialize, Debug, TS)]
-#[ts(export)]
-pub struct ManProperties {
-    team: Option<Team>,
-    x: Option<i16>,
-    y: Option<i16>,
-}
-
-impl NetworkedEntity for Man {
-    fn get_full_properties(&self) -> EntityProperties {
-        EntityProperties::Man(ManProperties {
-            team: self.team.get_full(),
-            x: self.client_x.get_full(),
-            y: self.client_y.get_full(),
-        })
-    }
-
-    fn get_changed_properties_and_reset(&mut self) -> EntityProperties {
-        EntityProperties::Man(ManProperties {
-            team: self.team.get_changed(),
-            x: self.client_x.get_changed(),
-            y: self.client_y.get_changed(),
-        })
-    }
-}
-
- */
