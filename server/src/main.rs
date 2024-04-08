@@ -1,5 +1,5 @@
 use dogfight::network::NetworkedBytes;
-use std::time::Instant;
+use std::{time::Instant, vec};
 
 use dogfight::{network::state_to_json, world::World};
 use serde_json::to_string;
@@ -32,5 +32,13 @@ fn main() {
         },
         _ => {}
     }
-    println!("{:?}", first);
+
+    let mut test: Vec<u8> = (-325900 as i32).to_bytes();
+
+    test.append(&mut vec![0, 10]);
+    println!("{:?}", test);
+    let (b, i) = i32::from_bytes(&test);
+    println!("{:?}", test);
+    println!("{:?}", i);
+    println!("{:?}", b);
 }

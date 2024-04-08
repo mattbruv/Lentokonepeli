@@ -112,6 +112,10 @@ pub fn networked(input: TokenStream) -> TokenStream {
                 header_bytes.extend(bytes);
                 header_bytes
             }
+
+            fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+                todo!()
+            }
         }
     };
 

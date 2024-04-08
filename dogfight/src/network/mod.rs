@@ -1,5 +1,7 @@
 pub mod property;
 
+use std::io::Read;
+
 use serde::Serialize;
 use ts_rs::TS;
 
@@ -12,12 +14,16 @@ pub trait NetworkedEntity {
 
 pub trait NetworkedBytes {
     fn to_bytes(&self) -> Vec<u8>;
-    // fn from_bytes(bytes: Vec<u8>) -> Self;
+    fn from_bytes(bytes: &[u8]) -> (&[u8], Self);
 }
 
 impl NetworkedBytes for Team {
     fn to_bytes(&self) -> Vec<u8> {
         vec![*self as u8]
+    }
+
+    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+        todo!()
     }
 }
 
@@ -25,11 +31,21 @@ impl NetworkedBytes for i16 {
     fn to_bytes(&self) -> Vec<u8> {
         i16::to_le_bytes(*self).into()
     }
+
+    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+        let value = i16::from_le_bytes(bytes[..2].try_into().unwrap());
+        (&bytes[2..], value)
+    }
 }
 
 impl NetworkedBytes for i32 {
     fn to_bytes(&self) -> Vec<u8> {
         i32::to_le_bytes(*self).into()
+    }
+
+    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+        let value = i32::from_le_bytes(bytes[..4].try_into().unwrap());
+        (&bytes[4..], value)
     }
 }
 
