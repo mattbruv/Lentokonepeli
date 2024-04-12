@@ -120,9 +120,9 @@ pub fn networked(input: TokenStream) -> TokenStream {
         });
 
     let property_impl = quote! {
-        use crate::network::NetworkedBytes;
-        use crate::network::property_header_bytes;
-        use crate::network::parse_property_header_bytes;
+        use crate::network::encoding::NetworkedBytes;
+        use crate::network::encoding::property_header_bytes;
+        use crate::network::encoding::parse_property_header_bytes;
 
         impl NetworkedBytes for #properties_struct_name {
             fn to_bytes(&self) -> Vec<u8> {
