@@ -16,10 +16,6 @@ pub struct Man {
     client_y: Property<i16>,
 }
 
-//impl NetworkedProperties for ManProperties {
-//    fn to_bytes(&self) -> Vec<u8> {}
-//}
-
 impl Man {
     pub fn test(&mut self) {}
     pub fn new(team: Team) -> Self {
