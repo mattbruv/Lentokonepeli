@@ -3,7 +3,7 @@ use dogfight::{
         man::{Man, ManProperties},
         Team,
     },
-    network::{EntityProperties, NetworkedBytes, NetworkedEntity},
+    network::{encoding::NetworkedBytes, EntityProperties, NetworkedEntity},
 };
 use std::{time::Instant, vec};
 
