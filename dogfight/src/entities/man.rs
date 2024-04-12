@@ -14,9 +14,9 @@ pub struct Man {
     team: Property<Team>,
     client_x: Property<i16>,
     client_y: Property<i16>,
-    foo1: Property<i16>,
-    foo2: Property<i16>,
-    foo3: Property<i16>,
+    foo1: Property<i8>,
+    foo2: Property<i8>,
+    foo3: Property<i8>,
 }
 
 impl Man {
@@ -28,9 +28,9 @@ impl Man {
             team: Property::new(team),
             client_x: Property::new(0),
             client_y: Property::new(0),
-            foo1: Property::new(1),
-            foo2: Property::new(2),
-            foo3: Property::new(3),
+            foo1: Property::new(-1),
+            foo2: Property::new(-2),
+            foo3: Property::new(-128),
         }
     }
 
