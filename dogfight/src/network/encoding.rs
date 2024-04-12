@@ -1,5 +1,7 @@
+use std::{char::CharTryFromError, os::unix::process::parent_id};
+
 use crate::{
-    entities::{EntityType, Team},
+    entities::{man::ManProperties, plane::PlaneProperties, EntityType, Team},
     network::EntityChangeType,
 };
 
@@ -90,7 +92,53 @@ impl NetworkedBytes for EntityChange {
     }
 
     fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        todo!()
+        let (mut bytes, header) = u16::from_bytes(bytes);
+
+        let update_type = header & 1;
+
+        let ent_type_bitmask: u16 = 0b1111_1100_0000_0000;
+        let ent_type = entity_type_from_u8(((header & ent_type_bitmask) >> 10) as u8);
+
+        let ent_id_bitmask: u16 = 0b0000_0011_1111_1110;
+        let entity_id = (header & ent_id_bitmask) >> 1;
+
+        let update: EntityChangeType = match update_type {
+            0 => EntityChangeType::Deleted,
+
+            // for each possible type:
+            // parse the properties from bytes,
+            // advance the byte array,
+            // and return the new struct
+            1 => match ent_type {
+                EntityType::Man => {
+                    let (slice, props) = ManProperties::from_bytes(bytes);
+                    bytes = slice;
+                    EntityChangeType::Properties(EntityProperties::Man(props))
+                }
+                EntityType::Plane => {
+                    let (slice, props) = PlaneProperties::from_bytes(bytes);
+                    bytes = slice;
+                    EntityChangeType::Properties(EntityProperties::Plane(props))
+                }
+            },
+            _ => panic!("Unknown entity change type {}", update_type),
+        };
+
+        let change: EntityChange = EntityChange {
+            ent_type: ent_type,
+            id: entity_id,
+            update: update,
+        };
+
+        (bytes, change)
+    }
+}
+
+fn entity_type_from_u8(byte: u8) -> EntityType {
+    match byte {
+        0 => EntityType::Man,
+        1 => EntityType::Plane,
+        _ => panic!("Unrecognized entity type: {}", byte),
     }
 }
 
@@ -100,11 +148,7 @@ impl NetworkedBytes for EntityType {
     }
 
     fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        let ent_type = match bytes[0] {
-            0 => EntityType::Man,
-            1 => EntityType::Plane,
-            _ => panic!("Unrecognized entity type: {}", bytes[0]),
-        };
+        let ent_type = entity_type_from_u8(bytes[0]);
         (&bytes[1..], ent_type)
     }
 }
@@ -132,6 +176,17 @@ impl NetworkedBytes for i16 {
 
     fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
         let value = i16::from_le_bytes(bytes[..2].try_into().unwrap());
+        (&bytes[2..], value)
+    }
+}
+
+impl NetworkedBytes for u16 {
+    fn to_bytes(&self) -> Vec<u8> {
+        u16::to_le_bytes(*self).into()
+    }
+
+    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+        let value = u16::from_le_bytes(bytes[..2].try_into().unwrap());
         (&bytes[2..], value)
     }
 }
