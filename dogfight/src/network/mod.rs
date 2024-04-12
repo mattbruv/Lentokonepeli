@@ -75,6 +75,21 @@ pub fn property_header_bytes(is_property_set_vector: Vec<bool>) -> Vec<u8> {
     byte_vector
 }
 
+pub fn parse_property_header_bytes(header_bytes: &[u8], num_bytes: usize) -> (Vec<bool>, &[u8]) {
+    let mut properties = Vec::new();
+    let mut remaining_bytes = header_bytes;
+
+    for _ in 0..num_bytes {
+        let byte = remaining_bytes.get(0).copied().unwrap_or(0);
+        for i in 0..8 {
+            properties.push(byte & (1 << i) != 0);
+        }
+        remaining_bytes = &remaining_bytes[1..];
+    }
+
+    (properties, remaining_bytes)
+}
+
 pub fn state_to_json(state: Vec<EntityChange>) -> String {
     serde_json::to_string(&state).unwrap()
 }

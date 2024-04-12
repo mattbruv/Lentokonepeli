@@ -28,11 +28,14 @@ pub fn networked(input: TokenStream) -> TokenStream {
 
     // Iterate through the fields and collect identifiers and types
     let mut property_fields = Vec::new();
+
     for field in fields {
         if let Some((field_ident, property_type)) = extract_property_info(&field) {
             property_fields.push((field_ident, property_type));
         }
     }
+
+    let header_byte_count = (property_fields.len() + 7) / 8;
 
     // Generate the new struct definition
     let properties_struct_name =
@@ -95,9 +98,16 @@ pub fn networked(input: TokenStream) -> TokenStream {
         }
     });
 
+    let property_init = property_fields.iter().map(|(ident, ty)| {
+        quote! {
+            #ident: None
+        }
+    });
+
     let property_impl = quote! {
         use crate::network::NetworkedBytes;
         use crate::network::property_header_bytes;
+        use crate::network::parse_property_header_bytes;
 
         impl NetworkedBytes for #properties_struct_name {
             fn to_bytes(&self) -> Vec<u8> {
@@ -114,7 +124,15 @@ pub fn networked(input: TokenStream) -> TokenStream {
             }
 
             fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-                todo!()
+
+                let header = parse_property_header_bytes(bytes, #header_byte_count);
+
+                let mut parsed = #properties_struct_name {
+                    #(#property_init),*
+                };
+
+
+                (bytes, parsed)
             }
         }
     };
