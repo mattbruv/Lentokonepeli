@@ -20,8 +20,8 @@ impl World {
         };
 
         w.men.insert(Man::new(Team::Allies));
-        //w.men.insert(Man::new(Team::Centrals));
-        //w.men.insert(Man::new(Team::Centrals));
+        w.men.insert(Man::new(Team::Centrals));
+        w.men.insert(Man::new(Team::Centrals));
 
         w.planes.insert(Plane::new());
 

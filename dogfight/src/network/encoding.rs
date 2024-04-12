@@ -1,4 +1,9 @@
-use crate::entities::Team;
+use crate::{
+    entities::{EntityType, Team},
+    network::EntityChangeType,
+};
+
+use super::{EntityChange, EntityProperties};
 
 /**
  * This funciton is used to create the header bytes to tell
@@ -44,6 +49,64 @@ pub fn parse_property_header_bytes(header_bytes: &[u8], num_bytes: usize) -> (Ve
 pub trait NetworkedBytes {
     fn to_bytes(&self) -> Vec<u8>;
     fn from_bytes(bytes: &[u8]) -> (&[u8], Self);
+}
+
+impl NetworkedBytes for EntityChange {
+    fn to_bytes(&self) -> Vec<u8> {
+        let ent_type_bytes = self.ent_type.to_bytes();
+        let ent_type_u8 = ent_type_bytes.first().unwrap();
+        let update_type: u8 = match self.update {
+            EntityChangeType::Deleted => 0,
+            EntityChangeType::Properties(_) => 1,
+        };
+
+        let mut header: u16 = 0;
+
+        // set entity type as far left 6 bits
+        header |= (*ent_type_u8 as u16) << 10;
+
+        // set the entity ID, 9 bits wide
+        header |= self.id << 1;
+
+        // add update type as a single bit at bit 0
+        header |= update_type as u16;
+
+        let header_bytes = u16::to_le_bytes(header);
+
+        let mut encoded = vec![];
+        encoded.extend(header_bytes);
+
+        let data_encoded: Vec<u8> = match &self.update {
+            EntityChangeType::Properties(props) => match props {
+                EntityProperties::Man(man) => man.to_bytes(),
+                EntityProperties::Plane(plane) => plane.to_bytes(),
+            },
+            _ => vec![],
+        };
+
+        encoded.extend(data_encoded);
+
+        encoded
+    }
+
+    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+        todo!()
+    }
+}
+
+impl NetworkedBytes for EntityType {
+    fn to_bytes(&self) -> Vec<u8> {
+        vec![*self as u8]
+    }
+
+    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+        let ent_type = match bytes[0] {
+            0 => EntityType::Man,
+            1 => EntityType::Plane,
+            _ => panic!("Unrecognized entity type: {}", bytes[0]),
+        };
+        (&bytes[1..], ent_type)
+    }
 }
 
 impl NetworkedBytes for Team {

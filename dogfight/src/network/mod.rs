@@ -30,8 +30,8 @@ pub struct EntityChange {
 #[derive(Serialize, Debug, TS)]
 #[ts(export)]
 pub enum EntityChangeType {
-    Properties(EntityProperties),
     Deleted,
+    Properties(EntityProperties),
 }
 
 #[derive(Serialize, Debug, TS)]
