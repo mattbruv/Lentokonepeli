@@ -14,6 +14,7 @@ pub struct Man {
     team: Property<Team>,
     client_x: Property<i16>,
     client_y: Property<i16>,
+    foo: Property<i16>,
 }
 
 impl Man {
@@ -25,6 +26,7 @@ impl Man {
             team: Property::new(team),
             client_x: Property::new(0),
             client_y: Property::new(0),
+            foo: Property::new(20),
         }
     }
 

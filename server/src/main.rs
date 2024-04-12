@@ -26,6 +26,10 @@ fn main() {
             println!("{:?}", bytes);
             let (bytes, parsed) = ManProperties::from_bytes(&bytes);
             println!("{:?}", parsed);
+            println!("{:?}", parsed == man_props);
+            let json = serde_json::to_string(&parsed).unwrap();
+            println!("{:?}", json);
+
             println!("{:?}", bytes);
         }
         _ => (),

@@ -51,7 +51,7 @@ pub fn networked(input: TokenStream) -> TokenStream {
         use serde::Serialize;
         use ts_rs::TS;
 
-        #[derive(Serialize, Debug, TS)]
+        #[derive(Serialize, Debug, TS, Eq, PartialEq)]
         #[ts(export)]
         pub struct #properties_struct_name {
             #(#properties_fields),*
