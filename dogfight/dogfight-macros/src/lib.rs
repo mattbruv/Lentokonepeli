@@ -148,7 +148,7 @@ pub fn networked(input: TokenStream) -> TokenStream {
 
                 #(#property_loads)*
 
-                (bytes, parsed)
+                (data_bytes, parsed)
             }
         }
     };
