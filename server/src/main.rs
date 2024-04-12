@@ -23,14 +23,25 @@ fn main() {
         EntityProperties::Man(man_props) => {
             println!("{:?}", man_props);
             let bytes = man_props.to_bytes();
+            let t1 = Instant::now();
+            for _ in 1..1000 {
+                let _ = man_props.to_bytes();
+            }
+            let (new, parsed) = ManProperties::from_bytes(&bytes);
+            let tserialize = t1.elapsed();
             println!("{:?}", bytes);
-            let (bytes, parsed) = ManProperties::from_bytes(&bytes);
+            let t2 = Instant::now();
+            for _ in 1..1000 {
+                let _ = ManProperties::from_bytes(&bytes);
+            }
+            let tdeser = t2.elapsed();
             println!("{:?}", parsed);
             println!("{:?}", parsed == man_props);
             let json = serde_json::to_string(&parsed).unwrap();
             println!("{:?}", json);
 
             println!("{:?}", bytes);
+            println!("serialize: {:?} deserialize: {:?}", tserialize, tdeser);
         }
         _ => (),
     }

@@ -55,6 +55,28 @@ impl NetworkedBytes for i32 {
     }
 }
 
+impl NetworkedBytes for u8 {
+    fn to_bytes(&self) -> Vec<u8> {
+        u8::to_le_bytes(*self).into()
+    }
+
+    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+        let value = u8::from_le_bytes(bytes[..1].try_into().unwrap());
+        (&bytes[1..], value)
+    }
+}
+
+impl NetworkedBytes for i8 {
+    fn to_bytes(&self) -> Vec<u8> {
+        i8::to_le_bytes(*self).into()
+    }
+
+    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+        let value = i8::from_le_bytes(bytes[..1].try_into().unwrap());
+        (&bytes[1..], value)
+    }
+}
+
 /**
  * This funciton is used to create the header bytes to tell
  * if properties of an object are changed/included in the binary data or not.
