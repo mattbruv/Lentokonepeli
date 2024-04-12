@@ -17,11 +17,11 @@ where
     pub fn new(ent_type: EntityType) -> EntityContainer<T> {
         let container = EntityContainer {
             ent_type: ent_type,
-            ids: (0..(2 as EntityId).pow(10)).rev().collect(), // generate list of 0 to 2^10 = 1024 Ids
+            ids: (0..(2 as EntityId).pow(9)).rev().collect(), // generate list of 0 to 2^9 = 512 Ids
             map: HashMap::new(),
         };
 
-        assert!(container.ids.len() <= 1024);
+        assert!(container.ids.len() <= 512);
         container
     }
 
