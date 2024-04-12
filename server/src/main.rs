@@ -24,14 +24,14 @@ fn main() {
             println!("{:?}", man_props);
             let bytes = man_props.to_bytes();
             let t1 = Instant::now();
-            for _ in 1..1000 {
+            for _ in 1..10000 {
                 let _ = man_props.to_bytes();
             }
-            let (new, parsed) = ManProperties::from_bytes(&bytes);
+            let (_, parsed) = ManProperties::from_bytes(&bytes);
             let tserialize = t1.elapsed();
             println!("{:?}", bytes);
             let t2 = Instant::now();
-            for _ in 1..1000 {
+            for _ in 1..10000 {
                 let _ = ManProperties::from_bytes(&bytes);
             }
             let tdeser = t2.elapsed();
