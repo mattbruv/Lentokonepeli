@@ -4,13 +4,16 @@ use dogfight::{
 };
 
 fn main() {
-    let world: World = World::new();
+    let mut world: World = World::new();
 
-    let state = world.get_full_state();
+    let _ = world.get_changed_state();
+    let _ = world.get_changed_state();
+    let _ = world.get_changed_state();
+    let state = world.get_changed_state();
     let bytes: Vec<u8> = state.iter().flat_map(|x| x.to_bytes()).collect();
 
     println!("{:?}", state);
-    //println!("{:?}", bytes);
+    println!("{:?}", bytes);
 
     let mut bytes_copy = bytes.as_slice();
     let mut parsed: Vec<EntityChange> = vec![];

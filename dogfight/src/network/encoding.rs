@@ -86,6 +86,11 @@ impl NetworkedBytes for EntityChange {
             _ => vec![],
         };
 
+        // If nothing was encoded, don't return anything.
+        if data_encoded.len() <= 1 {
+            return vec![]
+        }
+
         encoded.extend(data_encoded);
 
         encoded

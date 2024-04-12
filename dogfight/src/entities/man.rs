@@ -20,7 +20,7 @@ pub struct Man {
 }
 
 impl Man {
-    pub fn test(&mut self) {}
+    pub fn test(&mut self) {} 
     pub fn new(team: Team) -> Self {
         Man {
             x: 0,
