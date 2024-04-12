@@ -104,6 +104,21 @@ pub fn networked(input: TokenStream) -> TokenStream {
         }
     });
 
+    let property_loads = property_fields
+        .iter()
+        .enumerate()
+        .map(|(index, (ident, ty))| {
+            quote! {
+                // If the header is set, read bytes of that type
+                if header[#index] {
+                    let data = #ty::from_bytes(data_bytes);
+                    parsed.#ident = Some(data.1);
+                    // set data byte slice to new range
+                    data_bytes = data.0;
+                }
+            }
+        });
+
     let property_impl = quote! {
         use crate::network::NetworkedBytes;
         use crate::network::property_header_bytes;
@@ -125,12 +140,13 @@ pub fn networked(input: TokenStream) -> TokenStream {
 
             fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
 
-                let header = parse_property_header_bytes(bytes, #header_byte_count);
+                let (header, mut data_bytes) = parse_property_header_bytes(bytes, #header_byte_count);
 
                 let mut parsed = #properties_struct_name {
                     #(#property_init),*
                 };
 
+                #(#property_loads)*
 
                 (bytes, parsed)
             }
