@@ -26,6 +26,7 @@ fn main() {
             println!("{:?}", bytes);
             let (bytes, parsed) = ManProperties::from_bytes(&bytes);
             println!("{:?}", parsed);
+            println!("{:?}", bytes);
         }
         _ => (),
     }
