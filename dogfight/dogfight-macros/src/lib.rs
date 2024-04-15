@@ -98,7 +98,7 @@ pub fn networked(input: TokenStream) -> TokenStream {
         }
     });
 
-    let property_init = property_fields.iter().map(|(ident, ty)| {
+    let property_init = property_fields.iter().map(|(ident, _)| {
         quote! {
             #ident: None
         }

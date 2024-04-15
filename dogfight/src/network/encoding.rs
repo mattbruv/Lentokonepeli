@@ -1,5 +1,3 @@
-use std::{char::CharTryFromError, os::unix::process::parent_id};
-
 use crate::{
     entities::{man::ManProperties, plane::PlaneProperties, EntityType, Team},
     network::EntityChangeType,
@@ -88,7 +86,7 @@ impl NetworkedBytes for EntityChange {
 
         // If nothing was encoded, don't return anything.
         if data_encoded.len() <= 1 {
-            return vec![]
+            return vec![];
         }
 
         encoded.extend(data_encoded);
