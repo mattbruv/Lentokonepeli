@@ -2,7 +2,8 @@ use std::collections::HashMap;
 
 use crate::network::{EntityChange, EntityChangeType, NetworkedEntity};
 
-use super::{EntityId, EntityType};
+use super::EntityId;
+use crate::entities::types::EntityType;
 
 pub struct EntityContainer<T> {
     ent_type: EntityType,

@@ -1,9 +1,8 @@
 use dogfight_macros::Networked;
 
-use crate::{
-    entities::Team,
-    network::{property::*, EntityProperties, NetworkedEntity},
-};
+use crate::network::{property::*, EntityProperties, NetworkedEntity};
+
+use super::types::Team;
 
 #[derive(Networked)]
 pub struct Flag {

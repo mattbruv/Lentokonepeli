@@ -6,7 +6,7 @@ use ts_rs::TS;
 
 use crate::entities::{
     flag::FlagProperties, ground::GroundProperties, man::ManProperties, plane::PlaneProperties,
-    player::PlayerProperties, EntityId, EntityType,
+    player::PlayerProperties, types::EntityType, EntityId,
 };
 
 pub trait NetworkedEntity {
