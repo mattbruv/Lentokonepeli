@@ -80,6 +80,7 @@ impl NetworkedBytes for EntityChange {
             EntityChangeType::Properties(props) => match props {
                 EntityProperties::Man(man) => man.to_bytes(),
                 EntityProperties::Plane(plane) => plane.to_bytes(),
+                EntityProperties::Player(player) => player.to_bytes(),
             },
             _ => vec![],
         };
@@ -156,6 +157,23 @@ impl NetworkedBytes for EntityType {
     }
 }
 
+impl NetworkedBytes for String {
+    fn to_bytes(&self) -> Vec<u8> {
+        let bytes = self.as_bytes();
+        let mut len = (bytes.len() as u32).to_bytes();
+        len.extend(bytes);
+
+        len
+    }
+    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+        let (bytes, len) = u32::from_bytes(bytes);
+        let slice = &bytes[0..len as usize];
+        let string_value = std::str::from_utf8(slice).unwrap();
+
+        (&bytes[len as usize..], string_value.into())
+    }
+}
+
 impl NetworkedBytes for Team {
     fn to_bytes(&self) -> Vec<u8> {
         vec![*self as u8]
@@ -190,6 +208,17 @@ impl NetworkedBytes for u16 {
     fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
         let value = u16::from_le_bytes(bytes[..2].try_into().unwrap());
         (&bytes[2..], value)
+    }
+}
+
+impl NetworkedBytes for u32 {
+    fn to_bytes(&self) -> Vec<u8> {
+        u32::to_le_bytes(*self).into()
+    }
+
+    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+        let value = u32::from_le_bytes(bytes[..4].try_into().unwrap());
+        (&bytes[4..], value)
     }
 }
 

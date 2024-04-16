@@ -28,4 +28,11 @@ fn main() {
     let b = format!("{:?}", parsed);
 
     println!("{:?}", a == b);
+
+    let test: String = "hélló".into();
+    let bytes = test.to_bytes();
+    println!("{:?}", bytes);
+    let read = String::from_bytes(&bytes);
+    println!("{}", read.1);
+    println!("{:?}", read.0);
 }
