@@ -1,5 +1,7 @@
 use crate::{
-    entities::{man::ManProperties, plane::PlaneProperties, EntityType, Team},
+    entities::{
+        man::ManProperties, plane::PlaneProperties, player::PlayerProperties, EntityType, Team,
+    },
     network::EntityChangeType,
 };
 
@@ -123,6 +125,11 @@ impl NetworkedBytes for EntityChange {
                     let (slice, props) = PlaneProperties::from_bytes(bytes);
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::Plane(props))
+                }
+                EntityType::Player => {
+                    let (slice, props) = PlayerProperties::from_bytes(bytes);
+                    bytes = slice;
+                    EntityChangeType::Properties(EntityProperties::Player(props))
                 }
             },
             _ => panic!("Unknown entity change type {}", update_type),
