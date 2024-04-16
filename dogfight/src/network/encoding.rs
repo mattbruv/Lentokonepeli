@@ -149,6 +149,7 @@ fn entity_type_from_u8(byte: u8) -> EntityType {
     match byte {
         0 => EntityType::Man,
         1 => EntityType::Plane,
+        2 => EntityType::Player,
         _ => panic!("Unrecognized entity type: {}", byte),
     }
 }

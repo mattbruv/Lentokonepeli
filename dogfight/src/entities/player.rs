@@ -1,3 +1,5 @@
+use std::string;
+
 use crate::network::{property::*, EntityProperties, NetworkedEntity};
 use dogfight_macros::Networked;
 
@@ -10,4 +12,16 @@ pub struct Player {
     name: Property<String>,
     #[rustfmt::skip]
     clan: Property<Option::<String>>,
+}
+
+impl Player {
+    pub fn new(name: String) -> Self {
+        Player {
+            shots: 0,
+            hits: 0,
+            team_kills: 0,
+            name: Property::new(name),
+            clan: Property::new(None),
+        }
+    }
 }

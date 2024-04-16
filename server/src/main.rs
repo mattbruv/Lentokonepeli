@@ -6,10 +6,7 @@ use dogfight::{
 fn main() {
     let mut world: World = World::new();
 
-    let _ = world.get_changed_state();
-    let _ = world.get_changed_state();
-    let _ = world.get_changed_state();
-    let state = world.get_changed_state();
+    let state = world.get_full_state();
     let bytes: Vec<u8> = state.iter().flat_map(|x| x.to_bytes()).collect();
 
     println!("{:?}", state);
