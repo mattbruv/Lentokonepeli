@@ -1,13 +1,8 @@
 use crate::{
     entities::{
-        coast::CoastProperties,
-        flag::FlagProperties,
-        ground::GroundProperties,
-        man::ManProperties,
-        plane::{PlaneProperties, PlaneType},
-        player::PlayerProperties,
-        runway::RunwayProperties,
-        types::{EntityType, Facing, Team, Terrain},
+        coast::CoastProperties, flag::FlagProperties, ground::GroundProperties, man::ManProperties,
+        plane::PlaneProperties, player::PlayerProperties, runway::RunwayProperties,
+        types::EntityType,
     },
     network::EntityChangeType,
 };
@@ -115,7 +110,9 @@ impl NetworkedBytes for EntityChange {
         let update_type = header & 1;
 
         let ent_type_bitmask: u16 = 0b1111_1100_0000_0000;
-        let ent_type = entity_type_from_u8(((header & ent_type_bitmask) >> 10) as u8);
+        let ent_byte = ((header & ent_type_bitmask) >> 10) as u8;
+        let slice = vec![ent_byte];
+        let (_, ent_type) = EntityType::from_bytes(&slice);
 
         let ent_id_bitmask: u16 = 0b0000_0011_1111_1110;
         let entity_id = (header & ent_id_bitmask) >> 1;
@@ -182,80 +179,6 @@ impl NetworkedBytes for EntityChange {
     }
 }
 
-fn entity_type_from_u8(byte: u8) -> EntityType {
-    match byte {
-        0 => EntityType::Man,
-        1 => EntityType::Plane,
-        2 => EntityType::Player,
-        3 => EntityType::Flag,
-        4 => EntityType::Ground,
-        5 => EntityType::Coast,
-        6 => EntityType::Runway,
-        7 => EntityType::Water,
-        _ => panic!("Unrecognized entity type: {}", byte),
-    }
-}
-
-impl NetworkedBytes for Terrain {
-    fn to_bytes(&self) -> Vec<u8> {
-        vec![*self as u8]
-    }
-
-    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        let terrain = match bytes[0] {
-            0 => Terrain::Normal,
-            1 => Terrain::Desert,
-            _ => panic!("Unrecognized terrain byte: {}", bytes[0]),
-        };
-        (&bytes[1..], terrain)
-    }
-}
-
-impl NetworkedBytes for PlaneType {
-    fn to_bytes(&self) -> Vec<u8> {
-        vec![*self as u8]
-    }
-
-    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        let plane_type = match bytes[0] {
-            4 => PlaneType::Albatros,
-            7 => PlaneType::Bristol,
-            6 => PlaneType::Fokker,
-            5 => PlaneType::Junkers,
-            8 => PlaneType::Salmson,
-            9 => PlaneType::Sopwith,
-            _ => panic!("Unrecognized plane type: {}", bytes[0]),
-        };
-        (&bytes[1..], plane_type)
-    }
-}
-
-impl NetworkedBytes for Facing {
-    fn to_bytes(&self) -> Vec<u8> {
-        vec![*self as u8]
-    }
-
-    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        let facing = match bytes[0] {
-            0 => Facing::Right,
-            1 => Facing::Left,
-            _ => panic!("Unrecognized facing byte: {}", bytes[0]),
-        };
-        (&bytes[1..], facing)
-    }
-}
-
-impl NetworkedBytes for EntityType {
-    fn to_bytes(&self) -> Vec<u8> {
-        vec![*self as u8]
-    }
-
-    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        let ent_type = entity_type_from_u8(bytes[0]);
-        (&bytes[1..], ent_type)
-    }
-}
-
 impl<T: NetworkedBytes> NetworkedBytes for Option<T> {
     fn to_bytes(&self) -> Vec<u8> {
         match self {
@@ -295,21 +218,6 @@ impl NetworkedBytes for String {
         let string_value = std::str::from_utf8(slice).unwrap();
 
         (&bytes[len as usize..], string_value.into())
-    }
-}
-
-impl NetworkedBytes for Team {
-    fn to_bytes(&self) -> Vec<u8> {
-        vec![*self as u8]
-    }
-
-    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        let team = match bytes[0] {
-            0 => Team::Centrals,
-            1 => Team::Allies,
-            _ => panic!("Unrecognized team byte: {}", bytes[0]),
-        };
-        (&bytes[1..], team)
     }
 }
 

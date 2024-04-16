@@ -2,6 +2,48 @@ use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, Data, DeriveInput, Fields, Ident};
 
+#[proc_macro_derive(EnumBytes)]
+pub fn enum_bytes(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as DeriveInput);
+    let enum_name = &input.ident;
+
+    let variants = match input.data {
+        Data::Enum(data) => data.variants,
+        _ => panic!("EnumBytes only works for enums, you dummy"),
+    };
+
+    if variants.len() > 255 {
+        panic!("You have a shit ton of enum variants, you're probably doing something stupid.");
+    }
+
+    let mappings = variants.iter().enumerate().map(|(idx, variant)| {
+        let name = &variant.ident;
+        let val_u8 = idx as u8;
+        quote! {
+            #val_u8 => #enum_name::#name,
+        }
+        //
+    });
+
+    let error_string = format!("Unrecognized {} byte:", enum_name) + " {}";
+
+    TokenStream::from(quote! {
+        impl NetworkedBytes for #enum_name {
+            fn to_bytes(&self) -> Vec<u8> {
+                vec![*self as u8]
+            }
+
+            fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+                let value = match bytes[0] {
+                    #(#mappings)*
+                    _ => panic!(#error_string, bytes[0]),
+                };
+                (&bytes[1..], value)
+            }
+        }
+    })
+}
+
 #[proc_macro_derive(Networked)]
 pub fn networked(input: TokenStream) -> TokenStream {
     // Parse the input tokens into a syntax tree
