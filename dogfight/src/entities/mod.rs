@@ -20,4 +20,5 @@ pub enum Team {
 pub enum EntityType {
     Man,
     Plane,
+    Player,
 }
