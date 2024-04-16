@@ -2,6 +2,7 @@ use serde::Serialize;
 use ts_rs::TS;
 
 pub mod container;
+pub mod flag;
 pub mod man;
 pub mod plane;
 pub mod player;
@@ -18,7 +19,8 @@ pub enum Team {
 #[derive(Serialize, Clone, Copy, Debug, TS)]
 #[ts(export)]
 pub enum EntityType {
-    Man,
-    Plane,
-    Player,
+    Man = 0,
+    Plane = 1,
+    Player = 2,
+    Flag = 3,
 }
