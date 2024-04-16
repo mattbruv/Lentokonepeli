@@ -6,14 +6,14 @@ use ts_rs::TS;
 #[derive(Serialize, Clone, Copy, Debug, TS, EnumBytes)]
 #[ts(export)]
 pub enum EntityType {
-    Man = 0,
-    Plane = 1,
-    Player = 2,
-    Flag = 3,
-    Ground = 4,
-    Coast = 5,
-    Runway = 6,
-    Water = 7,
+    Man,
+    Plane,
+    Player,
+    Flag,
+    Ground,
+    Coast,
+    Runway,
+    Water,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, TS, Serialize, EnumBytes)]
