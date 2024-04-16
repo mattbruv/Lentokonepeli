@@ -4,7 +4,7 @@ use crate::{
         flag::FlagProperties,
         ground::GroundProperties,
         man::ManProperties,
-        plane::PlaneProperties,
+        plane::{PlaneProperties, PlaneType},
         player::PlayerProperties,
         runway::RunwayProperties,
         types::{EntityType, Facing, Team, Terrain},
@@ -201,6 +201,25 @@ impl NetworkedBytes for Terrain {
             _ => panic!("Unrecognized terrain byte: {}", bytes[0]),
         };
         (&bytes[1..], terrain)
+    }
+}
+
+impl NetworkedBytes for PlaneType {
+    fn to_bytes(&self) -> Vec<u8> {
+        vec![*self as u8]
+    }
+
+    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+        let plane_type = match bytes[0] {
+            4 => PlaneType::Albatros,
+            7 => PlaneType::Bristol,
+            6 => PlaneType::Fokker,
+            5 => PlaneType::Junkers,
+            8 => PlaneType::Salmson,
+            9 => PlaneType::Sopwith,
+            _ => panic!("Unrecognized plane type: {}", bytes[0]),
+        };
+        (&bytes[1..], plane_type)
     }
 }
 

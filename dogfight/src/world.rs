@@ -7,7 +7,7 @@ use crate::{
         flag::Flag,
         ground::Ground,
         man::Man,
-        plane::Plane,
+        plane::{Plane, PlaneType},
         player::Player,
         runway::Runway,
         types::{EntityType, Facing, Team, Terrain},
@@ -46,7 +46,7 @@ impl World {
         w.men.insert(Man::new(Team::Centrals));
         w.men.insert(Man::new(Team::Centrals));
 
-        w.planes.insert(Plane::new());
+        w.planes.insert(Plane::new(PlaneType::Albatros));
         w.coasts
             .insert(Coast::new(Terrain::Desert, Facing::Left, 10, 20));
         w.runways
