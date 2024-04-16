@@ -2,16 +2,19 @@ use std::vec;
 
 use crate::{
     entities::{
-        container::EntityContainer, man::Man, plane::Plane, player::Player, EntityType, Team,
+        container::EntityContainer, flag::Flag, man::Man, plane::Plane, player::Player, EntityType,
+        Team,
     },
     network::EntityChange,
 };
 
 pub const RESOLUTION: i32 = 100;
+pub const LEVEL_BORDER_X: i16 = 20_000;
 
 pub struct World {
     players: EntityContainer<Player>,
     planes: EntityContainer<Plane>,
+    flags: EntityContainer<Flag>,
     men: EntityContainer<Man>,
 }
 
@@ -21,6 +24,7 @@ impl World {
             men: EntityContainer::new(EntityType::Man),
             planes: EntityContainer::new(EntityType::Plane),
             players: EntityContainer::new(EntityType::Player),
+            flags: EntityContainer::new(EntityType::Flag),
         };
 
         w.players.insert(Player::new("matt".into()));
@@ -51,6 +55,7 @@ impl World {
         state.extend(self.men.get_all_full_state());
         state.extend(self.planes.get_all_full_state());
         state.extend(self.players.get_all_full_state());
+        state.extend(self.flags.get_all_full_state());
         state
     }
 
@@ -59,6 +64,7 @@ impl World {
         state.extend(self.men.get_all_changed_state());
         state.extend(self.planes.get_all_changed_state());
         state.extend(self.players.get_all_changed_state());
+        state.extend(self.flags.get_all_changed_state());
         state
     }
 }
