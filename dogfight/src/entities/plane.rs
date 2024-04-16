@@ -25,13 +25,23 @@ pub enum PlaneState {
 
 #[derive(Networked)]
 pub struct Plane {
+    x: i32,
+    y: i32,
+    client_x: Property<i16>,
+    client_y: Property<i16>,
     plane_type: Property<PlaneType>,
+    state: PlaneState,
 }
 
 impl Plane {
     pub fn new(plane_type: PlaneType) -> Plane {
         Plane {
             plane_type: Property::new(plane_type),
+            x: 0,
+            y: 0,
+            client_x: Property::new(0),
+            client_y: Property::new(0),
+            state: PlaneState::Landed,
         }
     }
 }
