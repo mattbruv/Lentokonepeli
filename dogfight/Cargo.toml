@@ -1,4 +1,4 @@
-workspace = { members = ["dogfight-macros"] }
+workspace = { members = ["dogfight-macros", "dogfight-web"] }
 [package]
 name = "dogfight"
 version = "0.1.0"

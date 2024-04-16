@@ -6,7 +6,7 @@ function App() {
   const [count, setCount] = useState(0);
 
   let web = DogfightWeb.new();
-  console.log(web);
+  //console.log(web);
   //let state = web.get_changed_state();
   let x = web.get_changed_state_binary();
   //console.log(state);
