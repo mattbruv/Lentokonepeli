@@ -1,8 +1,16 @@
 import { useState } from "react";
 import "./App.css";
+import { DogfightWeb } from "dogfight-web";
 
 function App() {
   const [count, setCount] = useState(0);
+
+  let web = DogfightWeb.new();
+  console.log(web);
+  //let state = web.get_changed_state();
+  let x = web.get_changed_state_binary();
+  //console.log(state);
+  console.log(x);
 
   return (
     <>

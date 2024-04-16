@@ -10,17 +10,19 @@ use crate::entities::{
     water::WaterProperties, EntityId,
 };
 
+use self::encoding::NetworkedBytes;
+
 pub trait NetworkedEntity {
     fn get_full_properties(&self) -> EntityProperties;
     fn get_changed_properties_and_reset(&mut self) -> EntityProperties;
 }
 
-pub fn state_to_json(state: Vec<EntityChange>) -> String {
+pub fn entity_changes_to_json(state: Vec<EntityChange>) -> String {
     serde_json::to_string(&state).unwrap()
 }
 
-pub fn state_to_bytes(state: Vec<EntityChange>) -> Vec<u8> {
-    bincode::serialize(&state).unwrap()
+pub fn entity_changes_to_binary(state: Vec<EntityChange>) -> Vec<u8> {
+    state.iter().flat_map(|x| x.to_bytes()).collect()
 }
 
 #[derive(Serialize, Debug, TS)]
