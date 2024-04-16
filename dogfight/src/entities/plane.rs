@@ -1,8 +1,8 @@
-use dogfight_macros::Networked;
+use dogfight_macros::{EnumBytes, Networked};
 
 use crate::network::{property::Property, EntityProperties, NetworkedEntity};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS, EnumBytes)]
 #[ts(export)]
 pub enum PlaneType {
     Albatros = 4,
