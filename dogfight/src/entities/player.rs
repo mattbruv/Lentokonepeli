@@ -1,5 +1,3 @@
-use std::string;
-
 use crate::network::{property::*, EntityProperties, NetworkedEntity};
 use dogfight_macros::Networked;
 
