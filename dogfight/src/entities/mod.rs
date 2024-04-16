@@ -10,9 +10,8 @@ pub type EntityId = u16;
 #[derive(Serialize, Clone, Copy, PartialEq, Eq, Debug, TS)]
 #[ts(export)]
 pub enum Team {
-    None,
-    Allies,
-    Centrals,
+    Centrals = 0,
+    Allies = 1,
 }
 
 #[derive(Serialize, Clone, Copy, Debug, TS)]
