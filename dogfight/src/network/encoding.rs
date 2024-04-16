@@ -1,7 +1,12 @@
 use crate::{
     entities::{
-        flag::FlagProperties, ground::GroundProperties, man::ManProperties, plane::PlaneProperties,
-        player::PlayerProperties, types::EntityType, types::Team, types::Terrain,
+        coast::CoastProperties,
+        flag::FlagProperties,
+        ground::GroundProperties,
+        man::ManProperties,
+        plane::PlaneProperties,
+        player::PlayerProperties,
+        types::{EntityType, Facing, Team, Terrain},
     },
     network::EntityChangeType,
 };
@@ -86,6 +91,7 @@ impl NetworkedBytes for EntityChange {
                 EntityProperties::Player(player) => player.to_bytes(),
                 EntityProperties::Flag(flag) => flag.to_bytes(),
                 EntityProperties::Ground(ground) => ground.to_bytes(),
+                EntityProperties::Coast(coast) => coast.to_bytes(),
             },
             _ => vec![],
         };
@@ -144,6 +150,11 @@ impl NetworkedBytes for EntityChange {
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::Ground(props))
                 }
+                EntityType::Coast => {
+                    let (slice, props) = CoastProperties::from_bytes(bytes);
+                    bytes = slice;
+                    EntityChangeType::Properties(EntityProperties::Coast(props))
+                }
             },
             _ => panic!("Unknown entity change type {}", update_type),
         };
@@ -164,6 +175,8 @@ fn entity_type_from_u8(byte: u8) -> EntityType {
         1 => EntityType::Plane,
         2 => EntityType::Player,
         3 => EntityType::Flag,
+        4 => EntityType::Ground,
+        5 => EntityType::Coast,
         _ => panic!("Unrecognized entity type: {}", byte),
     }
 }
@@ -177,9 +190,24 @@ impl NetworkedBytes for Terrain {
         let terrain = match bytes[0] {
             0 => Terrain::Normal,
             1 => Terrain::Desert,
-            _ => panic!("Unrecognized team byte: {}", bytes[0]),
+            _ => panic!("Unrecognized terrain byte: {}", bytes[0]),
         };
         (&bytes[1..], terrain)
+    }
+}
+
+impl NetworkedBytes for Facing {
+    fn to_bytes(&self) -> Vec<u8> {
+        vec![*self as u8]
+    }
+
+    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+        let facing = match bytes[0] {
+            0 => Facing::Right,
+            1 => Facing::Left,
+            _ => panic!("Unrecognized facing byte: {}", bytes[0]),
+        };
+        (&bytes[1..], facing)
     }
 }
 

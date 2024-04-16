@@ -5,8 +5,8 @@ use serde::Serialize;
 use ts_rs::TS;
 
 use crate::entities::{
-    flag::FlagProperties, ground::GroundProperties, man::ManProperties, plane::PlaneProperties,
-    player::PlayerProperties, types::EntityType, EntityId,
+    coast::CoastProperties, flag::FlagProperties, ground::GroundProperties, man::ManProperties,
+    plane::PlaneProperties, player::PlayerProperties, types::EntityType, EntityId,
 };
 
 pub trait NetworkedEntity {
@@ -45,4 +45,5 @@ pub enum EntityProperties {
     Player(PlayerProperties),
     Flag(FlagProperties),
     Ground(GroundProperties),
+    Coast(CoastProperties),
 }

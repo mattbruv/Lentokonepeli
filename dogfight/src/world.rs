@@ -2,13 +2,14 @@ use std::vec;
 
 use crate::{
     entities::{
+        coast::Coast,
         container::EntityContainer,
         flag::Flag,
         ground::Ground,
         man::Man,
         plane::Plane,
         player::Player,
-        types::{EntityType, Team},
+        types::{EntityType, Facing, Team, Terrain},
     },
     network::EntityChange,
 };
@@ -22,6 +23,7 @@ pub struct World {
     flags: EntityContainer<Flag>,
     men: EntityContainer<Man>,
     grounds: EntityContainer<Ground>,
+    coasts: EntityContainer<Coast>,
 }
 
 impl World {
@@ -32,6 +34,7 @@ impl World {
             players: EntityContainer::new(EntityType::Player),
             flags: EntityContainer::new(EntityType::Flag),
             grounds: EntityContainer::new(EntityType::Ground),
+            coasts: EntityContainer::new(EntityType::Coast),
         };
 
         w.players.insert(Player::new("matt".into()));
@@ -41,6 +44,8 @@ impl World {
         w.men.insert(Man::new(Team::Centrals));
 
         w.planes.insert(Plane::new());
+        w.coasts
+            .insert(Coast::new(Terrain::Desert, Facing::Left, 10, 20));
 
         w
     }
@@ -64,6 +69,7 @@ impl World {
         state.extend(self.players.get_all_full_state());
         state.extend(self.flags.get_all_full_state());
         state.extend(self.grounds.get_all_full_state());
+        state.extend(self.coasts.get_all_full_state());
         state
     }
 
@@ -74,6 +80,7 @@ impl World {
         state.extend(self.players.get_all_changed_state());
         state.extend(self.flags.get_all_changed_state());
         state.extend(self.grounds.get_all_changed_state());
+        state.extend(self.coasts.get_all_changed_state());
         state
     }
 }
