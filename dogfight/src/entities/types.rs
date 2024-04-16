@@ -19,20 +19,20 @@ pub enum EntityType {
 #[derive(Debug, PartialEq, Eq, Clone, Copy, TS, Serialize, EnumBytes)]
 #[ts(export)]
 pub enum Terrain {
-    Normal = 0,
-    Desert = 1,
+    Normal,
+    Desert,
 }
 
 #[derive(Serialize, Clone, Copy, PartialEq, Eq, Debug, TS, EnumBytes)]
 #[ts(export)]
 pub enum Team {
-    Centrals = 0,
-    Allies = 1,
+    Centrals,
+    Allies,
 }
 
 #[derive(Serialize, Clone, Copy, PartialEq, Eq, Debug, TS, EnumBytes)]
 #[ts(export)]
 pub enum Facing {
-    Right = 0,
-    Left = 1,
+    Right,
+    Left,
 }
