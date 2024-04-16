@@ -1,7 +1,7 @@
 use crate::{
     entities::{
         flag::FlagProperties, ground::GroundProperties, man::ManProperties, plane::PlaneProperties,
-        player::PlayerProperties, terrain::Terrain, EntityType, Team,
+        player::PlayerProperties, types::EntityType, types::Team, types::Terrain,
     },
     network::EntityChangeType,
 };

@@ -2,8 +2,13 @@ use std::vec;
 
 use crate::{
     entities::{
-        container::EntityContainer, flag::Flag, ground::Ground, man::Man, plane::Plane,
-        player::Player, EntityType, Team,
+        container::EntityContainer,
+        flag::Flag,
+        ground::Ground,
+        man::Man,
+        plane::Plane,
+        player::Player,
+        types::{EntityType, Team},
     },
     network::EntityChange,
 };

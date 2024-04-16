@@ -2,7 +2,7 @@ use dogfight_macros::Networked;
 
 use crate::network::{property::*, EntityProperties, NetworkedEntity};
 
-use super::terrain::Terrain;
+use super::types::Terrain;
 
 #[derive(Networked)]
 pub struct Ground {

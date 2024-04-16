@@ -1,10 +1,11 @@
 use dogfight_macros::Networked;
 
 use crate::{
-    entities::Team,
     network::{property::*, EntityProperties, NetworkedEntity},
     world::RESOLUTION,
 };
+
+use super::types::Team;
 
 #[derive(Networked)]
 pub struct Man {
