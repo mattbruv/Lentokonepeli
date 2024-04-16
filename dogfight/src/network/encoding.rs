@@ -163,9 +163,8 @@ impl NetworkedBytes for Team {
 
     fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
         let team = match bytes[0] {
-            0 => Team::None,
+            0 => Team::Centrals,
             1 => Team::Allies,
-            2 => Team::Centrals,
             _ => panic!("Unrecognized team byte: {}", bytes[0]),
         };
         (&bytes[1..], team)
