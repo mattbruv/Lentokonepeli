@@ -5,6 +5,7 @@ pub mod ground;
 pub mod man;
 pub mod plane;
 pub mod player;
+pub mod runway;
 pub mod types;
 
 pub type EntityId = u16;

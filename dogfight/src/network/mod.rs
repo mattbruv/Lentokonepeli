@@ -6,7 +6,8 @@ use ts_rs::TS;
 
 use crate::entities::{
     coast::CoastProperties, flag::FlagProperties, ground::GroundProperties, man::ManProperties,
-    plane::PlaneProperties, player::PlayerProperties, types::EntityType, EntityId,
+    plane::PlaneProperties, player::PlayerProperties, runway::RunwayProperties, types::EntityType,
+    EntityId,
 };
 
 pub trait NetworkedEntity {
@@ -46,4 +47,5 @@ pub enum EntityProperties {
     Flag(FlagProperties),
     Ground(GroundProperties),
     Coast(CoastProperties),
+    Runway(RunwayProperties),
 }

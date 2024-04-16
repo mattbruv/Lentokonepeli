@@ -10,6 +10,7 @@ pub enum EntityType {
     Flag = 3,
     Ground = 4,
     Coast = 5,
+    Runway = 6,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, TS, Serialize)]
