@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 import { DogfightWeb } from "dogfight-web";
+import { sayGoodbye } from "dogfight-renderer";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -24,8 +25,9 @@ function App() {
         </p>
       </div>
       <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
+        Click on the Vite and React logos to learn more ok
       </p>
+      <p>{sayGoodbye()}</p>
     </>
   );
 }

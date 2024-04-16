@@ -10,7 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "dogfight-web": "file:../dogfight/dogfight-web/pkg",
+    "dogfight-renderer": "file:../renderer",
+    "dogfight-web": "file:../../dogfight/dogfight-web/pkg",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
