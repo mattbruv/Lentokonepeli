@@ -1,13 +1,16 @@
 use std::vec;
 
 use crate::{
-    entities::{container::EntityContainer, man::Man, plane::Plane, EntityType, Team},
+    entities::{
+        container::EntityContainer, man::Man, plane::Plane, player::Player, EntityType, Team,
+    },
     network::EntityChange,
 };
 
 pub const RESOLUTION: i32 = 100;
 
 pub struct World {
+    players: EntityContainer<Player>,
     planes: EntityContainer<Plane>,
     men: EntityContainer<Man>,
 }
@@ -17,7 +20,10 @@ impl World {
         let mut w = World {
             men: EntityContainer::new(EntityType::Man),
             planes: EntityContainer::new(EntityType::Plane),
+            players: EntityContainer::new(EntityType::Player),
         };
+
+        w.players.insert(Player::new("matt".into()));
 
         w.men.insert(Man::new(Team::Allies));
         w.men.insert(Man::new(Team::Centrals));
@@ -44,6 +50,7 @@ impl World {
         let mut state = vec![];
         state.extend(self.men.get_all_full_state());
         state.extend(self.planes.get_all_full_state());
+        state.extend(self.players.get_all_full_state());
         state
     }
 
@@ -51,6 +58,7 @@ impl World {
         let mut state = vec![];
         state.extend(self.men.get_all_changed_state());
         state.extend(self.planes.get_all_changed_state());
+        state.extend(self.players.get_all_changed_state());
         state
     }
 }
