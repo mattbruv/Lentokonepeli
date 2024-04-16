@@ -18,11 +18,11 @@ pub fn enum_bytes(input: TokenStream) -> TokenStream {
 
     let mut enum_value: i32 = -1;
 
-    let mappings = variants.iter().enumerate().map(|(idx, variant)| {
+    let mappings = variants.iter().map(|variant| {
         let name = &variant.ident;
 
         match &variant.discriminant {
-            Some((eq, expr)) => match expr {
+            Some((_, expr)) => match expr {
                 syn::Expr::Lit(lit) => match &lit.lit {
                     Lit::Int(int) => {
                         if let Ok(value) = int.base10_parse::<u8>() {
