@@ -29,10 +29,10 @@ fn main() {
 
     println!("{:?}", a == b);
 
-    let test: String = "hélló".into();
+    let test = Some("optional string test".to_string());
     let bytes = test.to_bytes();
     println!("{:?}", bytes);
-    let read = String::from_bytes(&bytes);
-    println!("{}", read.1);
+    let read = Option::<String>::from_bytes(&bytes);
+    println!("{:?}", read.1);
     println!("{:?}", read.0);
 }
