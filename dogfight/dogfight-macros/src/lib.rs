@@ -1,6 +1,6 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, Data, DeriveInput, Fields, Ident};
+use syn::{parse_macro_input, Data, DeriveInput, Fields, Ident, Lit};
 
 #[proc_macro_derive(EnumBytes)]
 pub fn enum_bytes(input: TokenStream) -> TokenStream {
@@ -16,11 +16,34 @@ pub fn enum_bytes(input: TokenStream) -> TokenStream {
         panic!("You have a shit ton of enum variants, you're probably doing something stupid.");
     }
 
+    let mut enum_value: i32 = -1;
+
     let mappings = variants.iter().enumerate().map(|(idx, variant)| {
         let name = &variant.ident;
-        let val_u8 = idx as u8;
+
+        match &variant.discriminant {
+            Some((eq, expr)) => match expr {
+                syn::Expr::Lit(lit) => match &lit.lit {
+                    Lit::Int(int) => {
+                        if let Ok(value) = int.base10_parse::<u8>() {
+                            enum_value = value as i32;
+                        } else {
+                            panic!("Unable to parse int value")
+                        }
+                    }
+                    _ => panic!("invalid enum value"),
+                },
+                _ => panic!("invalid enum value"),
+            },
+            None => {
+                enum_value += 1;
+            }
+        }
+
+        let val = enum_value as u8;
+
         quote! {
-            #val_u8 => #enum_name::#name,
+            #val => #enum_name::#name,
         }
         //
     });
