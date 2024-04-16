@@ -4,6 +4,7 @@ use ts_rs::TS;
 pub mod container;
 pub mod man;
 pub mod plane;
+pub mod player;
 
 pub type EntityId = u16;
 

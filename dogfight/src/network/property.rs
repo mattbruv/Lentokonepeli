@@ -14,7 +14,7 @@ pub struct Property<T: Eq + Debug> {
 
 impl<T> Property<T>
 where
-    T: Eq + Debug + Copy,
+    T: Eq + Debug + Clone,
 {
     pub fn new(value: T) -> Self {
         Self {
@@ -44,12 +44,12 @@ where
     #[inline]
     fn get_and_reset(&mut self) -> T {
         self.dirty = false;
-        self.value
+        self.value.clone()
     }
 
     #[inline]
     pub fn get_full(&self) -> Option<T> {
-        Some(self.value)
+        Some(self.value.clone())
     }
 
     #[inline]

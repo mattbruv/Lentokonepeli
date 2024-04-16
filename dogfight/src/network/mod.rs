@@ -4,7 +4,9 @@ pub mod property;
 use serde::Serialize;
 use ts_rs::TS;
 
-use crate::entities::{man::ManProperties, plane::PlaneProperties, EntityId, EntityType};
+use crate::entities::{
+    man::ManProperties, plane::PlaneProperties, player::PlayerProperties, EntityId, EntityType,
+};
 
 pub trait NetworkedEntity {
     fn get_full_properties(&self) -> EntityProperties;
@@ -39,4 +41,5 @@ pub enum EntityChangeType {
 pub enum EntityProperties {
     Man(ManProperties),
     Plane(PlaneProperties),
+    Player(PlayerProperties),
 }

@@ -92,7 +92,7 @@ pub fn networked(input: TokenStream) -> TokenStream {
     let to_bytes = property_fields.iter().map(|(ident, _)| {
         quote! {
             is_set.push(self.#ident.is_some());
-            if let Some(val) = self.#ident {
+            if let Some(val) = &self.#ident {
                 bytes.extend(val.to_bytes());
             }
         }
