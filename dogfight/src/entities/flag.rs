@@ -3,7 +3,6 @@ use dogfight_macros::Networked;
 use crate::{
     entities::Team,
     network::{property::*, EntityProperties, NetworkedEntity},
-    world::RESOLUTION,
 };
 
 #[derive(Networked)]

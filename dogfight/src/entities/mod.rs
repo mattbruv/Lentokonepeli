@@ -3,9 +3,11 @@ use ts_rs::TS;
 
 pub mod container;
 pub mod flag;
+pub mod ground;
 pub mod man;
 pub mod plane;
 pub mod player;
+pub mod terrain;
 
 pub type EntityId = u16;
 
@@ -23,4 +25,5 @@ pub enum EntityType {
     Plane = 1,
     Player = 2,
     Flag = 3,
+    Ground = 4,
 }

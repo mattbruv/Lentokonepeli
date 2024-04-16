@@ -1,7 +1,7 @@
 use crate::{
     entities::{
-        flag::FlagProperties, man::ManProperties, plane::PlaneProperties, player::PlayerProperties,
-        EntityType, Team,
+        flag::FlagProperties, ground::GroundProperties, man::ManProperties, plane::PlaneProperties,
+        player::PlayerProperties, terrain::Terrain, EntityType, Team,
     },
     network::EntityChangeType,
 };
@@ -85,6 +85,7 @@ impl NetworkedBytes for EntityChange {
                 EntityProperties::Plane(plane) => plane.to_bytes(),
                 EntityProperties::Player(player) => player.to_bytes(),
                 EntityProperties::Flag(flag) => flag.to_bytes(),
+                EntityProperties::Ground(ground) => ground.to_bytes(),
             },
             _ => vec![],
         };
@@ -138,6 +139,11 @@ impl NetworkedBytes for EntityChange {
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::Flag(props))
                 }
+                EntityType::Ground => {
+                    let (slice, props) = GroundProperties::from_bytes(bytes);
+                    bytes = slice;
+                    EntityChangeType::Properties(EntityProperties::Ground(props))
+                }
             },
             _ => panic!("Unknown entity change type {}", update_type),
         };
@@ -159,6 +165,21 @@ fn entity_type_from_u8(byte: u8) -> EntityType {
         2 => EntityType::Player,
         3 => EntityType::Flag,
         _ => panic!("Unrecognized entity type: {}", byte),
+    }
+}
+
+impl NetworkedBytes for Terrain {
+    fn to_bytes(&self) -> Vec<u8> {
+        vec![*self as u8]
+    }
+
+    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+        let terrain = match bytes[0] {
+            0 => Terrain::Normal,
+            1 => Terrain::Desert,
+            _ => panic!("Unrecognized team byte: {}", bytes[0]),
+        };
+        (&bytes[1..], terrain)
     }
 }
 
