@@ -8,4 +8,6 @@ pub struct Player {
     team_kills: i32,
 
     name: Property<String>,
+    #[rustfmt::skip]
+    clan: Property<Option::<String>>,
 }

@@ -164,6 +164,31 @@ impl NetworkedBytes for EntityType {
     }
 }
 
+impl<T: NetworkedBytes> NetworkedBytes for Option<T> {
+    fn to_bytes(&self) -> Vec<u8> {
+        match self {
+            Some(thing) => {
+                let mut bytes = vec![1];
+                bytes.extend(thing.to_bytes());
+                bytes
+            }
+            None => vec![0],
+        }
+    }
+
+    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+        let (bytes, is_some) = u8::from_bytes(bytes);
+
+        match is_some {
+            1 => {
+                let (bytes, thing) = T::from_bytes(bytes);
+                (bytes, Some(thing))
+            }
+            _ => (bytes, None),
+        }
+    }
+}
+
 impl NetworkedBytes for String {
     fn to_bytes(&self) -> Vec<u8> {
         let bytes = self.as_bytes();
