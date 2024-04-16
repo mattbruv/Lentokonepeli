@@ -94,6 +94,7 @@ impl NetworkedBytes for EntityChange {
                 EntityProperties::Ground(ground) => ground.to_bytes(),
                 EntityProperties::Coast(coast) => coast.to_bytes(),
                 EntityProperties::Runway(runway) => runway.to_bytes(),
+                EntityProperties::Water(water) => water.to_bytes(),
             },
             _ => vec![],
         };
@@ -162,6 +163,11 @@ impl NetworkedBytes for EntityChange {
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::Runway(props))
                 }
+                EntityType::Water => {
+                    let (slice, props) = RunwayProperties::from_bytes(bytes);
+                    bytes = slice;
+                    EntityChangeType::Properties(EntityProperties::Runway(props))
+                }
             },
             _ => panic!("Unknown entity change type {}", update_type),
         };
@@ -185,6 +191,7 @@ fn entity_type_from_u8(byte: u8) -> EntityType {
         4 => EntityType::Ground,
         5 => EntityType::Coast,
         6 => EntityType::Runway,
+        7 => EntityType::Water,
         _ => panic!("Unrecognized entity type: {}", byte),
     }
 }

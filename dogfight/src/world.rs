@@ -11,6 +11,7 @@ use crate::{
         player::Player,
         runway::Runway,
         types::{EntityType, Facing, Team, Terrain},
+        water::Water,
     },
     network::EntityChange,
 };
@@ -26,6 +27,7 @@ pub struct World {
     grounds: EntityContainer<Ground>,
     coasts: EntityContainer<Coast>,
     runways: EntityContainer<Runway>,
+    waters: EntityContainer<Water>,
 }
 
 impl World {
@@ -38,6 +40,7 @@ impl World {
             grounds: EntityContainer::new(EntityType::Ground),
             coasts: EntityContainer::new(EntityType::Coast),
             runways: EntityContainer::new(EntityType::Runway),
+            waters: EntityContainer::new(EntityType::Water),
         };
 
         w.players.insert(Player::new("matt".into()));
@@ -76,6 +79,7 @@ impl World {
         state.extend(self.grounds.get_all_full_state());
         state.extend(self.coasts.get_all_full_state());
         state.extend(self.runways.get_all_full_state());
+        state.extend(self.waters.get_all_full_state());
         state
     }
 
@@ -88,6 +92,7 @@ impl World {
         state.extend(self.grounds.get_all_changed_state());
         state.extend(self.coasts.get_all_changed_state());
         state.extend(self.runways.get_all_changed_state());
+        state.extend(self.waters.get_all_changed_state());
         state
     }
 }
