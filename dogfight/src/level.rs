@@ -8,7 +8,10 @@ use std::vec;
 
 use crate::{
     entities::{
+        background_item::BackgroundItem,
+        coast::Coast,
         ground::Ground,
+        runway::Runway,
         types::{BackgroundItemType, Facing, Team, Terrain},
         water::Water,
     },
@@ -35,50 +38,24 @@ impl World {
                         Water::new(terrain, facing, width as i16, pos.x as i16, pos.y as i16);
                     self.waters.insert(water);
                 }
-                LevelObject::Coast(pos, terrain, dir) => {
-                    println!("{:?}", pos);
-                    //          let mut coast = Coast::new();
-                    //         coast.set_x(pos.x);
-                    //        coast.set_y(pos.y);
-                    //       coast.set_terrain_type(terrain);
-                    //      coast.set_facing(dir);
-                    //     self.coasts.add(coast);
+                LevelObject::Coast(pos, terrain, facing) => {
+                    let coast = Coast::new(terrain, facing, pos.x as i16, pos.y as i16);
+                    self.coasts.insert(coast);
                 }
                 LevelObject::Runway(pos, team, facing) => {
-                    println!("{:?}", pos);
-                    //                let mut runway = Runway::new();
-                    //               runway.set_facing(facing);
-                    //              runway.set_x(pos.x);
-                    //             runway.set_y(pos.y);
-                    //            runway.set_team(team);
-                    //           runway.set_health(255);
-                    //          self.runways.add(runway);
+                    let runway = Runway::new(team, facing, pos.x as i16, pos.y as i16);
+                    self.runways.insert(runway);
                 }
                 LevelObject::BackgroundItem(pos, item_type, facing) => {
-                    println!("{:?}", pos);
-                    //                   let mut obj = BackgroundItem::new();
-                    //                  obj.set_x(pos.x);
-                    //                 obj.set_y(pos.y);
-                    //                obj.set_item_type(item_type);
-                    //               obj.set_facing(facing);
-                    //              self.background_items.add(obj);
+                    let bg_item =
+                        BackgroundItem::new(item_type, facing, pos.x as i16, pos.y as i16);
+                    self.background_items.insert(bg_item);
                 }
                 LevelObject::Bunker(pos, team) => {
-                    println!("{:?}", pos);
-                    //                let mut obj = Bunker::new();
-                    //               obj.set_x(pos.x);
-                    //              obj.set_y(pos.y);
-                    //             obj.set_health(255);
-                    //            obj.set_team(team);
-                    //           self.bunkers.add(obj);
+                    //println!("bunker {:?} {:?}", pos, team);
                 }
                 LevelObject::Hill(pos, terrain) => {
-                    println!("{:?}", pos);
-                    //                 let mut hill = Hill::new();
-                    //                hill.set_x(pos.x);
-                    //               hill.set_y(pos.y);
-                    //              hill.set_terrain_type(terrain);
-                    //             self.hills.add(hill);
+                    //println!("{:?}", pos);
                 }
             }
         }
