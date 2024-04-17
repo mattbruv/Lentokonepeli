@@ -35,8 +35,31 @@ The purpose of this project is to bring this nostalgic game back to life and kee
 
 ## Development
 
-Currently in progress.
-This section will be re-written when there is something to show.
+### Repo Structure:
+
+#### Game/Server
+
+- [./dogfight](./dogfight/): The Rust source code for the game's logic
+  - Build by running `cargo build --release`
+  - Generate Types for the TypeScript library by running `cargo test`
+- [./dogfight/dogfight-macros/](./dogfight/dogfight-macros/):
+  The procedural macros used by the game.
+  - Build by running `cargo build --release`
+- [./dogfight/dogfight-web/](./dogfight/dogfight-web/):
+  A WASM <---> JS interface for the dogfight game, which exports a package enabling dogfight to run in the browser.
+  - Build by running `wasm-pack build`
+
+#### Web Client
+
+- [./client/renderer/](./client/renderer/):
+  A pure TypeScript library with logic for rendering logic to render a game world.
+  - `npm install`
+  - run `npm run copy` to copy the types generated from `./dogfight/` into the appropriate folder so they can be used in this project.
+  - Build with `tsc` or in watch mode with `tsc --watch`
+- [./client/ui/](./client/ui/):
+  A React web user interface
+  - `npm install`
+  - Run with `npm run dev`
 
 ## Acknowledgments
 
