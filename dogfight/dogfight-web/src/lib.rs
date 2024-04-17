@@ -1,7 +1,5 @@
 mod utils;
 
-use std::vec;
-
 use dogfight::network::{entity_changes_to_binary, entity_changes_to_json};
 use dogfight::world::World;
 use wasm_bindgen::prelude::*;
