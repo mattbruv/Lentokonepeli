@@ -1,7 +1,4 @@
-use dogfight::{
-    network::{encoding::NetworkedBytes, EntityChange},
-    world::World,
-};
+use dogfight::world::World;
 
 fn main() {
     let mut world: World = World::new();
