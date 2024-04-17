@@ -11,12 +11,8 @@ function App() {
   //console.log(web);
   //let state = web.get_changed_state();
   let x = web.get_changed_state();
-  console.log(x);
   let state = JSON.parse(x) as EntityChange[];
-  let foo = sayGoodbye(state);
-  console.log(foo);
-  //console.log(state);
-  console.log(x);
+  sayGoodbye(state);
 
   return (
     <>

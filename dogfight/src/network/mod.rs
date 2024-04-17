@@ -35,6 +35,7 @@ pub struct EntityChange {
 
 #[derive(Serialize, Debug, TS)]
 #[ts(export)]
+#[serde(tag = "type", content = "data")]
 pub enum EntityChangeType {
     Deleted,
     Properties(EntityProperties),
@@ -42,6 +43,7 @@ pub enum EntityChangeType {
 
 #[derive(Serialize, Debug, TS)]
 #[ts(export)]
+#[serde(tag = "type", content = "props")]
 pub enum EntityProperties {
     Man(ManProperties),
     Plane(PlaneProperties),
