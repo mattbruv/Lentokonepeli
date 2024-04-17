@@ -7,7 +7,7 @@
 use std::vec;
 
 use crate::{
-    entities::types::{Facing, Team, Terrain},
+    entities::types::{BackgroundItemType, Facing, Team, Terrain},
     images::{
         get_image, BEACH_L, BEACH_L_DESERT, FLAG_GER_1, HEADQUARTER_GERMANS, HEADQUARTER_RAF,
         RUNWAY, RUNWAY2,
