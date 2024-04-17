@@ -90,7 +90,7 @@ pub enum LevelObject {
     BackgroundItem(Point, BackgroundItemType, Facing),
 }
 
-pub fn parse_level(level_str: &str) -> Level {
+fn parse_level(level_str: &str) -> Level {
     // println!("parse level: {}", level_str);
     let mut level = Level {
         name: String::from("unnamed"),
