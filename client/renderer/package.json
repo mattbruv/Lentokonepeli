@@ -4,7 +4,8 @@
   "main": "dist/index.js",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "copy": "cp -R ../../dogfight/bindings src/"
   },
   "types": "dist/index.d.ts",
   "author": "",
