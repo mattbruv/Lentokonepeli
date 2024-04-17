@@ -1,8 +1,8 @@
 use crate::{
     entities::{
-        coast::CoastProperties, flag::FlagProperties, ground::GroundProperties, man::ManProperties,
-        plane::PlaneProperties, player::PlayerProperties, runway::RunwayProperties,
-        types::EntityType,
+        background_item::BackgroundItemProperties, coast::CoastProperties,
+        ground::GroundProperties, man::ManProperties, plane::PlaneProperties,
+        player::PlayerProperties, runway::RunwayProperties, types::EntityType,
     },
     network::EntityChangeType,
 };
@@ -85,7 +85,7 @@ impl NetworkedBytes for EntityChange {
                 EntityProperties::Man(man) => man.to_bytes(),
                 EntityProperties::Plane(plane) => plane.to_bytes(),
                 EntityProperties::Player(player) => player.to_bytes(),
-                EntityProperties::Flag(flag) => flag.to_bytes(),
+                EntityProperties::BackgroundItem(bg_item) => bg_item.to_bytes(),
                 EntityProperties::Ground(ground) => ground.to_bytes(),
                 EntityProperties::Coast(coast) => coast.to_bytes(),
                 EntityProperties::Runway(runway) => runway.to_bytes(),
@@ -140,10 +140,10 @@ impl NetworkedBytes for EntityChange {
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::Player(props))
                 }
-                EntityType::Flag => {
-                    let (slice, props) = FlagProperties::from_bytes(bytes);
+                EntityType::BackgroundItem => {
+                    let (slice, props) = BackgroundItemProperties::from_bytes(bytes);
                     bytes = slice;
-                    EntityChangeType::Properties(EntityProperties::Flag(props))
+                    EntityChangeType::Properties(EntityProperties::BackgroundItem(props))
                 }
                 EntityType::Ground => {
                     let (slice, props) = GroundProperties::from_bytes(bytes);

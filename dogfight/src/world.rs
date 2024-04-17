@@ -2,9 +2,9 @@ use std::vec;
 
 use crate::{
     entities::{
+        background_item::{self, BackgroundItem},
         coast::Coast,
         container::EntityContainer,
-        flag::Flag,
         ground::Ground,
         man::Man,
         plane::{Plane, PlaneType},
@@ -22,7 +22,7 @@ pub const LEVEL_BORDER_X: i16 = 20_000;
 pub struct World {
     players: EntityContainer<Player>,
     planes: EntityContainer<Plane>,
-    flags: EntityContainer<Flag>,
+    background_items: EntityContainer<BackgroundItem>,
     men: EntityContainer<Man>,
     grounds: EntityContainer<Ground>,
     coasts: EntityContainer<Coast>,
@@ -36,7 +36,7 @@ impl World {
             men: EntityContainer::new(EntityType::Man),
             planes: EntityContainer::new(EntityType::Plane),
             players: EntityContainer::new(EntityType::Player),
-            flags: EntityContainer::new(EntityType::Flag),
+            background_items: EntityContainer::new(EntityType::BackgroundItem),
             grounds: EntityContainer::new(EntityType::Ground),
             coasts: EntityContainer::new(EntityType::Coast),
             runways: EntityContainer::new(EntityType::Runway),
@@ -75,7 +75,7 @@ impl World {
         state.extend(self.men.get_all_full_state());
         state.extend(self.planes.get_all_full_state());
         state.extend(self.players.get_all_full_state());
-        state.extend(self.flags.get_all_full_state());
+        state.extend(self.background_items.get_all_full_state());
         state.extend(self.grounds.get_all_full_state());
         state.extend(self.coasts.get_all_full_state());
         state.extend(self.runways.get_all_full_state());
@@ -88,7 +88,7 @@ impl World {
         state.extend(self.men.get_all_changed_state());
         state.extend(self.planes.get_all_changed_state());
         state.extend(self.players.get_all_changed_state());
-        state.extend(self.flags.get_all_changed_state());
+        state.extend(self.background_items.get_all_changed_state());
         state.extend(self.grounds.get_all_changed_state());
         state.extend(self.coasts.get_all_changed_state());
         state.extend(self.runways.get_all_changed_state());

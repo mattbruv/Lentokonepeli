@@ -9,11 +9,21 @@ pub enum EntityType {
     Man,
     Plane,
     Player,
-    Flag,
+    BackgroundItem,
     Ground,
     Coast,
     Runway,
     Water,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy, TS, Serialize, EnumBytes)]
+#[ts(export)]
+pub enum BackgroundItemType {
+    FlagCentrals,
+    FlagAllies,
+    ControlTower,
+    DesertTower,
+    PalmTree,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, TS, Serialize, EnumBytes)]
