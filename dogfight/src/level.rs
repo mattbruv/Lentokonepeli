@@ -13,7 +13,85 @@ use crate::{
         RUNWAY, RUNWAY2,
     },
     math::Point,
+    world::World,
 };
+
+impl World {
+    pub fn load_level(&mut self, level_str: &str) {
+        let level_data = parse_level(level_str);
+
+        for object in level_data.objects {
+            match object {
+                LevelObject::Ground(pos, width, terrain_type) => {
+                    println!("{:?}", pos);
+                    /*
+                                            let mut ground = Ground::new();
+                                            ground.set_x(pos.x);
+                                            ground.set_y(pos.y);
+                                            ground.set_width(width);
+                                            ground.set_terrain_type(terrain_type);
+                                            self.grounds.add(ground);
+                    */
+                }
+                LevelObject::Water(pos, width, terrain_type, facing) => {
+                    println!("{:?}", pos);
+                    //                      let mut water = Water::new();
+                    //                     water.set_x(pos.x);
+                    //                    water.set_y(pos.y);
+                    //                   water.set_width(width);
+                    //                  water.set_terrain_type(terrain_type);
+                    //                 water.set_facing(facing);
+                    //                self.waters.add(water);
+                }
+                LevelObject::Coast(pos, terrain, dir) => {
+                    println!("{:?}", pos);
+                    //          let mut coast = Coast::new();
+                    //         coast.set_x(pos.x);
+                    //        coast.set_y(pos.y);
+                    //       coast.set_terrain_type(terrain);
+                    //      coast.set_facing(dir);
+                    //     self.coasts.add(coast);
+                }
+                LevelObject::Runway(pos, team, facing) => {
+                    println!("{:?}", pos);
+                    //                let mut runway = Runway::new();
+                    //               runway.set_facing(facing);
+                    //              runway.set_x(pos.x);
+                    //             runway.set_y(pos.y);
+                    //            runway.set_team(team);
+                    //           runway.set_health(255);
+                    //          self.runways.add(runway);
+                }
+                LevelObject::BackgroundItem(pos, item_type, facing) => {
+                    println!("{:?}", pos);
+                    //                   let mut obj = BackgroundItem::new();
+                    //                  obj.set_x(pos.x);
+                    //                 obj.set_y(pos.y);
+                    //                obj.set_item_type(item_type);
+                    //               obj.set_facing(facing);
+                    //              self.background_items.add(obj);
+                }
+                LevelObject::Bunker(pos, team) => {
+                    println!("{:?}", pos);
+                    //                let mut obj = Bunker::new();
+                    //               obj.set_x(pos.x);
+                    //              obj.set_y(pos.y);
+                    //             obj.set_health(255);
+                    //            obj.set_team(team);
+                    //           self.bunkers.add(obj);
+                }
+                LevelObject::Hill(pos, terrain) => {
+                    println!("{:?}", pos);
+                    //                 let mut hill = Hill::new();
+                    //                hill.set_x(pos.x);
+                    //               hill.set_y(pos.y);
+                    //              hill.set_terrain_type(terrain);
+                    //             self.hills.add(hill);
+                }
+            }
+        }
+    }
+}
 
 #[derive(Debug)]
 struct CharInfo {
