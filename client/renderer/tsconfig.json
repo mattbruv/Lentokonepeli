@@ -4,7 +4,7 @@
     "target": "es2019",
     "declaration": true,
     "declarationMap": true,
-    "outDir": "./dist",
+    "outDir": "dist",
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
