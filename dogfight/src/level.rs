@@ -7,7 +7,11 @@
 use std::vec;
 
 use crate::{
-    entities::types::{BackgroundItemType, Facing, Team, Terrain},
+    entities::{
+        ground::Ground,
+        types::{BackgroundItemType, Facing, Team, Terrain},
+        water::Water,
+    },
     images::{
         get_image, BEACH_L, BEACH_L_DESERT, FLAG_GER_1, HEADQUARTER_GERMANS, HEADQUARTER_RAF,
         RUNWAY, RUNWAY2,
@@ -22,26 +26,14 @@ impl World {
 
         for object in level_data.objects {
             match object {
-                LevelObject::Ground(pos, width, terrain_type) => {
-                    println!("{:?}", pos);
-                    /*
-                                            let mut ground = Ground::new();
-                                            ground.set_x(pos.x);
-                                            ground.set_y(pos.y);
-                                            ground.set_width(width);
-                                            ground.set_terrain_type(terrain_type);
-                                            self.grounds.add(ground);
-                    */
+                LevelObject::Ground(pos, width, terrain) => {
+                    let ground = Ground::new(terrain, width as i16, pos.x as i16, pos.y as i16);
+                    self.grounds.insert(ground);
                 }
-                LevelObject::Water(pos, width, terrain_type, facing) => {
-                    println!("{:?}", pos);
-                    //                      let mut water = Water::new();
-                    //                     water.set_x(pos.x);
-                    //                    water.set_y(pos.y);
-                    //                   water.set_width(width);
-                    //                  water.set_terrain_type(terrain_type);
-                    //                 water.set_facing(facing);
-                    //                self.waters.add(water);
+                LevelObject::Water(pos, width, terrain, facing) => {
+                    let water =
+                        Water::new(terrain, facing, width as i16, pos.x as i16, pos.y as i16);
+                    self.waters.insert(water);
                 }
                 LevelObject::Coast(pos, terrain, dir) => {
                     println!("{:?}", pos);
