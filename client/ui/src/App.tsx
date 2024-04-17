@@ -1,33 +1,19 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import "./App.css";
-import { DogfightWeb } from "dogfight-web";
-import { sayGoodbye } from "dogfight-renderer";
-import { EntityChange } from "dogfight-renderer/dist/bindings/EntityChange";
+import { DogfightContext } from "./DogfightContext";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const dogfight = useContext(DogfightContext);
 
-  let web = DogfightWeb.new();
-  //console.log(web);
-  //let state = web.get_changed_state();
-  let x = web.get_changed_state();
-  let state = JSON.parse(x) as EntityChange[];
-  sayGoodbye(state);
+  // TODO: read string from client and interpret it as a level,
+  // render internal state to screen
 
   return (
     <>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+      <h1>Lento</h1>
+      <div>
+        <p>{dogfight}</p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more ok
-      </p>
     </>
   );
 }
