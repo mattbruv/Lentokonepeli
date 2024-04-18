@@ -12,8 +12,9 @@
   "dependencies": {
     "@mantine/core": "^7.8.0",
     "@mantine/hooks": "^7.8.0",
-    "dogfight-renderer": "file:../renderer",
-    "dogfight-web": "file:../../dogfight/dogfight-web/pkg",
+    "dogfight-web": "file:../dogfight/dogfight-web/pkg",
+    "pixi-viewport": "^5.1.0",
+    "pixi.js": "^8.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
