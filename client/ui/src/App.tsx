@@ -5,6 +5,9 @@ import { DogfightContext } from "./DogfightContext";
 function App() {
   const dogfight = useContext(DogfightContext);
 
+  const x = dogfight.game.get_changed_state_binary();
+  console.log(x);
+
   // TODO: read string from client and interpret it as a level,
   // render internal state to screen
 
@@ -12,7 +15,7 @@ function App() {
     <>
       <h1>Lento</h1>
       <div>
-        <p>{dogfight}</p>
+        <p>test</p>
       </div>
     </>
   );
