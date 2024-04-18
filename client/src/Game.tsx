@@ -6,10 +6,7 @@ export function Game() {
   const dogfight = useContext(DogfightContext);
 
   useEffect(() => {
-    const init = async () => {
-      await dogfight.client.init(gameContainer.current);
-    };
-    init();
+    dogfight.client.appendView(gameContainer.current);
   }, []);
 
   return <div ref={gameContainer}></div>;

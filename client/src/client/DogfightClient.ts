@@ -3,22 +3,20 @@ import { SKY_COLOR } from "./constants";
 import { Viewport } from "pixi-viewport";
 
 export class DogfightClient {
-  app: PIXI.Application;
+  app: PIXI.Application<HTMLCanvasElement>;
   viewport: Viewport;
 
   constructor() {
-    this.app = new PIXI.Application();
-    this.viewport = new Viewport();
-    console.log("INIT!");
+    this.app = new PIXI.Application<HTMLCanvasElement>({
+      backgroundColor: SKY_COLOR,
+    });
+
+    this.viewport = new Viewport({
+      events: this.app.renderer.events,
+    });
   }
 
-  async init(div: HTMLDivElement | null) {
-    if (div !== null) {
-      await this.app.init({
-        backgroundColor: SKY_COLOR,
-        resizeTo: window,
-      });
-      div.appendChild(this.app.canvas);
-    }
+  public appendView(element: HTMLDivElement | null) {
+    element?.appendChild(this.app.view);
   }
 }
