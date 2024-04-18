@@ -4,10 +4,10 @@ import { DogfightClient } from "./client/DogfightClient";
 
 interface Dogfight {
   game: DogfightWeb;
-  renderer: DogfightClient;
+  client: DogfightClient;
 }
 
 export const DogfightContext = createContext<Dogfight>({
   game: DogfightWeb.new(),
-  renderer: new DogfightClient(),
+  client: new DogfightClient(),
 });

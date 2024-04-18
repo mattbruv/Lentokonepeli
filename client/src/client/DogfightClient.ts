@@ -9,11 +9,16 @@ export class DogfightClient {
   constructor() {
     this.app = new PIXI.Application();
     this.viewport = new Viewport();
+    console.log("INIT!");
   }
 
-  async init() {
-    await this.app.init({
-      backgroundColor: SKY_COLOR,
-    });
+  async init(div: HTMLDivElement | null) {
+    if (div !== null) {
+      await this.app.init({
+        backgroundColor: SKY_COLOR,
+        resizeTo: window,
+      });
+      div.appendChild(this.app.canvas);
+    }
   }
 }
