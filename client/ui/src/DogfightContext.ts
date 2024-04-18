@@ -1,3 +1,10 @@
+import { DogfightWeb } from "dogfight-web";
 import { createContext } from "react";
 
-export const DogfightContext = createContext(100);
+interface Dogfight {
+  game: DogfightWeb;
+}
+
+export const DogfightContext = createContext<Dogfight>({
+  game: DogfightWeb.new(),
+});
