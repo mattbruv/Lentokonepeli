@@ -1,10 +1,13 @@
 mod utils;
 
 use std::fmt::format;
+use std::time::Instant;
 
 use dogfight::network::{entity_changes_to_binary, entity_changes_to_json};
 use dogfight::world::World;
 use wasm_bindgen::prelude::*;
+
+use crate::utils::set_panic_hook;
 
 #[wasm_bindgen]
 extern "C" {
@@ -39,5 +42,13 @@ impl DogfightWeb {
 
     pub fn get_full_state_binary(&self) -> Vec<u8> {
         entity_changes_to_binary(self.world.get_full_state())
+    }
+
+    pub fn test(&self) -> String {
+        set_panic_hook();
+        let t = Instant::now();
+        let foo = self.get_full_state();
+        let elapsed = t.elapsed();
+        format!("time spent: {:?}", elapsed)
     }
 }
