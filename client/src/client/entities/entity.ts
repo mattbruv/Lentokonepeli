@@ -1,11 +1,7 @@
-import { Facing } from "dogfight-types/Facing";
+import * as PIXI from "pixi.js";
 
-interface Entity {
-  foo: () => Facing;
+interface Entity<Props> {
+  getContainer: () => PIXI.Container;
+  updateProperties: (props: Props) => void;
+  destroy: () => void;
 }
-
-const x: Entity = {
-  foo: function (): Facing {
-    return "Right";
-  },
-};
