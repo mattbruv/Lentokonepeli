@@ -1,5 +1,7 @@
 mod utils;
 
+use std::fmt::format;
+
 use dogfight::network::{entity_changes_to_binary, entity_changes_to_json};
 use dogfight::world::World;
 use wasm_bindgen::prelude::*;
@@ -29,5 +31,13 @@ impl DogfightWeb {
 
     pub fn get_changed_state_binary(&mut self) -> Vec<u8> {
         entity_changes_to_binary(self.world.get_changed_state())
+    }
+
+    pub fn get_full_state(&self) -> String {
+        entity_changes_to_json(self.world.get_full_state())
+    }
+
+    pub fn get_full_state_binary(&self) -> Vec<u8> {
+        entity_changes_to_binary(self.world.get_full_state())
     }
 }
