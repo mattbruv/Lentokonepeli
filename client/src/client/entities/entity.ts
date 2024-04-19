@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 
-interface Entity<Props> {
+export interface Entity<Props> {
   getContainer: () => PIXI.Container;
   updateProperties: (props: Props) => void;
   destroy: () => void;
