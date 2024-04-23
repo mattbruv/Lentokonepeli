@@ -6,6 +6,7 @@ export async function loadTextures() {
   const spritesheet = await PIXI.Assets.load<PIXI.Spritesheet>(
     "./images/images.json"
   );
+  spritesheet.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
   Textures = spritesheet.textures as unknown as TextureMap;
 }
 
