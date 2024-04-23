@@ -5,7 +5,7 @@ import { Textures } from "../textures";
 import { CoastProperties } from "dogfight-types/CoastProperties";
 import { Facing } from "dogfight-types/Facing";
 import { Terrain } from "dogfight-types/Terrain";
-import { DrawLayer } from "../constants";
+import { DrawLayer, WaterColor } from "../constants";
 
 type TextureCombinations = {
   [F in Facing]: {
@@ -16,16 +16,19 @@ type TextureCombinations = {
 export class Coast implements Entity<CoastProperties> {
   private container: PIXI.Container;
   private coastSprite: PIXI.Sprite;
+  private water: PIXI.Graphics;
   private facing: Facing;
 
   constructor() {
     this.container = new PIXI.Container();
     const texture = Textures["ground1.gif"];
-    this.coastSprite = new PIXI.Sprite(texture);
+    this.coastSprite = new PIXI.Sprite();
     this.coastSprite.height = texture.height;
-    this.container.addChild(this.coastSprite);
+    this.water = new PIXI.Graphics();
     this.facing = "Left";
 
+    this.container.addChild(this.water);
+    this.container.addChild(this.coastSprite);
     this.container.zIndex = DrawLayer.LAYER_10;
   }
 
@@ -35,10 +38,12 @@ export class Coast implements Entity<CoastProperties> {
   public updateProperties(props: CoastProperties): void {
     if (props.client_x != null) {
       this.coastSprite.position.x = props.client_x;
+      this.water.position.x = props.client_x;
     }
 
     if (props.client_y != null) {
       this.coastSprite.position.y = props.client_y;
+      this.water.position.y = props.client_y;
     }
 
     if (props.facing != null) {
@@ -60,6 +65,25 @@ export class Coast implements Entity<CoastProperties> {
       };
 
       this.coastSprite.texture = tex[this.facing][props.terrain];
+
+      // draw water
+      this.water.clear();
+
+      const colors: Record<Terrain, WaterColor> = {
+        Normal: WaterColor.NORMAL,
+        Desert: WaterColor.DESERT,
+      };
+
+      this.water.beginFill(colors[props.terrain]);
+
+      this.water.drawRect(
+        0,
+        this.coastSprite.height,
+        this.coastSprite.width,
+        5000
+      );
+
+      this.water.endFill();
     }
   }
 
