@@ -43,7 +43,7 @@ export class Coast implements Entity<CoastProperties> {
 
     if (props.facing != null) {
       this.facing = props.facing;
-      this.coastSprite.anchor.x = this.facing === "Left" ? 1 : 0;
+      this.coastSprite.anchor.x = this.facing === "Left" ? 0 : 1;
       this.coastSprite.scale.x = this.facing === "Left" ? 1 : -1;
     }
 
