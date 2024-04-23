@@ -53,13 +53,15 @@ export class Coast implements Entity<CoastProperties> {
 
     if (props.terrain !== null) {
       const tex: TextureCombinations = {
+        // none of the beach-r textures are used in the game.
+        // They are actually just the left ones, but inverted
         Right: {
           Normal: Textures["beach-l.gif"],
           Desert: Textures["beach-l_desert.gif"],
         },
         Left: {
           Normal: Textures["beach-l.gif"],
-          Desert: Textures["beach-l.gif"],
+          Desert: Textures["beach-l_desert.gif"],
         },
       };
 
