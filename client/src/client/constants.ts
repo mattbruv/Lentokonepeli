@@ -1,5 +1,9 @@
 import { Terrain } from "dogfight-types/Terrain";
 
+export const VIEW_WIDTH = 740;
+export const VIEW_HEIGHT = 660;
+// 510 hardcoded bg, plus 150 UI height, 660 total height?
+
 export const enum DrawLayer {
   LAYER_17,
   LAYER_16,
