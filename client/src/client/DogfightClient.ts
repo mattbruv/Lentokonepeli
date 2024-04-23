@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { SKY_COLOR } from "./constants";
+import { SKY_COLOR, VIEW_HEIGHT, VIEW_WIDTH } from "./constants";
 import { Viewport } from "pixi-viewport";
 import { Ground } from "./entities/ground";
 import { Water } from "./entities/water";
@@ -25,6 +25,8 @@ export class DogfightClient {
   constructor() {
     this.app = new PIXI.Application<HTMLCanvasElement>({
       backgroundColor: SKY_COLOR,
+      width: VIEW_WIDTH,
+      height: VIEW_HEIGHT,
     });
 
     this.viewport = new Viewport({
