@@ -8,6 +8,7 @@ import { EntityProperties } from "dogfight-types/EntityProperties";
 import { EntityType } from "dogfight-types/EntityType";
 import { loadTextures } from "./textures";
 import { Coast } from "./entities/coast";
+import { Runway } from "./entities/runway";
 
 export class DogfightClient {
   // https://pixijs.download/v7.x/docs/index.html
@@ -17,6 +18,7 @@ export class DogfightClient {
   private grounds: Map<number, Ground> = new Map();
   private waters: Map<number, Water> = new Map();
   private coasts: Map<number, Coast> = new Map();
+  private runways: Map<number, Runway> = new Map();
 
   constructor() {
     this.app = new PIXI.Application<HTMLCanvasElement>({
@@ -68,6 +70,11 @@ export class DogfightClient {
         this.grounds.delete(id);
         break;
       }
+      case "Runway": {
+        this.runways.get(id)?.destroy();
+        this.runways.delete(id);
+        break;
+      }
       case "Water": {
         this.waters.get(id)?.destroy();
         this.waters.delete(id);
@@ -101,6 +108,16 @@ export class DogfightClient {
           this.viewport.addChild(water.getContainer());
         }
         water.updateProperties(data.props);
+        break;
+      }
+      case "Runway": {
+        let runway = this.runways.get(id);
+        if (!runway) {
+          runway = new Runway();
+          this.runways.set(id, runway);
+          this.viewport.addChild(runway.getContainer());
+        }
+        runway.updateProperties(data.props);
         break;
       }
       case "Coast": {
