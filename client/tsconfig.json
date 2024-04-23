@@ -22,8 +22,8 @@
 
     "baseUrl": ".",
     "paths": {
-      "dogfight-types/*": ["../dogfight/bindings/*"]
-      // "*": ["src/*", "../dogfight/bindings/*"]
+      "dogfight-types/*": ["../dogfight/bindings/*"],
+      "images": ["./src/assets/images"]
     }
   },
   "include": ["src", "../dogfight/bindings"],
