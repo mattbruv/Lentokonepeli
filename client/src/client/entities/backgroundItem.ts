@@ -73,19 +73,25 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
       const texture = this.itemTextures[props.bg_item_type];
       this.itemSprite.texture = texture;
 
-      /*
       if (this.flagTypes.includes(props.bg_item_type)) {
         this.flagInterval = setInterval(() => this.waveFlag(), 100);
       }
-      */
     }
 
     if (props.client_x !== null) {
-      this.itemSprite.position.x = props.client_x;
+      let xDiff = Math.floor(this.itemSprite.texture.width / 2);
+      if (this.flagTypes.includes(this.itemType)) {
+        xDiff = 0;
+      }
+      this.itemSprite.position.x = props.client_x - xDiff;
     }
 
     if (props.client_y !== null) {
-      this.itemSprite.position.y = props.client_y;
+      let yDiff = this.itemSprite.texture.height;
+      if (this.flagTypes.includes(this.itemType)) {
+        yDiff = 0;
+      }
+      this.itemSprite.position.y = props.client_y - yDiff;
     }
 
     if (props.facing !== null) {
