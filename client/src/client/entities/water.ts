@@ -2,6 +2,7 @@ import { GroundProperties } from "dogfight-types/GroundProperties";
 import { Entity } from "./entity";
 import * as PIXI from "pixi.js";
 import { WaterProperties } from "dogfight-types/WaterProperties";
+import { DrawLayer } from "../constants";
 
 export class Water implements Entity<WaterProperties> {
   private container: PIXI.Container;
@@ -11,6 +12,8 @@ export class Water implements Entity<WaterProperties> {
     this.container = new PIXI.Container();
     this.waterGraphics = new PIXI.Graphics();
     this.container.addChild(this.waterGraphics);
+
+    this.container.zIndex = DrawLayer.LAYER_11;
   }
 
   public getContainer(): PIXI.Container {
