@@ -9,6 +9,7 @@ import { EntityType } from "dogfight-types/EntityType";
 import { loadTextures } from "./textures";
 import { Coast } from "./entities/coast";
 import { Runway } from "./entities/runway";
+import { BackgroundItem } from "./entities/backgroundItem";
 
 export class DogfightClient {
   // https://pixijs.download/v7.x/docs/index.html
@@ -16,6 +17,7 @@ export class DogfightClient {
   private viewport: Viewport;
 
   private grounds: Map<number, Ground> = new Map();
+  private backgroundItems: Map<number, BackgroundItem> = new Map();
   private waters: Map<number, Water> = new Map();
   private coasts: Map<number, Coast> = new Map();
   private runways: Map<number, Runway> = new Map();
@@ -70,6 +72,11 @@ export class DogfightClient {
         this.grounds.delete(id);
         break;
       }
+      case "BackgroundItem": {
+        this.backgroundItems.get(id)?.destroy();
+        this.backgroundItems.delete(id);
+        break;
+      }
       case "Runway": {
         this.runways.get(id)?.destroy();
         this.runways.delete(id);
@@ -98,6 +105,16 @@ export class DogfightClient {
           this.viewport.addChild(ground.getContainer());
         }
         ground.updateProperties(data.props);
+        break;
+      }
+      case "BackgroundItem": {
+        let item = this.backgroundItems.get(id);
+        if (!item) {
+          item = new BackgroundItem();
+          this.backgroundItems.set(id, item);
+          this.viewport.addChild(item.getContainer());
+        }
+        item.updateProperties(data.props);
         break;
       }
       case "Water": {
