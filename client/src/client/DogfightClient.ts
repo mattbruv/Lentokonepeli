@@ -30,6 +30,11 @@ export class DogfightClient {
     this.app.stage.addChild(this.viewport);
 
     this.viewport.drag().pinch().wheel().decelerate();
+
+    this.viewport.onpointermove = (e) => {
+      const pos = this.viewport.toWorld(e.data.global);
+      console.log("x", Math.round(pos.x), "y", Math.round(pos.y));
+    };
   }
   public async init(element: HTMLDivElement) {
     await loadTextures();
