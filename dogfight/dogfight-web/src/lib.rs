@@ -51,11 +51,7 @@ impl DogfightWeb {
         self.world.init();
     }
 
-    pub fn test(&self) -> String {
-        set_panic_hook();
-        let t = Instant::now();
-        let _ = self.get_full_state();
-        let elapsed = t.elapsed();
-        format!("time spent: {:?}", elapsed)
+    pub fn tick(&mut self) -> () {
+        self.world.tick();
     }
 }
