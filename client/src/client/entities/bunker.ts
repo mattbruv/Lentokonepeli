@@ -22,7 +22,6 @@ export class Bunker implements Entity<BunkerProperties> {
     return this.container;
   }
   public updateProperties(props: BunkerProperties): void {
-    console.log(props);
     if (props.x !== null) {
       this.bunker.position.x = props.x;
     }
