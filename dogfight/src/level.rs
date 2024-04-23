@@ -9,6 +9,7 @@ use std::vec;
 use crate::{
     entities::{
         background_item::BackgroundItem,
+        bunker::Bunker,
         coast::Coast,
         ground::Ground,
         runway::Runway,
@@ -52,7 +53,8 @@ impl World {
                     self.background_items.insert(bg_item);
                 }
                 LevelObject::Bunker(pos, team) => {
-                    //println!("bunker {:?} {:?}", pos, team);
+                    let bunker = Bunker::new(team, pos.x as i16, pos.y as i16);
+                    self.bunkers.insert(bunker);
                 }
                 LevelObject::Hill(pos, terrain) => {
                     //println!("{:?}", pos);
