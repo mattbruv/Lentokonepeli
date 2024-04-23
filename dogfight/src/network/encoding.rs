@@ -1,8 +1,9 @@
 use crate::{
     entities::{
-        background_item::BackgroundItemProperties, coast::CoastProperties,
-        ground::GroundProperties, man::ManProperties, plane::PlaneProperties,
-        player::PlayerProperties, runway::RunwayProperties, types::EntityType,
+        background_item::BackgroundItemProperties, bunker::BunkerProperties,
+        coast::CoastProperties, ground::GroundProperties, man::ManProperties,
+        plane::PlaneProperties, player::PlayerProperties, runway::RunwayProperties,
+        types::EntityType,
     },
     network::EntityChangeType,
 };
@@ -90,6 +91,7 @@ impl NetworkedBytes for EntityChange {
                 EntityProperties::Coast(coast) => coast.to_bytes(),
                 EntityProperties::Runway(runway) => runway.to_bytes(),
                 EntityProperties::Water(water) => water.to_bytes(),
+                EntityProperties::Bunker(bunker) => bunker.to_bytes(),
             },
             _ => vec![],
         };
@@ -164,6 +166,11 @@ impl NetworkedBytes for EntityChange {
                     let (slice, props) = RunwayProperties::from_bytes(bytes);
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::Runway(props))
+                }
+                EntityType::Bunker => {
+                    let (slice, props) = BunkerProperties::from_bytes(bytes);
+                    bytes = slice;
+                    EntityChangeType::Properties(EntityProperties::Bunker(props))
                 }
             },
             _ => panic!("Unknown entity change type {}", update_type),

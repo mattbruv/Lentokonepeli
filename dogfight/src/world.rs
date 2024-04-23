@@ -2,8 +2,9 @@ use std::vec;
 
 use crate::{
     entities::{
-        background_item::BackgroundItem, coast::Coast, container::EntityContainer, ground::Ground,
-        man::Man, plane::Plane, player::Player, runway::Runway, types::EntityType, water::Water,
+        background_item::BackgroundItem, bunker::Bunker, coast::Coast, container::EntityContainer,
+        ground::Ground, man::Man, plane::Plane, player::Player, runway::Runway, types::EntityType,
+        water::Water,
     },
     network::EntityChange,
 };
@@ -20,6 +21,7 @@ pub struct World {
     pub coasts: EntityContainer<Coast>,
     pub runways: EntityContainer<Runway>,
     pub waters: EntityContainer<Water>,
+    pub bunkers: EntityContainer<Bunker>,
 }
 
 impl World {
@@ -33,6 +35,7 @@ impl World {
             coasts: EntityContainer::new(EntityType::Coast),
             runways: EntityContainer::new(EntityType::Runway),
             waters: EntityContainer::new(EntityType::Water),
+            bunkers: EntityContainer::new(EntityType::Bunker),
         };
 
         world
@@ -60,6 +63,7 @@ impl World {
         state.extend(self.coasts.get_all_full_state());
         state.extend(self.runways.get_all_full_state());
         state.extend(self.waters.get_all_full_state());
+        state.extend(self.bunkers.get_all_full_state());
         state
     }
 
@@ -73,6 +77,7 @@ impl World {
         state.extend(self.coasts.get_all_changed_state());
         state.extend(self.runways.get_all_changed_state());
         state.extend(self.waters.get_all_changed_state());
+        state.extend(self.bunkers.get_all_changed_state());
         state
     }
 }

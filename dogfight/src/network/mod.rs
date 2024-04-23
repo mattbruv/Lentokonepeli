@@ -5,9 +5,9 @@ use serde::Serialize;
 use ts_rs::TS;
 
 use crate::entities::{
-    background_item::BackgroundItemProperties, coast::CoastProperties, ground::GroundProperties,
-    man::ManProperties, plane::PlaneProperties, player::PlayerProperties, runway::RunwayProperties,
-    types::EntityType, water::WaterProperties, EntityId,
+    background_item::BackgroundItemProperties, bunker::BunkerProperties, coast::CoastProperties,
+    ground::GroundProperties, man::ManProperties, plane::PlaneProperties, player::PlayerProperties,
+    runway::RunwayProperties, types::EntityType, water::WaterProperties, EntityId,
 };
 
 use self::encoding::NetworkedBytes;
@@ -53,4 +53,5 @@ pub enum EntityProperties {
     Coast(CoastProperties),
     Runway(RunwayProperties),
     Water(WaterProperties),
+    Bunker(BunkerProperties),
 }

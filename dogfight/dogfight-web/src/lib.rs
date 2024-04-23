@@ -1,6 +1,5 @@
 mod utils;
 
-use std::fmt::format;
 use std::time::Instant;
 
 use dogfight::network::{entity_changes_to_binary, entity_changes_to_json};
@@ -51,7 +50,7 @@ impl DogfightWeb {
     pub fn test(&self) -> String {
         set_panic_hook();
         let t = Instant::now();
-        let foo = self.get_full_state();
+        let _ = self.get_full_state();
         let elapsed = t.elapsed();
         format!("time spent: {:?}", elapsed)
     }
