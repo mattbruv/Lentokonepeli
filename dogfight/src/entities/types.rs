@@ -14,6 +14,7 @@ pub enum EntityType {
     Coast,
     Runway,
     Water,
+    Bunker,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, TS, Serialize, EnumBytes)]
