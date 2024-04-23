@@ -5,6 +5,7 @@ import { Textures } from "../textures";
 import { CoastProperties } from "dogfight-types/CoastProperties";
 import { Facing } from "dogfight-types/Facing";
 import { Terrain } from "dogfight-types/Terrain";
+import { DrawLayer } from "../constants";
 
 type TextureCombinations = {
   [F in Facing]: {
@@ -24,24 +25,23 @@ export class Coast implements Entity<CoastProperties> {
     this.coastSprite.height = texture.height;
     this.container.addChild(this.coastSprite);
     this.facing = "Left";
+
+    this.container.zIndex = DrawLayer.LAYER_10;
   }
 
   public getContainer(): PIXI.Container {
     return this.container;
   }
   public updateProperties(props: CoastProperties): void {
-    if (props.client_x) {
-      this.coastSprite.position.set(
-        props.client_x,
-        this.coastSprite.position.y
-      );
+    if (props.client_x != null) {
+      this.coastSprite.position.x = props.client_x;
     }
 
-    if (props.client_y) {
-      this.coastSprite.position.set(100, 100);
+    if (props.client_y != null) {
+      this.coastSprite.position.y = props.client_y;
     }
 
-    if (props.facing) {
+    if (props.facing != null) {
       this.facing = props.facing;
       this.coastSprite.anchor.x = this.facing === "Left" ? 1 : 0;
       this.coastSprite.scale.x = this.facing === "Left" ? 1 : -1;
@@ -61,8 +61,6 @@ export class Coast implements Entity<CoastProperties> {
 
       this.coastSprite.texture = tex[this.facing][props.terrain];
     }
-
-    console.log(this.coastSprite);
   }
 
   public destroy() {}
