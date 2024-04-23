@@ -11,6 +11,7 @@ import { Coast } from "./entities/coast";
 import { Runway } from "./entities/runway";
 import { BackgroundItem } from "./entities/backgroundItem";
 import { Bunker } from "./entities/bunker";
+import { Man } from "./entities/man";
 
 export class DogfightClient {
   // https://pixijs.download/v7.x/docs/index.html
@@ -23,6 +24,7 @@ export class DogfightClient {
   private coasts: Map<number, Coast> = new Map();
   private runways: Map<number, Runway> = new Map();
   private bunkers: Map<number, Bunker> = new Map();
+  private men: Map<number, Man> = new Map();
 
   constructor() {
     this.app = new PIXI.Application<HTMLCanvasElement>({
@@ -76,6 +78,11 @@ export class DogfightClient {
         this.grounds.delete(id);
         break;
       }
+      case "Man": {
+        this.men.get(id)?.destroy();
+        this.men.delete(id);
+        break;
+      }
       case "BackgroundItem": {
         this.backgroundItems.get(id)?.destroy();
         this.backgroundItems.delete(id);
@@ -114,6 +121,16 @@ export class DogfightClient {
           this.viewport.addChild(ground.getContainer());
         }
         ground.updateProperties(data.props);
+        break;
+      }
+      case "Man": {
+        let man = this.men.get(id);
+        if (!man) {
+          man = new Man();
+          this.men.set(id, man);
+          this.viewport.addChild(man.getContainer());
+        }
+        man.updateProperties(data.props);
         break;
       }
       case "BackgroundItem": {
