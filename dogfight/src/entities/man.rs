@@ -1,4 +1,4 @@
-use dogfight_macros::Networked;
+use dogfight_macros::{EnumBytes, Networked};
 
 use crate::{
     network::{property::*, EntityProperties, NetworkedEntity},
@@ -6,6 +6,16 @@ use crate::{
 };
 
 use super::types::Team;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS, EnumBytes)]
+#[ts(export)]
+pub enum ManState {
+    Falling,
+    Parachuting,
+    Standing,
+    WalkingLeft,
+    WalkingRight,
+}
 
 #[derive(Networked)]
 pub struct Man {
@@ -15,10 +25,10 @@ pub struct Man {
     team: Property<Team>,
     client_x: Property<i16>,
     client_y: Property<i16>,
+    state: Property<ManState>,
 }
 
 impl Man {
-    pub fn test(&mut self) {}
     pub fn new(team: Team) -> Self {
         Man {
             x: 0,
@@ -26,6 +36,7 @@ impl Man {
             team: Property::new(team),
             client_x: Property::new(0),
             client_y: Property::new(0),
+            state: Property::new(ManState::Parachuting),
         }
     }
 
