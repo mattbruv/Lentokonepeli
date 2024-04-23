@@ -1,11 +1,10 @@
-import { GroundProperties } from "dogfight-types/GroundProperties";
 import { Entity } from "./entity";
 import * as PIXI from "pixi.js";
 import { Textures } from "../textures";
 import { CoastProperties } from "dogfight-types/CoastProperties";
 import { Facing } from "dogfight-types/Facing";
 import { Terrain } from "dogfight-types/Terrain";
-import { DrawLayer, WaterColor } from "../constants";
+import { DrawLayer, TERRAIN_WATER_COLOR } from "../constants";
 
 type TextureCombinations = {
   [F in Facing]: {
@@ -69,12 +68,7 @@ export class Coast implements Entity<CoastProperties> {
       // draw water
       this.water.clear();
 
-      const colors: Record<Terrain, WaterColor> = {
-        Normal: WaterColor.NORMAL,
-        Desert: WaterColor.DESERT,
-      };
-
-      this.water.beginFill(colors[props.terrain]);
+      this.water.beginFill(TERRAIN_WATER_COLOR[props.terrain]);
 
       this.water.drawRect(
         0,
