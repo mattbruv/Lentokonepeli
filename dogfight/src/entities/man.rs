@@ -49,6 +49,11 @@ impl Man {
         self.client_x.set((x / RESOLUTION) as i16);
     }
 
+    pub fn set_client_x(&mut self, client_x: i16) -> () {
+        self.x = client_x as i32 * RESOLUTION;
+        self.client_x.set(client_x);
+    }
+
     pub fn get_y(&self) -> i32 {
         self.y
     }
@@ -56,5 +61,10 @@ impl Man {
     pub fn set_y(&mut self, y: i32) -> () {
         self.y = y;
         self.client_y.set((y / RESOLUTION) as i16);
+    }
+
+    pub fn set_client_y(&mut self, client_y: i16) -> () {
+        self.y = client_y as i32 * RESOLUTION;
+        self.client_y.set(client_y);
     }
 }

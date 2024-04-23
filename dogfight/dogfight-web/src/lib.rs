@@ -47,6 +47,10 @@ impl DogfightWeb {
         self.world.load_level(&world);
     }
 
+    pub fn init(&mut self) {
+        self.world.init();
+    }
+
     pub fn test(&self) -> String {
         set_panic_hook();
         let t = Instant::now();

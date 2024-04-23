@@ -2,8 +2,16 @@ use std::vec;
 
 use crate::{
     entities::{
-        background_item::BackgroundItem, bunker::Bunker, coast::Coast, container::EntityContainer,
-        ground::Ground, man::Man, plane::Plane, player::Player, runway::Runway, types::EntityType,
+        background_item::BackgroundItem,
+        bunker::Bunker,
+        coast::Coast,
+        container::EntityContainer,
+        ground::Ground,
+        man::Man,
+        plane::Plane,
+        player::Player,
+        runway::Runway,
+        types::{EntityType, Team},
         water::Water,
     },
     network::EntityChange,
@@ -39,6 +47,13 @@ impl World {
         };
 
         world
+    }
+
+    pub fn init(&mut self) -> () {
+        let mut m = Man::new(Team::Centrals);
+        m.set_client_x(100);
+        m.set_client_y(-150);
+        self.men.insert(m);
     }
 
     pub fn test(&mut self) -> () {
