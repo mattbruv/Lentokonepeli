@@ -29,7 +29,6 @@ export class Man implements Entity<ManProperties> {
     return this.container;
   }
   public updateProperties(props: ManProperties): void {
-    console.log(props);
     if (props.client_x !== null) {
       this.manSprite.position.x = props.client_x;
     }

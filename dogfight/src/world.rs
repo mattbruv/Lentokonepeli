@@ -56,14 +56,8 @@ impl World {
         self.men.insert(m);
     }
 
-    pub fn test(&mut self) -> () {
+    pub fn tick(&mut self) -> () {
         if let Some(m) = self.men.get_mut(0) {
-            m.set_x(m.get_x() + 100);
-            m.set_x(m.get_x() + 100);
-            m.set_x(m.get_x() + 100);
-            m.set_x(m.get_x() + 100);
-            m.set_x(m.get_x() + 100);
-            m.set_x(m.get_x() + 100);
             m.set_x(m.get_x() + 100);
         }
     }

@@ -16,6 +16,13 @@ export function Game() {
         const json = dogfight.game.get_full_state();
         const state = JSON.parse(json) as EntityChange[];
         dogfight.client.updateEntities(state);
+
+        setInterval(() => {
+          dogfight.game.tick();
+          const json = dogfight.game.get_changed_state();
+          const state = JSON.parse(json) as EntityChange[];
+          dogfight.client.updateEntities(state);
+        }, 30);
       });
     }
   }, []);
