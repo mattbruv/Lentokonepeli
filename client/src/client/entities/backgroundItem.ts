@@ -98,8 +98,6 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
       this.itemSprite.anchor.x = props.facing === "Right" ? 0 : 1;
       this.itemSprite.scale.x = props.facing === "Right" ? 1 : -1;
     }
-
-    console.log(props);
   }
 
   waveFlag() {
