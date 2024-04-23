@@ -1,3 +1,5 @@
+import { Terrain } from "dogfight-types/Terrain";
+
 export const enum DrawLayer {
   LAYER_17,
   LAYER_16,
@@ -18,5 +20,10 @@ export const enum WaterColor {
   NORMAL = 3051728,
   DESERT = 2344139,
 }
+
+export const TERRAIN_WATER_COLOR: Record<Terrain, WaterColor> = {
+  Normal: WaterColor.NORMAL,
+  Desert: WaterColor.DESERT,
+};
 
 export const SKY_COLOR = 14540287;
