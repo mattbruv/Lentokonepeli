@@ -10,7 +10,7 @@ export function Game() {
   useEffect(() => {
     if (gameContainer.current) {
       dogfight.client.init(gameContainer.current).then(() => {
-        dogfight.game.load_level(Levels["africa"]);
+        dogfight.game.load_level(Levels["classic"]);
 
         const json = dogfight.game.get_full_state();
         const state = JSON.parse(json) as EntityChange[];
