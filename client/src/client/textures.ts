@@ -1,0 +1,102 @@
+import * as PIXI from "pixi.js";
+
+export let Textures: TextureMap = {} as unknown as TextureMap;
+
+export async function loadTextures() {
+  const spritesheet = await PIXI.Assets.load<PIXI.Spritesheet>(
+    "./images/images.json"
+  );
+  Textures = spritesheet.textures as unknown as TextureMap;
+}
+
+interface TextureMap {
+  "beach-l.gif": PIXI.Texture<PIXI.Resource>;
+  "beach-l_desert.gif": PIXI.Texture<PIXI.Resource>;
+  "beach-r_desert.gif": PIXI.Texture<PIXI.Resource>;
+  "bomb.gif": PIXI.Texture<PIXI.Resource>;
+  "bullet.gif": PIXI.Texture<PIXI.Resource>;
+  "carrybomb.gif": PIXI.Texture<PIXI.Resource>;
+  "controlTower.gif": PIXI.Texture<PIXI.Resource>;
+  "controlTowerDesert.gif": PIXI.Texture<PIXI.Resource>;
+  "droppedbomb.gif": PIXI.Texture<PIXI.Resource>;
+  "explosion0001.gif": PIXI.Texture<PIXI.Resource>;
+  "explosion0002.gif": PIXI.Texture<PIXI.Resource>;
+  "explosion0003.gif": PIXI.Texture<PIXI.Resource>;
+  "explosion0004.gif": PIXI.Texture<PIXI.Resource>;
+  "explosion0005.gif": PIXI.Texture<PIXI.Resource>;
+  "explosion0006.gif": PIXI.Texture<PIXI.Resource>;
+  "explosion0007.gif": PIXI.Texture<PIXI.Resource>;
+  "explosion0008.gif": PIXI.Texture<PIXI.Resource>;
+  "flag_ger_1.gif": PIXI.Texture<PIXI.Resource>;
+  "flag_ger_2.gif": PIXI.Texture<PIXI.Resource>;
+  "flag_ger_3.gif": PIXI.Texture<PIXI.Resource>;
+  "flag_raf_1.gif": PIXI.Texture<PIXI.Resource>;
+  "flag_raf_2.gif": PIXI.Texture<PIXI.Resource>;
+  "flag_raf_3.gif": PIXI.Texture<PIXI.Resource>;
+  "germanflag.jpg": PIXI.Texture<PIXI.Resource>;
+  "germanflag_small.gif": PIXI.Texture<PIXI.Resource>;
+  "ground1.gif": PIXI.Texture<PIXI.Resource>;
+  "groundDesert.gif": PIXI.Texture<PIXI.Resource>;
+  "headquarter_broke.gif": PIXI.Texture<PIXI.Resource>;
+  "headquarter_germans.gif": PIXI.Texture<PIXI.Resource>;
+  "headquarter_raf.gif": PIXI.Texture<PIXI.Resource>;
+  "hill1.gif": PIXI.Texture<PIXI.Resource>;
+  "info_box.gif": PIXI.Texture<PIXI.Resource>;
+  "man_icon.gif": PIXI.Texture<PIXI.Resource>;
+  "mdl_page.jpg": PIXI.Texture<PIXI.Resource>;
+  "metalpanel.jpg": PIXI.Texture<PIXI.Resource>;
+  "palmtree.gif": PIXI.Texture<PIXI.Resource>;
+  "parachuter0.gif": PIXI.Texture<PIXI.Resource>;
+  "parachuter1.gif": PIXI.Texture<PIXI.Resource>;
+  "parachuter2.gif": PIXI.Texture<PIXI.Resource>;
+  "parachuter3.gif": PIXI.Texture<PIXI.Resource>;
+  "pic_plane4.gif": PIXI.Texture<PIXI.Resource>;
+  "pic_plane5.gif": PIXI.Texture<PIXI.Resource>;
+  "pic_plane6.gif": PIXI.Texture<PIXI.Resource>;
+  "pic_plane7.gif": PIXI.Texture<PIXI.Resource>;
+  "pic_plane8.gif": PIXI.Texture<PIXI.Resource>;
+  "pic_plane9.gif": PIXI.Texture<PIXI.Resource>;
+  "plane4.gif": PIXI.Texture<PIXI.Resource>;
+  "plane4_flip1.gif": PIXI.Texture<PIXI.Resource>;
+  "plane4_flip2.gif": PIXI.Texture<PIXI.Resource>;
+  "plane5.gif": PIXI.Texture<PIXI.Resource>;
+  "plane5_flip1.gif": PIXI.Texture<PIXI.Resource>;
+  "plane5_flip2.gif": PIXI.Texture<PIXI.Resource>;
+  "plane6.gif": PIXI.Texture<PIXI.Resource>;
+  "plane6_flip1.gif": PIXI.Texture<PIXI.Resource>;
+  "plane6_flip2.gif": PIXI.Texture<PIXI.Resource>;
+  "plane7.gif": PIXI.Texture<PIXI.Resource>;
+  "plane7_flip1.gif": PIXI.Texture<PIXI.Resource>;
+  "plane7_flip2.gif": PIXI.Texture<PIXI.Resource>;
+  "plane8.gif": PIXI.Texture<PIXI.Resource>;
+  "plane8_flip1.gif": PIXI.Texture<PIXI.Resource>;
+  "plane8_flip2.gif": PIXI.Texture<PIXI.Resource>;
+  "plane9.gif": PIXI.Texture<PIXI.Resource>;
+  "plane9_flip1.gif": PIXI.Texture<PIXI.Resource>;
+  "plane9_flip2.gif": PIXI.Texture<PIXI.Resource>;
+  "plane_big.gif": PIXI.Texture<PIXI.Resource>;
+  "plane_icon.gif": PIXI.Texture<PIXI.Resource>;
+  "plane_small.gif": PIXI.Texture<PIXI.Resource>;
+  "raf_flag_small.gif": PIXI.Texture<PIXI.Resource>;
+  "randomflag.jpg": PIXI.Texture<PIXI.Resource>;
+  "randomflag_small.gif": PIXI.Texture<PIXI.Resource>;
+  "royalairforcesflag.jpg": PIXI.Texture<PIXI.Resource>;
+  "runway.gif": PIXI.Texture<PIXI.Resource>;
+  "runway2.gif": PIXI.Texture<PIXI.Resource>;
+  "runway2_broke.gif": PIXI.Texture<PIXI.Resource>;
+  "runway2b.gif": PIXI.Texture<PIXI.Resource>;
+  "runway_broke.gif": PIXI.Texture<PIXI.Resource>;
+  "sandhill.gif": PIXI.Texture<PIXI.Resource>;
+  "selectionScreen.gif": PIXI.Texture<PIXI.Resource>;
+  "sky3b.jpg": PIXI.Texture<PIXI.Resource>;
+  "smoke1.gif": PIXI.Texture<PIXI.Resource>;
+  "smoke2.gif": PIXI.Texture<PIXI.Resource>;
+  "wave-l_1.gif": PIXI.Texture<PIXI.Resource>;
+  "wave-l_2.gif": PIXI.Texture<PIXI.Resource>;
+  "wave-l_3.gif": PIXI.Texture<PIXI.Resource>;
+  "wave-l_4.gif": PIXI.Texture<PIXI.Resource>;
+  "wave-l_5.gif": PIXI.Texture<PIXI.Resource>;
+  "wave-l_6.gif": PIXI.Texture<PIXI.Resource>;
+  "wave-l_7.gif": PIXI.Texture<PIXI.Resource>;
+  "woodpanel.jpg": PIXI.Texture<PIXI.Resource>;
+}

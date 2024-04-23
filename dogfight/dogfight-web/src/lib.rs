@@ -44,6 +44,10 @@ impl DogfightWeb {
         entity_changes_to_binary(self.world.get_full_state())
     }
 
+    pub fn load_level(&mut self, world: String) {
+        self.world.load_level(&world);
+    }
+
     pub fn test(&self) -> String {
         set_panic_hook();
         let t = Instant::now();

@@ -1,5 +1,5 @@
 import { DogfightWeb } from "dogfight-web";
-import { createContext } from "react";
+import { createContext, useContext } from "react";
 import { DogfightClient } from "./client/DogfightClient";
 
 interface Dogfight {
