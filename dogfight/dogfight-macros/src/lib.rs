@@ -124,6 +124,14 @@ pub fn networked(input: TokenStream) -> TokenStream {
         }
     };
 
+    let dirty_checks = property_fields.iter().map(|(ident, _)| {
+        quote! {
+            if self.#ident.is_dirty() {
+                return true;
+            }
+        }
+    });
+
     let full_code = property_fields.iter().map(|(ident, _)| {
         quote! {
             #ident: self.#ident.get_full()
@@ -149,6 +157,11 @@ pub fn networked(input: TokenStream) -> TokenStream {
                 EntityProperties::#struct_name(#properties_struct_name {
                     #(#changed_code),*
                 })
+            }
+
+            fn has_changes(&self) -> bool {
+                #(#dirty_checks)*;
+                return false;
             }
         }
     };
