@@ -27,7 +27,7 @@ impl DogfightWeb {
     }
 
     pub fn get_full_state_binary(&self) -> Vec<u8> {
-        entity_changes_to_binary(self.world.get_full_state())
+        entity_changes_to_binary(&self.world.get_full_state())
     }
 
     pub fn load_level(&mut self, world: String) {

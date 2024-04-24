@@ -23,7 +23,7 @@ pub fn entity_changes_to_json(state: Vec<EntityChange>) -> String {
     serde_json::to_string(&state).unwrap()
 }
 
-pub fn entity_changes_to_binary(state: Vec<EntityChange>) -> Vec<u8> {
+pub fn entity_changes_to_binary(state: &Vec<EntityChange>) -> Vec<u8> {
     state.iter().flat_map(|x| x.to_bytes()).collect()
 }
 
