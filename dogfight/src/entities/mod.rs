@@ -9,5 +9,6 @@ pub mod player;
 pub mod runway;
 pub mod types;
 pub mod water;
+pub mod world_info;
 
 pub type EntityId = u16;

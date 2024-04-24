@@ -13,14 +13,16 @@ use crate::{
         runway::Runway,
         types::{EntityType, Team},
         water::Water,
+        world_info::{WorldInfo, WorldInfoProperties},
     },
-    network::EntityChange,
+    network::{EntityChange, NetworkedEntity},
 };
 
 pub const RESOLUTION: i32 = 100;
 pub const LEVEL_BORDER_X: i16 = 20_000;
 
 pub struct World {
+    pub world_info: WorldInfo,
     pub players: EntityContainer<Player>,
     pub planes: EntityContainer<Plane>,
     pub background_items: EntityContainer<BackgroundItem>,
@@ -35,6 +37,7 @@ pub struct World {
 impl World {
     pub fn new() -> Self {
         let world = World {
+            world_info: WorldInfo::new(),
             men: EntityContainer::new(EntityType::Man),
             planes: EntityContainer::new(EntityType::Plane),
             players: EntityContainer::new(EntityType::Player),
@@ -64,6 +67,7 @@ impl World {
 
     pub fn get_full_state(&self) -> Vec<EntityChange> {
         let mut state = vec![];
+        state.push(self.world_info.get_all_full_state());
         state.extend(self.men.get_all_full_state());
         state.extend(self.planes.get_all_full_state());
         state.extend(self.players.get_all_full_state());
@@ -78,6 +82,7 @@ impl World {
 
     pub fn get_changed_state(&mut self) -> Vec<EntityChange> {
         let mut state = vec![];
+        state.push(self.world_info.get_all_changed_state());
         state.extend(self.men.get_all_changed_state());
         state.extend(self.planes.get_all_changed_state());
         state.extend(self.players.get_all_changed_state());

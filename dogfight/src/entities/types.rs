@@ -6,6 +6,7 @@ use ts_rs::TS;
 #[derive(Serialize, Clone, Copy, Debug, TS, EnumBytes)]
 #[ts(export)]
 pub enum EntityType {
+    WorldInfo,
     Man,
     Plane,
     Player,

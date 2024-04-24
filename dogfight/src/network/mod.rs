@@ -7,7 +7,8 @@ use ts_rs::TS;
 use crate::entities::{
     background_item::BackgroundItemProperties, bunker::BunkerProperties, coast::CoastProperties,
     ground::GroundProperties, man::ManProperties, plane::PlaneProperties, player::PlayerProperties,
-    runway::RunwayProperties, types::EntityType, water::WaterProperties, EntityId,
+    runway::RunwayProperties, types::EntityType, water::WaterProperties,
+    world_info::WorldInfoProperties, EntityId,
 };
 
 use self::encoding::NetworkedBytes;
@@ -45,6 +46,7 @@ pub enum EntityChangeType {
 #[ts(export)]
 #[serde(tag = "type", content = "props")]
 pub enum EntityProperties {
+    WorldInfo(WorldInfoProperties),
     Man(ManProperties),
     Plane(PlaneProperties),
     Player(PlayerProperties),

@@ -1,12 +1,8 @@
 mod utils;
 
-use std::time::Instant;
-
 use dogfight::network::{entity_changes_to_binary, entity_changes_to_json};
 use dogfight::world::World;
 use wasm_bindgen::prelude::*;
-
-use crate::utils::set_panic_hook;
 
 #[wasm_bindgen]
 extern "C" {
