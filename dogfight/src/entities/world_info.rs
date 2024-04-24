@@ -4,7 +4,7 @@ use crate::network::{
     property::*, EntityChange, EntityChangeType, EntityProperties, NetworkedEntity,
 };
 
-use super::types::EntityType;
+use super::types::{EntityType, Team};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS, EnumBytes)]
 #[ts(export)]
@@ -17,12 +17,15 @@ pub enum WorldState {
 #[derive(Networked)]
 pub struct WorldInfo {
     state: Property<WorldState>,
+    #[rustfmt::skip]
+    winner: Property<Option::<Team>>,
 }
 
 impl WorldInfo {
     pub fn new() -> Self {
         Self {
-            state: Property::new(WorldState::Playing),
+            state: Property::new(WorldState::Intermission),
+            winner: Property::new(None),
         }
     }
 
