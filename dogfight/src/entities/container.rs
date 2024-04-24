@@ -64,6 +64,7 @@ where
     pub fn get_all_changed_state(&mut self) -> Vec<EntityChange> {
         self.map
             .iter_mut()
+            .filter(|(_, ent)| ent.has_changes())
             .map(|(id, ent)| EntityChange {
                 ent_type: self.ent_type,
                 id: *id,
