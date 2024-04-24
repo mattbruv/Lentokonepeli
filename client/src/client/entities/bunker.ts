@@ -21,6 +21,7 @@ export class Bunker implements Entity<BunkerProperties> {
   public getContainer(): PIXI.Container {
     return this.container;
   }
+
   public updateProperties(props: BunkerProperties): void {
     if (props.x !== null) {
       this.bunker.position.x = props.x;
