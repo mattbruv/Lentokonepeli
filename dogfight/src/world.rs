@@ -13,8 +13,9 @@ use crate::{
         runway::Runway,
         types::{EntityType, Team},
         water::Water,
-        world_info::{WorldInfo, WorldInfoProperties},
+        world_info::WorldInfo,
     },
+    event::GameEvent,
     network::{EntityChange, NetworkedEntity},
 };
 
@@ -59,10 +60,20 @@ impl World {
         self.men.insert(m);
     }
 
-    pub fn tick(&mut self) -> () {
+    pub fn tick(&mut self) -> Vec<GameEvent> {
+        let mut events: Vec<GameEvent> = vec![];
+
         if let Some(m) = self.men.get_mut(0) {
             m.set_x(m.get_x() + 100);
         }
+
+        let updated_state = self.get_changed_state();
+
+        if updated_state.len() > 0 {
+            events.push(GameEvent::EntityChanges(updated_state));
+        }
+
+        events
     }
 
     pub fn get_full_state(&self) -> Vec<EntityChange> {
@@ -80,7 +91,7 @@ impl World {
         state
     }
 
-    pub fn get_changed_state(&mut self) -> Vec<EntityChange> {
+    fn get_changed_state(&mut self) -> Vec<EntityChange> {
         let mut state = vec![];
 
         if self.world_info.has_changes() {
