@@ -16,6 +16,7 @@ use self::encoding::NetworkedBytes;
 pub trait NetworkedEntity {
     fn get_full_properties(&self) -> EntityProperties;
     fn get_changed_properties_and_reset(&mut self) -> EntityProperties;
+    fn has_changes(&self) -> bool;
 }
 
 pub fn entity_changes_to_json(state: Vec<EntityChange>) -> String {
