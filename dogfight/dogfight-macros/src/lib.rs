@@ -107,6 +107,7 @@ pub fn networked(input: TokenStream) -> TokenStream {
         Ident::new(&format!("{}Properties", struct_name), struct_name.span());
     let properties_fields = property_fields.iter().map(|(ident, ty)| {
         quote! {
+            #[serde(skip_serializing_if = "Option::is_none")]
             #ident: Option<#ty>
         }
     });

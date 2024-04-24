@@ -23,15 +23,15 @@ export class Bunker implements Entity<BunkerProperties> {
   }
 
   public updateProperties(props: BunkerProperties): void {
-    if (props.x !== null) {
+    if (props.x !== undefined) {
       this.bunker.position.x = props.x;
     }
 
-    if (props.y !== null) {
+    if (props.y !== undefined) {
       this.bunker.position.y = props.y;
     }
 
-    if (props.team !== null) {
+    if (props.team !== undefined) {
       const textures: Record<Team, PIXI.Texture> = {
         Centrals: Textures["headquarter_germans.gif"],
         Allies: Textures["headquarter_raf.gif"],
