@@ -35,17 +35,17 @@ export class Coast implements Entity<CoastProperties> {
     return this.container;
   }
   public updateProperties(props: CoastProperties): void {
-    if (props.client_x != null) {
+    if (props.client_x !== undefined) {
       this.coastSprite.position.x = props.client_x;
       this.water.position.x = props.client_x;
     }
 
-    if (props.client_y != null) {
+    if (props.client_y !== undefined) {
       this.coastSprite.position.y = props.client_y;
       this.water.position.y = props.client_y;
     }
 
-    if (props.facing != null) {
+    if (props.facing !== undefined) {
       this.facing = props.facing;
       this.coastSprite.anchor.x = this.facing === "Left" ? 0 : 1;
       this.coastSprite.scale.x = this.facing === "Left" ? 1 : -1;
