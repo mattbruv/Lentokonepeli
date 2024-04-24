@@ -51,7 +51,7 @@ export class Coast implements Entity<CoastProperties> {
       this.coastSprite.scale.x = this.facing === "Left" ? 1 : -1;
     }
 
-    if (props.terrain !== null) {
+    if (props.terrain !== undefined) {
       const tex: TextureCombinations = {
         // none of the beach-r textures are used in the game.
         // They are actually just the left ones, but inverted

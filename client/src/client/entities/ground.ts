@@ -41,7 +41,7 @@ export class Ground implements Entity<GroundProperties> {
       this.water.y = props.client_y;
     }
 
-    if (props.terrain !== null) {
+    if (props.terrain !== undefined) {
       const textureMap: Record<Terrain, PIXI.Texture> = {
         Normal: Textures["ground1.gif"],
         Desert: Textures["groundDesert.gif"],

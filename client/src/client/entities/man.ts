@@ -29,15 +29,15 @@ export class Man implements Entity<ManProperties> {
     return this.container;
   }
   public updateProperties(props: ManProperties): void {
-    if (props.client_x !== null) {
+    if (props.client_x !== undefined) {
       this.manSprite.position.x = props.client_x;
     }
 
-    if (props.client_y !== null) {
+    if (props.client_y !== undefined) {
       this.manSprite.position.y = props.client_y;
     }
 
-    if (props.team !== null) {
+    if (props.team !== undefined) {
       //
     }
   }

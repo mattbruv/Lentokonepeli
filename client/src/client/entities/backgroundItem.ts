@@ -63,7 +63,7 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
   }
 
   public updateProperties(props: BackgroundItemProperties): void {
-    if (props.bg_item_type !== null) {
+    if (props.bg_item_type !== undefined) {
       if (this.flagInterval !== null) {
         clearInterval(this.flagInterval);
       }
@@ -78,7 +78,7 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
       }
     }
 
-    if (props.client_x !== null) {
+    if (props.client_x !== undefined) {
       let xDiff = Math.floor(this.itemSprite.texture.width / 2);
       if (this.flagTypes.includes(this.itemType)) {
         xDiff = 0;
@@ -86,7 +86,7 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
       this.itemSprite.position.x = props.client_x - xDiff;
     }
 
-    if (props.client_y !== null) {
+    if (props.client_y !== undefined) {
       let yDiff = this.itemSprite.texture.height;
       if (this.flagTypes.includes(this.itemType)) {
         yDiff = 0;
@@ -94,7 +94,7 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
       this.itemSprite.position.y = props.client_y - yDiff;
     }
 
-    if (props.facing !== null) {
+    if (props.facing !== undefined) {
       this.itemSprite.anchor.x = props.facing === "Right" ? 0 : 1;
       this.itemSprite.scale.x = props.facing === "Right" ? 1 : -1;
     }

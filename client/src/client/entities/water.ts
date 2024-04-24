@@ -60,28 +60,28 @@ export class Water implements Entity<WaterProperties> {
   }
 
   public updateProperties(props: WaterProperties): void {
-    if (props.facing !== null) {
+    if (props.facing !== undefined) {
       this.facing = props.facing;
       this.waves.anchor.x = this.facing === "Left" ? 0 : 1;
       this.waves.scale.x = this.facing === "Left" ? 1 : -1;
     }
 
-    if (props.width !== null) {
+    if (props.width !== undefined) {
       this.waterGraphics.width = props.width;
       this.waves.width = props.width;
     }
 
-    if (props.client_x !== null) {
+    if (props.client_x !== undefined) {
       this.waterGraphics.position.x = props.client_x;
       this.waves.position.x = props.client_x;
     }
 
-    if (props.client_y !== null) {
+    if (props.client_y !== undefined) {
       this.waterGraphics.position.y = props.client_y;
       this.waves.position.y = props.client_y;
     }
 
-    if (props.terrain !== null) {
+    if (props.terrain !== undefined) {
       const color = TERRAIN_WATER_COLOR[props.terrain];
       this.waterGraphics.clear();
       this.waterGraphics.beginFill(color);
