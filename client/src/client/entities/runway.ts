@@ -28,17 +28,17 @@ export class Runway implements Entity<RunwayProperties> {
     return this.container;
   }
   public updateProperties(props: RunwayProperties): void {
-    if (props.client_x != null) {
+    if (props.client_x !== undefined) {
       this.runwaySprite.position.x = props.client_x;
       this.runwayBack.position.x = props.client_x + 217;
     }
 
-    if (props.client_y != null) {
+    if (props.client_y !== undefined) {
       this.runwaySprite.position.y = props.client_y;
       this.runwayBack.position.y = props.client_y;
     }
 
-    if (props.facing != null) {
+    if (props.facing !== undefined) {
       const textureMap: Record<Facing, PIXI.Texture> = {
         Left: Textures["runway2.gif"],
         Right: Textures["runway.gif"],

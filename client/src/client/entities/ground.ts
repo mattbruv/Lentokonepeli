@@ -27,16 +27,16 @@ export class Ground implements Entity<GroundProperties> {
     return this.container;
   }
   public updateProperties(props: GroundProperties): void {
-    if (props.width != null) {
+    if (props.width !== undefined) {
       this.groundSprite.width = props.width;
     }
 
-    if (props.client_x != null) {
+    if (props.client_x !== undefined) {
       this.groundSprite.x = props.client_x;
       this.water.x = props.client_x;
     }
 
-    if (props.client_y != null) {
+    if (props.client_y !== undefined) {
       this.groundSprite.y = props.client_y;
       this.water.y = props.client_y;
     }
