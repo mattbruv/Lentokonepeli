@@ -82,7 +82,11 @@ impl World {
 
     pub fn get_changed_state(&mut self) -> Vec<EntityChange> {
         let mut state = vec![];
-        state.push(self.world_info.get_all_changed_state());
+
+        if self.world_info.has_changes() {
+            state.push(self.world_info.get_all_changed_state());
+        }
+
         state.extend(self.men.get_all_changed_state());
         state.extend(self.planes.get_all_changed_state());
         state.extend(self.players.get_all_changed_state());
