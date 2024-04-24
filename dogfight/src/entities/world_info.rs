@@ -1,20 +1,17 @@
 use dogfight_macros::{EnumBytes, Networked};
 
-use crate::{
-    network::{property::*, EntityChange, EntityChangeType, EntityProperties, NetworkedEntity},
-    world::RESOLUTION,
+use crate::network::{
+    property::*, EntityChange, EntityChangeType, EntityProperties, NetworkedEntity,
 };
 
-use super::types::{EntityType, Team};
+use super::types::EntityType;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS, EnumBytes)]
 #[ts(export)]
 pub enum WorldState {
-    Falling,
-    Parachuting,
-    Standing,
-    WalkingLeft,
-    WalkingRight,
+    Intermission,
+    Playing,
+    PostGame,
 }
 
 #[derive(Networked)]
@@ -25,7 +22,7 @@ pub struct WorldInfo {
 impl WorldInfo {
     pub fn new() -> Self {
         Self {
-            state: Property::new(WorldState::Falling),
+            state: Property::new(WorldState::Playing),
         }
     }
 
