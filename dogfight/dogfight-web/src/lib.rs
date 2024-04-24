@@ -22,15 +22,6 @@ impl DogfightWeb {
         }
     }
 
-    pub fn get_changed_state(&mut self) -> String {
-        let state = self.world.get_changed_state();
-        entity_changes_to_json(state)
-    }
-
-    pub fn get_changed_state_binary(&mut self) -> Vec<u8> {
-        entity_changes_to_binary(self.world.get_changed_state())
-    }
-
     pub fn get_full_state(&self) -> String {
         entity_changes_to_json(self.world.get_full_state())
     }
@@ -48,6 +39,6 @@ impl DogfightWeb {
     }
 
     pub fn tick(&mut self) -> () {
-        self.world.tick();
+        let events = self.world.tick();
     }
 }
