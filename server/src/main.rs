@@ -25,6 +25,9 @@ fn main() {
 
     let bin = game_events_to_binary(&changed);
     let parsed = game_events_from_bytes(&bin);
+    let a = serde_json::to_string(&changed).unwrap();
+    let b = serde_json::to_string(&parsed).unwrap();
     println!("{:?}", bin);
     println!("{:?}", parsed);
+    println!("{:?}", a == b);
 }
