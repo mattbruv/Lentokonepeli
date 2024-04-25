@@ -15,8 +15,8 @@ use crate::{
         water::Water,
         world_info::WorldInfo,
     },
-    event::GameEvent,
     network::{EntityChange, NetworkedEntity},
+    output::GameOutput,
 };
 
 pub const RESOLUTION: i32 = 100;
@@ -63,8 +63,8 @@ impl World {
         self.men.insert(m2);
     }
 
-    pub fn tick(&mut self) -> Vec<GameEvent> {
-        let mut events: Vec<GameEvent> = vec![];
+    pub fn tick(&mut self) -> Vec<GameOutput> {
+        let mut events: Vec<GameOutput> = vec![];
 
         if let Some(m) = self.men.get_mut(0) {
             m.set_x(m.get_x() + 100);
@@ -77,7 +77,7 @@ impl World {
         let updated_state = self.get_changed_state();
 
         if updated_state.len() > 0 {
-            events.push(GameEvent::EntityChanges(updated_state));
+            events.push(GameOutput::EntityChanges(updated_state));
         }
 
         events

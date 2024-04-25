@@ -12,7 +12,7 @@ import { Runway } from "./entities/runway";
 import { BackgroundItem } from "./entities/backgroundItem";
 import { Bunker } from "./entities/bunker";
 import { Man } from "./entities/man";
-import { GameEvent } from "dogfight-types/GameEvent";
+import { GameOutput } from "dogfight-types/GameOutput";
 
 export class DogfightClient {
   // https://pixijs.download/v7.x/docs/index.html
@@ -56,7 +56,7 @@ export class DogfightClient {
     element?.appendChild(this.app.view);
   }
 
-  public handleGameEvents(events: GameEvent[]) {
+  public handleGameEvents(events: GameOutput[]) {
     for (const event of events) {
       switch (event.type) {
         case "EntityChanges": {
