@@ -124,7 +124,16 @@ impl World {
         for event in input {
             match event {
                 GameInput::AddPlayer { name } => {
-                    //
+                    let player = self
+                        .players
+                        .get_map()
+                        .iter()
+                        .find(|(id, p)| p.get_name().eq(&name));
+
+                    // Add the player if not already exists
+                    if let None = player {
+                        self.players.insert(Player::new(name));
+                    }
                 }
                 GameInput::RemovePlayer { name } => {
                     //
