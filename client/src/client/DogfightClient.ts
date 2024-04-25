@@ -13,12 +13,15 @@ import { BackgroundItem } from "./entities/backgroundItem";
 import { Bunker } from "./entities/bunker";
 import { Man } from "./entities/man";
 import { GameOutput } from "dogfight-types/GameOutput";
+import { Player } from "./entities/player";
 
 export class DogfightClient {
   // https://pixijs.download/v7.x/docs/index.html
   private app: PIXI.Application<HTMLCanvasElement>;
   private viewport: Viewport;
   private debugText = new PIXI.Text();
+
+  private players: Map<number, Player> = new Map();
 
   private grounds: Map<number, Ground> = new Map();
   private backgroundItems: Map<number, BackgroundItem> = new Map();
@@ -93,6 +96,10 @@ export class DogfightClient {
 
   private deleteEntity(id: number, ent_type: EntityType) {
     switch (ent_type) {
+      case "Player": {
+        this.players.delete(id);
+        break;
+      }
       case "Ground": {
         this.grounds.get(id)?.destroy();
         this.grounds.delete(id);
@@ -133,6 +140,15 @@ export class DogfightClient {
 
   private updateEntity(id: number, data: EntityProperties) {
     switch (data.type) {
+      case "Player": {
+        let player = this.players.get(id);
+        if (!player) {
+          player = new Player();
+          this.players.set(id, player);
+        }
+        player.updateProperties(data.props);
+        break;
+      }
       case "Ground": {
         let ground = this.grounds.get(id);
         if (!ground) {
