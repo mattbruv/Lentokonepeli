@@ -14,12 +14,21 @@ import { Bunker } from "./entities/bunker";
 import { Man } from "./entities/man";
 import { GameOutput } from "dogfight-types/GameOutput";
 import { Player } from "./entities/player";
+import { Team } from "dogfight-types/Team";
+
+export type ClientCallbacks = {
+  chooseTeam: (team: Team) => void;
+};
 
 export class DogfightClient {
   // https://pixijs.download/v7.x/docs/index.html
   private app: PIXI.Application<HTMLCanvasElement>;
   private viewport: Viewport;
   private debugText = new PIXI.Text();
+
+  private myPlayerName: string | null = null;
+
+  private callbacks?: ClientCallbacks;
 
   private players: Map<number, Player> = new Map();
 
@@ -58,13 +67,19 @@ export class DogfightClient {
       };
     }
   }
-  public async init(element: HTMLDivElement) {
+
+  public async init(callbacks: ClientCallbacks, element: HTMLDivElement) {
     await loadTextures();
     this.appendView(element);
+    this.callbacks = callbacks;
   }
 
   private appendView(element: HTMLDivElement) {
     element?.appendChild(this.app.view);
+  }
+
+  public setMyPlayerName(name: string) {
+    this.myPlayerName = name;
   }
 
   public handleGameEvents(events: GameOutput[]) {
