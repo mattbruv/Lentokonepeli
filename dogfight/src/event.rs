@@ -1,4 +1,3 @@
-use image::load_from_memory_with_format;
 use serde::Serialize;
 use ts_rs::TS;
 
@@ -17,11 +16,14 @@ pub enum GameEvent {
 
 impl NetworkedBytes for GameEvent {
     fn to_bytes(&self) -> Vec<u8> {
-        let mut bytes = vec![];
+        let mut bytes: Vec<u8> = vec![];
 
         match &self {
             GameEvent::EntityChanges(changes) => {
                 bytes.push(0);
+                let len = changes.len();
+                assert!(len < 256, "Change count exceeds byte size");
+                bytes.push(len as u8);
                 bytes.extend(entity_changes_to_binary(changes));
             }
         }
@@ -30,11 +32,22 @@ impl NetworkedBytes for GameEvent {
     }
 
     fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        let (mut bytes, variant) = u8::from_bytes(bytes);
+        let (bytes, variant) = u8::from_bytes(bytes);
 
         match variant {
-            0 => 3,
+            0 => {
+                // parse entity changes
+                let (bytes, change_length) = u8::from_bytes(bytes);
+                let mut changes = vec![];
+
+                for _ in 0..change_length {
+                    let (slice, update) = EntityChange::from_bytes(bytes);
+                    changes.push(update);
+                }
+
+                (bytes, GameEvent::EntityChanges(changes))
+            }
             _ => panic!("Unrecognized enum variant in Event: {}", variant),
-        };
+        }
     }
 }
