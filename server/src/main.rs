@@ -15,6 +15,14 @@ fn main() {
 
     let changed = world.tick();
 
+    match &changed[0] {
+        GameEvent::EntityChanges(c) => {
+            for thing in c.iter() {
+                println!("{:?}", thing);
+            }
+        }
+    }
+
     let bin = game_events_to_binary(&changed);
     let parsed = game_events_from_bytes(&bin);
     println!("{:?}", bin);
