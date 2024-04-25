@@ -9,7 +9,7 @@ use crate::network::{encoding::NetworkedBytes, entity_changes_to_binary, EntityC
 */
 #[derive(Serialize, Debug, TS)]
 #[ts(export)]
-#[serde(tag = "type", content = "event")]
+#[serde(tag = "type", content = "data")]
 pub enum GameEvent {
     EntityChanges(Vec<EntityChange>),
 }
