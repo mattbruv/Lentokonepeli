@@ -18,6 +18,7 @@ export class DogfightClient {
   // https://pixijs.download/v7.x/docs/index.html
   private app: PIXI.Application<HTMLCanvasElement>;
   private viewport: Viewport;
+  private debugText = new PIXI.Text();
 
   private grounds: Map<number, Ground> = new Map();
   private backgroundItems: Map<number, BackgroundItem> = new Map();
@@ -42,10 +43,17 @@ export class DogfightClient {
 
     this.viewport.drag().pinch().wheel().decelerate();
 
-    this.viewport.onpointermove = (e) => {
-      const pos = this.viewport.toWorld(e.data.global);
-      console.log("x", Math.round(pos.x), "y", Math.round(pos.y));
-    };
+    if (import.meta.env.DEV) {
+      this.app.stage.addChild(this.debugText);
+      this.debugText.style.fontFamily = "monospace";
+
+      this.viewport.onpointermove = (e) => {
+        const pos = this.viewport.toWorld(e.data.global);
+        const x = Math.round(pos.x);
+        const y = Math.round(pos.y);
+        this.debugText.text = `${x}, ${y}`;
+      };
+    }
   }
   public async init(element: HTMLDivElement) {
     await loadTextures();
