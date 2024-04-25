@@ -2,6 +2,7 @@ use std::time::Instant;
 
 use dogfight::event::GameEvent;
 use dogfight::network::encoding::NetworkedBytes;
+use dogfight::network::{game_events_from_bytes, game_events_to_binary};
 use dogfight::world::World;
 
 fn main() {
@@ -12,25 +13,10 @@ fn main() {
     world.load_level(levels[0]);
     world.init();
 
-    let full = world.get_full_state();
     let changed = world.tick();
-    let changed = &world.tick()[0];
-    let el = now.elapsed();
-    println!("{:?}", changed);
-    let bytes = changed.to_bytes();
-    println!("{:?}", bytes);
-    let parsed = GameEvent::from_bytes(&bytes);
+
+    let bin = game_events_to_binary(&changed);
+    let parsed = game_events_from_bytes(&bin);
+    println!("{:?}", bin);
     println!("{:?}", parsed);
-    println!("{:?}", el);
-    match &parsed.1 {
-        GameEvent::EntityChanges(c) => {
-            println!("change len: {}", c.len());
-        }
-    }
-    let a = serde_json::to_string(changed).unwrap();
-    let b = serde_json::to_string(&parsed.1).unwrap();
-    println!("a: {}", a);
-    println!("b: {}", b);
-    println!("equal?: {}", a == b);
-    println!("{:?}", parsed.0);
 }
