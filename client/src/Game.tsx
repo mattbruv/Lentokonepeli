@@ -16,10 +16,11 @@ export function Game() {
 
         setInterval(() => {
           const tick = dogfight.game.tick();
-          const events = JSON.parse(tick) as GameEvent[];
-          console.log(events);
+          const events_json = dogfight.game.game_events_from_binary(tick);
+          const events = JSON.parse(events_json) as GameEvent[];
+
           dogfight.client.handleGameEvents(events);
-        }, 3000);
+        }, 1000);
       });
     }
   }, []);

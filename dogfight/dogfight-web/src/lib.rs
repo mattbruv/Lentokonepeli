@@ -27,16 +27,6 @@ impl DogfightWeb {
         }
     }
 
-    /*
-        pub fn get_full_state(&self) -> String {
-            entity_changes_to_json(self.world.get_full_state())
-        }
-
-        pub fn get_full_state_binary(&self) -> Vec<u8> {
-            entity_changes_to_binary(&self.world.get_full_state())
-        }
-    */
-
     pub fn load_level(&mut self, world: String) {
         self.world.load_level(&world);
     }
@@ -45,13 +35,14 @@ impl DogfightWeb {
         self.world.init();
     }
 
-    pub fn tick(&mut self) -> String {
+    pub fn tick(&mut self) -> Vec<u8> {
         let events = self.world.tick();
-        let out = game_events_to_json(&events);
-        let bin = game_events_to_binary(&events);
-        let test = format!("{:?}", bin);
-        let parsed = game_events_from_bytes(&bin);
-        test
-        //game_events_to_json(parsed)
+        let binary = game_events_to_binary(&events);
+        binary
+    }
+
+    pub fn game_events_from_binary(&self, binary: Vec<u8>) -> String {
+        let events = game_events_from_bytes(&binary);
+        game_events_to_json(&events)
     }
 }
