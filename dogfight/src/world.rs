@@ -128,7 +128,7 @@ impl World {
                         .players
                         .get_map()
                         .iter()
-                        .find(|(id, p)| p.get_name().eq(&name));
+                        .find(|(_, p)| p.get_name().eq(&name));
 
                     // Add the player if not already exists
                     if let None = player {
