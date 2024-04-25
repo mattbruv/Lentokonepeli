@@ -4,11 +4,14 @@ pub mod property;
 use serde::Serialize;
 use ts_rs::TS;
 
-use crate::entities::{
-    background_item::BackgroundItemProperties, bunker::BunkerProperties, coast::CoastProperties,
-    ground::GroundProperties, man::ManProperties, plane::PlaneProperties, player::PlayerProperties,
-    runway::RunwayProperties, types::EntityType, water::WaterProperties,
-    world_info::WorldInfoProperties, EntityId,
+use crate::{
+    entities::{
+        background_item::BackgroundItemProperties, bunker::BunkerProperties,
+        coast::CoastProperties, ground::GroundProperties, man::ManProperties,
+        plane::PlaneProperties, player::PlayerProperties, runway::RunwayProperties,
+        types::EntityType, water::WaterProperties, world_info::WorldInfoProperties, EntityId,
+    },
+    event::GameEvent,
 };
 
 use self::encoding::NetworkedBytes;
@@ -19,12 +22,46 @@ pub trait NetworkedEntity {
     fn has_changes(&self) -> bool;
 }
 
-pub fn entity_changes_to_json(state: Vec<EntityChange>) -> String {
+/*
+pub(crate) fn entity_changes_to_json(state: Vec<EntityChange>) -> String {
     serde_json::to_string(&state).unwrap()
 }
+*/
 
-pub fn entity_changes_to_binary(state: &Vec<EntityChange>) -> Vec<u8> {
+pub(crate) fn entity_changes_to_binary(state: &Vec<EntityChange>) -> Vec<u8> {
     state.iter().flat_map(|x| x.to_bytes()).collect()
+}
+
+pub fn game_events_to_binary(events: Vec<GameEvent>) -> Vec<u8> {
+    events.to_bytes()
+}
+
+pub fn game_events_from_bytes(bytes: Vec<u8>) -> Vec<GameEvent> {
+    let (_, events) = Vec::<GameEvent>::from_bytes(&bytes);
+    events
+}
+
+pub fn game_events_to_json(events: Vec<GameEvent>) -> String {
+    serde_json::to_string(&events).unwrap()
+}
+
+impl NetworkedBytes for Vec<GameEvent> {
+    fn to_bytes(&self) -> Vec<u8> {
+        self.iter().flat_map(|x| x.to_bytes()).collect()
+    }
+
+    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+        let mut events = vec![];
+        let mut slice = bytes;
+
+        while slice.len() > 0 {
+            let (bytes, event) = GameEvent::from_bytes(slice);
+            events.push(event);
+            slice = &bytes;
+        }
+
+        (bytes, events)
+    }
 }
 
 #[derive(Serialize, Debug, TS)]
