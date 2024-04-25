@@ -21,4 +21,16 @@ fn main() {
     println!("{:?}", bytes);
     let parsed = GameEvent::from_bytes(&bytes);
     println!("{:?}", parsed);
+    println!("{:?}", el);
+    match &parsed.1 {
+        GameEvent::EntityChanges(c) => {
+            println!("change len: {}", c.len());
+        }
+    }
+    let a = serde_json::to_string(changed).unwrap();
+    let b = serde_json::to_string(&parsed.1).unwrap();
+    println!("a: {}", a);
+    println!("b: {}", b);
+    println!("equal?: {}", a == b);
+    println!("{:?}", parsed.0);
 }
