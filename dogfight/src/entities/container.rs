@@ -50,6 +50,14 @@ where
         self.map.get(&id)
     }
 
+    pub fn get_map_mut(&mut self) -> &mut HashMap<EntityId, T> {
+        &mut self.map
+    }
+
+    pub fn get_map(&self) -> &HashMap<EntityId, T> {
+        &self.map
+    }
+
     pub fn get_all_full_state(&self) -> Vec<EntityChange> {
         self.map
             .iter()
