@@ -32,20 +32,22 @@ impl NetworkedBytes for GameEvent {
     }
 
     fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        let (bytes, variant) = u8::from_bytes(bytes);
+        let (mut slice, variant) = u8::from_bytes(bytes);
 
         match variant {
             0 => {
                 // parse entity changes
-                let (bytes, change_length) = u8::from_bytes(bytes);
+                let (bytes, change_length) = u8::from_bytes(slice);
+                slice = &bytes;
                 let mut changes = vec![];
 
                 for _ in 0..change_length {
-                    let (slice, update) = EntityChange::from_bytes(bytes);
+                    let (bytes, update) = EntityChange::from_bytes(slice);
+                    slice = &bytes;
                     changes.push(update);
                 }
 
-                (bytes, GameEvent::EntityChanges(changes))
+                (slice, GameEvent::EntityChanges(changes))
             }
             _ => panic!("Unrecognized enum variant in Event: {}", variant),
         }
