@@ -20,7 +20,7 @@ export function Game() {
           const events = JSON.parse(events_json) as GameEvent[];
 
           dogfight.client.handleGameEvents(events);
-        }, 1000);
+        }, 30);
       });
     }
   }, []);

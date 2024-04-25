@@ -57,8 +57,14 @@ export class DogfightClient {
   }
 
   public handleGameEvents(events: GameEvent[]) {
-    //
-    console.log(events);
+    for (const event of events) {
+      switch (event.type) {
+        case "EntityChanges": {
+          this.updateEntities(event.event);
+          break;
+        }
+      }
+    }
   }
 
   private updateEntities(changes: EntityChange[]) {
