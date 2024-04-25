@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { DogfightContext } from "./DogfightContext";
 import { EntityChange } from "dogfight-types/EntityChange";
 import Levels from "./assets/levels.json";
+import { GameEvent } from "dogfight-types/GameEvent";
 
 export function Game() {
   const gameContainer = useRef<HTMLDivElement>(null);
@@ -13,16 +14,12 @@ export function Game() {
         dogfight.game.load_level(Levels["africa"]);
         dogfight.game.init();
 
-        const json = dogfight.game.get_full_state();
-        const state = JSON.parse(json) as EntityChange[];
-        dogfight.client.updateEntities(state);
-
         setInterval(() => {
-          dogfight.game.tick();
-          const json = dogfight.game.get_changed_state();
-          const state = JSON.parse(json) as EntityChange[];
-          dogfight.client.updateEntities(state);
-        }, 30);
+          const tick = dogfight.game.tick();
+          const events = JSON.parse(tick) as GameEvent[];
+          console.log(events);
+          dogfight.client.handleGameEvents(events);
+        }, 3000);
       });
     }
   }, []);
