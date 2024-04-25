@@ -10,16 +10,16 @@ use crate::network::{encoding::NetworkedBytes, entity_changes_to_binary, EntityC
 #[derive(Serialize, Debug, TS)]
 #[ts(export)]
 #[serde(tag = "type", content = "data")]
-pub enum GameEvent {
+pub enum GameOutput {
     EntityChanges(Vec<EntityChange>),
 }
 
-impl NetworkedBytes for GameEvent {
+impl NetworkedBytes for GameOutput {
     fn to_bytes(&self) -> Vec<u8> {
         let mut bytes: Vec<u8> = vec![];
 
         match &self {
-            GameEvent::EntityChanges(changes) => {
+            GameOutput::EntityChanges(changes) => {
                 bytes.push(0);
                 let len = changes.len();
                 assert!(len < 256, "Change count exceeds byte size");
@@ -47,7 +47,7 @@ impl NetworkedBytes for GameEvent {
                     changes.push(update);
                 }
 
-                (slice, GameEvent::EntityChanges(changes))
+                (slice, GameOutput::EntityChanges(changes))
             }
             _ => panic!("Unrecognized enum variant in Event: {}", variant),
         }

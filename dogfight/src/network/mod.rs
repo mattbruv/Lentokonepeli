@@ -11,7 +11,7 @@ use crate::{
         plane::PlaneProperties, player::PlayerProperties, runway::RunwayProperties,
         types::EntityType, water::WaterProperties, world_info::WorldInfoProperties, EntityId,
     },
-    event::GameEvent,
+    output::GameOutput,
 };
 
 use self::encoding::NetworkedBytes;
@@ -32,20 +32,20 @@ pub(crate) fn entity_changes_to_binary(state: &Vec<EntityChange>) -> Vec<u8> {
     state.iter().flat_map(|x| x.to_bytes()).collect()
 }
 
-pub fn game_events_to_binary(events: &Vec<GameEvent>) -> Vec<u8> {
+pub fn game_events_to_binary(events: &Vec<GameOutput>) -> Vec<u8> {
     events.to_bytes()
 }
 
-pub fn game_events_from_bytes(bytes: &Vec<u8>) -> Vec<GameEvent> {
-    let (_, events) = Vec::<GameEvent>::from_bytes(bytes);
+pub fn game_events_from_bytes(bytes: &Vec<u8>) -> Vec<GameOutput> {
+    let (_, events) = Vec::<GameOutput>::from_bytes(bytes);
     events
 }
 
-pub fn game_events_to_json(events: &Vec<GameEvent>) -> String {
+pub fn game_events_to_json(events: &Vec<GameOutput>) -> String {
     serde_json::to_string(&events).unwrap()
 }
 
-impl NetworkedBytes for Vec<GameEvent> {
+impl NetworkedBytes for Vec<GameOutput> {
     fn to_bytes(&self) -> Vec<u8> {
         self.iter().flat_map(|x| x.to_bytes()).collect()
     }
@@ -55,7 +55,7 @@ impl NetworkedBytes for Vec<GameEvent> {
         let mut slice = bytes;
 
         while slice.len() > 0 {
-            let (bytes, event) = GameEvent::from_bytes(slice);
+            let (bytes, event) = GameOutput::from_bytes(slice);
             events.push(event);
             slice = &bytes;
         }
