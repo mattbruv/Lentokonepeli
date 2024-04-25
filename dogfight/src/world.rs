@@ -15,6 +15,7 @@ use crate::{
         water::Water,
         world_info::WorldInfo,
     },
+    input::GameInput,
     network::{EntityChange, NetworkedEntity},
     output::GameOutput,
 };
@@ -63,7 +64,9 @@ impl World {
         self.men.insert(m2);
     }
 
-    pub fn tick(&mut self) -> Vec<GameOutput> {
+    pub fn tick(&mut self, input: Vec<GameInput>) -> Vec<GameOutput> {
+        self.handle_input(input);
+
         let mut events: Vec<GameOutput> = vec![];
 
         if let Some(m) = self.men.get_mut(0) {
@@ -115,5 +118,24 @@ impl World {
         state.extend(self.waters.get_all_changed_state());
         state.extend(self.bunkers.get_all_changed_state());
         state
+    }
+
+    fn handle_input(&mut self, input: Vec<GameInput>) -> () {
+        for event in input {
+            match event {
+                GameInput::AddPlayer { name } => {
+                    //
+                }
+                GameInput::RemovePlayer { name } => {
+                    //
+                }
+                GameInput::PlayerChooseTeam(selection) => {
+                    //
+                }
+                GameInput::PlayerChooseRunway(selection) => {
+                    //
+                }
+            }
+        }
     }
 }
