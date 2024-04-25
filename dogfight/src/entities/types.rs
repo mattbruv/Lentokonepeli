@@ -1,6 +1,6 @@
 use crate::network::encoding::NetworkedBytes;
 use dogfight_macros::EnumBytes;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 #[derive(Serialize, Clone, Copy, Debug, TS, EnumBytes)]
@@ -35,7 +35,7 @@ pub enum Terrain {
     Desert,
 }
 
-#[derive(Serialize, Clone, Copy, PartialEq, Eq, Debug, TS, EnumBytes)]
+#[derive(Serialize, Deserialize, Clone, Copy, PartialEq, Eq, Debug, TS, EnumBytes)]
 #[ts(export)]
 pub enum Team {
     Centrals,
