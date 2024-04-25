@@ -2,6 +2,8 @@ import { useContext, useEffect, useRef } from "react";
 import { DogfightContext } from "./DogfightContext";
 import Levels from "./assets/levels.json";
 import { GameOutput } from "dogfight-types/GameOutput";
+import { ClientCallbacks } from "./client/DogfightClient";
+import { Team } from "dogfight-types/Team";
 
 export function Game() {
   const gameContainer = useRef<HTMLDivElement>(null);
@@ -9,7 +11,11 @@ export function Game() {
 
   useEffect(() => {
     if (gameContainer.current) {
-      dogfight.client.init(gameContainer.current).then(() => {
+      const callbacks: ClientCallbacks = {
+        chooseTeam: (team: Team) => void {},
+      };
+
+      dogfight.client.init(callbacks, gameContainer.current).then(() => {
         dogfight.game.load_level(Levels["africa"]);
         dogfight.game.init();
 
