@@ -60,7 +60,7 @@ export class DogfightClient {
     for (const event of events) {
       switch (event.type) {
         case "EntityChanges": {
-          this.updateEntities(event.event);
+          this.updateEntities(event.data);
           break;
         }
       }
