@@ -221,7 +221,6 @@ pub fn networked(input: TokenStream) -> TokenStream {
 
                 let (header, mut data_bytes) = parse_property_header_bytes(bytes, #header_byte_count);
 
-                println!("{:?}", bytes);
                 let mut parsed = #properties_struct_name {
                     #(#property_init),*
                 };
