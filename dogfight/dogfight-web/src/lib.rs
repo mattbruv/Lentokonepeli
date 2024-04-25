@@ -46,7 +46,6 @@ impl DogfightWeb {
     }
 
     pub fn tick(&mut self) -> String {
-        //set_panic_hook();
         let events = self.world.tick();
         let out = game_events_to_json(&events);
         let bin = game_events_to_binary(&events);

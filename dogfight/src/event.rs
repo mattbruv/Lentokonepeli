@@ -44,7 +44,7 @@ impl NetworkedBytes for GameEvent {
                 for _ in 0..change_length {
                     let (bytes, update) = EntityChange::from_bytes(slice);
                     slice = &bytes;
-                    println!("{:?}", update);
+                    println!("foo {:?}", update);
                     changes.push(update);
                 }
 
