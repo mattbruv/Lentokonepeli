@@ -1,8 +1,9 @@
 use dogfight_macros::{EnumBytes, Networked};
+use serde::Deserialize;
 
 use crate::network::{property::Property, EntityProperties, NetworkedEntity};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS, EnumBytes)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS, EnumBytes)]
 #[ts(export)]
 pub enum PlaneType {
     Albatros = 4,
