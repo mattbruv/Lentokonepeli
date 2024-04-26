@@ -151,7 +151,13 @@ impl World {
                     }
                 }
                 GameInput::PlayerChooseTeam(selection) => {
-                    //
+                    let pid = self.get_player_id_from_name(&selection.player_name);
+
+                    if let Some(id) = pid {
+                        if let Some(player) = self.players.get_mut(id) {
+                            player.set_team(selection.team)
+                        }
+                    }
                 }
                 GameInput::PlayerChooseRunway(selection) => {
                     //

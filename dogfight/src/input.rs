@@ -23,14 +23,14 @@ pub fn game_input_from_string(input: String) -> Vec<GameInput> {
 #[derive(Serialize, Deserialize, Debug, TS)]
 #[ts(export)]
 pub struct RunwaySelection {
-    player_name: String,
-    runway_id: EntityId,
-    plane_type: PlaneType,
+    pub player_name: String,
+    pub runway_id: EntityId,
+    pub plane_type: PlaneType,
 }
 
 #[derive(Serialize, Deserialize, Debug, TS)]
 #[ts(export)]
 pub struct TeamSelection {
-    player_name: String,
-    team: Option<Team>, // None team selection means random
+    pub player_name: String,
+    pub team: Option<Team>, // None team selection means random
 }
