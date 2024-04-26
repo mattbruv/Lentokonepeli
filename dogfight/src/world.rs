@@ -65,8 +65,9 @@ impl World {
     }
 
     pub fn tick(&mut self, input: Vec<GameInput>) -> Vec<GameOutput> {
-        let mut events: Vec<GameOutput> = vec![];
+        let mut game_output: Vec<GameOutput> = vec![];
         let input_events = self.handle_input(input);
+        game_output.extend(input_events);
 
         if let Some(m) = self.men.get_mut(0) {
             m.set_x(m.get_x() + 100);
@@ -79,10 +80,10 @@ impl World {
         let updated_state = self.get_changed_state();
 
         if updated_state.len() > 0 {
-            events.push(GameOutput::EntityChanges(updated_state));
+            game_output.push(GameOutput::EntityChanges(updated_state));
         }
 
-        events
+        game_output
     }
 
     pub(crate) fn get_player_id_from_name(&self, name: &String) -> Option<EntityId> {
