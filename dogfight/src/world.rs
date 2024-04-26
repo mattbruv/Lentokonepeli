@@ -17,7 +17,6 @@ use crate::{
         EntityId,
     },
     input::GameInput,
-    network::{EntityChange, NetworkedEntity},
     output::GameOutput,
 };
 
@@ -87,41 +86,7 @@ impl World {
         events
     }
 
-    pub fn get_full_state(&self) -> Vec<EntityChange> {
-        let mut state = vec![];
-        state.push(self.world_info.get_all_full_state());
-        state.extend(self.men.get_all_full_state());
-        state.extend(self.planes.get_all_full_state());
-        state.extend(self.players.get_all_full_state());
-        state.extend(self.background_items.get_all_full_state());
-        state.extend(self.grounds.get_all_full_state());
-        state.extend(self.coasts.get_all_full_state());
-        state.extend(self.runways.get_all_full_state());
-        state.extend(self.waters.get_all_full_state());
-        state.extend(self.bunkers.get_all_full_state());
-        state
-    }
-
-    fn get_changed_state(&mut self) -> Vec<EntityChange> {
-        let mut state = vec![];
-
-        if self.world_info.has_changes() {
-            state.push(self.world_info.get_all_changed_state());
-        }
-
-        state.extend(self.men.get_all_changed_state());
-        state.extend(self.planes.get_all_changed_state());
-        state.extend(self.players.get_all_changed_state());
-        state.extend(self.background_items.get_all_changed_state());
-        state.extend(self.grounds.get_all_changed_state());
-        state.extend(self.coasts.get_all_changed_state());
-        state.extend(self.runways.get_all_changed_state());
-        state.extend(self.waters.get_all_changed_state());
-        state.extend(self.bunkers.get_all_changed_state());
-        state
-    }
-
-    fn get_player_id_from_name(&self, name: &String) -> Option<EntityId> {
+    pub(crate) fn get_player_id_from_name(&self, name: &String) -> Option<EntityId> {
         let player = self
             .players
             .get_map()
@@ -132,37 +97,5 @@ impl World {
             return Some(*id);
         }
         None
-    }
-
-    fn handle_input(&mut self, input: Vec<GameInput>) -> () {
-        for event in input {
-            match event {
-                GameInput::AddPlayer { name } => {
-                    // Add the player if not already exists
-                    if let None = self.get_player_id_from_name(&name) {
-                        self.players.insert(Player::new(name));
-                    }
-                }
-                GameInput::RemovePlayer { name } => {
-                    let player_id = self.get_player_id_from_name(&name);
-
-                    if let Some(id) = player_id {
-                        self.players.remove(id);
-                    }
-                }
-                GameInput::PlayerChooseTeam(selection) => {
-                    let pid = self.get_player_id_from_name(&selection.player_name);
-
-                    if let Some(id) = pid {
-                        if let Some(player) = self.players.get_mut(id) {
-                            player.set_team(selection.team)
-                        }
-                    }
-                }
-                GameInput::PlayerChooseRunway(selection) => {
-                    //
-                }
-            }
-        }
     }
 }

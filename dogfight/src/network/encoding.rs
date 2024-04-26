@@ -6,9 +6,10 @@ use crate::{
         types::EntityType, water::WaterProperties, world_info::WorldInfoProperties,
     },
     network::EntityChangeType,
+    world::World,
 };
 
-use super::{EntityChange, EntityProperties};
+use super::{EntityChange, EntityProperties, NetworkedEntity};
 
 /**
  * This funciton is used to create the header bytes to tell
@@ -297,5 +298,41 @@ impl NetworkedBytes for i8 {
     fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
         let value = i8::from_le_bytes(bytes[..1].try_into().unwrap());
         (&bytes[1..], value)
+    }
+}
+
+impl World {
+    pub fn get_full_state(&self) -> Vec<EntityChange> {
+        let mut state = vec![];
+        state.push(self.world_info.get_all_full_state());
+        state.extend(self.men.get_all_full_state());
+        state.extend(self.planes.get_all_full_state());
+        state.extend(self.players.get_all_full_state());
+        state.extend(self.background_items.get_all_full_state());
+        state.extend(self.grounds.get_all_full_state());
+        state.extend(self.coasts.get_all_full_state());
+        state.extend(self.runways.get_all_full_state());
+        state.extend(self.waters.get_all_full_state());
+        state.extend(self.bunkers.get_all_full_state());
+        state
+    }
+
+    pub(crate) fn get_changed_state(&mut self) -> Vec<EntityChange> {
+        let mut state = vec![];
+
+        if self.world_info.has_changes() {
+            state.push(self.world_info.get_all_changed_state());
+        }
+
+        state.extend(self.men.get_all_changed_state());
+        state.extend(self.planes.get_all_changed_state());
+        state.extend(self.players.get_all_changed_state());
+        state.extend(self.background_items.get_all_changed_state());
+        state.extend(self.grounds.get_all_changed_state());
+        state.extend(self.coasts.get_all_changed_state());
+        state.extend(self.runways.get_all_changed_state());
+        state.extend(self.waters.get_all_changed_state());
+        state.extend(self.bunkers.get_all_changed_state());
+        state
     }
 }
