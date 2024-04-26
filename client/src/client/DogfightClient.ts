@@ -92,6 +92,9 @@ export class DogfightClient {
         case "PlayerJoin": {
           break;
         }
+        case "PlayerLeave": {
+          break;
+        }
       }
     }
   }
