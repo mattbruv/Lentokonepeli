@@ -2,12 +2,14 @@ mod utils;
 
 // use dogfight::network::{entity_changes_to_binary, entity_changes_to_json};
 use dogfight::{
-    network::{game_events_from_bytes, game_events_to_binary, game_events_to_json},
+    input::{game_input_from_string, GameInput},
+    network::{
+        encoding::NetworkedBytes, game_events_from_bytes, game_events_to_binary,
+        game_events_to_json,
+    },
     world::World,
 };
 use wasm_bindgen::prelude::*;
-
-use crate::utils::set_panic_hook;
 
 #[wasm_bindgen]
 extern "C" {
@@ -35,8 +37,9 @@ impl DogfightWeb {
         self.world.init();
     }
 
-    pub fn tick(&mut self) -> Vec<u8> {
-        let events = self.world.tick();
+    pub fn tick(&mut self, input_json: String) -> Vec<u8> {
+        let input = game_input_from_string(input_json);
+        let events = self.world.tick(input);
         let binary = game_events_to_binary(&events);
         binary
     }
