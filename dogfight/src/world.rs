@@ -14,6 +14,7 @@ use crate::{
         types::{EntityType, Team},
         water::Water,
         world_info::WorldInfo,
+        EntityId,
     },
     input::GameInput,
     network::{EntityChange, NetworkedEntity},
@@ -120,23 +121,34 @@ impl World {
         state
     }
 
+    fn get_player_id_from_name(&self, name: &String) -> Option<EntityId> {
+        let player = self
+            .players
+            .get_map()
+            .iter()
+            .find(|(_, p)| p.get_name().eq(name));
+
+        if let Some((id, _)) = player {
+            return Some(*id);
+        }
+        None
+    }
+
     fn handle_input(&mut self, input: Vec<GameInput>) -> () {
         for event in input {
             match event {
                 GameInput::AddPlayer { name } => {
-                    let player = self
-                        .players
-                        .get_map()
-                        .iter()
-                        .find(|(_, p)| p.get_name().eq(&name));
-
                     // Add the player if not already exists
-                    if let None = player {
+                    if let None = self.get_player_id_from_name(&name) {
                         self.players.insert(Player::new(name));
                     }
                 }
                 GameInput::RemovePlayer { name } => {
-                    //
+                    let player_id = self.get_player_id_from_name(&name);
+
+                    if let Some(id) = player_id {
+                        self.players.remove(id);
+                    }
                 }
                 GameInput::PlayerChooseTeam(selection) => {
                     //
