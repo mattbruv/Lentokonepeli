@@ -26,11 +26,24 @@ where
         container
     }
 
+    /**
+     * Try to insert an entity into the HashMap.
+     * returns the entity if it was succesfully inserted,
+     * otherwise returns None
+     */
     pub fn insert(&mut self, ent: T) -> Option<&T> {
         // Try to get an available ID
         if let Some(id) = self.ids.pop() {
-            // If the entity is inserted, return it
-            if let Some(_) = self.map.insert(id, ent) {
+            // If an entity already exists, cancel this operation
+            if let Some(_) = self.get(id) {
+                return None;
+            }
+
+            // This is a little weird.
+            // Inserting into a hashmap returns None if nothing was there,
+            // not Some(inserted_item) like I originally assumed.
+            // It was backwards.
+            if let None = self.map.insert(id, ent) {
                 return self.get(id);
             }
             return None;

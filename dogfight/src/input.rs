@@ -40,16 +40,16 @@ pub struct TeamSelection {
 }
 
 impl World {
-    pub(crate) fn handle_input(&mut self, input: Vec<GameInput>) -> Vec<GameOutput> {
-        let mut events = vec![];
+    pub(crate) fn handle_input(&mut self, input_events: Vec<GameInput>) -> Vec<GameOutput> {
+        let mut game_output = vec![];
 
-        for event in input {
-            match event {
+        for input_event in input_events {
+            match input_event {
                 GameInput::AddPlayer { name } => {
                     // Add the player if not already exists
                     if let None = self.get_player_id_from_name(&name) {
                         if let Some(p) = self.players.insert(Player::new(name)) {
-                            events.push(GameOutput::PlayerJoin(p.get_name()));
+                            game_output.push(GameOutput::PlayerJoin(p.get_name()));
                         }
                     }
                 }
@@ -75,6 +75,6 @@ impl World {
             };
         }
 
-        events
+        game_output
     }
 }

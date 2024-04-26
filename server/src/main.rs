@@ -1,8 +1,5 @@
 use std::time::Instant;
 
-use dogfight::event::GameEvent;
-use dogfight::network::encoding::NetworkedBytes;
-use dogfight::network::{game_events_from_bytes, game_events_to_binary};
 use dogfight::world::World;
 
 fn main() {
@@ -13,21 +10,13 @@ fn main() {
     world.load_level(levels[0]);
     world.init();
 
-    let changed = world.tick();
+    let mut input = vec![];
 
-    match &changed[0] {
-        GameEvent::EntityChanges(c) => {
-            for thing in c.iter() {
-                println!("{:?}", thing);
-            }
-        }
-    }
+    input.push(dogfight::input::GameInput::AddPlayer {
+        name: "player1".into(),
+    });
 
-    let bin = game_events_to_binary(&changed);
-    let parsed = game_events_from_bytes(&bin);
-    let a = serde_json::to_string(&changed).unwrap();
-    let b = serde_json::to_string(&parsed).unwrap();
-    println!("{:?}", bin);
-    println!("{:?}", parsed);
-    println!("{:?}", a == b);
+    let changed = world.tick(input);
+
+    println!("{:?}", changed);
 }
