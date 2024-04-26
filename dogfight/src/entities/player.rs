@@ -28,8 +28,8 @@ impl Player {
         }
     }
 
-    pub fn get_name(&self) -> &String {
-        self.name.get()
+    pub fn get_name(&self) -> String {
+        self.name.get().clone()
     }
 
     pub fn set_team(&mut self, team: Option<Team>) {

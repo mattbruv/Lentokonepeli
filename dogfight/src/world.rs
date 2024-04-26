@@ -65,9 +65,8 @@ impl World {
     }
 
     pub fn tick(&mut self, input: Vec<GameInput>) -> Vec<GameOutput> {
-        self.handle_input(input);
-
         let mut events: Vec<GameOutput> = vec![];
+        let input_events = self.handle_input(input);
 
         if let Some(m) = self.men.get_mut(0) {
             m.set_x(m.get_x() + 100);

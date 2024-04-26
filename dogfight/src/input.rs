@@ -3,6 +3,7 @@ use ts_rs::TS;
 
 use crate::{
     entities::{plane::PlaneType, player::Player, types::Team, EntityId},
+    output::{self, GameOutput},
     world::World,
 };
 
@@ -39,13 +40,17 @@ pub struct TeamSelection {
 }
 
 impl World {
-    pub(crate) fn handle_input(&mut self, input: Vec<GameInput>) -> () {
+    pub(crate) fn handle_input(&mut self, input: Vec<GameInput>) -> Vec<GameOutput> {
+        let mut events = vec![];
+
         for event in input {
             match event {
                 GameInput::AddPlayer { name } => {
                     // Add the player if not already exists
                     if let None = self.get_player_id_from_name(&name) {
-                        self.players.insert(Player::new(name));
+                        if let Some(p) = self.players.insert(Player::new(name)) {
+                            events.push(GameOutput::PlayerJoin(p.get_name()));
+                        }
                     }
                 }
                 GameInput::RemovePlayer { name } => {
@@ -67,7 +72,9 @@ impl World {
                 GameInput::PlayerChooseRunway(_) => {
                     //
                 }
-            }
+            };
         }
+
+        events
     }
 }
