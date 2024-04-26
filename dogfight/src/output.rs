@@ -13,6 +13,7 @@ use crate::network::{encoding::NetworkedBytes, entity_changes_to_binary, EntityC
 pub enum GameOutput {
     EntityChanges(Vec<EntityChange>),
     PlayerJoin(String),
+    PlayerLeave(String),
 }
 
 impl NetworkedBytes for GameOutput {
@@ -29,6 +30,10 @@ impl NetworkedBytes for GameOutput {
             }
             GameOutput::PlayerJoin(name) => {
                 bytes.push(1);
+                bytes.extend(String::to_bytes(name));
+            }
+            GameOutput::PlayerLeave(name) => {
+                bytes.push(2);
                 bytes.extend(String::to_bytes(name));
             }
         }
@@ -58,6 +63,11 @@ impl NetworkedBytes for GameOutput {
                 let (bytes, name) = String::from_bytes(slice);
                 slice = &bytes;
                 (slice, GameOutput::PlayerJoin(name))
+            }
+            2 => {
+                let (bytes, name) = String::from_bytes(slice);
+                slice = &bytes;
+                (slice, GameOutput::PlayerLeave(name))
             }
             _ => panic!("Unrecognized enum variant in Event: {}", variant),
         }
