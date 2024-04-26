@@ -4,6 +4,7 @@ import Levels from "./assets/levels.json";
 import { GameOutput } from "dogfight-types/GameOutput";
 import { ClientCallbacks } from "./client/DogfightClient";
 import { Team } from "dogfight-types/Team";
+import { GameInput } from "dogfight-types/GameInput";
 
 export function Game() {
   const gameContainer = useRef<HTMLDivElement>(null);
@@ -15,12 +16,35 @@ export function Game() {
         chooseTeam: (team: Team) => void {},
       };
 
+      let tick_input: GameInput[] = [];
+
       dogfight.client.init(callbacks, gameContainer.current).then(() => {
         dogfight.game.load_level(Levels["africa"]);
         dogfight.game.init();
 
+        // set player name for testing
+        const player_name = "player1";
+
+        tick_input.push({
+          type: "AddPlayer",
+          data: {
+            name: player_name,
+          },
+        });
+
+        setTimeout(() => {
+          tick_input.push({
+            type: "PlayerChooseTeam",
+            data: {
+              player_name,
+              team: "Centrals",
+            },
+          });
+        }, 4000);
+
         setInterval(() => {
-          const tick = dogfight.game.tick();
+          const input_json = JSON.stringify(tick_input);
+          const tick = dogfight.game.tick(input_json);
           const events_json = dogfight.game.game_events_from_binary(tick);
           const events = JSON.parse(events_json) as GameOutput[];
 
