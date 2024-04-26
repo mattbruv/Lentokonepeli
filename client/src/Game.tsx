@@ -44,6 +44,7 @@ export function Game() {
 
         setInterval(() => {
           const input_json = JSON.stringify(tick_input);
+          tick_input = [];
           const tick = dogfight.game.tick(input_json);
           const events_json = dogfight.game.game_events_from_binary(tick);
           const events = JSON.parse(events_json) as GameOutput[];
