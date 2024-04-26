@@ -84,7 +84,6 @@ export class DogfightClient {
 
   public handleGameEvents(events: GameOutput[]) {
     for (const event of events) {
-      console.log(event);
       switch (event.type) {
         case "EntityChanges": {
           this.updateEntities(event.data);
@@ -160,7 +159,6 @@ export class DogfightClient {
   private updateEntity(id: number, data: EntityProperties) {
     switch (data.type) {
       case "Player": {
-        console.log(data);
         let player = this.players.get(id);
         if (!player) {
           player = new Player();
