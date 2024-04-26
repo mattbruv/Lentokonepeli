@@ -1,12 +1,8 @@
 mod utils;
 
-// use dogfight::network::{entity_changes_to_binary, entity_changes_to_json};
 use dogfight::{
-    input::{game_input_from_string, GameInput},
-    network::{
-        encoding::NetworkedBytes, game_events_from_bytes, game_events_to_binary,
-        game_events_to_json,
-    },
+    input::game_input_from_string,
+    network::{game_events_from_bytes, game_events_to_binary, game_events_to_json},
     world::World,
 };
 use wasm_bindgen::prelude::*;
