@@ -1,4 +1,4 @@
-import { Entity } from "./entity";
+import { Entity, EntityUpdateCallbacks } from "./entity";
 import * as PIXI from "pixi.js";
 import { Textures } from "../textures";
 import { Facing } from "dogfight-types/Facing";
@@ -13,7 +13,7 @@ type FlagTextureMap = {
 };
 
 export class BackgroundItem implements Entity<BackgroundItemProperties> {
-  private props: BackgroundItemProperties = {};
+  props: BackgroundItemProperties = {};
 
   private container: PIXI.Container;
   private itemSprite: PIXI.Sprite;
@@ -58,28 +58,32 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
     this.container.zIndex = DrawLayer.LAYER_15;
   }
 
-  public getProps(): Readonly<BackgroundItemProperties> {
-    return this.props;
-  }
-
   public getContainer(): PIXI.Container {
     return this.container;
   }
 
-  public updateProps(props: BackgroundItemProperties): void {
+  public updateCallbacks(): EntityUpdateCallbacks<BackgroundItemProperties> {
+    return {
+      bg_item_type: (value) => {
+        if (this.flagInterval !== null) {
+          clearInterval(this.flagInterval);
+        }
+
+        const texture = this.itemTextures[value];
+        this.itemSprite.texture = texture;
+
+        if (this.flagTypes.includes(value)) {
+          this.flagInterval = setInterval(() => this.waveFlag(), 100);
+        }
+      },
+      facing: () => {},
+      client_x: () => {},
+      client_y: () => {},
+    };
+  }
+
+  private updateProps(props: BackgroundItemProperties): void {
     if (props.bg_item_type !== undefined) {
-      if (this.flagInterval !== null) {
-        clearInterval(this.flagInterval);
-      }
-
-      this.props.bg_item_type = props.bg_item_type;
-
-      const texture = this.itemTextures[props.bg_item_type];
-      this.itemSprite.texture = texture;
-
-      if (this.flagTypes.includes(props.bg_item_type)) {
-        this.flagInterval = setInterval(() => this.waveFlag(), 100);
-      }
     }
 
     if (props.client_x !== undefined) {
@@ -110,7 +114,7 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
     }
   }
 
-  waveFlag() {
+  private waveFlag() {
     if (
       this.props.bg_item_type !== "FlagAllies" &&
       this.props.bg_item_type !== "FlagCentrals"
