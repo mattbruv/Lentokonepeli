@@ -1,9 +1,10 @@
 import * as PIXI from "pixi.js";
 
 export type EntityUpdateCallbacks<Source extends object> = {
-  [Property in keyof Source]-?: (
-    value: Exclude<Source[Property], undefined>
-  ) => void;
+  [Property in keyof Source]-?: {
+    order: number;
+    callback: () => void;
+  };
 };
 
 export type Entity<Props extends object> = {

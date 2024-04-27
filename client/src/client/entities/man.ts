@@ -27,14 +27,22 @@ export class Man implements Entity<ManProperties> {
   }
 
   public updateCallbacks: EntityUpdateCallbacks<ManProperties> = {
-    client_x: (client_x) => {
-      this.manSprite.position.x = client_x;
+    client_x: {
+      order: 0,
+      callback: () => this.updateX(),
     },
-    client_y: (client_y) => {
-      this.manSprite.position.y = client_y;
+    client_y: {
+      order: 1,
+      callback: () => this.updateY(),
     },
-    team: (team) => {},
-    state: (state) => {},
+    team: {
+      order: 1,
+      callback: () => this.updateTeam(),
+    },
+    state: {
+      order: 1,
+      callback: () => this.updateState(),
+    },
   };
 
   public getContainer(): PIXI.Container {
@@ -42,4 +50,17 @@ export class Man implements Entity<ManProperties> {
   }
 
   public destroy() {}
+
+  private updateX(): void {
+    if (!this.props.client_x) return;
+    this.manSprite.position.x = this.props.client_x;
+  }
+
+  private updateY(): void {
+    if (!this.props.client_y) return;
+    this.manSprite.position.y = this.props.client_y;
+  }
+
+  private updateState(): void {}
+  private updateTeam(): void {}
 }
