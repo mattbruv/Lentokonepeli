@@ -6,7 +6,6 @@ export type EntityUpdateCallbacks<Source extends object> = {
 
 export type Entity<Props extends object> = {
   props: Props;
-  callbackOrder: (keyof Props)[];
   updateCallbacks: EntityUpdateCallbacks<Props>;
   getContainer: () => PIXI.Container;
   destroy: () => void;
