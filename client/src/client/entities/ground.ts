@@ -29,44 +29,26 @@ export class Ground implements Entity<GroundProperties> {
   }
 
   public updateCallbacks: EntityUpdateCallbacks<GroundProperties> = {
-    terrain: [
-      0,
-      () => {
-        console.log("update t");
-      },
-    ],
-    width: [
-      1,
-      () => {
-        console.log("update width");
-      },
-    ],
-    client_x: [
-      1,
-      () => {
-        console.log("udpate x");
-      },
-    ],
-    client_y: [
-      1,
-      () => {
-        console.log("update y");
-      },
-    ],
-  };
-  /*
-    client_x: (client_x) => {
+    client_x: () => {
+      const { client_x } = this.props;
+      if (client_x === undefined) return;
       this.groundSprite.x = client_x;
       this.water.x = client_x;
     },
-    client_y: (client_y) => {
+    client_y: () => {
+      const { client_y } = this.props;
+      if (client_y === undefined) return;
       this.groundSprite.y = client_y;
       this.water.y = client_y;
     },
-    width: (width) => {
-      this.groundSprite.width = width;
+    width: () => {
+      if (this.props.width === undefined) return;
+      this.groundSprite.width = this.props.width;
     },
-    terrain: (terrain) => {
+    terrain: () => {
+      const { terrain } = this.props;
+      if (terrain === undefined) return;
+
       const textureMap: Record<Terrain, PIXI.Texture> = {
         Normal: Textures["ground1.gif"],
         Desert: Textures["groundDesert.gif"],
@@ -85,12 +67,6 @@ export class Ground implements Entity<GroundProperties> {
       this.water.endFill();
     },
   };
-  */
-
-  public updateProps(props: GroundProperties): void {
-    if (props.terrain !== undefined) {
-    }
-  }
 
   public destroy() {}
 }
