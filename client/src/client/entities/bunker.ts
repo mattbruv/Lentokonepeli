@@ -6,6 +6,7 @@ import { BunkerProperties } from "dogfight-types/BunkerProperties";
 import { Team } from "dogfight-types/Team";
 
 export class Bunker implements Entity<BunkerProperties> {
+  private props: BunkerProperties = {};
   private container: PIXI.Container;
   private bunker: PIXI.Sprite;
 
