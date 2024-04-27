@@ -84,7 +84,7 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
         console.log("udpate bg x");
       },
       client_y: () => {
-        console.log("udpate bg y");
+        console.log("udpate bg type");
       },
     };
   }
