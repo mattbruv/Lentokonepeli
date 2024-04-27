@@ -59,7 +59,7 @@ export class Water implements Entity<WaterProperties> {
     return this.container;
   }
 
-  public updateProperties(props: WaterProperties): void {
+  public updateProps(props: WaterProperties): void {
     if (props.facing !== undefined) {
       this.facing = props.facing;
       this.waves.anchor.x = this.facing === "Left" ? 0 : 1;

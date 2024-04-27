@@ -27,7 +27,7 @@ export class Runway implements Entity<RunwayProperties> {
   public getContainer(): PIXI.Container {
     return this.container;
   }
-  public updateProperties(props: RunwayProperties): void {
+  public updateProps(props: RunwayProperties): void {
     if (props.client_x !== undefined) {
       this.runwaySprite.position.x = props.client_x;
       this.runwayBack.position.x = props.client_x + 217;

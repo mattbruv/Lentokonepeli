@@ -207,7 +207,7 @@ export class DogfightClient {
           player = new Player();
           this.players.set(id, player);
         }
-        player.updateProperties(data.props);
+        player.updateProps(data.props);
         break;
       }
       case "Ground": {
@@ -217,7 +217,7 @@ export class DogfightClient {
           this.grounds.set(id, ground);
           this.viewport.addChild(ground.getContainer());
         }
-        ground.updateProperties(data.props);
+        ground.updateProps(data.props);
         break;
       }
       case "Man": {
@@ -227,7 +227,7 @@ export class DogfightClient {
           this.men.set(id, man);
           this.viewport.addChild(man.getContainer());
         }
-        man.updateProperties(data.props);
+        man.updateProps(data.props);
         break;
       }
       case "BackgroundItem": {
@@ -237,7 +237,7 @@ export class DogfightClient {
           this.backgroundItems.set(id, item);
           this.viewport.addChild(item.getContainer());
         }
-        item.updateProperties(data.props);
+        item.updateProps(data.props);
         break;
       }
       case "Bunker": {
@@ -247,7 +247,7 @@ export class DogfightClient {
           this.bunkers.set(id, bunker);
           this.viewport.addChild(bunker.getContainer());
         }
-        bunker.updateProperties(data.props);
+        bunker.updateProps(data.props);
         break;
       }
       case "Water": {
@@ -257,7 +257,7 @@ export class DogfightClient {
           this.waters.set(id, water);
           this.viewport.addChild(water.getContainer());
         }
-        water.updateProperties(data.props);
+        water.updateProps(data.props);
         break;
       }
       case "Runway": {
@@ -267,7 +267,7 @@ export class DogfightClient {
           this.runways.set(id, runway);
           this.viewport.addChild(runway.getContainer());
         }
-        runway.updateProperties(data.props);
+        runway.updateProps(data.props);
         break;
       }
       case "Coast": {
@@ -277,7 +277,7 @@ export class DogfightClient {
           this.coasts.set(id, coast);
           this.viewport.addChild(coast.getContainer());
         }
-        coast.updateProperties(data.props);
+        coast.updateProps(data.props);
         break;
       }
     }
