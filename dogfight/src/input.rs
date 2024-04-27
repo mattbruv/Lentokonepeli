@@ -58,6 +58,7 @@ impl World {
 
                     if let Some(id) = player_id {
                         self.players.remove(id);
+                        game_output.push(GameOutput::PlayerLeave(name));
                     }
                 }
                 GameInput::PlayerChooseTeam(selection) => {
@@ -65,7 +66,16 @@ impl World {
 
                     if let Some(id) = pid {
                         if let Some(player) = self.players.get_mut(id) {
-                            player.set_team(selection.team)
+                            if let Some(team) = selection.team {
+                                // only join the team if the player already isn't on the team
+                                if let None = player.get_team() {
+                                    player.set_team(selection.team);
+                                    game_output.push(GameOutput::PlayerJoinTeam {
+                                        name: player.get_name(),
+                                        team: team,
+                                    })
+                                }
+                            }
                         }
                     }
                 }

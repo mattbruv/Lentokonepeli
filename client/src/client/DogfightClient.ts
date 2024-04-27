@@ -114,6 +114,13 @@ export class DogfightClient {
           console.log(event.data + " left the game!");
           break;
         }
+        case "PlayerJoinTeam": {
+          console.log(event.data.name + " joined " + event.data.team);
+          if (event.data.name === this.myPlayerName) {
+            this.teamChooser.container.visible = false;
+          }
+          break;
+        }
       }
     }
   }
