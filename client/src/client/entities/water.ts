@@ -35,26 +35,36 @@ export class Water implements Entity<WaterProperties> {
   }
 
   public updateCallbacks: EntityUpdateCallbacks<WaterProperties> = {
-    client_x: (client_x) => {
+    client_x: () => {
+      const { client_x } = this.props;
+      if (client_x === undefined) return;
       this.waterGraphics.position.x = client_x;
       this.waves.position.x = client_x;
     },
-    client_y: (client_y) => {
+    client_y: () => {
+      const { client_y } = this.props;
+      if (client_y === undefined) return;
       this.waterGraphics.position.y = client_y;
       this.waves.position.y = client_y;
     },
-    facing: (facing) => {
+    facing: () => {
+      const { facing } = this.props;
+      if (facing === undefined) return;
       this.waves.anchor.x = facing === "Left" ? 0 : 1;
       this.waves.scale.x = facing === "Left" ? 1 : -1;
     },
-    terrain: (terrain) => {
+    terrain: () => {
+      const { terrain } = this.props;
+      if (terrain === undefined) return;
       const color = TERRAIN_WATER_COLOR[terrain];
       this.waterGraphics.clear();
       this.waterGraphics.beginFill(color);
       this.waterGraphics.drawRect(0, 0, this.waves.width, 5000);
       this.waterGraphics.endFill();
     },
-    width: (width) => {
+    width: () => {
+      const { width } = this.props;
+      if (width === undefined) return;
       this.waterGraphics.width = width;
       this.waves.width = width;
     },

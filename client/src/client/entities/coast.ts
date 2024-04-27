@@ -37,22 +37,28 @@ export class Coast implements Entity<CoastProperties> {
   }
 
   public updateCallbacks: EntityUpdateCallbacks<CoastProperties> = {
-    client_x: (client_x) => {
+    client_x: () => {
+      const { client_x } = this.props;
+      if (client_x === undefined) return;
       this.coastSprite.position.x = client_x;
       this.water.position.x = client_x;
     },
-    client_y: (client_y) => {
+    client_y: () => {
+      const { client_y } = this.props;
+      if (client_y === undefined) return;
       this.coastSprite.position.y = client_y;
       this.water.position.y = client_y;
     },
-    facing: (facing) => {
+    facing: () => {
+      const { facing } = this.props;
+      if (facing === undefined) return;
       this.coastSprite.anchor.x = facing === "Left" ? 0 : 1;
       this.coastSprite.scale.x = facing === "Left" ? 1 : -1;
     },
-    terrain: (t) => this.updateTerrain(t),
+    terrain: () => this.updateTerrain(),
   };
 
-  private updateTerrain(terrain: Terrain) {
+  private updateTerrain() {
     const tex: TextureCombinations = {
       // none of the beach-r textures are used in the game.
       // They are actually just the left ones, but inverted
@@ -83,11 +89,6 @@ export class Coast implements Entity<CoastProperties> {
     );
 
     this.water.endFill();
-  }
-
-  public updateProps(props: CoastProperties): void {
-    if (props.terrain !== undefined) {
-    }
   }
 
   public destroy() {}

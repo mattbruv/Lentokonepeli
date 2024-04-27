@@ -13,15 +13,22 @@ export class Runway implements Entity<RunwayProperties> {
   private facing: Facing;
 
   public updateCallbacks: EntityUpdateCallbacks<RunwayProperties> = {
-    client_x: (client_x) => {
+    client_x: () => {
+      const { client_x } = this.props;
+      if (client_x === undefined) return;
       this.runwaySprite.position.x = client_x;
       this.runwayBack.position.x = client_x + 217;
     },
-    client_y: (client_y) => {
+    client_y: () => {
+      const { client_y } = this.props;
+      if (client_y === undefined) return;
       this.runwaySprite.position.y = client_y;
       this.runwayBack.position.y = client_y;
     },
-    facing: (facing) => {
+    facing: () => {
+      const { facing } = this.props;
+      if (facing === undefined) return;
+
       const textureMap: Record<Facing, PIXI.Texture> = {
         Left: Textures["runway2.gif"],
         Right: Textures["runway.gif"],
@@ -29,7 +36,7 @@ export class Runway implements Entity<RunwayProperties> {
       this.runwaySprite.texture = textureMap[facing];
       this.runwayBack.visible = this.facing === "Left" ? true : false;
     },
-    team: (team) => {},
+    team: () => {},
   };
 
   constructor() {
