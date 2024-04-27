@@ -24,13 +24,13 @@ export class Bunker implements Entity<BunkerProperties> {
   }
 
   public updateCallbacks: EntityUpdateCallbacks<BunkerProperties> = {
-    team: (value: Team) => {
+    team: () => {
       console.log("team update bunker");
     },
-    x: (value: number) => {
+    x: () => {
       console.log("update bunker x");
     },
-    y: (value: number) => {
+    y: () => {
       console.log("update bunker y");
     },
   };
