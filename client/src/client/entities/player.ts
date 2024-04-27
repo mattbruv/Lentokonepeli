@@ -12,11 +12,10 @@ export class Player implements Entity<PlayerProperties> {
   }
 
   public updateCallbacks: EntityUpdateCallbacks<PlayerProperties> = {
-    team: () => {
-      console.log("player's team changed!");
-    },
+    team: () => {},
     name: () => {},
     clan: () => {},
+    state: () => {},
   };
 
   public getProps(): Readonly<PlayerProperties> {
