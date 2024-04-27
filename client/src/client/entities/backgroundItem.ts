@@ -63,23 +63,35 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
   }
 
   public updateCallbacks: EntityUpdateCallbacks<BackgroundItemProperties> = {
-    bg_item_type: (value) => {
+    bg_item_type: () => {
+      const { bg_item_type } = this.props;
+      if (bg_item_type === undefined) return;
+      if (!this.props.bg_item_type) return;
       if (this.flagInterval !== null) {
         clearInterval(this.flagInterval);
       }
 
-      const texture = this.itemTextures[value];
+      const texture = this.itemTextures[bg_item_type];
       this.itemSprite.texture = texture;
 
-      if (this.flagTypes.includes(value)) {
+      if (this.flagTypes.includes(bg_item_type)) {
         this.flagInterval = setInterval(() => this.waveFlag(), 100);
       }
     },
-    facing: (facing) => {
+    facing: () => {
+      const { facing } = this.props;
       this.itemSprite.anchor.x = facing === "Right" ? 0 : 1;
       this.itemSprite.scale.x = facing === "Right" ? 1 : -1;
     },
-    client_x: (client_x) => {
+    client_x: () => {
+      const { facing, client_x, client_y } = this.props;
+      if (
+        facing === undefined ||
+        client_x === undefined ||
+        client_y === undefined
+      )
+        return;
+
       let xDiff = Math.floor(this.itemSprite.texture.width / 2);
       if (
         this.props.bg_item_type &&
@@ -89,7 +101,9 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
       }
       this.itemSprite.position.x = client_x - xDiff;
     },
-    client_y: (client_y) => {
+    client_y: () => {
+      const { client_y } = this.props;
+      if (client_y === undefined) return;
       let yDiff = this.itemSprite.texture.height;
       if (
         this.props.bg_item_type &&
