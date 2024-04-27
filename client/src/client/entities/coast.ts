@@ -34,7 +34,7 @@ export class Coast implements Entity<CoastProperties> {
   public getContainer(): PIXI.Container {
     return this.container;
   }
-  public updateProperties(props: CoastProperties): void {
+  public updateProps(props: CoastProperties): void {
     if (props.client_x !== undefined) {
       this.coastSprite.position.x = props.client_x;
       this.water.position.x = props.client_x;

@@ -26,7 +26,7 @@ export class Ground implements Entity<GroundProperties> {
   public getContainer(): PIXI.Container {
     return this.container;
   }
-  public updateProperties(props: GroundProperties): void {
+  public updateProps(props: GroundProperties): void {
     if (props.width !== undefined) {
       this.groundSprite.width = props.width;
     }

@@ -9,7 +9,7 @@ export class Player implements Entity<PlayerProperties> {
     return new PIXI.Container();
   }
 
-  public updateProperties(props: PlayerProperties): void {
+  public updateProps(props: PlayerProperties): void {
     if (props.clan !== undefined) {
     }
 

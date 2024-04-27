@@ -13,11 +13,12 @@ type FlagTextureMap = {
 };
 
 export class BackgroundItem implements Entity<BackgroundItemProperties> {
+  private props: BackgroundItemProperties = {};
+
   private container: PIXI.Container;
   private itemSprite: PIXI.Sprite;
 
   private itemTextures: Record<BackgroundItemType, PIXI.Texture>;
-  private itemType: BackgroundItemType;
   private flagTypes: BackgroundItemType[];
   private flagInterval: number | null = null;
   private flagTextures: FlagTextureMap;
@@ -26,7 +27,6 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
   constructor() {
     this.container = new PIXI.Container();
     this.itemSprite = new PIXI.Sprite();
-    this.itemType = "PalmTree";
 
     this.itemTextures = {
       ControlTower: Textures["controlTower.gif"],
@@ -58,17 +58,21 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
     this.container.zIndex = DrawLayer.LAYER_15;
   }
 
+  public getProps(): Readonly<BackgroundItemProperties> {
+    return this.props;
+  }
+
   public getContainer(): PIXI.Container {
     return this.container;
   }
 
-  public updateProperties(props: BackgroundItemProperties): void {
+  public updateProps(props: BackgroundItemProperties): void {
     if (props.bg_item_type !== undefined) {
       if (this.flagInterval !== null) {
         clearInterval(this.flagInterval);
       }
 
-      this.itemType = props.bg_item_type;
+      this.props.bg_item_type = props.bg_item_type;
 
       const texture = this.itemTextures[props.bg_item_type];
       this.itemSprite.texture = texture;
@@ -80,7 +84,10 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
 
     if (props.client_x !== undefined) {
       let xDiff = Math.floor(this.itemSprite.texture.width / 2);
-      if (this.flagTypes.includes(this.itemType)) {
+      if (
+        this.props.bg_item_type &&
+        this.flagTypes.includes(this.props.bg_item_type)
+      ) {
         xDiff = 0;
       }
       this.itemSprite.position.x = props.client_x - xDiff;
@@ -88,7 +95,10 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
 
     if (props.client_y !== undefined) {
       let yDiff = this.itemSprite.texture.height;
-      if (this.flagTypes.includes(this.itemType)) {
+      if (
+        this.props.bg_item_type &&
+        this.flagTypes.includes(this.props.bg_item_type)
+      ) {
         yDiff = 0;
       }
       this.itemSprite.position.y = props.client_y - yDiff;
@@ -101,10 +111,13 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
   }
 
   waveFlag() {
-    if (this.itemType !== "FlagAllies" && this.itemType !== "FlagCentrals")
+    if (
+      this.props.bg_item_type !== "FlagAllies" &&
+      this.props.bg_item_type !== "FlagCentrals"
+    )
       return;
 
-    const texture = this.flagTextures[this.itemType][this.flagIndex];
+    const texture = this.flagTextures[this.props.bg_item_type][this.flagIndex];
     this.itemSprite.texture = texture;
     this.flagIndex++;
     this.flagIndex %= 4;

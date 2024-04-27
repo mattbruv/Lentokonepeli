@@ -22,7 +22,7 @@ export class Bunker implements Entity<BunkerProperties> {
     return this.container;
   }
 
-  public updateProperties(props: BunkerProperties): void {
+  public updateProps(props: BunkerProperties): void {
     if (props.x !== undefined) {
       this.bunker.position.x = props.x;
     }

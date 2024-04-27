@@ -28,7 +28,7 @@ export class Man implements Entity<ManProperties> {
   public getContainer(): PIXI.Container {
     return this.container;
   }
-  public updateProperties(props: ManProperties): void {
+  public updateProps(props: ManProperties): void {
     if (props.client_x !== undefined) {
       this.manSprite.position.x = props.client_x;
     }
