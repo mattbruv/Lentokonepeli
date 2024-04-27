@@ -30,22 +30,26 @@ export class Ground implements Entity<GroundProperties> {
 
   public updateCallbacks: EntityUpdateCallbacks<GroundProperties> = {
     client_x: () => {
+      console.log(" ground x");
       const { client_x } = this.props;
       if (client_x === undefined) return;
       this.groundSprite.x = client_x;
       this.water.x = client_x;
     },
     client_y: () => {
+      console.log(" ground y");
       const { client_y } = this.props;
       if (client_y === undefined) return;
       this.groundSprite.y = client_y;
       this.water.y = client_y;
     },
     width: () => {
+      console.log("gr width");
       if (this.props.width === undefined) return;
       this.groundSprite.width = this.props.width;
     },
     terrain: () => {
+      console.log("gr terrain");
       const { terrain } = this.props;
       if (terrain === undefined) return;
 
