@@ -1,14 +1,12 @@
 import * as PIXI from "pixi.js";
 
 export type EntityUpdateCallbacks<Source extends object> = {
-  [Property in keyof Source]-?: {
-    order: number;
-    callback: () => void;
-  };
+  [Property in keyof Source]-?: [order: number, callback: () => void];
 };
 
 export type Entity<Props extends object> = {
   props: Props;
+  callbackOrder: (keyof Props)[];
   updateCallbacks: EntityUpdateCallbacks<Props>;
   getContainer: () => PIXI.Container;
   destroy: () => void;
@@ -18,26 +16,22 @@ export function updateProps<Props extends Object>(
   entity: Entity<Props>,
   props: Props
 ) {
-  console.log("BEFORE :", JSON.stringify(entity.props));
-
   entity.props = {
     ...entity.props,
     ...props,
   };
 
-  const callbacks = entity.updateCallbacks;
+  const callbacks = Object.entries(entity.updateCallbacks)
+    .map((entry) => ({
+      key: entry[0],
+      order: entry[1][0],
+      callback: entry[1][1],
+    }))
+    .sort((a, b) => a.order - b.order);
 
-  console.log(props);
-  for (const key in props) {
-    if (props.hasOwnProperty(key)) {
-      const propUpdateCallback = callbacks[key];
-      const value = props[key];
-      if (value !== undefined) {
-        propUpdateCallback(
-          value as Exclude<Props[Extract<keyof Props, string>], undefined>
-        );
-      }
+  for (const entry of callbacks) {
+    if (props.hasOwnProperty(entry.key)) {
+      entry.callback();
     }
   }
-  console.log("AFTER :", JSON.stringify(entity.props));
 }
