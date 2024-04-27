@@ -4,7 +4,7 @@ type EntityUpdateCallbacks<Source> = {
   [Property in keyof Source]-?: (value: Source[Property]) => void;
 };
 
-type Entity<Props> = {
+export type Entity<Props> = {
   props: Props;
   updateCallbacks: () => EntityUpdateCallbacks<Props>;
   getContainer: () => PIXI.Container;
