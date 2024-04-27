@@ -166,6 +166,9 @@ export class DogfightClient {
 
   private onMyPlayerUpdate(props: PlayerProperties) {
     console.log("update me!", props);
+    if (props.state) {
+      console.log("STATE: update ", props.state);
+    }
   }
 
   public handleGameEvents(events: GameOutput[]) {
