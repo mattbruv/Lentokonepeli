@@ -1,5 +1,5 @@
 import { GroundProperties } from "dogfight-types/GroundProperties";
-import { Entity } from "./entity";
+import { Entity, EntityUpdateCallbacks } from "./entity";
 import * as PIXI from "pixi.js";
 import { WaterProperties } from "dogfight-types/WaterProperties";
 import { DrawLayer, TERRAIN_WATER_COLOR } from "../constants";
@@ -7,6 +7,7 @@ import { Textures } from "../textures";
 import { Facing } from "dogfight-types/Facing";
 
 export class Water implements Entity<WaterProperties> {
+  public props: WaterProperties = {};
   private container: PIXI.Container;
   private waterGraphics: PIXI.Graphics;
   private waves: PIXI.TilingSprite;
@@ -33,6 +34,34 @@ export class Water implements Entity<WaterProperties> {
     this.container.zIndex = DrawLayer.LAYER_11;
   }
 
+  public updateCallbacks(): EntityUpdateCallbacks<WaterProperties> {
+    return {
+      client_x: (client_x) => {
+        this.waterGraphics.position.x = client_x;
+        this.waves.position.x = client_x;
+      },
+      client_y: (client_y) => {
+        this.waterGraphics.position.y = client_y;
+        this.waves.position.y = client_y;
+      },
+      facing: (facing) => {
+        this.waves.anchor.x = facing === "Left" ? 0 : 1;
+        this.waves.scale.x = facing === "Left" ? 1 : -1;
+      },
+      terrain: (terrain) => {
+        const color = TERRAIN_WATER_COLOR[terrain];
+        this.waterGraphics.clear();
+        this.waterGraphics.beginFill(color);
+        this.waterGraphics.drawRect(0, 0, this.waves.width, 5000);
+        this.waterGraphics.endFill();
+      },
+      width: (width) => {
+        this.waterGraphics.width = width;
+        this.waves.width = width;
+      },
+    };
+  }
+
   private waveStep() {
     const str = `wave-l_${this.waveIndex}.gif`;
 
@@ -57,37 +86,6 @@ export class Water implements Entity<WaterProperties> {
 
   public getContainer(): PIXI.Container {
     return this.container;
-  }
-
-  public updateProps(props: WaterProperties): void {
-    if (props.facing !== undefined) {
-      this.facing = props.facing;
-      this.waves.anchor.x = this.facing === "Left" ? 0 : 1;
-      this.waves.scale.x = this.facing === "Left" ? 1 : -1;
-    }
-
-    if (props.width !== undefined) {
-      this.waterGraphics.width = props.width;
-      this.waves.width = props.width;
-    }
-
-    if (props.client_x !== undefined) {
-      this.waterGraphics.position.x = props.client_x;
-      this.waves.position.x = props.client_x;
-    }
-
-    if (props.client_y !== undefined) {
-      this.waterGraphics.position.y = props.client_y;
-      this.waves.position.y = props.client_y;
-    }
-
-    if (props.terrain !== undefined) {
-      const color = TERRAIN_WATER_COLOR[props.terrain];
-      this.waterGraphics.clear();
-      this.waterGraphics.beginFill(color);
-      this.waterGraphics.drawRect(0, 0, this.waves.width, 5000);
-      this.waterGraphics.endFill();
-    }
   }
 
   public destroy() {
