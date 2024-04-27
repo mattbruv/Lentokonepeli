@@ -18,6 +18,7 @@ import { Team } from "dogfight-types/Team";
 import { TeamChooser } from "./team_chooser";
 import { GameHUD } from "./hud";
 import { Entity, updateProps } from "./entities/entity";
+import { PlayerProperties } from "dogfight-types/PlayerProperties";
 
 export type GameClientCallbacks = {
   chooseTeam: (team: Team) => void;
@@ -231,6 +232,10 @@ export class DogfightClient {
 
     if (entity) {
       updateProps(entity, data.props);
+
+      if (data.type === "Player") {
+        // TODO
+      }
     }
   }
 }
