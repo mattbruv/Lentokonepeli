@@ -26,18 +26,16 @@ export class Man implements Entity<ManProperties> {
     this.container.zIndex = DrawLayer.LAYER_10_LAYER_12;
   }
 
-  public updateCallbacks(): EntityUpdateCallbacks<ManProperties> {
-    return {
-      client_x: (client_x) => {
-        this.manSprite.position.x = client_x;
-      },
-      client_y: (client_y) => {
-        this.manSprite.position.y = client_y;
-      },
-      team: (team) => {},
-      state: (state) => {},
-    };
-  }
+  public updateCallbacks: EntityUpdateCallbacks<ManProperties> = {
+    client_x: (client_x) => {
+      this.manSprite.position.x = client_x;
+    },
+    client_y: (client_y) => {
+      this.manSprite.position.y = client_y;
+    },
+    team: (team) => {},
+    state: (state) => {},
+  };
 
   public getContainer(): PIXI.Container {
     return this.container;

@@ -23,19 +23,17 @@ export class Bunker implements Entity<BunkerProperties> {
     return this.container;
   }
 
-  public updateCallbacks(): EntityUpdateCallbacks<BunkerProperties> {
-    return {
-      team: (value: Team) => {
-        console.log("team update bunker");
-      },
-      x: (value: number) => {
-        console.log("update bunker x");
-      },
-      y: (value: number) => {
-        console.log("update bunker y");
-      },
-    };
-  }
+  public updateCallbacks: EntityUpdateCallbacks<BunkerProperties> = {
+    team: (value: Team) => {
+      console.log("team update bunker");
+    },
+    x: (value: number) => {
+      console.log("update bunker x");
+    },
+    y: (value: number) => {
+      console.log("update bunker y");
+    },
+  };
 
   public updateProps(props: BunkerProperties): void {
     if (props.x !== undefined) {
