@@ -12,8 +12,19 @@ export function Game() {
 
   useEffect(() => {
     if (gameContainer.current) {
+      // set player name for testing
+      const player_name = "player1";
+
       const callbacks: ClientCallbacks = {
-        chooseTeam: (team: Team) => void {},
+        chooseTeam: (team: Team): void => {
+          tick_input.push({
+            type: "PlayerChooseTeam",
+            data: {
+              player_name,
+              team,
+            },
+          });
+        },
       };
 
       let tick_input: GameInput[] = [];
@@ -22,8 +33,7 @@ export function Game() {
         dogfight.game.load_level(Levels["africa"]);
         dogfight.game.init();
 
-        // set player name for testing
-        const player_name = "player1";
+        dogfight.client.setMyPlayerName(player_name);
 
         tick_input.push({
           type: "AddPlayer",
