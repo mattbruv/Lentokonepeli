@@ -42,16 +42,6 @@ export function Game() {
           },
         });
 
-        setTimeout(() => {
-          tick_input.push({
-            type: "PlayerChooseTeam",
-            data: {
-              player_name,
-              team: "Centrals",
-            },
-          });
-        }, 4000);
-
         setInterval(() => {
           const input_json = JSON.stringify(tick_input);
           tick_input = [];

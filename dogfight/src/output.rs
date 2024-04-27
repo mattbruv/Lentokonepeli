@@ -1,7 +1,11 @@
 use serde::Serialize;
 use ts_rs::TS;
 
-use crate::network::{encoding::NetworkedBytes, entity_changes_to_binary, EntityChange};
+use crate::{
+    entities::types::Team,
+    input::TeamSelection,
+    network::{encoding::NetworkedBytes, entity_changes_to_binary, EntityChange},
+};
 
 /*
     Represents anything that the game world needs to send to the
@@ -14,6 +18,7 @@ pub enum GameOutput {
     EntityChanges(Vec<EntityChange>),
     PlayerJoin(String),
     PlayerLeave(String),
+    PlayerJoinTeam { name: String, team: Team },
 }
 
 impl NetworkedBytes for GameOutput {
@@ -35,6 +40,11 @@ impl NetworkedBytes for GameOutput {
             GameOutput::PlayerLeave(name) => {
                 bytes.push(2);
                 bytes.extend(String::to_bytes(name));
+            }
+            GameOutput::PlayerJoinTeam { name, team } => {
+                bytes.push(3);
+                bytes.extend(String::to_bytes(&name));
+                bytes.extend(Team::to_bytes(team));
             }
         }
 
@@ -68,6 +78,19 @@ impl NetworkedBytes for GameOutput {
                 let (bytes, name) = String::from_bytes(slice);
                 slice = &bytes;
                 (slice, GameOutput::PlayerLeave(name))
+            }
+            3 => {
+                let (bytes, name) = String::from_bytes(slice);
+                slice = &bytes;
+                let (bytes, team) = Team::from_bytes(slice);
+                slice = &bytes;
+                (
+                    slice,
+                    GameOutput::PlayerJoinTeam {
+                        name: name,
+                        team: team,
+                    },
+                )
             }
             _ => panic!("Unrecognized enum variant in Event: {}", variant),
         }

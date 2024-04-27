@@ -35,4 +35,8 @@ impl Player {
     pub fn set_team(&mut self, team: Option<Team>) {
         self.team.set(team);
     }
+
+    pub fn get_team(&self) -> &Option<Team> {
+        self.team.get()
+    }
 }
