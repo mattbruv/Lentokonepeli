@@ -1,4 +1,4 @@
-import { Entity } from "./entity";
+import { Entity, EntityUpdateCallbacks } from "./entity";
 import * as PIXI from "pixi.js";
 import { Textures } from "../textures";
 import { DrawLayer } from "../constants";
@@ -6,7 +6,7 @@ import { BunkerProperties } from "dogfight-types/BunkerProperties";
 import { Team } from "dogfight-types/Team";
 
 export class Bunker implements Entity<BunkerProperties> {
-  private props: BunkerProperties = {};
+  public props: BunkerProperties = {};
   private container: PIXI.Container;
   private bunker: PIXI.Sprite;
 
@@ -21,6 +21,20 @@ export class Bunker implements Entity<BunkerProperties> {
 
   public getContainer(): PIXI.Container {
     return this.container;
+  }
+
+  public updateCallbacks(): EntityUpdateCallbacks<BunkerProperties> {
+    return {
+      team: (value: Team) => {
+        console.log("team update bunker");
+      },
+      x: (value: number) => {
+        console.log("update bunker x");
+      },
+      y: (value: number) => {
+        console.log("update bunker y");
+      },
+    };
   }
 
   public updateProps(props: BunkerProperties): void {

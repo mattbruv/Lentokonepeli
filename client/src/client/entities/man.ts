@@ -1,4 +1,4 @@
-import { Entity } from "./entity";
+import { Entity, EntityUpdateCallbacks } from "./entity";
 import * as PIXI from "pixi.js";
 import { Textures } from "../textures";
 import { DrawLayer } from "../constants";
@@ -6,6 +6,7 @@ import { Team } from "dogfight-types/Team";
 import { ManProperties } from "dogfight-types/ManProperties";
 
 export class Man implements Entity<ManProperties> {
+  public props: ManProperties = {};
   private container: PIXI.Container;
   private manSprite: PIXI.Sprite;
 
@@ -25,21 +26,21 @@ export class Man implements Entity<ManProperties> {
     this.container.zIndex = DrawLayer.LAYER_10_LAYER_12;
   }
 
+  public updateCallbacks(): EntityUpdateCallbacks<ManProperties> {
+    return {
+      client_x: (client_x) => {
+        this.manSprite.position.x = client_x;
+      },
+      client_y: (client_y) => {
+        this.manSprite.position.y = client_y;
+      },
+      team: (team) => {},
+      state: (state) => {},
+    };
+  }
+
   public getContainer(): PIXI.Container {
     return this.container;
-  }
-  public updateProps(props: ManProperties): void {
-    if (props.client_x !== undefined) {
-      this.manSprite.position.x = props.client_x;
-    }
-
-    if (props.client_y !== undefined) {
-      this.manSprite.position.y = props.client_y;
-    }
-
-    if (props.team !== undefined) {
-      //
-    }
   }
 
   public destroy() {}
