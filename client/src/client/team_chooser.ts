@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { Textures } from "./textures";
 import { DrawLayer } from "./constants";
+import { GameClientCallbacks } from "./DogfightClient";
 
 export class TeamChooser {
   public container: PIXI.Container;
@@ -16,6 +17,10 @@ export class TeamChooser {
     this.flag_random = new PIXI.Sprite();
     this.flag_allies = new PIXI.Sprite();
 
+    this.flag_centrals.interactive = true;
+    this.flag_random.interactive = true;
+    this.flag_allies.interactive = true;
+
     this.container.addChild(this.flag_centrals);
     this.container.addChild(this.flag_random);
     this.container.addChild(this.flag_allies);
@@ -23,7 +28,7 @@ export class TeamChooser {
     //this.container.anchor.set();
   }
 
-  public init() {
+  public init(callbacks: GameClientCallbacks) {
     this.flag_centrals.texture = Textures["germanflag.jpg"];
     this.flag_random.texture = Textures["randomflag.jpg"];
     this.flag_allies.texture = Textures["royalairforcesflag.jpg"];
@@ -33,5 +38,17 @@ export class TeamChooser {
 
     this.flag_random.position.x = width + gap;
     this.flag_allies.position.x = this.flag_random.width + width + gap * 2;
+
+    this.flag_allies.onclick = () => {
+      callbacks.chooseTeam("Allies");
+    };
+
+    this.flag_centrals.onclick = () => {
+      callbacks.chooseTeam("Centrals");
+    };
+
+    this.flag_random.onclick = () => {
+      alert("Random team not yet implemented!");
+    };
   }
 }

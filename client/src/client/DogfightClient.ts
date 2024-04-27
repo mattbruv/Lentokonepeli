@@ -17,7 +17,7 @@ import { Player } from "./entities/player";
 import { Team } from "dogfight-types/Team";
 import { TeamChooser } from "./team_chooser";
 
-export type ClientCallbacks = {
+export type GameClientCallbacks = {
   chooseTeam: (team: Team) => void;
 };
 
@@ -31,7 +31,7 @@ export class DogfightClient {
 
   private teamChooser: TeamChooser = new TeamChooser();
 
-  private callbacks?: ClientCallbacks;
+  private callbacks?: GameClientCallbacks;
 
   private players: Map<number, Player> = new Map();
 
@@ -72,11 +72,11 @@ export class DogfightClient {
     }
   }
 
-  public async init(callbacks: ClientCallbacks, element: HTMLDivElement) {
+  public async init(callbacks: GameClientCallbacks, element: HTMLDivElement) {
     await loadTextures();
     this.appendView(element);
     this.callbacks = callbacks;
-    this.teamChooser.init();
+    this.teamChooser.init(this.callbacks);
 
     // center the team chooser on the screen
     const width = this.app.screen.width / 2;
