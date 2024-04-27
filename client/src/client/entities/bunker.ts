@@ -25,34 +25,28 @@ export class Bunker implements Entity<BunkerProperties> {
 
   public updateCallbacks: EntityUpdateCallbacks<BunkerProperties> = {
     team: () => {
-      console.log("team update bunker");
+      if (this.props.team !== undefined) {
+        const textures: Record<Team, PIXI.Texture> = {
+          Centrals: Textures["headquarter_germans.gif"],
+          Allies: Textures["headquarter_raf.gif"],
+        };
+
+        this.bunker.texture = textures[this.props.team];
+      }
     },
     x: () => {
-      console.log("update bunker x");
+      if (this.props.x !== undefined) {
+        this.bunker.position.x = this.props.x;
+      }
     },
     y: () => {
-      console.log("update bunker y");
+      if (this.props.y !== undefined) {
+        this.bunker.position.y = this.props.y;
+      }
     },
   };
 
-  public updateProps(props: BunkerProperties): void {
-    if (props.x !== undefined) {
-      this.bunker.position.x = props.x;
-    }
-
-    if (props.y !== undefined) {
-      this.bunker.position.y = props.y;
-    }
-
-    if (props.team !== undefined) {
-      const textures: Record<Team, PIXI.Texture> = {
-        Centrals: Textures["headquarter_germans.gif"],
-        Allies: Textures["headquarter_raf.gif"],
-      };
-
-      this.bunker.texture = textures[props.team];
-    }
-  }
+  public updateProps(props: BunkerProperties): void {}
 
   public destroy() {}
 }

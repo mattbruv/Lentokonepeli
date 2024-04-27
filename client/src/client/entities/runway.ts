@@ -10,7 +10,6 @@ export class Runway implements Entity<RunwayProperties> {
   private container: PIXI.Container;
   private runwaySprite: PIXI.Sprite;
   private runwayBack: PIXI.Sprite;
-  private facing: Facing;
 
   public updateCallbacks: EntityUpdateCallbacks<RunwayProperties> = {
     client_x: () => {
@@ -34,7 +33,7 @@ export class Runway implements Entity<RunwayProperties> {
         Right: Textures["runway.gif"],
       };
       this.runwaySprite.texture = textureMap[facing];
-      this.runwayBack.visible = this.facing === "Left" ? true : false;
+      this.runwayBack.visible = facing === "Left" ? true : false;
     },
     team: () => {},
   };
@@ -44,7 +43,7 @@ export class Runway implements Entity<RunwayProperties> {
     this.runwaySprite = new PIXI.Sprite();
     this.runwayBack = new PIXI.Sprite(Textures["runway2b.gif"]);
     this.runwayBack.visible = false;
-    this.facing = "Left";
+    this.props.facing = "Left";
 
     this.container.addChild(this.runwayBack);
     this.container.addChild(this.runwaySprite);

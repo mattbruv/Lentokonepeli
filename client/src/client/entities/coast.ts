@@ -17,7 +17,6 @@ export class Coast implements Entity<CoastProperties> {
   private container: PIXI.Container;
   private coastSprite: PIXI.Sprite;
   private water: PIXI.Graphics;
-  private facing: Facing;
 
   constructor() {
     this.container = new PIXI.Container();
@@ -25,7 +24,6 @@ export class Coast implements Entity<CoastProperties> {
     this.coastSprite = new PIXI.Sprite();
     this.coastSprite.height = texture.height;
     this.water = new PIXI.Graphics();
-    this.facing = "Left";
 
     this.container.addChild(this.water);
     this.container.addChild(this.coastSprite);
