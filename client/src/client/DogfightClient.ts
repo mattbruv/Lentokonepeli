@@ -35,6 +35,7 @@ export class DogfightClient {
   private viewport: Viewport;
   private debugText = new PIXI.Text();
 
+  private myPlayerId: number | null = null;
   private myPlayerName: string | null = null;
 
   private teamChooser: TeamChooser = new TeamChooser();
@@ -163,6 +164,10 @@ export class DogfightClient {
     this.gameHUD.setTeam(team);
   }
 
+  private onMyPlayerUpdate(props: PlayerProperties) {
+    console.log("update me!", props);
+  }
+
   public handleGameEvents(events: GameOutput[]) {
     for (const event of events) {
       switch (event.type) {
@@ -234,7 +239,15 @@ export class DogfightClient {
       updateProps(entity, data.props);
 
       if (data.type === "Player") {
-        // TODO
+        const name = data.props.name;
+
+        if (name !== undefined && name === this.myPlayerName) {
+          this.myPlayerId = id;
+        }
+
+        if (this.myPlayerId === id) {
+          this.onMyPlayerUpdate(data.props);
+        }
       }
     }
   }
