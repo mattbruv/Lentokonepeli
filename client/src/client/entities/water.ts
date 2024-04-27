@@ -14,7 +14,6 @@ export class Water implements Entity<WaterProperties> {
 
   private waveIndex = 0;
   private waveInterval: number;
-  private facing: Facing = "Left";
 
   constructor() {
     this.container = new PIXI.Container();
