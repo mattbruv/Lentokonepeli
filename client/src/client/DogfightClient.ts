@@ -16,6 +16,7 @@ import { GameOutput } from "dogfight-types/GameOutput";
 import { Player } from "./entities/player";
 import { Team } from "dogfight-types/Team";
 import { TeamChooser } from "./team_chooser";
+import { GameHUD } from "./hud";
 
 export type GameClientCallbacks = {
   chooseTeam: (team: Team) => void;
@@ -30,6 +31,7 @@ export class DogfightClient {
   private myPlayerName: string | null = null;
 
   private teamChooser: TeamChooser = new TeamChooser();
+  private gameHUD: GameHUD = new GameHUD();
 
   private callbacks?: GameClientCallbacks;
 
@@ -56,6 +58,7 @@ export class DogfightClient {
 
     this.app.stage.addChild(this.viewport);
     this.app.stage.addChild(this.teamChooser.container);
+    this.app.stage.addChild(this.gameHUD.container);
 
     this.viewport.drag().pinch().wheel().decelerate();
 
@@ -77,18 +80,24 @@ export class DogfightClient {
     this.appendView(element);
     this.callbacks = callbacks;
     this.teamChooser.init(this.callbacks);
+    this.gameHUD.init();
 
-    // center the team chooser on the screen
     const width = this.app.screen.width / 2;
     const height = this.app.screen.height / 2;
+    // center the team chooser on the screen
+    {
+      const chooserWidth = this.teamChooser.container.width;
+      const chooserHeight = this.teamChooser.container.height;
+      const x = width - chooserWidth / 2;
+      const y = height - chooserHeight / 2;
+      this.teamChooser.container.position.set(x, y);
+    }
 
-    const chooserWidth = this.teamChooser.container.width;
-    const chooserHeight = this.teamChooser.container.height;
-
-    const x = width - chooserWidth / 2;
-    const y = height - chooserHeight / 2;
-
-    this.teamChooser.container.position.set(x, y);
+    // set HUD on screen properly
+    {
+      const y = this.app.screen.height - this.gameHUD.container.height;
+      this.gameHUD.container.position.set(0, y);
+    }
   }
 
   private appendView(element: HTMLDivElement) {
@@ -118,6 +127,7 @@ export class DogfightClient {
           console.log(event.data.name + " joined " + event.data.team);
           if (event.data.name === this.myPlayerName) {
             this.teamChooser.container.visible = false;
+            this.gameHUD.setTeam(event.data.team);
           }
           break;
         }
