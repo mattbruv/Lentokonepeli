@@ -59,9 +59,6 @@ impl World {
         m.set_client_x(100);
         m.set_client_y(-150);
         self.men.insert(m);
-        let mut m2 = Man::new(Team::Allies);
-        m2.set_client_x(300);
-        self.men.insert(m2);
     }
 
     pub fn tick(&mut self, input: Vec<GameInput>) -> Vec<GameOutput> {
@@ -71,10 +68,6 @@ impl World {
 
         if let Some(m) = self.men.get_mut(0) {
             m.set_x(m.get_x() + 100);
-        }
-
-        if let Some(m) = self.men.get_mut(1) {
-            m.set_x(m.get_x() + 200);
         }
 
         let updated_state = self.get_changed_state();
