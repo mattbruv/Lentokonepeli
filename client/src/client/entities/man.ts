@@ -26,23 +26,13 @@ export class Man implements Entity<ManProperties> {
     this.container.zIndex = DrawLayer.LAYER_10_LAYER_12;
   }
 
+  public callbackOrder: (keyof ManProperties)[] = ["client_x", "client_y"];
+
   public updateCallbacks: EntityUpdateCallbacks<ManProperties> = {
-    client_x: {
-      order: 0,
-      callback: () => this.updateX(),
-    },
-    client_y: {
-      order: 1,
-      callback: () => this.updateY(),
-    },
-    team: {
-      order: 1,
-      callback: () => this.updateTeam(),
-    },
-    state: {
-      order: 1,
-      callback: () => this.updateState(),
-    },
+    client_x: [0, () => this.updateX()],
+    client_y: [1, () => this.updateY()],
+    team: [2, () => this.updateTeam()],
+    state: [3, () => this.updateState()],
   };
 
   public getContainer(): PIXI.Container {
@@ -52,15 +42,21 @@ export class Man implements Entity<ManProperties> {
   public destroy() {}
 
   private updateX(): void {
+    console.log("UDPATE MAN X");
     if (!this.props.client_x) return;
     this.manSprite.position.x = this.props.client_x;
   }
 
   private updateY(): void {
+    console.log("UDPATE MAN Y");
     if (!this.props.client_y) return;
     this.manSprite.position.y = this.props.client_y;
   }
 
-  private updateState(): void {}
-  private updateTeam(): void {}
+  private updateState(): void {
+    console.log("UDPATE MAN STATE");
+  }
+  private updateTeam(): void {
+    console.log("UDPATE MAN TEAM");
+  }
 }

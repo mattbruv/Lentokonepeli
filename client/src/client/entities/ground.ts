@@ -29,6 +29,32 @@ export class Ground implements Entity<GroundProperties> {
   }
 
   public updateCallbacks: EntityUpdateCallbacks<GroundProperties> = {
+    terrain: [
+      0,
+      () => {
+        console.log("update t");
+      },
+    ],
+    width: [
+      1,
+      () => {
+        console.log("update width");
+      },
+    ],
+    client_x: [
+      1,
+      () => {
+        console.log("udpate x");
+      },
+    ],
+    client_y: [
+      1,
+      () => {
+        console.log("update y");
+      },
+    ],
+  };
+  /*
     client_x: (client_x) => {
       this.groundSprite.x = client_x;
       this.water.x = client_x;
@@ -59,6 +85,7 @@ export class Ground implements Entity<GroundProperties> {
       this.water.endFill();
     },
   };
+  */
 
   public updateProps(props: GroundProperties): void {
     if (props.terrain !== undefined) {
