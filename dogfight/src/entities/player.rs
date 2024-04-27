@@ -1,7 +1,15 @@
 use crate::network::{property::*, EntityProperties, NetworkedEntity};
-use dogfight_macros::Networked;
+use dogfight_macros::{EnumBytes, Networked};
 
 use super::types::Team;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS, EnumBytes)]
+#[ts(export)]
+pub enum PlayerState {
+    ChoosingRunway,
+    WaitingRespawn,
+    Playing,
+}
 
 #[derive(Networked)]
 pub struct Player {
@@ -14,6 +22,7 @@ pub struct Player {
     clan: Property<Option::<String>>,
     #[rustfmt::skip]
     team: Property<Option::<Team>>,
+    state: Property<PlayerState>,
 }
 
 impl Player {
@@ -25,6 +34,7 @@ impl Player {
             name: Property::new(name),
             clan: Property::new(None),
             team: Property::new(None),
+            state: Property::new(PlayerState::ChoosingRunway),
         }
     }
 
