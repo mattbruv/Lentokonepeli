@@ -1,9 +1,9 @@
 import * as PIXI from "pixi.js";
 
-export type NoUndefined<T> = T extends undefined ? never : T;
-
 export type EntityUpdateCallbacks<Source extends object> = {
-  [Property in keyof Source]-?: (value: NoUndefined<Source[Property]>) => void;
+  [Property in keyof Source]: (
+    value: Exclude<Source[Property], undefined>
+  ) => void;
 };
 
 export type Entity<Props extends object> = {
@@ -31,7 +31,11 @@ export function updateProps<Props extends Object>(
     if (props.hasOwnProperty(key)) {
       const propUpdateCallback = callbacks[key];
       const value = props[key];
-      propUpdateCallback(value as NoUndefined<typeof value>);
+      if (value !== undefined) {
+        propUpdateCallback(
+          value as Exclude<Props[Extract<keyof Props, string>], undefined>
+        );
+      }
     }
   }
   console.log("AFTER :", JSON.stringify(entity.props));
