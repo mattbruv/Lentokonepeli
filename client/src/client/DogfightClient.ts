@@ -17,10 +17,15 @@ import { Player } from "./entities/player";
 import { Team } from "dogfight-types/Team";
 import { TeamChooser } from "./team_chooser";
 import { GameHUD } from "./hud";
-import { updateProps } from "./entities/entity";
+import { Entity, updateProps } from "./entities/entity";
 
 export type GameClientCallbacks = {
   chooseTeam: (team: Team) => void;
+};
+
+type EntityMap<T extends Entity<any>> = {
+  new_type: () => T;
+  map: Map<number, Entity<T>>;
 };
 
 export class DogfightClient {
@@ -36,15 +41,53 @@ export class DogfightClient {
 
   private callbacks?: GameClientCallbacks;
 
-  private players: Map<number, Player> = new Map();
+  private players: EntityMap<Player> = {
+    new_type: () => new Player(),
+    map: new Map(),
+  };
 
-  private grounds: Map<number, Ground> = new Map();
-  private backgroundItems: Map<number, BackgroundItem> = new Map();
-  private waters: Map<number, Water> = new Map();
-  private coasts: Map<number, Coast> = new Map();
-  private runways: Map<number, Runway> = new Map();
-  private bunkers: Map<number, Bunker> = new Map();
-  private men: Map<number, Man> = new Map();
+  private grounds: EntityMap<Ground> = {
+    new_type: () => new Ground(),
+    map: new Map(),
+  };
+
+  private backgroundItems: EntityMap<BackgroundItem> = {
+    new_type: () => new BackgroundItem(),
+    map: new Map(),
+  };
+  private waters: EntityMap<Water> = {
+    new_type: () => new Water(),
+    map: new Map(),
+  };
+  private coasts: EntityMap<Coast> = {
+    new_type: () => new Coast(),
+    map: new Map(),
+  };
+  private runways: EntityMap<BackgroundItem> = {
+    new_type: () => new BackgroundItem(),
+    map: new Map(),
+  };
+  private bunkers: EntityMap<Bunker> = {
+    new_type: () => new Bunker(),
+    map: new Map(),
+  };
+  private men: EntityMap<Man> = {
+    new_type: () => new Man(),
+    map: new Map(),
+  };
+
+  private entityMaps: Record<EntityType, EntityMap<any> | undefined> = {
+    WorldInfo: undefined,
+    Plane: undefined,
+    Man: this.men,
+    Player: this.players,
+    BackgroundItem: this.backgroundItems,
+    Ground: this.grounds,
+    Coast: this.coasts,
+    Runway: this.runways,
+    Water: this.waters,
+    Bunker: this.bunkers,
+  };
 
   constructor() {
     this.app = new PIXI.Application<HTMLCanvasElement>({
@@ -157,50 +200,36 @@ export class DogfightClient {
   }
 
   private deleteEntity(id: number, ent_type: EntityType) {
-    switch (ent_type) {
-      case "Player": {
-        this.players.delete(id);
-        break;
-      }
-      case "Ground": {
-        this.grounds.get(id)?.destroy();
-        this.grounds.delete(id);
-        break;
-      }
-      case "Man": {
-        this.men.get(id)?.destroy();
-        this.men.delete(id);
-        break;
-      }
-      case "BackgroundItem": {
-        this.backgroundItems.get(id)?.destroy();
-        this.backgroundItems.delete(id);
-        break;
-      }
-      case "Runway": {
-        this.runways.get(id)?.destroy();
-        this.runways.delete(id);
-        break;
-      }
-      case "Bunker": {
-        this.bunkers.get(id)?.destroy();
-        this.bunkers.delete(id);
-        break;
-      }
-      case "Water": {
-        this.waters.get(id)?.destroy();
-        this.waters.delete(id);
-        break;
-      }
-      case "Coast": {
-        this.coasts.get(id)?.destroy();
-        this.coasts.delete(id);
-        break;
-      }
-    }
+    const ent_map = this.entityMaps[ent_type];
+    if (!ent_map) return;
+    const entity = ent_map.map.get(id);
+    entity?.destroy();
+    ent_map.map.delete(id);
   }
 
   private updateEntity(id: number, data: EntityProperties) {
+    const ent_map = this.entityMaps[data.type];
+    if (!ent_map) return;
+
+    let entity = ent_map.map.get(id);
+
+    // If the entity doesn't exist, create a new one
+    // and add it to the stage
+    if (!entity) {
+      entity = ent_map.new_type();
+      if (entity) {
+        ent_map.map.set(id, entity);
+        this.viewport.addChild(entity.getContainer());
+      }
+    }
+
+    if (entity) {
+      updateProps(entity, data.props);
+    }
+  }
+
+  /*
+  private OLDUPDATE(id: number, data: EntityProperties) {
     switch (data.type) {
       case "Player": {
         let player = this.players.get(id);
@@ -283,4 +312,5 @@ export class DogfightClient {
       }
     }
   }
+  */
 }
