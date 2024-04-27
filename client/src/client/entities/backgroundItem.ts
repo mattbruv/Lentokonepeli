@@ -65,6 +65,7 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
   public updateCallbacks(): EntityUpdateCallbacks<BackgroundItemProperties> {
     return {
       bg_item_type: (value) => {
+        console.log("udpate bg type");
         if (this.flagInterval !== null) {
           clearInterval(this.flagInterval);
         }
@@ -76,9 +77,15 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
           this.flagInterval = setInterval(() => this.waveFlag(), 100);
         }
       },
-      facing: () => {},
-      client_x: () => {},
-      client_y: () => {},
+      facing: () => {
+        console.log("udpate bg facing");
+      },
+      client_x: () => {
+        console.log("udpate bg x");
+      },
+      client_y: () => {
+        console.log("udpate bg y");
+      },
     };
   }
 
