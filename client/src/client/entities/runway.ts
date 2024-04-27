@@ -12,6 +12,26 @@ export class Runway implements Entity<RunwayProperties> {
   private runwayBack: PIXI.Sprite;
   private facing: Facing;
 
+  public updateCallbacks: EntityUpdateCallbacks<RunwayProperties> = {
+    client_x: (client_x) => {
+      this.runwaySprite.position.x = client_x;
+      this.runwayBack.position.x = client_x + 217;
+    },
+    client_y: (client_y) => {
+      this.runwaySprite.position.y = client_y;
+      this.runwayBack.position.y = client_y;
+    },
+    facing: (facing) => {
+      const textureMap: Record<Facing, PIXI.Texture> = {
+        Left: Textures["runway2.gif"],
+        Right: Textures["runway.gif"],
+      };
+      this.runwaySprite.texture = textureMap[facing];
+      this.runwayBack.visible = this.facing === "Left" ? true : false;
+    },
+    team: (team) => {},
+  };
+
   constructor() {
     this.container = new PIXI.Container();
     this.runwaySprite = new PIXI.Sprite();
@@ -27,28 +47,6 @@ export class Runway implements Entity<RunwayProperties> {
 
   public getContainer(): PIXI.Container {
     return this.container;
-  }
-
-  public updateCallbacks(): EntityUpdateCallbacks<RunwayProperties> {
-    return {
-      client_x: (client_x) => {
-        this.runwaySprite.position.x = client_x;
-        this.runwayBack.position.x = client_x + 217;
-      },
-      client_y: (client_y) => {
-        this.runwaySprite.position.y = client_y;
-        this.runwayBack.position.y = client_y;
-      },
-      facing: (facing) => {
-        const textureMap: Record<Facing, PIXI.Texture> = {
-          Left: Textures["runway2.gif"],
-          Right: Textures["runway.gif"],
-        };
-        this.runwaySprite.texture = textureMap[facing];
-        this.runwayBack.visible = this.facing === "Left" ? true : false;
-      },
-      team: (team) => {},
-    };
   }
 
   public destroy() {}

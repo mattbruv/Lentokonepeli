@@ -28,39 +28,37 @@ export class Ground implements Entity<GroundProperties> {
     return this.container;
   }
 
-  public updateCallbacks(): EntityUpdateCallbacks<GroundProperties> {
-    return {
-      client_x: (client_x) => {
-        this.groundSprite.x = client_x;
-        this.water.x = client_x;
-      },
-      client_y: (client_y) => {
-        this.groundSprite.y = client_y;
-        this.water.y = client_y;
-      },
-      width: (width) => {
-        this.groundSprite.width = width;
-      },
-      terrain: (terrain) => {
-        const textureMap: Record<Terrain, PIXI.Texture> = {
-          Normal: Textures["ground1.gif"],
-          Desert: Textures["groundDesert.gif"],
-        };
+  public updateCallbacks: EntityUpdateCallbacks<GroundProperties> = {
+    client_x: (client_x) => {
+      this.groundSprite.x = client_x;
+      this.water.x = client_x;
+    },
+    client_y: (client_y) => {
+      this.groundSprite.y = client_y;
+      this.water.y = client_y;
+    },
+    width: (width) => {
+      this.groundSprite.width = width;
+    },
+    terrain: (terrain) => {
+      const textureMap: Record<Terrain, PIXI.Texture> = {
+        Normal: Textures["ground1.gif"],
+        Desert: Textures["groundDesert.gif"],
+      };
 
-        this.groundSprite.texture = textureMap[terrain];
-        const color = TERRAIN_WATER_COLOR[terrain];
-        this.water.clear();
-        this.water.beginFill(color);
-        this.water.drawRect(
-          0,
-          0 + this.groundSprite.height,
-          this.groundSprite.width,
-          5000
-        );
-        this.water.endFill();
-      },
-    };
-  }
+      this.groundSprite.texture = textureMap[terrain];
+      const color = TERRAIN_WATER_COLOR[terrain];
+      this.water.clear();
+      this.water.beginFill(color);
+      this.water.drawRect(
+        0,
+        0 + this.groundSprite.height,
+        this.groundSprite.width,
+        5000
+      );
+      this.water.endFill();
+    },
+  };
 
   public updateProps(props: GroundProperties): void {
     if (props.terrain !== undefined) {

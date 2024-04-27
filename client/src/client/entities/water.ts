@@ -34,33 +34,31 @@ export class Water implements Entity<WaterProperties> {
     this.container.zIndex = DrawLayer.LAYER_11;
   }
 
-  public updateCallbacks(): EntityUpdateCallbacks<WaterProperties> {
-    return {
-      client_x: (client_x) => {
-        this.waterGraphics.position.x = client_x;
-        this.waves.position.x = client_x;
-      },
-      client_y: (client_y) => {
-        this.waterGraphics.position.y = client_y;
-        this.waves.position.y = client_y;
-      },
-      facing: (facing) => {
-        this.waves.anchor.x = facing === "Left" ? 0 : 1;
-        this.waves.scale.x = facing === "Left" ? 1 : -1;
-      },
-      terrain: (terrain) => {
-        const color = TERRAIN_WATER_COLOR[terrain];
-        this.waterGraphics.clear();
-        this.waterGraphics.beginFill(color);
-        this.waterGraphics.drawRect(0, 0, this.waves.width, 5000);
-        this.waterGraphics.endFill();
-      },
-      width: (width) => {
-        this.waterGraphics.width = width;
-        this.waves.width = width;
-      },
-    };
-  }
+  public updateCallbacks: EntityUpdateCallbacks<WaterProperties> = {
+    client_x: (client_x) => {
+      this.waterGraphics.position.x = client_x;
+      this.waves.position.x = client_x;
+    },
+    client_y: (client_y) => {
+      this.waterGraphics.position.y = client_y;
+      this.waves.position.y = client_y;
+    },
+    facing: (facing) => {
+      this.waves.anchor.x = facing === "Left" ? 0 : 1;
+      this.waves.scale.x = facing === "Left" ? 1 : -1;
+    },
+    terrain: (terrain) => {
+      const color = TERRAIN_WATER_COLOR[terrain];
+      this.waterGraphics.clear();
+      this.waterGraphics.beginFill(color);
+      this.waterGraphics.drawRect(0, 0, this.waves.width, 5000);
+      this.waterGraphics.endFill();
+    },
+    width: (width) => {
+      this.waterGraphics.width = width;
+      this.waves.width = width;
+    },
+  };
 
   private waveStep() {
     const str = `wave-l_${this.waveIndex}.gif`;
