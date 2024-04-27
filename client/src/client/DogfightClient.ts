@@ -108,6 +108,11 @@ export class DogfightClient {
     this.myPlayerName = name;
   }
 
+  private onJoinTeam(team: Team) {
+    this.teamChooser.container.visible = false;
+    this.gameHUD.setTeam(team);
+  }
+
   public handleGameEvents(events: GameOutput[]) {
     for (const event of events) {
       switch (event.type) {
@@ -126,8 +131,7 @@ export class DogfightClient {
         case "PlayerJoinTeam": {
           console.log(event.data.name + " joined " + event.data.team);
           if (event.data.name === this.myPlayerName) {
-            this.teamChooser.container.visible = false;
-            this.gameHUD.setTeam(event.data.team);
+            this.onJoinTeam(event.data.team);
           }
           break;
         }
