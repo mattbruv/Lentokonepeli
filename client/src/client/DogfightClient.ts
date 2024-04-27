@@ -17,6 +17,7 @@ import { Player } from "./entities/player";
 import { Team } from "dogfight-types/Team";
 import { TeamChooser } from "./team_chooser";
 import { GameHUD } from "./hud";
+import { updateProps } from "./entities/entity";
 
 export type GameClientCallbacks = {
   chooseTeam: (team: Team) => void;
@@ -237,7 +238,8 @@ export class DogfightClient {
           this.backgroundItems.set(id, item);
           this.viewport.addChild(item.getContainer());
         }
-        item.updateProps(data.props);
+        console.log(id);
+        updateProps(item, data.props);
         break;
       }
       case "Bunker": {
