@@ -25,7 +25,7 @@ export type GameClientCallbacks = {
 
 type EntityMap<T extends Entity<any>> = {
   new_type: () => T;
-  map: Map<number, Entity<T>>;
+  map: Map<number, T>;
 };
 
 export class DogfightClient {
@@ -182,6 +182,7 @@ export class DogfightClient {
           if (event.data.name === this.myPlayerName) {
             this.onJoinTeam(event.data.team);
           }
+
           break;
         }
       }
