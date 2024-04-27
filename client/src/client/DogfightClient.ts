@@ -55,22 +55,27 @@ export class DogfightClient {
     new_type: () => new BackgroundItem(),
     map: new Map(),
   };
+
   private waters: EntityMap<Water> = {
     new_type: () => new Water(),
     map: new Map(),
   };
+
   private coasts: EntityMap<Coast> = {
     new_type: () => new Coast(),
     map: new Map(),
   };
+
   private runways: EntityMap<BackgroundItem> = {
     new_type: () => new BackgroundItem(),
     map: new Map(),
   };
+
   private bunkers: EntityMap<Bunker> = {
     new_type: () => new Bunker(),
     map: new Map(),
   };
+
   private men: EntityMap<Man> = {
     new_type: () => new Man(),
     map: new Map(),
@@ -227,90 +232,4 @@ export class DogfightClient {
       updateProps(entity, data.props);
     }
   }
-
-  /*
-  private OLDUPDATE(id: number, data: EntityProperties) {
-    switch (data.type) {
-      case "Player": {
-        let player = this.players.get(id);
-        if (!player) {
-          player = new Player();
-          this.players.set(id, player);
-        }
-        updateProps(player, data.props);
-        break;
-      }
-      case "Ground": {
-        let ground = this.grounds.get(id);
-        if (!ground) {
-          ground = new Ground();
-          this.grounds.set(id, ground);
-          this.viewport.addChild(ground.getContainer());
-        }
-        updateProps(ground, data.props);
-        break;
-      }
-      case "Man": {
-        let man = this.men.get(id);
-        if (!man) {
-          man = new Man();
-          this.men.set(id, man);
-          this.viewport.addChild(man.getContainer());
-        }
-        updateProps(man, data.props);
-        break;
-      }
-      case "BackgroundItem": {
-        let item = this.backgroundItems.get(id);
-        if (!item) {
-          item = new BackgroundItem();
-          this.backgroundItems.set(id, item);
-          this.viewport.addChild(item.getContainer());
-        }
-        updateProps(item, data.props);
-        break;
-      }
-      case "Bunker": {
-        let bunker = this.bunkers.get(id);
-        if (!bunker) {
-          bunker = new Bunker();
-          this.bunkers.set(id, bunker);
-          this.viewport.addChild(bunker.getContainer());
-        }
-        updateProps(bunker, data.props);
-        break;
-      }
-      case "Water": {
-        let water = this.waters.get(id);
-        if (!water) {
-          water = new Water();
-          this.waters.set(id, water);
-          this.viewport.addChild(water.getContainer());
-        }
-        updateProps(water, data.props);
-        break;
-      }
-      case "Runway": {
-        let runway = this.runways.get(id);
-        if (!runway) {
-          runway = new Runway();
-          this.runways.set(id, runway);
-          this.viewport.addChild(runway.getContainer());
-        }
-        updateProps(runway, data.props);
-        break;
-      }
-      case "Coast": {
-        let coast = this.coasts.get(id);
-        if (!coast) {
-          coast = new Coast();
-          this.coasts.set(id, coast);
-          this.viewport.addChild(coast.getContainer());
-        }
-        updateProps(coast, data.props);
-        break;
-      }
-    }
-  }
-  */
 }
