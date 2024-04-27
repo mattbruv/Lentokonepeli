@@ -1,4 +1,4 @@
-import { Entity } from "./entity";
+import { Entity, EntityUpdateCallbacks } from "./entity";
 import * as PIXI from "pixi.js";
 import { Textures } from "../textures";
 import { CoastProperties } from "dogfight-types/CoastProperties";
@@ -13,6 +13,7 @@ type TextureCombinations = {
 };
 
 export class Coast implements Entity<CoastProperties> {
+  public props: CoastProperties = {};
   private container: PIXI.Container;
   private coastSprite: PIXI.Sprite;
   private water: PIXI.Graphics;
@@ -34,52 +35,60 @@ export class Coast implements Entity<CoastProperties> {
   public getContainer(): PIXI.Container {
     return this.container;
   }
+
+  public updateCallbacks(): EntityUpdateCallbacks<CoastProperties> {
+    return {
+      client_x: (client_x) => {
+        this.coastSprite.position.x = client_x;
+        this.water.position.x = client_x;
+      },
+      client_y: (client_y) => {
+        this.coastSprite.position.y = client_y;
+        this.water.position.y = client_y;
+      },
+      facing: (facing) => {
+        this.coastSprite.anchor.x = facing === "Left" ? 0 : 1;
+        this.coastSprite.scale.x = facing === "Left" ? 1 : -1;
+      },
+      terrain: this.updateTerrain,
+    };
+  }
+
+  private updateTerrain(terrain: Terrain) {
+    const tex: TextureCombinations = {
+      // none of the beach-r textures are used in the game.
+      // They are actually just the left ones, but inverted
+      Right: {
+        Normal: Textures["beach-l.gif"],
+        Desert: Textures["beach-l_desert.gif"],
+      },
+      Left: {
+        Normal: Textures["beach-l.gif"],
+        Desert: Textures["beach-l_desert.gif"],
+      },
+    };
+
+    if (!this.props.facing) return;
+    if (!this.props.terrain) return;
+    this.coastSprite.texture = tex[this.props.facing][this.props.terrain];
+
+    // draw water
+    this.water.clear();
+
+    this.water.beginFill(TERRAIN_WATER_COLOR[this.props.terrain]);
+
+    this.water.drawRect(
+      0,
+      this.coastSprite.height,
+      this.coastSprite.width,
+      5000
+    );
+
+    this.water.endFill();
+  }
+
   public updateProps(props: CoastProperties): void {
-    if (props.client_x !== undefined) {
-      this.coastSprite.position.x = props.client_x;
-      this.water.position.x = props.client_x;
-    }
-
-    if (props.client_y !== undefined) {
-      this.coastSprite.position.y = props.client_y;
-      this.water.position.y = props.client_y;
-    }
-
-    if (props.facing !== undefined) {
-      this.facing = props.facing;
-      this.coastSprite.anchor.x = this.facing === "Left" ? 0 : 1;
-      this.coastSprite.scale.x = this.facing === "Left" ? 1 : -1;
-    }
-
     if (props.terrain !== undefined) {
-      const tex: TextureCombinations = {
-        // none of the beach-r textures are used in the game.
-        // They are actually just the left ones, but inverted
-        Right: {
-          Normal: Textures["beach-l.gif"],
-          Desert: Textures["beach-l_desert.gif"],
-        },
-        Left: {
-          Normal: Textures["beach-l.gif"],
-          Desert: Textures["beach-l_desert.gif"],
-        },
-      };
-
-      this.coastSprite.texture = tex[this.facing][props.terrain];
-
-      // draw water
-      this.water.clear();
-
-      this.water.beginFill(TERRAIN_WATER_COLOR[props.terrain]);
-
-      this.water.drawRect(
-        0,
-        this.coastSprite.height,
-        this.coastSprite.width,
-        5000
-      );
-
-      this.water.endFill();
     }
   }
 
