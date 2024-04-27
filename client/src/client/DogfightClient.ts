@@ -208,7 +208,7 @@ export class DogfightClient {
           player = new Player();
           this.players.set(id, player);
         }
-        player.updateProps(data.props);
+        updateProps(player, data.props);
         break;
       }
       case "Ground": {
@@ -218,7 +218,7 @@ export class DogfightClient {
           this.grounds.set(id, ground);
           this.viewport.addChild(ground.getContainer());
         }
-        ground.updateProps(data.props);
+        updateProps(ground, data.props);
         break;
       }
       case "Man": {
@@ -228,7 +228,7 @@ export class DogfightClient {
           this.men.set(id, man);
           this.viewport.addChild(man.getContainer());
         }
-        man.updateProps(data.props);
+        updateProps(man, data.props);
         break;
       }
       case "BackgroundItem": {
@@ -238,7 +238,6 @@ export class DogfightClient {
           this.backgroundItems.set(id, item);
           this.viewport.addChild(item.getContainer());
         }
-        console.log(id);
         updateProps(item, data.props);
         break;
       }
@@ -249,7 +248,7 @@ export class DogfightClient {
           this.bunkers.set(id, bunker);
           this.viewport.addChild(bunker.getContainer());
         }
-        bunker.updateProps(data.props);
+        updateProps(bunker, data.props);
         break;
       }
       case "Water": {
@@ -259,7 +258,7 @@ export class DogfightClient {
           this.waters.set(id, water);
           this.viewport.addChild(water.getContainer());
         }
-        water.updateProps(data.props);
+        updateProps(water, data.props);
         break;
       }
       case "Runway": {
@@ -269,7 +268,7 @@ export class DogfightClient {
           this.runways.set(id, runway);
           this.viewport.addChild(runway.getContainer());
         }
-        runway.updateProps(data.props);
+        updateProps(runway, data.props);
         break;
       }
       case "Coast": {
@@ -279,7 +278,7 @@ export class DogfightClient {
           this.coasts.set(id, coast);
           this.viewport.addChild(coast.getContainer());
         }
-        coast.updateProps(data.props);
+        updateProps(coast, data.props);
         break;
       }
     }

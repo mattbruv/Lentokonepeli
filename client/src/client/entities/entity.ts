@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 
 export type EntityUpdateCallbacks<Source extends object> = {
-  [Property in keyof Source]: (
+  [Property in keyof Source]-?: (
     value: Exclude<Source[Property], undefined>
   ) => void;
 };
