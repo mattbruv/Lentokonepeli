@@ -1,4 +1,4 @@
-import { Entity } from "./entity";
+import { Entity, EntityUpdateCallbacks } from "./entity";
 import * as PIXI from "pixi.js";
 import { Textures } from "../textures";
 import { Facing } from "dogfight-types/Facing";
@@ -6,6 +6,7 @@ import { DrawLayer, TERRAIN_WATER_COLOR } from "../constants";
 import { RunwayProperties } from "dogfight-types/RunwayProperties";
 
 export class Runway implements Entity<RunwayProperties> {
+  public props: RunwayProperties = {};
   private container: PIXI.Container;
   private runwaySprite: PIXI.Sprite;
   private runwayBack: PIXI.Sprite;
@@ -27,26 +28,27 @@ export class Runway implements Entity<RunwayProperties> {
   public getContainer(): PIXI.Container {
     return this.container;
   }
-  public updateProps(props: RunwayProperties): void {
-    if (props.client_x !== undefined) {
-      this.runwaySprite.position.x = props.client_x;
-      this.runwayBack.position.x = props.client_x + 217;
-    }
 
-    if (props.client_y !== undefined) {
-      this.runwaySprite.position.y = props.client_y;
-      this.runwayBack.position.y = props.client_y;
-    }
-
-    if (props.facing !== undefined) {
-      const textureMap: Record<Facing, PIXI.Texture> = {
-        Left: Textures["runway2.gif"],
-        Right: Textures["runway.gif"],
-      };
-      this.facing = props.facing;
-      this.runwaySprite.texture = textureMap[props.facing];
-      this.runwayBack.visible = this.facing === "Left" ? true : false;
-    }
+  public updateCallbacks(): EntityUpdateCallbacks<RunwayProperties> {
+    return {
+      client_x: (client_x) => {
+        this.runwaySprite.position.x = client_x;
+        this.runwayBack.position.x = client_x + 217;
+      },
+      client_y: (client_y) => {
+        this.runwaySprite.position.y = client_y;
+        this.runwayBack.position.y = client_y;
+      },
+      facing: (facing) => {
+        const textureMap: Record<Facing, PIXI.Texture> = {
+          Left: Textures["runway2.gif"],
+          Right: Textures["runway.gif"],
+        };
+        this.runwaySprite.texture = textureMap[facing];
+        this.runwayBack.visible = this.facing === "Left" ? true : false;
+      },
+      team: (team) => {},
+    };
   }
 
   public destroy() {}
