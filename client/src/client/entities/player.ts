@@ -11,15 +11,13 @@ export class Player implements Entity<PlayerProperties> {
     return new PIXI.Container();
   }
 
-  public updateCallbacks(): EntityUpdateCallbacks<PlayerProperties> {
-    return {
-      clan: (clan) => {},
-      name: (name) => {},
-      team: (team) => {
-        console.log("player's team changed!");
-      },
-    };
-  }
+  public updateCallbacks: EntityUpdateCallbacks<PlayerProperties> = {
+    clan: (clan) => {},
+    name: (name) => {},
+    team: (team) => {
+      console.log("player's team changed!");
+    },
+  };
 
   public getProps(): Readonly<PlayerProperties> {
     return this.props;

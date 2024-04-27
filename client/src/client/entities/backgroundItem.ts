@@ -62,46 +62,44 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
     return this.container;
   }
 
-  public updateCallbacks(): EntityUpdateCallbacks<BackgroundItemProperties> {
-    return {
-      bg_item_type: (value) => {
-        if (this.flagInterval !== null) {
-          clearInterval(this.flagInterval);
-        }
+  public updateCallbacks: EntityUpdateCallbacks<BackgroundItemProperties> = {
+    bg_item_type: (value) => {
+      if (this.flagInterval !== null) {
+        clearInterval(this.flagInterval);
+      }
 
-        const texture = this.itemTextures[value];
-        this.itemSprite.texture = texture;
+      const texture = this.itemTextures[value];
+      this.itemSprite.texture = texture;
 
-        if (this.flagTypes.includes(value)) {
-          this.flagInterval = setInterval(() => this.waveFlag(), 100);
-        }
-      },
-      facing: (facing) => {
-        this.itemSprite.anchor.x = facing === "Right" ? 0 : 1;
-        this.itemSprite.scale.x = facing === "Right" ? 1 : -1;
-      },
-      client_x: (client_x) => {
-        let xDiff = Math.floor(this.itemSprite.texture.width / 2);
-        if (
-          this.props.bg_item_type &&
-          this.flagTypes.includes(this.props.bg_item_type)
-        ) {
-          xDiff = 0;
-        }
-        this.itemSprite.position.x = client_x - xDiff;
-      },
-      client_y: (client_y) => {
-        let yDiff = this.itemSprite.texture.height;
-        if (
-          this.props.bg_item_type &&
-          this.flagTypes.includes(this.props.bg_item_type)
-        ) {
-          yDiff = 0;
-        }
-        this.itemSprite.position.y = client_y - yDiff;
-      },
-    };
-  }
+      if (this.flagTypes.includes(value)) {
+        this.flagInterval = setInterval(() => this.waveFlag(), 100);
+      }
+    },
+    facing: (facing) => {
+      this.itemSprite.anchor.x = facing === "Right" ? 0 : 1;
+      this.itemSprite.scale.x = facing === "Right" ? 1 : -1;
+    },
+    client_x: (client_x) => {
+      let xDiff = Math.floor(this.itemSprite.texture.width / 2);
+      if (
+        this.props.bg_item_type &&
+        this.flagTypes.includes(this.props.bg_item_type)
+      ) {
+        xDiff = 0;
+      }
+      this.itemSprite.position.x = client_x - xDiff;
+    },
+    client_y: (client_y) => {
+      let yDiff = this.itemSprite.texture.height;
+      if (
+        this.props.bg_item_type &&
+        this.flagTypes.includes(this.props.bg_item_type)
+      ) {
+        yDiff = 0;
+      }
+      this.itemSprite.position.y = client_y - yDiff;
+    },
+  };
 
   private waveFlag() {
     if (
