@@ -6,6 +6,7 @@ use super::types::Team;
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS, EnumBytes)]
 #[ts(export)]
 pub enum PlayerState {
+    ChoosingTeam,
     ChoosingRunway,
     WaitingRespawn,
     Playing,
@@ -34,7 +35,7 @@ impl Player {
             name: Property::new(name),
             clan: Property::new(None),
             team: Property::new(None),
-            state: Property::new(PlayerState::ChoosingRunway),
+            state: Property::new(PlayerState::ChoosingTeam),
         }
     }
 
@@ -44,6 +45,7 @@ impl Player {
 
     pub fn set_team(&mut self, team: Option<Team>) {
         self.team.set(team);
+        self.state.set(PlayerState::ChoosingRunway);
     }
 
     pub fn get_team(&self) -> &Option<Team> {
