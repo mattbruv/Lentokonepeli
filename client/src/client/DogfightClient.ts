@@ -90,9 +90,11 @@ export class DogfightClient {
           break;
         }
         case "PlayerJoin": {
+          console.log(event.data + " joined the game!");
           break;
         }
         case "PlayerLeave": {
+          console.log(event.data + " left the game!");
           break;
         }
       }
