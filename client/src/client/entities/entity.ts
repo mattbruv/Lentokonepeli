@@ -1,7 +1,9 @@
 import * as PIXI from "pixi.js";
 
-type EntityUpdateCallbacks<Source> = {
-  [Property in keyof Source]-?: (value: Source[Property]) => void;
+export type NoUndefined<T> = T extends undefined ? never : T;
+
+export type EntityUpdateCallbacks<Source> = {
+  [Property in keyof Source]-?: (value: NoUndefined<Source[Property]>) => void;
 };
 
 export type Entity<Props> = {
@@ -21,6 +23,9 @@ export function updateProps<Props>(entity: Entity<Props>, newProps: Props) {
 
   for (const key in newProps) {
     const propUpdateCallback = callbacks[key];
-    propUpdateCallback(newProps[key]);
+    const value = newProps[key];
+    if (value !== undefined) {
+      propUpdateCallback(value);
+    }
   }
 }
