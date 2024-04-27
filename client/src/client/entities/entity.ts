@@ -13,18 +13,16 @@ export type Entity<Props extends object> = {
 
 export function updateProps<Props extends Object>(
   entity: Entity<Props>,
-  props: Props
+  newProps: Props
 ) {
   entity.props = {
     ...entity.props,
-    ...props,
+    ...newProps,
   };
 
-  for (const entry of Object.entries(entity.updateCallbacks)) {
-    console.log(entry[0]);
-    if (props.hasOwnProperty(entry[0])) {
-      entry[1];
+  for (const [key, callback] of Object.entries(entity.updateCallbacks)) {
+    if (newProps.hasOwnProperty(key)) {
+      callback();
     }
   }
-  console.log("NEXT");
 }
