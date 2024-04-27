@@ -50,7 +50,7 @@ export class Coast implements Entity<CoastProperties> {
         this.coastSprite.anchor.x = facing === "Left" ? 0 : 1;
         this.coastSprite.scale.x = facing === "Left" ? 1 : -1;
       },
-      terrain: this.updateTerrain,
+      terrain: (t) => this.updateTerrain(t),
     };
   }
 
