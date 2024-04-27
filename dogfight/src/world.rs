@@ -54,22 +54,17 @@ impl World {
         world
     }
 
-    pub fn init(&mut self) -> () {
-        let mut m = Man::new(Team::Centrals);
-        m.set_client_x(100);
-        m.set_client_y(-150);
-        self.men.insert(m);
-    }
+    pub fn init(&mut self) -> () {}
 
     pub fn tick(&mut self, input: Vec<GameInput>) -> Vec<GameOutput> {
+        // process input data
         let mut game_output: Vec<GameOutput> = vec![];
         let input_events = self.handle_input(input);
         game_output.extend(input_events);
 
-        if let Some(m) = self.men.get_mut(0) {
-            m.set_x(m.get_x() + 100);
-        }
+        // main game update logic
 
+        // return the changed state
         let updated_state = self.get_changed_state();
 
         if updated_state.len() > 0 {

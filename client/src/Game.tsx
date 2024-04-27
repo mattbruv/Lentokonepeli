@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef } from "react";
 import { DogfightContext } from "./DogfightContext";
 import Levels from "./assets/levels.json";
 import { GameOutput } from "dogfight-types/GameOutput";
-import { ClientCallbacks } from "./client/DogfightClient";
+import { GameClientCallbacks } from "./client/DogfightClient";
 import { Team } from "dogfight-types/Team";
 import { GameInput } from "dogfight-types/GameInput";
 
@@ -15,7 +15,7 @@ export function Game() {
       // set player name for testing
       const player_name = "player1";
 
-      const callbacks: ClientCallbacks = {
+      const callbacks: GameClientCallbacks = {
         chooseTeam: (team: Team): void => {
           tick_input.push({
             type: "PlayerChooseTeam",
