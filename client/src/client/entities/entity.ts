@@ -1,29 +1,26 @@
 import * as PIXI from "pixi.js";
-import { BackgroundItem } from "./backgroundItem";
-import { BackgroundItemProperties } from "dogfight-types/BackgroundItemProperties";
-import { Bunker } from "./bunker";
-import { BunkerProperties } from "dogfight-types/BunkerProperties";
-import { Team } from "dogfight-types/Team";
 
-type EntityPropFunctions<Source> = {
-  [Property in keyof Source as `update_${string & Property}`]-?: (
-    value: Source[Property]
-  ) => void;
+type EntityUpdateCallbacks<Source> = {
+  [Property in keyof Source]-?: (value: Source[Property]) => void;
 };
 
-type EntityBase<Props> = {
+type Entity<Props> = {
+  props: Props;
+  updateCallbacks: () => EntityUpdateCallbacks<Props>;
   getContainer: () => PIXI.Container;
-  updateProps: (props: Props) => void;
-  getProps: () => Readonly<Props>;
   destroy: () => void;
 };
 
-export type Entity<Props> = EntityBase<Props> & EntityPropFunctions<Props>;
+export function updateProps<Props>(entity: Entity<Props>, newProps: Props) {
+  entity.props = {
+    ...entity.props,
+    ...newProps,
+  };
 
-abstract class Foo<T> extends EntityBase<T> {
-  getContainer: () => PIXI.Container<PIXI.DisplayObject>;
-  updateProps: (props: T) => void;
-  getProps: () => Readonly<T>;
-  destroy: () => void;
-  //
+  const callbacks = entity.updateCallbacks();
+
+  for (const key in newProps) {
+    const propUpdateCallback = callbacks[key];
+    propUpdateCallback(newProps[key]);
+  }
 }
