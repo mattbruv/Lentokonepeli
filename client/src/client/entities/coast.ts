@@ -36,23 +36,21 @@ export class Coast implements Entity<CoastProperties> {
     return this.container;
   }
 
-  public updateCallbacks(): EntityUpdateCallbacks<CoastProperties> {
-    return {
-      client_x: (client_x) => {
-        this.coastSprite.position.x = client_x;
-        this.water.position.x = client_x;
-      },
-      client_y: (client_y) => {
-        this.coastSprite.position.y = client_y;
-        this.water.position.y = client_y;
-      },
-      facing: (facing) => {
-        this.coastSprite.anchor.x = facing === "Left" ? 0 : 1;
-        this.coastSprite.scale.x = facing === "Left" ? 1 : -1;
-      },
-      terrain: (t) => this.updateTerrain(t),
-    };
-  }
+  public updateCallbacks: EntityUpdateCallbacks<CoastProperties> = {
+    client_x: (client_x) => {
+      this.coastSprite.position.x = client_x;
+      this.water.position.x = client_x;
+    },
+    client_y: (client_y) => {
+      this.coastSprite.position.y = client_y;
+      this.water.position.y = client_y;
+    },
+    facing: (facing) => {
+      this.coastSprite.anchor.x = facing === "Left" ? 0 : 1;
+      this.coastSprite.scale.x = facing === "Left" ? 1 : -1;
+    },
+    terrain: (t) => this.updateTerrain(t),
+  };
 
   private updateTerrain(terrain: Terrain) {
     const tex: TextureCombinations = {

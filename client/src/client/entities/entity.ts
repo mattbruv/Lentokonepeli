@@ -8,7 +8,7 @@ export type EntityUpdateCallbacks<Source extends object> = {
 
 export type Entity<Props extends object> = {
   props: Props;
-  updateCallbacks: () => EntityUpdateCallbacks<Props>;
+  updateCallbacks: EntityUpdateCallbacks<Props>;
   getContainer: () => PIXI.Container;
   destroy: () => void;
 };
@@ -24,7 +24,7 @@ export function updateProps<Props extends Object>(
     ...props,
   };
 
-  const callbacks = entity.updateCallbacks();
+  const callbacks = entity.updateCallbacks;
 
   console.log(props);
   for (const key in props) {
