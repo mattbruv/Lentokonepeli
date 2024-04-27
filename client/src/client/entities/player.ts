@@ -27,5 +27,9 @@ export class Player implements Entity<PlayerProperties> {
     }
   }
 
+  public getProps(): Readonly<PlayerProperties> {
+    return this.props;
+  }
+
   public destroy() {}
 }
