@@ -20,9 +20,11 @@ import { GameHUD } from "./hud";
 import { Entity, updateProps } from "./entities/entity";
 import { PlayerProperties } from "dogfight-types/PlayerProperties";
 import { toPixiPoint } from "./helpers";
+import { RunwaySelection } from "dogfight-types/RunwaySelection";
 
 export type GameClientCallbacks = {
   chooseTeam: (team: Team) => void;
+  chooseRunway: (selection: RunwaySelection) => void;
 };
 
 type EntityMap<T extends Entity<any>> = {
