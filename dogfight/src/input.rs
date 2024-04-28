@@ -1,8 +1,9 @@
-use serde::{Deserialize, Serialize};
+use serde::{de::value::BoolDeserializer, Deserialize, Serialize};
 use ts_rs::TS;
 
 use crate::{
     entities::{plane::PlaneType, player::Player, types::Team, EntityId},
+    network::encoding::NetworkedBytes,
     output::{self, GameOutput},
     world::World,
 };
@@ -18,10 +19,33 @@ pub enum GameInput {
     RemovePlayer { name: String },
     PlayerChooseTeam(TeamSelection),
     PlayerChooseRunway(RunwaySelection),
+    PlayerKeyboard(PlayerKeyboard),
 }
 
 pub fn game_input_from_string(input: String) -> Vec<GameInput> {
     serde_json::from_str(&input).unwrap()
+}
+
+#[derive(Serialize, Deserialize, Debug, TS)]
+#[ts(export)]
+pub struct PlayerKeyboard {
+    left: bool,
+    right: bool,
+    down: bool,
+    up: bool,
+    shift: bool,
+    space: bool,
+    enter: bool,
+}
+
+impl NetworkedBytes for PlayerKeyboard {
+    fn to_bytes(&self) -> Vec<u8> {
+        todo!()
+    }
+
+    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+        todo!()
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, TS)]
