@@ -19,7 +19,7 @@ pub enum GameInput {
     RemovePlayer { name: String },
     PlayerChooseTeam(TeamSelection),
     PlayerChooseRunway(RunwaySelection),
-    PlayerKeyboard(PlayerKeyboard),
+    PlayerKeyboard { name: String, keys: PlayerKeyboard },
 }
 
 pub fn game_input_from_string(input: String) -> Vec<GameInput> {
@@ -36,6 +36,20 @@ pub struct PlayerKeyboard {
     shift: bool,
     space: bool,
     enter: bool,
+}
+
+impl PlayerKeyboard {
+    pub fn new() -> Self {
+        Self {
+            left: false,
+            right: false,
+            down: false,
+            up: false,
+            shift: false,
+            space: false,
+            enter: false,
+        }
+    }
 }
 
 impl NetworkedBytes for PlayerKeyboard {
@@ -146,8 +160,10 @@ impl World {
                 GameInput::PlayerChooseRunway(_) => {
                     //
                 }
-                GameInput::PlayerKeyboard(keyboard) => {
-                    //
+                GameInput::PlayerKeyboard { name, keys } => {
+                    if let Some((_, p)) = self.get_player_from_name(&name) {
+                        p.set_keys(keys);
+                    }
                 }
             };
         }

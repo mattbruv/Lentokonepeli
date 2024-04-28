@@ -1,4 +1,7 @@
-use crate::network::{property::*, EntityProperties, NetworkedEntity};
+use crate::{
+    input::PlayerKeyboard,
+    network::{property::*, EntityProperties, NetworkedEntity},
+};
 use dogfight_macros::{EnumBytes, Networked};
 
 use super::types::Team;
@@ -18,6 +21,8 @@ pub struct Player {
     hits: i32,
     team_kills: i32,
 
+    keys: PlayerKeyboard,
+
     name: Property<String>,
     #[rustfmt::skip]
     clan: Property<Option::<String>>,
@@ -32,11 +37,16 @@ impl Player {
             shots: 0,
             hits: 0,
             team_kills: 0,
+            keys: PlayerKeyboard::new(),
             name: Property::new(name),
             clan: Property::new(None),
             team: Property::new(None),
             state: Property::new(PlayerState::ChoosingTeam),
         }
+    }
+
+    pub fn set_keys(&mut self, state: PlayerKeyboard) {
+        self.keys = state
     }
 
     pub fn get_name(&self) -> String {
