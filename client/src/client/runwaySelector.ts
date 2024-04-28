@@ -16,6 +16,7 @@ export class RunwaySelector {
 
     this.container.addChild(this.infoBox);
     this.container.addChild(this.planeImage);
+    this.container.visible = false;
   }
 
   public init(callbacks: GameClientCallbacks) {
