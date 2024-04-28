@@ -1,11 +1,11 @@
-import { Entity, EntityUpdateCallbacks } from "./entity";
+import { Entity, EntityUpdateCallbacks, Followable, Point } from "./entity";
 import * as PIXI from "pixi.js";
 import { Textures } from "../textures";
 import { Facing } from "dogfight-types/Facing";
 import { DrawLayer, TERRAIN_WATER_COLOR } from "../constants";
 import { RunwayProperties } from "dogfight-types/RunwayProperties";
 
-export class Runway implements Entity<RunwayProperties> {
+export class Runway implements Entity<RunwayProperties>, Followable {
   public props: RunwayProperties = {};
   private container: PIXI.Container;
   private runwaySprite: PIXI.Sprite;
@@ -49,6 +49,15 @@ export class Runway implements Entity<RunwayProperties> {
     this.container.addChild(this.runwaySprite);
 
     this.container.zIndex = DrawLayer.LAYER_11_LAYER_13;
+  }
+  public getCenter(): Point {
+    const halfWidth = this.runwaySprite.texture.width / 2;
+    const halfHeight = this.runwaySprite.texture.height / 2;
+
+    return {
+      x: (this.props.client_x ?? 0) - halfWidth,
+      y: (this.props.client_y ?? 0) - halfHeight,
+    };
   }
 
   public getContainer(): PIXI.Container {

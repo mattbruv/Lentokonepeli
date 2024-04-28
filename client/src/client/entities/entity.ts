@@ -4,6 +4,14 @@ export type EntityUpdateCallbacks<Source extends object> = {
   [Property in keyof Source]-?: () => void;
 };
 
+export type Point = {
+  x: number;
+  y: number;
+};
+export interface Followable {
+  getCenter: () => Point;
+}
+
 export type Entity<Props extends object> = {
   props: Props;
   updateCallbacks: EntityUpdateCallbacks<Props>;
