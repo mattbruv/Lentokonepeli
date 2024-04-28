@@ -45,8 +45,12 @@ impl Player {
         }
     }
 
-    pub fn set_keys(&mut self, state: PlayerKeyboard) {
-        self.keys = state
+    pub fn set_state(&mut self, state: PlayerState) {
+        self.state.set(state);
+    }
+
+    pub fn set_keys(&mut self, keys: PlayerKeyboard) {
+        self.keys = keys
     }
 
     pub fn get_name(&self) -> String {

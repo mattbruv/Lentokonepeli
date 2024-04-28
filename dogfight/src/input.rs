@@ -2,7 +2,12 @@ use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 use crate::{
-    entities::{plane::PlaneType, player::Player, types::Team, EntityId},
+    entities::{
+        plane::PlaneType,
+        player::{Player, PlayerState},
+        types::Team,
+        EntityId,
+    },
     network::encoding::NetworkedBytes,
     output::GameOutput,
     world::World,
@@ -157,8 +162,10 @@ impl World {
                         }
                     }
                 }
-                GameInput::PlayerChooseRunway(_) => {
-                    //
+                GameInput::PlayerChooseRunway(selection) => {
+                    if let Some((_, p)) = self.get_player_from_name(&selection.player_name) {
+                        p.set_state(PlayerState::Playing);
+                    }
                 }
                 GameInput::PlayerKeyboard { name, keys } => {
                     if let Some((_, p)) = self.get_player_from_name(&name) {
