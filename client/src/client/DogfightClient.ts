@@ -175,19 +175,17 @@ export class DogfightClient {
       );
       if (runways.length > 0) {
         const first = runways[0];
-        const { client_x, client_y } = first.props;
-        if (client_x !== undefined && client_y !== undefined) {
-          this.centerCamera(client_x, client_y);
-        }
-        console.log(first);
+        const center = first.getCenter();
+        this.centerCamera(center.x, center.y);
       }
-      console.log(runways);
     }
   }
 
   private centerCamera(x: number, y: number) {
     const hudHeight = this.gameHUD.container.height;
-    this.viewport.moveCenter(x, y + hudHeight);
+    y += hudHeight;
+    this.viewport.moveCenter(x, y);
+    console.log(x, y);
   }
 
   public handleGameEvents(events: GameOutput[]) {
