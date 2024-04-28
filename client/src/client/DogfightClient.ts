@@ -147,7 +147,13 @@ export class DogfightClient {
         break;
       }
       case "ChoosingRunway": {
-        console.log("runway change: ", keys.enter);
+        if (keys.enter && myPlayer.props.name) {
+          this.callbacks?.chooseRunway({
+            plane_type: "Albatros",
+            player_name: myPlayer.props.name,
+            runway_id: 0,
+          });
+        }
         break;
       }
     }
@@ -214,16 +220,22 @@ export class DogfightClient {
     const myPlayer = this.getMyPlayer();
     if (!myPlayer) return;
 
-    if (props.state === "ChoosingRunway") {
-      this.runwaySelector.container.visible = true;
-      const runways = [...this.runways.map.values()].filter(
-        (x) => x.props.team === myPlayer.props.team
-      );
-      if (runways.length > 0) {
-        const first = runways[0];
-        const center = first.getCenter();
-        // console.log(center, first);
-        this.centerCamera(center.x, center.y);
+    switch (props.state) {
+      case "ChoosingRunway": {
+        this.runwaySelector.container.visible = true;
+        const runways = [...this.runways.map.values()].filter(
+          (x) => x.props.team === myPlayer.props.team
+        );
+        if (runways.length > 0) {
+          const first = runways[0];
+          const center = first.getCenter();
+          // console.log(center, first);
+          this.centerCamera(center.x, center.y);
+        }
+        break;
+      }
+      case "Playing": {
+        this.runwaySelector.container.visible = false;
       }
     }
   }

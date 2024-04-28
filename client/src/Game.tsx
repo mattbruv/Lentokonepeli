@@ -41,7 +41,10 @@ export function Game() {
           console.log("playing keyboard change: ", keyboard);
           tick_input.push({
             type: "PlayerKeyboard",
-            data: keyboard,
+            data: {
+              name: player_name,
+              keys: keyboard,
+            },
           });
         },
       };
