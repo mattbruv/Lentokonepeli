@@ -22,10 +22,13 @@ import { PlayerProperties } from "dogfight-types/PlayerProperties";
 import { toPixiPoint } from "./helpers";
 import { RunwaySelection } from "dogfight-types/RunwaySelection";
 import { RunwaySelector } from "./runwaySelector";
+import { GameKeyboard } from "./keyboard";
+import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 
 export type GameClientCallbacks = {
   chooseTeam: (team: Team) => void;
   chooseRunway: (selection: RunwaySelection) => void;
+  keyChange: (keyboard: PlayerKeyboard) => void;
 };
 
 type EntityMap<T extends Entity<any>> = {
@@ -45,8 +48,7 @@ export class DogfightClient {
   private teamChooser: TeamChooser = new TeamChooser();
   private runwaySelector: RunwaySelector = new RunwaySelector();
   private gameHUD: GameHUD = new GameHUD();
-
-  private keysDown: Set<string> = new Set();
+  public keyboard: GameKeyboard = new GameKeyboard();
 
   private callbacks?: GameClientCallbacks;
 
@@ -140,6 +142,7 @@ export class DogfightClient {
     this.callbacks = callbacks;
     this.teamChooser.init(this.callbacks);
     this.runwaySelector.init(this.callbacks);
+    this.keyboard.init(this.callbacks.keyChange);
     this.gameHUD.init();
 
     const width = this.app.screen.width / 2;

@@ -6,6 +6,7 @@ import { GameClientCallbacks } from "./client/DogfightClient";
 import { Team } from "dogfight-types/Team";
 import { GameInput } from "dogfight-types/GameInput";
 import { RunwaySelection } from "dogfight-types/RunwaySelection";
+import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 
 export function Game() {
   const gameContainer = useRef<HTMLDivElement>(null);
@@ -36,16 +37,23 @@ export function Game() {
             },
           });
         },
+        keyChange: (keyboard: PlayerKeyboard): void => {
+          console.log(keyboard);
+          tick_input.push({
+            type: "PlayerKeyboard",
+            data: keyboard,
+          });
+        },
       };
 
       let tick_input: GameInput[] = [];
 
       dogfight.client.init(callbacks, gameContainer.current).then(() => {
         document.onkeydown = (event) => {
-          dogfight.client.onKeyDown(event.key);
+          dogfight.client.keyboard.onKeyDown(event.key);
         };
         document.onkeyup = (event) => {
-          dogfight.client.onKeyUp(event.key);
+          dogfight.client.keyboard.onKeyUp(event.key);
         };
 
         dogfight.game.load_level(Levels["classic"]);
