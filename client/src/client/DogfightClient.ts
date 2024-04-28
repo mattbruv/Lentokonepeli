@@ -171,20 +171,6 @@ export class DogfightClient {
     }
   }
 
-  public onKeyDown(key: string) {
-    const keyAlreadyPressed = this.keysDown.has(key);
-
-    if (!keyAlreadyPressed) {
-      this.keysDown.add(key);
-      console.log(this.keysDown);
-    }
-  }
-
-  public onKeyUp(key: string) {
-    this.keysDown.delete(key);
-    console.log(this.keysDown);
-  }
-
   private appendView(element: HTMLDivElement) {
     element?.appendChild(this.app.view);
   }
