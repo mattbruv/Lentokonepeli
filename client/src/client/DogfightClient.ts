@@ -114,6 +114,7 @@ export class DogfightClient {
 
     this.app.stage.addChild(this.viewport);
     this.app.stage.addChild(this.teamChooser.container);
+    this.app.stage.addChild(this.runwaySelector.container);
     this.app.stage.addChild(this.gameHUD.container);
 
     this.viewport.drag().pinch().wheel().decelerate();
@@ -155,6 +156,17 @@ export class DogfightClient {
       const y = this.app.screen.height - this.gameHUD.container.height;
       this.gameHUD.container.position.set(0, y);
     }
+
+    // set runway selector
+    {
+      const w = this.runwaySelector.container.width;
+      const h = this.runwaySelector.container.height;
+      const x = width - w / 2;
+      // idk why i have to divide hud height by 2, but thats what works
+      const y = height - h / 2 - this.gameHUD.container.height / 2;
+      console.log(w, h, x, y);
+      this.runwaySelector.container.position.set(x, y);
+    }
   }
 
   private appendView(element: HTMLDivElement) {
@@ -176,6 +188,7 @@ export class DogfightClient {
     if (!myPlayer) return;
 
     if (props.state === "ChoosingRunway") {
+      this.runwaySelector.container.visible = true;
       const runways = [...this.runways.map.values()].filter(
         (x) => x.props.team === myPlayer.props.team
       );
