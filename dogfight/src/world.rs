@@ -2,19 +2,9 @@ use std::vec;
 
 use crate::{
     entities::{
-        background_item::BackgroundItem,
-        bunker::Bunker,
-        coast::Coast,
-        container::EntityContainer,
-        ground::Ground,
-        man::Man,
-        plane::Plane,
-        player::Player,
-        runway::Runway,
-        types::{EntityType, Team},
-        water::Water,
-        world_info::WorldInfo,
-        EntityId,
+        background_item::BackgroundItem, bunker::Bunker, coast::Coast, container::EntityContainer,
+        ground::Ground, man::Man, plane::Plane, player::Player, runway::Runway, types::EntityType,
+        water::Water, world_info::WorldInfo, EntityId,
     },
     input::GameInput,
     output::GameOutput,

@@ -1,10 +1,10 @@
-use serde::{de::value::BoolDeserializer, Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 use crate::{
     entities::{plane::PlaneType, player::Player, types::Team, EntityId},
     network::encoding::NetworkedBytes,
-    output::{self, GameOutput},
+    output::GameOutput,
     world::World,
 };
 
@@ -40,11 +40,51 @@ pub struct PlayerKeyboard {
 
 impl NetworkedBytes for PlayerKeyboard {
     fn to_bytes(&self) -> Vec<u8> {
-        todo!()
+        let mut bytes = vec![];
+
+        let mut byte: u8 = 0;
+
+        if self.left {
+            byte |= 1 << 0;
+        }
+        if self.right {
+            byte |= 1 << 1;
+        }
+        if self.down {
+            byte |= 1 << 2;
+        }
+        if self.up {
+            byte |= 1 << 3;
+        }
+        if self.shift {
+            byte |= 1 << 4;
+        }
+        if self.space {
+            byte |= 1 << 5;
+        }
+        if self.enter {
+            byte |= 1 << 6;
+        }
+
+        bytes.push(byte);
+
+        bytes
     }
 
     fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        todo!()
+        let (slice, byte) = u8::from_bytes(bytes);
+
+        let keyboard: PlayerKeyboard = PlayerKeyboard {
+            left: byte & (1 << 0) != 0,
+            right: byte & (1 << 1) != 0,
+            down: byte & (1 << 2) != 0,
+            up: byte & (1 << 3) != 0,
+            shift: byte & (1 << 4) != 0,
+            space: byte & (1 << 5) != 0,
+            enter: byte & (1 << 6) != 0,
+        };
+
+        (slice, keyboard)
     }
 }
 
@@ -104,6 +144,9 @@ impl World {
                     }
                 }
                 GameInput::PlayerChooseRunway(_) => {
+                    //
+                }
+                GameInput::PlayerKeyboard(keyboard) => {
                     //
                 }
             };
