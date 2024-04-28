@@ -169,6 +169,16 @@ export class DogfightClient {
     }
   }
 
+  public onKeyDown(key: string) {
+    console.log("down:", key);
+    //
+  }
+
+  public onKeyUp(key: string) {
+    console.log("up:", key);
+    //
+  }
+
   private appendView(element: HTMLDivElement) {
     element?.appendChild(this.app.view);
   }
