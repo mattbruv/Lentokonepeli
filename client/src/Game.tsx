@@ -41,6 +41,13 @@ export function Game() {
       let tick_input: GameInput[] = [];
 
       dogfight.client.init(callbacks, gameContainer.current).then(() => {
+        document.onkeydown = (event) => {
+          dogfight.client.onKeyDown(event.key);
+        };
+        document.onkeyup = (event) => {
+          dogfight.client.onKeyUp(event.key);
+        };
+
         dogfight.game.load_level(Levels["classic"]);
         dogfight.game.init();
 
