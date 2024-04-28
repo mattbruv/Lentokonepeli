@@ -38,7 +38,6 @@ export function Game() {
           });
         },
         keyChange: (keyboard: PlayerKeyboard): void => {
-          console.log("playing keyboard change: ", keyboard);
           tick_input.push({
             type: "PlayerKeyboard",
             data: {

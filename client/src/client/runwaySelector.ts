@@ -1,8 +1,10 @@
 import * as PIXI from "pixi.js";
 import { Textures } from "./textures";
-import { GameClientCallbacks } from "./DogfightClient";
+import { EntityMap, GameClientCallbacks } from "./DogfightClient";
 import { PlaneType } from "dogfight-types/PlaneType";
 import { Team } from "dogfight-types/Team";
+import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
+import { Runway } from "./entities/runway";
 
 type PlaneData = {
   plane_type: PlaneType;
@@ -18,6 +20,8 @@ export class RunwaySelector {
   public planeImage: PIXI.Sprite;
 
   public planeMap: PlaneMap;
+  private team: Team = "Centrals";
+  private index = 0;
 
   constructor() {
     this.container = new PIXI.Container();
@@ -71,5 +75,20 @@ export class RunwaySelector {
     });
 
     this.planeImage.texture = Textures["pic_plane4.gif"];
+  }
+
+  setTeam(team: Team) {
+    this.team = team;
+  }
+
+  processKeys(keys: PlayerKeyboard) {
+    const map = this.planeMap[this.team];
+    if (keys.left || keys.down) {
+      this.index = this.index - 1 < 0 ? map.length - 1 : this.index - 1;
+    }
+    if (keys.right || keys.up) {
+      this.index = this.index + 1 >= map.length ? 0 : this.index + 1;
+    }
+    this.planeImage.texture = map[this.index].texture;
   }
 }
