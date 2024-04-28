@@ -41,7 +41,7 @@ export function Game() {
       let tick_input: GameInput[] = [];
 
       dogfight.client.init(callbacks, gameContainer.current).then(() => {
-        dogfight.game.load_level(Levels["africa"]);
+        dogfight.game.load_level(Levels["classic"]);
         dogfight.game.init();
 
         dogfight.client.setMyPlayerName(player_name);
