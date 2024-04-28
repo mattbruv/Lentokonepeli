@@ -64,6 +64,16 @@ impl World {
         game_output
     }
 
+    pub(crate) fn get_player_from_name(
+        &mut self,
+        name: &String,
+    ) -> Option<(&EntityId, &mut Player)> {
+        self.players
+            .get_map_mut()
+            .iter_mut()
+            .find(|(_, p)| p.get_name().eq(name))
+    }
+
     pub(crate) fn get_player_id_from_name(&self, name: &String) -> Option<EntityId> {
         let player = self
             .players
