@@ -15,12 +15,13 @@ import { Man } from "./entities/man";
 import { GameOutput } from "dogfight-types/GameOutput";
 import { Player } from "./entities/player";
 import { Team } from "dogfight-types/Team";
-import { TeamChooser } from "./team_chooser";
+import { TeamChooser } from "./teamChooser";
 import { GameHUD } from "./hud";
 import { Entity, updateProps } from "./entities/entity";
 import { PlayerProperties } from "dogfight-types/PlayerProperties";
 import { toPixiPoint } from "./helpers";
 import { RunwaySelection } from "dogfight-types/RunwaySelection";
+import { RunwaySelector } from "./runwaySelector";
 
 export type GameClientCallbacks = {
   chooseTeam: (team: Team) => void;
@@ -42,6 +43,7 @@ export class DogfightClient {
   private myPlayerName: string | null = null;
 
   private teamChooser: TeamChooser = new TeamChooser();
+  private runwaySelector: RunwaySelector = new RunwaySelector();
   private gameHUD: GameHUD = new GameHUD();
 
   private callbacks?: GameClientCallbacks;
@@ -134,6 +136,7 @@ export class DogfightClient {
     this.appendView(element);
     this.callbacks = callbacks;
     this.teamChooser.init(this.callbacks);
+    this.runwaySelector.init(this.callbacks);
     this.gameHUD.init();
 
     const width = this.app.screen.width / 2;
