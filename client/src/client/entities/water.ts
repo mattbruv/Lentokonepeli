@@ -30,7 +30,7 @@ export class Water implements Entity<WaterProperties> {
     this.container.addChild(this.waterGraphics);
     this.container.addChild(this.waves);
 
-    this.container.zIndex = DrawLayer.LAYER_11;
+    this.container.zIndex = DrawLayer.Water;
   }
 
   public updateCallbacks: EntityUpdateCallbacks<WaterProperties> = {

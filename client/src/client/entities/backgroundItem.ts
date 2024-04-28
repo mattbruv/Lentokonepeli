@@ -55,7 +55,7 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
 
     this.container.addChild(this.itemSprite);
 
-    this.container.zIndex = DrawLayer.LAYER_15;
+    this.container.zIndex = DrawLayer.Flag;
   }
 
   public getContainer(): PIXI.Container {

@@ -21,7 +21,7 @@ export class Ground implements Entity<GroundProperties> {
     this.container.addChild(this.water);
     this.container.addChild(this.groundSprite);
 
-    this.container.zIndex = DrawLayer.LAYER_14;
+    this.container.zIndex = DrawLayer.Ground;
   }
 
   public getContainer(): PIXI.Container {

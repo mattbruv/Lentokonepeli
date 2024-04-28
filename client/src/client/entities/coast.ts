@@ -27,7 +27,7 @@ export class Coast implements Entity<CoastProperties> {
 
     this.container.addChild(this.water);
     this.container.addChild(this.coastSprite);
-    this.container.zIndex = DrawLayer.LAYER_10;
+    this.container.zIndex = DrawLayer.Ground;
   }
 
   public getContainer(): PIXI.Container {
