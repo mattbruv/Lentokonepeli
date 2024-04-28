@@ -236,6 +236,7 @@ export class DogfightClient {
       }
       case "Playing": {
         this.runwaySelector.container.visible = false;
+        break;
       }
     }
   }
