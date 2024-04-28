@@ -31,7 +31,7 @@ export type GameClientCallbacks = {
   keyChange: (keyboard: PlayerKeyboard) => void;
 };
 
-type EntityMap<T extends Entity<any>> = {
+export type EntityMap<T extends Entity<any>> = {
   new_type: () => T;
   map: Map<number, T>;
 };
@@ -153,6 +153,10 @@ export class DogfightClient {
             player_name: myPlayer.props.name,
             runway_id: 0,
           });
+        } else {
+          if (myPlayer.props.team) {
+            this.runwaySelector.processKeys(keys);
+          }
         }
         break;
       }
@@ -219,6 +223,10 @@ export class DogfightClient {
   private onMyPlayerUpdate(props: PlayerProperties) {
     const myPlayer = this.getMyPlayer();
     if (!myPlayer) return;
+
+    if (props.team) {
+      this.runwaySelector.setTeam(props.team);
+    }
 
     switch (props.state) {
       case "ChoosingRunway": {
