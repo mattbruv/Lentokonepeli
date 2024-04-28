@@ -136,13 +136,25 @@ export class DogfightClient {
     }
   }
 
+  // Handle key events and dispatch the proper callback calls
+  // based on our current player's state
+  private onKeyChange(keyboard: PlayerKeyboard) {
+    const myPlayer = this.getMyPlayer();
+    if (!myPlayer) return;
+    switch (myPlayer.props.state) {
+      case "Playing": {
+        this.callbacks?.keyChange(keyboard);
+      }
+    }
+  }
+
   public async init(callbacks: GameClientCallbacks, element: HTMLDivElement) {
     await loadTextures();
     this.appendView(element);
     this.callbacks = callbacks;
     this.teamChooser.init(this.callbacks);
     this.runwaySelector.init(this.callbacks);
-    this.keyboard.init(this.callbacks.keyChange);
+    this.keyboard.init((keyboard) => this.onKeyChange(keyboard));
     this.gameHUD.init();
 
     const width = this.app.screen.width / 2;
@@ -187,9 +199,15 @@ export class DogfightClient {
     this.gameHUD.setTeam(team);
   }
 
-  private onMyPlayerUpdate(props: PlayerProperties) {
-    if (this.myPlayerId === null) return;
+  private getMyPlayer(): Player | undefined {
+    if (this.myPlayerId === null) return undefined;
     const myPlayer = this.players.map.get(this.myPlayerId);
+    return myPlayer;
+  }
+
+  private onMyPlayerUpdate(props: PlayerProperties) {
+    console.log(props);
+    const myPlayer = this.getMyPlayer();
     if (!myPlayer) return;
 
     if (props.state === "ChoosingRunway") {
