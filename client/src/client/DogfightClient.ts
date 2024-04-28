@@ -176,6 +176,7 @@ export class DogfightClient {
       if (runways.length > 0) {
         const first = runways[0];
         const center = first.getCenter();
+        console.log(center, first);
         this.centerCamera(center.x, center.y);
       }
     }
