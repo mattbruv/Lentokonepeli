@@ -164,7 +164,7 @@ export class DogfightClient {
       const x = width - w / 2;
       // idk why i have to divide hud height by 2, but thats what works
       const y = height - h / 2 - this.gameHUD.container.height / 2;
-      console.log(w, h, x, y);
+      //console.log(w, h, x, y);
       this.runwaySelector.container.position.set(x, y);
     }
   }
@@ -195,7 +195,7 @@ export class DogfightClient {
       if (runways.length > 0) {
         const first = runways[0];
         const center = first.getCenter();
-        console.log(center, first);
+        // console.log(center, first);
         this.centerCamera(center.x, center.y);
       }
     }
@@ -206,7 +206,7 @@ export class DogfightClient {
    * Coordinates must be in game world space.
    */
   private centerCamera(x: number, y: number): void {
-    console.log(x, y);
+    // console.log(x, y);
     let canvasHeight = this.app.screen.height;
     // account for HUD height
     //if (this.gameHUD.isEnabled()) {
@@ -217,7 +217,7 @@ export class DogfightClient {
     const pos = toPixiPoint({ x: -x, y: -y });
     pos.x += Math.round(canvasWidth / 2);
     pos.y += Math.round(canvasHeight / 2);
-    console.log(pos.x, pos.y);
+    // console.log(pos.x, pos.y);
     this.viewport.moveCenter(pos.x, pos.y);
   }
 
