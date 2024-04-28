@@ -1,6 +1,18 @@
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 
-export class Keyboard {
+const keyMap: Record<string, keyof PlayerKeyboard> = {
+  ArrowLeft: "left",
+  ArrowRight: "right",
+  ArrowDown: "down",
+  ArrowUp: "up",
+  " ": "space",
+  Enter: "enter",
+  Shift: "shift",
+};
+
+type keyboardChangeCallback = (keyboard: PlayerKeyboard) => void;
+
+export class GameKeyboard {
   private keyboard: PlayerKeyboard = {
     left: false,
     right: false,
@@ -11,17 +23,33 @@ export class Keyboard {
     enter: false,
   };
 
-  public onKeyDown(key: string) {
-    const keyAlreadyPressed = this.keysDown.has(key);
+  private onKeyChange?: keyboardChangeCallback;
+
+  public init(callback: keyboardChangeCallback) {
+    this.onKeyChange = callback;
+  }
+
+  public onKeyDown(keyString: string) {
+    const inMap = keyString in keyMap;
+    if (!inMap) return;
+    const key = keyMap[keyString];
+    const keyAlreadyPressed = this.keyboard[key];
 
     if (!keyAlreadyPressed) {
-      this.keysDown.add(key);
-      console.log(this.keysDown);
+      this.keyboard[key] = true;
+      if (this.onKeyChange) {
+        this.onKeyChange(structuredClone(this.keyboard));
+      }
     }
   }
 
-  public onKeyUp(key: string) {
-    this.keysDown.delete(key);
-    console.log(this.keysDown);
+  public onKeyUp(keyString: string) {
+    const inMap = keyString in keyMap;
+    if (!inMap) return;
+    const key = keyMap[keyString];
+    this.keyboard[key] = false;
+    if (this.onKeyChange) {
+      this.onKeyChange(structuredClone(this.keyboard));
+    }
   }
 }
