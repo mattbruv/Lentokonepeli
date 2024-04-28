@@ -16,7 +16,7 @@ export class Bunker implements Entity<BunkerProperties> {
 
     this.container.addChild(this.bunker);
 
-    this.container.zIndex = DrawLayer.LAYER_09;
+    this.container.zIndex = DrawLayer.Bunker;
   }
 
   public getContainer(): PIXI.Container {

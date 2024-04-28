@@ -23,7 +23,7 @@ export class Man implements Entity<ManProperties> {
 
     this.container.addChild(this.manSprite);
 
-    this.container.zIndex = DrawLayer.LAYER_10_LAYER_12;
+    this.container.zIndex = DrawLayer.Man;
   }
 
   public callbackOrder: (keyof ManProperties)[] = ["client_x", "client_y"];

@@ -48,7 +48,7 @@ export class Runway implements Entity<RunwayProperties>, Followable {
     this.container.addChild(this.runwayBack);
     this.container.addChild(this.runwaySprite);
 
-    this.container.zIndex = DrawLayer.LAYER_11_LAYER_13;
+    this.container.zIndex = DrawLayer.Runway;
   }
   public getCenter(): Point {
     const halfWidth = this.runwaySprite.texture.width / 2;
