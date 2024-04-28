@@ -138,12 +138,17 @@ export class DogfightClient {
 
   // Handle key events and dispatch the proper callback calls
   // based on our current player's state
-  private onKeyChange(keyboard: PlayerKeyboard) {
+  private onKeyChange(keys: PlayerKeyboard) {
     const myPlayer = this.getMyPlayer();
     if (!myPlayer) return;
     switch (myPlayer.props.state) {
       case "Playing": {
-        this.callbacks?.keyChange(keyboard);
+        this.callbacks?.keyChange(keys);
+        break;
+      }
+      case "ChoosingRunway": {
+        console.log("runway change: ", keys.enter);
+        break;
       }
     }
   }
@@ -206,7 +211,6 @@ export class DogfightClient {
   }
 
   private onMyPlayerUpdate(props: PlayerProperties) {
-    console.log(props);
     const myPlayer = this.getMyPlayer();
     if (!myPlayer) return;
 
