@@ -19,6 +19,7 @@ import { TeamChooser } from "./team_chooser";
 import { GameHUD } from "./hud";
 import { Entity, updateProps } from "./entities/entity";
 import { PlayerProperties } from "dogfight-types/PlayerProperties";
+import { toPixiPoint } from "./helpers";
 
 export type GameClientCallbacks = {
   chooseTeam: (team: Team) => void;
@@ -182,11 +183,24 @@ export class DogfightClient {
     }
   }
 
-  private centerCamera(x: number, y: number) {
-    const hudHeight = this.gameHUD.container.height;
-    y += hudHeight;
-    this.viewport.moveCenter(x, y);
+  /**
+   * Center the camera view on a specific (x, y) location
+   * Coordinates must be in game world space.
+   */
+  private centerCamera(x: number, y: number): void {
     console.log(x, y);
+    let canvasHeight = this.app.screen.height;
+    // account for HUD height
+    //if (this.gameHUD.isEnabled()) {
+    canvasHeight -= this.gameHUD.container.height;
+    // this.HUD.radar.centerCamera(x, y);
+    //}
+    const canvasWidth = this.app.screen.width;
+    const pos = toPixiPoint({ x: -x, y: -y });
+    pos.x += Math.round(canvasWidth / 2);
+    pos.y += Math.round(canvasHeight / 2);
+    console.log(pos.x, pos.y);
+    this.viewport.moveCenter(pos.x, pos.y);
   }
 
   public handleGameEvents(events: GameOutput[]) {
