@@ -68,8 +68,8 @@ export class DogfightClient {
     map: new Map(),
   };
 
-  private runways: EntityMap<BackgroundItem> = {
-    new_type: () => new BackgroundItem(),
+  private runways: EntityMap<Runway> = {
+    new_type: () => new Runway(),
     map: new Map(),
   };
 
@@ -165,10 +165,29 @@ export class DogfightClient {
   }
 
   private onMyPlayerUpdate(props: PlayerProperties) {
-    console.log("update me!", props);
-    if (props.state) {
-      console.log("STATE: update ", props.state);
+    if (this.myPlayerId === null) return;
+    const myPlayer = this.players.map.get(this.myPlayerId);
+    if (!myPlayer) return;
+
+    if (props.state === "ChoosingRunway") {
+      const runways = [...this.runways.map.values()].filter(
+        (x) => x.props.team === myPlayer.props.team
+      );
+      if (runways.length > 0) {
+        const first = runways[0];
+        const { client_x, client_y } = first.props;
+        if (client_x !== undefined && client_y !== undefined) {
+          this.centerCamera(client_x, client_y);
+        }
+        console.log(first);
+      }
+      console.log(runways);
     }
+  }
+
+  private centerCamera(x: number, y: number) {
+    const hudHeight = this.gameHUD.container.height;
+    this.viewport.moveCenter(x, y + hudHeight);
   }
 
   public handleGameEvents(events: GameOutput[]) {
