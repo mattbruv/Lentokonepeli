@@ -46,6 +46,8 @@ export class DogfightClient {
   private runwaySelector: RunwaySelector = new RunwaySelector();
   private gameHUD: GameHUD = new GameHUD();
 
+  private keysDown: Set<string> = new Set();
+
   private callbacks?: GameClientCallbacks;
 
   private players: EntityMap<Player> = {
@@ -170,13 +172,17 @@ export class DogfightClient {
   }
 
   public onKeyDown(key: string) {
-    console.log("down:", key);
-    //
+    const keyAlreadyPressed = this.keysDown.has(key);
+
+    if (!keyAlreadyPressed) {
+      this.keysDown.add(key);
+      console.log(this.keysDown);
+    }
   }
 
   public onKeyUp(key: string) {
-    console.log("up:", key);
-    //
+    this.keysDown.delete(key);
+    console.log(this.keysDown);
   }
 
   private appendView(element: HTMLDivElement) {
