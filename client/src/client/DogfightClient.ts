@@ -223,6 +223,7 @@ export class DogfightClient {
   }
 
   private onMyPlayerUpdate(props: PlayerProperties) {
+    console.log(props);
     const myPlayer = this.getMyPlayer();
     if (!myPlayer) return;
 
@@ -334,6 +335,18 @@ export class DogfightClient {
 
     if (entity) {
       updateProps(entity, data.props);
+
+      const me = this.getMyPlayer();
+      if (me) {
+        if (me.props.controlling) {
+          if (
+            id === me.props.controlling.id &&
+            data.type === me.props.controlling.entity_type
+          ) {
+            console.log("TODO: center camera on ", data);
+          }
+        }
+      }
 
       if (data.type === "Player") {
         const name = data.props.name;

@@ -167,7 +167,7 @@ impl World {
                     if let Some(runway) = self.runways.get(selection.runway_id) {
                         let team = *runway.get_team();
                         let client_x = runway.get_client_x();
-                        let client_y = runway.get_client_y();
+                        let client_y = runway.get_client_y() - 200;
 
                         let mut man = Man::new(team);
                         man.set_client_x(client_x);
