@@ -3,7 +3,7 @@ use dogfight_macros::EnumBytes;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
-#[derive(Serialize, Clone, Copy, Debug, TS, EnumBytes)]
+#[derive(Serialize, Clone, Copy, Debug, TS, PartialEq, Eq, EnumBytes)]
 #[ts(export)]
 pub enum EntityType {
     WorldInfo,

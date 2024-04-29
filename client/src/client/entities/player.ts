@@ -16,6 +16,7 @@ export class Player implements Entity<PlayerProperties> {
     name: () => {},
     clan: () => {},
     state: () => {},
+    controlling: () => {},
   };
 
   public destroy() {}
