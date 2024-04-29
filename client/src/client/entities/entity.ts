@@ -12,6 +12,10 @@ export interface Followable {
   getCenter: () => Point;
 }
 
+export function isFollowable(object: any): object is Followable {
+  return "getCenter" in object;
+}
+
 export type Entity<Props extends object> = {
   props: Props;
   updateCallbacks: EntityUpdateCallbacks<Props>;

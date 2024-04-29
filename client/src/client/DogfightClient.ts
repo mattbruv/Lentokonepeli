@@ -17,7 +17,7 @@ import { Player } from "./entities/player";
 import { Team } from "dogfight-types/Team";
 import { TeamChooser } from "./teamChooser";
 import { GameHUD } from "./hud";
-import { Entity, updateProps } from "./entities/entity";
+import { Entity, isFollowable, updateProps } from "./entities/entity";
 import { PlayerProperties } from "dogfight-types/PlayerProperties";
 import { toPixiPoint } from "./helpers";
 import { RunwaySelection } from "dogfight-types/RunwaySelection";
@@ -343,7 +343,11 @@ export class DogfightClient {
             id === me.props.controlling.id &&
             data.type === me.props.controlling.entity_type
           ) {
-            console.log("TODO: center camera on ", data);
+            if (isFollowable(entity)) {
+              console.log("followable!");
+              const pos = entity.getCenter();
+              this.centerCamera(pos.x, pos.y);
+            }
           }
         }
       }
