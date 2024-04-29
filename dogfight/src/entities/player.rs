@@ -25,6 +25,12 @@ pub struct ControllingEntity {
     entity_type: EntityType,
 }
 
+impl ControllingEntity {
+    pub fn new(id: EntityId, entity_type: EntityType) -> Self {
+        Self { id, entity_type }
+    }
+}
+
 impl NetworkedBytes for ControllingEntity {
     fn to_bytes(&self) -> Vec<u8> {
         let mut bytes = vec![];
@@ -76,6 +82,10 @@ impl Player {
 
     pub fn set_state(&mut self, state: PlayerState) {
         self.state.set(state);
+    }
+
+    pub fn set_controlling(&mut self, controlling: Option<ControllingEntity>) {
+        self.controlling.set(controlling);
     }
 
     pub fn set_keys(&mut self, keys: PlayerKeyboard) {

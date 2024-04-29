@@ -21,4 +21,16 @@ impl Runway {
             client_y: Property::new(y),
         }
     }
+
+    pub fn get_team(&self) -> &Team {
+        self.team.get()
+    }
+
+    pub fn get_client_x(&self) -> i16 {
+        *self.client_x.get()
+    }
+
+    pub fn get_client_y(&self) -> i16 {
+        *self.client_y.get()
+    }
 }

@@ -1,4 +1,4 @@
-use std::vec;
+use std::{any::Any, vec};
 
 use crate::{
     entities::{
@@ -6,7 +6,7 @@ use crate::{
         ground::Ground, man::Man, plane::Plane, player::Player, runway::Runway, types::EntityType,
         water::Water, world_info::WorldInfo, EntityId,
     },
-    input::GameInput,
+    input::{GameInput, RunwaySelection},
     output::GameOutput,
 };
 
@@ -85,5 +85,9 @@ impl World {
             return Some(*id);
         }
         None
+    }
+
+    pub(crate) fn test_runway(&mut self, p: &mut Player, selection: RunwaySelection) {
+        let runway = self.runways.get_mut(selection.runway_id);
     }
 }
