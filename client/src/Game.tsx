@@ -7,6 +7,7 @@ import { Team } from "dogfight-types/Team";
 import { GameInput } from "dogfight-types/GameInput";
 import { RunwaySelection } from "dogfight-types/RunwaySelection";
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
+import { PlaneType } from "dogfight-types/PlaneType";
 
 export function Game() {
   const gameContainer = useRef<HTMLDivElement>(null);
@@ -27,13 +28,13 @@ export function Game() {
             },
           });
         },
-        chooseRunway: (selection: RunwaySelection): void => {
+        chooseRunway: (runwayId: number, planeType: PlaneType): void => {
           tick_input.push({
             type: "PlayerChooseRunway",
             data: {
-              player_name: selection.player_name,
-              plane_type: selection.plane_type,
-              runway_id: selection.runway_id,
+              player_name,
+              plane_type: planeType,
+              runway_id: runwayId,
             },
           });
         },

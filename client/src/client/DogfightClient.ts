@@ -24,10 +24,11 @@ import { RunwaySelection } from "dogfight-types/RunwaySelection";
 import { RunwaySelector } from "./runwaySelector";
 import { GameKeyboard } from "./keyboard";
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
+import { PlaneType } from "dogfight-types/PlaneType";
 
 export type GameClientCallbacks = {
   chooseTeam: (team: Team) => void;
-  chooseRunway: (selection: RunwaySelection) => void;
+  chooseRunway: (runwayId: number, planeType: PlaneType) => void;
   keyChange: (keyboard: PlayerKeyboard) => void;
 };
 
@@ -155,11 +156,7 @@ export class DogfightClient {
               this.centerCamera(runwayPos.x, runwayPos.y);
             },
             (runwayId, planeType) => {
-              this.callbacks?.chooseRunway({
-                plane_type: planeType,
-                player_name: myPlayer.props.name ?? "",
-                runway_id: runwayId,
-              });
+              this.callbacks?.chooseRunway(runwayId, planeType);
             }
           );
         }
