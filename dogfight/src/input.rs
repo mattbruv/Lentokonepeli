@@ -3,9 +3,10 @@ use ts_rs::TS;
 
 use crate::{
     entities::{
+        man::Man,
         plane::PlaneType,
-        player::{Player, PlayerState},
-        types::Team,
+        player::{self, ControllingEntity, Player, PlayerState},
+        types::{EntityType, Team},
         EntityId,
     },
     network::encoding::NetworkedBytes,
@@ -131,7 +132,7 @@ impl World {
                 GameInput::AddPlayer { name } => {
                     // Add the player if not already exists
                     if let None = self.get_player_id_from_name(&name) {
-                        if let Some(p) = self.players.insert(Player::new(name)) {
+                        if let Some((_, p)) = self.players.insert(Player::new(name)) {
                             game_output.push(GameOutput::PlayerJoin(p.get_name()));
                         }
                     }
@@ -163,8 +164,26 @@ impl World {
                     }
                 }
                 GameInput::PlayerChooseRunway(selection) => {
-                    if let Some((_, p)) = self.get_player_from_name(&selection.player_name) {
-                        p.set_state(PlayerState::Playing);
+                    if let Some(runway) = self.runways.get(selection.runway_id) {
+                        let team = *runway.get_team();
+                        let client_x = runway.get_client_x();
+                        let client_y = runway.get_client_y();
+
+                        let mut man = Man::new(team);
+                        man.set_client_x(client_x);
+                        man.set_client_y(client_y);
+
+                        if let Some((man_id, _)) = self.men.insert(man) {
+                            if let Some((_, player)) =
+                                self.get_player_from_name(&selection.player_name)
+                            {
+                                player.set_state(PlayerState::Playing);
+                                player.set_controlling(Some(ControllingEntity::new(
+                                    man_id,
+                                    EntityType::Man,
+                                )))
+                            }
+                        }
                     }
                 }
                 GameInput::PlayerKeyboard { name, keys } => {
