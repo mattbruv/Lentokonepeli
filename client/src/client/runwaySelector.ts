@@ -79,14 +79,15 @@ export class RunwaySelector {
 
   setTeam(team: Team) {
     this.team = team;
+    this.planeImage.texture = this.planeMap[this.team][this.index].texture;
   }
 
   processKeys(keys: PlayerKeyboard) {
     const map = this.planeMap[this.team];
-    if (keys.left || keys.down) {
+    if (keys.down) {
       this.index = this.index - 1 < 0 ? map.length - 1 : this.index - 1;
     }
-    if (keys.right || keys.up) {
+    if (keys.up) {
       this.index = this.index + 1 >= map.length ? 0 : this.index + 1;
     }
     this.planeImage.texture = map[this.index].texture;
