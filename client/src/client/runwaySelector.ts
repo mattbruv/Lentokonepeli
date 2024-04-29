@@ -1,10 +1,15 @@
 import * as PIXI from "pixi.js";
 import { Textures } from "./textures";
-import { EntityMap, GameClientCallbacks } from "./DogfightClient";
+import {
+  DogfightClient,
+  EntityMap,
+  GameClientCallbacks,
+} from "./DogfightClient";
 import { PlaneType } from "dogfight-types/PlaneType";
 import { Team } from "dogfight-types/Team";
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 import { Runway } from "./entities/runway";
+import { Point } from "./entities/entity";
 
 type PlaneData = {
   plane_type: PlaneType;
@@ -22,6 +27,9 @@ export class RunwaySelector {
   public planeMap: PlaneMap;
   private team: Team = "Centrals";
   private index = 0;
+  private runwayIndex = 0;
+
+  callbacks?: GameClientCallbacks;
 
   constructor() {
     this.container = new PIXI.Container();
@@ -42,6 +50,7 @@ export class RunwaySelector {
   }
 
   public init(callbacks: GameClientCallbacks) {
+    this.callbacks = callbacks;
     this.infoBox.texture = Textures["selectionScreen.gif"];
 
     this.planeMap.Centrals.push({
@@ -82,14 +91,53 @@ export class RunwaySelector {
     this.planeImage.texture = this.planeMap[this.team][this.index].texture;
   }
 
-  processKeys(keys: PlayerKeyboard) {
+  processKeys(
+    keys: PlayerKeyboard,
+    runways: EntityMap<Runway>,
+    centerCamera: (runwayPos: Point) => void
+  ) {
     const map = this.planeMap[this.team];
+
     if (keys.down) {
       this.index = this.index - 1 < 0 ? map.length - 1 : this.index - 1;
     }
+
     if (keys.up) {
       this.index = this.index + 1 >= map.length ? 0 : this.index + 1;
     }
+
     this.planeImage.texture = map[this.index].texture;
+
+    const myRunways = this.getMyRunways(runways);
+
+    if (keys.left) {
+      this.runwayIndex =
+        this.runwayIndex - 1 < 0 ? myRunways.length - 1 : this.runwayIndex - 1;
+    }
+
+    if (keys.right) {
+      this.runwayIndex =
+        this.runwayIndex + 1 >= myRunways.length ? 0 : this.runwayIndex + 1;
+    }
+
+    this.selectRunway(runways, centerCamera);
+  }
+
+  public selectRunway(
+    runways: EntityMap<Runway>,
+    centerCamera: (runwayPos: Point) => void
+  ) {
+    const myRunways = this.getMyRunways(runways);
+    const pos = myRunways[this.runwayIndex][1].getCenter();
+    centerCamera(pos);
+  }
+
+  private getMyRunways(runways: EntityMap<Runway>): [number, Runway][] {
+    return [...runways.map.entries()]
+      .filter(
+        ([_, runway]) => runway.props.team === this.team
+        // TODO: health
+      )
+      .sort((a, b) => (a[1].props.client_x ?? 0) - (b[1].props.client_x ?? 0));
   }
 }
