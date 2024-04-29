@@ -60,7 +60,7 @@ export class Ground implements Entity<GroundProperties> {
       this.water.beginFill(color);
       this.water.drawRect(
         0,
-        0 + this.groundSprite.height,
+        0 + this.groundSprite.height - 2,
         this.groundSprite.width,
         5000
       );

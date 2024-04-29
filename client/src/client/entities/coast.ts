@@ -81,7 +81,7 @@ export class Coast implements Entity<CoastProperties> {
 
     this.water.drawRect(
       0,
-      this.coastSprite.height,
+      this.coastSprite.height - 2,
       this.coastSprite.width,
       5000
     );
