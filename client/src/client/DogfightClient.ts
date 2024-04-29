@@ -155,7 +155,9 @@ export class DogfightClient {
           });
         } else {
           if (myPlayer.props.team) {
-            this.runwaySelector.processKeys(keys);
+            this.runwaySelector.processKeys(keys, this.runways, (runwayPos) => {
+              this.centerCamera(runwayPos.x, runwayPos.y);
+            });
           }
         }
         break;
@@ -231,15 +233,9 @@ export class DogfightClient {
     switch (props.state) {
       case "ChoosingRunway": {
         this.runwaySelector.container.visible = true;
-        const runways = [...this.runways.map.values()].filter(
-          (x) => x.props.team === myPlayer.props.team
-        );
-        if (runways.length > 0) {
-          const first = runways[0];
-          const center = first.getCenter();
-          // console.log(center, first);
-          this.centerCamera(center.x, center.y);
-        }
+        this.runwaySelector.selectRunway(this.runways, (runwayPos) => {
+          this.centerCamera(runwayPos.x, runwayPos.y);
+        });
         break;
       }
       case "Playing": {
