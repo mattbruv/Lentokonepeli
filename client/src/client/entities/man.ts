@@ -1,11 +1,11 @@
-import { Entity, EntityUpdateCallbacks } from "./entity";
+import { Entity, EntityUpdateCallbacks, Followable, Point } from "./entity";
 import * as PIXI from "pixi.js";
 import { Textures } from "../textures";
 import { DrawLayer } from "../constants";
 import { Team } from "dogfight-types/Team";
 import { ManProperties } from "dogfight-types/ManProperties";
 
-export class Man implements Entity<ManProperties> {
+export class Man implements Entity<ManProperties>, Followable {
   public props: ManProperties = {};
   private container: PIXI.Container;
   private manSprite: PIXI.Sprite;
@@ -37,6 +37,12 @@ export class Man implements Entity<ManProperties> {
 
   public getContainer(): PIXI.Container {
     return this.container;
+  }
+  public getCenter(): Point {
+    return {
+      x: this.props.client_x ?? 0,
+      y: this.props.client_y ?? 0,
+    };
   }
 
   public destroy() {}
