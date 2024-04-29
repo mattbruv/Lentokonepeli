@@ -10,6 +10,7 @@ import { Team } from "dogfight-types/Team";
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 import { Runway } from "./entities/runway";
 import { Point } from "./entities/entity";
+import { Player } from "./entities/player";
 
 type PlaneData = {
   plane_type: PlaneType;
@@ -94,7 +95,8 @@ export class RunwaySelector {
   processKeys(
     keys: PlayerKeyboard,
     runways: EntityMap<Runway>,
-    centerCamera: (runwayPos: Point) => void
+    centerCamera: (runwayPos: Point) => void,
+    selectRunway: (runwayId: number, plane: PlaneType) => void
   ) {
     const map = this.planeMap[this.team];
 
@@ -121,6 +123,12 @@ export class RunwaySelector {
     }
 
     this.selectRunway(runways, centerCamera);
+
+    if (keys.enter) {
+      const planeType = map[this.index].plane_type;
+      const runwayId = myRunways[this.runwayIndex][0];
+      selectRunway(runwayId, planeType);
+    }
   }
 
   public selectRunway(

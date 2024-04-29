@@ -147,18 +147,21 @@ export class DogfightClient {
         break;
       }
       case "ChoosingRunway": {
-        if (keys.enter && myPlayer.props.name) {
-          this.callbacks?.chooseRunway({
-            plane_type: "Albatros",
-            player_name: myPlayer.props.name,
-            runway_id: 0,
-          });
-        } else {
-          if (myPlayer.props.team) {
-            this.runwaySelector.processKeys(keys, this.runways, (runwayPos) => {
+        if (myPlayer.props.team) {
+          this.runwaySelector.processKeys(
+            keys,
+            this.runways,
+            (runwayPos) => {
               this.centerCamera(runwayPos.x, runwayPos.y);
-            });
-          }
+            },
+            (runwayId, planeType) => {
+              this.callbacks?.chooseRunway({
+                plane_type: planeType,
+                player_name: myPlayer.props.name ?? "",
+                runway_id: runwayId,
+              });
+            }
+          );
         }
         break;
       }
