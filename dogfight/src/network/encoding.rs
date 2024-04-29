@@ -305,9 +305,10 @@ impl World {
     pub fn get_full_state(&self) -> Vec<EntityChange> {
         let mut state = vec![];
         state.push(self.world_info.get_all_full_state());
+        // player state should be serialized first
+        state.extend(self.players.get_all_full_state());
         state.extend(self.men.get_all_full_state());
         state.extend(self.planes.get_all_full_state());
-        state.extend(self.players.get_all_full_state());
         state.extend(self.background_items.get_all_full_state());
         state.extend(self.grounds.get_all_full_state());
         state.extend(self.coasts.get_all_full_state());
@@ -324,9 +325,10 @@ impl World {
             state.push(self.world_info.get_all_changed_state());
         }
 
+        // player state should be serialized first
+        state.extend(self.players.get_all_changed_state());
         state.extend(self.men.get_all_changed_state());
         state.extend(self.planes.get_all_changed_state());
-        state.extend(self.players.get_all_changed_state());
         state.extend(self.background_items.get_all_changed_state());
         state.extend(self.grounds.get_all_changed_state());
         state.extend(self.coasts.get_all_changed_state());
