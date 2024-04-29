@@ -259,7 +259,7 @@ export class DogfightClient {
     // this.HUD.radar.centerCamera(x, y);
     //}
     const canvasWidth = this.app.screen.width;
-    const pos = toPixiPoint({ x: -x, y: -y });
+    const pos = toPixiPoint({ x: x, y: -y });
     pos.x += Math.round(canvasWidth / 2);
     pos.y += Math.round(canvasHeight / 2);
     // console.log(pos.x, pos.y);

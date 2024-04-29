@@ -53,6 +53,9 @@ impl World {
         game_output.extend(input_events);
 
         // main game update logic
+        self.men.get_map_mut().iter_mut().for_each(|(_, man)| {
+            man.set_client_x(man.get_client_x() + 1) //
+        });
 
         // return the changed state
         let updated_state = self.get_changed_state();
