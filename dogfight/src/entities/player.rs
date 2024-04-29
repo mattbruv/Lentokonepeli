@@ -4,7 +4,10 @@ use crate::{
 };
 use dogfight_macros::{EnumBytes, Networked};
 
-use super::types::Team;
+use super::{
+    types::{EntityType, Team},
+    EntityId,
+};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS, EnumBytes)]
 #[ts(export)]
@@ -13,6 +16,29 @@ pub enum PlayerState {
     ChoosingRunway,
     WaitingRespawn,
     Playing,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS)]
+#[ts(export)]
+pub struct ControllingEntity {
+    id: EntityId,
+    entity_type: EntityType,
+}
+
+impl NetworkedBytes for ControllingEntity {
+    fn to_bytes(&self) -> Vec<u8> {
+        let mut bytes = vec![];
+        bytes.extend(self.id.to_bytes());
+        bytes.extend(self.entity_type.to_bytes());
+        bytes
+    }
+
+    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+        let (slice, id) = EntityId::from_bytes(bytes);
+        let (dice, entity_type) = EntityType::from_bytes(slice);
+        let controlling: ControllingEntity = ControllingEntity { id, entity_type };
+        (dice, controlling)
+    }
 }
 
 #[derive(Networked)]
@@ -29,6 +55,8 @@ pub struct Player {
     #[rustfmt::skip]
     team: Property<Option::<Team>>,
     state: Property<PlayerState>,
+    #[rustfmt::skip]
+    controlling: Property<Option::<ControllingEntity>>,
 }
 
 impl Player {
@@ -42,6 +70,7 @@ impl Player {
             clan: Property::new(None),
             team: Property::new(None),
             state: Property::new(PlayerState::ChoosingTeam),
+            controlling: Property::new(None),
         }
     }
 
