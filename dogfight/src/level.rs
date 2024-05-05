@@ -269,7 +269,7 @@ fn parse_layer(layer: &str) -> Vec<LevelObject> {
                         x: i + j * 100 + 50 - (img.width() / 2) as i32, //
                         y: -25,
                     },
-                    Team::Allies,
+                    Team::Centrals,
                     Facing::Left,
                 ))
             }
@@ -280,7 +280,7 @@ fn parse_layer(layer: &str) -> Vec<LevelObject> {
                         x: i + j * 100 + 50 - (img.width() / 2) as i32, //
                         y: -25,
                     },
-                    Team::Allies,
+                    Team::Centrals,
                     Facing::Right,
                 ))
             }
@@ -291,7 +291,7 @@ fn parse_layer(layer: &str) -> Vec<LevelObject> {
                         x: i + j * 100 + 50 - (img.width() / 2) as i32, //
                         y: -25,
                     },
-                    Team::Centrals,
+                    Team::Allies,
                     Facing::Left,
                 ))
             }
@@ -302,7 +302,7 @@ fn parse_layer(layer: &str) -> Vec<LevelObject> {
                         x: i + j * 100 + 50 - (img.width() / 2) as i32, //
                         y: -25,
                     },
-                    Team::Centrals,
+                    Team::Allies,
                     Facing::Right,
                 ))
             }
