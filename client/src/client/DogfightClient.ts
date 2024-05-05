@@ -51,6 +51,8 @@ export class DogfightClient {
   private gameHUD: GameHUD = new GameHUD();
   public keyboard: GameKeyboard = new GameKeyboard();
 
+  private debug: PIXI.Graphics = new PIXI.Graphics();
+
   private callbacks?: GameClientCallbacks;
 
   private players: EntityMap<Player> = {
@@ -169,7 +171,7 @@ export class DogfightClient {
     await loadTextures();
     this.appendView(element);
     this.callbacks = callbacks;
-    this.teamChooser.init(this.callbacks);
+    //this.teamChooser.init(this.callbacks);
     this.runwaySelector.init(this.callbacks);
     this.keyboard.init((keyboard) => this.onKeyChange(keyboard));
     this.gameHUD.init();
@@ -201,6 +203,14 @@ export class DogfightClient {
       //console.log(w, h, x, y);
       this.runwaySelector.container.position.set(x, y);
     }
+
+    this.debug.beginFill("red");
+    this.debug.drawCircle(0, 0, 10);
+    this.debug.endFill;
+    setTimeout(() => {
+      this.viewport.addChild(this.debug);
+    }, 100);
+    this.centerCamera(0, 0);
   }
 
   private appendView(element: HTMLDivElement) {
@@ -251,19 +261,23 @@ export class DogfightClient {
    * Coordinates must be in game world space.
    */
   private centerCamera(x: number, y: number): void {
-    // console.log(x, y);
-    let canvasHeight = this.app.screen.height;
+    console.log(x, y);
+    let canvasHeight = this.app.stage.height;
     // account for HUD height
     //if (this.gameHUD.isEnabled()) {
-    canvasHeight -= this.gameHUD.container.height;
+    const hudHeight = this.gameHUD.container.height;
+    canvasHeight -= hudHeight;
     // this.HUD.radar.centerCamera(x, y);
     //}
-    const canvasWidth = this.app.screen.width;
-    const pos = toPixiPoint({ x: x, y: -y });
+
+    const canvasWidth = this.app.stage.width;
+    const pos = toPixiPoint({ x: x, y: y });
+    console.log(pos.x, pos.y);
     pos.x += Math.round(canvasWidth / 2);
     pos.y += Math.round(canvasHeight / 2);
-    // console.log(pos.x, pos.y);
-    this.viewport.moveCenter(pos.x, pos.y);
+    console.log(pos.x, pos.y);
+    console.log(canvasWidth, canvasHeight);
+    this.viewport.moveCenter(pos.x, pos.y - hudHeight);
   }
 
   public handleGameEvents(events: GameOutput[]) {
