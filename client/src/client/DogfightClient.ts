@@ -171,7 +171,7 @@ export class DogfightClient {
     await loadTextures();
     this.appendView(element);
     this.callbacks = callbacks;
-    //this.teamChooser.init(this.callbacks);
+    this.teamChooser.init(this.callbacks);
     this.runwaySelector.init(this.callbacks);
     this.keyboard.init((keyboard) => this.onKeyChange(keyboard));
     this.gameHUD.init();
@@ -261,23 +261,10 @@ export class DogfightClient {
    * Coordinates must be in game world space.
    */
   private centerCamera(x: number, y: number): void {
-    console.log(x, y);
-    let canvasHeight = this.app.stage.height;
-    // account for HUD height
-    //if (this.gameHUD.isEnabled()) {
-    const hudHeight = this.gameHUD.container.height;
-    canvasHeight -= hudHeight;
-    // this.HUD.radar.centerCamera(x, y);
-    //}
-
-    const canvasWidth = this.app.stage.width;
-    const pos = toPixiPoint({ x: x, y: y });
-    console.log(pos.x, pos.y);
-    pos.x += Math.round(canvasWidth / 2);
-    pos.y += Math.round(canvasHeight / 2);
-    console.log(pos.x, pos.y);
-    console.log(canvasWidth, canvasHeight);
-    this.viewport.moveCenter(pos.x, pos.y - hudHeight);
+    const x1 = x - this.app.screen.width / 2;
+    const y1 = y - this.app.screen.height / 2;
+    //console.log(x, y, x1, y1);
+    this.viewport.moveCorner(x1, y1);
   }
 
   public handleGameEvents(events: GameOutput[]) {
