@@ -54,7 +54,7 @@ impl World {
 
         // main game update logic
         self.men.get_map_mut().iter_mut().for_each(|(_, man)| {
-            man.set_client_x(man.get_client_x() + 1) //
+            man.set_client_x(man.get_client_x() + 10) //
         });
 
         // return the changed state
