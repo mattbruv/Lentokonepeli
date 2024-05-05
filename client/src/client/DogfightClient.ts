@@ -262,7 +262,7 @@ export class DogfightClient {
    */
   private centerCamera(x: number, y: number): void {
     const x1 = x - this.app.screen.width / 2;
-    const y1 = y - this.app.screen.height / 2;
+    const y1 = y - (this.app.screen.height - this.gameHUD.container.height) / 2;
     //console.log(x, y, x1, y1);
     this.viewport.moveCorner(x1, y1);
   }
