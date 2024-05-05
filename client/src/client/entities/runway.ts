@@ -55,7 +55,7 @@ export class Runway implements Entity<RunwayProperties>, Followable {
     const halfHeight = this.runwaySprite.texture.height / 2;
 
     return {
-      x: (this.props.client_x ?? 0) - halfWidth,
+      x: (this.props.client_x ?? 0) + halfWidth,
       y: (this.props.client_y ?? 0) - halfHeight,
     };
   }

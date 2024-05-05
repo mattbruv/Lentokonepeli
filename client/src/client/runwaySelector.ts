@@ -137,6 +137,7 @@ export class RunwaySelector {
   ) {
     const myRunways = this.getMyRunways(runways);
     const pos = myRunways[this.runwayIndex][1].getCenter();
+    pos.y -= 130;
     centerCamera(pos);
   }
 
