@@ -96,8 +96,8 @@ impl Player {
         self.keys = keys
     }
 
-    pub fn get_keys(&self) -> PlayerKeyboard {
-        self.keys
+    pub fn get_keys(&self) -> &PlayerKeyboard {
+        &self.keys
     }
 
     pub fn get_name(&self) -> String {
