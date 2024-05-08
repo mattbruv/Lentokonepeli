@@ -41,17 +41,14 @@ impl Man {
         }
     }
 
-    pub fn tick(&mut self, plane: &mut Plane, keyboard: PlayerKeyboard) -> () {
-        return;
-        /*
+    pub fn tick(&mut self, keyboard: &PlayerKeyboard) -> () {
         match self.state.get() {
-            ManState::Falling => self.fall(world, keyboard),
-            ManState::Parachuting => self.parachute(world, keyboard),
+            ManState::Falling => self.fall(keyboard),
+            ManState::Parachuting => self.parachute(keyboard),
             ManState::Standing | ManState::WalkingLeft | ManState::WalkingRight => {
-                self.walk(world, keyboard)
+                self.walk(keyboard)
             }
         }
-        */
     }
 
     pub fn get_x(&self) -> i32 {
@@ -90,15 +87,15 @@ impl Man {
         self.client_y.set(client_y);
     }
 
-    fn fall(&mut self, world: &mut World, keyboard: &PlayerKeyboard) {
+    fn fall(&mut self, keyboard: &PlayerKeyboard) {
         todo!()
     }
 
-    fn parachute(&mut self, world: &mut World, keyboard: &PlayerKeyboard) {
+    fn parachute(&mut self, keyboard: &PlayerKeyboard) {
         todo!()
     }
 
-    fn walk(&mut self, world: &mut World, keyboard: &PlayerKeyboard) {
+    fn walk(&mut self, keyboard: &PlayerKeyboard) {
         self.state.set(ManState::Standing);
 
         if keyboard.left {

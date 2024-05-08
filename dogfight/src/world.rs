@@ -63,11 +63,10 @@ impl World {
         let input_events = self.handle_input(input);
         game_output.extend(input_events);
 
-        self.tick_controlled_entities();
-
-        // main game update logic
-        self.men.get_map_mut().iter_mut().for_each(|(_, man)| {
-            man.set_client_x(man.get_client_x() + 10) //
+        tick_controlled_entities(TickControlled {
+            men: &mut self.men,
+            players: &mut self.players,
+            planes: &mut self.planes,
         });
 
         // return the changed state
@@ -101,13 +100,5 @@ impl World {
             return Some(*id);
         }
         None
-    }
-
-    fn tick_controlled_entities(&mut self) -> () {
-        tick_controlled_entities(TickControlled {
-            player: &mut self.players,
-            men: &mut self.men,
-            planes: &mut self.planes,
-        })
     }
 }
