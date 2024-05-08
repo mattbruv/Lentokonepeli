@@ -345,7 +345,7 @@ export class DogfightClient {
             data.type === me.props.controlling.entity_type
           ) {
             if (isFollowable(entity)) {
-              console.log("followable!");
+              //console.log("followable!");
               const pos = entity.getCenter();
               this.centerCamera(pos.x, pos.y);
             }
