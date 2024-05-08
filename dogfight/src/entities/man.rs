@@ -1,11 +1,12 @@
 use dogfight_macros::{EnumBytes, Networked};
 
 use crate::{
+    input::PlayerKeyboard,
     network::{property::*, EntityProperties, NetworkedEntity},
-    world::RESOLUTION,
+    world::{self, World, RESOLUTION},
 };
 
-use super::types::Team;
+use super::{plane::Plane, types::Team};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS, EnumBytes)]
 #[ts(export)]
@@ -36,8 +37,21 @@ impl Man {
             team: Property::new(team),
             client_x: Property::new(0),
             client_y: Property::new(0),
-            state: Property::new(ManState::Parachuting),
+            state: Property::new(ManState::Standing),
         }
+    }
+
+    pub fn tick(&mut self, plane: &mut Plane, keyboard: PlayerKeyboard) -> () {
+        return;
+        /*
+        match self.state.get() {
+            ManState::Falling => self.fall(world, keyboard),
+            ManState::Parachuting => self.parachute(world, keyboard),
+            ManState::Standing | ManState::WalkingLeft | ManState::WalkingRight => {
+                self.walk(world, keyboard)
+            }
+        }
+        */
     }
 
     pub fn get_x(&self) -> i32 {
@@ -74,5 +88,27 @@ impl Man {
     pub fn set_client_y(&mut self, client_y: i16) -> () {
         self.y = client_y as i32 * RESOLUTION;
         self.client_y.set(client_y);
+    }
+
+    fn fall(&mut self, world: &mut World, keyboard: &PlayerKeyboard) {
+        todo!()
+    }
+
+    fn parachute(&mut self, world: &mut World, keyboard: &PlayerKeyboard) {
+        todo!()
+    }
+
+    fn walk(&mut self, world: &mut World, keyboard: &PlayerKeyboard) {
+        self.state.set(ManState::Standing);
+
+        if keyboard.left {
+            self.set_x(self.x - 100);
+            self.state.set(ManState::WalkingLeft);
+        }
+
+        if keyboard.right {
+            self.set_x(self.x + 100);
+            self.state.set(ManState::WalkingRight);
+        }
     }
 }

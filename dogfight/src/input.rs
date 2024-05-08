@@ -32,16 +32,16 @@ pub fn game_input_from_string(input: String) -> Vec<GameInput> {
     serde_json::from_str(&input).unwrap()
 }
 
-#[derive(Serialize, Deserialize, Debug, TS)]
+#[derive(Serialize, Deserialize, Debug, TS, Clone, Copy)]
 #[ts(export)]
 pub struct PlayerKeyboard {
-    left: bool,
-    right: bool,
-    down: bool,
-    up: bool,
-    shift: bool,
-    space: bool,
-    enter: bool,
+    pub left: bool,
+    pub right: bool,
+    pub down: bool,
+    pub up: bool,
+    pub shift: bool,
+    pub space: bool,
+    pub enter: bool,
 }
 
 impl PlayerKeyboard {
