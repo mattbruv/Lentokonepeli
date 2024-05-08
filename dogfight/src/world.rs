@@ -1,13 +1,24 @@
-use std::{any::Any, vec};
+use std::{any::Any, collections::HashMap, sync::Arc, vec};
 
 use crate::{
     entities::{
-        background_item::BackgroundItem, bunker::Bunker, coast::Coast, container::EntityContainer,
-        ground::Ground, man::Man, plane::Plane, player::Player, runway::Runway, types::EntityType,
-        water::Water, world_info::WorldInfo, EntityId,
+        background_item::BackgroundItem,
+        bunker::Bunker,
+        coast::Coast,
+        container::EntityContainer,
+        ground::Ground,
+        man::Man,
+        plane::Plane,
+        player::{ControllingEntity, Player},
+        runway::Runway,
+        types::EntityType,
+        water::Water,
+        world_info::WorldInfo,
+        EntityId,
     },
-    input::{GameInput, RunwaySelection},
+    input::{GameInput, PlayerKeyboard, RunwaySelection},
     output::GameOutput,
+    tick::{tick_controlled_entities, TickControlled},
 };
 
 pub const RESOLUTION: i32 = 100;
@@ -52,6 +63,8 @@ impl World {
         let input_events = self.handle_input(input);
         game_output.extend(input_events);
 
+        self.tick_controlled_entities();
+
         // main game update logic
         self.men.get_map_mut().iter_mut().for_each(|(_, man)| {
             man.set_client_x(man.get_client_x() + 10) //
@@ -90,7 +103,11 @@ impl World {
         None
     }
 
-    pub(crate) fn test_runway(&mut self, p: &mut Player, selection: RunwaySelection) {
-        let runway = self.runways.get_mut(selection.runway_id);
+    fn tick_controlled_entities(&mut self) -> () {
+        tick_controlled_entities(TickControlled {
+            player: &mut self.players,
+            men: &mut self.men,
+            planes: &mut self.planes,
+        })
     }
 }

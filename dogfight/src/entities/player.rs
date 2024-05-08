@@ -21,8 +21,8 @@ pub enum PlayerState {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS)]
 #[ts(export)]
 pub struct ControllingEntity {
-    id: EntityId,
-    entity_type: EntityType,
+    pub id: EntityId,
+    pub entity_type: EntityType,
 }
 
 impl ControllingEntity {
@@ -88,8 +88,16 @@ impl Player {
         self.controlling.set(controlling);
     }
 
+    pub fn get_controlling(&self) -> Option<ControllingEntity> {
+        *self.controlling.get()
+    }
+
     pub fn set_keys(&mut self, keys: PlayerKeyboard) {
         self.keys = keys
+    }
+
+    pub fn get_keys(&self) -> PlayerKeyboard {
+        self.keys
     }
 
     pub fn get_name(&self) -> String {
