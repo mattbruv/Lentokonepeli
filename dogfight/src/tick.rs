@@ -1,6 +1,7 @@
 use std::f32::consts::E;
 
 use crate::{
+    collision::SolidEntity,
     entities::{
         container::EntityContainer,
         man::Man,

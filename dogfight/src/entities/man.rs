@@ -1,6 +1,8 @@
 use dogfight_macros::{EnumBytes, Networked};
+use euclid::{rect, Point2D, Rect};
 
 use crate::{
+    collision::{SolidEntity, WorldSpace},
     input::PlayerKeyboard,
     network::{property::*, EntityProperties, NetworkedEntity},
     world::RESOLUTION,
@@ -136,5 +138,15 @@ impl Man {
             self.set_x(self.x + 100);
             self.state.set(ManState::WalkingRight);
         }
+    }
+}
+
+impl SolidEntity for Man {
+    fn get_team(&self) -> Team {
+        *self.team.get()
+    }
+
+    fn get_collision_bounds(&self) -> Rect<i32, WorldSpace> {
+        rect(self.x, self.y, 10, 10)
     }
 }
