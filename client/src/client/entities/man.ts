@@ -66,6 +66,10 @@ export class Man implements Entity<ManProperties>, Followable {
         this.manSprite.texture = Textures["parachuter0.gif"];
         break;
       }
+      case "Parachuting": {
+        this.manSprite.texture = Textures["parachuter1.gif"];
+        break;
+      }
       case "Standing": {
         this.manSprite.texture = Textures["parachuter0.gif"];
         break;
