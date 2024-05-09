@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use dogfight_macros::{EnumBytes, Networked};
 
 use crate::{
@@ -7,6 +9,8 @@ use crate::{
 };
 
 use super::{plane::Plane, types::Team};
+
+const SPEED_PER_PIXEL: i32 = 100;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS, EnumBytes)]
 #[ts(export)]
@@ -23,6 +27,9 @@ pub struct Man {
     x: i32,
     y: i32,
 
+    xSpeed: i32,
+    ySpeed: i32,
+
     team: Property<Team>,
     client_x: Property<i16>,
     client_y: Property<i16>,
@@ -37,7 +44,9 @@ impl Man {
             team: Property::new(team),
             client_x: Property::new(0),
             client_y: Property::new(0),
-            state: Property::new(ManState::Standing),
+            state: Property::new(ManState::Falling),
+            xSpeed: 0,
+            ySpeed: 0,
         }
     }
 
@@ -88,11 +97,18 @@ impl Man {
     }
 
     fn fall(&mut self, keyboard: &PlayerKeyboard) {
-        todo!()
+        self.set_x(self.x * self.xSpeed / SPEED_PER_PIXEL);
+        self.set_y(self.y * self.ySpeed / SPEED_PER_PIXEL);
+        self.xSpeed = (self.xSpeed as f32 - self.xSpeed as f32 * 0.01) as i32;
+        self.ySpeed += SPEED_PER_PIXEL / 30;
+
+        if keyboard.space {
+            self.state.set(ManState::Parachuting);
+        }
     }
 
     fn parachute(&mut self, keyboard: &PlayerKeyboard) {
-        todo!()
+        //todo!()
     }
 
     fn walk(&mut self, keyboard: &PlayerKeyboard) {
