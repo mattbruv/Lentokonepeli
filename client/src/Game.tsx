@@ -79,7 +79,7 @@ export function Game() {
           const events = JSON.parse(events_json) as GameOutput[];
 
           dogfight.client.handleGameEvents(events);
-        }, 30);
+        }, 1000 / 60);
       });
     }
   }, []);

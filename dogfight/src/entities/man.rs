@@ -1,14 +1,12 @@
-use std::sync::Arc;
-
 use dogfight_macros::{EnumBytes, Networked};
 
 use crate::{
     input::PlayerKeyboard,
     network::{property::*, EntityProperties, NetworkedEntity},
-    world::{self, World, RESOLUTION},
+    world::RESOLUTION,
 };
 
-use super::{plane::Plane, types::Team};
+use super::types::Team;
 
 const SPEED_PER_PIXEL: i32 = 100;
 
@@ -27,8 +25,8 @@ pub struct Man {
     x: i32,
     y: i32,
 
-    xSpeed: i32,
-    ySpeed: i32,
+    x_speed: i32,
+    y_speed: i32,
 
     team: Property<Team>,
     client_x: Property<i16>,
@@ -45,8 +43,8 @@ impl Man {
             client_x: Property::new(0),
             client_y: Property::new(0),
             state: Property::new(ManState::Falling),
-            xSpeed: 0,
-            ySpeed: 0,
+            x_speed: 1,
+            y_speed: 1,
         }
     }
 
@@ -97,10 +95,10 @@ impl Man {
     }
 
     fn fall(&mut self, keyboard: &PlayerKeyboard) {
-        self.set_x(self.x * self.xSpeed / SPEED_PER_PIXEL);
-        self.set_y(self.y * self.ySpeed / SPEED_PER_PIXEL);
-        self.xSpeed = (self.xSpeed as f32 - self.xSpeed as f32 * 0.01) as i32;
-        self.ySpeed += SPEED_PER_PIXEL / 30;
+        self.set_x(self.x + (RESOLUTION * self.x_speed / SPEED_PER_PIXEL));
+        self.set_y(self.y + (RESOLUTION * self.y_speed / SPEED_PER_PIXEL));
+        self.x_speed = (self.x_speed as f64 - self.x_speed as f64 * 0.01) as i32;
+        self.y_speed += SPEED_PER_PIXEL / 30;
 
         if keyboard.space {
             self.state.set(ManState::Parachuting);
@@ -108,7 +106,22 @@ impl Man {
     }
 
     fn parachute(&mut self, keyboard: &PlayerKeyboard) {
-        //todo!()
+        self.set_x(self.x + (RESOLUTION * self.x_speed / SPEED_PER_PIXEL));
+        self.set_y(self.y + (RESOLUTION * self.y_speed / SPEED_PER_PIXEL));
+        self.x_speed = (self.x_speed as f64 - self.x_speed as f64 * 0.01) as i32;
+        self.y_speed = (self.y_speed as f64 - self.y_speed as f64 * 0.05) as i32;
+
+        if self.y_speed < SPEED_PER_PIXEL {
+            self.y_speed = SPEED_PER_PIXEL;
+        }
+
+        if keyboard.left {
+            self.set_x(self.x - 100);
+        }
+
+        if keyboard.right {
+            self.set_x(self.x + 100);
+        }
     }
 
     fn walk(&mut self, keyboard: &PlayerKeyboard) {
