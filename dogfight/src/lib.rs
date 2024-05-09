@@ -1,3 +1,4 @@
+pub mod collision;
 pub mod entities;
 pub mod images;
 pub mod input;
