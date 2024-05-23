@@ -1,0 +1,44 @@
+name: Build and Deploy
+on:
+  push:
+    branches:
+      - main
+permissions:
+  contents: write
+jobs:
+  build-and-deploy:
+    concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
+    runs-on: ubuntu-latest
+    env:
+      token: ${{ secrets.ACCESS_TOKEN }}
+    steps:
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          rustflags: ""
+      - uses: jetli/wasm-pack-action@v0.4.0
+        with:
+          # Optional version of wasm-pack to install(eg. 'v0.9.1', 'latest')
+          version: "latest"
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build Game
+        run: |
+          cd dogfight
+          python3 build.py
+
+      - name: Build Client
+        run: |
+          cd client
+          npm install
+          npm run build
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: client/dist # The folder the action should deploy.
+          #repository-name: mattbruv/ccsr
+          #token: ${{ secrets.ACCESS_TOKEN }}
+          force: true
+          single-commit: true
