@@ -10,4 +10,5 @@ export default defineConfig({
     // https://github.com/Menci/vite-plugin-top-level-await
     target: "ES2022",
   },
+  base: "/Lentokonepeli/",
 });
