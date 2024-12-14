@@ -1,6 +1,8 @@
 import * as PIXI from "pixi.js";
 
-export type EntityUpdateCallbacks<Source extends object> = {
+type NoUndefined<T> = T extends undefined ? never : T;
+
+export type EntityUpdateCallbacks<Source> = {
   [Property in keyof Source]-?: () => void;
 };
 
@@ -8,6 +10,7 @@ export type Point = {
   x: number;
   y: number;
 };
+
 export interface Followable {
   getCenter: () => Point;
 }
@@ -16,8 +19,8 @@ export function isFollowable(object: any): object is Followable {
   return "getCenter" in object;
 }
 
-export type Entity<Props extends object> = {
-  props: Props;
+export type Entity<Props> = {
+  props: NoUndefined<Props>;
   updateCallbacks: EntityUpdateCallbacks<Props>;
   getContainer: () => PIXI.Container;
   destroy: () => void;

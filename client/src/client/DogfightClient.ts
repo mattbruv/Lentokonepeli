@@ -32,7 +32,11 @@ export type GameClientCallbacks = {
   keyChange: (keyboard: PlayerKeyboard) => void;
 };
 
-export type EntityMap<T extends Entity<any>> = {
+type EntityContainer = {
+  [E in EntityProperties as E["type"]]: EntityMap<Entity<E["props"]>>;
+};
+
+export type EntityMap<T> = {
   new_type: () => T;
   map: Map<number, T>;
 };
@@ -95,9 +99,12 @@ export class DogfightClient {
     map: new Map(),
   };
 
-  private entityMaps: Record<EntityType, EntityMap<any> | undefined> = {
-    WorldInfo: undefined,
-    Plane: undefined,
+  private entityContainer: EntityContainer = {
+    WorldInfo: {
+      new_type() {
+      },
+    },
+    //    Plane: this.players,
     Man: this.men,
     Player: this.players,
     BackgroundItem: this.backgroundItems,
@@ -311,7 +318,7 @@ export class DogfightClient {
   }
 
   private deleteEntity(id: number, ent_type: EntityType) {
-    const ent_map = this.entityMaps[ent_type];
+    const ent_map = this.entityContainer[ent_type];
     if (!ent_map) return;
     const entity = ent_map.map.get(id);
     entity?.destroy();
@@ -319,7 +326,7 @@ export class DogfightClient {
   }
 
   private updateEntity(id: number, data: EntityProperties) {
-    const ent_map = this.entityMaps[data.type];
+    const ent_map = this.entityContainer[data.type];
     if (!ent_map) return;
 
     let entity = ent_map.map.get(id);
@@ -329,7 +336,9 @@ export class DogfightClient {
     if (!entity) {
       entity = ent_map.new_type();
       if (entity) {
-        ent_map.map.set(id, entity);
+        // Not sure why Typescript wants to error when I call the set() function here.
+        // It's making the set param a union type for some reason I don't understand
+        const x = ent_map.map.set(id, entity as any);
         this.viewport.addChild(entity.getContainer());
       }
     }
