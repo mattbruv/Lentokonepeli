@@ -3,7 +3,6 @@ use ts_rs::TS;
 
 use crate::{
     entities::types::Team,
-    input::TeamSelection,
     network::{encoding::NetworkedBytes, entity_changes_to_binary, EntityChange},
 };
 

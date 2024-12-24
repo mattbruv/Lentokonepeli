@@ -19,7 +19,7 @@ export function Game() {
       const player_name = "player1";
 
       const callbacks: GameClientCallbacks = {
-        chooseTeam: (team: Team): void => {
+        chooseTeam: (team: Team | null): void => {
           tick_input.push({
             type: "PlayerChooseTeam",
             data: {
@@ -59,7 +59,7 @@ export function Game() {
           dogfight.client.keyboard.onKeyUp(event.key);
         };
 
-        dogfight.game.load_level(Levels["classic"]);
+        dogfight.game.load_level(Levels.classic2);
         dogfight.game.init();
 
         dogfight.client.setMyPlayerName(player_name);

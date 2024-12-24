@@ -1,3 +1,6 @@
+use std::io::SeekFrom;
+
+use rand::random;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
@@ -5,7 +8,7 @@ use crate::{
     entities::{
         man::Man,
         plane::PlaneType,
-        player::{self, ControllingEntity, Player, PlayerState},
+        player::{ControllingEntity, Player, PlayerState},
         types::{EntityType, Team},
         EntityId,
     },
@@ -150,15 +153,21 @@ impl World {
 
                     if let Some(id) = pid {
                         if let Some(player) = self.players.get_mut(id) {
-                            if let Some(team) = selection.team {
-                                // only join the team if the player already isn't on the team
-                                if let None = player.get_team() {
-                                    player.set_team(selection.team);
-                                    game_output.push(GameOutput::PlayerJoinTeam {
-                                        name: player.get_name(),
-                                        team: team,
-                                    })
+                            let the_team = selection.team.unwrap_or_else(|| {
+                                if random() {
+                                    Team::Centrals
+                                } else {
+                                    Team::Allies
                                 }
+                            });
+
+                            // only join the team if the player already isn't on the team
+                            if let None = player.get_team() {
+                                player.set_team(Some(the_team));
+                                game_output.push(GameOutput::PlayerJoinTeam {
+                                    name: player.get_name(),
+                                    team: the_team,
+                                })
                             }
                         }
                     }

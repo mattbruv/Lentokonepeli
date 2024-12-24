@@ -29,7 +29,7 @@ import { WorldInfo } from "./entities/worldInfo";
 import { Plane } from "./entities/plane";
 
 export type GameClientCallbacks = {
-  chooseTeam: (team: Team) => void;
+  chooseTeam: (team: Team | null) => void;
   chooseRunway: (runwayId: number, planeType: PlaneType) => void;
   keyChange: (keyboard: PlayerKeyboard) => void;
 };

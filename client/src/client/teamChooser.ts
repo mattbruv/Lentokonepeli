@@ -48,7 +48,7 @@ export class TeamChooser {
     };
 
     this.flag_random.onclick = () => {
-      alert("Random team not yet implemented!");
+      callbacks.chooseTeam(null)
     };
   }
 }
