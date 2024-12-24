@@ -2,11 +2,17 @@ import { Entity, EntityUpdateCallbacks, Followable, Point } from "./entity";
 import * as PIXI from "pixi.js";
 import { Textures } from "../textures";
 import { DrawLayer } from "../constants";
-import { Team } from "dogfight-types/Team";
 import { ManProperties } from "dogfight-types/ManProperties";
 
 export class Man implements Entity<ManProperties>, Followable {
-  public props: ManProperties = {};
+
+  public props: Required<ManProperties> = {
+    client_x: 0,
+    client_y: 0,
+    state: "Standing",
+    team: "Allies",
+  };
+
   private container: PIXI.Container;
   private manSprite: PIXI.Sprite;
   private frameCount = 0;
@@ -48,7 +54,7 @@ export class Man implements Entity<ManProperties>, Followable {
     };
   }
 
-  public destroy() {}
+  public destroy() { }
 
   private updateX(): void {
     if (!this.props.client_x) return;
@@ -86,7 +92,7 @@ export class Man implements Entity<ManProperties>, Followable {
       }
     }
   }
-  private updateTeam(): void {}
+  private updateTeam(): void { }
 
   private animateWalk(): void {
     if (

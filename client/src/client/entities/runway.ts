@@ -6,7 +6,14 @@ import { DrawLayer, TERRAIN_WATER_COLOR } from "../constants";
 import { RunwayProperties } from "dogfight-types/RunwayProperties";
 
 export class Runway implements Entity<RunwayProperties>, Followable {
-  public props: RunwayProperties = {};
+
+  public props: Required<RunwayProperties> = {
+    client_x: 0,
+    client_y: 0,
+    facing: "Left",
+    team: "Allies"
+  };
+
   private container: PIXI.Container;
   private runwaySprite: PIXI.Sprite;
   private runwayBack: PIXI.Sprite;
@@ -35,7 +42,7 @@ export class Runway implements Entity<RunwayProperties>, Followable {
       this.runwaySprite.texture = textureMap[facing];
       this.runwayBack.visible = facing === "Left" ? true : false;
     },
-    team: () => {},
+    team: () => { },
   };
 
   constructor() {
@@ -64,5 +71,5 @@ export class Runway implements Entity<RunwayProperties>, Followable {
     return this.container;
   }
 
-  public destroy() {}
+  public destroy() { }
 }

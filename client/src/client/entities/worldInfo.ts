@@ -3,7 +3,10 @@ import * as PIXI from "pixi.js";
 import { WorldInfoProperties } from "dogfight-types/WorldInfoProperties";
 
 export class WorldInfo implements Entity<WorldInfoProperties> {
-  public props: WorldInfoProperties = {};
+  public props: Required<WorldInfoProperties> = {
+    state: "Intermission",
+    winner: "Allies"
+  };
 
   constructor() { }
 

@@ -13,7 +13,13 @@ type FlagTextureMap = {
 };
 
 export class BackgroundItem implements Entity<BackgroundItemProperties> {
-  props: BackgroundItemProperties = {};
+
+  props: Required<BackgroundItemProperties> = {
+    bg_item_type: "PalmTree",
+    client_x: 0,
+    client_y: 0,
+    facing: "Left"
+  };
 
   private container: PIXI.Container;
   private itemSprite: PIXI.Sprite;

@@ -7,7 +7,13 @@ import { Textures } from "../textures";
 import { Facing } from "dogfight-types/Facing";
 
 export class Water implements Entity<WaterProperties> {
-  public props: WaterProperties = {};
+  public props: Required<WaterProperties> = {
+    client_x: 0,
+    client_y: 0,
+    facing: "Left",
+    terrain: "Normal",
+    width: 0
+  };
   private container: PIXI.Container;
   private waterGraphics: PIXI.Graphics;
   private waves: PIXI.TilingSprite;

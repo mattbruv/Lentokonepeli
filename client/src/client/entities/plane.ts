@@ -4,7 +4,11 @@ import { PlayerProperties } from "dogfight-types/PlayerProperties";
 import { PlaneProperties } from "dogfight-types/PlaneProperties";
 
 export class Plane implements Entity<PlaneProperties> {
-  public props: PlaneProperties = {};
+  public props: Required<PlaneProperties> = {
+    client_x: 0,
+    client_y: 0,
+    plane_type: "Albatros"
+  };
 
   constructor() { }
 

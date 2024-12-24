@@ -13,7 +13,12 @@ type TextureCombinations = {
 };
 
 export class Coast implements Entity<CoastProperties> {
-  public props: CoastProperties = {};
+  public props: Required<CoastProperties> = {
+    client_x: 0,
+    client_y: 0,
+    facing: "Right",
+    terrain: "Normal"
+  };
   private container: PIXI.Container;
   private coastSprite: PIXI.Sprite;
   private water: PIXI.Graphics;
@@ -89,5 +94,5 @@ export class Coast implements Entity<CoastProperties> {
     this.water.endFill();
   }
 
-  public destroy() {}
+  public destroy() { }
 }

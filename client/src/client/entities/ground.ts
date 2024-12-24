@@ -6,7 +6,14 @@ import { DrawLayer, TERRAIN_WATER_COLOR } from "../constants";
 import { Terrain } from "dogfight-types/Terrain";
 
 export class Ground implements Entity<GroundProperties> {
-  public props: GroundProperties = {};
+
+  public props: Required<GroundProperties> = {
+    client_x: 0,
+    client_y: 0,
+    terrain: "Normal",
+    width: 0,
+  };
+
   private container: PIXI.Container;
   private groundSprite: PIXI.TilingSprite;
   private water: PIXI.Graphics;
@@ -68,5 +75,5 @@ export class Ground implements Entity<GroundProperties> {
     },
   };
 
-  public destroy() {}
+  public destroy() { }
 }
