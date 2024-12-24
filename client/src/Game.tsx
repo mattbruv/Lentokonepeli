@@ -8,6 +8,7 @@ import { GameInput } from "dogfight-types/GameInput";
 import { RunwaySelection } from "dogfight-types/RunwaySelection";
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 import { PlaneType } from "dogfight-types/PlaneType";
+import { DebugEntity } from "dogfight-types/DebugEntity";
 
 let paused = false;
 let doTick = false;
@@ -71,7 +72,8 @@ export function Game() {
           }
 
           if (event.key === "d") {
-            console.log(dogfight.game.debug())
+            const debugInfo: DebugEntity[] = JSON.parse(dogfight.game.debug())
+            console.log(debugInfo)
           }
         };
 

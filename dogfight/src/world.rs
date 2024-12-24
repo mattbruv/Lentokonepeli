@@ -1,5 +1,7 @@
+use std::{fmt::Debug, process::id};
+
 use crate::{
-    collision::SolidEntity,
+    collision::{BoundingBox, DebugEntity, SolidEntity},
     entities::{
         background_item::BackgroundItem, bunker::Bunker, coast::Coast, container::EntityContainer,
         ground::Ground, man::Man, plane::Plane, player::Player, runway::Runway, types::EntityType,
@@ -69,19 +71,25 @@ impl World {
     }
 
     pub fn debug(&self) -> String {
-        let sizes: Vec<String> = self
+        let mut debug_info: Vec<DebugEntity> = vec![];
+
+        let man_bounds: Vec<DebugEntity> = self
             .men
             .get_map()
             .iter()
             .map(|(idx, man)| {
-                let x = man.get_collision_bounds();
-                let f = format!("{:?}", x);
-                let s = format!("{{{idx}: {f}}}");
-                s
+                let bounds = man.get_collision_bounds();
+                DebugEntity {
+                    ent_id: *idx,
+                    ent_type: EntityType::Man,
+                    bounding_box: bounds,
+                }
             })
             .collect();
 
-        format!("{:?}", sizes)
+        debug_info.extend(man_bounds);
+
+        serde_json::to_string(&debug_info).unwrap()
     }
 
     pub(crate) fn get_player_from_name(

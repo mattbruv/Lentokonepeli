@@ -152,8 +152,8 @@ impl SolidEntity for Man {
 
     fn get_collision_bounds(&self) -> BoundingBox {
         BoundingBox {
-            x: self.x,
-            y: self.y,
+            x: self.x / RESOLUTION,
+            y: self.y / RESOLUTION,
             width: 10,
             height: 10,
         }

@@ -1,8 +1,22 @@
 use image::RgbaImage;
+use serde::Serialize;
+use ts_rs::TS;
 
-use crate::entities::types::Team;
+use crate::entities::{
+    types::{EntityType, Team},
+    EntityId,
+};
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Serialize, TS)]
+#[ts(export)]
+pub struct DebugEntity {
+    pub ent_id: EntityId,
+    pub ent_type: EntityType,
+    pub bounding_box: BoundingBox,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, TS)]
+#[ts(export)]
 pub struct BoundingBox {
     pub x: i32,
     pub y: i32,
