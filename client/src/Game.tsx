@@ -69,6 +69,10 @@ export function Game() {
           if (event.key === "t") {
             doTick = true
           }
+
+          if (event.key === "d") {
+            console.log("debug")
+          }
         };
 
         dogfight.game.load_level(Levels.classic2);

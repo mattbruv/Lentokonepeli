@@ -47,7 +47,10 @@ export class DogfightClient {
   // https://pixijs.download/v7.x/docs/index.html
   private app: PIXI.Application<HTMLCanvasElement>;
   private viewport: Viewport;
-  private debugText = new PIXI.Text();
+
+  // Debugging helpers
+  private debugPointer = new PIXI.Text();
+  private debugCoords = new PIXI.Text();
 
   private myPlayerId: number | null = null;
   private myPlayerName: string | null = null;
@@ -143,14 +146,17 @@ export class DogfightClient {
     this.viewport.drag().pinch().wheel().decelerate();
 
     if (import.meta.env.DEV) {
-      this.app.stage.addChild(this.debugText);
-      this.debugText.style.fontFamily = "monospace";
+      this.app.stage.addChild(this.debugPointer);
+      this.app.stage.addChild(this.debugCoords);
+      this.debugCoords.position.set(0, 30)
+      this.debugPointer.style.fontFamily = "monospace";
+      this.debugCoords.style.fontFamily = "monospace";
 
       this.viewport.onpointermove = (e) => {
         const pos = this.viewport.toWorld(e.data.global);
         const x = Math.round(pos.x);
         const y = Math.round(pos.y);
-        this.debugText.text = `${x}, ${y}`;
+        this.debugPointer.text = `${x}, ${y}`;
       };
     }
   }
@@ -365,6 +371,12 @@ export class DogfightClient {
             if (isFollowable(entity)) {
               //console.log("followable!");
               const pos = entity.getCenter();
+              /*
+              const pos = this.viewport.toWorld(e.data.global);
+              const x = Math.round(pos.x);
+              const y = Math.round(pos.y);
+              */
+              this.debugCoords.text = `${pos.x}, ${pos.y}`;
               this.centerCamera(pos.x, pos.y);
             }
           }
