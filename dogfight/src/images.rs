@@ -1,7 +1,7 @@
 use image;
 
-pub fn get_image(bytes: &[u8]) -> image::DynamicImage {
-    image::load_from_memory(bytes).unwrap()
+pub fn get_image(bytes: &[u8]) -> image::RgbaImage {
+    image::load_from_memory(bytes).unwrap().to_rgba8()
 }
 
 pub const BEACH_L: &[u8] = include_bytes!("../images/beach-l.gif");
@@ -40,10 +40,10 @@ pub const HEADQUARTER_RAF: &[u8] = include_bytes!("../images/headquarter_raf.gif
 // pub const MDL_PAGE: &[u8] = include_bytes!("../images/mdl_page.jpg");
 // pub const METALPANEL: &[u8] = include_bytes!("../images/metalpanel.jpg");
 // pub const PALMTREE: &[u8] = include_bytes!("../images/palmtree.gif");
-// pub const PARACHUTER0: &[u8] = include_bytes!("../images/parachuter0.gif");
-// pub const PARACHUTER1: &[u8] = include_bytes!("../images/parachuter1.gif");
-// pub const PARACHUTER2: &[u8] = include_bytes!("../images/parachuter2.gif");
-// pub const PARACHUTER3: &[u8] = include_bytes!("../images/parachuter3.gif");
+pub const PARACHUTER0: &[u8] = include_bytes!("../images/parachuter0.gif");
+pub const PARACHUTER1: &[u8] = include_bytes!("../images/parachuter1.gif");
+pub const PARACHUTER2: &[u8] = include_bytes!("../images/parachuter2.gif");
+pub const PARACHUTER3: &[u8] = include_bytes!("../images/parachuter3.gif");
 // pub const PIC_PLANE4: &[u8] = include_bytes!("../images/pic_plane4.gif");
 // pub const PIC_PLANE5: &[u8] = include_bytes!("../images/pic_plane5.gif");
 // pub const PIC_PLANE6: &[u8] = include_bytes!("../images/pic_plane6.gif");

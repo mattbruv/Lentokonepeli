@@ -1,4 +1,5 @@
 use crate::{
+    collision::SolidEntity,
     entities::{
         background_item::BackgroundItem, bunker::Bunker, coast::Coast, container::EntityContainer,
         ground::Ground, man::Man, plane::Plane, player::Player, runway::Runway, types::EntityType,
@@ -68,7 +69,19 @@ impl World {
     }
 
     pub fn debug(&self) -> String {
-        "hello from dogfight".to_owned()
+        let sizes: Vec<String> = self
+            .men
+            .get_map()
+            .iter()
+            .map(|(idx, man)| {
+                let x = man.get_collision_bounds();
+                let f = format!("{:?}", x);
+                let s = format!("{{{idx}: {f}}}");
+                s
+            })
+            .collect();
+
+        format!("{:?}", sizes)
     }
 
     pub(crate) fn get_player_from_name(

@@ -1,8 +1,9 @@
 use dogfight_macros::{EnumBytes, Networked};
-use euclid::{rect, Point2D, Rect};
+use image::RgbaImage;
 
 use crate::{
-    collision::{SolidEntity, WorldSpace},
+    collision::{BoundingBox, SolidEntity},
+    images::{get_image, PARACHUTER0},
     input::PlayerKeyboard,
     network::{property::*, EntityProperties, NetworkedEntity},
     world::RESOLUTION,
@@ -34,6 +35,8 @@ pub struct Man {
     client_x: Property<i16>,
     client_y: Property<i16>,
     state: Property<ManState>,
+
+    img: RgbaImage,
 }
 
 impl Man {
@@ -47,6 +50,7 @@ impl Man {
             state: Property::new(ManState::Falling),
             x_speed: 1,
             y_speed: 1,
+            img: get_image(PARACHUTER0),
         }
     }
 
@@ -146,7 +150,16 @@ impl SolidEntity for Man {
         *self.team.get()
     }
 
-    fn get_collision_bounds(&self) -> Rect<i32, WorldSpace> {
-        rect(self.x, self.y, 10, 10)
+    fn get_collision_bounds(&self) -> BoundingBox {
+        BoundingBox {
+            x: self.x,
+            y: self.y,
+            width: 10,
+            height: 10,
+        }
+    }
+
+    fn get_collision_image(&self) -> Option<&RgbaImage> {
+        Some(&self.img)
     }
 }
