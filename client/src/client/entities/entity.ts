@@ -15,7 +15,7 @@ export interface Followable {
   getCenter: () => Point;
 }
 
-export function isFollowable(object: any): object is Followable {
+export function isFollowable(object: {}): object is Followable {
   return "getCenter" in object;
 }
 

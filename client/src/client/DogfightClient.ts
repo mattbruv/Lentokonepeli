@@ -25,6 +25,8 @@ import { RunwaySelector } from "./runwaySelector";
 import { GameKeyboard } from "./keyboard";
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 import { PlaneType } from "dogfight-types/PlaneType";
+import { WorldInfo } from "./entities/worldInfo";
+import { Plane } from "./entities/plane";
 
 export type GameClientCallbacks = {
   chooseTeam: (team: Team) => void;
@@ -32,13 +34,13 @@ export type GameClientCallbacks = {
   keyChange: (keyboard: PlayerKeyboard) => void;
 };
 
-type EntityContainer = {
-  [E in EntityProperties as E["type"]]: EntityMap<Entity<E["props"]>>;
+type EntityCollection = {
+  [E in EntityProperties as E["type"]]: EntityGroup<Entity<E["props"]>>;
 };
 
-export type EntityMap<T> = {
+export type EntityGroup<T> = {
   new_type: () => T;
-  map: Map<number, T>;
+  entities: Map<number, T>;
 };
 
 export class DogfightClient {
@@ -59,52 +61,59 @@ export class DogfightClient {
 
   private callbacks?: GameClientCallbacks;
 
-  private players: EntityMap<Player> = {
+  private worldInfo: EntityGroup<WorldInfo> = {
+    new_type: () => new WorldInfo(),
+    entities: new Map(),
+  };
+
+  private planes: EntityGroup<Plane> = {
+    new_type: () => new Plane(),
+    entities: new Map(),
+  };
+
+  private players: EntityGroup<Player> = {
     new_type: () => new Player(),
-    map: new Map(),
+    entities: new Map(),
   };
 
-  private grounds: EntityMap<Ground> = {
+  private grounds: EntityGroup<Ground> = {
     new_type: () => new Ground(),
-    map: new Map(),
+    entities: new Map(),
   };
 
-  private backgroundItems: EntityMap<BackgroundItem> = {
+  private backgroundItems: EntityGroup<BackgroundItem> = {
     new_type: () => new BackgroundItem(),
-    map: new Map(),
+    entities: new Map(),
   };
 
-  private waters: EntityMap<Water> = {
+  private waters: EntityGroup<Water> = {
     new_type: () => new Water(),
-    map: new Map(),
+    entities: new Map(),
   };
 
-  private coasts: EntityMap<Coast> = {
+  private coasts: EntityGroup<Coast> = {
     new_type: () => new Coast(),
-    map: new Map(),
+    entities: new Map(),
   };
 
-  private runways: EntityMap<Runway> = {
+  private runways: EntityGroup<Runway> = {
     new_type: () => new Runway(),
-    map: new Map(),
+    entities: new Map(),
   };
 
-  private bunkers: EntityMap<Bunker> = {
+  private bunkers: EntityGroup<Bunker> = {
     new_type: () => new Bunker(),
-    map: new Map(),
+    entities: new Map(),
   };
 
-  private men: EntityMap<Man> = {
+  private men: EntityGroup<Man> = {
     new_type: () => new Man(),
-    map: new Map(),
+    entities: new Map(),
   };
 
-  private entityContainer: EntityContainer = {
-    WorldInfo: {
-      new_type() {
-      },
-    },
-    //    Plane: this.players,
+  private entityContainer: EntityCollection = {
+    WorldInfo: this.worldInfo,
+    Plane: this.planes,
     Man: this.men,
     Player: this.players,
     BackgroundItem: this.backgroundItems,
@@ -235,7 +244,7 @@ export class DogfightClient {
 
   private getMyPlayer(): Player | undefined {
     if (this.myPlayerId === null) return undefined;
-    const myPlayer = this.players.map.get(this.myPlayerId);
+    const myPlayer = this.players.entities.get(this.myPlayerId);
     return myPlayer;
   }
 
@@ -320,16 +329,16 @@ export class DogfightClient {
   private deleteEntity(id: number, ent_type: EntityType) {
     const ent_map = this.entityContainer[ent_type];
     if (!ent_map) return;
-    const entity = ent_map.map.get(id);
+    const entity = ent_map.entities.get(id);
     entity?.destroy();
-    ent_map.map.delete(id);
+    ent_map.entities.delete(id);
   }
 
   private updateEntity(id: number, data: EntityProperties) {
     const ent_map = this.entityContainer[data.type];
     if (!ent_map) return;
 
-    let entity = ent_map.map.get(id);
+    let entity = ent_map.entities.get(id);
 
     // If the entity doesn't exist, create a new one
     // and add it to the stage
@@ -338,7 +347,7 @@ export class DogfightClient {
       if (entity) {
         // Not sure why Typescript wants to error when I call the set() function here.
         // It's making the set param a union type for some reason I don't understand
-        const x = ent_map.map.set(id, entity as any);
+        const x = ent_map.entities.set(id, entity as any);
         this.viewport.addChild(entity.getContainer());
       }
     }

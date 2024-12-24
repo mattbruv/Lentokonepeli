@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 import { Textures } from "./textures";
 import {
   DogfightClient,
-  EntityMap,
+  EntityGroup,
   GameClientCallbacks,
 } from "./DogfightClient";
 import { PlaneType } from "dogfight-types/PlaneType";
@@ -94,7 +94,7 @@ export class RunwaySelector {
 
   processKeys(
     keys: PlayerKeyboard,
-    runways: EntityMap<Runway>,
+    runways: EntityGroup<Runway>,
     centerCamera: (runwayPos: Point) => void,
     selectRunway: (runwayId: number, plane: PlaneType) => void
   ) {
@@ -132,7 +132,7 @@ export class RunwaySelector {
   }
 
   public selectRunway(
-    runways: EntityMap<Runway>,
+    runways: EntityGroup<Runway>,
     centerCamera: (runwayPos: Point) => void
   ) {
     const myRunways = this.getMyRunways(runways);
@@ -141,8 +141,8 @@ export class RunwaySelector {
     centerCamera(pos);
   }
 
-  private getMyRunways(runways: EntityMap<Runway>): [number, Runway][] {
-    return [...runways.map.entries()]
+  private getMyRunways(runways: EntityGroup<Runway>): [number, Runway][] {
+    return [...runways.entities.entries()]
       .filter(
         ([_, runway]) => runway.props.team === this.team
         // TODO: health
