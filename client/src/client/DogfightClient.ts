@@ -40,7 +40,7 @@ type EntityCollection = {
 
 export type EntityGroup<T> = {
   new_type: () => T;
-  entities: Map<number, T>;
+  entries: Map<number, T>;
 };
 
 export class DogfightClient {
@@ -63,55 +63,55 @@ export class DogfightClient {
 
   private worldInfo: EntityGroup<WorldInfo> = {
     new_type: () => new WorldInfo(),
-    entities: new Map(),
+    entries: new Map(),
   };
 
   private planes: EntityGroup<Plane> = {
     new_type: () => new Plane(),
-    entities: new Map(),
+    entries: new Map(),
   };
 
   private players: EntityGroup<Player> = {
     new_type: () => new Player(),
-    entities: new Map(),
+    entries: new Map(),
   };
 
   private grounds: EntityGroup<Ground> = {
     new_type: () => new Ground(),
-    entities: new Map(),
+    entries: new Map(),
   };
 
   private backgroundItems: EntityGroup<BackgroundItem> = {
     new_type: () => new BackgroundItem(),
-    entities: new Map(),
+    entries: new Map(),
   };
 
   private waters: EntityGroup<Water> = {
     new_type: () => new Water(),
-    entities: new Map(),
+    entries: new Map(),
   };
 
   private coasts: EntityGroup<Coast> = {
     new_type: () => new Coast(),
-    entities: new Map(),
+    entries: new Map(),
   };
 
   private runways: EntityGroup<Runway> = {
     new_type: () => new Runway(),
-    entities: new Map(),
+    entries: new Map(),
   };
 
   private bunkers: EntityGroup<Bunker> = {
     new_type: () => new Bunker(),
-    entities: new Map(),
+    entries: new Map(),
   };
 
   private men: EntityGroup<Man> = {
     new_type: () => new Man(),
-    entities: new Map(),
+    entries: new Map(),
   };
 
-  private entityContainer: EntityCollection = {
+  private entities: EntityCollection = {
     WorldInfo: this.worldInfo,
     Plane: this.planes,
     Man: this.men,
@@ -244,7 +244,7 @@ export class DogfightClient {
 
   private getMyPlayer(): Player | undefined {
     if (this.myPlayerId === null) return undefined;
-    const myPlayer = this.players.entities.get(this.myPlayerId);
+    const myPlayer = this.players.entries.get(this.myPlayerId);
     return myPlayer;
   }
 
@@ -327,18 +327,18 @@ export class DogfightClient {
   }
 
   private deleteEntity(id: number, ent_type: EntityType) {
-    const ent_map = this.entityContainer[ent_type];
-    if (!ent_map) return;
-    const entity = ent_map.entities.get(id);
-    entity?.destroy();
-    ent_map.entities.delete(id);
+    const group = this.entities[ent_type];
+    const entity = group.entries.get(id);
+    if (!entity) return;
+    entity.destroy();
+    group.entries.delete(id);
   }
 
   private updateEntity(id: number, data: EntityProperties) {
-    const ent_map = this.entityContainer[data.type];
+    const ent_map = this.entities[data.type];
     if (!ent_map) return;
 
-    let entity = ent_map.entities.get(id);
+    let entity = ent_map.entries.get(id);
 
     // If the entity doesn't exist, create a new one
     // and add it to the stage
@@ -347,7 +347,7 @@ export class DogfightClient {
       if (entity) {
         // Not sure why Typescript wants to error when I call the set() function here.
         // It's making the set param a union type for some reason I don't understand
-        const x = ent_map.entities.set(id, entity as any);
+        const x = ent_map.entries.set(id, entity as any);
         this.viewport.addChild(entity.getContainer());
       }
     }

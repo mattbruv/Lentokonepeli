@@ -16,7 +16,8 @@ pub enum WorldState {
 
 #[derive(Networked)]
 pub struct WorldInfo {
-    state: Property<WorldState>,
+    #[rustfmt::skip]
+    state: Property<Option::<WorldState>>,
     #[rustfmt::skip]
     winner: Property<Option::<Team>>,
 }
@@ -24,7 +25,7 @@ pub struct WorldInfo {
 impl WorldInfo {
     pub fn new() -> Self {
         Self {
-            state: Property::new(WorldState::Intermission),
+            state: Property::new(Some(WorldState::Intermission)),
             winner: Property::new(None),
         }
     }

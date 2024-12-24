@@ -142,7 +142,7 @@ export class RunwaySelector {
   }
 
   private getMyRunways(runways: EntityGroup<Runway>): [number, Runway][] {
-    return [...runways.entities.entries()]
+    return [...runways.entries.entries()]
       .filter(
         ([_, runway]) => runway.props.team === this.team
         // TODO: health
