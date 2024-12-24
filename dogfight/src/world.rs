@@ -67,6 +67,10 @@ impl World {
         game_output
     }
 
+    pub fn debug(&self) -> String {
+        "hello from dogfight".to_owned()
+    }
+
     pub(crate) fn get_player_from_name(
         &mut self,
         name: &String,

@@ -40,6 +40,10 @@ impl DogfightWeb {
         binary
     }
 
+    pub fn debug(&self) -> String {
+        self.world.debug()
+    }
+
     pub fn game_events_from_binary(&self, binary: Vec<u8>) -> String {
         let events = game_events_from_bytes(&binary);
         game_events_to_json(&events)

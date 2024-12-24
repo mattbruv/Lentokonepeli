@@ -71,7 +71,7 @@ export function Game() {
           }
 
           if (event.key === "d") {
-            console.log("debug")
+            console.log(dogfight.game.debug())
           }
         };
 
