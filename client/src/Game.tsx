@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { DogfightContext } from "./DogfightContext";
 import Levels from "./assets/levels.json";
 import { GameOutput } from "dogfight-types/GameOutput";
@@ -8,6 +8,9 @@ import { GameInput } from "dogfight-types/GameInput";
 import { RunwaySelection } from "dogfight-types/RunwaySelection";
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 import { PlaneType } from "dogfight-types/PlaneType";
+
+let paused = false;
+let doTick = false;
 
 export function Game() {
   const gameContainer = useRef<HTMLDivElement>(null);
@@ -57,6 +60,15 @@ export function Game() {
         };
         document.onkeyup = (event) => {
           dogfight.client.keyboard.onKeyUp(event.key);
+
+          // pause/unpause the game
+          if (event.key === "q") {
+            paused = !paused
+          }
+
+          if (event.key === "t") {
+            doTick = true
+          }
         };
 
         dogfight.game.load_level(Levels.classic2);
@@ -72,6 +84,9 @@ export function Game() {
         });
 
         setInterval(() => {
+          if (paused && !doTick) return;
+          doTick = false;
+
           const input_json = JSON.stringify(tick_input);
           tick_input = [];
           const tick = dogfight.game.tick(input_json);

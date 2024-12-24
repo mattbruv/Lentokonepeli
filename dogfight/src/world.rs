@@ -1,22 +1,10 @@
-use std::{any::Any, collections::HashMap, sync::Arc, vec};
-
 use crate::{
     entities::{
-        background_item::BackgroundItem,
-        bunker::Bunker,
-        coast::Coast,
-        container::EntityContainer,
-        ground::Ground,
-        man::Man,
-        plane::Plane,
-        player::{ControllingEntity, Player},
-        runway::Runway,
-        types::EntityType,
-        water::Water,
-        world_info::WorldInfo,
-        EntityId,
+        background_item::BackgroundItem, bunker::Bunker, coast::Coast, container::EntityContainer,
+        ground::Ground, man::Man, plane::Plane, player::Player, runway::Runway, types::EntityType,
+        water::Water, world_info::WorldInfo, EntityId,
     },
-    input::{GameInput, PlayerKeyboard, RunwaySelection},
+    input::GameInput,
     output::GameOutput,
     tick::{tick_controlled_entities, TickControlled},
 };
