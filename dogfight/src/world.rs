@@ -1,7 +1,5 @@
-use std::{fmt::Debug, process::id};
-
 use crate::{
-    collision::{BoundingBox, DebugEntity, SolidEntity},
+    collision::{DebugEntity, SolidEntity},
     entities::{
         background_item::BackgroundItem, bunker::Bunker, coast::Coast, container::EntityContainer,
         ground::Ground, man::Man, plane::Plane, player::Player, runway::Runway, types::EntityType,
@@ -9,7 +7,6 @@ use crate::{
     },
     input::GameInput,
     output::GameOutput,
-    tick::{tick_controlled_entities, TickControlled},
 };
 
 pub const RESOLUTION: i32 = 100;
@@ -54,11 +51,7 @@ impl World {
         let input_events = self.handle_input(input);
         game_output.extend(input_events);
 
-        tick_controlled_entities(TickControlled {
-            men: &mut self.men,
-            players: &mut self.players,
-            planes: &mut self.planes,
-        });
+        self.tick_controlled_entities();
 
         // return the changed state
         let updated_state = self.get_changed_state();
