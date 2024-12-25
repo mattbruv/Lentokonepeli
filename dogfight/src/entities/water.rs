@@ -1,6 +1,10 @@
 use dogfight_macros::Networked;
+use image::RgbaImage;
 
-use crate::network::{property::*, EntityProperties, NetworkedEntity};
+use crate::{
+    collision::{BoundingBox, SolidEntity},
+    network::{property::*, EntityProperties, NetworkedEntity},
+};
 
 use super::types::{Facing, Terrain};
 
@@ -22,5 +26,24 @@ impl Water {
             client_x: Property::new(x),
             client_y: Property::new(y),
         }
+    }
+}
+
+impl SolidEntity for Water {
+    fn get_team(&self) -> super::types::Team {
+        todo!()
+    }
+
+    fn get_collision_bounds(&self) -> BoundingBox {
+        BoundingBox {
+            x: *self.client_x.get(),
+            y: *self.client_y.get(),
+            width: *self.width.get(),
+            height: 100,
+        }
+    }
+
+    fn get_collision_image(&self) -> Option<&RgbaImage> {
+        None
     }
 }

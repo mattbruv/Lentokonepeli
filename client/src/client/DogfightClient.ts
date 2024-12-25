@@ -151,6 +151,7 @@ export class DogfightClient {
       this.app.stage.addChild(this.debugPointer);
       this.app.stage.addChild(this.debugCoords);
       this.viewport.addChild(this.debugCollision);
+      this.debugCollision.zIndex = 999;
       this.debugCoords.position.set(0, 30)
       this.debugPointer.style.fontFamily = "monospace";
       this.debugCoords.style.fontFamily = "monospace";
@@ -402,19 +403,36 @@ export class DogfightClient {
 
   public renderDebug(debugInfo: DebugEntity[]) {
     this.debugCollision.clear();
+    this.viewport.sortChildren()
 
     for (const entry of debugInfo) {
-      console.log(entry)
+
       this.debugCollision.lineStyle({
-        color: "#ff00ff",
+        color: DEBUG_COLORS[entry.ent_type],
         width: 1,
       })
 
       const { x, y, width, height } = entry.bounding_box
+
+      console.log(entry)
 
       this.debugCollision.drawRect(x, y, width, height)
     }
 
     this.debugCollision.endFill()
   }
+}
+
+
+const DEBUG_COLORS: Record<EntityType, string> = {
+  WorldInfo: "gray",
+  Man: "magenta",
+  Plane: "purple",
+  Player: "gray",
+  BackgroundItem: "",
+  Ground: "orange",
+  Coast: "red",
+  Runway: "yellow",
+  Water: "blue",
+  Bunker: "brown"
 }

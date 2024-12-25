@@ -87,7 +87,37 @@ impl World {
             })
             .collect();
 
+        let water_bounds: Vec<DebugEntity> = self
+            .waters
+            .get_map()
+            .iter()
+            .map(|(idx, water)| {
+                let bounds = water.get_collision_bounds();
+                DebugEntity {
+                    ent_id: *idx,
+                    ent_type: EntityType::Water,
+                    bounding_box: bounds,
+                }
+            })
+            .collect();
+
+        let ground_bounds: Vec<DebugEntity> = self
+            .grounds
+            .get_map()
+            .iter()
+            .map(|(idx, ground)| {
+                let bounds = ground.get_collision_bounds();
+                DebugEntity {
+                    ent_id: *idx,
+                    ent_type: EntityType::Ground,
+                    bounding_box: bounds,
+                }
+            })
+            .collect();
+
         debug_info.extend(man_bounds);
+        debug_info.extend(ground_bounds);
+        debug_info.extend(water_bounds);
 
         serde_json::to_string(&debug_info).unwrap()
     }

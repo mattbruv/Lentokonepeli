@@ -18,10 +18,10 @@ pub struct DebugEntity {
 #[derive(Debug, Clone, Copy, Serialize, TS)]
 #[ts(export)]
 pub struct BoundingBox {
-    pub x: i32,
-    pub y: i32,
-    pub width: i32,
-    pub height: i32,
+    pub x: i16,
+    pub y: i16,
+    pub width: i16,
+    pub height: i16,
 }
 
 impl BoundingBox {
