@@ -3,6 +3,7 @@ use serde::Serialize;
 use ts_rs::TS;
 
 use crate::entities::{
+    entity::Entity,
     types::{EntityType, Team},
     EntityId,
 };
@@ -51,9 +52,8 @@ impl BoundingBox {
     }
 }
 
-pub trait SolidEntity {
+pub trait SolidEntity: Entity {
     //fn is_alive(&self) -> bool;
-    fn get_team(&self) -> Team;
 
     fn get_collision_bounds(&self) -> BoundingBox;
     fn get_collision_image(&self) -> Option<&RgbaImage>;

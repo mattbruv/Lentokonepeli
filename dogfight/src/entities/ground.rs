@@ -5,7 +5,10 @@ use crate::{
     network::{property::*, EntityProperties, NetworkedEntity},
 };
 
-use super::types::Terrain;
+use super::{
+    entity::Entity,
+    types::{EntityType, Terrain},
+};
 
 #[derive(Networked)]
 pub struct Ground {
@@ -26,11 +29,13 @@ impl Ground {
     }
 }
 
-impl SolidEntity for Ground {
-    fn get_team(&self) -> super::types::Team {
-        todo!()
+impl Entity for Ground {
+    fn get_type(&self) -> EntityType {
+        EntityType::Ground
     }
+}
 
+impl SolidEntity for Ground {
     fn get_collision_bounds(&self) -> crate::collision::BoundingBox {
         BoundingBox {
             x: *self.client_x.get(),

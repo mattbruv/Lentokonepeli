@@ -2,6 +2,7 @@ pub mod background_item;
 pub mod bunker;
 pub mod coast;
 pub mod container;
+pub mod entity;
 pub mod ground;
 pub mod man;
 pub mod plane;

@@ -9,7 +9,10 @@ use crate::{
     world::RESOLUTION,
 };
 
-use super::types::Team;
+use super::{
+    entity::Entity,
+    types::{EntityType, Team},
+};
 
 const SPEED_PER_PIXEL: i32 = 100;
 
@@ -145,11 +148,13 @@ impl Man {
     }
 }
 
-impl SolidEntity for Man {
-    fn get_team(&self) -> Team {
-        *self.team.get()
+impl Entity for Man {
+    fn get_type(&self) -> EntityType {
+        EntityType::Man
     }
+}
 
+impl SolidEntity for Man {
     fn get_collision_bounds(&self) -> BoundingBox {
         BoundingBox {
             x: (self.x / RESOLUTION) as i16,

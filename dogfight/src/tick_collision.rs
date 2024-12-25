@@ -1,4 +1,4 @@
-use crate::{entities::types::EntityType, tick_actions::Action, world::World};
+use crate::{collision::SolidEntity, tick_actions::Action, world::World};
 
 impl World {
     /*
@@ -11,9 +11,32 @@ impl World {
             - Bunker
             - Water
             - Explosion
+            - Man
+            - Runway
+
+        Active:
+            - Bomb
+            - Bullet
+            - Plane
+            - Explosion
+            - Man
+
+        We won't ever need to worry about checking bunker <-> ground collision
+        or basically any combination of static objects against other static objects
+        Static:
+            - Runway
+            - Bunker
+            - Water
+            - Ground
+            - Coast
     */
     pub fn tick_collision_entities(&mut self) -> Vec<Action> {
         let collision_actions = vec![];
+        let x = self
+            .men
+            .get_map()
+            .iter()
+            .map(|m| m.1.get_collision_bounds());
 
         /*
         for (_, player) in self.players.get_map_mut() {
@@ -32,4 +55,7 @@ impl World {
 
         collision_actions
     }
+
+    // Get bounding boxes of all collidable objects
+    //
 }
