@@ -27,6 +27,7 @@ import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 import { PlaneType } from "dogfight-types/PlaneType";
 import { WorldInfo } from "./entities/worldInfo";
 import { Plane } from "./entities/plane";
+import { DebugEntity } from "dogfight-types/DebugEntity";
 
 export type GameClientCallbacks = {
   chooseTeam: (team: Team | null) => void;
@@ -51,6 +52,7 @@ export class DogfightClient {
   // Debugging helpers
   private debugPointer = new PIXI.Text();
   private debugCoords = new PIXI.Text();
+  private debugCollision = new PIXI.Graphics();
 
   private myPlayerId: number | null = null;
   private myPlayerName: string | null = null;
@@ -148,6 +150,7 @@ export class DogfightClient {
     if (import.meta.env.DEV) {
       this.app.stage.addChild(this.debugPointer);
       this.app.stage.addChild(this.debugCoords);
+      this.viewport.addChild(this.debugCollision);
       this.debugCoords.position.set(0, 30)
       this.debugPointer.style.fontFamily = "monospace";
       this.debugCoords.style.fontFamily = "monospace";
@@ -395,5 +398,23 @@ export class DogfightClient {
         }
       }
     }
+  }
+
+  public renderDebug(debugInfo: DebugEntity[]) {
+    this.debugCollision.clear();
+
+    for (const entry of debugInfo) {
+      console.log(entry)
+      this.debugCollision.lineStyle({
+        color: "#ff00ff",
+        width: 1,
+      })
+
+      const { x, y, width, height } = entry.bounding_box
+
+      this.debugCollision.drawRect(x, y, width, height)
+    }
+
+    this.debugCollision.endFill()
   }
 }

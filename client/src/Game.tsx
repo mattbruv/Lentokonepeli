@@ -73,7 +73,7 @@ export function Game() {
 
           if (event.key === "d") {
             const debugInfo: DebugEntity[] = JSON.parse(dogfight.game.debug())
-            console.log(debugInfo)
+            dogfight.client.renderDebug(debugInfo);
           }
         };
 
