@@ -6,5 +6,7 @@ pub mod level;
 pub mod math;
 pub mod network;
 pub mod output;
-pub mod tick;
+pub mod tick_actions;
+pub mod tick_collision;
+pub mod tick_runnable;
 pub mod world;

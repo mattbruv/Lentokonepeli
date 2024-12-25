@@ -1,4 +1,4 @@
-use crate::{entities::types::EntityType, world::World};
+use crate::{entities::types::EntityType, tick_actions::Action, world::World};
 
 /*
 
@@ -20,7 +20,20 @@ Break this out into separate files to manage what I'm sure will be large blocks 
 */
 
 impl World {
-    pub fn tick_controlled_entities(&mut self) {
+    /*
+        Runnable entities:
+            - Bomb
+            - Explosion
+            - Plane
+            - Ghost (?)
+            - Runway
+            - Bullet
+            - Man
+            - Bunker
+    */
+    pub fn tick_runnable_entities(&mut self) -> Vec<Action> {
+        let run_actions = vec![];
+
         for (_, player) in self.players.get_map_mut() {
             if let Some(controlled) = player.get_controlling() {
                 match controlled.entity_type {
@@ -33,5 +46,7 @@ impl World {
                 };
             }
         }
+
+        run_actions
     }
 }

@@ -51,7 +51,17 @@ impl World {
         let input_events = self.handle_input(input);
         game_output.extend(input_events);
 
-        self.tick_controlled_entities();
+        // 1. Tick runnable entities and capture output actions
+        let runnable_actions = self.tick_runnable_entities();
+
+        // 2. Process runnable actions
+        game_output.extend(self.process_actions(runnable_actions));
+
+        // 3. Process collision
+        let collision_actions = self.tick_collision_entities();
+
+        // 4. Process collision actions
+        game_output.extend(self.process_actions(collision_actions));
 
         // return the changed state
         let updated_state = self.get_changed_state();
