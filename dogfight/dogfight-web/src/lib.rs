@@ -20,6 +20,8 @@ pub struct DogfightWeb {
 #[wasm_bindgen]
 impl DogfightWeb {
     pub fn new() -> Self {
+        utils::set_panic_hook();
+
         Self {
             world: World::new(),
         }

@@ -27,6 +27,10 @@ impl Ground {
             client_y: Property::new(y),
         }
     }
+
+    pub fn get_y(&self) -> i16 {
+        *self.client_y.get()
+    }
 }
 
 impl Entity for Ground {

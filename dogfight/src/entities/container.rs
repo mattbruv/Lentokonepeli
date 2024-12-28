@@ -28,7 +28,7 @@ where
 
     /**
      * Try to insert an entity into the HashMap.
-     * returns the entity if it was succesfully inserted,
+     * returns the entity if it was successfully inserted,
      * otherwise returns None
      */
     pub fn insert(&mut self, entity: T) -> Option<(EntityId, &T)> {

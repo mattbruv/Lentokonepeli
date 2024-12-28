@@ -6,7 +6,7 @@ use crate::{
     images::{get_image, PARACHUTER0},
     input::PlayerKeyboard,
     network::{property::*, EntityProperties, NetworkedEntity},
-    world::RESOLUTION,
+    world::{World, RESOLUTION},
 };
 
 use super::{
@@ -98,6 +98,10 @@ impl Man {
         self.client_y.set((y / RESOLUTION) as i16);
     }
 
+    pub fn set_state(&mut self, new_state: ManState) {
+        self.state.set(new_state);
+    }
+
     pub fn set_client_y(&mut self, client_y: i16) -> () {
         self.y = client_y as i32 * RESOLUTION;
         self.client_y.set(client_y);
@@ -165,6 +169,7 @@ impl SolidEntity for Man {
     }
 
     fn get_collision_image(&self) -> Option<&RgbaImage> {
-        Some(&self.img)
+        None
+        // Some(&self.img)
     }
 }

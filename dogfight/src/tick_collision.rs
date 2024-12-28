@@ -1,4 +1,9 @@
-use crate::{collision::SolidEntity, tick_actions::Action, world::World};
+use crate::{
+    collision::SolidEntity,
+    entities::{container::EntityContainer, man::ManState},
+    tick_actions::Action,
+    world::World,
+};
 
 impl World {
     /*
@@ -31,29 +36,32 @@ impl World {
             - Coast
     */
     pub fn tick_collision_entities(&mut self) -> Vec<Action> {
-        let collision_actions = vec![];
-        let x = self
-            .men
-            .get_map()
-            .iter()
-            .map(|m| m.1.get_collision_bounds());
+        let mut actions = vec![];
 
-        /*
-        for (_, player) in self.players.get_map_mut() {
-            if let Some(controlled) = player.get_controlling() {
-                match controlled.entity_type {
-                    EntityType::Man => {
-                        if let Some(man) = self.men.get_mut(controlled.id) {
-                            man.tick(player.get_keys());
-                        }
-                    }
-                    _ => (),
-                };
+        actions.extend(self.collide_men());
+
+        actions
+    }
+
+    fn collide_men(&mut self) -> Vec<Action> {
+        let mut actions = vec![];
+
+        for (man_id, man) in self.men.get_map_mut() {
+            // Man -> Ground
+            for (ground_id, ground) in self.grounds.get_map() {
+                if man.check_collision(ground) {
+                    man.set_client_y(ground.get_y());
+                    man.set_state(ManState::Standing);
+                }
+            }
+
+            // Man -> Water
+            for (water_id, water) in self.waters.get_map() {
+                //
             }
         }
-        */
 
-        collision_actions
+        actions
     }
 
     // Get bounding boxes of all collidable objects
