@@ -1,7 +1,7 @@
 use crate::{
     collision::SolidEntity,
-    entities::{container::EntityContainer, man::ManState},
-    tick_actions::Action,
+    entities::{container::EntityContainer, entity::Entity, man::ManState},
+    tick_actions::{Action, KillData},
     world::World,
 };
 
@@ -46,7 +46,7 @@ impl World {
     fn collide_men(&mut self) -> Vec<Action> {
         let mut actions = vec![];
 
-        for (man_id, man) in self.men.get_map_mut() {
+        'men: for (man_id, man) in self.men.get_map_mut() {
             // Man -> Ground
             for (ground_id, ground) in self.grounds.get_map() {
                 if man.check_collision(ground) {
@@ -58,6 +58,13 @@ impl World {
             // Man -> Water
             for (water_id, water) in self.waters.get_map() {
                 //
+                if man.check_collision(water) {
+                    actions.push(Action::Kill(KillData {
+                        ent_id: *man_id,
+                        ent_type: man.get_type(),
+                    }));
+                    break 'men;
+                }
             }
         }
 

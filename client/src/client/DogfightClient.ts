@@ -414,7 +414,7 @@ export class DogfightClient {
 
       const { x, y, width, height } = entry.bounding_box
 
-      console.log(entry)
+      // console.log(entry)
 
       this.debugCollision.drawRect(x, y, width, height)
     }
