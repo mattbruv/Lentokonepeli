@@ -98,6 +98,10 @@ impl Man {
         self.client_y.set((y / RESOLUTION) as i16);
     }
 
+    pub fn get_state(&self) -> ManState {
+        *self.state.get()
+    }
+
     pub fn set_state(&mut self, new_state: ManState) {
         self.state.set(new_state);
     }
