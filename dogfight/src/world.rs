@@ -63,7 +63,6 @@ impl World {
     pub fn init_debug(&mut self) -> () {
         let mut debug_plane = Plane::new(PlaneType::Fokker);
 
-        debug_plane.set_angle(PI / 3.0);
         debug_plane.set_position(-2490, -20);
 
         self.planes.insert(debug_plane);
@@ -72,7 +71,7 @@ impl World {
     pub fn tick(&mut self, input: Vec<GameInput>) -> Vec<GameOutput> {
         self.game_tick += 1;
 
-        if self.game_tick == 10 {
+        if self.game_tick == 50 {
             self.init_debug();
         }
 

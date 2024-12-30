@@ -10,7 +10,7 @@ use crate::{
 
 const MAX_Y: i16 = -570;
 const SKY_HEIGHT: i16 = 500;
-const DIRECTIONS: i32 = 256;
+const DIRECTIONS: f64 = 256.0;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS, EnumBytes)]
 #[ts(export)]
@@ -67,15 +67,15 @@ impl Plane {
         self.client_y.set(y);
     }
 
-    pub fn set_direction(&mut self, new_direction: u8) {
-        let angle = new_direction as f64 * (TAU / DIRECTIONS as f64);
+    pub fn set_direction(&mut self, direction: u8) {
+        let angle = TAU * direction as f64 / DIRECTIONS;
         self.set_angle(angle);
     }
 
+    // this.direction = ((int)(this.physicalModel.angle * 256.0D / 6.283185307179586D));
     pub fn set_angle(&mut self, new_angle: f64) {
         self.physical_model.set_angle(new_angle);
-        self.direction
-            .set((self.physical_model.angle * (DIRECTIONS as f64) / TAU) as u8);
+        self.direction.set((new_angle * (DIRECTIONS) / TAU) as u8);
     }
 
     pub fn get_direction(&self) -> u8 {
@@ -100,7 +100,7 @@ impl PhysicalModel {
             gravity: 6.0,
             gravity_pull: 0.04908738521234052,
             speed: 0.0,
-            angle: 0.0,
+            angle: 0.0, // This should probably be named radians
         }
     }
 

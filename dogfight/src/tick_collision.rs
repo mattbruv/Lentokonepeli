@@ -1,6 +1,6 @@
 use crate::{
     collision::SolidEntity,
-    entities::{container::EntityContainer, entity::Entity, man::ManState},
+    entities::{entity::Entity, man::ManState},
     tick_actions::{Action, KillData},
     world::World,
 };
