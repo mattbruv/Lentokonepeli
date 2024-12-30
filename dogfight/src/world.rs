@@ -1,9 +1,22 @@
+use core::panic;
+use std::{f64::consts::PI, thread::panicking};
+
 use crate::{
     collision::{DebugEntity, SolidEntity},
     entities::{
-        background_item::BackgroundItem, bunker::Bunker, coast::Coast, container::EntityContainer,
-        ground::Ground, man::Man, plane::Plane, player::Player, runway::Runway, types::EntityType,
-        water::Water, world_info::WorldInfo, EntityId,
+        background_item::BackgroundItem,
+        bunker::Bunker,
+        coast::Coast,
+        container::EntityContainer,
+        ground::Ground,
+        man::Man,
+        plane::{Plane, PlaneType},
+        player::Player,
+        runway::Runway,
+        types::EntityType,
+        water::Water,
+        world_info::WorldInfo,
+        EntityId,
     },
     input::GameInput,
     output::GameOutput,
@@ -13,6 +26,7 @@ pub const RESOLUTION: i32 = 100;
 pub const LEVEL_BORDER_X: i16 = 20_000;
 
 pub struct World {
+    game_tick: u32,
     pub world_info: WorldInfo,
     pub players: EntityContainer<Player>,
     pub planes: EntityContainer<Plane>,
@@ -28,6 +42,7 @@ pub struct World {
 impl World {
     pub fn new() -> Self {
         let world = World {
+            game_tick: 0,
             world_info: WorldInfo::new(),
             men: EntityContainer::new(EntityType::Man),
             planes: EntityContainer::new(EntityType::Plane),
@@ -45,7 +60,26 @@ impl World {
 
     pub fn init(&mut self) -> () {}
 
+    pub fn init_debug(&mut self) -> () {
+        let mut debug_plane = Plane::new(PlaneType::Fokker);
+
+        debug_plane.set_angle(PI / 3.0);
+        debug_plane.set_position(-2490, -20);
+
+        self.planes.insert(debug_plane);
+    }
+
     pub fn tick(&mut self, input: Vec<GameInput>) -> Vec<GameOutput> {
+        self.game_tick += 1;
+
+        if self.game_tick == 10 {
+            self.init_debug();
+        }
+
+        if let Some(p) = self.planes.get_mut(0) {
+            p.set_direction(p.get_direction() + 1);
+        }
+
         // process input data
         let mut game_output: Vec<GameOutput> = vec![];
         let input_events = self.handle_input(input);

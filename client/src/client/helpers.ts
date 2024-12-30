@@ -1,6 +1,11 @@
 import * as PIXI from "pixi.js";
 import { Point } from "./entities/entity";
 
+export function directionToRadians(direction: number): number {
+  const degrees = (direction / 255) * 360
+  return degrees * (Math.PI / 180)
+}
+
 export function toGamePoint(pixiPoint: PIXI.Point): Point {
   return {
     x: Math.round(pixiPoint.x),

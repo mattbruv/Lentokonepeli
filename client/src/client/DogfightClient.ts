@@ -357,7 +357,7 @@ export class DogfightClient {
       if (entity) {
         // Not sure why Typescript wants to error when I call the set() function here.
         // It's making the set param a union type for some reason I don't understand
-        const x = ent_map.entries.set(id, entity as any);
+        ent_map.entries.set(id, entity as any);
         this.viewport.addChild(entity.getContainer());
       }
     }
