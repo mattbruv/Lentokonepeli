@@ -69,12 +69,12 @@ impl Plane {
 
     pub fn set_direction(&mut self, direction: u8) {
         let angle = TAU * direction as f64 / DIRECTIONS;
-        self.set_angle(angle);
+        self.set_radians(angle);
     }
 
     // this.direction = ((int)(this.physicalModel.angle * 256.0D / 6.283185307179586D));
-    pub fn set_angle(&mut self, new_angle: f64) {
-        self.physical_model.set_angle(new_angle);
+    fn set_radians(&mut self, new_angle: f64) {
+        self.physical_model.set_radians(new_angle);
         self.direction.set((new_angle * (DIRECTIONS) / TAU) as u8);
     }
 
@@ -104,7 +104,7 @@ impl PhysicalModel {
         }
     }
 
-    fn set_angle(&mut self, new_angle: f64) {
+    fn set_radians(&mut self, new_angle: f64) {
         self.angle = new_angle
     }
 
