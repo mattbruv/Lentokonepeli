@@ -3,10 +3,10 @@ use image::RgbaImage;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
-    images::{get_image, PARACHUTER0},
+    images::{get_image, PARACHUTER0, PARACHUTER1},
     input::PlayerKeyboard,
     network::{property::*, EntityProperties, NetworkedEntity},
-    world::{World, RESOLUTION},
+    world::RESOLUTION,
 };
 
 use super::{
@@ -39,7 +39,8 @@ pub struct Man {
     client_y: Property<i16>,
     state: Property<ManState>,
 
-    img: RgbaImage,
+    image_standing: RgbaImage,
+    image_parachuting: RgbaImage,
 }
 
 impl Man {
@@ -53,7 +54,8 @@ impl Man {
             state: Property::new(ManState::Falling),
             x_speed: 1,
             y_speed: 1,
-            img: get_image(PARACHUTER0),
+            image_standing: get_image(PARACHUTER0),
+            image_parachuting: get_image(PARACHUTER1),
         }
     }
 
@@ -167,13 +169,15 @@ impl SolidEntity for Man {
         BoundingBox {
             x: (self.x / RESOLUTION) as i16,
             y: (self.y / RESOLUTION) as i16,
-            width: 10,
-            height: 10,
+            width: self.image_parachuting.width() as i16,
+            height: self.image_parachuting.height() as i16,
         }
     }
 
     fn get_collision_image(&self) -> Option<&RgbaImage> {
-        None
-        // Some(&self.img)
+        match self.state.get() {
+            ManState::Parachuting => Some(&self.image_parachuting),
+            _ => Some(&self.image_standing),
+        }
     }
 }

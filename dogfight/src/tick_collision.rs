@@ -50,11 +50,12 @@ impl World {
             // Man -> Ground
             for (ground_id, ground) in self.grounds.get_map() {
                 if man.check_collision(ground) {
-                    man.set_client_y(ground.get_y());
                     match man.get_state() {
                         // Update the state to walking only if we're not already doing it.
                         ManState::Falling | ManState::Parachuting => {
                             man.set_state(ManState::Standing);
+                            let h = man.get_collision_image().unwrap().height();
+                            man.set_client_y(ground.get_y() - h as i16);
                         }
                         _ => {}
                     }
