@@ -1,7 +1,9 @@
 use dogfight_macros::Networked;
+use image::RgbaImage;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
+    images::{get_image, GROUND1, PARACHUTER0},
     network::{property::*, EntityProperties, NetworkedEntity},
 };
 
@@ -16,6 +18,8 @@ pub struct Ground {
     width: Property<i16>,
     client_x: Property<i16>,
     client_y: Property<i16>,
+
+    image: RgbaImage,
 }
 
 impl Ground {
@@ -25,6 +29,7 @@ impl Ground {
             width: Property::new(width),
             client_x: Property::new(x),
             client_y: Property::new(y),
+            image: get_image(GROUND1),
         }
     }
 
@@ -39,13 +44,15 @@ impl Entity for Ground {
     }
 }
 
+const Y_HIT_OFFSET: i16 = 7;
+
 impl SolidEntity for Ground {
     fn get_collision_bounds(&self) -> crate::collision::BoundingBox {
         BoundingBox {
             x: *self.client_x.get(),
-            y: *self.client_y.get(),
+            y: *self.client_y.get() + Y_HIT_OFFSET, // hardcoded offset of 7 in original server
             width: *self.width.get(),
-            height: 100,
+            height: self.image.height() as i16 - Y_HIT_OFFSET,
         }
     }
 

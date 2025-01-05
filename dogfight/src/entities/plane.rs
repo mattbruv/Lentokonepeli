@@ -1,12 +1,17 @@
 use std::f64::consts::{PI, TAU};
 
 use dogfight_macros::{EnumBytes, Networked};
+use image::RgbaImage;
 use serde::Deserialize;
 
 use crate::{
+    collision::{BoundingBox, SolidEntity},
+    images::{get_image, PARACHUTER0, PLANE4, PLANE5, PLANE6, PLANE7, PLANE8, PLANE9},
     network::{property::Property, EntityProperties, NetworkedEntity},
     world::RESOLUTION,
 };
+
+use super::{entity::Entity, types::EntityType};
 
 const MAX_Y: i16 = -570;
 const SKY_HEIGHT: i16 = 500;
@@ -44,6 +49,13 @@ pub struct Plane {
     direction: Property<u8>,
     state: PlaneState,
     physical_model: PhysicalModel,
+
+    image_albatros: RgbaImage,
+    image_junkers: RgbaImage,
+    image_fokker: RgbaImage,
+    image_bristol: RgbaImage,
+    image_salmson: RgbaImage,
+    image_sopwith: RgbaImage,
 }
 
 impl Plane {
@@ -57,6 +69,13 @@ impl Plane {
             direction: Property::new(0),
             state: PlaneState::Landed,
             physical_model: PhysicalModel::new(),
+
+            image_albatros: get_image(PLANE4),
+            image_junkers: get_image(PLANE5),
+            image_fokker: get_image(PLANE6),
+            image_bristol: get_image(PLANE7),
+            image_salmson: get_image(PLANE8),
+            image_sopwith: get_image(PLANE9),
         }
     }
 
@@ -267,5 +286,38 @@ impl Plane {
 
     fn get_y(&self) -> i32 {
         self.y
+    }
+
+    fn get_image(&self) -> &RgbaImage {
+        match self.plane_type.get() {
+            PlaneType::Albatros => &self.image_albatros,
+            PlaneType::Junkers => &self.image_junkers,
+            PlaneType::Fokker => &self.image_fokker,
+            PlaneType::Bristol => &self.image_bristol,
+            PlaneType::Salmson => &self.image_salmson,
+            PlaneType::Sopwith => &self.image_sopwith,
+        }
+    }
+}
+
+impl Entity for Plane {
+    fn get_type(&self) -> EntityType {
+        EntityType::Plane
+    }
+}
+
+impl SolidEntity for Plane {
+    fn get_collision_bounds(&self) -> BoundingBox {
+        let img = self.get_image();
+        BoundingBox {
+            x: (self.x / RESOLUTION) as i16,
+            y: (self.y / RESOLUTION) as i16,
+            width: img.width() as i16,
+            height: img.height() as i16,
+        }
+    }
+
+    fn get_collision_image(&self) -> Option<&RgbaImage> {
+        None
     }
 }

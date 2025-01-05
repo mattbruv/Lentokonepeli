@@ -55,7 +55,7 @@ impl World {
                         ManState::Falling | ManState::Parachuting => {
                             man.set_state(ManState::Standing);
                             let h = man.get_collision_image().unwrap().height();
-                            man.set_client_y(ground.get_y() - h as i16);
+                            man.set_client_y(ground.get_collision_bounds().y - h as i16);
                         }
                         _ => {}
                     }

@@ -21,12 +21,13 @@ export class Man implements Entity<ManProperties>, Followable {
     this.container = new PIXI.Container();
     this.manSprite = new PIXI.Sprite();
 
-    const texture = Textures["parachuter1.gif"];
+    const texture = Textures["parachuter0.gif"];
 
     this.manSprite.texture = texture;
 
     // set anchor point at bottom middle
-    // this.manSprite.anchor.set(0.5, 0);
+    this.manSprite.anchor.set(0.5, 0);
+    this.manSprite.position.x = texture.width / 2
 
     this.container.addChild(this.manSprite);
 
@@ -57,11 +58,11 @@ export class Man implements Entity<ManProperties>, Followable {
   public destroy() { }
 
   private updateX(): void {
-    this.manSprite.position.x = this.props.client_x;
+    this.container.position.x = this.props.client_x;
   }
 
   private updateY(): void {
-    this.manSprite.position.y = this.props.client_y;
+    this.container.position.y = this.props.client_y;
   }
 
   private updateState(): void {
