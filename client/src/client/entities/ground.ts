@@ -38,23 +38,19 @@ export class Ground implements Entity<GroundProperties> {
   public updateCallbacks: EntityUpdateCallbacks<GroundProperties> = {
     client_x: () => {
       const { client_x } = this.props;
-      if (client_x === undefined) return;
       this.groundSprite.x = client_x;
       this.water.x = client_x;
     },
     client_y: () => {
       const { client_y } = this.props;
-      if (client_y === undefined) return;
       this.groundSprite.y = client_y;
       this.water.y = client_y;
     },
     width: () => {
-      if (this.props.width === undefined) return;
       this.groundSprite.width = this.props.width;
     },
     terrain: () => {
       const { terrain } = this.props;
-      if (terrain === undefined) return;
 
       const textureMap: Record<Terrain, PIXI.Texture> = {
         Normal: Textures["ground1.gif"],
