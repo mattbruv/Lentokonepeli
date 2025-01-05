@@ -66,6 +66,10 @@ pub trait SolidEntity: Entity {
             let img_self = self.get_collision_image();
             let img_other = other.get_collision_image();
 
+            // web_sys::console::log_1(&format!("{:?}", intersection).into());
+            // web_sys::console::log_1(&format!("{:?}", img_self).into());
+            // web_sys::console::log_1(&format!("{:?}", img_other).into());
+
             if img_self.is_none() && img_other.is_none() {
                 return true;
             }

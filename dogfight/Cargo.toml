@@ -14,3 +14,4 @@ rand = "0.8.5"
 serde = { version = "1.0.197", features = ["derive"] }
 serde_json = "1.0.114"
 ts-rs = { version = "7.1.1", features = ["serde-compat"] }
+web-sys = { version = "0.3.76", features = ["console"] }
