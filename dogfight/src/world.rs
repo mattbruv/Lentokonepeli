@@ -116,6 +116,7 @@ impl World {
                     ent_id: *idx,
                     ent_type: EntityType::Man,
                     bounding_box: bounds,
+                    pixels: man.get_debug_pixels(),
                 }
             })
             .collect();
@@ -130,6 +131,7 @@ impl World {
                     ent_id: *idx,
                     ent_type: EntityType::Water,
                     bounding_box: bounds,
+                    pixels: water.get_debug_pixels(),
                 }
             })
             .collect();
@@ -144,6 +146,7 @@ impl World {
                     ent_id: *idx,
                     ent_type: EntityType::Plane,
                     bounding_box: bounds,
+                    pixels: plane.get_debug_pixels(),
                 }
             })
             .collect();
@@ -158,6 +161,7 @@ impl World {
                     ent_id: *idx,
                     ent_type: EntityType::Ground,
                     bounding_box: bounds,
+                    pixels: ground.get_debug_pixels(),
                 }
             })
             .collect();
@@ -172,6 +176,7 @@ impl World {
                     ent_id: *idx,
                     ent_type: EntityType::Coast,
                     bounding_box: bounds,
+                    pixels: coast.get_debug_pixels(),
                 }
             })
             .collect();

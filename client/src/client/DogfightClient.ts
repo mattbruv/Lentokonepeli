@@ -417,6 +417,14 @@ export class DogfightClient {
       // console.log(entry)
 
       this.debugCollision.drawRect(x, y, width, height)
+
+      if (entry.pixels) {
+        for (const pixel of entry.pixels) {
+          const px = x + pixel.x;
+          const py = y + pixel.y;
+          this.debugCollision.drawRect(px, py, 1, 1)
+        }
+      }
     }
 
     this.debugCollision.endFill()

@@ -1,19 +1,23 @@
-use image::RgbaImage;
+use image::{codecs::jpeg::PixelDensity, RgbaImage};
 use serde::Serialize;
 use ts_rs::TS;
 
-use crate::entities::{
-    entity::Entity,
-    types::{EntityType, Team},
-    EntityId,
+use crate::{
+    entities::{
+        entity::Entity,
+        types::{EntityType, Team},
+        EntityId,
+    },
+    math::Point,
 };
 
-#[derive(Debug, Clone, Copy, Serialize, TS)]
+#[derive(Debug, Clone, Serialize, TS)]
 #[ts(export)]
 pub struct DebugEntity {
     pub ent_id: EntityId,
     pub ent_type: EntityType,
     pub bounding_box: BoundingBox,
+    pub pixels: Option<Vec<Point>>,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, TS)]
@@ -98,6 +102,27 @@ pub trait SolidEntity: Entity {
         }
 
         false
+    }
+
+    fn get_debug_pixels(&self) -> Option<Vec<Point>> {
+        let mut pixels = vec![];
+        let img = self.get_collision_image();
+
+        if let Some(i) = img {
+            for (x, y, pixel) in i.enumerate_pixels() {
+                if pixel[3] != 0 {
+                    pixels.push(Point {
+                        x: x as i32,
+                        y: y as i32,
+                    });
+                }
+            }
+        }
+
+        match pixels.len() {
+            0 => None,
+            _ => Some(pixels),
+        }
     }
 }
 
