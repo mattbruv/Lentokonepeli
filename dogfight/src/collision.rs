@@ -79,14 +79,14 @@ pub trait SolidEntity: Entity {
             }
 
             if let Some(img) = img_self {
-                if check_pixels(img, &intersection, &bounds_self) {
+                if img_other.is_none() && check_pixels(img, &intersection, &bounds_self) {
                     web_sys::console::log_1(&format!("img self: {:?}", intersection).into());
                     return true;
                 }
             }
 
             if let Some(img) = img_other {
-                if check_pixels(img, &intersection, &bounds_other) {
+                if img_self.is_none() && check_pixels(img, &intersection, &bounds_other) {
                     web_sys::console::log_1(&format!("img other: {:?}", intersection).into());
                     return true;
                 }
@@ -136,6 +136,7 @@ fn check_pixels(image: &RgbaImage, intersection: &BoundingBox, bounds: &Bounding
             let pixel_x = intersection.x + x - bounds.x;
             let pixel_y = intersection.y + y - bounds.y;
             if image.get_pixel(pixel_x as u32, pixel_y as u32).0[3] != 0 {
+                web_sys::console::log_1(&format!("x: {} y: {}", pixel_x, pixel_y).into());
                 return true;
             }
         }
