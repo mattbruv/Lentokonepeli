@@ -105,6 +105,7 @@ impl Man {
     }
 
     pub fn set_state(&mut self, new_state: ManState) {
+        self.y_speed = 1;
         self.state.set(new_state);
     }
 

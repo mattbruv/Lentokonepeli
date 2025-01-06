@@ -54,11 +54,12 @@ impl World {
                         // Update the state to walking only if we're not already doing it.
                         ManState::Falling | ManState::Parachuting => {
                             man.set_state(ManState::Standing);
-                            let h = man.get_collision_image().unwrap().height();
-                            man.set_client_y(ground.get_collision_bounds().y - h as i16);
                         }
                         _ => {}
-                    }
+                    };
+
+                    //let h = man.get_collision_image().unwrap().height();
+                    //man.set_client_y(ground.get_collision_bounds().y - h as i16);
 
                     web_sys::console::log_1(&format!("man collide ground!").into());
                     break 'men;
@@ -93,7 +94,13 @@ impl World {
                 }
             }
 
-            man.set_state(ManState::Falling);
+            // If we didn't collide with something and we're walking/standing, fall
+            match man.get_state() {
+                ManState::WalkingLeft | ManState::WalkingRight | ManState::Standing => {
+                    man.set_state(ManState::Falling);
+                }
+                _ => {}
+            }
         }
 
         actions
