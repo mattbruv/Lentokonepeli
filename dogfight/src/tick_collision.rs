@@ -59,6 +59,25 @@ impl World {
                         }
                         _ => {}
                     }
+
+                    web_sys::console::log_1(&format!("man collide ground!").into());
+                    break 'men;
+                }
+            }
+
+            // Man -> Coast
+            for (coast_id, coast) in self.coasts.get_map() {
+                //
+                if man.check_collision(coast) {
+                    match man.get_state() {
+                        // Update the state to walking only if we're not already doing it.
+                        ManState::Falling | ManState::Parachuting => {
+                            man.set_state(ManState::Standing);
+                        }
+                        _ => {}
+                    }
+                    web_sys::console::log_1(&format!("man collide coast!").into());
+                    break 'men;
                 }
             }
 
@@ -73,6 +92,8 @@ impl World {
                     break 'men;
                 }
             }
+
+            man.set_state(ManState::Falling);
         }
 
         actions

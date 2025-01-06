@@ -180,7 +180,7 @@ impl World {
 
                         let mut man = Man::new(team);
                         man.set_client_x(client_x);
-                        man.set_client_y(-500);
+                        man.set_client_y(-200);
 
                         if let Some((man_id, _)) = self.men.insert(man) {
                             if let Some((_, player)) =
