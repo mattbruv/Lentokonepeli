@@ -1,6 +1,3 @@
-use core::panic;
-use std::{f64::consts::PI, thread::panicking};
-
 use crate::{
     collision::{DebugEntity, SolidEntity},
     entities::{
@@ -165,10 +162,25 @@ impl World {
             })
             .collect();
 
+        let coast_bounds: Vec<DebugEntity> = self
+            .coasts
+            .get_map()
+            .iter()
+            .map(|(idx, coast)| {
+                let bounds = coast.get_collision_bounds();
+                DebugEntity {
+                    ent_id: *idx,
+                    ent_type: EntityType::Coast,
+                    bounding_box: bounds,
+                }
+            })
+            .collect();
+
         debug_info.extend(man_bounds);
         debug_info.extend(ground_bounds);
         debug_info.extend(water_bounds);
         debug_info.extend(plane_bounds);
+        debug_info.extend(coast_bounds);
 
         serde_json::to_string(&debug_info).unwrap()
     }

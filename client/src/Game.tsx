@@ -95,7 +95,9 @@ export function Game() {
 
           const input_json = JSON.stringify(tick_input);
           tick_input = [];
+          //const start = performance.now();
           const tick = dogfight.game.tick(input_json);
+          //console.log("took " + (performance.now() - start))
           const events_json = dogfight.game.game_events_from_binary(tick);
           const events = JSON.parse(events_json) as GameOutput[];
 

@@ -47,7 +47,7 @@ impl Entity for Ground {
 const Y_HIT_OFFSET: i16 = 7;
 
 impl SolidEntity for Ground {
-    fn get_collision_bounds(&self) -> crate::collision::BoundingBox {
+    fn get_collision_bounds(&self) -> BoundingBox {
         BoundingBox {
             x: *self.client_x.get(),
             y: *self.client_y.get() + Y_HIT_OFFSET, // hardcoded offset of 7 in original server
@@ -56,7 +56,7 @@ impl SolidEntity for Ground {
         }
     }
 
-    fn get_collision_image(&self) -> Option<&image::RgbaImage> {
+    fn get_collision_image(&self) -> Option<&RgbaImage> {
         None
     }
 }
