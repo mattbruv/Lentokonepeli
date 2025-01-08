@@ -92,6 +92,14 @@ impl World {
                     break 'men;
                 }
             }
+
+            for (runway_id, runway) in self.runways.get_map() {
+                //
+                if man.check_collision(runway) {
+                    web_sys::console::log_1(&format!("man collide runway!").into());
+                    break 'men;
+                }
+            }
         }
 
         actions

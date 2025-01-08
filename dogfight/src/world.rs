@@ -181,11 +181,27 @@ impl World {
             })
             .collect();
 
+        let runway_bounds: Vec<DebugEntity> = self
+            .runways
+            .get_map()
+            .iter()
+            .map(|(idx, runway)| {
+                let bounds = runway.get_collision_bounds();
+                DebugEntity {
+                    ent_id: *idx,
+                    ent_type: EntityType::Runway,
+                    bounding_box: bounds,
+                    pixels: runway.get_debug_pixels(),
+                }
+            })
+            .collect();
+
         debug_info.extend(man_bounds);
         debug_info.extend(ground_bounds);
         debug_info.extend(water_bounds);
         debug_info.extend(plane_bounds);
         debug_info.extend(coast_bounds);
+        debug_info.extend(runway_bounds);
 
         serde_json::to_string(&debug_info).unwrap()
     }

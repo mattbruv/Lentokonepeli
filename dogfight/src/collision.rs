@@ -80,20 +80,20 @@ pub trait SolidEntity: Entity {
 
             if let Some(img) = img_self {
                 if img_other.is_none() && check_pixels(img, &intersection, &bounds_self) {
-                    web_sys::console::log_1(&format!("img self: {:?}", intersection).into());
+                    // web_sys::console::log_1(&format!("img self: {:?}", intersection).into());
                     return true;
                 }
             }
 
             if let Some(img) = img_other {
                 if img_self.is_none() && check_pixels(img, &intersection, &bounds_other) {
-                    web_sys::console::log_1(&format!("img other: {:?}", intersection).into());
+                    //  web_sys::console::log_1(&format!("img other: {:?}", intersection).into());
                     return true;
                 }
             }
 
             if let (Some(img_self), Some(img_other)) = (img_self, img_other) {
-                web_sys::console::log_1(&format!("double pixels: {:?}", intersection).into());
+                // web_sys::console::log_1(&format!("double pixels: {:?}", intersection).into());
                 return check_pixel_collision(
                     img_self,
                     &intersection,

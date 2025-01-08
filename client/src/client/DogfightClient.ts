@@ -435,12 +435,12 @@ export class DogfightClient {
 const DEBUG_COLORS: Record<EntityType, string> = {
   WorldInfo: "gray",
   Man: "magenta",
-  Plane: "purple",
+  Plane: "red",
   Player: "gray",
   BackgroundItem: "",
   Ground: "orange",
-  Coast: "red",
-  Runway: "yellow",
+  Coast: "yellow",
+  Runway: "purple",
   Water: "blue",
   Bunker: "brown"
 }
