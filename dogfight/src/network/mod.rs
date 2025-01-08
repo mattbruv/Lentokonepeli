@@ -29,6 +29,7 @@ pub(crate) fn entity_changes_to_json(state: Vec<EntityChange>) -> String {
 */
 
 pub(crate) fn entity_changes_to_binary(state: &Vec<EntityChange>) -> Vec<u8> {
+    //web_sys::console::log_1(&format!("{:?}", state).into());
     state.iter().flat_map(|x| x.to_bytes()).collect()
 }
 

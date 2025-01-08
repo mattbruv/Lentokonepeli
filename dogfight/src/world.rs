@@ -107,6 +107,7 @@ impl World {
         let updated_state = self.get_changed_state();
 
         if updated_state.len() > 0 {
+            // web_sys::console::log_1(&format!("{:?}", updated_state).into());
             game_output.push(GameOutput::EntityChanges(updated_state));
         }
 

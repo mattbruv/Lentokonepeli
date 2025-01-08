@@ -348,6 +348,7 @@ export class DogfightClient {
     const group = this.entities[ent_type];
     const entity = group.entries.get(id);
     if (!entity) return;
+    this.viewport.removeChild(entity.getContainer())
     entity.destroy();
     group.entries.delete(id);
   }

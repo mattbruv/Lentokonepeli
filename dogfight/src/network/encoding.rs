@@ -12,9 +12,9 @@ use crate::{
 use super::{EntityChange, EntityProperties, NetworkedEntity};
 
 /**
- * This funciton is used to create the header bytes to tell
+ * This function is used to create the header bytes to tell
  * if properties of an object are changed/included in the binary data or not.
- * It takes a vector of booleans represeting the set state of each property in order,
+ * It takes a vector of booleans representing the set state of each property in order,
  * and returns this data smushed into bytes
  */
 pub fn property_header_bytes(is_property_set_vector: Vec<bool>) -> Vec<u8> {
@@ -100,9 +100,9 @@ impl NetworkedBytes for EntityChange {
         };
 
         // If nothing was encoded, don't return anything.
-        if data_encoded.len() <= 1 {
-            return vec![];
-        }
+        //      if data_encoded.len() <= 1 {
+        //          return vec![];
+        //      }
 
         encoded.extend(data_encoded);
 

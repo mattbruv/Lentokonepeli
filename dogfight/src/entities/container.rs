@@ -107,6 +107,8 @@ where
             update: EntityChangeType::Deleted,
         });
 
+        // web_sys::console::log_1(&format!("{}", removed.len()).into());
+
         updated.extend(removed);
 
         self.removed_ids.clear();

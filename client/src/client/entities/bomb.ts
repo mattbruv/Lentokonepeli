@@ -34,14 +34,14 @@ export class Bomb implements Entity<BombProperties> {
   public updateCallbacks: EntityUpdateCallbacks<BombProperties> = {
     client_x: () => {
       this.container.position.x = this.props.client_x
-      console.log("BOMB X: " + this.props.client_x)
+      //console.log("BOMB X: " + this.props.client_x)
     },
     client_y: () => {
       this.container.position.y = this.props.client_y
-      console.log("BOMB y: " + this.props.client_y)
+      //console.log("BOMB y: " + this.props.client_y)
     },
     direction: () => {
-      console.log(this.props.direction)
+      // console.log(this.props.direction)
       this.bombSprite.rotation = directionToRadians(this.props.direction)
     }
   };
