@@ -7,7 +7,7 @@ pub fn get_image(bytes: &[u8]) -> image::RgbaImage {
 pub const BEACH_L: &[u8] = include_bytes!("../images/beach-l.gif");
 pub const BEACH_L_DESERT: &[u8] = include_bytes!("../images/beach-l_desert.gif");
 // pub const BEACH_R_DESERT: &[u8] = include_bytes!("../images/beach-r_desert.gif");
-// pub const BOMB: &[u8] = include_bytes!("../images/bomb.gif");
+pub const BOMB: &[u8] = include_bytes!("../images/bomb.gif");
 // pub const BULLET: &[u8] = include_bytes!("../images/bullet.gif");
 // pub const CARRYBOMB: &[u8] = include_bytes!("../images/carrybomb.gif");
 // pub const CONTROLTOWER: &[u8] = include_bytes!("../images/controlTower.gif");

@@ -6,7 +6,7 @@ use ts_rs::TS;
 
 use crate::{
     entities::{
-        background_item::BackgroundItemProperties, bunker::BunkerProperties,
+        background_item::BackgroundItemProperties, bomb::BombProperties, bunker::BunkerProperties,
         coast::CoastProperties, ground::GroundProperties, man::ManProperties,
         plane::PlaneProperties, player::PlayerProperties, runway::RunwayProperties,
         types::EntityType, water::WaterProperties, world_info::WorldInfoProperties, EntityId,
@@ -94,4 +94,5 @@ pub enum EntityProperties {
     Runway(RunwayProperties),
     Water(WaterProperties),
     Bunker(BunkerProperties),
+    Bomb(BombProperties),
 }

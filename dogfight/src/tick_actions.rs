@@ -49,6 +49,7 @@ impl World {
             EntityType::Runway => todo!(),
             EntityType::Water => todo!(),
             EntityType::Bunker => todo!(),
+            EntityType::Bomb => todo!(),
         };
 
         output
