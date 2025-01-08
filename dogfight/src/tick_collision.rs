@@ -62,7 +62,7 @@ impl World {
                     };
 
                     web_sys::console::log_1(&format!("man collide ground!").into());
-                    break 'men;
+                    continue 'men;
                 }
             }
 
@@ -78,7 +78,7 @@ impl World {
                         _ => {}
                     }
                     web_sys::console::log_1(&format!("man collide coast!").into());
-                    break 'men;
+                    continue 'men;
                 }
             }
 
@@ -90,7 +90,7 @@ impl World {
                         ent_id: *man_id,
                         ent_type: man.get_type(),
                     }));
-                    break 'men;
+                    continue 'men;
                 }
             }
 
@@ -98,7 +98,7 @@ impl World {
                 //
                 if man.check_collision(runway) {
                     web_sys::console::log_1(&format!("man collide runway!").into());
-                    break 'men;
+                    continue 'men;
                 }
             }
         }
@@ -126,28 +126,28 @@ impl World {
                 if bomb.check_collision(ground) {
                     blow_up(bomb_id, bomb, bomb.get_x(), bomb.get_y());
                     web_sys::console::log_1(&format!("bomb collide ground!").into());
-                    break 'bombs;
+                    continue 'bombs;
                 }
             }
 
             for (coast_id, coast) in self.coasts.get_map() {
                 if bomb.check_collision(coast) {
                     web_sys::console::log_1(&format!("bomb collide coast!").into());
-                    break 'bombs;
+                    continue 'bombs;
                 }
             }
 
             for (water_id, water) in self.waters.get_map() {
                 if bomb.check_collision(water) {
                     web_sys::console::log_1(&format!("bomb collide water!").into());
-                    break 'bombs;
+                    continue 'bombs;
                 }
             }
 
             for (runway_id, runway) in self.runways.get_map() {
                 if bomb.check_collision(runway) {
                     web_sys::console::log_1(&format!("bomb collide runway!").into());
-                    break 'bombs;
+                    continue 'bombs;
                 }
             }
         }

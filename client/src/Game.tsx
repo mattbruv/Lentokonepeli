@@ -13,6 +13,8 @@ import { DebugEntity } from "dogfight-types/DebugEntity";
 let paused = false;
 let doTick = false;
 
+let TOT_BYTES: number = 0
+
 export function Game() {
   const gameContainer = useRef<HTMLDivElement>(null);
   const dogfight = useContext(DogfightContext);
@@ -98,12 +100,16 @@ export function Game() {
           //const start = performance.now();
           const tick = dogfight.game.tick(input_json);
           //console.log("took " + (performance.now() - start))
-          //console.log(tick)
+          TOT_BYTES += tick.length
           const events_json = dogfight.game.game_events_from_binary(tick);
           const events = JSON.parse(events_json) as GameOutput[];
 
           dogfight.client.handleGameEvents(events);
         }, 1000 / 100);
+
+        setInterval(() => {
+          console.log("bytes sent: " + TOT_BYTES)
+        }, 10000)
       });
     }
   }, []);

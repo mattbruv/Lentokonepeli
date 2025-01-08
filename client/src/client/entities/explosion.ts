@@ -31,15 +31,15 @@ export class Explosion implements Entity<ExplosionProperties> {
   public updateCallbacks: EntityUpdateCallbacks<ExplosionProperties> = {
     client_x: () => {
       this.bombSprite.position.x = this.props.client_x;
-      console.log(this.props.client_x);
+      //console.log(this.props.client_x);
     },
     client_y: () => {
       this.bombSprite.position.y = this.props.client_y;
-      console.log(this.props.client_y);
+      //console.log(this.props.client_y);
     },
     phase: () => {
       this.bombSprite.texture = Textures[PHASE_TEXTURES[this.props.phase]]
-      console.log("PHASE: ", this.props.phase);
+      //console.log("PHASE: ", this.props.phase);
     },
     team: () => { },
   };

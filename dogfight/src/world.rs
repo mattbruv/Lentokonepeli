@@ -70,8 +70,10 @@ impl World {
     }
 
     fn spawn_bomb(&mut self) -> () {
-        let debug_bomb = Bomb::new(-2490, -300, 0, 0.0);
-        self.bombs.insert(debug_bomb);
+        for i in 1..50 {
+            let debug_bomb = Bomb::new(-2490 + i * 50, -300, 0, 0.0);
+            self.bombs.insert(debug_bomb);
+        }
     }
 
     pub fn tick(&mut self, input: Vec<GameInput>) -> Vec<GameOutput> {
