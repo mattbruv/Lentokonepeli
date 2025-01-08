@@ -107,11 +107,17 @@ where
             update: EntityChangeType::Deleted,
         });
 
-        // web_sys::console::log_1(&format!("{}", removed.len()).into());
+        /*
+        if removed.len() > 0 {
+            web_sys::console::log_1(&format!("ids len: {}", self.ids.len()).into());
+        }
+        */
 
         updated.extend(removed);
 
-        self.removed_ids.clear();
+        // Move all removed_ids into ids to recycle them and make them available again.
+        // This will clear removed_ids
+        self.ids.append(&mut self.removed_ids);
 
         updated
     }
