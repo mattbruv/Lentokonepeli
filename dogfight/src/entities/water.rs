@@ -42,7 +42,7 @@ impl SolidEntity for Water {
     fn get_collision_bounds(&self) -> BoundingBox {
         BoundingBox {
             x: *self.client_x.get(),
-            y: *self.client_y.get(),
+            y: *self.client_y.get() + 5,
             width: *self.width.get(),
             height: 100,
         }
