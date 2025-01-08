@@ -6,8 +6,9 @@ use ts_rs::TS;
 
 use crate::{
     entities::{
+        entity::Entity,
         man::Man,
-        plane::PlaneType,
+        plane::{Plane, PlaneType},
         player::{ControllingEntity, Player, PlayerState},
         types::{EntityType, Team},
         EntityId,
@@ -176,20 +177,18 @@ impl World {
                     if let Some(runway) = self.runways.get(selection.runway_id) {
                         let team = *runway.get_team();
                         let client_x = runway.get_client_x();
-                        //let client_y = runway.get_client_y() - 200;
 
-                        let mut man = Man::new(team);
-                        man.set_client_x(client_x);
-                        man.set_client_y(-200);
+                        let mut plane = Plane::new(selection.plane_type);
+                        plane.set_position(client_x, -200);
 
-                        if let Some((man_id, _)) = self.men.insert(man) {
+                        if let Some((plane_id, _)) = self.planes.insert(plane) {
                             if let Some((_, player)) =
                                 self.get_player_from_name(&selection.player_name)
                             {
                                 player.set_state(PlayerState::Playing);
                                 player.set_controlling(Some(ControllingEntity::new(
-                                    man_id,
-                                    EntityType::Man,
+                                    plane_id,
+                                    EntityType::Plane,
                                 )))
                             }
                         }

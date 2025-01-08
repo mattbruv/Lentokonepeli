@@ -85,11 +85,6 @@ impl Plane {
         self.client_y.set(y);
     }
 
-    pub fn set_direction(&mut self, direction: u8) {
-        let angle = TAU * direction as f64 / (DIRECTIONS as f64);
-        self.set_radians(angle);
-    }
-
     // this.direction = ((int)(this.physicalModel.angle * 256.0D / 6.283185307179586D));
     fn set_radians(&mut self, new_angle: f64) {
         self.physical_model.set_radians(new_angle);

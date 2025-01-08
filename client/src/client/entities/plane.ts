@@ -1,4 +1,4 @@
-import { Entity, EntityUpdateCallbacks } from "./entity";
+import { Entity, EntityUpdateCallbacks, Followable, Point } from "./entity";
 import * as PIXI from "pixi.js";
 import { PlaneProperties } from "dogfight-types/PlaneProperties";
 import { PlaneType } from "dogfight-types/PlaneType";
@@ -14,7 +14,7 @@ const PLANE_TEXTURE_ID: Record<PlaneType, number> = {
   Sopwith: 9,
 }
 
-export class Plane implements Entity<PlaneProperties> {
+export class Plane implements Entity<PlaneProperties>, Followable {
 
   private container: PIXI.Container;
   private planeSprite: PIXI.Sprite;
@@ -34,6 +34,13 @@ export class Plane implements Entity<PlaneProperties> {
 
   public getContainer(): PIXI.Container {
     return this.container
+  }
+
+  public getCenter(): Point {
+    return {
+      x: this.props.client_x ?? 0,
+      y: this.props.client_y ?? 0,
+    };
   }
 
   private getTexture() {

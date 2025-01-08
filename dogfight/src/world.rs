@@ -88,7 +88,7 @@ impl World {
         }
 
         if let Some(p) = self.planes.get_mut(0) {
-            p.set_direction(p.get_direction() + 1);
+            // p.set_direction(p.get_direction() + 1);
         }
 
         // process input data
