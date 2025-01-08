@@ -106,14 +106,24 @@ impl Entity for Explosion {
 
 impl SolidEntity for Explosion {
     fn get_collision_bounds(&self) -> BoundingBox {
-        let w = self.image.width() as i16;
-        let h = self.image.height() as i16;
+        match self.do_collision {
+            true => {
+                let w = self.image.width() as i16;
+                let h = self.image.height() as i16;
 
-        BoundingBox {
-            x: *self.client_x.get() - w / 2,
-            y: *self.client_y.get() - h / 2,
-            width: w,
-            height: h,
+                BoundingBox {
+                    x: *self.client_x.get() - w / 2,
+                    y: *self.client_y.get() - h / 2,
+                    width: w,
+                    height: h,
+                }
+            }
+            false => BoundingBox {
+                x: 0,
+                y: 0,
+                width: 0,
+                height: 0,
+            },
         }
     }
 
