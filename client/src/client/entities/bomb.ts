@@ -18,21 +18,25 @@ export class Bomb implements Entity<BombProperties> {
 
   constructor() {
     this.container = new PIXI.Container();
-    this.bombSprite = new PIXI.Sprite(Textures["bomb.gif"]);
+    const texture = Textures["bomb.gif"]
+    this.bombSprite = new PIXI.Sprite(texture);
     this.bombSprite.anchor.set(0.5, 0.5)
+    this.bombSprite.position.set(texture.width / 2, texture.height / 2)
     this.container.addChild(this.bombSprite)
   }
 
   public getContainer(): PIXI.Container {
+    console.log(this.container)
+    console.log("FUCK")
     return this.container
   }
 
   public updateCallbacks: EntityUpdateCallbacks<BombProperties> = {
     client_x: () => {
-      this.bombSprite.position.x = this.props.client_x
+      this.container.position.x = this.props.client_x
     },
     client_y: () => {
-      this.bombSprite.position.y = this.props.client_y
+      this.container.position.y = this.props.client_y
     },
     direction: () => {
       console.log(this.props.direction)

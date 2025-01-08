@@ -321,6 +321,7 @@ impl World {
         state.extend(self.runways.get_all_full_state());
         state.extend(self.waters.get_all_full_state());
         state.extend(self.bunkers.get_all_full_state());
+        state.extend(self.bombs.get_all_full_state());
         state
     }
 
@@ -341,6 +342,7 @@ impl World {
         state.extend(self.runways.get_all_changed_state());
         state.extend(self.waters.get_all_changed_state());
         state.extend(self.bunkers.get_all_changed_state());
+        state.extend(self.bombs.get_all_changed_state());
         state
     }
 }

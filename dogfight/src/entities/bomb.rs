@@ -3,6 +3,7 @@ use std::f64::consts::{PI, TAU};
 use dogfight_macros::{EnumBytes, Networked};
 use image::RgbaImage;
 use serde::Deserialize;
+use web_sys::js_sys::Math::cos;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
@@ -24,17 +25,25 @@ pub struct Bomb {
     client_x: Property<i16>,
     client_y: Property<i16>,
     direction: Property<u8>,
+    angle: f64,
+    x_speed: f64,
+    y_speed: f64,
     image: RgbaImage,
 }
 
 impl Bomb {
-    pub fn new() -> Bomb {
+    pub fn new(x: i16, y: i16, direction: u8, speed: f64) -> Bomb {
+        let angle_radians = TAU * (direction as f64) / DIRECTIONS;
         Bomb {
-            x: 0,
-            y: 0,
-            client_x: Property::new(0),
-            client_y: Property::new(0),
-            direction: Property::new(0),
+            x: (x as i32) * RESOLUTION,
+            y: (y as i32) * RESOLUTION,
+            client_x: Property::new(x),
+            client_y: Property::new(y),
+            direction: Property::new(direction),
+            angle: angle_radians,
+            x_speed: angle_radians.cos() * speed * (RESOLUTION as f64),
+            y_speed: angle_radians.cos() * speed * (RESOLUTION as f64),
+
             image: get_image(BOMB),
         }
     }

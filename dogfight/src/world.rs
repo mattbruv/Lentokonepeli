@@ -1,7 +1,7 @@
 use crate::{
-    collision::{DebugEntity, SolidEntity},
     entities::{
         background_item::BackgroundItem,
+        bomb::Bomb,
         bunker::Bunker,
         coast::Coast,
         container::EntityContainer,
@@ -34,6 +34,7 @@ pub struct World {
     pub runways: EntityContainer<Runway>,
     pub waters: EntityContainer<Water>,
     pub bunkers: EntityContainer<Bunker>,
+    pub bombs: EntityContainer<Bomb>,
 }
 
 impl World {
@@ -50,6 +51,7 @@ impl World {
             runways: EntityContainer::new(EntityType::Runway),
             waters: EntityContainer::new(EntityType::Water),
             bunkers: EntityContainer::new(EntityType::Bunker),
+            bombs: EntityContainer::new(EntityType::Bomb),
         };
 
         world
@@ -59,10 +61,12 @@ impl World {
 
     pub fn init_debug(&mut self) -> () {
         let mut debug_plane = Plane::new(PlaneType::Fokker);
+        let debug_bomb = Bomb::new(-2490, -200, 0, 1.0);
 
         debug_plane.set_position(-2490, -20);
 
         self.planes.insert(debug_plane);
+        self.bombs.insert(debug_bomb);
     }
 
     pub fn tick(&mut self, input: Vec<GameInput>) -> Vec<GameOutput> {
@@ -101,109 +105,6 @@ impl World {
         }
 
         game_output
-    }
-
-    pub fn debug(&self) -> String {
-        let mut debug_info: Vec<DebugEntity> = vec![];
-
-        let man_bounds: Vec<DebugEntity> = self
-            .men
-            .get_map()
-            .iter()
-            .map(|(idx, man)| {
-                let bounds = man.get_collision_bounds();
-                DebugEntity {
-                    ent_id: *idx,
-                    ent_type: EntityType::Man,
-                    bounding_box: bounds,
-                    pixels: man.get_debug_pixels(),
-                }
-            })
-            .collect();
-
-        let water_bounds: Vec<DebugEntity> = self
-            .waters
-            .get_map()
-            .iter()
-            .map(|(idx, water)| {
-                let bounds = water.get_collision_bounds();
-                DebugEntity {
-                    ent_id: *idx,
-                    ent_type: EntityType::Water,
-                    bounding_box: bounds,
-                    pixels: water.get_debug_pixels(),
-                }
-            })
-            .collect();
-
-        let plane_bounds: Vec<DebugEntity> = self
-            .planes
-            .get_map()
-            .iter()
-            .map(|(idx, plane)| {
-                let bounds = plane.get_collision_bounds();
-                DebugEntity {
-                    ent_id: *idx,
-                    ent_type: EntityType::Plane,
-                    bounding_box: bounds,
-                    pixels: plane.get_debug_pixels(),
-                }
-            })
-            .collect();
-
-        let ground_bounds: Vec<DebugEntity> = self
-            .grounds
-            .get_map()
-            .iter()
-            .map(|(idx, ground)| {
-                let bounds = ground.get_collision_bounds();
-                DebugEntity {
-                    ent_id: *idx,
-                    ent_type: EntityType::Ground,
-                    bounding_box: bounds,
-                    pixels: ground.get_debug_pixels(),
-                }
-            })
-            .collect();
-
-        let coast_bounds: Vec<DebugEntity> = self
-            .coasts
-            .get_map()
-            .iter()
-            .map(|(idx, coast)| {
-                let bounds = coast.get_collision_bounds();
-                DebugEntity {
-                    ent_id: *idx,
-                    ent_type: EntityType::Coast,
-                    bounding_box: bounds,
-                    pixels: coast.get_debug_pixels(),
-                }
-            })
-            .collect();
-
-        let runway_bounds: Vec<DebugEntity> = self
-            .runways
-            .get_map()
-            .iter()
-            .map(|(idx, runway)| {
-                let bounds = runway.get_collision_bounds();
-                DebugEntity {
-                    ent_id: *idx,
-                    ent_type: EntityType::Runway,
-                    bounding_box: bounds,
-                    pixels: runway.get_debug_pixels(),
-                }
-            })
-            .collect();
-
-        debug_info.extend(man_bounds);
-        debug_info.extend(ground_bounds);
-        debug_info.extend(water_bounds);
-        debug_info.extend(plane_bounds);
-        debug_info.extend(coast_bounds);
-        debug_info.extend(runway_bounds);
-
-        serde_json::to_string(&debug_info).unwrap()
     }
 
     pub(crate) fn get_player_from_name(
