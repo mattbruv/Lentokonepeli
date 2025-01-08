@@ -33,6 +33,10 @@ impl Ground {
         }
     }
 
+    pub fn get_x(&self) -> i16 {
+        *self.client_x.get()
+    }
+
     pub fn get_y(&self) -> i16 {
         *self.client_y.get()
     }

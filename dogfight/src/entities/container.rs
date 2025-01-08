@@ -8,6 +8,7 @@ use crate::entities::types::EntityType;
 pub struct EntityContainer<T> {
     ent_type: EntityType,
     ids: Vec<EntityId>,
+    removed_ids: Vec<EntityId>,
     map: HashMap<EntityId, T>,
 }
 
@@ -19,6 +20,7 @@ where
         let container = EntityContainer {
             ent_type: ent_type,
             ids: (0..(2 as EntityId).pow(9)).rev().collect(), // generate list of 0 to 2^9 = 512 Ids
+            removed_ids: vec![],
             map: HashMap::new(),
         };
 
@@ -51,7 +53,13 @@ where
     }
 
     pub fn remove(&mut self, id: EntityId) -> Option<T> {
-        self.map.remove(&id)
+        let ent = self.map.remove(&id);
+
+        if let Some(_) = ent {
+            self.removed_ids.push(id);
+        }
+
+        ent
     }
 
     pub fn get_mut(&mut self, id: EntityId) -> Option<&mut T> {
@@ -82,7 +90,8 @@ where
     }
 
     pub fn get_all_changed_state(&mut self) -> Vec<EntityChange> {
-        self.map
+        let mut updated: Vec<EntityChange> = self
+            .map
             .iter_mut()
             .filter(|(_, ent)| ent.has_changes())
             .map(|(id, ent)| EntityChange {
@@ -90,6 +99,18 @@ where
                 id: *id,
                 update: EntityChangeType::Properties(ent.get_changed_properties_and_reset()),
             })
-            .collect()
+            .collect();
+
+        let removed = self.removed_ids.iter().map(|id| EntityChange {
+            ent_type: self.ent_type,
+            id: *id,
+            update: EntityChangeType::Deleted,
+        });
+
+        updated.extend(removed);
+
+        self.removed_ids.clear();
+
+        updated
     }
 }

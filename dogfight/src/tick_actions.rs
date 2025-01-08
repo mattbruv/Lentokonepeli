@@ -4,13 +4,19 @@ use crate::{
     world::World,
 };
 
-pub struct KillData {
+pub struct RemoveData {
     pub ent_id: EntityId,
     pub ent_type: EntityType,
 }
 
+pub struct ExplosionData {
+    pub x: i16,
+    pub y: i16,
+}
+
 pub enum Action {
-    Kill(KillData),
+    RemoveEntity(RemoveData),
+    Explosion(ExplosionData),
 }
 
 impl World {
@@ -26,31 +32,40 @@ impl World {
 
     fn process_action(&mut self, action: Action) -> Vec<GameOutput> {
         match action {
-            Action::Kill(kill_data) => self.kill_entity(kill_data),
+            Action::RemoveEntity(remove) => self.remove_entity(remove),
+            Action::Explosion(explosion_data) => self.explode(explosion_data),
         }
     }
 
-    fn kill_entity(&mut self, kill_data: KillData) -> Vec<GameOutput> {
+    fn remove_entity(&mut self, remove_data: RemoveData) -> Vec<GameOutput> {
         let mut output = vec![];
 
-        let id = kill_data.ent_id;
-        match kill_data.ent_type {
-            EntityType::WorldInfo => {}
+        let id = remove_data.ent_id;
+        match remove_data.ent_type {
             EntityType::Man => {
                 self.men.remove(id);
-                panic!("Not implemented yet");
-                // self.men.remove(id);
             }
-            EntityType::Plane => todo!(),
-            EntityType::Player => todo!(),
-            EntityType::BackgroundItem => todo!(),
-            EntityType::Ground => todo!(),
-            EntityType::Coast => todo!(),
-            EntityType::Runway => todo!(),
-            EntityType::Water => todo!(),
-            EntityType::Bunker => todo!(),
-            EntityType::Bomb => todo!(),
+            EntityType::Plane => {
+                self.planes.remove(id);
+            }
+            EntityType::Bomb => {
+                self.bombs.remove(id);
+            }
+            EntityType::WorldInfo => {}
+            EntityType::BackgroundItem => {}
+            EntityType::Ground => {}
+            EntityType::Coast => {}
+            EntityType::Runway => {}
+            EntityType::Player => {}
+            EntityType::Water => {}
+            EntityType::Bunker => {}
         };
+
+        output
+    }
+
+    fn explode(&mut self, explosion_data: ExplosionData) -> Vec<GameOutput> {
+        let mut output = vec![];
 
         output
     }

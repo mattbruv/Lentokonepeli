@@ -333,6 +333,7 @@ export class DogfightClient {
 
       switch (update.type) {
         case "Deleted": {
+          console.log(`DELETED: type ${ent_type} -> id ${id}`)
           this.deleteEntity(id, ent_type);
           break;
         }

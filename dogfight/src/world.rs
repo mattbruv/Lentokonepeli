@@ -62,11 +62,12 @@ impl World {
 
     pub fn init_debug(&mut self) -> () {
         let mut debug_plane = Plane::new(PlaneType::Fokker);
-        let debug_bomb = Bomb::new(-2490, -200, 0, 1.0);
-
         debug_plane.set_position(-2490, -20);
-
         self.planes.insert(debug_plane);
+    }
+
+    fn spawn_bomb(&mut self) -> () {
+        let debug_bomb = Bomb::new(-2490, -300, 0, 0.0);
         self.bombs.insert(debug_bomb);
     }
 
@@ -75,6 +76,10 @@ impl World {
 
         if self.game_tick == 50 {
             self.init_debug();
+        }
+
+        if self.bombs.get_map().len() == 0 {
+            self.spawn_bomb();
         }
 
         if let Some(p) = self.planes.get_mut(0) {
