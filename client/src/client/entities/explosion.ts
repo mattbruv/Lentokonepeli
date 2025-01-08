@@ -4,15 +4,16 @@ import { DrawLayer } from "../constants";
 import { ExplosionProperties } from "dogfight-types/ExplosionProperties";
 import { Textures } from "../textures";
 
-const PHASE_TEXTURES: Record<number, PIXI.Texture> = {
-  0: Textures["explosion0001.gif"],
-  1: Textures["explosion0002.gif"],
-  2: Textures["explosion0003.gif"],
-  3: Textures["explosion0004.gif"],
-  4: Textures["explosion0005.gif"],
-  5: Textures["explosion0006.gif"],
-  6: Textures["explosion0007.gif"],
-  7: Textures["explosion0008.gif"],
+const PHASE_TEXTURES: Record<number, keyof typeof Textures> = {
+  0: "explosion0001.gif",
+  1: "explosion0002.gif",
+  2: "explosion0003.gif",
+  3: "explosion0004.gif",
+  4: "explosion0005.gif",
+  5: "explosion0006.gif",
+  6: "explosion0007.gif",
+  7: "explosion0008.gif",
+  8: "explosion0008.gif",
 }
 
 export class Explosion implements Entity<ExplosionProperties> {
@@ -37,7 +38,7 @@ export class Explosion implements Entity<ExplosionProperties> {
       console.log(this.props.client_y);
     },
     phase: () => {
-      this.bombSprite.texture = PHASE_TEXTURES[this.props.phase]
+      this.bombSprite.texture = Textures[PHASE_TEXTURES[this.props.phase]]
       console.log("PHASE: ", this.props.phase);
     },
     team: () => { },
@@ -51,7 +52,7 @@ export class Explosion implements Entity<ExplosionProperties> {
     this.bombSprite = new PIXI.Sprite(texture);
 
     this.container.addChild(this.bombSprite);
-    //this.bombSprite.anchor.set(0.5)
+    this.bombSprite.anchor.set(0.5)
 
     this.container.zIndex = DrawLayer.Bomb;
   }

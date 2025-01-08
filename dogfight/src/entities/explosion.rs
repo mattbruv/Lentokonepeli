@@ -30,7 +30,7 @@ pub struct Explosion {
 }
 
 const PHASE_TIME_MS: u32 = 70;
-const TOTAL_PHASES: u32 = 7;
+const TOTAL_PHASES: u32 = 8;
 
 impl Explosion {
     pub fn new(team: Option<Team>, x: i16, y: i16) -> Self {
