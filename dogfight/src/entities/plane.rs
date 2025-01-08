@@ -8,14 +8,13 @@ use crate::{
     collision::{BoundingBox, SolidEntity},
     images::{get_image, PARACHUTER0, PLANE4, PLANE5, PLANE6, PLANE7, PLANE8, PLANE9},
     network::{property::Property, EntityProperties, NetworkedEntity},
-    world::RESOLUTION,
+    world::{DIRECTIONS, RESOLUTION},
 };
 
 use super::{entity::Entity, types::EntityType};
 
 const MAX_Y: i16 = -570;
 const SKY_HEIGHT: i16 = 500;
-const DIRECTIONS: f64 = 256.0;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS, EnumBytes)]
 #[ts(export)]
@@ -87,14 +86,15 @@ impl Plane {
     }
 
     pub fn set_direction(&mut self, direction: u8) {
-        let angle = TAU * direction as f64 / DIRECTIONS;
+        let angle = TAU * direction as f64 / (DIRECTIONS as f64);
         self.set_radians(angle);
     }
 
     // this.direction = ((int)(this.physicalModel.angle * 256.0D / 6.283185307179586D));
     fn set_radians(&mut self, new_angle: f64) {
         self.physical_model.set_radians(new_angle);
-        self.direction.set((new_angle * (DIRECTIONS) / TAU) as u8);
+        self.direction
+            .set((new_angle * (DIRECTIONS as f64) / TAU) as u8);
     }
 
     pub fn get_direction(&self) -> u8 {

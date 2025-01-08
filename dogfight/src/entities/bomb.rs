@@ -7,15 +7,12 @@ use imageproc::geometric_transformations::Interpolation;
 use crate::{
     collision::{BoundingBox, SolidEntity},
     images::{get_image, BOMB},
-    network::property::Property,
-    network::EntityProperties,
-    network::NetworkedEntity,
-    world::RESOLUTION,
+    math::radians_to_direction,
+    network::{property::Property, EntityProperties, NetworkedEntity},
+    world::{DIRECTIONS, RESOLUTION},
 };
 
 use super::{entity::Entity, types::EntityType};
-
-const DIRECTIONS: f64 = 256.0;
 
 #[derive(Networked)]
 pub struct Bomb {
@@ -33,7 +30,7 @@ pub struct Bomb {
 
 impl Bomb {
     pub fn new(x: i16, y: i16, direction: u8, speed: f64) -> Bomb {
-        let angle_radians = TAU * (direction as f64) / DIRECTIONS;
+        let angle_radians = TAU * (direction as f64) / (DIRECTIONS as f64);
         Bomb {
             x: (x as i32) * RESOLUTION,
             y: (y as i32) * RESOLUTION,
@@ -56,22 +53,20 @@ impl Bomb {
         self.client_y.set(y);
     }
 
-    pub fn set_direction(&mut self, direction: u8) {
-        let angle = TAU * direction as f64 / DIRECTIONS;
-        self.set_radians(angle);
-    }
-
-    // this.direction = ((int)(this.physicalModel.angle * 256.0D / 6.283185307179586D));
-    fn set_radians(&mut self, new_angle: f64) {
-        // self.physical_model.set_radians(new_angle);
-        self.direction.set((new_angle * (DIRECTIONS) / TAU) as u8);
-    }
-
-    pub fn get_direction(&self) -> u8 {
-        *self.direction.get()
-    }
-
     pub fn tick(&mut self) {
+        self.x += ((RESOLUTION as f64) * self.x_speed / (RESOLUTION as f64)) as i32;
+        self.y += ((RESOLUTION as f64) * self.y_speed / (RESOLUTION as f64)) as i32;
+
+        self.client_x.set((self.x / RESOLUTION) as i16);
+        self.client_y.set((self.y / RESOLUTION) as i16);
+
+        self.x_speed -= self.x_speed * 0.01;
+        self.y_speed += 3.3333333333333335;
+
+        // update angle/direction
+        self.angle = self.y_speed.atan2(self.x_speed);
+        self.direction.set(radians_to_direction(self.angle));
+
         self.rotate_image();
     }
 

@@ -19,6 +19,7 @@ use crate::{
     output::GameOutput,
 };
 
+pub const DIRECTIONS: i32 = 256;
 pub const RESOLUTION: i32 = 100;
 pub const LEVEL_BORDER_X: i16 = 20_000;
 

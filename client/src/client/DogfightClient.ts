@@ -446,7 +446,7 @@ const DEBUG_COLORS: Record<EntityType, string> = {
   Player: "gray",
   BackgroundItem: "",
   Ground: "orange",
-  Coast: "yellow",
+  Coast: "peru",
   Runway: "purple",
   Water: "blue",
   Bunker: "brown",
