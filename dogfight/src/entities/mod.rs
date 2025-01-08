@@ -14,3 +14,5 @@ pub mod water;
 pub mod world_info;
 
 pub type EntityId = u16;
+
+pub mod explosion;

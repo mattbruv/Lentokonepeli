@@ -51,6 +51,9 @@ impl World {
             EntityType::Bomb => {
                 self.bombs.remove(id);
             }
+            EntityType::Explosion => {
+                self.explosions.remove(id);
+            }
             EntityType::WorldInfo => {}
             EntityType::BackgroundItem => {}
             EntityType::Ground => {}

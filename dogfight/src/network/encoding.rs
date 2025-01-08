@@ -1,9 +1,10 @@
 use crate::{
     entities::{
         background_item::BackgroundItemProperties, bomb::BombProperties, bunker::BunkerProperties,
-        coast::CoastProperties, ground::GroundProperties, man::ManProperties,
-        plane::PlaneProperties, player::PlayerProperties, runway::RunwayProperties,
-        types::EntityType, water::WaterProperties, world_info::WorldInfoProperties,
+        coast::CoastProperties, explosion::ExplosionProperties, ground::GroundProperties,
+        man::ManProperties, plane::PlaneProperties, player::PlayerProperties,
+        runway::RunwayProperties, types::EntityType, water::WaterProperties,
+        world_info::WorldInfoProperties,
     },
     network::EntityChangeType,
     world::World,
@@ -95,6 +96,7 @@ impl NetworkedBytes for EntityChange {
                 EntityProperties::Bunker(bunker) => bunker.to_bytes(),
                 EntityProperties::WorldInfo(world_info) => world_info.to_bytes(),
                 EntityProperties::Bomb(bomb) => bomb.to_bytes(),
+                EntityProperties::Explosion(explosion) => explosion.to_bytes(),
             },
             _ => vec![],
         };
@@ -184,6 +186,11 @@ impl NetworkedBytes for EntityChange {
                     let (slice, props) = BombProperties::from_bytes(bytes);
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::Bomb(props))
+                }
+                EntityType::Explosion => {
+                    let (slice, props) = ExplosionProperties::from_bytes(bytes);
+                    bytes = slice;
+                    EntityChangeType::Properties(EntityProperties::Explosion(props))
                 }
             },
             _ => panic!("Unknown entity change type {}", update_type),
@@ -322,6 +329,7 @@ impl World {
         state.extend(self.waters.get_all_full_state());
         state.extend(self.bunkers.get_all_full_state());
         state.extend(self.bombs.get_all_full_state());
+        state.extend(self.explosions.get_all_full_state());
         state
     }
 
@@ -343,6 +351,7 @@ impl World {
         state.extend(self.waters.get_all_changed_state());
         state.extend(self.bunkers.get_all_changed_state());
         state.extend(self.bombs.get_all_changed_state());
+        state.extend(self.explosions.get_all_changed_state());
         state
     }
 }

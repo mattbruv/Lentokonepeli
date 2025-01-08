@@ -5,6 +5,7 @@ use crate::{
         bunker::Bunker,
         coast::Coast,
         container::EntityContainer,
+        explosion::Explosion,
         ground::Ground,
         man::Man,
         plane::{Plane, PlaneType},
@@ -36,6 +37,7 @@ pub struct World {
     pub waters: EntityContainer<Water>,
     pub bunkers: EntityContainer<Bunker>,
     pub bombs: EntityContainer<Bomb>,
+    pub explosions: EntityContainer<Explosion>,
 }
 
 impl World {
@@ -53,6 +55,7 @@ impl World {
             waters: EntityContainer::new(EntityType::Water),
             bunkers: EntityContainer::new(EntityType::Bunker),
             bombs: EntityContainer::new(EntityType::Bomb),
+            explosions: EntityContainer::new(EntityType::Explosion),
         };
 
         world

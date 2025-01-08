@@ -17,6 +17,7 @@ pub enum EntityType {
     Water,
     Bunker,
     Bomb,
+    Explosion,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, TS, Serialize, EnumBytes)]
