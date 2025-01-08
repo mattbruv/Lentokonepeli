@@ -19,5 +19,8 @@
     "titleBar.inactiveBackground": "#ed505199",
     "titleBar.inactiveForeground": "#e7e7e799"
   },
-  "peacock.color": "#ed5051"
+  "peacock.color": "#ed5051",
+  "cSpell.words": [
+    "imageproc"
+  ]
 }

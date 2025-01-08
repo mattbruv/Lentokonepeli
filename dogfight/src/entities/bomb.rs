@@ -1,13 +1,12 @@
-use std::f64::consts::{PI, TAU};
+use std::f64::consts::TAU;
 
-use dogfight_macros::{EnumBytes, Networked};
+use dogfight_macros::Networked;
 use image::RgbaImage;
-use serde::Deserialize;
-use web_sys::js_sys::Math::cos;
+use imageproc::geometric_transformations::Interpolation;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
-    images::{get_image, BOMB, PLANE4, PLANE5, PLANE6, PLANE7, PLANE8, PLANE9},
+    images::{get_image, BOMB},
     network::property::Property,
     network::EntityProperties,
     network::NetworkedEntity,
@@ -29,6 +28,7 @@ pub struct Bomb {
     x_speed: f64,
     y_speed: f64,
     image: RgbaImage,
+    rotated_image: RgbaImage,
 }
 
 impl Bomb {
@@ -45,6 +45,7 @@ impl Bomb {
             y_speed: angle_radians.cos() * speed * (RESOLUTION as f64),
 
             image: get_image(BOMB),
+            rotated_image: get_image(BOMB),
         }
     }
 
@@ -69,27 +70,18 @@ impl Bomb {
     pub fn get_direction(&self) -> u8 {
         *self.direction.get()
     }
-}
 
-struct PhysicalModel {
-    air_resistance: f64,
-    gravity: f64,
-    gravity_pull: f64,
-    speed: f64,
-    angle: f64,
-}
+    pub fn tick(&mut self) {
+        self.rotate_image();
+    }
 
-impl PhysicalModel {
-    const LANDING_SPEED: f64 = 100.0;
-
-    fn new() -> Self {
-        PhysicalModel {
-            air_resistance: 1.0,
-            gravity: 6.0,
-            gravity_pull: 0.04908738521234052,
-            speed: 0.0,
-            angle: 0.0, // This should probably be named radians
-        }
+    pub fn rotate_image(&mut self) -> () {
+        self.rotated_image = imageproc::geometric_transformations::rotate_about_center(
+            &self.image,
+            self.angle as f32,
+            Interpolation::Nearest,
+            image::Rgba([0, 0, 0, 0]),
+        );
     }
 }
 
@@ -110,6 +102,6 @@ impl SolidEntity for Bomb {
     }
 
     fn get_collision_image(&self) -> Option<&RgbaImage> {
-        None
+        Some(&self.rotated_image)
     }
 }

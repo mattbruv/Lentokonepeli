@@ -31,9 +31,10 @@ impl World {
             - Man
             - Bunker
     */
-    pub fn tick_runnable_entities(&mut self) -> Vec<Action> {
+    pub fn tick_entities(&mut self) -> Vec<Action> {
         let run_actions = vec![];
 
+        // Tick men
         for (_, player) in self.players.get_map_mut() {
             if let Some(controlled) = player.get_controlling() {
                 match controlled.entity_type {
@@ -45,6 +46,11 @@ impl World {
                     _ => (),
                 };
             }
+        }
+
+        // Tick bombs
+        for (_, bomb) in self.bombs.get_map_mut() {
+            bomb.tick();
         }
 
         run_actions

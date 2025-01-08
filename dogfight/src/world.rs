@@ -86,7 +86,7 @@ impl World {
         game_output.extend(input_events);
 
         // 1. Tick runnable entities and capture output actions
-        let runnable_actions = self.tick_runnable_entities();
+        let runnable_actions = self.tick_entities();
 
         // 2. Process runnable actions
         game_output.extend(self.process_actions(runnable_actions));
