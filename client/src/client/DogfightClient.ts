@@ -340,7 +340,7 @@ export class DogfightClient {
 
       switch (update.type) {
         case "Deleted": {
-          console.log(`DELETED: type ${ent_type} -> id ${id}`)
+          //console.log(`DELETED: type ${ent_type} -> id ${id}`)
           this.deleteEntity(id, ent_type);
           break;
         }
@@ -374,9 +374,8 @@ export class DogfightClient {
         // Not sure why Typescript wants to error when I call the set() function here.
         // It's making the set param a union type for some reason I don't understand
         ent_map.entries.set(id, entity as any);
-        //console.log(id, ent_map.entries.size)
         this.viewport.addChild(entity.getContainer());
-        console.log("create", data.type, "id:", id, "total:", ent_map.entries.size)
+        //console.log("create", data.type, "id:", id, "total:", ent_map.entries.size)
       }
     }
 
