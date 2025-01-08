@@ -1,5 +1,9 @@
 use crate::{
-    entities::{types::EntityType, EntityId},
+    entities::{
+        explosion::Explosion,
+        types::{EntityType, Team},
+        EntityId,
+    },
     output::GameOutput,
     world::World,
 };
@@ -10,6 +14,7 @@ pub struct RemoveData {
 }
 
 pub struct ExplosionData {
+    pub team: Option<Team>,
     pub x: i16,
     pub y: i16,
 }
@@ -67,8 +72,11 @@ impl World {
         output
     }
 
-    fn explode(&mut self, explosion_data: ExplosionData) -> Vec<GameOutput> {
+    fn explode(&mut self, data: ExplosionData) -> Vec<GameOutput> {
         let mut output = vec![];
+
+        let explosion = Explosion::new(data.team, data.x, data.y);
+        self.explosions.insert(explosion);
 
         output
     }

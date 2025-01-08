@@ -340,7 +340,7 @@ export class DogfightClient {
 
       switch (update.type) {
         case "Deleted": {
-          // console.log(`DELETED: type ${ent_type} -> id ${id}`)
+          console.log(`DELETED: type ${ent_type} -> id ${id}`)
           this.deleteEntity(id, ent_type);
           break;
         }
@@ -376,6 +376,7 @@ export class DogfightClient {
         ent_map.entries.set(id, entity as any);
         //console.log(id, ent_map.entries.size)
         this.viewport.addChild(entity.getContainer());
+        console.log("create", data.type, "id:", id, "total:", ent_map.entries.size)
       }
     }
 

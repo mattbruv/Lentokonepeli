@@ -70,6 +70,14 @@ impl Bomb {
         self.rotate_image();
     }
 
+    pub fn get_x(&self) -> i16 {
+        *self.client_x.get()
+    }
+
+    pub fn get_y(&self) -> i16 {
+        *self.client_y.get()
+    }
+
     pub fn rotate_image(&mut self) -> () {
         self.rotated_image = imageproc::geometric_transformations::rotate_about_center(
             &self.image,

@@ -114,13 +114,17 @@ impl World {
                 ent_id: *bomb_id,
                 ent_type: bomb.get_type(),
             }));
-            actions.push(Action::Explosion(ExplosionData { x: x, y: y }));
+            actions.push(Action::Explosion(ExplosionData {
+                team: None,
+                x: x,
+                y: y,
+            }));
         };
 
         'bombs: for (bomb_id, bomb) in self.bombs.get_map_mut() {
             for (ground_id, ground) in self.grounds.get_map() {
                 if bomb.check_collision(ground) {
-                    blow_up(bomb_id, bomb, ground.get_x(), ground.get_y());
+                    blow_up(bomb_id, bomb, bomb.get_x(), bomb.get_y());
                     web_sys::console::log_1(&format!("bomb collide ground!").into());
                     break 'bombs;
                 }

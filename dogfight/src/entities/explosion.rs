@@ -5,11 +5,13 @@ use crate::{
     collision::{BoundingBox, SolidEntity},
     images::{get_image, EXPLOSION0004},
     network::{property::*, EntityProperties, NetworkedEntity},
+    tick_actions::{Action, RemoveData},
 };
 
 use super::{
     entity::Entity,
     types::{EntityType, Team},
+    EntityId,
 };
 
 #[derive(Networked)]
@@ -19,10 +21,16 @@ pub struct Explosion {
     client_x: Property<i16>,
     client_y: Property<i16>,
 
+    age_ms: u32,
+    phase: Property<u8>,
+
     do_collision: bool,
 
     image: RgbaImage,
 }
+
+const PHASE_TIME_MS: u32 = 70;
+const TOTAL_PHASES: u32 = 7;
 
 impl Explosion {
     pub fn new(team: Option<Team>, x: i16, y: i16) -> Self {
@@ -30,6 +38,10 @@ impl Explosion {
             team: Property::new(team),
             client_x: Property::new(x),
             client_y: Property::new(y),
+
+            age_ms: 0,
+            phase: Property::new(0),
+
             do_collision: false,
 
             image: get_image(EXPLOSION0004),
@@ -57,11 +69,38 @@ impl Explosion {
     pub fn get_client_y(&self) -> i16 {
         *self.client_y.get()
     }
+
+    pub fn tick(&mut self, my_id: EntityId) -> Vec<Action> {
+        let mut actions = vec![];
+
+        // Assuming the game is always going to run at 1 tick per 10 MS
+        // as the original seemed to be designed to do.
+        self.age_ms += 10;
+
+        self.phase.set((self.age_ms / PHASE_TIME_MS) as u8);
+
+        // If the phase just turned to 3, do collision once.
+        if *self.phase.get() == 3 && self.phase.is_dirty() {
+            self.do_collision = true;
+        } else {
+            self.do_collision = false;
+        }
+
+        // Mark this explosion to be destroyed if older than max phase.
+        if self.age_ms > TOTAL_PHASES * PHASE_TIME_MS {
+            actions.push(Action::RemoveEntity(RemoveData {
+                ent_id: my_id,
+                ent_type: self.get_type(),
+            }));
+        }
+
+        actions
+    }
 }
 
 impl Entity for Explosion {
     fn get_type(&self) -> EntityType {
-        EntityType::Runway
+        EntityType::Explosion
     }
 }
 

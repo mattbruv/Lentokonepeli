@@ -32,7 +32,7 @@ impl World {
             - Bunker
     */
     pub fn tick_entities(&mut self) -> Vec<Action> {
-        let run_actions = vec![];
+        let mut run_actions = vec![];
 
         // Tick men
         for (_, player) in self.players.get_map_mut() {
@@ -51,6 +51,11 @@ impl World {
         // Tick bombs
         for (_, bomb) in self.bombs.get_map_mut() {
             bomb.tick();
+        }
+
+        // Tick Explosions
+        for (explosion_id, explosion) in self.explosions.get_map_mut() {
+            run_actions.extend(explosion.tick(*explosion_id));
         }
 
         run_actions
