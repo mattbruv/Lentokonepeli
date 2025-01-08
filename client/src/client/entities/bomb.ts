@@ -26,8 +26,6 @@ export class Bomb implements Entity<BombProperties> {
   }
 
   public getContainer(): PIXI.Container {
-    console.log(this.container)
-    console.log("FUCK")
     return this.container
   }
 

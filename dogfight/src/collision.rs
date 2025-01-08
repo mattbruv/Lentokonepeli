@@ -136,7 +136,7 @@ fn check_pixels(image: &RgbaImage, intersection: &BoundingBox, bounds: &Bounding
             let pixel_x = intersection.x + x - bounds.x;
             let pixel_y = intersection.y + y - bounds.y;
             if image.get_pixel(pixel_x as u32, pixel_y as u32).0[3] != 0 {
-                web_sys::console::log_1(&format!("x: {} y: {}", pixel_x, pixel_y).into());
+                // web_sys::console::log_1(&format!("x: {} y: {}", pixel_x, pixel_y).into());
                 return true;
             }
         }
