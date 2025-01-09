@@ -1,4 +1,11 @@
-use crate::{entities::types::EntityType, tick_actions::Action, world::World};
+use std::any::Any;
+
+use crate::{
+    entities::{entity::Entity, types::EntityType},
+    input::PlayerKeyboard,
+    tick_actions::Action,
+    world::World,
+};
 
 /*
 
@@ -32,9 +39,10 @@ impl World {
             - Bunker
     */
     pub fn tick_entities(&mut self) -> Vec<Action> {
-        let mut run_actions = vec![];
+        let mut actions = vec![];
 
         // Tick men
+        // TODO: tick all men, not just men controlled by players
         for (_, player) in self.players.get_map_mut() {
             if let Some(controlled) = player.get_controlling() {
                 match controlled.entity_type {
@@ -55,9 +63,22 @@ impl World {
 
         // Tick Explosions
         for (explosion_id, explosion) in self.explosions.get_map_mut() {
-            run_actions.extend(explosion.tick(*explosion_id));
+            actions.extend(explosion.tick(*explosion_id));
         }
 
-        run_actions
+        // Tick Planes
+        for (plane_id, plane) in self.planes.get_map_mut() {
+            let keyboard: Option<&PlayerKeyboard> = match self
+                .players
+                .get_player_controlling(plane.get_type(), *plane_id)
+            {
+                Some(p) => Some(p.get_keys()),
+                None => None,
+            };
+
+            actions.extend(plane.tick(keyboard));
+        }
+
+        actions
     }
 }

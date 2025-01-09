@@ -1,4 +1,4 @@
-use std::f64::consts::{PI, TAU};
+use std::f64::consts::PI;
 
 use dogfight_macros::{EnumBytes, Networked};
 use image::RgbaImage;
@@ -6,9 +6,11 @@ use serde::Deserialize;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
-    images::{get_image, PARACHUTER0, PLANE4, PLANE5, PLANE6, PLANE7, PLANE8, PLANE9},
+    images::{get_image, PLANE4, PLANE5, PLANE6, PLANE7, PLANE8, PLANE9},
+    input::PlayerKeyboard,
     network::{property::Property, EntityProperties, NetworkedEntity},
-    world::{DIRECTIONS, RESOLUTION},
+    tick_actions::Action,
+    world::RESOLUTION,
 };
 
 use super::{entity::Entity, types::EntityType};
@@ -47,7 +49,13 @@ pub struct Plane {
     plane_type: Property<PlaneType>,
     direction: Property<u8>,
     state: PlaneState,
-    physical_model: PhysicalModel,
+
+    // Physical Model
+    air_resistance: f64,
+    gravity: f64,
+    gravity_pull: f64,
+    speed: f64,
+    angle: f64,
 
     image_albatros: RgbaImage,
     image_junkers: RgbaImage,
@@ -67,7 +75,13 @@ impl Plane {
             client_y: Property::new(0),
             direction: Property::new(0),
             state: PlaneState::Landed,
-            physical_model: PhysicalModel::new(),
+
+            // Physical Model
+            air_resistance: 1.0,
+            gravity: 6.0,
+            gravity_pull: 0.04908738521234052,
+            speed: 0.0,
+            angle: 0.0, // This should probably be named radians
 
             image_albatros: get_image(PLANE4),
             image_junkers: get_image(PLANE5),
@@ -85,49 +99,30 @@ impl Plane {
         self.client_y.set(y);
     }
 
-    // this.direction = ((int)(this.physicalModel.angle * 256.0D / 6.283185307179586D));
-    fn set_radians(&mut self, new_angle: f64) {
-        self.physical_model.set_radians(new_angle);
-        self.direction
-            .set((new_angle * (DIRECTIONS as f64) / TAU) as u8);
-    }
-
     pub fn get_direction(&self) -> u8 {
         *self.direction.get()
     }
+
+    pub fn tick(&mut self, keys: Option<&PlayerKeyboard>) -> Vec<Action> {
+        let mut actions = vec![];
+
+        self.gravity();
+        self.air_resistance();
+
+        actions
+    }
 }
 
-struct PhysicalModel {
-    air_resistance: f64,
-    gravity: f64,
-    gravity_pull: f64,
-    speed: f64,
-    angle: f64,
-}
-
-impl PhysicalModel {
+// Impl Physical Model
+impl Plane {
     const LANDING_SPEED: f64 = 100.0;
 
-    fn new() -> Self {
-        PhysicalModel {
-            air_resistance: 1.0,
-            gravity: 6.0,
-            gravity_pull: 0.04908738521234052,
-            speed: 0.0,
-            angle: 0.0, // This should probably be named radians
-        }
+    fn accelerate(&mut self) {
+        self.speed += self.get_acceleration_speed() * self.get_height_multiplier();
     }
 
-    fn set_radians(&mut self, new_angle: f64) {
-        self.angle = new_angle
-    }
-
-    fn accelerate(&mut self, plane: &Plane) {
-        self.speed += plane.get_acceleration_speed() * self.get_height_multiplier(plane);
-    }
-
-    fn air_resistance(&mut self, plane: &Plane) {
-        let mut resistance = (self.speed - plane.get_speed_modifier()).powi(2) * 5.0e-5;
+    fn air_resistance(&mut self) {
+        let mut resistance = (self.speed - self.get_speed_modifier()).powi(2) * 5.0e-5;
         if resistance < self.air_resistance {
             resistance = self.air_resistance;
         }
@@ -137,7 +132,7 @@ impl PhysicalModel {
         }
     }
 
-    fn gravity(&mut self, plane: &Plane) {
+    fn gravity(&mut self) {
         let mut d1 = (1.0 - self.speed / 150.0) * self.gravity_pull;
         if d1 < 0.0 {
             d1 = 0.0;
@@ -161,28 +156,23 @@ impl PhysicalModel {
         }
     }
 
-    fn run(&mut self, plane: &Plane) {
-        self.gravity(plane);
-        self.air_resistance(plane);
-    }
-
-    fn steer_up(&mut self, plane: &Plane) {
-        self.angle += self.speed / 100.0 / 4.0 * plane.get_turn_step();
+    fn steer_up(&mut self) {
+        self.angle += self.speed / 100.0 / 4.0 * self.get_turn_step();
         if self.angle >= 2.0 * PI {
             self.angle -= 2.0 * PI;
         }
     }
 
-    fn steer_down(&mut self, plane: &Plane) {
-        self.angle -= self.speed / 100.0 / 4.0 * plane.get_turn_step();
+    fn steer_down(&mut self) {
+        self.angle -= self.speed / 100.0 / 4.0 * self.get_turn_step();
         if self.angle < 0.0 {
             self.angle += 2.0 * PI;
         }
     }
 
-    fn get_height_multiplier(&self, plane: &Plane) -> f64 {
+    fn get_height_multiplier(&self) -> f64 {
         let mut multiplier =
-            (plane.get_y() as f64 / 100.0 - (64966.0 + plane.get_max_y() as f64)) / 150.0;
+            (self.get_y() as f64 / 100.0 - (64966.0 + self.get_max_y() as f64)) / 150.0;
         if multiplier > 1.0 {
             multiplier = 1.0;
         }

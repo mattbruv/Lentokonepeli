@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::network::{EntityChange, EntityChangeType, NetworkedEntity};
 
-use super::EntityId;
+use super::{player::Player, EntityId};
 use crate::entities::types::EntityType;
 
 pub struct EntityContainer<T> {
@@ -120,5 +120,21 @@ where
         self.ids.append(&mut self.removed_ids);
 
         updated
+    }
+}
+
+impl EntityContainer<Player> {
+    pub fn get_player_controlling(
+        &mut self,
+        ent_type: EntityType,
+        ent_id: EntityId,
+    ) -> Option<&Player> {
+        self.get_map_mut()
+            .iter()
+            .find(|(_, p)| match p.get_controlling() {
+                Some(controlled) => controlled.entity_type == ent_type && controlled.id == ent_id,
+                None => false,
+            })
+            .map(|(_, p)| p)
     }
 }
