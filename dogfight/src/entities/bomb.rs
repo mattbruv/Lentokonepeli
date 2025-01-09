@@ -6,7 +6,7 @@ use imageproc::geometric_transformations::Interpolation;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
-    images::{get_image, get_rotateable_image, BOMB},
+    images::{get_image, get_rotateable_image, rotate_image, BOMB},
     math::radians_to_direction,
     network::{property::Property, EntityProperties, NetworkedEntity},
     world::{DIRECTIONS, RESOLUTION},
@@ -67,7 +67,7 @@ impl Bomb {
         self.angle = self.y_speed.atan2(self.x_speed);
         self.direction.set(radians_to_direction(self.angle));
 
-        self.rotate_image();
+        self.image = rotate_image(&self.image, self.angle);
     }
 
     pub fn get_x(&self) -> i16 {
@@ -76,15 +76,6 @@ impl Bomb {
 
     pub fn get_y(&self) -> i16 {
         *self.client_y.get()
-    }
-
-    pub fn rotate_image(&mut self) -> () {
-        self.rotated_image = imageproc::geometric_transformations::rotate_about_center(
-            &self.image,
-            self.angle as f32,
-            Interpolation::Nearest,
-            image::Rgba([0, 0, 0, 0]),
-        );
     }
 }
 

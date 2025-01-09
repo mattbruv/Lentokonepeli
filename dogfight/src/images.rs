@@ -1,4 +1,5 @@
-use image::{self, DynamicImage, GenericImage, Rgba};
+use image::{self, DynamicImage, GenericImage, Rgba, RgbaImage};
+use imageproc::geometric_transformations::Interpolation;
 
 pub fn get_rotateable_image(bytes: &[u8]) -> image::RgbaImage {
     let img = get_image(bytes);
@@ -22,6 +23,15 @@ pub fn get_rotateable_image(bytes: &[u8]) -> image::RgbaImage {
     new_img.copy_from(&img, x_offset, y_offset).unwrap();
 
     new_img.to_rgba8()
+}
+
+pub fn rotate_image(img: &RgbaImage, angle: f64) -> RgbaImage {
+    imageproc::geometric_transformations::rotate_about_center(
+        &img,
+        angle as f32,
+        Interpolation::Nearest,
+        image::Rgba([0, 0, 0, 0]),
+    )
 }
 
 pub fn get_image(bytes: &[u8]) -> image::RgbaImage {

@@ -6,7 +6,10 @@ use serde::Deserialize;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
-    images::{get_image, get_rotateable_image, PLANE4, PLANE5, PLANE6, PLANE7, PLANE8, PLANE9},
+    images::{
+        get_image, get_rotateable_image, rotate_image, PLANE4, PLANE5, PLANE6, PLANE7, PLANE8,
+        PLANE9,
+    },
     input::PlayerKeyboard,
     math::radians_to_direction,
     network::{property::Property, EntityProperties, NetworkedEntity},
@@ -91,6 +94,8 @@ pub struct Plane {
     image_bristol: RgbaImage,
     image_salmson: RgbaImage,
     image_sopwith: RgbaImage,
+
+    rotated_image: RgbaImage,
 }
 
 impl Plane {
@@ -133,6 +138,8 @@ impl Plane {
             image_bristol: get_rotateable_image(PLANE7),
             image_salmson: get_rotateable_image(PLANE8),
             image_sopwith: get_rotateable_image(PLANE9),
+
+            rotated_image: get_rotateable_image(PLANE4),
         }
     }
 
@@ -238,7 +245,32 @@ impl Plane {
             PlaneMode::Dodging => todo!(),
         }
 
+        self.update_rotate_image();
+
         actions
+    }
+
+    fn update_rotate_image(&mut self) -> () {
+        match self.plane_type.get() {
+            PlaneType::Albatros => {
+                self.rotated_image = rotate_image(&self.image_albatros, self.angle);
+            }
+            PlaneType::Junkers => {
+                self.rotated_image = rotate_image(&self.image_junkers, self.angle);
+            }
+            PlaneType::Fokker => {
+                self.rotated_image = rotate_image(&self.image_fokker, self.angle);
+            }
+            PlaneType::Bristol => {
+                self.rotated_image = rotate_image(&self.image_bristol, self.angle);
+            }
+            PlaneType::Salmson => {
+                self.rotated_image = rotate_image(&self.image_salmson, self.angle);
+            }
+            PlaneType::Sopwith => {
+                self.rotated_image = rotate_image(&self.image_sopwith, self.angle);
+            }
+        };
     }
 }
 
@@ -448,6 +480,6 @@ impl SolidEntity for Plane {
     }
 
     fn get_collision_image(&self) -> Option<&RgbaImage> {
-        None
+        Some(&self.rotated_image)
     }
 }
