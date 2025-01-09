@@ -1,4 +1,28 @@
-use image;
+use image::{self, DynamicImage, GenericImage, Rgba};
+
+pub fn get_rotateable_image(bytes: &[u8]) -> image::RgbaImage {
+    let img = get_image(bytes);
+    let (width, height) = img.dimensions();
+
+    // Calculate the diagonal size
+    let max_size = (f64::from(width.pow(2) + height.pow(2)).sqrt().ceil() as u32)
+        .max(width)
+        .max(height);
+
+    let mut new_img = DynamicImage::new_rgb8(max_size, max_size);
+    for x in 0..max_size {
+        for y in 0..max_size {
+            new_img.put_pixel(x, y, Rgba([0, 0, 0, 0]));
+        }
+    }
+
+    let x_offset = (max_size - width) / 2;
+    let y_offset = (max_size - height) / 2;
+
+    new_img.copy_from(&img, x_offset, y_offset).unwrap();
+
+    new_img.to_rgba8()
+}
 
 pub fn get_image(bytes: &[u8]) -> image::RgbaImage {
     image::load_from_memory(bytes).unwrap().to_rgba8()

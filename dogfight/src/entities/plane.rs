@@ -6,7 +6,7 @@ use serde::Deserialize;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
-    images::{get_image, PLANE4, PLANE5, PLANE6, PLANE7, PLANE8, PLANE9},
+    images::{get_image, get_rotateable_image, PLANE4, PLANE5, PLANE6, PLANE7, PLANE8, PLANE9},
     input::PlayerKeyboard,
     math::radians_to_direction,
     network::{property::Property, EntityProperties, NetworkedEntity},
@@ -127,12 +127,12 @@ impl Plane {
             speed: 0.0,
             angle: 0.0, // This should probably be named radians
 
-            image_albatros: get_image(PLANE4),
-            image_junkers: get_image(PLANE5),
-            image_fokker: get_image(PLANE6),
-            image_bristol: get_image(PLANE7),
-            image_salmson: get_image(PLANE8),
-            image_sopwith: get_image(PLANE9),
+            image_albatros: get_rotateable_image(PLANE4),
+            image_junkers: get_rotateable_image(PLANE5),
+            image_fokker: get_rotateable_image(PLANE6),
+            image_bristol: get_rotateable_image(PLANE7),
+            image_salmson: get_rotateable_image(PLANE8),
+            image_sopwith: get_rotateable_image(PLANE9),
         }
     }
 
@@ -215,6 +215,7 @@ impl Plane {
 
                 // update coordinates and angle
                 if self.speed != 0.0 {
+                    // TODO: this should probably be speed per pixel instead, it's distinct
                     let res = RESOLUTION as f64;
                     //web_sys::console::log_1(&format!("x before: {}", self.x).into());
                     //web_sys::console::log_1(&format!("y before: {}", self.y).into());
@@ -439,8 +440,8 @@ impl SolidEntity for Plane {
     fn get_collision_bounds(&self) -> BoundingBox {
         let img = self.get_image();
         BoundingBox {
-            x: (self.x / RESOLUTION) as i16,
-            y: (self.y / RESOLUTION) as i16,
+            x: (self.x / RESOLUTION) as i16 - (img.width() / 2) as i16,
+            y: (self.y / RESOLUTION) as i16 - (img.height() / 2) as i16,
             width: img.width() as i16,
             height: img.height() as i16,
         }

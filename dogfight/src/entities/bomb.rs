@@ -6,7 +6,7 @@ use imageproc::geometric_transformations::Interpolation;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
-    images::{get_image, BOMB},
+    images::{get_image, get_rotateable_image, BOMB},
     math::radians_to_direction,
     network::{property::Property, EntityProperties, NetworkedEntity},
     world::{DIRECTIONS, RESOLUTION},
@@ -41,8 +41,8 @@ impl Bomb {
             x_speed: angle_radians.cos() * speed * (RESOLUTION as f64),
             y_speed: angle_radians.cos() * speed * (RESOLUTION as f64),
 
-            image: get_image(BOMB),
-            rotated_image: get_image(BOMB),
+            image: get_rotateable_image(BOMB),
+            rotated_image: get_rotateable_image(BOMB),
         }
     }
 
