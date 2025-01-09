@@ -64,16 +64,20 @@ impl World {
     pub fn init(&mut self) -> () {}
 
     pub fn init_debug(&mut self) -> () {
+        /*
         let mut debug_plane = Plane::new(PlaneType::Fokker);
         debug_plane.set_position(-2490, -20);
         self.planes.insert(debug_plane);
+        */
     }
 
     fn spawn_bomb(&mut self) -> () {
+        /*
         for i in 0..2 {
             let debug_bomb = Bomb::new(-2490 + i * 50, -300, 0, 0.0);
             self.bombs.insert(debug_bomb);
         }
+        */
     }
 
     pub fn tick(&mut self, input: Vec<GameInput>) -> Vec<GameOutput> {

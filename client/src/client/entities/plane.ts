@@ -62,7 +62,7 @@ export class Plane implements Entity<PlaneProperties>, Followable {
     },
 
     client_fuel: () => {
-      console.log(this.props.client_fuel)
+      console.log("fuel", this.props.client_fuel)
     },
 
     flipped: () => {
@@ -75,7 +75,7 @@ export class Plane implements Entity<PlaneProperties>, Followable {
     },
 
     motor_on: () => {
-      console.log(this.props.motor_on)
+      console.log("motor on", this.props.motor_on)
     },
 
     plane_type: () => {
