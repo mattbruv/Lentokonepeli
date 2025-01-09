@@ -69,4 +69,6 @@ impl SolidEntity for Coast {
             },
         }
     }
+
+    fn do_rotate_collision_image(&mut self) -> () {}
 }

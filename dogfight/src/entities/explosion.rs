@@ -130,4 +130,6 @@ impl SolidEntity for Explosion {
     fn get_collision_image(&self) -> Option<&RgbaImage> {
         Some(&self.image)
     }
+
+    fn do_rotate_collision_image(&mut self) -> () {}
 }

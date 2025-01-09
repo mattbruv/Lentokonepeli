@@ -42,7 +42,7 @@ impl DogfightWeb {
         binary
     }
 
-    pub fn debug(&self) -> String {
+    pub fn debug(&mut self) -> String {
         self.world.debug()
     }
 

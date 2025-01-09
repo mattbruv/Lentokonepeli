@@ -49,7 +49,7 @@ impl World {
 
         'men: for (man_id, man) in self.men.get_map_mut() {
             // Man -> Ground
-            for (ground_id, ground) in self.grounds.get_map() {
+            for (ground_id, ground) in self.grounds.get_map_mut() {
                 if man.check_collision(ground) {
                     match man.get_state() {
                         // Update the state to walking only if we're not already doing it.
@@ -67,7 +67,7 @@ impl World {
             }
 
             // Man -> Coast
-            for (coast_id, coast) in self.coasts.get_map() {
+            for (coast_id, coast) in self.coasts.get_map_mut() {
                 //
                 if man.check_collision(coast) {
                     match man.get_state() {
@@ -83,7 +83,7 @@ impl World {
             }
 
             // Man -> Water
-            for (water_id, water) in self.waters.get_map() {
+            for (water_id, water) in self.waters.get_map_mut() {
                 //
                 if man.check_collision(water) {
                     actions.push(Action::RemoveEntity(RemoveData {
@@ -94,7 +94,7 @@ impl World {
                 }
             }
 
-            for (runway_id, runway) in self.runways.get_map() {
+            for (runway_id, runway) in self.runways.get_map_mut() {
                 //
                 if man.check_collision(runway) {
                     web_sys::console::log_1(&format!("man collide runway!").into());
@@ -122,7 +122,7 @@ impl World {
         };
 
         'bombs: for (bomb_id, bomb) in self.bombs.get_map_mut() {
-            for (ground_id, ground) in self.grounds.get_map() {
+            for (ground_id, ground) in self.grounds.get_map_mut() {
                 if bomb.check_collision(ground) {
                     blow_up(bomb_id, bomb, bomb.get_x(), bomb.get_y());
                     web_sys::console::log_1(&format!("bomb collide ground!").into());
@@ -130,21 +130,21 @@ impl World {
                 }
             }
 
-            for (coast_id, coast) in self.coasts.get_map() {
+            for (coast_id, coast) in self.coasts.get_map_mut() {
                 if bomb.check_collision(coast) {
                     web_sys::console::log_1(&format!("bomb collide coast!").into());
                     continue 'bombs;
                 }
             }
 
-            for (water_id, water) in self.waters.get_map() {
+            for (water_id, water) in self.waters.get_map_mut() {
                 if bomb.check_collision(water) {
                     web_sys::console::log_1(&format!("bomb collide water!").into());
                     continue 'bombs;
                 }
             }
 
-            for (runway_id, runway) in self.runways.get_map() {
+            for (runway_id, runway) in self.runways.get_map_mut() {
                 if bomb.check_collision(runway) {
                     web_sys::console::log_1(&format!("bomb collide runway!").into());
                     continue 'bombs;

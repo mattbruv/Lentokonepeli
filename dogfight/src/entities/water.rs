@@ -51,4 +51,6 @@ impl SolidEntity for Water {
     fn get_collision_image(&self) -> Option<&RgbaImage> {
         None
     }
+
+    fn do_rotate_collision_image(&mut self) -> () {}
 }

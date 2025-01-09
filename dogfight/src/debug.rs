@@ -5,13 +5,13 @@ use crate::{
 };
 
 impl World {
-    pub fn debug(&self) -> String {
+    pub fn debug(&mut self) -> String {
         let mut debug_info: Vec<DebugEntity> = vec![];
 
         let man_bounds: Vec<DebugEntity> = self
             .men
-            .get_map()
-            .iter()
+            .get_map_mut()
+            .iter_mut()
             .map(|(idx, man)| {
                 let bounds = man.get_collision_bounds();
                 DebugEntity {
@@ -25,8 +25,8 @@ impl World {
 
         let water_bounds: Vec<DebugEntity> = self
             .waters
-            .get_map()
-            .iter()
+            .get_map_mut()
+            .iter_mut()
             .map(|(idx, water)| {
                 let bounds = water.get_collision_bounds();
                 DebugEntity {
@@ -40,8 +40,8 @@ impl World {
 
         let plane_bounds: Vec<DebugEntity> = self
             .planes
-            .get_map()
-            .iter()
+            .get_map_mut()
+            .iter_mut()
             .map(|(idx, plane)| {
                 let bounds = plane.get_collision_bounds();
                 DebugEntity {
@@ -55,8 +55,8 @@ impl World {
 
         let ground_bounds: Vec<DebugEntity> = self
             .grounds
-            .get_map()
-            .iter()
+            .get_map_mut()
+            .iter_mut()
             .map(|(idx, ground)| {
                 let bounds = ground.get_collision_bounds();
                 DebugEntity {
@@ -70,8 +70,8 @@ impl World {
 
         let coast_bounds: Vec<DebugEntity> = self
             .coasts
-            .get_map()
-            .iter()
+            .get_map_mut()
+            .iter_mut()
             .map(|(idx, coast)| {
                 let bounds = coast.get_collision_bounds();
                 DebugEntity {
@@ -85,8 +85,8 @@ impl World {
 
         let runway_bounds: Vec<DebugEntity> = self
             .runways
-            .get_map()
-            .iter()
+            .get_map_mut()
+            .iter_mut()
             .map(|(idx, runway)| {
                 let bounds = runway.get_collision_bounds();
                 DebugEntity {
@@ -100,8 +100,8 @@ impl World {
 
         let bomb_bounds: Vec<DebugEntity> = self
             .bombs
-            .get_map()
-            .iter()
+            .get_map_mut()
+            .iter_mut()
             .map(|(idx, bomb)| {
                 let bounds = bomb.get_collision_bounds();
                 DebugEntity {
@@ -115,8 +115,8 @@ impl World {
 
         let explosion_bounds: Vec<DebugEntity> = self
             .explosions
-            .get_map()
-            .iter()
+            .get_map_mut()
+            .iter_mut()
             .map(|(idx, explosion)| {
                 let bounds = explosion.get_collision_bounds();
                 DebugEntity {

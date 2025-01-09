@@ -181,4 +181,6 @@ impl SolidEntity for Man {
             _ => Some(&self.image_standing),
         }
     }
+
+    fn do_rotate_collision_image(&mut self) -> () {}
 }

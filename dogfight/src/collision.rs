@@ -61,12 +61,18 @@ pub trait SolidEntity: Entity {
 
     fn get_collision_bounds(&self) -> BoundingBox;
     fn get_collision_image(&self) -> Option<&RgbaImage>;
+    fn do_rotate_collision_image(&mut self) -> ();
 
-    fn check_collision(&self, other: &dyn SolidEntity) -> bool {
+    fn check_collision(&mut self, other: &mut dyn SolidEntity) -> bool {
         let bounds_self = self.get_collision_bounds();
         let bounds_other = other.get_collision_bounds();
 
         if let Some(intersection) = bounds_self.intersection(&bounds_other) {
+            // Let's only rotate the object's collision image if their bigger bounding boxes collide
+            // We were doing this every frame, doing it this way is an easy performance win.
+            self.do_rotate_collision_image();
+            other.do_rotate_collision_image();
+
             let img_self = self.get_collision_image();
             let img_other = other.get_collision_image();
 
@@ -107,7 +113,8 @@ pub trait SolidEntity: Entity {
         false
     }
 
-    fn get_debug_pixels(&self) -> Option<Vec<Point>> {
+    fn get_debug_pixels(&mut self) -> Option<Vec<Point>> {
+        self.do_rotate_collision_image();
         let mut pixels = vec![];
         let img = self.get_collision_image();
 

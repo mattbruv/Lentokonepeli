@@ -2,7 +2,7 @@ use std::f64::consts::TAU;
 
 use dogfight_macros::Networked;
 use image::RgbaImage;
-use imageproc::geometric_transformations::Interpolation;
+use imageproc::geometric_transformations::{rotate, Interpolation};
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
@@ -66,8 +66,6 @@ impl Bomb {
         // update angle/direction
         self.angle = self.y_speed.atan2(self.x_speed);
         self.direction.set(radians_to_direction(self.angle));
-
-        self.rotated_image = rotate_image(&self.image, self.angle);
     }
 
     pub fn get_x(&self) -> i16 {
@@ -97,5 +95,9 @@ impl SolidEntity for Bomb {
 
     fn get_collision_image(&self) -> Option<&RgbaImage> {
         Some(&self.rotated_image)
+    }
+
+    fn do_rotate_collision_image(&mut self) -> () {
+        self.rotated_image = rotate_image(&self.image, self.angle);
     }
 }

@@ -245,32 +245,7 @@ impl Plane {
             PlaneMode::Dodging => todo!(),
         }
 
-        self.update_rotate_image();
-
         actions
-    }
-
-    fn update_rotate_image(&mut self) -> () {
-        match self.plane_type.get() {
-            PlaneType::Albatros => {
-                self.rotated_image = rotate_image(&self.image_albatros, self.angle);
-            }
-            PlaneType::Junkers => {
-                self.rotated_image = rotate_image(&self.image_junkers, self.angle);
-            }
-            PlaneType::Fokker => {
-                self.rotated_image = rotate_image(&self.image_fokker, self.angle);
-            }
-            PlaneType::Bristol => {
-                self.rotated_image = rotate_image(&self.image_bristol, self.angle);
-            }
-            PlaneType::Salmson => {
-                self.rotated_image = rotate_image(&self.image_salmson, self.angle);
-            }
-            PlaneType::Sopwith => {
-                self.rotated_image = rotate_image(&self.image_sopwith, self.angle);
-            }
-        };
     }
 }
 
@@ -481,5 +456,28 @@ impl SolidEntity for Plane {
 
     fn get_collision_image(&self) -> Option<&RgbaImage> {
         Some(&self.rotated_image)
+    }
+
+    fn do_rotate_collision_image(&mut self) -> () {
+        match self.plane_type.get() {
+            PlaneType::Albatros => {
+                self.rotated_image = rotate_image(&self.image_albatros, self.angle);
+            }
+            PlaneType::Junkers => {
+                self.rotated_image = rotate_image(&self.image_junkers, self.angle);
+            }
+            PlaneType::Fokker => {
+                self.rotated_image = rotate_image(&self.image_fokker, self.angle);
+            }
+            PlaneType::Bristol => {
+                self.rotated_image = rotate_image(&self.image_bristol, self.angle);
+            }
+            PlaneType::Salmson => {
+                self.rotated_image = rotate_image(&self.image_salmson, self.angle);
+            }
+            PlaneType::Sopwith => {
+                self.rotated_image = rotate_image(&self.image_sopwith, self.angle);
+            }
+        };
     }
 }
