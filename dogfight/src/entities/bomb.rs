@@ -67,7 +67,7 @@ impl Bomb {
         self.angle = self.y_speed.atan2(self.x_speed);
         self.direction.set(radians_to_direction(self.angle));
 
-        self.image = rotate_image(&self.image, self.angle);
+        self.rotated_image = rotate_image(&self.image, self.angle);
     }
 
     pub fn get_x(&self) -> i16 {

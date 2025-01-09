@@ -10,7 +10,7 @@ pub fn get_rotateable_image(bytes: &[u8]) -> image::RgbaImage {
         .max(width)
         .max(height);
 
-    let mut new_img = DynamicImage::new_rgb8(max_size, max_size);
+    let mut new_img = RgbaImage::new(max_size, max_size);
     for x in 0..max_size {
         for y in 0..max_size {
             new_img.put_pixel(x, y, Rgba([0, 0, 0, 0]));
@@ -22,7 +22,7 @@ pub fn get_rotateable_image(bytes: &[u8]) -> image::RgbaImage {
 
     new_img.copy_from(&img, x_offset, y_offset).unwrap();
 
-    new_img.to_rgba8()
+    new_img
 }
 
 pub fn rotate_image(img: &RgbaImage, angle: f64) -> RgbaImage {
