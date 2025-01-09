@@ -128,9 +128,9 @@ impl EntityContainer<Player> {
         &mut self,
         ent_type: EntityType,
         ent_id: EntityId,
-    ) -> Option<&Player> {
+    ) -> Option<&mut Player> {
         self.get_map_mut()
-            .iter()
+            .iter_mut()
             .find(|(_, p)| match p.get_controlling() {
                 Some(controlled) => controlled.entity_type == ent_type && controlled.id == ent_id,
                 None => false,

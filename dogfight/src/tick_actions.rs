@@ -1,6 +1,7 @@
 use crate::{
     entities::{
         explosion::Explosion,
+        player::PlayerState,
         types::{EntityType, Team},
         EntityId,
     },
@@ -68,6 +69,15 @@ impl World {
             EntityType::Water => {}
             EntityType::Bunker => {}
         };
+
+        if let Some(player) = self
+            .players
+            .get_player_controlling(remove_data.ent_type, remove_data.ent_id)
+        {
+            player.set_controlling(None);
+            // TODO: show temporary death screen or something
+            player.set_state(PlayerState::ChoosingRunway);
+        }
 
         output
     }

@@ -247,6 +247,14 @@ impl Plane {
 
         actions
     }
+
+    pub(crate) fn get_client_x(&self) -> i16 {
+        *self.client_x.get()
+    }
+
+    pub(crate) fn get_client_y(&self) -> i16 {
+        *self.client_y.get()
+    }
 }
 
 // Impl Physical Model

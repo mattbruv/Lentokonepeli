@@ -1,6 +1,6 @@
 use crate::{
     collision::SolidEntity,
-    entities::{bomb::Bomb, entity::Entity, man::ManState, EntityId},
+    entities::{bomb::Bomb, entity::Entity, man::ManState, types::EntityType, EntityId},
     tick_actions::{Action, ExplosionData, RemoveData},
     world::World,
 };
@@ -40,6 +40,7 @@ impl World {
 
         actions.extend(self.collide_men());
         actions.extend(self.collide_bombs());
+        actions.extend(self.collide_planes());
 
         actions
     }
@@ -109,22 +110,16 @@ impl World {
     fn collide_bombs(&mut self) -> Vec<Action> {
         let mut actions = vec![];
 
-        let mut blow_up = |bomb_id: &EntityId, bomb: &Bomb, x: i16, y: i16| {
-            actions.push(Action::RemoveEntity(RemoveData {
-                ent_id: *bomb_id,
-                ent_type: bomb.get_type(),
-            }));
-            actions.push(Action::Explosion(ExplosionData {
-                team: None,
-                x: x,
-                y: y,
-            }));
-        };
-
         'bombs: for (bomb_id, bomb) in self.bombs.get_map_mut() {
             for (ground_id, ground) in self.grounds.get_map_mut() {
                 if bomb.check_collision(ground) {
-                    blow_up(bomb_id, bomb, bomb.get_x(), bomb.get_y());
+                    blow_up(
+                        &mut actions,
+                        bomb_id,
+                        bomb.get_type(),
+                        bomb.get_x(),
+                        bomb.get_y(),
+                    );
                     web_sys::console::log_1(&format!("bomb collide ground!").into());
                     continue 'bombs;
                 }
@@ -155,6 +150,81 @@ impl World {
         actions
     }
 
+    fn collide_planes(&mut self) -> Vec<Action> {
+        let mut actions = vec![];
+
+        'planes: for (plane_id, plane) in self.planes.get_map_mut() {
+            for (ground_id, ground) in self.grounds.get_map_mut() {
+                if plane.check_collision(ground) {
+                    blow_up(
+                        &mut actions,
+                        plane_id,
+                        plane.get_type(),
+                        plane.get_client_x(),
+                        plane.get_client_y(),
+                    );
+                    continue 'planes;
+                }
+            }
+
+            for (coast_id, coast) in self.coasts.get_map_mut() {
+                if plane.check_collision(coast) {
+                    blow_up(
+                        &mut actions,
+                        plane_id,
+                        plane.get_type(),
+                        plane.get_client_x(),
+                        plane.get_client_y(),
+                    );
+                    continue 'planes;
+                }
+            }
+
+            for (water_id, water) in self.waters.get_map_mut() {
+                if plane.check_collision(water) {
+                    actions.push(Action::RemoveEntity(RemoveData {
+                        ent_id: *plane_id,
+                        ent_type: plane.get_type(),
+                    }));
+                    continue 'planes;
+                }
+            }
+
+            for (runway_id, runway) in self.runways.get_map_mut() {
+                if plane.check_collision(runway) {
+                    blow_up(
+                        &mut actions,
+                        plane_id,
+                        plane.get_type(),
+                        plane.get_client_x(),
+                        plane.get_client_y(),
+                    );
+                    continue 'planes;
+                }
+            }
+        }
+
+        actions
+    }
+
     // Get bounding boxes of all collidable objects
     //
+}
+
+fn blow_up(
+    actions: &mut Vec<Action>,
+    ent_id: &EntityId,
+    ent_type: EntityType,
+    x: i16,
+    y: i16,
+) -> () {
+    actions.push(Action::RemoveEntity(RemoveData {
+        ent_id: *ent_id,
+        ent_type: ent_type,
+    }));
+    actions.push(Action::Explosion(ExplosionData {
+        team: None,
+        x: x,
+        y: y,
+    }));
 }
