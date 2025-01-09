@@ -314,54 +314,10 @@ impl Plane {
 }
 
 impl Plane {
-    fn get_acceleration_speed(&self) -> f64 {
-        match self.plane_type.get() {
-            PlaneType::Albatros => 4.75,
-            PlaneType::Junkers => todo!(),
-            PlaneType::Fokker => todo!(),
-            PlaneType::Bristol => todo!(),
-            PlaneType::Salmson => todo!(),
-            PlaneType::Sopwith => todo!(),
-        }
-    }
-
-    fn get_speed_modifier(&self) -> f64 {
-        match self.plane_type.get() {
-            PlaneType::Albatros => 55.0,
-            PlaneType::Junkers => todo!(),
-            PlaneType::Fokker => todo!(),
-            PlaneType::Bristol => todo!(),
-            PlaneType::Salmson => todo!(),
-            PlaneType::Sopwith => todo!(),
-        }
-    }
-
-    fn get_turn_step(&self) -> f64 {
-        match self.plane_type.get() {
-            PlaneType::Albatros => 0.031415926535897934,
-            PlaneType::Junkers => todo!(),
-            PlaneType::Fokker => todo!(),
-            PlaneType::Bristol => todo!(),
-            PlaneType::Salmson => todo!(),
-            PlaneType::Sopwith => todo!(),
-        }
-    }
-
-    fn get_max_y(&self) -> i16 {
-        match self.plane_type.get() {
-            PlaneType::Albatros => -50,
-            PlaneType::Junkers => todo!(),
-            PlaneType::Fokker => todo!(),
-            PlaneType::Bristol => todo!(),
-            PlaneType::Salmson => todo!(),
-            PlaneType::Sopwith => todo!(),
-        }
-    }
-
     fn get_max_ammo(&self) -> i32 {
         match self.plane_type.get() {
             PlaneType::Albatros => 95,
-            PlaneType::Junkers => todo!(),
+            PlaneType::Junkers => 100,
             PlaneType::Fokker => todo!(),
             PlaneType::Bristol => todo!(),
             PlaneType::Salmson => todo!(),
@@ -372,7 +328,7 @@ impl Plane {
     fn get_max_bombs(&self) -> i32 {
         match self.plane_type.get() {
             PlaneType::Albatros => 0,
-            PlaneType::Junkers => todo!(),
+            PlaneType::Junkers => 5,
             PlaneType::Fokker => todo!(),
             PlaneType::Bristol => todo!(),
             PlaneType::Salmson => todo!(),
@@ -383,7 +339,7 @@ impl Plane {
     fn get_max_fuel(&self) -> i32 {
         match self.plane_type.get() {
             PlaneType::Albatros => 80,
-            PlaneType::Junkers => todo!(),
+            PlaneType::Junkers => 100,
             PlaneType::Fokker => todo!(),
             PlaneType::Bristol => todo!(),
             PlaneType::Salmson => todo!(),
@@ -394,7 +350,62 @@ impl Plane {
     fn get_max_health(&self) -> i32 {
         match self.plane_type.get() {
             PlaneType::Albatros => 135,
-            PlaneType::Junkers => todo!(),
+            PlaneType::Junkers => 160,
+            PlaneType::Fokker => todo!(),
+            PlaneType::Bristol => todo!(),
+            PlaneType::Salmson => todo!(),
+            PlaneType::Sopwith => todo!(),
+        }
+    }
+
+    fn get_acceleration_speed(&self) -> f64 {
+        match self.plane_type.get() {
+            PlaneType::Albatros => 4.75,
+            PlaneType::Junkers => 4.65,
+            PlaneType::Fokker => todo!(),
+            PlaneType::Bristol => todo!(),
+            PlaneType::Salmson => todo!(),
+            PlaneType::Sopwith => todo!(),
+        }
+    }
+
+    fn get_max_y(&self) -> i16 {
+        match self.plane_type.get() {
+            PlaneType::Albatros => -50,
+            PlaneType::Junkers => 10,
+            PlaneType::Fokker => todo!(),
+            PlaneType::Bristol => todo!(),
+            PlaneType::Salmson => todo!(),
+            PlaneType::Sopwith => todo!(),
+        }
+    }
+
+    fn get_turn_step(&self) -> f64 {
+        match self.plane_type.get() {
+            PlaneType::Albatros => 0.031415926535897934,
+            PlaneType::Junkers => 0.028559933214452663,
+            PlaneType::Fokker => todo!(),
+            PlaneType::Bristol => todo!(),
+            PlaneType::Salmson => todo!(),
+            PlaneType::Sopwith => todo!(),
+        }
+    }
+
+    fn get_shoot_delay(&self) -> i32 {
+        match self.plane_type.get() {
+            PlaneType::Albatros => todo!(),
+            PlaneType::Junkers => 170,
+            PlaneType::Fokker => todo!(),
+            PlaneType::Bristol => todo!(),
+            PlaneType::Salmson => todo!(),
+            PlaneType::Sopwith => todo!(),
+        }
+    }
+
+    fn get_speed_modifier(&self) -> f64 {
+        match self.plane_type.get() {
+            PlaneType::Albatros => 55.0,
+            PlaneType::Junkers => 0.0,
             PlaneType::Fokker => todo!(),
             PlaneType::Bristol => todo!(),
             PlaneType::Salmson => todo!(),
