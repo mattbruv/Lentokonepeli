@@ -318,7 +318,7 @@ impl Plane {
         match self.plane_type.get() {
             PlaneType::Albatros => 95,
             PlaneType::Junkers => 100,
-            PlaneType::Fokker => todo!(),
+            PlaneType::Fokker => 90,
             PlaneType::Bristol => todo!(),
             PlaneType::Salmson => todo!(),
             PlaneType::Sopwith => todo!(),
@@ -329,7 +329,7 @@ impl Plane {
         match self.plane_type.get() {
             PlaneType::Albatros => 0,
             PlaneType::Junkers => 5,
-            PlaneType::Fokker => todo!(),
+            PlaneType::Fokker => 0,
             PlaneType::Bristol => todo!(),
             PlaneType::Salmson => todo!(),
             PlaneType::Sopwith => todo!(),
@@ -340,7 +340,7 @@ impl Plane {
         match self.plane_type.get() {
             PlaneType::Albatros => 80,
             PlaneType::Junkers => 100,
-            PlaneType::Fokker => todo!(),
+            PlaneType::Fokker => 90,
             PlaneType::Bristol => todo!(),
             PlaneType::Salmson => todo!(),
             PlaneType::Sopwith => todo!(),
@@ -351,7 +351,7 @@ impl Plane {
         match self.plane_type.get() {
             PlaneType::Albatros => 135,
             PlaneType::Junkers => 160,
-            PlaneType::Fokker => todo!(),
+            PlaneType::Fokker => 120,
             PlaneType::Bristol => todo!(),
             PlaneType::Salmson => todo!(),
             PlaneType::Sopwith => todo!(),
@@ -362,7 +362,7 @@ impl Plane {
         match self.plane_type.get() {
             PlaneType::Albatros => 4.75,
             PlaneType::Junkers => 4.65,
-            PlaneType::Fokker => todo!(),
+            PlaneType::Fokker => 5.0,
             PlaneType::Bristol => todo!(),
             PlaneType::Salmson => todo!(),
             PlaneType::Sopwith => todo!(),
@@ -373,7 +373,7 @@ impl Plane {
         match self.plane_type.get() {
             PlaneType::Albatros => -50,
             PlaneType::Junkers => 10,
-            PlaneType::Fokker => todo!(),
+            PlaneType::Fokker => 0,
             PlaneType::Bristol => todo!(),
             PlaneType::Salmson => todo!(),
             PlaneType::Sopwith => todo!(),
@@ -384,7 +384,7 @@ impl Plane {
         match self.plane_type.get() {
             PlaneType::Albatros => 0.031415926535897934,
             PlaneType::Junkers => 0.028559933214452663,
-            PlaneType::Fokker => todo!(),
+            PlaneType::Fokker => 0.0483321946706122,
             PlaneType::Bristol => todo!(),
             PlaneType::Salmson => todo!(),
             PlaneType::Sopwith => todo!(),
@@ -395,7 +395,7 @@ impl Plane {
         match self.plane_type.get() {
             PlaneType::Albatros => todo!(),
             PlaneType::Junkers => 170,
-            PlaneType::Fokker => todo!(),
+            PlaneType::Fokker => 120,
             PlaneType::Bristol => todo!(),
             PlaneType::Salmson => todo!(),
             PlaneType::Sopwith => todo!(),
@@ -406,7 +406,7 @@ impl Plane {
         match self.plane_type.get() {
             PlaneType::Albatros => 55.0,
             PlaneType::Junkers => 0.0,
-            PlaneType::Fokker => todo!(),
+            PlaneType::Fokker => 0.0,
             PlaneType::Bristol => todo!(),
             PlaneType::Salmson => todo!(),
             PlaneType::Sopwith => todo!(),
