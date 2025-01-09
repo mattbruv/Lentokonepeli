@@ -22,6 +22,10 @@ export class Plane implements Entity<PlaneProperties>, Followable {
   public props: Required<PlaneProperties> = {
     client_x: 0,
     client_y: 0,
+    client_fuel: 0,
+    flipped: false,
+    mode: "Flying",
+    motor_on: true,
     plane_type: "Albatros",
     direction: 0,
   };
@@ -56,9 +60,28 @@ export class Plane implements Entity<PlaneProperties>, Followable {
     client_y: () => {
       this.planeSprite.position.y = this.props.client_y
     },
+
+    client_fuel: () => {
+      console.log(this.props.client_fuel)
+    },
+
+    flipped: () => {
+      console.log("flipped", this.props.flipped)
+    },
+
+    mode: () => {
+      console.log("mode", this.props.mode)
+
+    },
+
+    motor_on: () => {
+      console.log(this.props.motor_on)
+    },
+
     plane_type: () => {
       this.planeSprite.texture = this.getTexture()
     },
+
     direction: () => {
       console.log(this.props.direction)
       this.planeSprite.rotation = directionToRadians(this.props.direction)

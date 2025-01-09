@@ -8,6 +8,7 @@ use crate::{
     collision::{BoundingBox, SolidEntity},
     images::{get_image, PLANE4, PLANE5, PLANE6, PLANE7, PLANE8, PLANE9},
     input::PlayerKeyboard,
+    math::radians_to_direction,
     network::{property::Property, EntityProperties, NetworkedEntity},
     tick_actions::Action,
     world::RESOLUTION,
@@ -29,8 +30,9 @@ pub enum PlaneType {
     Sopwith = 9,
 }
 
-#[derive(Debug)]
-pub enum PlaneState {
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS, EnumBytes)]
+#[ts(export)]
+pub enum PlaneMode {
     Flying = 0,    // 0
     Landing = 1,   // 1
     Landed = 2,    // 2
@@ -40,15 +42,41 @@ pub enum PlaneState {
     Dodging = 6, // 6
 }
 
+/*
+    this.keyMap.put(PLANE_UP, new int[] { 37 });
+    this.keyMap.put(PLANE_DOWN, new int[] { 39 });
+    this.keyMap.put(PLANE_SHOOT, new int[] { 17, 45 });
+    this.keyMap.put(PLANE_BOMB, new int[] { 16, 46, 66 });
+    this.keyMap.put(PLANE_MOTOR, new int[] { 40 });
+    this.keyMap.put(PLANE_FLIP, new int[] { 38 });
+    this.keyMap.put(PLANE_JUMP, new int[] { 32 });
+*/
+
 #[derive(Networked)]
 pub struct Plane {
     x: i32,
     y: i32,
     client_x: Property<i16>,
     client_y: Property<i16>,
+    client_fuel: Property<u8>,
     plane_type: Property<PlaneType>,
     direction: Property<u8>,
-    state: PlaneState,
+    mode: Property<PlaneMode>,
+    motor_on: Property<bool>,
+    flipped: Property<bool>,
+
+    // Random shit
+    last_flip_ms: i32,
+    flip_delay_ms: i32,
+
+    last_bomb_ms: i32,
+    bomb_delay_ms: i32,
+
+    last_motor_on_ms: i32,
+    motor_on_delay_ms: i32,
+
+    total_fuel: i32,
+    fuel_counter: i32,
 
     // Physical Model
     air_resistance: f64,
@@ -73,8 +101,24 @@ impl Plane {
             y: 0,
             client_x: Property::new(0),
             client_y: Property::new(0),
+            client_fuel: Property::new(0),
             direction: Property::new(0),
-            state: PlaneState::Landed,
+            mode: Property::new(PlaneMode::Flying),
+            motor_on: Property::new(true),
+            flipped: Property::new(false),
+
+            // random shit
+            fuel_counter: 100,
+            total_fuel: 500,
+
+            last_flip_ms: 0,
+            flip_delay_ms: 200,
+
+            last_bomb_ms: 0,
+            bomb_delay_ms: 500,
+
+            last_motor_on_ms: 0,
+            motor_on_delay_ms: 500,
 
             // Physical Model
             air_resistance: 1.0,
@@ -103,11 +147,81 @@ impl Plane {
         *self.direction.get()
     }
 
-    pub fn tick(&mut self, keys: Option<&PlayerKeyboard>) -> Vec<Action> {
+    pub fn tick(&mut self, keyboard: Option<&PlayerKeyboard>) -> Vec<Action> {
         let mut actions = vec![];
 
-        self.gravity();
-        self.air_resistance();
+        match self.mode.get() {
+            PlaneMode::Flying => {
+                // check if we're flipped
+                if let Some(keys) = keyboard {
+                    if keys.up && self.last_flip_ms > self.flip_delay_ms {
+                        self.flipped.set(!self.flipped.get());
+                        self.last_flip_ms = 0;
+                    }
+
+                    // PLANE_DOWN = 39 = right = steer_up
+                    if keys.right {
+                        self.steer_up();
+                    }
+
+                    // PLANE_UP = 37 = left = steer_down
+                    if keys.left {
+                        self.steer_down();
+                    }
+
+                    // PLANE_MOTOR = 40 = down
+                    if keys.down
+                        && self.last_motor_on_ms > self.motor_on_delay_ms
+                        && self.total_fuel > 0
+                    {
+                        self.motor_on.set(!self.motor_on.get());
+                        self.last_motor_on_ms = 0;
+                    }
+
+                    // If we are flying within bounds
+                    if *self.motor_on.get()
+                        && (self.x / RESOLUTION < 20_000)
+                        && (self.x / RESOLUTION > -20_000)
+                    {
+                        // drain fuel
+                        if self.fuel_counter > 0 {
+                            self.fuel_counter -= 1;
+                        }
+
+                        if self.fuel_counter == 0 {
+                            if self.total_fuel == 0 {
+                                self.motor_on.set(false);
+                            } else {
+                                self.fuel_counter = 100;
+                                // TODO: extract this into a function so we can update client fuel
+                                self.total_fuel -= 1;
+                            }
+                        }
+
+                        self.accelerate();
+                    }
+
+                    self.run();
+
+                    // update coordinates and angle
+                    if self.speed != 0.0 {
+                        //
+                        let res = RESOLUTION as f64;
+                        self.x = (res * self.angle.cos() * self.speed / res) as i32;
+                        self.y = (res * self.angle.sin() * self.speed / res) as i32;
+                        self.client_x.set((self.x / RESOLUTION) as i16);
+                        self.client_y.set((self.y / RESOLUTION) as i16);
+
+                        self.direction.set(radians_to_direction(self.angle));
+                    }
+                }
+            }
+            PlaneMode::Landing => todo!(),
+            PlaneMode::Landed => todo!(),
+            PlaneMode::TakingOff => todo!(),
+            PlaneMode::Falling => todo!(),
+            PlaneMode::Dodging => todo!(),
+        }
 
         actions
     }
@@ -116,6 +230,11 @@ impl Plane {
 // Impl Physical Model
 impl Plane {
     const LANDING_SPEED: f64 = 100.0;
+
+    fn run(&mut self) {
+        self.gravity();
+        self.air_resistance();
+    }
 
     fn accelerate(&mut self) {
         self.speed += self.get_acceleration_speed() * self.get_height_multiplier();

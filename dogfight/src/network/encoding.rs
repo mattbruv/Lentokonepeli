@@ -303,6 +303,17 @@ impl NetworkedBytes for u8 {
     }
 }
 
+impl NetworkedBytes for bool {
+    fn to_bytes(&self) -> Vec<u8> {
+        vec![if *self { 1 } else { 0 }]
+    }
+
+    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+        let value = bytes[0] != 0;
+        (&bytes[1..], value)
+    }
+}
+
 impl NetworkedBytes for i8 {
     fn to_bytes(&self) -> Vec<u8> {
         i8::to_le_bytes(*self).into()
