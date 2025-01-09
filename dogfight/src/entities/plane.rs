@@ -321,7 +321,7 @@ impl Plane {
             PlaneType::Fokker => 90,
             PlaneType::Bristol => 100,
             PlaneType::Salmson => 60,
-            PlaneType::Sopwith => todo!(),
+            PlaneType::Sopwith => 80,
         }
     }
 
@@ -332,7 +332,7 @@ impl Plane {
             PlaneType::Fokker => 0,
             PlaneType::Bristol => 0,
             PlaneType::Salmson => 5,
-            PlaneType::Sopwith => todo!(),
+            PlaneType::Sopwith => 0,
         }
     }
 
@@ -343,7 +343,7 @@ impl Plane {
             PlaneType::Fokker => 90,
             PlaneType::Bristol => 60,
             PlaneType::Salmson => 60,
-            PlaneType::Sopwith => todo!(),
+            PlaneType::Sopwith => 80,
         }
     }
 
@@ -354,7 +354,7 @@ impl Plane {
             PlaneType::Fokker => 120,
             PlaneType::Bristol => 135,
             PlaneType::Salmson => 90,
-            PlaneType::Sopwith => todo!(),
+            PlaneType::Sopwith => 120,
         }
     }
 
@@ -365,7 +365,7 @@ impl Plane {
             PlaneType::Fokker => 5.0,
             PlaneType::Bristol => 4.85,
             PlaneType::Salmson => 4.7,
-            PlaneType::Sopwith => todo!(),
+            PlaneType::Sopwith => 5.0,
         }
     }
 
@@ -376,7 +376,7 @@ impl Plane {
             PlaneType::Fokker => 0,
             PlaneType::Bristol => -20,
             PlaneType::Salmson => -140,
-            PlaneType::Sopwith => todo!(),
+            PlaneType::Sopwith => 20,
         }
     }
 
@@ -387,18 +387,18 @@ impl Plane {
             PlaneType::Fokker => 0.0483321946706122,
             PlaneType::Bristol => 0.036110260386089575,
             PlaneType::Salmson => 0.031415926535897934,
-            PlaneType::Sopwith => todo!(),
+            PlaneType::Sopwith => 0.04487989505128276,
         }
     }
 
     fn get_shoot_delay(&self) -> i32 {
         match self.plane_type.get() {
-            PlaneType::Albatros => todo!(),
+            PlaneType::Albatros => 118,
             PlaneType::Junkers => 170,
             PlaneType::Fokker => 120,
             PlaneType::Bristol => 97,
             PlaneType::Salmson => 180,
-            PlaneType::Sopwith => todo!(),
+            PlaneType::Sopwith => 130,
         }
     }
 
@@ -409,7 +409,7 @@ impl Plane {
             PlaneType::Fokker => 0.0,
             PlaneType::Bristol => 0.0,
             PlaneType::Salmson => 50.0,
-            PlaneType::Sopwith => todo!(),
+            PlaneType::Sopwith => 50.0,
         }
     }
 
