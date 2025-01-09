@@ -152,6 +152,11 @@ impl Plane {
 
         // web_sys::console::log_1(&format!("ticking plane! {:?}", self.mode.get()).into());
 
+        // Add a tick to our counters
+        self.last_bomb_ms += 10;
+        self.last_flip_ms += 10;
+        self.last_motor_on_ms += 10;
+
         match self.mode.get() {
             PlaneMode::Flying => {
                 // Apply player key logic if pressed
@@ -312,88 +317,88 @@ impl Plane {
     fn get_acceleration_speed(&self) -> f64 {
         match self.plane_type.get() {
             PlaneType::Albatros => 4.75,
-            PlaneType::Junkers => 1.0,
-            PlaneType::Fokker => 1.0,
-            PlaneType::Bristol => 1.0,
-            PlaneType::Salmson => 1.0,
-            PlaneType::Sopwith => 1.0,
+            PlaneType::Junkers => todo!(),
+            PlaneType::Fokker => todo!(),
+            PlaneType::Bristol => todo!(),
+            PlaneType::Salmson => todo!(),
+            PlaneType::Sopwith => todo!(),
         }
     }
 
     fn get_speed_modifier(&self) -> f64 {
         match self.plane_type.get() {
             PlaneType::Albatros => 55.0,
-            PlaneType::Junkers => 1.0,
-            PlaneType::Fokker => 1.0,
-            PlaneType::Bristol => 1.0,
-            PlaneType::Salmson => 1.0,
-            PlaneType::Sopwith => 1.0,
+            PlaneType::Junkers => todo!(),
+            PlaneType::Fokker => todo!(),
+            PlaneType::Bristol => todo!(),
+            PlaneType::Salmson => todo!(),
+            PlaneType::Sopwith => todo!(),
         }
     }
 
     fn get_turn_step(&self) -> f64 {
         match self.plane_type.get() {
             PlaneType::Albatros => 0.031415926535897934,
-            PlaneType::Junkers => 1.0,
-            PlaneType::Fokker => 1.0,
-            PlaneType::Bristol => 1.0,
-            PlaneType::Salmson => 1.0,
-            PlaneType::Sopwith => 1.0,
+            PlaneType::Junkers => todo!(),
+            PlaneType::Fokker => todo!(),
+            PlaneType::Bristol => todo!(),
+            PlaneType::Salmson => todo!(),
+            PlaneType::Sopwith => todo!(),
         }
     }
 
     fn get_max_y(&self) -> i16 {
         match self.plane_type.get() {
             PlaneType::Albatros => -50,
-            PlaneType::Junkers => 1,
-            PlaneType::Fokker => 1,
-            PlaneType::Bristol => 1,
-            PlaneType::Salmson => 1,
-            PlaneType::Sopwith => 1,
+            PlaneType::Junkers => todo!(),
+            PlaneType::Fokker => todo!(),
+            PlaneType::Bristol => todo!(),
+            PlaneType::Salmson => todo!(),
+            PlaneType::Sopwith => todo!(),
         }
     }
 
     fn get_max_ammo(&self) -> i32 {
         match self.plane_type.get() {
             PlaneType::Albatros => 95,
-            PlaneType::Junkers => 100,
-            PlaneType::Fokker => 1,
-            PlaneType::Bristol => 1,
-            PlaneType::Salmson => 1,
-            PlaneType::Sopwith => 1,
+            PlaneType::Junkers => todo!(),
+            PlaneType::Fokker => todo!(),
+            PlaneType::Bristol => todo!(),
+            PlaneType::Salmson => todo!(),
+            PlaneType::Sopwith => todo!(),
         }
     }
 
     fn get_max_bombs(&self) -> i32 {
         match self.plane_type.get() {
             PlaneType::Albatros => 0,
-            PlaneType::Junkers => 5,
-            PlaneType::Fokker => 0,
-            PlaneType::Bristol => 0,
-            PlaneType::Salmson => 0,
-            PlaneType::Sopwith => 0,
+            PlaneType::Junkers => todo!(),
+            PlaneType::Fokker => todo!(),
+            PlaneType::Bristol => todo!(),
+            PlaneType::Salmson => todo!(),
+            PlaneType::Sopwith => todo!(),
         }
     }
 
     fn get_max_fuel(&self) -> i32 {
         match self.plane_type.get() {
             PlaneType::Albatros => 80,
-            PlaneType::Junkers => 0,
-            PlaneType::Fokker => 0,
-            PlaneType::Bristol => 0,
-            PlaneType::Salmson => 0,
-            PlaneType::Sopwith => 0,
+            PlaneType::Junkers => todo!(),
+            PlaneType::Fokker => todo!(),
+            PlaneType::Bristol => todo!(),
+            PlaneType::Salmson => todo!(),
+            PlaneType::Sopwith => todo!(),
         }
     }
 
     fn get_max_health(&self) -> i32 {
         match self.plane_type.get() {
             PlaneType::Albatros => 135,
-            PlaneType::Junkers => 0,
-            PlaneType::Fokker => 0,
-            PlaneType::Bristol => 0,
-            PlaneType::Salmson => 0,
-            PlaneType::Sopwith => 0,
+            PlaneType::Junkers => todo!(),
+            PlaneType::Fokker => todo!(),
+            PlaneType::Bristol => todo!(),
+            PlaneType::Salmson => todo!(),
+            PlaneType::Sopwith => todo!(),
         }
     }
 

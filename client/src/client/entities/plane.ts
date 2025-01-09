@@ -84,7 +84,7 @@ export class Plane implements Entity<PlaneProperties>, Followable {
     },
 
     direction: () => {
-      console.log(this.props.direction)
+      // console.log(this.props.direction)
       this.planeSprite.rotation = directionToRadians(this.props.direction)
     }
   };
