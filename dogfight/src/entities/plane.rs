@@ -150,7 +150,7 @@ impl Plane {
     pub fn tick(&mut self, keyboard: Option<&PlayerKeyboard>) -> Vec<Action> {
         let mut actions = vec![];
 
-        web_sys::console::log_1(&format!("ticking plane! {:?}", self.mode.get()).into());
+        // web_sys::console::log_1(&format!("ticking plane! {:?}", self.mode.get()).into());
 
         match self.mode.get() {
             PlaneMode::Flying => {
@@ -211,8 +211,14 @@ impl Plane {
                 // update coordinates and angle
                 if self.speed != 0.0 {
                     let res = RESOLUTION as f64;
-                    self.x = (res * self.angle.cos() * self.speed / res) as i32;
-                    self.y = (res * self.angle.sin() * self.speed / res) as i32;
+                    //web_sys::console::log_1(&format!("x before: {}", self.x).into());
+                    //web_sys::console::log_1(&format!("y before: {}", self.y).into());
+
+                    self.x += (res * self.angle.cos() * self.speed / res) as i32;
+                    self.y += (res * self.angle.sin() * self.speed / res) as i32;
+
+                    //web_sys::console::log_1(&format!("x after: {}", self.x).into());
+                    //web_sys::console::log_1(&format!("y after: {}", self.y).into());
                     self.client_x.set((self.x / RESOLUTION) as i16);
                     self.client_y.set((self.y / RESOLUTION) as i16);
 

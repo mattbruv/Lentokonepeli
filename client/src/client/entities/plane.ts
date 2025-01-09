@@ -33,6 +33,7 @@ export class Plane implements Entity<PlaneProperties>, Followable {
   constructor() {
     this.container = new PIXI.Container();
     this.planeSprite = new PIXI.Sprite();
+    this.planeSprite.anchor.set(0.5)
     this.container.addChild(this.planeSprite)
   }
 
