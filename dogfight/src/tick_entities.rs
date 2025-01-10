@@ -76,7 +76,7 @@ impl World {
                 None => None,
             };
 
-            actions.extend(plane.tick(keyboard));
+            actions.extend(plane.tick(plane_id, keyboard));
         }
 
         actions

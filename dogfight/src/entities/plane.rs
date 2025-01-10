@@ -17,7 +17,13 @@ use crate::{
     world::RESOLUTION,
 };
 
-use super::{entity::Entity, types::EntityType};
+use super::{
+    entity::Entity,
+    man::Man,
+    player::ControllingEntity,
+    types::{EntityType, Team},
+    EntityId,
+};
 
 const MAX_Y: i16 = -570;
 const SKY_HEIGHT: i16 = 500;
@@ -154,7 +160,7 @@ impl Plane {
         *self.direction.get()
     }
 
-    pub fn tick(&mut self, keyboard: Option<&PlayerKeyboard>) -> Vec<Action> {
+    pub fn tick(&mut self, my_id: &EntityId, keyboard: Option<&PlayerKeyboard>) -> Vec<Action> {
         let mut actions = vec![];
 
         // web_sys::console::log_1(&format!("ticking plane! {:?}", self.mode.get()).into());
@@ -191,6 +197,24 @@ impl Plane {
                     {
                         self.motor_on.set(!self.motor_on.get());
                         self.last_motor_on_ms = 0;
+                    }
+
+                    // Spawn man if jumping out of plane
+                    // Or force plan abandon if out of bounds
+                    let is_out_of_bounds =
+                        *self.client_x.get() > 20_000 || *self.client_x.get() < -20_000;
+
+                    if keys.space || is_out_of_bounds {
+                        let mut man = Man::new(Team::Allies);
+                        man.set_x(self.x);
+                        man.set_y(self.y);
+                        actions.push(Action::SpawnMan(
+                            man,
+                            Some(ControllingEntity {
+                                id: *my_id,
+                                entity_type: self.get_type(),
+                            }),
+                        ));
                     }
                 }
 

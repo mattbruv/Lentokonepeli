@@ -50,7 +50,7 @@ impl World {
 
         'men: for (man_id, man) in self.men.get_map_mut() {
             // Man -> Ground
-            for (ground_id, ground) in self.grounds.get_map_mut() {
+            for (_, ground) in self.grounds.get_map_mut() {
                 if man.check_collision(ground) {
                     match man.get_state() {
                         // Update the state to walking only if we're not already doing it.
@@ -62,23 +62,21 @@ impl World {
                         _ => {}
                     };
 
-                    web_sys::console::log_1(&format!("man collide ground!").into());
+                    //web_sys::console::log_1(&format!("man collide ground!").into());
                     continue 'men;
                 }
             }
 
             // Man -> Coast
-            for (coast_id, coast) in self.coasts.get_map_mut() {
+            for (_, coast) in self.coasts.get_map_mut() {
                 //
                 if man.check_collision(coast) {
-                    match man.get_state() {
-                        // Update the state to walking only if we're not already doing it.
-                        ManState::Falling | ManState::Parachuting => {
-                            man.set_state(ManState::Standing);
-                        }
-                        _ => {}
-                    }
-                    web_sys::console::log_1(&format!("man collide coast!").into());
+                    // just kill me
+                    actions.push(Action::RemoveEntity(RemoveData {
+                        ent_id: *man_id,
+                        ent_type: man.get_type(),
+                    }));
+                    //web_sys::console::log_1(&format!("man collide coast!").into());
                     continue 'men;
                 }
             }
@@ -98,7 +96,11 @@ impl World {
             for (runway_id, runway) in self.runways.get_map_mut() {
                 //
                 if man.check_collision(runway) {
-                    web_sys::console::log_1(&format!("man collide runway!").into());
+                    actions.push(Action::RemoveEntity(RemoveData {
+                        ent_id: *man_id,
+                        ent_type: man.get_type(),
+                    }));
+                    // web_sys::console::log_1(&format!("man collide runway!").into());
                     continue 'men;
                 }
             }

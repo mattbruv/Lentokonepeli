@@ -1,7 +1,11 @@
+use imageproc::geometry::contour_area;
+
 use crate::{
     entities::{
+        entity::Entity,
         explosion::Explosion,
-        player::PlayerState,
+        man::Man,
+        player::{self, ControllingEntity, PlayerState},
         types::{EntityType, Team},
         EntityId,
     },
@@ -23,6 +27,7 @@ pub struct ExplosionData {
 pub enum Action {
     RemoveEntity(RemoveData),
     Explosion(ExplosionData),
+    SpawnMan(Man, Option<ControllingEntity>),
 }
 
 impl World {
@@ -40,6 +45,9 @@ impl World {
         match action {
             Action::RemoveEntity(remove) => self.remove_entity(remove),
             Action::Explosion(explosion_data) => self.explode(explosion_data),
+            Action::SpawnMan(man, currently_controlling) => {
+                self.spawn_man(man, currently_controlling)
+            }
         }
     }
 
@@ -89,5 +97,32 @@ impl World {
         self.explosions.insert(explosion);
 
         output
+    }
+
+    fn spawn_man(
+        &mut self,
+        man: Man,
+        currently_controlling: Option<ControllingEntity>,
+    ) -> Vec<GameOutput> {
+        if let Some((man_id, man)) = self.men.insert(man) {
+            if let Some(current) = currently_controlling {
+                if let Some(p) = self
+                    .players
+                    .get_player_controlling(current.entity_type, current.id)
+                {
+                    // unset the space/jump key
+                    let mut keys = *p.get_keys();
+                    keys.space = false;
+                    p.set_keys(keys);
+
+                    p.set_controlling(Some(ControllingEntity {
+                        id: man_id,
+                        entity_type: man.get_type(),
+                    }));
+                }
+            }
+        }
+
+        vec![]
     }
 }
