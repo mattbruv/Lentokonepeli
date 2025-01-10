@@ -86,6 +86,7 @@ pub struct Plane {
     fuel_counter: i32,
 
     takeoff_counter: i32,
+    dodge_counter: i32,
 
     // Physical Model
     air_resistance: f64,
@@ -132,6 +133,7 @@ impl Plane {
             motor_on_delay_ms: 500,
 
             takeoff_counter: 0,
+            dodge_counter: 0,
 
             // Physical Model
             air_resistance: 1.0,
@@ -178,10 +180,40 @@ impl Plane {
             PlaneMode::Landed => self.tick_landed(keyboard),
             PlaneMode::TakingOff => self.tick_takeoff(),
             PlaneMode::Falling => self.tick_falling(my_id, keyboard, &mut actions),
-            PlaneMode::Dodging => todo!(),
+            PlaneMode::Dodging => self.tick_dodging(),
         };
 
         actions
+    }
+
+    fn tick_dodging(&mut self) {
+        if *self.motor_on.get() {
+            self.drain_fuel();
+            self.accelerate();
+        }
+
+        self.run();
+
+        self.x += (100.0 * self.angle.cos() * self.speed / 100.0) as i32;
+        self.client_x.set((self.x / RESOLUTION) as i16);
+
+        self.y += (100.0 * self.angle.sin() * self.speed / 100.0) as i32;
+        self.client_y.set((self.y / RESOLUTION) as i16);
+
+        self.direction.set(radians_to_direction(self.angle));
+
+        self.dodge_counter += 1;
+
+        if self.dodge_counter > 40 {
+            self.mode.set(PlaneMode::Flying);
+            self.dodge_counter = 0;
+        } else if self.dodge_counter == 10 {
+            self.flipped.set(!self.flipped.get());
+        } else if self.dodge_counter == 20 {
+            self.flipped.set(!self.flipped.get());
+        } else if self.dodge_counter == 30 {
+            self.flipped.set(!self.flipped.get());
+        }
     }
 
     fn tick_falling(
@@ -310,8 +342,10 @@ impl Plane {
             // Or force plan abandon if out of bounds
             let is_out_of_bounds = *self.client_x.get() > 20_000 || *self.client_x.get() < -20_000;
 
+            // Jump out of plane
             if keys.space || is_out_of_bounds {
                 self.spawn_man_action(my_id, actions);
+                self.mode.set(PlaneMode::Falling);
             }
 
             // Bombs away
@@ -331,22 +365,7 @@ impl Plane {
         // If we are flying within bounds
         if *self.motor_on.get() && (self.x / RESOLUTION < 20_000) && (self.x / RESOLUTION > -20_000)
         {
-            // drain fuel
-            if self.fuel_counter > 0 {
-                self.fuel_counter -= 1;
-            }
-
-            if self.fuel_counter == 0 {
-                if self.total_fuel == 0 {
-                    self.motor_on.set(false);
-                } else {
-                    self.fuel_counter = 100;
-                    // TODO: extract this into a function so we can update client fuel
-                    self.total_fuel -= 1;
-                }
-            }
-
-            // Accelerate if motor on
+            self.drain_fuel();
             self.accelerate();
         }
 
@@ -368,6 +387,23 @@ impl Plane {
             self.client_y.set((self.y / RESOLUTION) as i16);
 
             self.direction.set(radians_to_direction(self.angle));
+        }
+    }
+
+    fn drain_fuel(&mut self) {
+        // drain fuel
+        if self.fuel_counter > 0 {
+            self.fuel_counter -= 1;
+        }
+
+        if self.fuel_counter == 0 {
+            if self.total_fuel == 0 {
+                self.motor_on.set(false);
+            } else {
+                self.fuel_counter = 100;
+                // TODO: extract this into a function so we can update client fuel
+                self.total_fuel -= 1;
+            }
         }
     }
 
