@@ -104,11 +104,8 @@ impl World {
         // 2. Process runnable actions
         game_output.extend(self.process_actions(runnable_actions));
 
-        // 3. Process collision
-        let collision_actions = self.tick_collision_entities();
-
-        // 4. Process collision actions
-        game_output.extend(self.process_actions(collision_actions));
+        // 3. Process collision and get output
+        game_output.extend(self.tick_collision_entities());
 
         // return the changed state
         let updated_state = self.get_changed_state();

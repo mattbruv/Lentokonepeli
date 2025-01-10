@@ -1,6 +1,7 @@
 use crate::{
     collision::SolidEntity,
     entities::{bomb::Bomb, entity::Entity, man::ManState, types::EntityType, EntityId},
+    output::GameOutput,
     tick_actions::{Action, ExplosionData, RemoveData},
     world::World,
 };
@@ -35,14 +36,19 @@ impl World {
             - Ground
             - Coast
     */
-    pub fn tick_collision_entities(&mut self) -> Vec<Action> {
-        let mut actions = vec![];
+    pub fn tick_collision_entities(&mut self) -> Vec<GameOutput> {
+        let mut output = vec![];
 
-        actions.extend(self.collide_men());
-        actions.extend(self.collide_bombs());
-        actions.extend(self.collide_planes());
+        let man_actions = self.collide_men();
+        output.extend(self.process_actions(man_actions));
 
-        actions
+        let bomb_actions = self.collide_bombs();
+        output.extend(self.process_actions(bomb_actions));
+
+        let plane_actions = self.collide_planes();
+        output.extend(self.process_actions(plane_actions));
+
+        output
     }
 
     fn collide_men(&mut self) -> Vec<Action> {
