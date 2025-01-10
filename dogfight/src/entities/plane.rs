@@ -6,10 +6,7 @@ use serde::Deserialize;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
-    images::{
-        get_image, get_rotateable_image, rotate_image, PLANE4, PLANE5, PLANE6, PLANE7, PLANE8,
-        PLANE9,
-    },
+    images::{get_rotateable_image, rotate_image, PLANE4, PLANE5, PLANE6, PLANE7, PLANE8, PLANE9},
     input::PlayerKeyboard,
     math::radians_to_direction,
     network::{property::Property, EntityProperties, NetworkedEntity},
@@ -88,6 +85,8 @@ pub struct Plane {
     total_fuel: i32,
     fuel_counter: i32,
 
+    takeoff_counter: i32,
+
     // Physical Model
     air_resistance: f64,
     gravity: f64,
@@ -132,6 +131,8 @@ impl Plane {
             last_motor_on_ms: 0,
             motor_on_delay_ms: 500,
 
+            takeoff_counter: 0,
+
             // Physical Model
             air_resistance: 1.0,
             gravity: 6.0,
@@ -172,118 +173,185 @@ impl Plane {
         self.last_motor_on_ms += 10;
 
         match self.mode.get() {
-            PlaneMode::Flying => {
-                // Apply player key logic if pressed
-                if let Some(keys) = keyboard {
-                    // check if we're flipped
-                    if keys.up && self.last_flip_ms > self.flip_delay_ms {
-                        self.flipped.set(!self.flipped.get());
-                        self.last_flip_ms = 0;
-                    }
-
-                    // PLANE_DOWN = 39 = right = steer_up
-                    if keys.right {
-                        self.steer_up();
-                    }
-
-                    // PLANE_UP = 37 = left = steer_down
-                    if keys.left {
-                        self.steer_down();
-                    }
-
-                    // PLANE_MOTOR = 40 = down
-                    if keys.down
-                        && self.last_motor_on_ms > self.motor_on_delay_ms
-                        && self.total_fuel > 0
-                    {
-                        self.motor_on.set(!self.motor_on.get());
-                        self.last_motor_on_ms = 0;
-                    }
-
-                    // Spawn man if jumping out of plane
-                    // Or force plan abandon if out of bounds
-                    let is_out_of_bounds =
-                        *self.client_x.get() > 20_000 || *self.client_x.get() < -20_000;
-
-                    if keys.space || is_out_of_bounds {
-                        let mut man = Man::new(Team::Allies);
-                        man.set_x(self.x);
-                        man.set_y(self.y);
-                        actions.push(Action::SpawnMan(
-                            man,
-                            Some(ControllingEntity {
-                                id: *my_id,
-                                entity_type: self.get_type(),
-                            }),
-                        ));
-                    }
-
-                    // Bombs away
-                    if keys.shift {
-                        let x = self.x / RESOLUTION;
-                        let y = self.y / RESOLUTION;
-                        actions.push(Action::SpawnBomb(Bomb::new(
-                            x as i16,
-                            y as i16,
-                            *self.direction.get(),
-                            self.speed / 100.0,
-                        )));
-                        //
-                    }
-                }
-
-                // If we are flying within bounds
-                if *self.motor_on.get()
-                    && (self.x / RESOLUTION < 20_000)
-                    && (self.x / RESOLUTION > -20_000)
-                {
-                    // drain fuel
-                    if self.fuel_counter > 0 {
-                        self.fuel_counter -= 1;
-                    }
-
-                    if self.fuel_counter == 0 {
-                        if self.total_fuel == 0 {
-                            self.motor_on.set(false);
-                        } else {
-                            self.fuel_counter = 100;
-                            // TODO: extract this into a function so we can update client fuel
-                            self.total_fuel -= 1;
-                        }
-                    }
-
-                    // Accelerate if motor on
-                    self.accelerate();
-                }
-
-                self.run();
-
-                // update coordinates and angle
-                if self.speed != 0.0 {
-                    // TODO: this should probably be speed per pixel instead, it's distinct
-                    let res = RESOLUTION as f64;
-                    //web_sys::console::log_1(&format!("x before: {}", self.x).into());
-                    //web_sys::console::log_1(&format!("y before: {}", self.y).into());
-
-                    self.x += (res * self.angle.cos() * self.speed / res) as i32;
-                    self.y += (res * self.angle.sin() * self.speed / res) as i32;
-
-                    //web_sys::console::log_1(&format!("x after: {}", self.x).into());
-                    //web_sys::console::log_1(&format!("y after: {}", self.y).into());
-                    self.client_x.set((self.x / RESOLUTION) as i16);
-                    self.client_y.set((self.y / RESOLUTION) as i16);
-
-                    self.direction.set(radians_to_direction(self.angle));
-                }
-            }
-            PlaneMode::Landing => todo!(),
-            PlaneMode::Landed => todo!(),
-            PlaneMode::TakingOff => todo!(),
+            PlaneMode::Flying => self.tick_flying(my_id, keyboard, &mut actions),
+            PlaneMode::Landing => self.tick_landing(),
+            PlaneMode::Landed => self.tick_landed(keyboard),
+            PlaneMode::TakingOff => self.tick_takeoff(),
             PlaneMode::Falling => todo!(),
             PlaneMode::Dodging => todo!(),
-        }
+        };
 
         actions
+    }
+
+    fn tick_takeoff(&mut self) {
+        self.accelerate();
+
+        self.takeoff_counter += 1;
+
+        if self.takeoff_counter == 65 || self.takeoff_counter == 75 {
+            if *self.flipped.get() {
+                self.steer_up();
+            } else {
+                self.steer_down();
+            }
+        } else if self.takeoff_counter == 60 || self.takeoff_counter == 70 {
+            if *self.flipped.get() {
+                self.steer_up();
+            } else {
+                self.steer_down();
+            }
+            self.y -= 100;
+            self.client_y.set((self.y / RESOLUTION) as i16);
+        }
+
+        // Fly! Free bird
+        if self.takeoff_counter >= 70 {
+            self.mode.set(PlaneMode::Flying);
+            self.takeoff_counter = 0;
+        }
+
+        self.direction.set(radians_to_direction(self.angle));
+
+        if self.speed != 0.0 {
+            self.x += (100.0 * self.angle.cos() * self.speed / 100.0) as i32;
+            self.client_x.set((self.x / RESOLUTION) as i16);
+        }
+    }
+
+    fn tick_landed(&mut self, keyboard: Option<&PlayerKeyboard>) {
+        if let Some(keys) = keyboard {
+            //
+            if keys.down && self.last_motor_on_ms > self.motor_on_delay_ms {
+                self.motor_on.set(!self.motor_on.get());
+                self.last_motor_on_ms = 0;
+                self.mode.set(PlaneMode::TakingOff);
+            }
+        }
+    }
+
+    fn tick_landing(&mut self) {
+        // if going faster than 100, slow down
+        if self.speed > 100.0 {
+            self.speed -= 3.0;
+        }
+        // if going slower than 100, speed up.
+        if self.speed < 100.0 {
+            self.speed += 3.0;
+        }
+        // if we're within a range of 3 from 100, set to 100.
+        if (self.speed - 100.0).abs() < 3.0 {
+            self.speed = 100.0;
+        }
+
+        if self.speed != 0.0 {
+            self.x += (100.0 * self.angle.cos() * self.speed / 100.0) as i32;
+            self.client_x.set((self.x / RESOLUTION) as i16);
+        }
+    }
+
+    fn tick_flying(
+        &mut self,
+        my_id: &u16,
+        keyboard: Option<&PlayerKeyboard>,
+        actions: &mut Vec<Action>,
+    ) {
+        // Apply player key logic if pressed
+        if let Some(keys) = keyboard {
+            // check if we're flipped
+            if keys.up && self.last_flip_ms > self.flip_delay_ms {
+                self.flipped.set(!self.flipped.get());
+                self.last_flip_ms = 0;
+            }
+
+            // PLANE_DOWN = 39 = right = steer_up
+            if keys.right {
+                self.steer_up();
+            }
+
+            // PLANE_UP = 37 = left = steer_down
+            if keys.left {
+                self.steer_down();
+            }
+
+            // PLANE_MOTOR = 40 = down
+            if keys.down && self.last_motor_on_ms > self.motor_on_delay_ms && self.total_fuel > 0 {
+                self.motor_on.set(!self.motor_on.get());
+                self.last_motor_on_ms = 0;
+            }
+
+            // Spawn man if jumping out of plane
+            // Or force plan abandon if out of bounds
+            let is_out_of_bounds = *self.client_x.get() > 20_000 || *self.client_x.get() < -20_000;
+
+            if keys.space || is_out_of_bounds {
+                let mut man = Man::new(Team::Allies);
+                man.set_x(self.x);
+                man.set_y(self.y);
+                actions.push(Action::SpawnMan(
+                    man,
+                    Some(ControllingEntity {
+                        id: *my_id,
+                        entity_type: self.get_type(),
+                    }),
+                ));
+            }
+
+            // Bombs away
+            if keys.shift {
+                let x = self.x / RESOLUTION;
+                let y = self.y / RESOLUTION;
+                actions.push(Action::SpawnBomb(Bomb::new(
+                    x as i16,
+                    y as i16,
+                    *self.direction.get(),
+                    self.speed / 100.0,
+                )));
+                //
+            }
+        }
+
+        // If we are flying within bounds
+        if *self.motor_on.get() && (self.x / RESOLUTION < 20_000) && (self.x / RESOLUTION > -20_000)
+        {
+            // drain fuel
+            if self.fuel_counter > 0 {
+                self.fuel_counter -= 1;
+            }
+
+            if self.fuel_counter == 0 {
+                if self.total_fuel == 0 {
+                    self.motor_on.set(false);
+                } else {
+                    self.fuel_counter = 100;
+                    // TODO: extract this into a function so we can update client fuel
+                    self.total_fuel -= 1;
+                }
+            }
+
+            // Accelerate if motor on
+            self.accelerate();
+        }
+
+        self.run();
+
+        // update coordinates and angle
+        if self.speed != 0.0 {
+            // TODO: this should probably be speed per pixel instead, it's distinct
+            let res = RESOLUTION as f64;
+            //web_sys::console::log_1(&format!("x before: {}", self.x).into());
+            //web_sys::console::log_1(&format!("y before: {}", self.y).into());
+
+            self.x += (res * self.angle.cos() * self.speed / res) as i32;
+            self.y += (res * self.angle.sin() * self.speed / res) as i32;
+
+            //web_sys::console::log_1(&format!("x after: {}", self.x).into());
+            //web_sys::console::log_1(&format!("y after: {}", self.y).into());
+            self.client_x.set((self.x / RESOLUTION) as i16);
+            self.client_y.set((self.y / RESOLUTION) as i16);
+
+            self.direction.set(radians_to_direction(self.angle));
+        }
     }
 
     pub(crate) fn get_client_x(&self) -> i16 {
