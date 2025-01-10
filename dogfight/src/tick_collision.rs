@@ -110,6 +110,17 @@ impl World {
                     continue 'men;
                 }
             }
+
+            for (_, explosion) in self.explosions.get_map_mut() {
+                if man.check_collision(explosion) {
+                    actions.push(Action::RemoveEntity(RemoveData {
+                        ent_id: *man_id,
+                        ent_type: man.get_type(),
+                    }));
+                    // web_sys::console::log_1(&format!("man collide runway!").into());
+                    continue 'men;
+                }
+            }
         }
 
         actions
@@ -210,6 +221,20 @@ impl World {
                     continue 'planes;
                 }
             }
+
+            for (_, explosion) in self.explosions.get_map_mut() {
+                if plane.check_collision(explosion) {
+                    blow_up(
+                        &mut actions,
+                        plane_id,
+                        plane.get_type(),
+                        plane.get_client_x(),
+                        plane.get_client_y(),
+                    );
+                    // web_sys::console::log_1(&format!("man collide runway!").into());
+                    continue 'planes;
+                }
+            }
         }
 
         actions
@@ -219,7 +244,7 @@ impl World {
     //
 }
 
-fn blow_up(
+pub fn blow_up(
     actions: &mut Vec<Action>,
     ent_id: &EntityId,
     ent_type: EntityType,

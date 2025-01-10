@@ -1,5 +1,3 @@
-use std::any::Any;
-
 use crate::{
     entities::{entity::Entity, types::EntityType},
     input::PlayerKeyboard,
