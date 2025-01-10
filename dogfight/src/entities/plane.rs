@@ -177,11 +177,37 @@ impl Plane {
             PlaneMode::Landing => self.tick_landing(),
             PlaneMode::Landed => self.tick_landed(keyboard),
             PlaneMode::TakingOff => self.tick_takeoff(),
-            PlaneMode::Falling => todo!(),
+            PlaneMode::Falling => self.tick_falling(my_id, keyboard, &mut actions),
             PlaneMode::Dodging => todo!(),
         };
 
         actions
+    }
+
+    fn tick_falling(
+        &mut self,
+        my_id: &u16,
+        keyboard: Option<&PlayerKeyboard>,
+        actions: &mut Vec<Action>,
+    ) {
+        self.run();
+
+        // this.x += (int)(100.0D * Math.cos(this.physicalModel.angle) * this.physicalModel.speed / 100.0D);
+        // this.y += (int)(100.0D * Math.sin(this.physicalModel.angle) * this.physicalModel.speed / 100.0D);
+        // this.direction = ((int)(this.physicalModel.angle * 256.0D / 6.283185307179586D));
+        self.x += (100.0 * self.angle.cos() * self.speed / 100.0) as i32;
+        self.client_x.set((self.x / RESOLUTION) as i16);
+
+        self.y += (100.0 * self.angle.sin() * self.speed / 100.0) as i32;
+        self.client_y.set((self.y / RESOLUTION) as i16);
+
+        self.direction.set(radians_to_direction(self.angle));
+
+        if let Some(keys) = keyboard {
+            if keys.space {
+                self.spawn_man_action(my_id, actions);
+            }
+        }
     }
 
     fn tick_takeoff(&mut self) {
@@ -285,16 +311,7 @@ impl Plane {
             let is_out_of_bounds = *self.client_x.get() > 20_000 || *self.client_x.get() < -20_000;
 
             if keys.space || is_out_of_bounds {
-                let mut man = Man::new(Team::Allies);
-                man.set_x(self.x);
-                man.set_y(self.y);
-                actions.push(Action::SpawnMan(
-                    man,
-                    Some(ControllingEntity {
-                        id: *my_id,
-                        entity_type: self.get_type(),
-                    }),
-                ));
+                self.spawn_man_action(my_id, actions);
             }
 
             // Bombs away
@@ -352,6 +369,19 @@ impl Plane {
 
             self.direction.set(radians_to_direction(self.angle));
         }
+    }
+
+    fn spawn_man_action(&mut self, my_id: &u16, actions: &mut Vec<Action>) {
+        let mut man = Man::new(Team::Allies);
+        man.set_x(self.x);
+        man.set_y(self.y);
+        actions.push(Action::SpawnMan(
+            man,
+            Some(ControllingEntity {
+                id: *my_id,
+                entity_type: self.get_type(),
+            }),
+        ));
     }
 
     pub(crate) fn get_client_x(&self) -> i16 {
