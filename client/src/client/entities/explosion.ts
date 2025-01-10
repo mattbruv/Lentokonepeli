@@ -55,6 +55,12 @@ export class Explosion implements Entity<ExplosionProperties> {
     this.bombSprite.anchor.set(0.5)
 
     this.container.zIndex = DrawLayer.Bomb;
+
+    const sound = new Howl(
+      {
+        src: "audio/explosion.mp3"
+      }
+    ).play()
   }
 
   public getContainer(): PIXI.Container {

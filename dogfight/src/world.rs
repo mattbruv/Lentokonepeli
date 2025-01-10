@@ -1,19 +1,8 @@
 use crate::{
     entities::{
-        background_item::BackgroundItem,
-        bomb::Bomb,
-        bunker::Bunker,
-        coast::Coast,
-        container::EntityContainer,
-        explosion::Explosion,
-        ground::Ground,
-        man::Man,
-        plane::{Plane, PlaneType},
-        player::Player,
-        runway::Runway,
-        types::EntityType,
-        water::Water,
-        world_info::WorldInfo,
+        background_item::BackgroundItem, bomb::Bomb, bunker::Bunker, coast::Coast,
+        container::EntityContainer, explosion::Explosion, ground::Ground, man::Man, plane::Plane,
+        player::Player, runway::Runway, types::EntityType, water::Water, world_info::WorldInfo,
         EntityId,
     },
     input::GameInput,
@@ -71,7 +60,7 @@ impl World {
         */
     }
 
-    fn spawn_bomb(&mut self) -> () {
+    fn spawn_debug_bomb(&mut self) -> () {
         for i in 0..2 {
             let debug_bomb = Bomb::new(-2490 + i * 50, -300, 0, 0.0);
             self.bombs.insert(debug_bomb);
@@ -86,7 +75,7 @@ impl World {
         }
 
         if self.bombs.get_map().len() == 0 {
-            self.spawn_bomb();
+            // self.spawn_bomb();
         }
 
         if let Some(p) = self.planes.get_mut(0) {

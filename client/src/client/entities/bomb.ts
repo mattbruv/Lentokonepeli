@@ -3,12 +3,15 @@ import * as PIXI from "pixi.js";
 import { Textures } from "../textures";
 import { directionToRadians } from "../helpers";
 import { BombProperties } from "dogfight-types/BombProperties";
+import { Howl } from "howler"
 
 
 export class Bomb implements Entity<BombProperties> {
 
   private container: PIXI.Container;
   private bombSprite: PIXI.Sprite;
+
+  private sound: Howl
 
   public props: Required<BombProperties> = {
     client_x: 0,
@@ -23,6 +26,13 @@ export class Bomb implements Entity<BombProperties> {
     this.bombSprite.anchor.set(0.5, 0.5)
     this.bombSprite.position.set(texture.width / 2, texture.height / 2)
     this.container.addChild(this.bombSprite)
+
+    // play bomb sound
+    this.sound = new Howl({
+      src: "audio/bombdrop.mp3"
+    })
+
+    this.sound.play()
   }
 
   public getContainer(): PIXI.Container {
@@ -44,5 +54,7 @@ export class Bomb implements Entity<BombProperties> {
     }
   };
 
-  public destroy() { }
+  public destroy() {
+    this.sound.stop()
+  }
 }

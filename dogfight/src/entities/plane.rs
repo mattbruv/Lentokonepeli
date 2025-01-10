@@ -18,6 +18,7 @@ use crate::{
 };
 
 use super::{
+    bomb::Bomb,
     entity::Entity,
     man::Man,
     player::ControllingEntity,
@@ -215,6 +216,19 @@ impl Plane {
                                 entity_type: self.get_type(),
                             }),
                         ));
+                    }
+
+                    // Bombs away
+                    if keys.shift {
+                        let x = self.x / RESOLUTION;
+                        let y = self.y / RESOLUTION;
+                        actions.push(Action::SpawnBomb(Bomb::new(
+                            x as i16,
+                            y as i16,
+                            *self.direction.get(),
+                            self.speed / 100.0,
+                        )));
+                        //
                     }
                 }
 
