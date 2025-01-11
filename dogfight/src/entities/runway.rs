@@ -97,6 +97,17 @@ impl Entity for Runway {
     }
 }
 
+impl Runway {
+    pub fn get_landing_bounds(&self) -> BoundingBox {
+        BoundingBox {
+            x: self.get_landable_x(),
+            y: self.get_landable_y(),
+            width: self.get_landable_width(),
+            height: 100,
+        }
+    }
+}
+
 impl SolidEntity for Runway {
     fn get_collision_bounds(&self) -> BoundingBox {
         let img = self.get_image();

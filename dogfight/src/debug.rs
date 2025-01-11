@@ -98,6 +98,21 @@ impl World {
             })
             .collect();
 
+        let landing_strips: Vec<DebugEntity> = self
+            .runways
+            .get_map()
+            .iter()
+            .map(|(idx, runway)| {
+                let bounds = runway.get_landing_bounds();
+                DebugEntity {
+                    ent_id: *idx,
+                    ent_type: EntityType::Runway,
+                    bounding_box: bounds,
+                    pixels: None,
+                }
+            })
+            .collect();
+
         let bomb_bounds: Vec<DebugEntity> = self
             .bombs
             .get_map_mut()
@@ -134,6 +149,7 @@ impl World {
         debug_info.extend(plane_bounds);
         debug_info.extend(coast_bounds);
         debug_info.extend(runway_bounds);
+        debug_info.extend(landing_strips);
         debug_info.extend(bomb_bounds);
         debug_info.extend(explosion_bounds);
 

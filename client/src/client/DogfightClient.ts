@@ -429,6 +429,13 @@ export class DogfightClient {
         width: 1,
       })
 
+      if (entry.ent_type === "Runway" && !entry.pixels) {
+        this.debugCollision.lineStyle({
+          color: "magenta",
+          width: 1,
+        })
+      }
+
       const { x, y, width, height } = entry.bounding_box
 
       // console.log(entry)
