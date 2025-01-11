@@ -10,6 +10,7 @@ use crate::{
         types::{EntityType, Team},
         EntityId,
     },
+    input::PlayerKeyboard,
     output::GameOutput,
     world::World,
 };
@@ -114,9 +115,8 @@ impl World {
                     .get_player_controlling(current.entity_type, current.id)
                 {
                     // unset the space/jump key
-                    let mut keys = *p.get_keys();
-                    keys.space = false;
-                    p.set_keys(keys);
+                    let reset_keys = PlayerKeyboard::new();
+                    p.set_keys(reset_keys);
 
                     p.set_controlling(Some(ControllingEntity {
                         id: man_id,

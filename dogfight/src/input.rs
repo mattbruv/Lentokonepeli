@@ -185,6 +185,7 @@ impl World {
                             if let Some((_, player)) =
                                 self.get_player_from_name(&selection.player_name)
                             {
+                                player.set_keys(PlayerKeyboard::new());
                                 player.set_state(PlayerState::Playing);
                                 player.set_controlling(Some(ControllingEntity::new(
                                     plane_id,
