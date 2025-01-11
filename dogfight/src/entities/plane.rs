@@ -435,7 +435,7 @@ impl Plane {
         // TODO: check to make sure the runway team is same as player team
         let facing = runway.get_facing();
         if ((facing == Facing::Right)
-            && (self.angle == 3.141592653589793))
+            && (self.angle == PI))
             || ((facing == Facing::Left)
                 && (self.angle == 0.0)
                 && (runway.reserve_for(2)))
