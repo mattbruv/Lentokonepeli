@@ -25,9 +25,15 @@ pub fn get_rotateable_image(bytes: &[u8]) -> image::RgbaImage {
     new_img
 }
 
-pub fn rotate_image(img: &RgbaImage, angle: f64) -> RgbaImage {
+pub fn rotate_image(img: &RgbaImage, angle: f64, flip_vertically: bool) -> RgbaImage {
+    let mut new_image = img.clone();
+
+    if flip_vertically {
+        image::imageops::flip_vertical_in_place(&mut new_image);
+    }
+
     imageproc::geometric_transformations::rotate_about_center(
-        &img,
+        &new_image,
         angle as f32,
         Interpolation::Nearest,
         image::Rgba([0, 0, 0, 0]),

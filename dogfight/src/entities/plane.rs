@@ -788,25 +788,17 @@ impl SolidEntity for Plane {
     }
 
     fn do_rotate_collision_image(&mut self) -> () {
-        match self.plane_type.get() {
-            PlaneType::Albatros => {
-                self.rotated_image = rotate_image(&self.image_albatros_rotateable, self.angle);
-            }
-            PlaneType::Junkers => {
-                self.rotated_image = rotate_image(&self.image_junkers_rotateable, self.angle);
-            }
-            PlaneType::Fokker => {
-                self.rotated_image = rotate_image(&self.image_fokker_rotateable, self.angle);
-            }
-            PlaneType::Bristol => {
-                self.rotated_image = rotate_image(&self.image_bristol_rotateable, self.angle);
-            }
-            PlaneType::Salmson => {
-                self.rotated_image = rotate_image(&self.image_salmson_rotateable, self.angle);
-            }
-            PlaneType::Sopwith => {
-                self.rotated_image = rotate_image(&self.image_sopwith_rotateable, self.angle);
-            }
+        let flip = self.flipped();
+
+        let original_image = match self.plane_type.get() {
+            PlaneType::Albatros => &self.image_albatros_rotateable,
+            PlaneType::Junkers => &self.image_junkers_rotateable,
+            PlaneType::Fokker => &self.image_fokker_rotateable,
+            PlaneType::Bristol => &self.image_bristol_rotateable,
+            PlaneType::Salmson => &self.image_salmson_rotateable,
+            PlaneType::Sopwith => &self.image_sopwith_rotateable,
         };
+
+        self.rotated_image = rotate_image(original_image, self.angle, flip);
     }
 }
