@@ -161,6 +161,8 @@ export class DogfightClient {
 
     this.viewport.drag().pinch().wheel().decelerate();
 
+    this.viewport.sortableChildren = true;
+
     if (import.meta.env.DEV) {
       this.app.stage.addChild(this.debugPointer);
       this.app.stage.addChild(this.debugCoords);

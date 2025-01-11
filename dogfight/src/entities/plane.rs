@@ -14,7 +14,7 @@ use crate::{
     input::PlayerKeyboard,
     math::radians_to_direction,
     network::{property::Property, EntityProperties, NetworkedEntity},
-    tick_actions::Action,
+    tick_actions::{Action, RemoveData},
     world::RESOLUTION,
 };
 
@@ -194,7 +194,12 @@ impl Plane {
         *self.direction.get()
     }
 
-    pub fn tick(&mut self, my_id: &EntityId, keyboard: Option<&PlayerKeyboard>) -> Vec<Action> {
+    pub fn tick(
+        &mut self,
+        my_id: &EntityId,
+        runway: Option<&Runway>,
+        keyboard: Option<&PlayerKeyboard>,
+    ) -> Vec<Action> {
         let mut actions = vec![];
 
         // web_sys::console::log_1(&format!("ticking plane! {:?}", self.mode.get()).into());
@@ -206,7 +211,7 @@ impl Plane {
 
         match self.mode.get() {
             PlaneMode::Flying => self.tick_flying(my_id, keyboard, &mut actions),
-            PlaneMode::Landing => self.tick_landing(),
+            PlaneMode::Landing => self.tick_landing(my_id, runway, &mut actions),
             PlaneMode::Landed => self.tick_landed(keyboard),
             PlaneMode::TakingOff => self.tick_takeoff(),
             PlaneMode::Falling => self.tick_falling(my_id, keyboard, &mut actions),
@@ -339,7 +344,12 @@ impl Plane {
         }
     }
 
-    fn tick_landing(&mut self) {
+    fn tick_landing(
+        &mut self,
+        my_id: &EntityId,
+        runway: Option<&Runway>,
+        actions: &mut Vec<Action>,
+    ) {
         // if going faster than 100, slow down
         if self.speed > 100.0 {
             self.speed -= 3.0;
@@ -356,6 +366,22 @@ impl Plane {
         if self.speed != 0.0 {
             self.x += (100.0 * self.angle.cos() * self.speed / 100.0) as i32;
             self.client_x.set((self.x / RESOLUTION) as i16);
+        }
+
+        if let Some(r) = runway {
+            let runway_x = r.get_start_x();
+            let plane_x = self.get_client_x();
+            let landed = match r.get_facing() {
+                Facing::Right => plane_x <= runway_x,
+                Facing::Left => plane_x >= runway_x,
+            };
+
+            if landed {
+                actions.push(Action::RemoveEntity(RemoveData {
+                    ent_id: *my_id,
+                    ent_type: self.get_type(),
+                }));
+            }
         }
     }
 

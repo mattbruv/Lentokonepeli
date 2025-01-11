@@ -74,7 +74,12 @@ impl World {
                 None => None,
             };
 
-            actions.extend(plane.tick(plane_id, keyboard));
+            let runway = match plane.get_runway() {
+                Some(rid) => self.runways.get(rid),
+                None => None,
+            };
+
+            actions.extend(plane.tick(plane_id, runway, keyboard));
         }
 
         actions

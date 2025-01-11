@@ -20,7 +20,7 @@ export class Plane implements Entity<PlaneProperties>, Followable {
   private container: PIXI.Container;
   private planeSprite: PIXI.Sprite;
   private first_flip: boolean = true;
-  private frame: number = 1;
+  private frame = 0;
 
   public props: Required<PlaneProperties> = {
     client_x: 0,
@@ -78,6 +78,12 @@ export class Plane implements Entity<PlaneProperties>, Followable {
       }
       else {
         this.frame = 1;
+      }
+
+      this.planeSprite.scale.y = (this.props.flipped) ? -1 : 1
+
+      if (this.frame) {
+
       }
 
       console.log("flipped", this.props.flipped)
