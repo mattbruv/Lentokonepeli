@@ -163,7 +163,7 @@ export class DogfightClient {
 
     this.viewport.sortableChildren = true;
 
-    if (import.meta.env.DEV) {
+    if (true) { // (import.meta.env.DEV) { /
       this.app.stage.addChild(this.debugPointer);
       this.app.stage.addChild(this.debugCoords);
       this.viewport.addChild(this.debugCollision);

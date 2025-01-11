@@ -251,13 +251,13 @@ impl World {
                         continue 'planes;
                     }
 
-                    if plane.flipped() {
-                        plane.set_angle(PI);
-                    } else {
-                        plane.set_angle(0.0);
-                    }
-
                     if plane.can_land_on_runway(runway) {
+                        if plane.flipped() {
+                            plane.set_angle(PI);
+                        } else {
+                            plane.set_angle(0.0);
+                        }
+
                         web_sys::console::log_1(&format!("plane can land on runway").into());
                         plane.set_client_y(runway.get_landable_y() - plane.get_bottom_height());
                         if plane.is_facing_runway_correctly(runway) {
