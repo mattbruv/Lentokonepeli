@@ -47,11 +47,47 @@ impl Runway {
         *self.client_y.get()
     }
 
+    pub fn get_landable_x(&self) -> i16 {
+        let x = self.client_x.get();
+        match self.facing.get() {
+            Facing::Right => *x,
+            Facing::Left => x + 65,
+        }
+    }
+
+    pub fn get_landable_y(&self) -> i16 {
+        self.client_y.get() + 23
+    }
+
+    pub fn get_start_x(&self) -> i16 {
+        match self.facing.get() {
+            Facing::Right => self.client_x.get() + 15,
+            Facing::Left => self.client_x.get() + 230,
+        }
+    }
+
+    pub fn get_facing(&self) -> Facing {
+        *self.facing.get()
+    }
+
+    pub fn get_start_y(&self) -> i16 {
+        self.get_landable_y()
+    }
+
+    pub fn get_landable_width(&self) -> i16 {
+        self.get_image().width() as i16 - 65
+    }
+
     fn get_image(&self) -> &RgbaImage {
         match self.facing.get() {
             Facing::Right => &self.image_runway,
             Facing::Left => &self.image_runway2,
         }
+    }
+
+    pub(crate) fn reserve_for(&self, arg: i32) -> bool {
+        // TODO: Fill this out
+        true
     }
 }
 

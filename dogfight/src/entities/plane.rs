@@ -19,7 +19,8 @@ use super::{
     entity::Entity,
     man::Man,
     player::ControllingEntity,
-    types::{EntityType, Team},
+    runway::Runway,
+    types::{EntityType, Facing, Team},
     EntityId,
 };
 
@@ -420,12 +421,101 @@ impl Plane {
         ));
     }
 
+    pub fn set_client_y(&mut self, new_client_y: i16) -> () {
+        self.y  = new_client_y as i32 * RESOLUTION;
+        self.client_y.set(new_client_y);
+    }
+
+    pub fn set_angle(&mut self, new_angle_radians: f64) -> () {
+        self.angle = new_angle_radians;
+        self.direction.set(radians_to_direction(self.angle));
+    }
+
+    pub fn is_facing_runway_correctly(&self, runway: &Runway) -> bool {
+        // TODO: check to make sure the runway team is same as player team
+        let facing = runway.get_facing();
+        if ((facing == Facing::Right)
+            && (self.angle == 3.141592653589793))
+            || ((facing == Facing::Left)
+                && (self.angle == 0.0)
+                && (runway.reserve_for(2)))
+        {
+            return true;
+        }
+
+
+        false
+    }
+
+    pub fn can_land_on_runway(&self, runway: &Runway) -> bool {
+        let x = *self.client_x.get();
+
+        // Holy mother of if statements
+        if (*self.mode.get() != PlaneMode::Landing) && // fo
+        (x > runway.get_landable_x()) &&
+        (x + self.get_width() < runway.get_landable_x() + runway.get_landable_width()) &&
+        (!self.motor_on.get()) &&
+        (self.speed < 250.0 + self.get_speed_modifier()) &&
+        (
+            (
+                (!*self.flipped.get()) && 
+                (
+                    (self.angle < 0.8975979010256552) || 
+                    (self.angle > 5.385587406153931)
+                )
+            ) || 
+            (
+                (*self.flipped.get()) && 
+                (self.angle < 4.039190554615448) && 
+                (self.angle > 2.243994752564138)
+            )
+        )
+        {
+            return true;
+        }
+
+        false
+    }
+
+    pub(crate) fn get_mode(&self) -> PlaneMode {
+        *self.mode.get()
+    }
+
+    pub(crate) fn set_mode(&mut self, mode: PlaneMode) -> () {
+        self.mode.set(mode);
+    }
+
+    pub(crate) fn get_width(&self) -> i16 {
+        self.rotated_image.width() as i16
+    }
+
+    pub fn get_motor_on(&self) -> bool {
+        *self.motor_on.get()
+    }
+
     pub(crate) fn get_client_x(&self) -> i16 {
         *self.client_x.get()
     }
 
     pub(crate) fn get_client_y(&self) -> i16 {
         *self.client_y.get()
+    }
+    
+    pub(crate) fn get_bottom_height(&self) -> i16 {
+        // Convert the image to RGBA8 for easy pixel manipulation
+        let image = self.get_image();
+        let (width, height) = image.dimensions();
+    
+        for y in (0..height).rev() {
+            for x in 0..width {
+                let pixel = image.get_pixel(x, y);
+                if pixel[3] > 0 { // Check if alpha channel is non-zero (or change condition to fit your needs)
+                    return (y + 1).try_into().unwrap();
+                }
+            }
+        }
+    
+        0 // Return 0 if no non-transparent pixels are found
     }
 }
 

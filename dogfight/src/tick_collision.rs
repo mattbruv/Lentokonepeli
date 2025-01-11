@@ -1,6 +1,13 @@
 use crate::{
     collision::SolidEntity,
-    entities::{bomb::Bomb, entity::Entity, man::ManState, types::EntityType, EntityId},
+    entities::{
+        bomb::Bomb,
+        entity::Entity,
+        man::ManState,
+        plane::PlaneMode,
+        types::{EntityType, Facing},
+        EntityId,
+    },
     output::GameOutput,
     tick_actions::{Action, ExplosionData, RemoveData},
     world::World,
@@ -228,6 +235,19 @@ impl World {
 
             for (runway_id, runway) in self.runways.get_map_mut() {
                 if plane.check_collision(runway) {
+                    let plane_x = plane.get_client_x();
+                    // check if not
+                    if plane.can_land_on_runway(runway) {
+                        web_sys::console::log_1(&format!("plane can land on runway").into());
+                        plane.set_client_y(runway.get_landable_y() + plane.get_bottom_height());
+                        if plane.is_facing_runway_correctly(runway) {
+                            web_sys::console::log_1(
+                                &format!("plane facing runway correctly").into(),
+                            );
+                            plane.set_mode(PlaneMode::Landing);
+                        }
+                    }
+
                     blow_up(
                         &mut actions,
                         plane_id,
