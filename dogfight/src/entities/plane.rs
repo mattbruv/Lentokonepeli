@@ -447,6 +447,10 @@ impl Plane {
         false
     }
 
+    pub fn flipped(&self) -> bool {
+        *self.flipped.get()
+    }
+
     pub fn can_land_on_runway(&self, runway: &Runway) -> bool {
         let x = *self.client_x.get();
 
