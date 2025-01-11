@@ -462,9 +462,9 @@ impl Plane {
             //web_sys::console::log_1(&format!("y after: {}", self.y).into());
             self.client_x.set((self.x / RESOLUTION) as i16);
             self.client_y.set((self.y / RESOLUTION) as i16);
-
-            self.direction.set(radians_to_direction(self.angle));
         }
+
+        self.direction.set(radians_to_direction(self.angle));
     }
 
     fn drain_fuel(&mut self) {
