@@ -1,9 +1,9 @@
 use crate::{
     entities::{
         background_item::BackgroundItem, bomb::Bomb, bunker::Bunker, coast::Coast,
-        container::EntityContainer, explosion::Explosion, ground::Ground, man::Man, plane::Plane,
-        player::Player, runway::Runway, types::EntityType, water::Water, world_info::WorldInfo,
-        EntityId,
+        container::EntityContainer, explosion::Explosion, ground::Ground, hill::Hill, man::Man,
+        plane::Plane, player::Player, runway::Runway, types::EntityType, water::Water,
+        world_info::WorldInfo, EntityId,
     },
     input::GameInput,
     output::GameOutput,
@@ -27,6 +27,7 @@ pub struct World {
     pub bunkers: EntityContainer<Bunker>,
     pub bombs: EntityContainer<Bomb>,
     pub explosions: EntityContainer<Explosion>,
+    pub hills: EntityContainer<Hill>,
 }
 
 impl World {
@@ -45,6 +46,7 @@ impl World {
             bunkers: EntityContainer::new(EntityType::Bunker),
             bombs: EntityContainer::new(EntityType::Bomb),
             explosions: EntityContainer::new(EntityType::Explosion),
+            hills: EntityContainer::new(EntityType::Hill),
         };
 
         world

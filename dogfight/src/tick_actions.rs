@@ -80,6 +80,7 @@ impl World {
             EntityType::Player => {}
             EntityType::Water => {}
             EntityType::Bunker => {}
+            EntityType::Hill => {}
         };
 
         if let Some(player) = self

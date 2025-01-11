@@ -5,6 +5,7 @@ pub mod coast;
 pub mod container;
 pub mod entity;
 pub mod ground;
+pub mod hill;
 pub mod man;
 pub mod plane;
 pub mod player;

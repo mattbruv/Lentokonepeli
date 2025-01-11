@@ -12,6 +12,7 @@ use crate::{
         bunker::Bunker,
         coast::Coast,
         ground::Ground,
+        hill::Hill,
         runway::Runway,
         types::{BackgroundItemType, Facing, Team, Terrain},
         water::Water,
@@ -57,7 +58,8 @@ impl World {
                     self.bunkers.insert(bunker);
                 }
                 LevelObject::Hill(pos, terrain) => {
-                    //println!("{:?}", pos);
+                    let hill = Hill::new(terrain, pos.x as i16, pos.y as i16);
+                    self.hills.insert(hill);
                 }
             }
         }

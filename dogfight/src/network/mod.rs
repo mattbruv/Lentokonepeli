@@ -8,7 +8,7 @@ use crate::{
     entities::{
         background_item::BackgroundItemProperties, bomb::BombProperties, bunker::BunkerProperties,
         coast::CoastProperties, explosion::ExplosionProperties, ground::GroundProperties,
-        man::ManProperties, plane::PlaneProperties, player::PlayerProperties,
+        hill::HillProperties, man::ManProperties, plane::PlaneProperties, player::PlayerProperties,
         runway::RunwayProperties, types::EntityType, water::WaterProperties,
         world_info::WorldInfoProperties, EntityId,
     },
@@ -98,4 +98,5 @@ pub enum EntityProperties {
     Bunker(BunkerProperties),
     Bomb(BombProperties),
     Explosion(ExplosionProperties),
+    Hill(HillProperties),
 }

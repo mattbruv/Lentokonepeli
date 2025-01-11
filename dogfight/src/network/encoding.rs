@@ -2,7 +2,7 @@ use crate::{
     entities::{
         background_item::BackgroundItemProperties, bomb::BombProperties, bunker::BunkerProperties,
         coast::CoastProperties, explosion::ExplosionProperties, ground::GroundProperties,
-        man::ManProperties, plane::PlaneProperties, player::PlayerProperties,
+        hill::HillProperties, man::ManProperties, plane::PlaneProperties, player::PlayerProperties,
         runway::RunwayProperties, types::EntityType, water::WaterProperties,
         world_info::WorldInfoProperties,
     },
@@ -97,6 +97,7 @@ impl NetworkedBytes for EntityChange {
                 EntityProperties::WorldInfo(world_info) => world_info.to_bytes(),
                 EntityProperties::Bomb(bomb) => bomb.to_bytes(),
                 EntityProperties::Explosion(explosion) => explosion.to_bytes(),
+                EntityProperties::Hill(hill) => hill.to_bytes(),
             },
             _ => vec![],
         };
@@ -191,6 +192,11 @@ impl NetworkedBytes for EntityChange {
                     let (slice, props) = ExplosionProperties::from_bytes(bytes);
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::Explosion(props))
+                }
+                EntityType::Hill => {
+                    let (slice, props) = HillProperties::from_bytes(bytes);
+                    bytes = slice;
+                    EntityChangeType::Properties(EntityProperties::Hill(props))
                 }
             },
             _ => panic!("Unknown entity change type {}", update_type),
@@ -341,6 +347,7 @@ impl World {
         state.extend(self.bunkers.get_all_full_state());
         state.extend(self.bombs.get_all_full_state());
         state.extend(self.explosions.get_all_full_state());
+        state.extend(self.hills.get_all_full_state());
         state
     }
 
@@ -363,6 +370,7 @@ impl World {
         state.extend(self.bunkers.get_all_changed_state());
         state.extend(self.bombs.get_all_changed_state());
         state.extend(self.explosions.get_all_changed_state());
+        state.extend(self.hills.get_all_changed_state());
         state
     }
 }
