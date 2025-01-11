@@ -130,7 +130,7 @@ impl World {
         let mut actions = vec![];
 
         'bombs: for (bomb_id, bomb) in self.bombs.get_map_mut() {
-            for (ground_id, ground) in self.grounds.get_map_mut() {
+            for (_, ground) in self.grounds.get_map_mut() {
                 if bomb.check_collision(ground) {
                     blow_up(
                         &mut actions,
@@ -139,28 +139,45 @@ impl World {
                         bomb.get_x(),
                         bomb.get_y(),
                     );
-                    web_sys::console::log_1(&format!("bomb collide ground!").into());
+                    //web_sys::console::log_1(&format!("bomb collide ground!").into());
                     continue 'bombs;
                 }
             }
 
-            for (coast_id, coast) in self.coasts.get_map_mut() {
+            for (_, coast) in self.coasts.get_map_mut() {
                 if bomb.check_collision(coast) {
-                    web_sys::console::log_1(&format!("bomb collide coast!").into());
+                    blow_up(
+                        &mut actions,
+                        bomb_id,
+                        bomb.get_type(),
+                        bomb.get_x(),
+                        bomb.get_y(),
+                    );
+                    //web_sys::console::log_1(&format!("bomb collide coast!").into());
                     continue 'bombs;
                 }
             }
 
-            for (water_id, water) in self.waters.get_map_mut() {
+            for (_, water) in self.waters.get_map_mut() {
                 if bomb.check_collision(water) {
-                    web_sys::console::log_1(&format!("bomb collide water!").into());
+                    actions.push(Action::RemoveEntity(RemoveData {
+                        ent_id: *bomb_id,
+                        ent_type: bomb.get_type(),
+                    }));
+                    //web_sys::console::log_1(&format!("bomb collide water!").into());
                     continue 'bombs;
                 }
             }
 
-            for (runway_id, runway) in self.runways.get_map_mut() {
+            for (_, runway) in self.runways.get_map_mut() {
                 if bomb.check_collision(runway) {
-                    web_sys::console::log_1(&format!("bomb collide runway!").into());
+                    blow_up(
+                        &mut actions,
+                        bomb_id,
+                        bomb.get_type(),
+                        bomb.get_x(),
+                        bomb.get_y(),
+                    );
                     continue 'bombs;
                 }
             }
