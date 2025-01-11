@@ -282,7 +282,7 @@ impl Plane {
 
         if runway.get_facing() == Facing::Left {
             self.set_angle(PI);
-            self.flipped.set(false);
+            self.flipped.set(true);
         } else {
             self.set_angle(0.0);
             self.flipped.set(false);
