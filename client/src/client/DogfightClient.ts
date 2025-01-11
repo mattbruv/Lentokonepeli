@@ -1,12 +1,12 @@
 import * as PIXI from "pixi.js";
-import { SKY_COLOR, VIEW_HEIGHT, VIEW_WIDTH } from "./constants";
+import { DrawLayer, SKY_COLOR, VIEW_HEIGHT, VIEW_WIDTH } from "./constants";
 import { Viewport } from "pixi-viewport";
 import { Ground } from "./entities/ground";
 import { Water } from "./entities/water";
 import { EntityChange } from "dogfight-types/EntityChange";
 import { EntityProperties } from "dogfight-types/EntityProperties";
 import { EntityType } from "dogfight-types/EntityType";
-import { loadTextures } from "./textures";
+import { loadTextures, Textures } from "./textures";
 import { Coast } from "./entities/coast";
 import { Runway } from "./entities/runway";
 import { BackgroundItem } from "./entities/backgroundItem";
@@ -46,10 +46,14 @@ export type EntityGroup<T> = {
   entries: Map<number, T>;
 };
 
+const SKY_Y = -300;
+
 export class DogfightClient {
   // https://pixijs.download/v7.x/docs/index.html
   private app: PIXI.Application<HTMLCanvasElement>;
   private viewport: Viewport;
+
+  private sky: PIXI.TilingSprite;
 
   // Debugging helpers
   private debugPointer = new PIXI.Text();
@@ -154,6 +158,10 @@ export class DogfightClient {
       events: this.app.renderer.events,
     });
 
+    this.sky = new PIXI.TilingSprite(Textures["sky3b.jpg"]);
+    this.sky.position.set(0, -250);
+    this.app.stage.addChild(this.sky);
+
     this.app.stage.addChild(this.viewport);
     this.app.stage.addChild(this.teamChooser.container);
     this.app.stage.addChild(this.runwaySelector.container);
@@ -209,6 +217,13 @@ export class DogfightClient {
     }
   }
 
+  private positionSkyRelativeToCamera(x: number, y: number) {
+    const x1 = x / 6;
+    const y1 = y / 3 + 125;
+
+    this.sky.tilePosition.set(-x1, -y1)
+  }
+
   public async init(callbacks: GameClientCallbacks, element: HTMLDivElement) {
     await loadTextures();
     this.appendView(element);
@@ -217,6 +232,11 @@ export class DogfightClient {
     this.runwaySelector.init(this.callbacks);
     this.keyboard.init((keyboard) => this.onKeyChange(keyboard));
     this.gameHUD.init();
+
+    const skyTexture = Textures["sky3b.jpg"]
+    this.sky.texture = skyTexture
+    this.sky.width = skyTexture.width;
+    this.sky.height = skyTexture.height
 
     const width = this.app.screen.width / 2;
     const height = this.app.screen.height / 2;
@@ -307,6 +327,7 @@ export class DogfightClient {
     const y1 = y - (this.app.screen.height - this.gameHUD.container.height) / 2;
     //console.log(x, y, x1, y1);
     this.viewport.moveCorner(x1, y1);
+    this.positionSkyRelativeToCamera(x, y);
   }
 
   public handleGameEvents(events: GameOutput[]) {

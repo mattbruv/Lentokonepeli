@@ -5,6 +5,7 @@ export const VIEW_HEIGHT = 660;
 // 510 hardcoded bg, plus 150 UI height, 660 total height?
 
 export enum DrawLayer {
+  Sky = -999,
   Hill = -120,
   Water = -100,
   Flag = -70,
