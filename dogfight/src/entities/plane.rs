@@ -247,6 +247,21 @@ impl Plane {
         }
     }
 
+    fn park(&mut self, runway: &Runway) -> () {
+        self.set_client_x(runway.get_start_x());
+        self.set_client_y(runway.get_start_y() - self.get_bottom_height());
+
+        if runway.get_facing() == Facing::Left {
+            self.set_angle(PI);
+            self.flipped.set(false);
+        } else {
+            self.set_angle(0.0);
+            self.flipped.set(false);
+        }
+
+        self.speed = 0.0;
+    }
+
     fn tick_takeoff(&mut self) {
         self.accelerate();
 
@@ -271,6 +286,7 @@ impl Plane {
         // Fly! Free bird
         if self.takeoff_counter >= 70 {
             self.mode.set(PlaneMode::Flying);
+            self.runway = None;
             self.takeoff_counter = 0;
         }
 
@@ -425,8 +441,13 @@ impl Plane {
         ));
     }
 
+    pub fn set_client_x(&mut self, new_client_x: i16) -> () {
+        self.x = new_client_x as i32 * RESOLUTION;
+        self.client_x.set(new_client_x);
+    }
+
     pub fn set_client_y(&mut self, new_client_y: i16) -> () {
-        self.y  = new_client_y as i32 * RESOLUTION;
+        self.y = new_client_y as i32 * RESOLUTION;
         self.client_y.set(new_client_y);
     }
 
@@ -446,15 +467,11 @@ impl Plane {
     pub fn is_facing_runway_correctly(&self, runway: &Runway) -> bool {
         // TODO: check to make sure the runway team is same as player team
         let facing = runway.get_facing();
-        if ((facing == Facing::Right)
-            && (self.angle == PI))
-            || ((facing == Facing::Left)
-                && (self.angle == 0.0)
-                && (runway.reserve_for(2)))
+        if ((facing == Facing::Right) && (self.angle == PI))
+            || ((facing == Facing::Left) && (self.angle == 0.0) && (runway.reserve_for(2)))
         {
             return true;
         }
-
 
         false
     }
@@ -467,25 +484,16 @@ impl Plane {
         let x = *self.client_x.get();
 
         // Holy mother of if statements
-        if (*self.mode.get() != PlaneMode::Landing) && // fo
-        (x > runway.get_landable_x()) &&
-        (x + self.get_width() < runway.get_landable_x() + runway.get_landable_width()) &&
-        (!self.motor_on.get()) &&
-        (self.speed < 250.0 + self.get_speed_modifier()) &&
-        (
-            (
-                (!*self.flipped.get()) && 
-                (
-                    (self.angle < 0.8975979010256552) || 
-                    (self.angle > 5.385587406153931)
-                )
-            ) || 
-            (
-                (*self.flipped.get()) && 
-                (self.angle < 4.039190554615448) && 
-                (self.angle > 2.243994752564138)
-            )
-        )
+        if (*self.mode.get() != PlaneMode::Landing)
+            && (x > runway.get_landable_x())
+            && (x + self.get_width() < runway.get_landable_x() + runway.get_landable_width())
+            && (!self.motor_on.get())
+            && (self.speed < 250.0 + self.get_speed_modifier())
+            && (((!*self.flipped.get())
+                && ((self.angle < 0.8975979010256552) || (self.angle > 5.385587406153931)))
+                || ((*self.flipped.get())
+                    && (self.angle < 4.039190554615448)
+                    && (self.angle > 2.243994752564138)))
         {
             return true;
         }
@@ -516,21 +524,22 @@ impl Plane {
     pub(crate) fn get_client_y(&self) -> i16 {
         *self.client_y.get()
     }
-    
+
     pub(crate) fn get_bottom_height(&self) -> i16 {
         // Convert the image to RGBA8 for easy pixel manipulation
         let image = self.get_image();
         let (width, height) = image.dimensions();
-    
+
         for y in (0..height).rev() {
             for x in 0..width {
                 let pixel = image.get_pixel(x, y);
-                if pixel[3] > 0 { // Check if alpha channel is non-zero (or change condition to fit your needs)
+                if pixel[3] > 0 {
+                    // Check if alpha channel is non-zero (or change condition to fit your needs)
                     return (y + 1).try_into().unwrap();
                 }
             }
         }
-    
+
         0 // Return 0 if no non-transparent pixels are found
     }
 }
