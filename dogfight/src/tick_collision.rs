@@ -239,22 +239,22 @@ impl World {
                     // check if not
                     if plane.can_land_on_runway(runway) {
                         web_sys::console::log_1(&format!("plane can land on runway").into());
-                        plane.set_client_y(runway.get_landable_y() + plane.get_bottom_height());
+                        plane.set_client_y(runway.get_landable_y() - plane.get_bottom_height());
                         if plane.is_facing_runway_correctly(runway) {
                             web_sys::console::log_1(
                                 &format!("plane facing runway correctly").into(),
                             );
                             plane.set_mode(PlaneMode::Landing);
                         }
+                    } else {
+                        blow_up(
+                            &mut actions,
+                            plane_id,
+                            plane.get_type(),
+                            plane.get_client_x(),
+                            plane.get_client_y(),
+                        );
                     }
-
-                    blow_up(
-                        &mut actions,
-                        plane_id,
-                        plane.get_type(),
-                        plane.get_client_x(),
-                        plane.get_client_y(),
-                    );
                     continue 'planes;
                 }
             }
