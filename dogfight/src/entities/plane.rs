@@ -109,8 +109,8 @@ pub struct Plane {
 }
 
 impl Plane {
-    pub fn new(plane_type: PlaneType) -> Plane {
-        Plane {
+    pub fn new(plane_type: PlaneType, runway_id: EntityId, runway: &Runway) -> Plane {
+        let mut plane = Plane {
             plane_type: Property::new(plane_type),
             x: 0,
             y: 0,
@@ -138,7 +138,7 @@ impl Plane {
             takeoff_counter: 0,
             dodge_counter: 0,
 
-            runway: None,
+            runway: Some(runway_id),
 
             // Physical Model
             air_resistance: 1.0,
@@ -155,7 +155,14 @@ impl Plane {
             image_sopwith: get_rotateable_image(PLANE9),
 
             rotated_image: get_rotateable_image(PLANE4),
-        }
+        };
+
+        plane.park(runway);
+
+        plane.motor_on.set(true);
+        plane.set_mode(PlaneMode::TakingOff);
+
+        plane
     }
 
     pub fn set_position(&mut self, x: i16, y: i16) {
@@ -260,6 +267,7 @@ impl Plane {
         }
 
         self.speed = 0.0;
+        self.fuel_counter = 100;
     }
 
     fn tick_takeoff(&mut self) {

@@ -175,11 +175,7 @@ impl World {
                 }
                 GameInput::PlayerChooseRunway(selection) => {
                     if let Some(runway) = self.runways.get(selection.runway_id) {
-                        let team = *runway.get_team();
-                        let client_x = runway.get_client_x();
-
-                        let mut plane = Plane::new(selection.plane_type);
-                        plane.set_position(client_x, -200);
+                        let plane = Plane::new(selection.plane_type, selection.runway_id, runway);
 
                         if let Some((plane_id, _)) = self.planes.insert(plane) {
                             if let Some((_, player)) =
