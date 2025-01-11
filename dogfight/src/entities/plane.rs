@@ -3,10 +3,14 @@ use std::f64::consts::PI;
 use dogfight_macros::{EnumBytes, Networked};
 use image::RgbaImage;
 use serde::Deserialize;
+use web_sys::wasm_bindgen::convert::IntoWasmAbi;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
-    images::{get_rotateable_image, rotate_image, PLANE4, PLANE5, PLANE6, PLANE7, PLANE8, PLANE9},
+    images::{
+        get_image, get_rotateable_image, rotate_image, PLANE4, PLANE5, PLANE6, PLANE7, PLANE8,
+        PLANE9,
+    },
     input::PlayerKeyboard,
     math::radians_to_direction,
     network::{property::Property, EntityProperties, NetworkedEntity},
@@ -105,6 +109,13 @@ pub struct Plane {
     image_salmson: RgbaImage,
     image_sopwith: RgbaImage,
 
+    image_albatros_rotateable: RgbaImage,
+    image_junkers_rotateable: RgbaImage,
+    image_fokker_rotateable: RgbaImage,
+    image_bristol_rotateable: RgbaImage,
+    image_salmson_rotateable: RgbaImage,
+    image_sopwith_rotateable: RgbaImage,
+
     rotated_image: RgbaImage,
 }
 
@@ -147,12 +158,19 @@ impl Plane {
             speed: 0.0,
             angle: 0.0, // This should probably be named radians
 
-            image_albatros: get_rotateable_image(PLANE4),
-            image_junkers: get_rotateable_image(PLANE5),
-            image_fokker: get_rotateable_image(PLANE6),
-            image_bristol: get_rotateable_image(PLANE7),
-            image_salmson: get_rotateable_image(PLANE8),
-            image_sopwith: get_rotateable_image(PLANE9),
+            image_albatros_rotateable: get_rotateable_image(PLANE4),
+            image_junkers_rotateable: get_rotateable_image(PLANE5),
+            image_fokker_rotateable: get_rotateable_image(PLANE6),
+            image_bristol_rotateable: get_rotateable_image(PLANE7),
+            image_salmson_rotateable: get_rotateable_image(PLANE8),
+            image_sopwith_rotateable: get_rotateable_image(PLANE9),
+
+            image_albatros: get_image(PLANE4),
+            image_junkers: get_image(PLANE5),
+            image_fokker: get_image(PLANE6),
+            image_bristol: get_image(PLANE7),
+            image_salmson: get_image(PLANE8),
+            image_sopwith: get_image(PLANE9),
 
             rotated_image: get_rotateable_image(PLANE4),
         };
@@ -255,8 +273,12 @@ impl Plane {
     }
 
     fn park(&mut self, runway: &Runway) -> () {
+        web_sys::console::log_1(&format!("start_x {}", runway.get_start_x()).into());
         self.set_client_x(runway.get_start_x());
+
+        web_sys::console::log_1(&format!("start_y {}", runway.get_start_y()).into());
         self.set_client_y(runway.get_start_y() - self.get_bottom_height());
+        web_sys::console::log_1(&format!("bottom_height {}", self.get_bottom_height()).into());
 
         if runway.get_facing() == Facing::Left {
             self.set_angle(PI);
@@ -534,9 +556,12 @@ impl Plane {
     }
 
     pub(crate) fn get_bottom_height(&self) -> i16 {
+        (self.get_image().height() / 2) as i16
         // Convert the image to RGBA8 for easy pixel manipulation
+        /*
         let image = self.get_image();
         let (width, height) = image.dimensions();
+        web_sys::console::log_1(&format!("img width: {} height: {}", width, height).into());
 
         for y in (0..height).rev() {
             for x in 0..width {
@@ -549,6 +574,7 @@ impl Plane {
         }
 
         0 // Return 0 if no non-transparent pixels are found
+        */
     }
 }
 
@@ -748,7 +774,7 @@ impl Entity for Plane {
 
 impl SolidEntity for Plane {
     fn get_collision_bounds(&self) -> BoundingBox {
-        let img = self.get_image();
+        let img = self.get_collision_image().unwrap();
         BoundingBox {
             x: (self.x / RESOLUTION) as i16 - (img.width() / 2) as i16,
             y: (self.y / RESOLUTION) as i16 - (img.height() / 2) as i16,
@@ -764,22 +790,22 @@ impl SolidEntity for Plane {
     fn do_rotate_collision_image(&mut self) -> () {
         match self.plane_type.get() {
             PlaneType::Albatros => {
-                self.rotated_image = rotate_image(&self.image_albatros, self.angle);
+                self.rotated_image = rotate_image(&self.image_albatros_rotateable, self.angle);
             }
             PlaneType::Junkers => {
-                self.rotated_image = rotate_image(&self.image_junkers, self.angle);
+                self.rotated_image = rotate_image(&self.image_junkers_rotateable, self.angle);
             }
             PlaneType::Fokker => {
-                self.rotated_image = rotate_image(&self.image_fokker, self.angle);
+                self.rotated_image = rotate_image(&self.image_fokker_rotateable, self.angle);
             }
             PlaneType::Bristol => {
-                self.rotated_image = rotate_image(&self.image_bristol, self.angle);
+                self.rotated_image = rotate_image(&self.image_bristol_rotateable, self.angle);
             }
             PlaneType::Salmson => {
-                self.rotated_image = rotate_image(&self.image_salmson, self.angle);
+                self.rotated_image = rotate_image(&self.image_salmson_rotateable, self.angle);
             }
             PlaneType::Sopwith => {
-                self.rotated_image = rotate_image(&self.image_sopwith, self.angle);
+                self.rotated_image = rotate_image(&self.image_sopwith_rotateable, self.angle);
             }
         };
     }
