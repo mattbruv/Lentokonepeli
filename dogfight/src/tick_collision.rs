@@ -237,6 +237,20 @@ impl World {
 
             for (runway_id, runway) in self.runways.get_map_mut() {
                 if plane.check_collision(runway) {
+                    let mode = plane.get_mode();
+                    let runway_id_matches = match plane.get_runway() {
+                        Some(rid) => rid == *runway_id,
+                        None => false,
+                    };
+
+                    if (mode == PlaneMode::Landing
+                        || mode == PlaneMode::Landed
+                        || mode == PlaneMode::TakingOff)
+                        && runway_id_matches
+                    {
+                        continue 'planes;
+                    }
+
                     if plane.flipped() {
                         plane.set_angle(PI);
                     } else {
@@ -251,6 +265,7 @@ impl World {
                                 &format!("plane facing runway correctly").into(),
                             );
                             plane.set_mode(PlaneMode::Landing);
+                            plane.set_runway(Some(*runway_id));
                         }
                     } else {
                         blow_up(

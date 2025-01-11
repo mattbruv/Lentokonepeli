@@ -89,6 +89,8 @@ pub struct Plane {
     takeoff_counter: i32,
     dodge_counter: i32,
 
+    runway: Option<EntityId>,
+
     // Physical Model
     air_resistance: f64,
     gravity: f64,
@@ -135,6 +137,8 @@ impl Plane {
 
             takeoff_counter: 0,
             dodge_counter: 0,
+
+            runway: None,
 
             // Physical Model
             air_resistance: 1.0,
@@ -429,6 +433,14 @@ impl Plane {
     pub fn set_angle(&mut self, new_angle_radians: f64) -> () {
         self.angle = new_angle_radians;
         self.direction.set(radians_to_direction(self.angle));
+    }
+
+    pub fn get_runway(&self) -> Option<EntityId> {
+        self.runway
+    }
+
+    pub fn set_runway(&mut self, runway: Option<EntityId>) -> () {
+        self.runway = runway;
     }
 
     pub fn is_facing_runway_correctly(&self, runway: &Runway) -> bool {
