@@ -50,8 +50,8 @@ impl Runway {
     pub fn get_landable_x(&self) -> i16 {
         let x = self.client_x.get();
         match self.facing.get() {
-            Facing::Right => *x,
-            Facing::Left => x + 65,
+            Facing::Left => *x,
+            Facing::Right => x + 65,
         }
     }
 
@@ -61,8 +61,8 @@ impl Runway {
 
     pub fn get_start_x(&self) -> i16 {
         match self.facing.get() {
-            Facing::Right => self.client_x.get() + 15,
-            Facing::Left => self.client_x.get() + 230,
+            Facing::Left => self.client_x.get() + 15,
+            Facing::Right => self.client_x.get() + 230,
         }
     }
 
