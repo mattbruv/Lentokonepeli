@@ -15,12 +15,16 @@ const PLANE_TEXTURE_ID: Record<PlaneType, number> = {
   Sopwith: 9,
 }
 
+const GRAY_SMOKE_LIFETIME_MS = 300;
+
 export class Plane implements Entity<PlaneProperties>, Followable {
 
   private container: PIXI.Container;
   private planeSprite: PIXI.Sprite;
   private first_flip: boolean = true;
   private frame = 0;
+  private animation_gray_smoke: number;
+  private angle: number = 0;
 
   public props: Required<PlaneProperties> = {
     client_x: 0,
@@ -40,6 +44,32 @@ export class Plane implements Entity<PlaneProperties>, Followable {
     this.container.addChild(this.planeSprite)
 
     this.container.zIndex = DrawLayer.Plane;
+
+    this.animation_gray_smoke = window.setInterval(() => {
+      if (!this.props.motor_on || this.props.mode !== "Flying") return;
+
+      const tex = this.getTexture();
+      const w = tex.width
+      const h = tex.height
+      const d1 = this.angle
+
+      const x = this.planeSprite.position.x
+      const y = this.planeSprite.position.y
+      //console.log(this.planeSprite.position)
+
+      let k = Math.floor(x - Math.cos(d1) * ((w / 2) + 6));
+      let m = Math.floor(y - Math.sin(d1) * ((h / 2) + 6));
+
+      const smoke = new PIXI.Sprite(Textures["smoke1.gif"])
+      smoke.anchor.set(0.5)
+      smoke.position.set(k, m)
+      //console.log(k, m)
+      this.container.addChild(smoke)
+
+      setTimeout(() => {
+        this.container.removeChild(smoke)
+      }, GRAY_SMOKE_LIFETIME_MS)
+    }, 100)
   }
 
   public getContainer(): PIXI.Container {
@@ -61,7 +91,6 @@ export class Plane implements Entity<PlaneProperties>, Followable {
   }
 
   private renderFrame() {
-    console.log("RENDER FRAME")
     this.frame++;
 
     if (this.frame > 2) {
@@ -125,9 +154,12 @@ export class Plane implements Entity<PlaneProperties>, Followable {
 
     direction: () => {
       // console.log(this.props.direction)
-      this.planeSprite.rotation = directionToRadians(this.props.direction)
+      this.angle = directionToRadians(this.props.direction)
+      this.planeSprite.rotation = this.angle
     }
   };
 
-  public destroy() { }
+  public destroy() {
+    window.clearInterval(this.animation_gray_smoke)
+  }
 }
