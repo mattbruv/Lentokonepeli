@@ -55,8 +55,27 @@ export class Plane implements Entity<PlaneProperties>, Followable {
 
   private getTexture() {
     const id = PLANE_TEXTURE_ID[this.props.plane_type];
-    const key = `plane${id}.gif`
+    const flip = this.frame > 0 ? `_flip${this.frame}` : ''
+    const key = `plane${id}${flip}.gif`
     return Textures[key as keyof typeof Textures]
+  }
+
+  private renderFrame() {
+    console.log("RENDER FRAME")
+    this.frame++;
+
+    if (this.frame > 2) {
+      this.frame = 0;
+    }
+
+    const texture = this.getTexture();
+    this.planeSprite.texture = texture;
+
+    if (this.frame !== 0) {
+      setTimeout(() => {
+        this.renderFrame()
+      }, 80)
+    }
   }
 
   public updateCallbacks: EntityUpdateCallbacks<PlaneProperties> = {
@@ -73,25 +92,27 @@ export class Plane implements Entity<PlaneProperties>, Followable {
 
     flipped: () => {
 
+      let do_flip = false;
       if (this.first_flip) {
         this.first_flip = false;
       }
       else {
-        this.frame = 1;
+        do_flip = true;
       }
 
       this.planeSprite.scale.y = (this.props.flipped) ? -1 : 1
 
-      if (this.frame) {
-
+      if (do_flip) {
+        this.frame = 0;
+        this.renderFrame()
+        //console.log(this.frame)
       }
 
-      console.log("flipped", this.props.flipped)
+      //console.log("flipped", this.props.flipped)
     },
 
     mode: () => {
       console.log("mode", this.props.mode)
-
     },
 
     motor_on: () => {
