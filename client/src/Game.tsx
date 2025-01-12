@@ -79,7 +79,7 @@ export function Game() {
           }
         };
 
-        dogfight.game.load_level(Levels.classic2);
+        dogfight.game.load_level(Levels.classic);
         dogfight.game.init();
 
         dogfight.client.setMyPlayerName(player_name);

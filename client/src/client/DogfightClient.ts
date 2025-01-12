@@ -224,11 +224,17 @@ export class DogfightClient {
     }
   }
 
-  private positionSkyRelativeToCamera(x: number, y: number) {
+  private positionRelativeGameObjects(x: number, y: number) {
     const x1 = x / 6;
     const y1 = y / 3 + 125;
 
+    // reposition sky
     this.sky.tilePosition.set(-x1, -y1)
+
+    // update hills
+    for (const [_, hill] of this.hills.entries) {
+      hill.setPosition(x, y)
+    }
   }
 
   public async init(callbacks: GameClientCallbacks, element: HTMLDivElement) {
@@ -334,7 +340,7 @@ export class DogfightClient {
     const y1 = y - (this.app.screen.height - this.gameHUD.container.height) / 2;
     //console.log(x, y, x1, y1);
     this.viewport.moveCorner(x1, y1);
-    this.positionSkyRelativeToCamera(x, y);
+    this.positionRelativeGameObjects(x, y);
   }
 
   public handleGameEvents(events: GameOutput[]) {
