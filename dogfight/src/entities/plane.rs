@@ -433,39 +433,6 @@ impl Plane {
                 self.spawn_man_action(my_id, actions);
                 self.mode.set(PlaneMode::Falling);
             }
-
-            // Shoot bullets
-            if keys.enter && self.last_shot_ms >= self.get_shoot_delay() {
-                self.last_shot_ms = 0;
-
-                let x = *self.client_x.get();
-                let y = *self.client_y.get();
-
-                actions.push(Action::SpawnBullet(Bullet::new(
-                    x,
-                    y,
-                    self.angle,
-                    self.speed / 100.0,
-                )));
-                //
-            }
-
-            // Bombs away
-            if keys.shift && self.last_bomb_ms >= self.bomb_delay_ms && *self.total_bombs.get() > 0
-            {
-                self.last_bomb_ms = 0;
-                self.total_bombs.set(self.total_bombs.get() - 1);
-
-                let x = *self.client_x.get();
-                let y = *self.client_y.get();
-                actions.push(Action::SpawnBomb(Bomb::new(
-                    x,
-                    y,
-                    self.angle,
-                    self.speed / 100.0,
-                )));
-                //
-            }
         }
 
         // If we are flying within bounds
@@ -494,6 +461,54 @@ impl Plane {
         }
 
         self.direction.set(radians_to_direction(self.angle));
+
+        // Process things like shooting/bombs after we've updated our coords.
+
+        if let Some(keys) = keyboard {
+            // Shoot bullets
+            if keys.enter && self.last_shot_ms >= self.get_shoot_delay() {
+                self.last_shot_ms = 0;
+
+                let x = *self.client_x.get();
+                let y = *self.client_y.get();
+                let img = self.get_image();
+                let w = img.width() as i16;
+                let h = img.height() as i16;
+
+                let d3 = self.angle;
+                let i3: i16 = x + ((d3.cos() * ((w / 2 + 2) as f64)) as i16);
+                let i4: i16 = y + ((d3.sin() * ((h / 2 + 2) as f64)) as i16);
+
+                /*
+                i3 = (int)(this.x + this.w / 2 * 100 + Math.cos(d3) * (this.w / 2 + 2) * 100.0D) / 100;
+                i4 = (int)(this.y + this.h / 2 * 100 + Math.sin(d3) * (this.h / 2 + 2) * 100.0D) / 100;
+                */
+
+                actions.push(Action::SpawnBullet(Bullet::new(
+                    i3,
+                    i4,
+                    self.angle,
+                    self.speed / 100.0,
+                )));
+            }
+
+            // Bombs away
+            if keys.shift && self.last_bomb_ms >= self.bomb_delay_ms && *self.total_bombs.get() > 0
+            {
+                self.last_bomb_ms = 0;
+                self.total_bombs.set(self.total_bombs.get() - 1);
+
+                let x = *self.client_x.get();
+                let y = *self.client_y.get();
+                actions.push(Action::SpawnBomb(Bomb::new(
+                    x,
+                    y,
+                    self.angle,
+                    self.speed / 100.0,
+                )));
+                //
+            }
+        }
     }
 
     fn drain_fuel(&mut self) {
