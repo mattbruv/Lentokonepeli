@@ -143,6 +143,21 @@ impl World {
             })
             .collect();
 
+        let bullet_bounds: Vec<DebugEntity> = self
+            .bullets
+            .get_map_mut()
+            .iter_mut()
+            .map(|(idx, bullet)| {
+                let bounds = bullet.get_collision_bounds();
+                DebugEntity {
+                    ent_id: *idx,
+                    ent_type: EntityType::Bullet,
+                    bounding_box: bounds,
+                    pixels: bullet.get_debug_pixels(),
+                }
+            })
+            .collect();
+
         debug_info.extend(man_bounds);
         debug_info.extend(ground_bounds);
         debug_info.extend(water_bounds);
@@ -152,6 +167,7 @@ impl World {
         debug_info.extend(landing_strips);
         debug_info.extend(bomb_bounds);
         debug_info.extend(explosion_bounds);
+        debug_info.extend(bullet_bounds);
 
         serde_json::to_string(&debug_info).unwrap()
     }

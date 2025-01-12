@@ -6,11 +6,11 @@ use ts_rs::TS;
 
 use crate::{
     entities::{
-        background_item::BackgroundItemProperties, bomb::BombProperties, bunker::BunkerProperties,
-        coast::CoastProperties, explosion::ExplosionProperties, ground::GroundProperties,
-        hill::HillProperties, man::ManProperties, plane::PlaneProperties, player::PlayerProperties,
-        runway::RunwayProperties, types::EntityType, water::WaterProperties,
-        world_info::WorldInfoProperties, EntityId,
+        background_item::BackgroundItemProperties, bomb::BombProperties, bullet::BulletProperties,
+        bunker::BunkerProperties, coast::CoastProperties, explosion::ExplosionProperties,
+        ground::GroundProperties, hill::HillProperties, man::ManProperties, plane::PlaneProperties,
+        player::PlayerProperties, runway::RunwayProperties, types::EntityType,
+        water::WaterProperties, world_info::WorldInfoProperties, EntityId,
     },
     output::GameOutput,
 };
@@ -99,4 +99,5 @@ pub enum EntityProperties {
     Bomb(BombProperties),
     Explosion(ExplosionProperties),
     Hill(HillProperties),
+    Bullet(BulletProperties),
 }

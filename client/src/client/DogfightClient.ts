@@ -31,6 +31,7 @@ import { DebugEntity } from "dogfight-types/DebugEntity";
 import { Bomb } from "./entities/bomb";
 import { Explosion } from "./entities/explosion";
 import { Hill } from "./entities/hill";
+import { Bullet } from "./entities/bullet";
 
 export type GameClientCallbacks = {
   chooseTeam: (team: Team | null) => void;
@@ -138,6 +139,11 @@ export class DogfightClient {
     entries: new Map(),
   };
 
+  private bullets: EntityGroup<Bullet> = {
+    new_type: () => new Bullet(),
+    entries: new Map(),
+  };
+
   private entities: EntityCollection = {
     WorldInfo: this.worldInfo,
     Plane: this.planes,
@@ -151,7 +157,8 @@ export class DogfightClient {
     Bunker: this.bunkers,
     Bomb: this.bombs,
     Explosion: this.explosions,
-    Hill: this.hills
+    Hill: this.hills,
+    Bullet: this.bullets
   };
 
   constructor() {
@@ -505,5 +512,6 @@ const DEBUG_COLORS: Record<EntityType, string> = {
   Bunker: "brown",
   Bomb: "black",
   Explosion: "lime",
-  Hill: "green"
+  Hill: "green",
+  Bullet: "pink"
 }

@@ -1,5 +1,6 @@
 pub mod background_item;
 pub mod bomb;
+pub mod bullet;
 pub mod bunker;
 pub mod coast;
 pub mod container;

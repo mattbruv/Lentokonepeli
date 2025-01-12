@@ -1,6 +1,6 @@
 use crate::{
     entities::{
-        background_item::BackgroundItem, bomb::Bomb, bunker::Bunker, coast::Coast,
+        background_item::BackgroundItem, bomb::Bomb, bullet::Bullet, bunker::Bunker, coast::Coast,
         container::EntityContainer, explosion::Explosion, ground::Ground, hill::Hill, man::Man,
         plane::Plane, player::Player, runway::Runway, types::EntityType, water::Water,
         world_info::WorldInfo, EntityId,
@@ -28,6 +28,7 @@ pub struct World {
     pub bombs: EntityContainer<Bomb>,
     pub explosions: EntityContainer<Explosion>,
     pub hills: EntityContainer<Hill>,
+    pub bullets: EntityContainer<Bullet>,
 }
 
 impl World {
@@ -47,6 +48,7 @@ impl World {
             bombs: EntityContainer::new(EntityType::Bomb),
             explosions: EntityContainer::new(EntityType::Explosion),
             hills: EntityContainer::new(EntityType::Hill),
+            bullets: EntityContainer::new(EntityType::Bullet),
         };
 
         world

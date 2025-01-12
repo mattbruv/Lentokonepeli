@@ -3,6 +3,7 @@ use imageproc::geometry::contour_area;
 use crate::{
     entities::{
         bomb::Bomb,
+        bullet::Bullet,
         entity::Entity,
         explosion::Explosion,
         man::Man,
@@ -31,6 +32,7 @@ pub enum Action {
     Explosion(ExplosionData),
     SpawnMan(Man, Option<ControllingEntity>),
     SpawnBomb(Bomb),
+    SpawnBullet(Bullet),
 }
 
 impl World {
@@ -52,6 +54,7 @@ impl World {
                 self.spawn_man(man, currently_controlling)
             }
             Action::SpawnBomb(bomb) => self.spawn_bomb(bomb),
+            Action::SpawnBullet(bullet) => self.spawn_bullet(bullet),
         }
     }
 
@@ -81,6 +84,9 @@ impl World {
             EntityType::Water => {}
             EntityType::Bunker => {}
             EntityType::Hill => {}
+            EntityType::Bullet => {
+                self.bullets.remove(id);
+            }
         };
 
         if let Some(player) = self
@@ -132,6 +138,11 @@ impl World {
 
     fn spawn_bomb(&mut self, bomb: Bomb) -> Vec<GameOutput> {
         self.bombs.insert(bomb);
+        vec![]
+    }
+
+    fn spawn_bullet(&mut self, bullet: Bullet) -> Vec<GameOutput> {
+        self.bullets.insert(bullet);
         vec![]
     }
 }

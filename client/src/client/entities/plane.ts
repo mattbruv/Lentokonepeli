@@ -118,7 +118,7 @@ export class Plane implements Entity<PlaneProperties>, Followable {
     },
 
     client_fuel: () => {
-      console.log("fuel", this.props.client_fuel)
+      //console.log("fuel", this.props.client_fuel)
     },
 
     total_bombs: () => {

@@ -19,6 +19,7 @@ use crate::{
 
 use super::{
     bomb::{self, Bomb},
+    bullet::Bullet,
     entity::Entity,
     man::Man,
     player::ControllingEntity,
@@ -80,6 +81,8 @@ pub struct Plane {
     // Random shit
     last_flip_ms: i32,
     flip_delay_ms: i32,
+
+    last_shot_ms: i32,
 
     last_bomb_ms: i32,
     bomb_delay_ms: i32,
@@ -143,6 +146,8 @@ impl Plane {
 
             last_bomb_ms: 0,
             bomb_delay_ms: 500,
+
+            last_shot_ms: 0,
 
             last_motor_on_ms: 0,
             motor_on_delay_ms: 500,
@@ -210,6 +215,7 @@ impl Plane {
         // Add a tick to our counters
         self.last_bomb_ms += 10;
         self.last_flip_ms += 10;
+        self.last_shot_ms += 10;
         self.last_motor_on_ms += 10;
 
         match self.mode.get() {
@@ -426,6 +432,22 @@ impl Plane {
             if keys.space || is_out_of_bounds {
                 self.spawn_man_action(my_id, actions);
                 self.mode.set(PlaneMode::Falling);
+            }
+
+            // Shoot bullets
+            if keys.enter && self.last_shot_ms >= self.get_shoot_delay() {
+                self.last_shot_ms = 0;
+
+                let x = *self.client_x.get();
+                let y = *self.client_y.get();
+
+                actions.push(Action::SpawnBullet(Bullet::new(
+                    x,
+                    y,
+                    self.angle,
+                    self.speed / 100.0,
+                )));
+                //
             }
 
             // Bombs away
