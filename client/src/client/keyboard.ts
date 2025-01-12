@@ -8,6 +8,7 @@ const keyMap: Record<string, keyof PlayerKeyboard> = {
   " ": "space",
   Enter: "enter",
   Shift: "shift",
+  Control: "ctrl"
 };
 
 type keyboardChangeCallback = (keyboard: PlayerKeyboard) => void;
@@ -21,6 +22,7 @@ export class GameKeyboard {
     shift: false,
     space: false,
     enter: false,
+    ctrl: false,
   };
 
   private onKeyChange?: keyboardChangeCallback;

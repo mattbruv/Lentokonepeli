@@ -42,6 +42,7 @@ pub struct PlayerKeyboard {
     pub shift: bool,
     pub space: bool,
     pub enter: bool,
+    pub ctrl: bool,
 }
 
 impl PlayerKeyboard {
@@ -54,6 +55,7 @@ impl PlayerKeyboard {
             shift: false,
             space: false,
             enter: false,
+            ctrl: false,
         }
     }
 }
@@ -85,6 +87,9 @@ impl NetworkedBytes for PlayerKeyboard {
         if self.enter {
             byte |= 1 << 6;
         }
+        if self.ctrl {
+            byte |= 1 << 7;
+        }
 
         bytes.push(byte);
 
@@ -102,6 +107,7 @@ impl NetworkedBytes for PlayerKeyboard {
             shift: byte & (1 << 4) != 0,
             space: byte & (1 << 5) != 0,
             enter: byte & (1 << 6) != 0,
+            ctrl: byte & (1 << 7) != 0,
         };
 
         (slice, keyboard)

@@ -466,7 +466,7 @@ impl Plane {
 
         if let Some(keys) = keyboard {
             // Shoot bullets
-            if keys.enter && self.last_shot_ms >= self.get_shoot_delay() {
+            if keys.ctrl && self.last_shot_ms >= self.get_shoot_delay() {
                 self.last_shot_ms = 0;
 
                 let x = *self.client_x.get();
