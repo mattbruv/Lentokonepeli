@@ -434,8 +434,6 @@ impl Plane {
                 self.last_bomb_ms = 0;
                 self.total_bombs.set(self.total_bombs.get() - 1);
 
-                let image = self.get_image();
-
                 let x = *self.client_x.get();
                 let y = *self.client_y.get();
                 actions.push(Action::SpawnBomb(Bomb::new(
