@@ -3,7 +3,6 @@ use std::f64::consts::PI;
 use dogfight_macros::{EnumBytes, Networked};
 use image::RgbaImage;
 use serde::Deserialize;
-use web_sys::wasm_bindgen::convert::IntoWasmAbi;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
@@ -12,7 +11,7 @@ use crate::{
         PLANE9,
     },
     input::PlayerKeyboard,
-    math::radians_to_direction,
+    math::{get_client_percentage, radians_to_direction},
     network::{property::Property, EntityProperties, NetworkedEntity},
     tick_actions::{Action, RemoveData},
     world::RESOLUTION,
@@ -29,7 +28,7 @@ use super::{
 };
 
 const MAX_Y: i16 = -570;
-const SKY_HEIGHT: i16 = 500;
+// const SKY_HEIGHT: i16 = 500;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS, EnumBytes)]
 #[ts(export)]
@@ -177,6 +176,7 @@ impl Plane {
 
         plane.park(runway);
 
+        plane.set_fuel(plane.get_max_fuel());
         plane.motor_on.set(true);
         plane.set_mode(PlaneMode::TakingOff);
 
@@ -478,10 +478,18 @@ impl Plane {
                 self.motor_on.set(false);
             } else {
                 self.fuel_counter = 100;
-                // TODO: extract this into a function so we can update client fuel
-                self.total_fuel -= 1;
+                self.set_fuel(self.total_fuel - 1);
             }
         }
+    }
+
+    pub fn set_fuel(&mut self, fuel_amount: i32) -> () {
+        //        web_sys::console::log_1(
+        //            &format!("fuel: {}, max: {}", fuel_amount, self.get_max_fuel()).into(),
+        //        );
+        self.total_fuel = fuel_amount;
+        self.client_fuel
+            .set(get_client_percentage(self.total_fuel, self.get_max_fuel()));
     }
 
     fn spawn_man_action(&mut self, my_id: &u16, actions: &mut Vec<Action>) {
