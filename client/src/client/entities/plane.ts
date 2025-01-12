@@ -15,6 +15,7 @@ const PLANE_TEXTURE_ID: Record<PlaneType, number> = {
   Sopwith: 9,
 }
 
+const GRAY_SMOKE_INTERVAL_MS = 100;
 const GRAY_SMOKE_LIFETIME_MS = 300;
 
 export class Plane implements Entity<PlaneProperties>, Followable {
@@ -69,7 +70,7 @@ export class Plane implements Entity<PlaneProperties>, Followable {
       setTimeout(() => {
         this.container.removeChild(smoke)
       }, GRAY_SMOKE_LIFETIME_MS)
-    }, 100)
+    }, GRAY_SMOKE_INTERVAL_MS)
   }
 
   public getContainer(): PIXI.Container {
