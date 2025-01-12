@@ -18,7 +18,7 @@ use crate::{
 };
 
 use super::{
-    bomb::Bomb,
+    bomb::{self, Bomb},
     entity::Entity,
     man::Man,
     player::ControllingEntity,
@@ -70,6 +70,7 @@ pub struct Plane {
     client_x: Property<i16>,
     client_y: Property<i16>,
     client_fuel: Property<u8>,
+    total_bombs: Property<u8>,
     plane_type: Property<PlaneType>,
     direction: Property<u8>,
     mode: Property<PlaneMode>,
@@ -128,6 +129,7 @@ impl Plane {
             client_y: Property::new(0),
             client_fuel: Property::new(0),
             direction: Property::new(0),
+            total_bombs: Property::new(0),
             mode: Property::new(PlaneMode::Flying),
             motor_on: Property::new(true),
             flipped: Property::new(false),
@@ -177,6 +179,7 @@ impl Plane {
         plane.park(runway);
 
         plane.set_fuel(plane.get_max_fuel());
+        plane.total_bombs.set(plane.get_max_bombs());
         plane.motor_on.set(true);
         plane.set_mode(PlaneMode::TakingOff);
 
@@ -410,7 +413,7 @@ impl Plane {
             }
 
             // PLANE_MOTOR = 40 = down
-            if keys.down && self.last_motor_on_ms > self.motor_on_delay_ms && self.total_fuel > 0 {
+            if keys.down && self.last_motor_on_ms >= self.motor_on_delay_ms && self.total_fuel > 0 {
                 self.motor_on.set(!self.motor_on.get());
                 self.last_motor_on_ms = 0;
             }
@@ -426,7 +429,11 @@ impl Plane {
             }
 
             // Bombs away
-            if keys.shift {
+            if keys.shift && self.last_bomb_ms >= self.bomb_delay_ms && *self.total_bombs.get() > 0
+            {
+                self.last_bomb_ms = 0;
+                self.total_bombs.set(self.total_bombs.get() - 1);
+
                 let x = self.x / RESOLUTION;
                 let y = self.y / RESOLUTION;
                 actions.push(Action::SpawnBomb(Bomb::new(
@@ -696,7 +703,7 @@ impl Plane {
         }
     }
 
-    fn get_max_bombs(&self) -> i32 {
+    fn get_max_bombs(&self) -> u8 {
         match self.plane_type.get() {
             PlaneType::Albatros => 0,
             PlaneType::Junkers => 5,
