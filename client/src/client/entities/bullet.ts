@@ -3,7 +3,15 @@ import * as PIXI from "pixi.js";
 import { Howl } from "howler"
 import { BulletProperties } from "dogfight-types/BulletProperties";
 import { directionToRadians } from "../helpers";
+import { DrawLayer } from "../constants";
 
+const COLORS: string[] = [
+  "#FFFFFF",
+  "#FFFFFF",
+  "#FFFFFF",
+  "#FFFFFF",
+  "#FFFFFF",
+]
 
 export class Bullet implements Entity<BulletProperties> {
 
@@ -26,12 +34,17 @@ export class Bullet implements Entity<BulletProperties> {
   constructor() {
     this.container = new PIXI.Container();
     this.bulletGraphics = new PIXI.Graphics();
-    this.bulletGraphics.lineStyle({
-      color: "black"
-    })
+
+    this.bulletGraphics.clear()
     this.bulletGraphics.beginFill()
+    /*
+    this.bulletGraphics.lineStyle({
+      color: "red"
+    })
     this.bulletGraphics.drawRect(0, 0, 4, 4)
     this.bulletGraphics.endFill()
+    */
+
     //this.bulletGraphics.anchor.set(0.5, 0.5)
     //this.bulletGraphics.position.set(texture.width / 2, texture.height / 2)
     this.container.addChild(this.bulletGraphics)
@@ -42,6 +55,8 @@ export class Bullet implements Entity<BulletProperties> {
     })
 
     this.sound.play()
+
+    this.container.zIndex = DrawLayer.Bullet
 
     this.bullet_interval = window.setInterval(() => {
       if (this.isGameRunning) {
@@ -57,6 +72,20 @@ export class Bullet implements Entity<BulletProperties> {
 
     this.props.client_x += this.props.speed / 25.0 * Math.cos(angle)
     this.props.client_y += this.props.speed / 25.0 * Math.sin(angle)
+
+    let i = Math.floor(COLORS.length * this.age / 175)
+    i = i >= COLORS.length ? COLORS.length - 1 : i
+
+    const color = COLORS[i]
+    console.log(color)
+
+    this.bulletGraphics.clear()
+    this.bulletGraphics.beginFill()
+    this.bulletGraphics.lineStyle({
+      color: "red"
+    })
+    this.bulletGraphics.drawRect(0, 0, this.age, this.age)
+    this.bulletGraphics.endFill()
 
     this.updateCallbacks.client_x()
     this.updateCallbacks.client_y()
