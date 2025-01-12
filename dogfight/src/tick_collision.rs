@@ -51,6 +51,9 @@ impl World {
         let man_actions = self.collide_men();
         output.extend(self.process_actions(man_actions));
 
+        let bullet_actions = self.collide_bullets();
+        output.extend(self.process_actions(bullet_actions));
+
         let bomb_actions = self.collide_bombs();
         output.extend(self.process_actions(bomb_actions));
 
@@ -188,6 +191,57 @@ impl World {
                         bomb.get_y(),
                     );
                     continue 'bombs;
+                }
+            }
+        }
+
+        actions
+    }
+
+    fn collide_bullets(&mut self) -> Vec<Action> {
+        let mut actions = vec![];
+
+        'bullets: for (bullet_id, bullet) in self.bullets.get_map_mut() {
+            for (_, ground) in self.grounds.get_map_mut() {
+                if bullet.check_collision(ground) {
+                    actions.push(Action::RemoveEntity(RemoveData {
+                        ent_id: *bullet_id,
+                        ent_type: bullet.get_type(),
+                    }));
+                    continue 'bullets;
+                }
+            }
+
+            for (_, coast) in self.coasts.get_map_mut() {
+                if bullet.check_collision(coast) {
+                    actions.push(Action::RemoveEntity(RemoveData {
+                        ent_id: *bullet_id,
+                        ent_type: bullet.get_type(),
+                    }));
+                    continue 'bullets;
+                }
+            }
+
+            for (_, water) in self.waters.get_map_mut() {
+                if bullet.check_collision(water) {
+                    actions.push(Action::RemoveEntity(RemoveData {
+                        ent_id: *bullet_id,
+                        ent_type: bullet.get_type(),
+                    }));
+                    continue 'bullets;
+                }
+            }
+
+            for (_, runway) in self.runways.get_map_mut() {
+                if bullet.check_collision(runway) {
+                    blow_up(
+                        &mut actions,
+                        bullet_id,
+                        bullet.get_type(),
+                        bullet.get_x(),
+                        bullet.get_y(),
+                    );
+                    continue 'bullets;
                 }
             }
         }

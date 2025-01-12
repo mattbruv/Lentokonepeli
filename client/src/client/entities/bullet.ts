@@ -26,7 +26,7 @@ export class Bullet implements Entity<BulletProperties> {
       color: "black"
     })
     this.bulletGraphics.beginFill()
-    this.bulletGraphics.drawRect(0, 0, 2, 2)
+    this.bulletGraphics.drawRect(0, 0, 4, 4)
     this.bulletGraphics.endFill()
     //this.bulletGraphics.anchor.set(0.5, 0.5)
     //this.bulletGraphics.position.set(texture.width / 2, texture.height / 2)

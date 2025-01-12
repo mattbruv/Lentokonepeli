@@ -19,6 +19,7 @@ pub struct Bullet {
     client_y: Property<i16>,
     direction: Property<u8>,
     speed: Property<u8>,
+    angle: f64,
     age: i32,
 }
 
@@ -32,6 +33,7 @@ impl Bullet {
             client_y: Property::new(y),
             direction: Property::new(dir),
             speed: Property::new(((speed + 4.0) * 25.0) as u8),
+            angle: angle,
             age: 0,
         };
 
@@ -54,6 +56,8 @@ impl Bullet {
 
         self.age += 1;
 
+        self.move_bullet();
+
         if self.age == 175 {
             actions.push(Action::RemoveEntity(RemoveData {
                 ent_id: *my_id,
@@ -62,6 +66,13 @@ impl Bullet {
         }
 
         actions
+    }
+
+    pub fn move_bullet(&mut self) -> () {
+        self.x += (100.0 * (*self.speed.get() as f64) / 25.0 * self.angle.cos()) as i32;
+        self.y += (100.0 * (*self.speed.get() as f64) / 25.0 * self.angle.sin()) as i32;
+        //self.client_x.set((self.x / RESOLUTION) as i16);
+        //self.client_y.set((self.y / RESOLUTION) as i16);
     }
 
     pub fn get_damage_factor(&self) -> f64 {
@@ -76,11 +87,11 @@ impl Bullet {
     }
 
     pub fn get_x(&self) -> i16 {
-        *self.client_x.get()
+        (self.x / RESOLUTION) as i16
     }
 
     pub fn get_y(&self) -> i16 {
-        *self.client_y.get()
+        (self.y / RESOLUTION) as i16
     }
 }
 
