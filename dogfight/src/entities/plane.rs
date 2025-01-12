@@ -434,12 +434,14 @@ impl Plane {
                 self.last_bomb_ms = 0;
                 self.total_bombs.set(self.total_bombs.get() - 1);
 
-                let x = self.x / RESOLUTION;
-                let y = self.y / RESOLUTION;
+                let image = self.get_image();
+
+                let x = *self.client_x.get();
+                let y = *self.client_y.get();
                 actions.push(Action::SpawnBomb(Bomb::new(
-                    x as i16,
-                    y as i16,
-                    *self.direction.get(),
+                    x,
+                    y,
+                    self.angle,
                     self.speed / 100.0,
                 )));
                 //

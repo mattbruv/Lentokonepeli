@@ -64,7 +64,7 @@ impl World {
 
     fn spawn_debug_bomb(&mut self) -> () {
         for i in 0..2 {
-            let debug_bomb = Bomb::new(-2490 + i * 50, -300, 0, 0.0);
+            let debug_bomb = Bomb::new(-2490 + i * 50, -300, 0.0, 0.0);
             self.bombs.insert(debug_bomb);
         }
     }

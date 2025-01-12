@@ -29,17 +29,17 @@ pub struct Bomb {
 }
 
 impl Bomb {
-    pub fn new(x: i16, y: i16, direction: u8, speed: f64) -> Bomb {
-        let angle_radians = TAU * (direction as f64) / (DIRECTIONS as f64);
+    pub fn new(x: i16, y: i16, angle: f64, speed: f64) -> Bomb {
+        let dir = radians_to_direction(angle);
         Bomb {
             x: (x as i32) * RESOLUTION,
             y: (y as i32) * RESOLUTION,
             client_x: Property::new(x),
             client_y: Property::new(y),
-            direction: Property::new(direction),
-            angle: angle_radians,
-            x_speed: angle_radians.cos() * speed * (RESOLUTION as f64),
-            y_speed: angle_radians.cos() * speed * (RESOLUTION as f64),
+            direction: Property::new(dir),
+            angle: angle,
+            x_speed: angle.cos() * speed * 100.0,
+            y_speed: angle.sin() * speed * 100.0,
 
             image: get_rotateable_image(BOMB),
             rotated_image: get_rotateable_image(BOMB),
