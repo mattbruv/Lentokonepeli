@@ -44,13 +44,6 @@ impl Bullet {
         bullet
     }
 
-    pub fn set_position(&mut self, x: i16, y: i16) {
-        self.x = x as i32 * RESOLUTION;
-        self.y = y as i32 * RESOLUTION;
-        self.client_x.set(x);
-        self.client_y.set(y);
-    }
-
     pub fn tick(&mut self, my_id: &EntityId) -> Vec<Action> {
         let mut actions = vec![];
 
