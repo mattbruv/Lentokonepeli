@@ -3,13 +3,13 @@ use image::RgbaImage;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
-    images::{get_image, get_rotateable_image, rotate_image, BOMB},
     math::radians_to_direction,
     network::{property::Property, EntityProperties, NetworkedEntity},
-    world::{DIRECTIONS, RESOLUTION},
+    tick_actions::{Action, RemoveData},
+    world::RESOLUTION,
 };
 
-use super::{entity::Entity, types::EntityType};
+use super::{entity::Entity, types::EntityType, EntityId};
 
 #[derive(Networked)]
 pub struct Bullet {
@@ -19,6 +19,7 @@ pub struct Bullet {
     client_y: Property<i16>,
     direction: Property<u8>,
     speed: Property<u8>,
+    age: i32,
 }
 
 impl Bullet {
@@ -31,6 +32,7 @@ impl Bullet {
             client_y: Property::new(y),
             direction: Property::new(dir),
             speed: Property::new(((speed + 4.0) * 25.0) as u8),
+            age: 0,
         };
 
         if *bullet.speed.get() > 200 {
@@ -47,21 +49,30 @@ impl Bullet {
         self.client_y.set(y);
     }
 
-    pub fn tick(&mut self) {
-        /*
-        self.x += ((RESOLUTION as f64) * self.x_speed / (RESOLUTION as f64)) as i32;
-        self.y += ((RESOLUTION as f64) * self.y_speed / (RESOLUTION as f64)) as i32;
+    pub fn tick(&mut self, my_id: &EntityId) -> Vec<Action> {
+        let mut actions = vec![];
 
-        self.client_x.set((self.x / RESOLUTION) as i16);
-        self.client_y.set((self.y / RESOLUTION) as i16);
+        self.age += 1;
 
-        self.x_speed -= self.x_speed * 0.01;
-        self.y_speed += 3.3333333333333335;
+        if self.age == 175 {
+            actions.push(Action::RemoveEntity(RemoveData {
+                ent_id: *my_id,
+                ent_type: self.get_type(),
+            }));
+        }
 
-        // update angle/direction
-        self.angle = self.y_speed.atan2(self.x_speed);
-        self.direction.set(radians_to_direction(self.angle));
-        */
+        actions
+    }
+
+    pub fn get_damage_factor(&self) -> f64 {
+        if self.age > 175 {
+            return 0.0;
+        }
+
+        let mut d = self.age as f64 / 175.0;
+        d *= d;
+
+        return 1.0 - d;
     }
 
     pub fn get_x(&self) -> i16 {
@@ -75,7 +86,7 @@ impl Bullet {
 
 impl Entity for Bullet {
     fn get_type(&self) -> EntityType {
-        EntityType::Bomb
+        EntityType::Bullet
     }
 }
 

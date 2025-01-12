@@ -75,6 +75,9 @@ impl World {
             EntityType::Explosion => {
                 self.explosions.remove(id);
             }
+            EntityType::Bullet => {
+                self.bullets.remove(id);
+            }
             EntityType::WorldInfo => {}
             EntityType::BackgroundItem => {}
             EntityType::Ground => {}
@@ -84,9 +87,6 @@ impl World {
             EntityType::Water => {}
             EntityType::Bunker => {}
             EntityType::Hill => {}
-            EntityType::Bullet => {
-                self.bullets.remove(id);
-            }
         };
 
         if let Some(player) = self

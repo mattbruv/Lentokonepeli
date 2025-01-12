@@ -59,6 +59,11 @@ impl World {
             bomb.tick();
         }
 
+        // Tick bullets
+        for (bullet_id, bullet) in self.bullets.get_map_mut() {
+            actions.extend(bullet.tick(&bullet_id));
+        }
+
         // Tick Explosions
         for (explosion_id, explosion) in self.explosions.get_map_mut() {
             actions.extend(explosion.tick(*explosion_id));

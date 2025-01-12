@@ -1,13 +1,9 @@
-use std::io::SeekFrom;
-
 use rand::random;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 use crate::{
     entities::{
-        entity::Entity,
-        man::Man,
         plane::{Plane, PlaneType},
         player::{ControllingEntity, Player, PlayerState},
         types::{EntityType, Team},
