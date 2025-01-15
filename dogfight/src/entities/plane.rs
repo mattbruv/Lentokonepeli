@@ -71,6 +71,8 @@ pub struct Plane {
     client_x: Property<i16>,
     client_y: Property<i16>,
     client_fuel: Property<u8>,
+    client_ammo: Property<u8>,
+    client_health: Property<u8>,
     total_bombs: Property<u8>,
     plane_type: Property<PlaneType>,
     direction: Property<u8>,
@@ -92,6 +94,9 @@ pub struct Plane {
 
     total_fuel: i32,
     fuel_counter: i32,
+
+    total_ammo: i32,
+    total_health: i32,
 
     takeoff_counter: i32,
     dodge_counter: i32,
@@ -131,6 +136,8 @@ impl Plane {
             client_x: Property::new(0),
             client_y: Property::new(0),
             client_fuel: Property::new(0),
+            client_ammo: Property::new(0),
+            client_health: Property::new(0),
             direction: Property::new(0),
             total_bombs: Property::new(0),
             mode: Property::new(PlaneMode::Flying),
@@ -139,7 +146,10 @@ impl Plane {
 
             // random shit
             fuel_counter: 100,
-            total_fuel: 500,
+            total_fuel: 0,
+
+            total_ammo: 0,
+            total_health: 0,
 
             last_flip_ms: 0,
             flip_delay_ms: 200,
@@ -184,6 +194,8 @@ impl Plane {
         plane.park(runway);
 
         plane.set_fuel(plane.get_max_fuel());
+        plane.set_ammo(plane.get_max_ammo());
+        plane.set_health(plane.get_max_health());
         plane.total_bombs.set(plane.get_max_bombs());
         plane.motor_on.set(true);
         plane.set_mode(PlaneMode::TakingOff);
@@ -466,8 +478,9 @@ impl Plane {
 
         if let Some(keys) = keyboard {
             // Shoot bullets
-            if keys.ctrl && self.last_shot_ms >= self.get_shoot_delay() {
+            if keys.ctrl && self.last_shot_ms >= self.get_shoot_delay() && self.total_ammo > 0 {
                 self.last_shot_ms = 0;
+                self.total_ammo -= 1;
 
                 let x = *self.client_x.get();
                 let y = *self.client_y.get();
@@ -483,6 +496,7 @@ impl Plane {
                 i3 = (int)(this.x + this.w / 2 * 100 + Math.cos(d3) * (this.w / 2 + 2) * 100.0D) / 100;
                 i4 = (int)(this.y + this.h / 2 * 100 + Math.sin(d3) * (this.h / 2 + 2) * 100.0D) / 100;
                 */
+                self.set_ammo(self.total_ammo - 1);
 
                 actions.push(Action::SpawnBullet(Bullet::new(
                     i3,
@@ -528,12 +542,33 @@ impl Plane {
     }
 
     pub fn set_fuel(&mut self, fuel_amount: i32) -> () {
-        //        web_sys::console::log_1(
-        //            &format!("fuel: {}, max: {}", fuel_amount, self.get_max_fuel()).into(),
-        //        );
         self.total_fuel = fuel_amount;
         self.client_fuel
             .set(get_client_percentage(self.total_fuel, self.get_max_fuel()));
+    }
+
+    pub fn set_ammo(&mut self, ammo_amount: i32) -> () {
+        self.total_ammo = ammo_amount;
+        self.client_ammo
+            .set(get_client_percentage(self.total_ammo, self.get_max_ammo()));
+    }
+
+    pub fn subtract_health(&mut self, amount: i32) -> () {
+        let new_health = self.total_health - amount;
+        self.set_health(new_health);
+    }
+
+    pub fn set_health(&mut self, health_amount: i32) -> () {
+        self.total_health = health_amount;
+
+        if self.total_health < 0 {
+            self.total_health = 0;
+        }
+
+        self.client_health.set(get_client_percentage(
+            self.total_health,
+            self.get_max_health(),
+        ));
     }
 
     fn spawn_man_action(&mut self, my_id: &u16, actions: &mut Vec<Action>) {

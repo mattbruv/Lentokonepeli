@@ -37,7 +37,9 @@ export class Plane implements Entity<PlaneProperties>, Followable {
     motor_on: true,
     plane_type: "Albatros",
     direction: 0,
-    total_bombs: 0
+    total_bombs: 0,
+    client_ammo: 0,
+    client_health: 0
   };
 
   constructor() {
@@ -82,7 +84,9 @@ export class Plane implements Entity<PlaneProperties>, Followable {
   public getStats(): Stats {
     return {
       bombs: this.props.total_bombs,
-      fuel: this.props.client_fuel
+      fuel: this.props.client_fuel,
+      ammo: this.props.client_ammo,
+      health: this.props.client_health
     }
   };
 
@@ -124,7 +128,8 @@ export class Plane implements Entity<PlaneProperties>, Followable {
     client_y: () => {
       this.planeSprite.position.y = this.props.client_y
     },
-
+    client_ammo: () => { },
+    client_health: () => { },
     client_fuel: () => {
       //console.log("fuel", this.props.client_fuel)
     },
