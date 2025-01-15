@@ -19,6 +19,8 @@ const PLANE_TEXTURE_ID: Record<PlaneType, number> = {
 const GRAY_SMOKE_INTERVAL_MS = 100;
 const GRAY_SMOKE_LIFETIME_MS = 300;
 
+const BLACK_SMOKE_LIFETIME_MS = 300;
+
 export class Plane implements Entity<PlaneProperties>, Followable {
 
   private container: PIXI.Container;
@@ -26,6 +28,8 @@ export class Plane implements Entity<PlaneProperties>, Followable {
   private first_flip: boolean = true;
   private frame = 0;
   private animation_gray_smoke: number;
+  private dark_smoke_timeout: number;
+  private darkSmoke: PIXI.Container;
   private angle: number = 0;
 
   public props: Required<PlaneProperties> = {
@@ -46,9 +50,16 @@ export class Plane implements Entity<PlaneProperties>, Followable {
     this.container = new PIXI.Container();
     this.planeSprite = new PIXI.Sprite();
     this.planeSprite.anchor.set(0.5)
+    this.darkSmoke = new PIXI.Container();
+
     this.container.addChild(this.planeSprite)
+    this.container.addChild(this.darkSmoke)
 
     this.container.zIndex = DrawLayer.Plane;
+
+    this.dark_smoke_timeout = window.setTimeout(() => {
+      this.createDarkSmoke();
+    });
 
     this.animation_gray_smoke = window.setInterval(() => {
       if (!this.props.motor_on || this.props.mode !== "Flying") return;
@@ -75,6 +86,59 @@ export class Plane implements Entity<PlaneProperties>, Followable {
         this.container.removeChild(smoke)
       }, GRAY_SMOKE_LIFETIME_MS)
     }, GRAY_SMOKE_INTERVAL_MS)
+  }
+
+  private createDarkSmoke(): void {
+    const percentage = this.props.client_health / 255;
+
+    let smokeFrequency = 300;
+
+    if (percentage < 0.9) {
+      const smokeTex = Textures["smoke2.gif"]
+      const smoke = new PIXI.Sprite(smokeTex)
+      const smokePos = this.getSmokePosition(true)
+
+      smoke.anchor.set(0.5)
+      smoke.position.set(smokePos.x, smokePos.y)
+
+      this.darkSmoke.addChild(smoke)
+
+      if (percentage <= 0.66) {
+        smokeFrequency = 200;
+      }
+      if (percentage <= 0.33) {
+        smokeFrequency = 100;
+      }
+
+      window.setTimeout(() => {
+        this.darkSmoke.removeChild(smoke)
+      }, BLACK_SMOKE_LIFETIME_MS)
+    }
+
+    this.dark_smoke_timeout = window.setTimeout((): void => {
+      this.createDarkSmoke()
+    }, smokeFrequency)
+  }
+
+  private getSmokePosition(center: boolean): { x: number, y: number } {
+    // direction = 0 -> 256   2^8
+    const radians = directionToRadians(this.props.direction);
+    const halfWidth = Math.round(this.planeSprite.width / 2);
+    const offset = Math.round(halfWidth / 6);
+
+    const r = halfWidth + offset;
+    const theta = radians * -1;
+    const deltaX = r * Math.cos(theta);
+    const deltaY = r * Math.sin(theta);
+    let newX: number, newY: number;
+    if (center) {
+      newX = this.props.client_x;
+      newY = this.props.client_y;
+    } else {
+      newX = this.props.client_x - deltaX;
+      newY = this.props.client_y - deltaY;
+    }
+    return { x: newX, y: newY };
   }
 
   public getContainer(): PIXI.Container {
@@ -180,5 +244,6 @@ export class Plane implements Entity<PlaneProperties>, Followable {
 
   public destroy() {
     window.clearInterval(this.animation_gray_smoke)
+    window.clearTimeout(this.dark_smoke_timeout)
   }
 }
