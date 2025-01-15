@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import { Stats } from "../hud";
 
 type NoUndefined<T> = T extends undefined ? never : T;
 
@@ -13,6 +14,7 @@ export type Point = {
 
 export interface Followable {
   getCenter: () => Point;
+  getStats: () => Stats;
 }
 
 export function isFollowable(object: {}): object is Followable {

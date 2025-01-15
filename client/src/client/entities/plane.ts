@@ -5,6 +5,7 @@ import { PlaneType } from "dogfight-types/PlaneType";
 import { Textures } from "../textures";
 import { directionToRadians } from "../helpers";
 import { DrawLayer } from "../constants";
+import { Stats } from "../hud";
 
 const PLANE_TEXTURE_ID: Record<PlaneType, number> = {
   Albatros: 4,
@@ -77,6 +78,12 @@ export class Plane implements Entity<PlaneProperties>, Followable {
   public getContainer(): PIXI.Container {
     return this.container
   }
+
+  public getStats(): Stats {
+    return {
+      bombs: this.props.total_bombs
+    }
+  };
 
   public getCenter(): Point {
     return {

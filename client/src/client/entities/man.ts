@@ -3,6 +3,7 @@ import * as PIXI from "pixi.js";
 import { Textures } from "../textures";
 import { DrawLayer } from "../constants";
 import { ManProperties } from "dogfight-types/ManProperties";
+import { Stats } from "../hud";
 
 export class Man implements Entity<ManProperties>, Followable {
 
@@ -48,6 +49,15 @@ export class Man implements Entity<ManProperties>, Followable {
   public getContainer(): PIXI.Container {
     return this.container;
   }
+
+  public getStats(): Stats {
+    return {
+      health: 255,
+      ammo: 255,
+      bombs: 1
+    }
+  }
+
   public getCenter(): Point {
     return {
       x: this.props.client_x ?? 0,

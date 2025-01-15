@@ -4,6 +4,7 @@ import { Textures } from "../textures";
 import { Facing } from "dogfight-types/Facing";
 import { DrawLayer, TERRAIN_WATER_COLOR } from "../constants";
 import { RunwayProperties } from "dogfight-types/RunwayProperties";
+import { Stats } from "../hud";
 
 export class Runway implements Entity<RunwayProperties>, Followable {
 
@@ -57,6 +58,11 @@ export class Runway implements Entity<RunwayProperties>, Followable {
 
     this.container.zIndex = DrawLayer.Runway;
   }
+
+  public getStats(): Stats {
+    return {}
+  }
+
   public getCenter(): Point {
     const halfWidth = this.runwaySprite.texture.width / 2;
     const halfHeight = this.runwaySprite.texture.height / 2;

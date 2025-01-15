@@ -442,6 +442,7 @@ export class DogfightClient {
               */
               this.debugCoords.text = `${pos.x}, ${pos.y}`;
               this.centerCamera(pos.x, pos.y);
+              this.gameHUD.updateStats(entity.getStats())
             }
           }
         }
