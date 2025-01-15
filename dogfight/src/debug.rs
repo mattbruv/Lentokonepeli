@@ -172,3 +172,7 @@ impl World {
         serde_json::to_string(&debug_info).unwrap()
     }
 }
+
+pub fn log(message: String) -> () {
+    web_sys::console::log_1(&format!("{}", message).into());
+}

@@ -70,7 +70,7 @@ impl World {
                 self.planes.remove(id);
             }
             EntityType::Bomb => {
-                self.bullets.remove(id);
+                self.bombs.remove(id);
             }
             EntityType::Explosion => {
                 self.explosions.remove(id);
