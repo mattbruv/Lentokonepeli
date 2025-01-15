@@ -61,16 +61,17 @@ export class GameHUD {
     this.stats.beginFill("white")
 
     // draw health bar
-    const health = stats.health ?? 0;
-    this.stats.drawRect(290, 44, 74 * health / 255, 12)
+    const health = (stats.health ?? 0) / 255;
+    this.stats.drawRect(290, 44, 74 * health, 12)
 
     // draw fuel
-    const fuel = stats.fuel ?? 0;
-    this.stats.drawRect(290, 65, 74 * fuel / 255, 12)
+    const fuel = (stats.fuel ?? 0) / 255;
+    //console.log(stats.fuel, fuel)
+    this.stats.drawRect(290, 65, 74 * fuel, 12)
 
     // draw ammo
-    const ammo = stats.ammo ?? 0;
-    this.stats.drawRect(290, 86, 74 * ammo / 255, 12)
+    const ammo = (stats.ammo ?? 0) / 255;
+    this.stats.drawRect(290, 86, 74 * ammo, 12)
 
 
     //this.stats.beginFill("yellow")

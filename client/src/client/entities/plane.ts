@@ -81,7 +81,8 @@ export class Plane implements Entity<PlaneProperties>, Followable {
 
   public getStats(): Stats {
     return {
-      bombs: this.props.total_bombs
+      bombs: this.props.total_bombs,
+      fuel: this.props.client_fuel
     }
   };
 
