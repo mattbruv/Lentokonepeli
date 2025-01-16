@@ -60,6 +60,9 @@ impl World {
         let plane_actions = self.collide_planes();
         output.extend(self.process_actions(plane_actions));
 
+        let explosion_actions = self.collide_explosions();
+        output.extend(self.process_actions(explosion_actions));
+
         output
     }
 
@@ -114,17 +117,6 @@ impl World {
             for (runway_id, runway) in self.runways.get_map_mut() {
                 //
                 if man.check_collision(runway) {
-                    actions.push(Action::RemoveEntity(RemoveData {
-                        ent_id: *man_id,
-                        ent_type: man.get_type(),
-                    }));
-                    // web_sys::console::log_1(&format!("man collide runway!").into());
-                    continue 'men;
-                }
-            }
-
-            for (_, explosion) in self.explosions.get_map_mut() {
-                if man.check_collision(explosion) {
                     actions.push(Action::RemoveEntity(RemoveData {
                         ent_id: *man_id,
                         ent_type: man.get_type(),
@@ -249,6 +241,44 @@ impl World {
         actions
     }
 
+    fn collide_explosions(&mut self) -> Vec<Action> {
+        let mut actions = vec![];
+        //
+
+        '_explosions: for (_, explosion) in self.explosions.get_map_mut() {
+            for (plane_id, plane) in self.planes.get_map_mut() {
+                if explosion.check_collision(plane) {
+                    blow_up(
+                        &mut actions,
+                        plane_id,
+                        plane.get_type(),
+                        plane.get_client_x(),
+                        plane.get_client_y(),
+                    );
+                }
+            }
+
+            for (man_id, man) in self.men.get_map_mut() {
+                if explosion.check_collision(man) {
+                    actions.push(Action::RemoveEntity(RemoveData {
+                        ent_id: *man_id,
+                        ent_type: man.get_type(),
+                    }));
+                }
+            }
+
+            for (_, runway) in self.runways.get_map_mut() {
+                if explosion.check_collision(runway) {
+                    // damage runway
+                    // TODO: check for team
+                    runway.set_health(0);
+                }
+            }
+        }
+
+        actions
+    }
+
     fn collide_planes(&mut self) -> Vec<Action> {
         let mut actions = vec![];
 
@@ -330,20 +360,6 @@ impl World {
                             plane.get_client_y(),
                         );
                     }
-                    continue 'planes;
-                }
-            }
-
-            for (_, explosion) in self.explosions.get_map_mut() {
-                if plane.check_collision(explosion) {
-                    blow_up(
-                        &mut actions,
-                        plane_id,
-                        plane.get_type(),
-                        plane.get_client_x(),
-                        plane.get_client_y(),
-                    );
-                    // web_sys::console::log_1(&format!("man collide runway!").into());
                     continue 'planes;
                 }
             }

@@ -4,7 +4,9 @@ use image::RgbaImage;
 use crate::{
     collision::{BoundingBox, SolidEntity},
     images::{get_image, RUNWAY, RUNWAY2},
+    math::get_client_percentage,
     network::{property::*, EntityProperties, NetworkedEntity},
+    tick_actions::Action,
 };
 
 use super::{
@@ -18,6 +20,10 @@ pub struct Runway {
     facing: Property<Facing>,
     client_x: Property<i16>,
     client_y: Property<i16>,
+    client_health: Property<u8>,
+
+    total_health: i32,
+    health_timer: i32,
 
     image_runway: RgbaImage,
     image_runway2: RgbaImage,
@@ -25,14 +31,57 @@ pub struct Runway {
 
 impl Runway {
     pub fn new(team: Team, facing: Facing, x: i16, y: i16) -> Self {
-        Runway {
+        let mut runway = Runway {
             team: Property::new(team),
             facing: Property::new(facing),
             client_x: Property::new(x),
             client_y: Property::new(y),
+            client_health: Property::new(0),
+            total_health: 0,
+            health_timer: 0,
             image_runway: get_image(RUNWAY),
             image_runway2: get_image(RUNWAY2),
+        };
+
+        runway.set_health(runway.get_max_health());
+
+        runway
+    }
+
+    pub fn tick(&mut self) -> () {
+        if self.total_health > 0 && self.total_health < self.get_max_health() {
+            self.health_timer = (self.health_timer + 1) % 50;
+
+            if self.health_timer == 0 {
+                self.set_health(self.total_health + 1);
+            }
         }
+    }
+
+    pub fn subtract_health(&mut self, amount: i32) -> () {
+        let new_health = self.total_health - amount;
+        self.set_health(new_health);
+    }
+
+    pub fn is_alive(&self) -> bool {
+        self.total_health > 0
+    }
+
+    pub fn set_health(&mut self, health_amount: i32) -> () {
+        self.total_health = health_amount;
+
+        if self.total_health < 0 {
+            self.total_health = 0;
+        }
+
+        self.client_health.set(get_client_percentage(
+            self.total_health,
+            self.get_max_health(),
+        ));
+    }
+
+    fn get_max_health(&self) -> i32 {
+        1530
     }
 
     pub fn get_team(&self) -> &Team {

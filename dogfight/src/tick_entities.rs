@@ -69,6 +69,11 @@ impl World {
             actions.extend(explosion.tick(*explosion_id));
         }
 
+        // Tick Runways
+        for (_, runway) in self.runways.get_map_mut() {
+            runway.tick();
+        }
+
         // Tick Planes
         for (plane_id, plane) in self.planes.get_map_mut() {
             let keyboard: Option<&PlayerKeyboard> = match self
