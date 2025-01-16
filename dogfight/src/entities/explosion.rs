@@ -132,4 +132,8 @@ impl SolidEntity for Explosion {
     }
 
     fn do_rotate_collision_image(&mut self) -> () {}
+
+    fn is_alive(&self) -> bool {
+        true
+    }
 }

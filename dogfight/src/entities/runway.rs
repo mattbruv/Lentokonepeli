@@ -63,10 +63,6 @@ impl Runway {
         self.set_health(new_health);
     }
 
-    pub fn is_alive(&self) -> bool {
-        self.total_health > 0
-    }
-
     pub fn set_health(&mut self, health_amount: i32) -> () {
         self.total_health = health_amount;
 
@@ -177,4 +173,8 @@ impl SolidEntity for Runway {
     }
 
     fn do_rotate_collision_image(&mut self) -> () {}
+
+    fn is_alive(&self) -> bool {
+        self.total_health > 0
+    }
 }

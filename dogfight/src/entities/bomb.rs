@@ -100,4 +100,8 @@ impl SolidEntity for Bomb {
     fn do_rotate_collision_image(&mut self) -> () {
         self.rotated_image = rotate_image(&self.image, self.angle, false);
     }
+
+    fn is_alive(&self) -> bool {
+        true
+    }
 }

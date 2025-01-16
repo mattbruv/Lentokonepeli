@@ -59,11 +59,16 @@ impl BoundingBox {
 pub trait SolidEntity: Entity {
     //fn is_alive(&self) -> bool;
 
+    fn is_alive(&self) -> bool;
     fn get_collision_bounds(&self) -> BoundingBox;
     fn get_collision_image(&self) -> Option<&RgbaImage>;
     fn do_rotate_collision_image(&mut self) -> ();
 
     fn check_collision(&mut self, other: &mut dyn SolidEntity) -> bool {
+        if !other.is_alive() {
+            return false;
+        }
+
         let bounds_self = self.get_collision_bounds();
         let bounds_other = other.get_collision_bounds();
 

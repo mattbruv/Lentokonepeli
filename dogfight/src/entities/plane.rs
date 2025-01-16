@@ -914,4 +914,8 @@ impl SolidEntity for Plane {
 
         self.rotated_image = rotate_image(original_image, self.angle, flip);
     }
+
+    fn is_alive(&self) -> bool {
+        true
+    }
 }
