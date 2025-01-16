@@ -1,15 +1,8 @@
-use std::f64::consts::PI;
+use std::{any::Any, f64::consts::PI};
 
 use crate::{
     collision::SolidEntity,
-    entities::{
-        bomb::Bomb,
-        entity::Entity,
-        man::ManState,
-        plane::PlaneMode,
-        types::{EntityType, Facing},
-        EntityId,
-    },
+    entities::{entity::Entity, man::ManState, plane::PlaneMode, types::EntityType, EntityId},
     output::GameOutput,
     tick_actions::{Action, ExplosionData, RemoveData},
     world::World,
@@ -283,6 +276,15 @@ impl World {
         let mut actions = vec![];
 
         'planes: for (plane_id, plane) in self.planes.get_map_mut() {
+            for (man_id, man) in self.men.get_map_mut() {
+                if plane.check_collision(man) {
+                    actions.push(Action::RemoveEntity(RemoveData {
+                        ent_id: *man_id,
+                        ent_type: man.get_type(),
+                    }));
+                }
+            }
+
             for (ground_id, ground) in self.grounds.get_map_mut() {
                 if plane.check_collision(ground) {
                     blow_up(
