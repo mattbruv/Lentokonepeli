@@ -1,11 +1,12 @@
-import { Entity, EntityUpdateCallbacks, Followable, Point } from "./entity";
+import { Entity, EntityUpdateCallbacks, Followable, Point, RadarEnabled } from "./entity";
 import * as PIXI from "pixi.js";
 import { Textures } from "../textures";
 import { DrawLayer } from "../constants";
 import { ManProperties } from "dogfight-types/ManProperties";
 import { Stats } from "../hud";
+import { RadarObject, RadarObjectType } from "../radar";
 
-export class Man implements Entity<ManProperties>, Followable {
+export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
 
   public props: Required<ManProperties> = {
     client_x: 0,
@@ -102,6 +103,15 @@ export class Man implements Entity<ManProperties>, Followable {
     }
   }
   private updateTeam(): void { }
+
+  public getRadarInfo(): RadarObject {
+    return {
+      type: RadarObjectType.Man,
+      x: this.props.client_x,
+      y: this.props.client_y,
+      team: this.props.team
+    }
+  }
 
   private animateWalk(): void {
     if (

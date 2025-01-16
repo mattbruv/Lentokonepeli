@@ -17,7 +17,7 @@ import { Player } from "./entities/player";
 import { Team } from "dogfight-types/Team";
 import { TeamChooser } from "./teamChooser";
 import { GameHUD } from "./hud";
-import { Entity, isFollowable, updateProps } from "./entities/entity";
+import { Entity, isFollowable, RadarEnabled, updateProps } from "./entities/entity";
 import { PlayerProperties } from "dogfight-types/PlayerProperties";
 import { toPixiPoint } from "./helpers";
 import { RunwaySelection } from "dogfight-types/RunwaySelection";
@@ -32,6 +32,7 @@ import { Bomb } from "./entities/bomb";
 import { Explosion } from "./entities/explosion";
 import { Hill } from "./entities/hill";
 import { Bullet } from "./entities/bullet";
+import { Radar, RadarObject, RadarObjectType } from "./radar";
 
 export type GameClientCallbacks = {
   chooseTeam: (team: Team | null) => void;
@@ -348,6 +349,26 @@ export class DogfightClient {
     //console.log(x, y, x1, y1);
     this.viewport.moveCorner(x1, y1);
     this.positionRelativeGameObjects(x, y);
+    this.gameHUD.radar.centerCamera(-x, -y)
+  }
+
+  private updateRadar() {
+    const objs: RadarObject[] = []
+
+    const radarObjs: Record<RadarObjectType, EntityGroup<RadarEnabled>> = {
+      [RadarObjectType.Ground]: this.grounds,
+      [RadarObjectType.Man]: this.men,
+      [RadarObjectType.Plane]: this.planes,
+      [RadarObjectType.Runway]: this.runways,
+    }
+
+    for (const [_, objects] of Object.entries(radarObjs)) {
+      for (const [_, obj] of objects.entries) {
+        objs.push(obj.getRadarInfo())
+      }
+    }
+
+    this.gameHUD.radar.refreshRadar(objs)
   }
 
   public handleGameEvents(events: GameOutput[]) {
@@ -392,6 +413,8 @@ export class DogfightClient {
         }
       }
     }
+
+    this.updateRadar()
   }
 
   private deleteEntity(id: number, ent_type: EntityType) {

@@ -1,4 +1,4 @@
-import { Entity, EntityUpdateCallbacks, Followable, Point } from "./entity";
+import { Entity, EntityUpdateCallbacks, Followable, Point, RadarEnabled } from "./entity";
 import * as PIXI from "pixi.js";
 import { PlaneProperties } from "dogfight-types/PlaneProperties";
 import { PlaneType } from "dogfight-types/PlaneType";
@@ -6,6 +6,7 @@ import { Textures } from "../textures";
 import { directionToRadians } from "../helpers";
 import { DrawLayer } from "../constants";
 import { Stats } from "../hud";
+import { RadarObject, RadarObjectType } from "../radar";
 
 const PLANE_TEXTURE_ID: Record<PlaneType, number> = {
   Albatros: 4,
@@ -21,7 +22,7 @@ const GRAY_SMOKE_LIFETIME_MS = 300;
 
 const BLACK_SMOKE_LIFETIME_MS = 300;
 
-export class Plane implements Entity<PlaneProperties>, Followable {
+export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled {
 
   private container: PIXI.Container;
   private planeSprite: PIXI.Sprite;
@@ -245,5 +246,13 @@ export class Plane implements Entity<PlaneProperties>, Followable {
   public destroy() {
     window.clearInterval(this.animation_gray_smoke)
     window.clearTimeout(this.dark_smoke_timeout)
+  }
+
+  public getRadarInfo(): RadarObject {
+    return {
+      type: RadarObjectType.Plane,
+      x: this.props.client_x,
+      y: this.props.client_y,
+    }
   }
 }

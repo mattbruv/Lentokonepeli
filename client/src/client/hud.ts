@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { Textures } from "./textures";
 import { Team } from "dogfight-types/Team";
+import { Radar } from "./radar";
 
 
 export type Stats = {
@@ -16,6 +17,7 @@ export class GameHUD {
   private panel: PIXI.Sprite;
   private stats: PIXI.Graphics;
   private bombs: PIXI.Container;
+  public radar: Radar;
   private previousStats: Stats
 
   constructor() {
@@ -24,6 +26,7 @@ export class GameHUD {
     this.panel = new PIXI.Sprite();
     this.stats = new PIXI.Graphics();
     this.bombs = new PIXI.Container();
+    this.radar = new Radar();
 
     this.bombs.position.set(296, 108)
 
@@ -33,6 +36,7 @@ export class GameHUD {
     this.container.addChild(this.panel);
     this.container.addChild(this.stats);
     this.container.addChild(this.bombs);
+    this.container.addChild(this.radar.container);
   }
 
   public init() {
@@ -87,5 +91,6 @@ export class GameHUD {
     if (team === "Allies") {
       this.panel.texture = Textures["woodpanel.jpg"];
     }
+    this.radar.setTeam(team)
   }
 }

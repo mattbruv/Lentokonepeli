@@ -1,12 +1,13 @@
-import { Entity, EntityUpdateCallbacks, Followable, Point } from "./entity";
+import { Entity, EntityUpdateCallbacks, Followable, Point, RadarEnabled } from "./entity";
 import * as PIXI from "pixi.js";
 import { Textures } from "../textures";
 import { Facing } from "dogfight-types/Facing";
 import { DrawLayer, TERRAIN_WATER_COLOR } from "../constants";
 import { RunwayProperties } from "dogfight-types/RunwayProperties";
 import { Stats } from "../hud";
+import { RadarObject, RadarObjectType } from "../radar";
 
-export class Runway implements Entity<RunwayProperties>, Followable {
+export class Runway implements Entity<RunwayProperties>, Followable, RadarEnabled {
 
   public props: Required<RunwayProperties> = {
     client_x: 0,
@@ -78,4 +79,14 @@ export class Runway implements Entity<RunwayProperties>, Followable {
   }
 
   public destroy() { }
+
+  public getRadarInfo(): RadarObject {
+    return {
+      type: RadarObjectType.Runway,
+      x: this.props.client_x,
+      y: this.props.client_y,
+      team: this.props.team,
+      //width: this.runwaySprite.width,
+    }
+  }
 }

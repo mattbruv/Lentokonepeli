@@ -1,5 +1,6 @@
 import * as PIXI from "pixi.js";
 import { Stats } from "../hud";
+import { RadarObject } from "../radar";
 
 type NoUndefined<T> = T extends undefined ? never : T;
 
@@ -15,6 +16,10 @@ export type Point = {
 export interface Followable {
   getCenter: () => Point;
   getStats: () => Stats;
+}
+
+export interface RadarEnabled {
+  getRadarInfo: () => RadarObject
 }
 
 export function isFollowable(object: {}): object is Followable {

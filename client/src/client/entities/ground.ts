@@ -1,11 +1,12 @@
 import { GroundProperties } from "dogfight-types/GroundProperties";
-import { Entity, EntityUpdateCallbacks } from "./entity";
+import { Entity, EntityUpdateCallbacks, RadarEnabled } from "./entity";
 import * as PIXI from "pixi.js";
 import { Textures } from "../textures";
 import { DrawLayer, TERRAIN_WATER_COLOR } from "../constants";
 import { Terrain } from "dogfight-types/Terrain";
+import { RadarObject, RadarObjectType } from "../radar";
 
-export class Ground implements Entity<GroundProperties> {
+export class Ground implements Entity<GroundProperties>, RadarEnabled {
 
   public props: Required<GroundProperties> = {
     client_x: 0,
@@ -71,5 +72,15 @@ export class Ground implements Entity<GroundProperties> {
     },
   };
 
+  public getRadarInfo(): RadarObject {
+    return {
+      type: RadarObjectType.Ground,
+      x: this.props.client_x,
+      y: this.props.client_y,
+      width: this.props.width
+    }
+  }
+
   public destroy() { }
+
 }
