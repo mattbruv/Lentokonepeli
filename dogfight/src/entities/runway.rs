@@ -6,7 +6,6 @@ use crate::{
     images::{get_image, RUNWAY, RUNWAY2},
     math::get_client_percentage,
     network::{property::*, EntityProperties, NetworkedEntity},
-    tick_actions::Action,
 };
 
 use super::{

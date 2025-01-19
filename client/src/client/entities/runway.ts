@@ -2,7 +2,7 @@ import { Entity, EntityUpdateCallbacks, Followable, Point, RadarEnabled } from "
 import * as PIXI from "pixi.js";
 import { Textures } from "../textures";
 import { Facing } from "dogfight-types/Facing";
-import { DrawLayer, TERRAIN_WATER_COLOR } from "../constants";
+import { DrawLayer, TeamColor, TERRAIN_WATER_COLOR } from "../constants";
 import { RunwayProperties } from "dogfight-types/RunwayProperties";
 import { Stats } from "../hud";
 import { RadarObject, RadarObjectType } from "../radar";
@@ -20,6 +20,7 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
   private container: PIXI.Container;
   private runwaySprite: PIXI.Sprite;
   private runwayBack: PIXI.Sprite;
+  private healthBar: PIXI.Graphics;
 
   public updateCallbacks: EntityUpdateCallbacks<RunwayProperties> = {
     client_x: () => {
@@ -30,6 +31,7 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
     },
     client_health: () => {
       this.updateTexture()
+      this.drawHealthBar()
     },
     client_y: () => {
       const { client_y } = this.props;
@@ -53,13 +55,16 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
     this.runwayBack.visible = false;
     this.props.facing = "Left";
 
+    this.healthBar = new PIXI.Graphics();
+
     this.container.addChild(this.runwayBack);
     this.container.addChild(this.runwaySprite);
+    this.container.addChild(this.healthBar);
 
     this.container.zIndex = DrawLayer.Runway;
   }
 
-  private updateTexture(): void {
+  private getTexture() {
     const facing = this.props.facing;
     const textureMapNormal: Record<Facing, PIXI.Texture> = {
       Left: Textures["runway2.gif"],
@@ -70,7 +75,11 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
       Right: Textures["runway_broke.gif"],
     };
     const atlas = (this.props.client_health > 0) ? textureMapNormal : textureMapBroke
-    this.runwaySprite.texture = atlas[facing];
+    return atlas[facing];
+  }
+
+  private updateTexture(): void {
+    this.runwaySprite.texture = this.getTexture()
   }
 
   public getStats(): Stats {
@@ -85,6 +94,30 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
       x: (this.props.client_x ?? 0) + halfWidth,
       y: (this.props.client_y ?? 0) - halfHeight,
     };
+  }
+
+  private drawHealthBar() {
+    const { team, client_health, client_x, client_y } = this.props
+    // console.log(client_health)
+
+    if (client_health <= 0) {
+      this.healthBar.visible = false;
+      return;
+    }
+
+    this.healthBar.visible = true;
+
+    const tex = this.getTexture()
+    this.healthBar.position.y = client_y + tex.height - 3 - 1;
+    this.healthBar.position.x = client_x + 10;
+
+    const color = (team === "Allies") ? TeamColor.OwnBackground : TeamColor.OpponentBackground
+    const amount = Math.round((tex.width - 20) * (client_health / 255))
+
+    this.healthBar.clear()
+    this.healthBar.beginFill(color)
+    this.healthBar.drawRect(0, 0, amount, 3)
+    this.healthBar.endFill()
   }
 
   public getContainer(): PIXI.Container {
