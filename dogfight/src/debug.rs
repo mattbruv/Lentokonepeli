@@ -114,7 +114,7 @@ impl World {
             .collect();
 
         let bomb_bounds: Vec<DebugEntity> = self
-            .bullets
+            .bombs
             .get_map_mut()
             .iter_mut()
             .map(|(idx, bomb)| {

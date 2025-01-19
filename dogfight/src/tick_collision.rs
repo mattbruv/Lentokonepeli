@@ -1,5 +1,7 @@
 use std::{any::Any, f64::consts::PI};
 
+use imageproc::utils::Diff;
+
 use crate::{
     collision::SolidEntity,
     entities::{entity::Entity, man::ManState, plane::PlaneMode, types::EntityType, EntityId},
@@ -168,6 +170,7 @@ impl World {
 
             for (_, runway) in self.runways.get_map_mut() {
                 if bomb.check_collision(runway) {
+                    runway.subtract_health(30);
                     blow_up(
                         &mut actions,
                         bomb_id,
@@ -219,13 +222,12 @@ impl World {
 
             for (_, runway) in self.runways.get_map_mut() {
                 if bullet.check_collision(runway) {
-                    blow_up(
-                        &mut actions,
-                        bullet_id,
-                        bullet.get_type(),
-                        bullet.get_x(),
-                        bullet.get_y(),
-                    );
+                    let amount = (4.0 * bullet.get_damage_factor()) as i32;
+                    runway.subtract_health(amount);
+                    actions.push(Action::RemoveEntity(RemoveData {
+                        ent_id: *bullet_id,
+                        ent_type: bullet.get_type(),
+                    }));
                     continue 'bullets;
                 }
             }
@@ -262,9 +264,9 @@ impl World {
 
             for (_, runway) in self.runways.get_map_mut() {
                 if explosion.check_collision(runway) {
-                    // damage runway
                     // TODO: check for team
-                    runway.set_health(0);
+                    // damage runway
+                    runway.subtract_health(17);
                 }
             }
         }
