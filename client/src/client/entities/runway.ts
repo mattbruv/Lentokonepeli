@@ -25,6 +25,9 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
   private runwayBack: PIXI.Sprite;
   private healthBar: PIXI.Graphics;
 
+  private blinking = false;
+  private lastHealth = 0;
+
   public updateCallbacks: EntityUpdateCallbacks<RunwayProperties> = {
     client_x: () => {
       const { client_x } = this.props;
@@ -35,6 +38,33 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
     client_health: () => {
       this.updateTexture()
       this.drawHealthBar()
+
+      if (this.props.client_health < this.lastHealth && !this.blinking) {
+        // blink
+        let filter = new PIXI.ColorMatrixFilter();
+        filter.matrix = [
+          1, 0, 0, 0, 255, // Red
+          0, 1, 0, 0, 255, // Green
+          0, 0, 1, 0, 255, // Blue
+          0, 0, 0, 1, 0    // Alpha
+        ];
+        this.runwayBack.filters = [filter]
+        this.runwaySprite.filters = [filter]
+        this.blinking = true;
+
+        // play blink sound
+        new Howl({
+          src: "audio/hit.mp3"
+        }).play()
+        setTimeout(() => {
+          this.blinking = false;
+          this.runwayBack.filters = null
+          this.runwaySprite.filters = null
+        }, 100)
+
+      }
+
+      this.lastHealth = this.props.client_health
     },
     client_y: () => {
       const { client_y } = this.props;
