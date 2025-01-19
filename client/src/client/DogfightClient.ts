@@ -322,6 +322,11 @@ export class DogfightClient {
 
     if (props.team) {
       this.runwaySelector.setTeam(props.team);
+
+      // update runway team colors
+      for (const [_, runway] of this.runways.entries) {
+        runway.setUserTeam(props.team)
+      }
     }
 
     switch (props.state) {

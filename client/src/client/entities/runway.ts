@@ -6,6 +6,7 @@ import { DrawLayer, TeamColor, TERRAIN_WATER_COLOR } from "../constants";
 import { RunwayProperties } from "dogfight-types/RunwayProperties";
 import { Stats } from "../hud";
 import { RadarObject, RadarObjectType } from "../radar";
+import { Team } from "dogfight-types/Team";
 
 export class Runway implements Entity<RunwayProperties>, Followable, RadarEnabled {
 
@@ -16,6 +17,8 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
     team: "Allies",
     client_health: 0
   };
+
+  private userTeam: Team;
 
   private container: PIXI.Container;
   private runwaySprite: PIXI.Sprite;
@@ -49,6 +52,7 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
   };
 
   constructor() {
+    this.userTeam = "Allies"
     this.container = new PIXI.Container();
     this.runwaySprite = new PIXI.Sprite();
     this.runwayBack = new PIXI.Sprite(Textures["runway2b.gif"]);
@@ -62,6 +66,11 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
     this.container.addChild(this.healthBar);
 
     this.container.zIndex = DrawLayer.Runway;
+  }
+
+  public setUserTeam(userTeam: Team): void {
+    this.userTeam = userTeam
+    this.drawHealthBar()
   }
 
   private getTexture() {
@@ -111,7 +120,7 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
     this.healthBar.position.y = client_y + tex.height - 3 - 1;
     this.healthBar.position.x = client_x + 10;
 
-    const color = (team === "Allies") ? TeamColor.OwnBackground : TeamColor.OpponentBackground
+    const color = (team === this.userTeam) ? TeamColor.OwnBackground : TeamColor.OpponentBackground
     const amount = Math.round((tex.width - 20) * (client_health / 255))
 
     this.healthBar.clear()
