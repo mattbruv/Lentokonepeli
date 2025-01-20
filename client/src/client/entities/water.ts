@@ -29,7 +29,7 @@ export class Water implements Entity<WaterProperties> {
     this.waves = new PIXI.TilingSprite(wave1);
     this.waves.height = wave1.height;
 
-    this.waveInterval = setInterval(() => {
+    this.waveInterval = window.setInterval(() => {
       this.waveStep();
     }, 200);
 

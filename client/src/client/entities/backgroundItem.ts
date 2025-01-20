@@ -81,7 +81,7 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
       this.itemSprite.texture = texture;
 
       if (this.flagTypes.includes(bg_item_type)) {
-        this.flagInterval = setInterval(() => this.waveFlag(), 100);
+        this.flagInterval = window.setInterval(() => this.waveFlag(), 100);
       }
     },
     facing: () => {

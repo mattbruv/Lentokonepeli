@@ -83,7 +83,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
       //console.log(k, m)
       this.container.addChild(smoke)
 
-      setTimeout(() => {
+      window.setTimeout(() => {
         this.container.removeChild(smoke)
       }, GRAY_SMOKE_LIFETIME_MS)
     }, GRAY_SMOKE_INTERVAL_MS)
@@ -180,7 +180,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
     this.planeSprite.texture = texture;
 
     if (this.frame !== 0) {
-      setTimeout(() => {
+      window.setTimeout(() => {
         this.renderFrame()
       }, 80)
     }

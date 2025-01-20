@@ -56,7 +56,7 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
         new Howl({
           src: "audio/hit.mp3"
         }).play()
-        setTimeout(() => {
+        window.setTimeout(() => {
           this.blinking = false;
           this.runwayBack.filters = null
           this.runwaySprite.filters = null

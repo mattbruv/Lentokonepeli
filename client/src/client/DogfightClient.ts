@@ -290,7 +290,7 @@ export class DogfightClient {
     this.debug.beginFill("red");
     this.debug.drawCircle(0, 0, 10);
     this.debug.endFill;
-    setTimeout(() => {
+    window.setTimeout(() => {
       this.viewport.addChild(this.debug);
     }, 100);
     this.centerCamera(0, 0);
