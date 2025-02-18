@@ -13,23 +13,25 @@ export function Game() {
 
   async function createOffer() {
     await dogfight.createOffer((offer) => {
-      setOfferValue(offer)
-      navigator.clipboard.writeText(offer)
+      const msg = btoa(offer)
+      setOfferValue(msg)
+      navigator.clipboard.writeText(msg)
       console.log("offer copied to clipboard")
     })
   }
 
   async function createAnswer() {
-    const offer = await navigator.clipboard.readText()
+    const offer = atob(await navigator.clipboard.readText())
     await dogfight.createAnswer(offer, (answer) => {
-      setAnswerValue(answer)
-      navigator.clipboard.writeText(answer)
+      const ans = btoa(answer)
+      setAnswerValue(ans)
+      navigator.clipboard.writeText(ans)
       console.log("answer copied to clipboard")
     })
   }
 
   async function acceptAnswer() {
-    const answer = await navigator.clipboard.readText()
+    const answer = atob(await navigator.clipboard.readText())
     await dogfight.acceptAnswer(answer)
     console.log("ACCEPTED ANSWER!")
   }
