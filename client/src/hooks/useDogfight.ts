@@ -118,7 +118,7 @@ export function useDogfight() {
                     if (localDataChannel.current?.readyState === "open") {
                         // Don't send things off unless there's something to send off.
                         if (events.length) {
-                            console.log(changed_state)
+                            // console.log(changed_state)
                             localDataChannel.current?.send(changed_state)
                         }
                     }
@@ -204,16 +204,18 @@ export function useDogfight() {
                 // Ensure the guest sent a valid command so things don't break.
                 if (gameEngine.current.is_valid_command(m.data)) {
                     const command = JSON.parse(m.data) as PlayerCommand
-                    console.log(command)
+                    // console.log(command)
                     guestCommands.current.push(command)
                 }
             }
             // We are the guest, process the server's updates and send them to our client.
             else {
+                // The type coming in is an ArrayBuffer, need to make it a Uint8Array for
+                // the WASM bridge -> Rust to receive the right type and for it to work.
                 const buffer = new Uint8Array(m.data as ArrayBuffer)
                 const events_json = gameEngine.current.game_events_from_binary(buffer)
                 const events = JSON.parse(events_json) as ServerOutput[];
-                console.log(m.data, events_json, events)
+                //console.log(m.data, events_json, events)
                 client.current.handleGameEvents(events)
             }
         }
