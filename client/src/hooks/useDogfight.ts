@@ -90,7 +90,7 @@ export function useDogfight() {
 
         // We are host
         if (connectionType.current === ConnectionType.Host) {
-            gameEngine.current.load_level(Levels.africa);
+            gameEngine.current.load_level(Levels.classic);
             gameEngine.current.init();
             client.current.setMyPlayerName(HOST_NAME);
 
