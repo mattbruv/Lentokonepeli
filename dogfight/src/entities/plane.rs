@@ -523,6 +523,7 @@ impl Plane {
                 let x = *self.client_x.get();
                 let y = *self.client_y.get();
                 actions.push(Action::SpawnBomb(Bomb::new(
+                    self.player_id,
                     x,
                     y,
                     self.angle,
@@ -563,6 +564,10 @@ impl Plane {
 
     pub fn player_id(&self) -> u16 {
         self.player_id
+    }
+
+    pub fn health(&self) -> i32 {
+        self.total_health
     }
 
     pub fn subtract_health(&mut self, amount: i32) -> () {

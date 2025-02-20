@@ -4,6 +4,7 @@ use imageproc::utils::Diff;
 
 use crate::{
     collision::SolidEntity,
+    debug::log,
     entities::{entity::Entity, man::ManState, plane::PlaneMode, types::EntityType, EntityId},
     output::ServerOutput,
     tick_actions::{Action, ExplosionData, RemoveData},
@@ -131,6 +132,7 @@ impl World {
         'bombs: for (bomb_id, bomb) in self.bombs.get_map_mut() {
             for (_, ground) in self.grounds.get_map_mut() {
                 if bomb.check_collision(ground) {
+                    log("Bomb collision ground!?".to_string());
                     blow_up(
                         &mut actions,
                         bomb_id,
@@ -164,6 +166,24 @@ impl World {
                         ent_type: bomb.get_type(),
                     }));
                     //web_sys::console::log_1(&format!("bomb collide water!").into());
+                    continue 'bombs;
+                }
+            }
+
+            for (plane_id, plane) in self.planes.get_map_mut() {
+                if bomb.player_id() != plane.player_id() && bomb.check_collision(plane) {
+                    log("Bomb collision plane?".to_string());
+                    actions.push(Action::RemoveEntity(RemoveData {
+                        ent_id: *plane_id,
+                        ent_type: plane.get_type(),
+                    }));
+                    blow_up(
+                        &mut actions,
+                        bomb_id,
+                        bomb.get_type(),
+                        plane.get_client_x(),
+                        plane.get_client_y(),
+                    );
                     continue 'bombs;
                 }
             }
@@ -256,13 +276,17 @@ impl World {
         '_explosions: for (_, explosion) in self.explosions.get_map_mut() {
             for (plane_id, plane) in self.planes.get_map_mut() {
                 if explosion.check_collision(plane) {
-                    blow_up(
-                        &mut actions,
-                        plane_id,
-                        plane.get_type(),
-                        plane.get_client_x(),
-                        plane.get_client_y(),
-                    );
+                    // Do 50 damage, and if this kills the plane, blow it up
+                    plane.subtract_health(50);
+                    if plane.health() <= 0 {
+                        blow_up(
+                            &mut actions,
+                            plane_id,
+                            plane.get_type(),
+                            plane.get_client_x(),
+                            plane.get_client_y(),
+                        );
+                    }
                 }
             }
 

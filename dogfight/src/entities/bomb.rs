@@ -12,10 +12,11 @@ use crate::{
     world::{DIRECTIONS, RESOLUTION},
 };
 
-use super::{entity::Entity, types::EntityType};
+use super::{entity::Entity, types::EntityType, EntityId};
 
 #[derive(Networked)]
 pub struct Bomb {
+    player_id: EntityId,
     x: i32,
     y: i32,
     client_x: Property<i16>,
@@ -29,9 +30,10 @@ pub struct Bomb {
 }
 
 impl Bomb {
-    pub fn new(x: i16, y: i16, angle: f64, speed: f64) -> Bomb {
+    pub fn new(player_id: EntityId, x: i16, y: i16, angle: f64, speed: f64) -> Bomb {
         let dir = radians_to_direction(angle);
         Bomb {
+            player_id,
             x: (x as i32) * RESOLUTION,
             y: (y as i32) * RESOLUTION,
             client_x: Property::new(x),
@@ -44,6 +46,10 @@ impl Bomb {
             image: get_rotateable_image(BOMB),
             rotated_image: get_rotateable_image(BOMB),
         }
+    }
+
+    pub fn player_id(&self) -> EntityId {
+        self.player_id
     }
 
     pub fn set_position(&mut self, x: i16, y: i16) {
