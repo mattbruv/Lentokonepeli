@@ -10,9 +10,9 @@ export function Game() {
   const dogfight = useDogfight()
 
   async function createOffer() {
-
     if (gameContainer.current) {
-      dogfight.initWebRTC(ConnectionType.Host, gameContainer.current)
+      dogfight.initWebRTC(ConnectionType.Host)
+      await dogfight.initClient(gameContainer.current)
     }
 
     await dogfight.createOffer((offer) => {
@@ -25,7 +25,8 @@ export function Game() {
 
   async function createAnswer() {
     if (gameContainer.current) {
-      dogfight.initWebRTC(ConnectionType.Guest, gameContainer.current)
+      dogfight.initWebRTC(ConnectionType.Guest)
+      await dogfight.initClient(gameContainer.current)
     }
     const offer = atob(await navigator.clipboard.readText())
     await dogfight.createAnswer(offer, (answer) => {

@@ -38,6 +38,7 @@ export function useDogfight() {
         }
     }
 
+    // Init WebRTC function should be called before this, because we use the value of ConnectionType here
     const initClient = async (div: HTMLDivElement) => {
         const callbacks: GameClientCallbacks = {
             chooseTeam: (team: Team | null): void => {
@@ -170,7 +171,8 @@ export function useDogfight() {
         localDataChannel.current.send(JSON.stringify(command))
     }
 
-    function initWebRTC(type: ConnectionType, div: HTMLDivElement) {
+    // Assumes that game assets are loaded before this is ever called.
+    function initWebRTC(type: ConnectionType) {
         connectionType.current = type
 
         // WebRTC Initialization
@@ -186,13 +188,11 @@ export function useDogfight() {
 
             // send off the current state of the world if we're the host
             if (connectionType.current === ConnectionType.Host) {
-                initClient(div)
                 const all_state = gameEngine.current.get_full_state();
                 localDataChannel.current?.send(all_state)
             }
             // Otherwise, we're just a guest, let the host know we need to be added
             else {
-                initClient(div)
                 sendCommandToHost({ type: "AddPlayer" })
             }
         }
@@ -215,7 +215,7 @@ export function useDogfight() {
                 const buffer = new Uint8Array(m.data as ArrayBuffer)
                 const events_json = gameEngine.current.game_events_from_binary(buffer)
                 const events = JSON.parse(events_json) as ServerOutput[];
-                //console.log(m.data, events_json, events)
+                console.log(m.data, events_json, events)
                 client.current.handleGameEvents(events)
             }
         }

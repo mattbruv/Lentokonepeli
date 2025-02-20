@@ -575,6 +575,7 @@ impl Plane {
 
         if self.total_health < 0 {
             self.total_health = 0;
+            self.mode.set(PlaneMode::Falling);
         }
 
         self.client_health.set(get_client_percentage(
