@@ -215,13 +215,14 @@ export function useDogfight() {
                 const buffer = new Uint8Array(m.data as ArrayBuffer)
                 const events_json = gameEngine.current.game_events_from_binary(buffer)
                 const events = JSON.parse(events_json) as ServerOutput[];
-                console.log(m.data, events_json, events)
+                // console.log(m.data, events_json, events)
                 client.current.handleGameEvents(events)
             }
         }
 
-        localConnection.current.oniceconnectionstatechange = e => {
-            console.log("CONNECTION STATE CHANGE:", localConnection.current?.iceConnectionState)
+        localConnection.current.onconnectionstatechange = e => {
+            console.log("ICE CONNECTION STATE:", localConnection.current?.iceConnectionState)
+            console.log("CONNECTION STATE CHANGE:", localConnection.current?.connectionState)
         }
 
     }
