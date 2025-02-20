@@ -190,6 +190,19 @@ impl World {
         let mut actions = vec![];
 
         'bullets: for (bullet_id, bullet) in self.bullets.get_map_mut() {
+            for (_, plane) in self.planes.get_map_mut() {
+                // Don't collide our own bullet with our own plane
+                if bullet.player_id() != plane.player_id() && bullet.check_collision(plane) {
+                    let amount = (30.0 * bullet.get_damage_factor()) as i32;
+                    plane.subtract_health(amount);
+                    actions.push(Action::RemoveEntity(RemoveData {
+                        ent_id: *bullet_id,
+                        ent_type: bullet.get_type(),
+                    }));
+                    continue 'bullets;
+                }
+            }
+
             for (_, ground) in self.grounds.get_map_mut() {
                 if bullet.check_collision(ground) {
                     actions.push(Action::RemoveEntity(RemoveData {

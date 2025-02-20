@@ -66,6 +66,7 @@ pub enum PlaneMode {
 
 #[derive(Networked)]
 pub struct Plane {
+    player_id: EntityId,
     x: i32,
     y: i32,
     client_x: Property<i16>,
@@ -128,8 +129,14 @@ pub struct Plane {
 }
 
 impl Plane {
-    pub fn new(plane_type: PlaneType, runway_id: EntityId, runway: &Runway) -> Plane {
+    pub fn new(
+        owner_id: EntityId,
+        plane_type: PlaneType,
+        runway_id: EntityId,
+        runway: &Runway,
+    ) -> Plane {
         let mut plane = Plane {
+            player_id: owner_id,
             plane_type: Property::new(plane_type),
             x: 0,
             y: 0,
@@ -499,6 +506,7 @@ impl Plane {
                 self.set_ammo(self.total_ammo - 1);
 
                 actions.push(Action::SpawnBullet(Bullet::new(
+                    self.player_id,
                     i3,
                     i4,
                     self.angle,
@@ -551,6 +559,10 @@ impl Plane {
         self.total_ammo = ammo_amount;
         self.client_ammo
             .set(get_client_percentage(self.total_ammo, self.get_max_ammo()));
+    }
+
+    pub fn player_id(&self) -> u16 {
+        self.player_id
     }
 
     pub fn subtract_health(&mut self, amount: i32) -> () {

@@ -13,6 +13,7 @@ use super::{entity::Entity, types::EntityType, EntityId};
 
 #[derive(Networked)]
 pub struct Bullet {
+    player_id: EntityId,
     x: i32,
     y: i32,
     client_x: Property<i16>,
@@ -24,9 +25,10 @@ pub struct Bullet {
 }
 
 impl Bullet {
-    pub fn new(x: i16, y: i16, angle: f64, speed: f64) -> Bullet {
+    pub fn new(owner: EntityId, x: i16, y: i16, angle: f64, speed: f64) -> Bullet {
         let dir = radians_to_direction(angle);
         let mut bullet = Bullet {
+            player_id: owner,
             x: x as i32 * RESOLUTION,
             y: y as i32 * RESOLUTION,
             client_x: Property::new(x),
@@ -66,6 +68,10 @@ impl Bullet {
         self.y += (100.0 * (*self.speed.get() as f64) / 25.0 * self.angle.sin()) as i32;
         //self.client_x.set((self.x / RESOLUTION) as i16);
         //self.client_y.set((self.y / RESOLUTION) as i16);
+    }
+
+    pub fn player_id(&self) -> u16 {
+        self.player_id
     }
 
     pub fn get_damage_factor(&self) -> f64 {

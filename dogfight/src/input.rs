@@ -186,8 +186,11 @@ impl World {
                     }
                 }
                 PlayerCommand::PlayerChooseRunway(selection) => {
+                    let pid = *self.get_player_from_name(&name).unwrap().0;
+
                     if let Some(runway) = self.runways.get(selection.runway_id) {
-                        let plane = Plane::new(selection.plane_type, selection.runway_id, runway);
+                        let plane =
+                            Plane::new(pid, selection.plane_type, selection.runway_id, runway);
 
                         if let Some((plane_id, _)) = self.planes.insert(plane) {
                             if let Some((_, player)) = self.get_player_from_name(&name) {

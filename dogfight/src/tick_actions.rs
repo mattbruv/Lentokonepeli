@@ -89,7 +89,7 @@ impl World {
             EntityType::Hill => {}
         };
 
-        if let Some(player) = self
+        if let Some((_, player)) = self
             .players
             .get_player_controlling(remove_data.ent_type, remove_data.ent_id)
         {
@@ -117,7 +117,7 @@ impl World {
     ) -> Vec<ServerOutput> {
         if let Some((man_id, man)) = self.men.insert(man) {
             if let Some(current) = currently_controlling {
-                if let Some(p) = self
+                if let Some((_, p)) = self
                     .players
                     .get_player_controlling(current.entity_type, current.id)
                 {

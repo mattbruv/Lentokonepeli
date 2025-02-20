@@ -76,11 +76,12 @@ impl World {
 
         // Tick Planes
         for (plane_id, plane) in self.planes.get_map_mut() {
-            let keyboard: Option<&PlayerKeyboard> = match self
+            let player = self
                 .players
-                .get_player_controlling(plane.get_type(), *plane_id)
-            {
-                Some(p) => Some(p.get_keys()),
+                .get_player_controlling(plane.get_type(), *plane_id);
+
+            let keyboard: Option<&PlayerKeyboard> = match &player {
+                Some((_, p)) => Some(p.get_keys()),
                 None => None,
             };
 
