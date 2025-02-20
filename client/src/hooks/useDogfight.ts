@@ -3,12 +3,12 @@ import { PlaneType } from "dogfight-types/PlaneType";
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 import { Team } from "dogfight-types/Team";
 import { DogfightWeb } from "dogfight-web";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DogfightClient, GameClientCallbacks } from "../client/DogfightClient"
-import Levels from "../assets/levels.json";
 import { ServerInput } from "dogfight-types/ServerInput";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import { PlayerCommand } from "dogfight-types/PlayerCommand";
+import Levels from "../assets/levels.json";
 
 const HOST_NAME = "Host"
 const GUEST_NAME = "Guest"
@@ -21,6 +21,8 @@ export function useDogfight() {
     const doTick = useRef(false)
     const tickInterval = useRef<number | null>(null)
     const paused = useRef<boolean>(false)
+    const [connectionState, setConnectionState] = useState<RTCPeerConnectionState | null>(null)
+    const gameMap = useState<keyof typeof Levels>("classic")
 
     // WebRTC stuff
     const localConnection = useRef<RTCPeerConnection | null>(null)
@@ -91,7 +93,7 @@ export function useDogfight() {
 
         // We are host
         if (connectionType.current === ConnectionType.Host) {
-            gameEngine.current.load_level(Levels.classic);
+            gameEngine.current.load_level(Levels[gameMap[0]]);
             gameEngine.current.init();
             client.current.setMyPlayerName(HOST_NAME);
 
@@ -221,8 +223,7 @@ export function useDogfight() {
         }
 
         localConnection.current.onconnectionstatechange = e => {
-            console.log("ICE CONNECTION STATE:", localConnection.current?.iceConnectionState)
-            console.log("CONNECTION STATE CHANGE:", localConnection.current?.connectionState)
+            setConnectionState(localConnection.current?.connectionState ?? null)
         }
 
     }
@@ -268,12 +269,14 @@ export function useDogfight() {
     }
 
     return {
+        connectionState,
         initClient,
         initWebRTC,
         createOffer,
         createAnswer,
         acceptAnswer,
         sendMessage,
+        gameMap
     }
 }
 

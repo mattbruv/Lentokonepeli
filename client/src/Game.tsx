@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ConnectionType, useDogfight } from "./hooks/useDogfight";
-import { Button, Flex, TextInput } from "@mantine/core";
+import { Button, Flex, InputLabel, Select, TextInput, TypographyStylesProviderFactory } from "@mantine/core";
+import Levels from "./assets/levels.json"
 
 export function Game() {
   const gameContainer = useRef<HTMLDivElement>(null);
@@ -8,6 +9,7 @@ export function Game() {
   const [offerValue, setOfferValue] = useState<string>("")
 
   const dogfight = useDogfight()
+  const [gameMap, setGameMap] = dogfight.gameMap
 
   async function createOffer() {
     if (gameContainer.current) {
@@ -51,8 +53,11 @@ export function Game() {
       <Flex direction={"row"}>
         <div ref={gameContainer}></div>
         <Flex direction={"column"}>
+          <h2>Lentokonepeli Demo</h2>
           <div>
             <h3>Host a Game (WebRTC)</h3>
+            <InputLabel >Level:</InputLabel>
+            <Select data={Object.keys(Levels)} value={gameMap} onChange={(v) => { if (v) { setGameMap(v as keyof typeof Levels) } }} placeholder="Select a game map..." />
             <Button color={"cyan"} disabled={offerValue != ""} onClick={createOffer}>Create Offer</Button>
             <Button disabled={offerValue == ""} color={"cyan"} onClick={acceptAnswer}>Accept Player Answer</Button>
           </div>
@@ -61,10 +66,6 @@ export function Game() {
             <Button onClick={createAnswer}>Create Answer</Button>
           </div>
         </Flex>
-        <div>
-          <TextInput ref={messageRef} />
-          <Button color={'green'} onClick={() => dogfight.sendMessage(messageRef.current?.value ?? "N/A")}  >Send Message</Button>
-        </div>
       </Flex>
 
     </div>
