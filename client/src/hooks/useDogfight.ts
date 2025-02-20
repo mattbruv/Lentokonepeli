@@ -1,63 +1,66 @@
 import { DebugEntity } from "dogfight-types/DebugEntity";
-import { GameInput } from "dogfight-types/GameInput";
-import { GameOutput } from "dogfight-types/GameOutput";
 import { PlaneType } from "dogfight-types/PlaneType";
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 import { Team } from "dogfight-types/Team";
 import { DogfightWeb } from "dogfight-web";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { DogfightClient, GameClientCallbacks } from "../client/DogfightClient"
-import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr"
 import Levels from "../assets/levels.json";
+import { ServerInput } from "dogfight-types/ServerInput";
+import { ServerOutput } from "dogfight-types/ServerOutput";
+import { PlayerCommand } from "dogfight-types/PlayerCommand";
 
-const config: RTCConfiguration = {
-    iceServers: [
-        {
-            urls: ["stun:stun.services.mozilla.com", 'stun:stun.l.google.com:19302']
-        }
-    ]
-};
+const HOST_NAME = "Host"
+const GUEST_NAME = "Guest"
 
-export function useDogfight(username: string) {
-    const playerName = useRef(username);
+export function useDogfight() {
     const client = useRef<DogfightClient>(new DogfightClient())
     const gameEngine = useRef<DogfightWeb>(DogfightWeb.new())
-    const tickInput = useRef<GameInput[]>([])
+    const ourCommands = useRef<PlayerCommand[]>([])
+    const guestCommands = useRef<PlayerCommand[]>([])
     const doTick = useRef(false)
     const tickInterval = useRef<number | null>(null)
-
     const paused = useRef<boolean>(false)
 
+    // WebRTC stuff
+    const localConnection = useRef<RTCPeerConnection | null>(null)
+    const localDataChannel = useRef<RTCDataChannel | null>(null)
+    const connectionType = useRef<ConnectionType | null>(null)
+
+    function doCommand(command: PlayerCommand) {
+        // If we're the host, just add it to the queue.
+        if (connectionType.current === ConnectionType.Host) {
+            ourCommands.current.push(command)
+        }
+        // If we're the guest, just send the command off.
+        else {
+            localDataChannel.current?.send(JSON.stringify(command))
+        }
+    }
 
     const initClient = async (div: HTMLDivElement) => {
-
         const callbacks: GameClientCallbacks = {
             chooseTeam: (team: Team | null): void => {
-                tickInput.current.push({
+                doCommand({
                     type: "PlayerChooseTeam",
-                    data: {
-                        player_name: playerName.current,
-                        team,
-                    },
+                    data: { team }
                 });
             },
             chooseRunway: (runwayId: number, planeType: PlaneType): void => {
-                tickInput.current.push({
+                doCommand({
                     type: "PlayerChooseRunway",
                     data: {
-                        player_name: playerName.current,
                         plane_type: planeType,
                         runway_id: runwayId,
-                    },
+                    }
                 });
             },
             keyChange: (keyboard: PlayerKeyboard): void => {
-                tickInput.current.push({
+                doCommand({
                     type: "PlayerKeyboard",
                     data: {
-                        name: playerName.current,
-                        keys: keyboard,
-                    },
+                        ...keyboard,
+                    }
                 });
             },
         };
@@ -85,54 +88,72 @@ export function useDogfight(username: string) {
             }
         };
 
-        gameEngine.current.load_level(Levels.africa);
-        gameEngine.current.init();
+        // We are host
+        if (connectionType.current === ConnectionType.Host) {
+            gameEngine.current.load_level(Levels.africa);
+            gameEngine.current.init();
+            client.current.setMyPlayerName(HOST_NAME);
 
-        client.current.setMyPlayerName(playerName.current);
+            ourCommands.current.push({ type: "AddPlayer" });
 
-        tickInput.current.push({
-            type: "AddPlayer",
-            data: {
-                name: playerName.current,
-            },
-        });
+            let i = 0;
+            // If we're the host, define the function which will 
+            // 1. process player inputs,
+            // 2. tick the game
+            // 3. send off updates to connected peers
+            tickInterval.current = window.setInterval(() => {
+                if (paused.current && !doTick.current) return;
+                doTick.current = false;
+                const allCommands = processPlayerCommands()
+                const input_json = JSON.stringify(allCommands);
+                //const start = performance.now();
+                gameEngine.current.tick(input_json);
 
-        tickInterval.current = window.setInterval(() => {
-            if (paused.current && !doTick.current) return;
-            doTick.current = false;
+                if (i++ % 6 == 0) {
+                    const changed_state = gameEngine.current.flush_changed_state();
+                    // If data channel is open, send updates.
+                    const events_json = gameEngine.current.game_events_from_binary(changed_state);
+                    const events = JSON.parse(events_json) as ServerOutput[];
 
-            const input_json = JSON.stringify(tickInput.current);
-            tickInput.current = [];
-            //const start = performance.now();
-            const tick = gameEngine.current.tick(input_json);
-            //console.log("took " + (performance.now() - start))
-            const events_json = gameEngine.current.game_events_from_binary(tick);
-            const events = JSON.parse(events_json) as GameOutput[];
+                    if (localDataChannel.current?.readyState === "open") {
+                        // Don't send things off unless there's something to send off.
+                        if (events.length) {
+                            console.log(changed_state)
+                            localDataChannel.current?.send(changed_state)
+                        }
+                    }
 
-            client.current.handleGameEvents(events);
-        }, 1000 / 100);
-
-        // WebRTC Initialization
-        localConnection.current = new RTCPeerConnection(config)
-
-        localDataChannel.current = localConnection.current.createDataChannel("dogfight", {
-            ordered: true,
-            negotiated: true,
-            id: 0
-        })
-
-        localDataChannel.current.onopen = () => {
-            console.log("DATA CHANNEL OPENED")
+                    client.current.handleGameEvents(events);
+                }
+            }, 1000 / 100);
         }
-
-        localDataChannel.current.onmessage = (m) => {
-            console.log("ONMESSAGE: ", m)
+        // We are a guest
+        else {
+            // set player name
+            client.current.setMyPlayerName(GUEST_NAME);
         }
+    }
 
-        localConnection.current.oniceconnectionstatechange = e => {
-            console.log("CONNECTION STATE CHANGE:", localConnection.current?.iceConnectionState)
-        }
+    function processPlayerCommands(): ServerInput[] {
 
+        // Create server input objects which contain the player's name
+        // to validate and correctly attribute commands to a player
+        const serverInput: ServerInput[] =
+            [
+                ...ourCommands.current.map(command => ({
+                    player_name: HOST_NAME,
+                    command
+                })),
+                ...guestCommands.current.map(command => ({
+                    player_name: GUEST_NAME,
+                    command
+                }))
+            ]
+
+        ourCommands.current = [];
+        guestCommands.current = [];
+
+        return serverInput
     }
 
     useEffect(() => {
@@ -144,26 +165,63 @@ export function useDogfight(username: string) {
         }
     }, [])
 
+    function sendCommandToHost(command: PlayerCommand) {
+        if (!localDataChannel.current) return;
+        localDataChannel.current.send(JSON.stringify(command))
+    }
 
-    const serverConnection = useRef<HubConnection | null>(null)
-    const localConnection = useRef<RTCPeerConnection | null>(null)
-    //const remoteConnection = useRef<RTCPeerConnection | null>(null)
-    const localDataChannel = useRef<RTCDataChannel | null>(null)
-    //const remoteDataChannel = useRef<RTCDataChannel | null>(null)
+    function initWebRTC(type: ConnectionType, div: HTMLDivElement) {
+        connectionType.current = type
 
-    async function connectToServer(connType: ConnectionType) {
-        console.log("attempting to connect as", ConnectionType[connType])
+        // WebRTC Initialization
+        localConnection.current = new RTCPeerConnection()
 
-        serverConnection.current = new HubConnectionBuilder()
-            .withUrl("http://localhost:3259/signaling")
-            .configureLogging(LogLevel.Information)
-            .build()
-
-        serverConnection.current.on("ReceiveMessage", (e) => {
-            console.log(e)
+        localDataChannel.current = localConnection.current.createDataChannel("dogfight", {
+            ordered: true,
+            negotiated: true,
+            id: 0
         })
 
-        serverConnection.current.start()
+        localDataChannel.current.onopen = () => {
+
+            // send off the current state of the world if we're the host
+            if (connectionType.current === ConnectionType.Host) {
+                initClient(div)
+                const all_state = gameEngine.current.get_full_state();
+                localDataChannel.current?.send(all_state)
+            }
+            // Otherwise, we're just a guest, let the host know we need to be added
+            else {
+                initClient(div)
+                sendCommandToHost({ type: "AddPlayer" })
+            }
+        }
+
+        localDataChannel.current.onmessage = (m) => {
+            // Receive, parse, and add player input to the queue
+            if (connectionType.current === ConnectionType.Host) {
+                if (typeof m.data !== "string") return;
+                // Ensure the guest sent a valid command so things don't break.
+                if (gameEngine.current.is_valid_command(m.data)) {
+                    const command = JSON.parse(m.data) as PlayerCommand
+                    console.log(command)
+                    guestCommands.current.push(command)
+                }
+            }
+            // We are the guest, process the server's updates and send them to our client.
+            else {
+                const buffer = new Uint8Array(m.data as ArrayBuffer)
+                const events_json = gameEngine.current.game_events_from_binary(buffer)
+                const events = JSON.parse(events_json) as ServerOutput[];
+                console.log(m.data, events_json, events)
+                client.current.handleGameEvents(events)
+            }
+        }
+
+        localConnection.current.oniceconnectionstatechange = e => {
+            console.log("CONNECTION STATE CHANGE:", localConnection.current?.iceConnectionState)
+        }
+
     }
 
     async function createOffer(onIceCandidate: (value: string) => void) {
@@ -208,17 +266,16 @@ export function useDogfight(username: string) {
 
     return {
         initClient,
-        connectToServer,
+        initWebRTC,
         createOffer,
         createAnswer,
         acceptAnswer,
         sendMessage,
-        localDataChannel
     }
 }
 
 export enum ConnectionType {
     Host,
-    Peer
+    Guest
 }
 

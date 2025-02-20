@@ -1,17 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { ConnectionType, useDogfight } from "./hooks/useDogfight";
-import { Button, Flex, Stack, TextInput } from "@mantine/core";
-import { useSet } from "@mantine/hooks";
+import { Button, Flex, TextInput } from "@mantine/core";
 
 export function Game() {
   const gameContainer = useRef<HTMLDivElement>(null);
   const messageRef = useRef<HTMLInputElement>(null);
   const [offerValue, setOfferValue] = useState<string>("")
-  const [answerValue, setAnswerValue] = useState<string>("")
 
-  const dogfight = useDogfight("Player1")
+  const dogfight = useDogfight()
 
   async function createOffer() {
+
+    if (gameContainer.current) {
+      dogfight.initWebRTC(ConnectionType.Host, gameContainer.current)
+    }
+
     await dogfight.createOffer((offer) => {
       const msg = btoa(offer)
       setOfferValue(msg)
@@ -21,10 +24,12 @@ export function Game() {
   }
 
   async function createAnswer() {
+    if (gameContainer.current) {
+      dogfight.initWebRTC(ConnectionType.Guest, gameContainer.current)
+    }
     const offer = atob(await navigator.clipboard.readText())
     await dogfight.createAnswer(offer, (answer) => {
       const ans = btoa(answer)
-      setAnswerValue(ans)
       navigator.clipboard.writeText(ans)
       console.log("answer copied to clipboard")
     })
@@ -38,17 +43,6 @@ export function Game() {
 
 
   useEffect(() => {
-    if (gameContainer.current) {
-      dogfight.initClient(gameContainer.current).then(() => {
-        // dogfight.connectToServer(ConnectionType.Host)
-        /*
-        dogfight.createOffer((value) => {
-          console.log("OFFER:")
-          console.log(value)
-        })
-        */
-      })
-    }
   }, []);
 
   return (

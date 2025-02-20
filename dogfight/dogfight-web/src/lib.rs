@@ -1,8 +1,9 @@
 mod utils;
 
 use dogfight::{
-    input::game_input_from_string,
+    input::{game_input_from_string, is_valid_command},
     network::{game_events_from_bytes, game_events_to_binary, game_events_to_json},
+    output::ServerOutput,
     world::World,
 };
 use wasm_bindgen::prelude::*;
@@ -35,11 +36,25 @@ impl DogfightWeb {
         self.world.init();
     }
 
-    pub fn tick(&mut self, input_json: String) -> Vec<u8> {
+    pub fn is_valid_command(&self, command_json: &str) -> bool {
+        is_valid_command(command_json)
+    }
+
+    pub fn tick(&mut self, input_json: String) -> () {
         let input = game_input_from_string(input_json);
-        let events = self.world.tick(input);
-        let binary = game_events_to_binary(&events);
+        self.world.tick(input);
+    }
+
+    pub fn flush_changed_state(&mut self) -> Vec<u8> {
+        let changed_state = self.world.flush_changed_state();
+        let binary = game_events_to_binary(&changed_state);
         binary
+    }
+
+    pub fn get_full_state(&self) -> Vec<u8> {
+        let all_state = self.world.get_full_state();
+        let out = vec![ServerOutput::EntityChanges(all_state)];
+        game_events_to_binary(&out)
     }
 
     pub fn debug(&mut self) -> String {

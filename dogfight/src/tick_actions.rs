@@ -12,7 +12,7 @@ use crate::{
         EntityId,
     },
     input::PlayerKeyboard,
-    output::GameOutput,
+    output::ServerOutput,
     world::World,
 };
 
@@ -36,7 +36,7 @@ pub enum Action {
 }
 
 impl World {
-    pub fn process_actions(&mut self, actions: Vec<Action>) -> Vec<GameOutput> {
+    pub fn process_actions(&mut self, actions: Vec<Action>) -> Vec<ServerOutput> {
         let mut output = vec![];
 
         for action in actions {
@@ -46,7 +46,7 @@ impl World {
         output
     }
 
-    fn process_action(&mut self, action: Action) -> Vec<GameOutput> {
+    fn process_action(&mut self, action: Action) -> Vec<ServerOutput> {
         match action {
             Action::RemoveEntity(remove) => self.remove_entity(remove),
             Action::Explosion(explosion_data) => self.explode(explosion_data),
@@ -58,7 +58,7 @@ impl World {
         }
     }
 
-    fn remove_entity(&mut self, remove_data: RemoveData) -> Vec<GameOutput> {
+    fn remove_entity(&mut self, remove_data: RemoveData) -> Vec<ServerOutput> {
         let mut output = vec![];
 
         let id = remove_data.ent_id;
@@ -101,7 +101,7 @@ impl World {
         output
     }
 
-    fn explode(&mut self, data: ExplosionData) -> Vec<GameOutput> {
+    fn explode(&mut self, data: ExplosionData) -> Vec<ServerOutput> {
         let mut output = vec![];
 
         let explosion = Explosion::new(data.team, data.x, data.y);
@@ -114,7 +114,7 @@ impl World {
         &mut self,
         man: Man,
         currently_controlling: Option<ControllingEntity>,
-    ) -> Vec<GameOutput> {
+    ) -> Vec<ServerOutput> {
         if let Some((man_id, man)) = self.men.insert(man) {
             if let Some(current) = currently_controlling {
                 if let Some(p) = self
@@ -136,12 +136,12 @@ impl World {
         vec![]
     }
 
-    fn spawn_bomb(&mut self, bomb: Bomb) -> Vec<GameOutput> {
+    fn spawn_bomb(&mut self, bomb: Bomb) -> Vec<ServerOutput> {
         self.bombs.insert(bomb);
         vec![]
     }
 
-    fn spawn_bullet(&mut self, bullet: Bullet) -> Vec<GameOutput> {
+    fn spawn_bullet(&mut self, bullet: Bullet) -> Vec<ServerOutput> {
         self.bullets.insert(bullet);
         vec![]
     }

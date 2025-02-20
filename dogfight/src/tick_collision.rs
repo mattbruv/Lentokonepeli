@@ -5,7 +5,7 @@ use imageproc::utils::Diff;
 use crate::{
     collision::SolidEntity,
     entities::{entity::Entity, man::ManState, plane::PlaneMode, types::EntityType, EntityId},
-    output::GameOutput,
+    output::ServerOutput,
     tick_actions::{Action, ExplosionData, RemoveData},
     world::World,
 };
@@ -40,7 +40,7 @@ impl World {
             - Ground
             - Coast
     */
-    pub fn tick_collision_entities(&mut self) -> Vec<GameOutput> {
+    pub fn tick_collision_entities(&mut self) -> Vec<ServerOutput> {
         let mut output = vec![];
 
         let man_actions = self.collide_men();

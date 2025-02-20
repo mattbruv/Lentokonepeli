@@ -10,37 +10,37 @@ use crate::{
     Represents anything that the game world needs to send to the
     client after every game tick.
 */
-#[derive(Serialize, Debug, TS)]
+#[derive(Serialize, Debug, Clone, TS)]
 #[ts(export)]
 #[serde(tag = "type", content = "data")]
-pub enum GameOutput {
+pub enum ServerOutput {
     EntityChanges(Vec<EntityChange>),
     PlayerJoin(String),
     PlayerLeave(String),
     PlayerJoinTeam { name: String, team: Team },
 }
 
-impl NetworkedBytes for GameOutput {
+impl NetworkedBytes for ServerOutput {
     fn to_bytes(&self) -> Vec<u8> {
         let mut bytes: Vec<u8> = vec![];
 
         match &self {
-            GameOutput::EntityChanges(changes) => {
+            ServerOutput::EntityChanges(changes) => {
                 bytes.push(0);
                 let len = changes.len();
                 assert!(len < 256, "Change count exceeds byte size");
                 bytes.push(len as u8);
                 bytes.extend(entity_changes_to_binary(changes));
             }
-            GameOutput::PlayerJoin(name) => {
+            ServerOutput::PlayerJoin(name) => {
                 bytes.push(1);
                 bytes.extend(String::to_bytes(name));
             }
-            GameOutput::PlayerLeave(name) => {
+            ServerOutput::PlayerLeave(name) => {
                 bytes.push(2);
                 bytes.extend(String::to_bytes(name));
             }
-            GameOutput::PlayerJoinTeam { name, team } => {
+            ServerOutput::PlayerJoinTeam { name, team } => {
                 bytes.push(3);
                 bytes.extend(String::to_bytes(&name));
                 bytes.extend(Team::to_bytes(team));
@@ -66,17 +66,17 @@ impl NetworkedBytes for GameOutput {
                     changes.push(update);
                 }
 
-                (slice, GameOutput::EntityChanges(changes))
+                (slice, ServerOutput::EntityChanges(changes))
             }
             1 => {
                 let (bytes, name) = String::from_bytes(slice);
                 slice = &bytes;
-                (slice, GameOutput::PlayerJoin(name))
+                (slice, ServerOutput::PlayerJoin(name))
             }
             2 => {
                 let (bytes, name) = String::from_bytes(slice);
                 slice = &bytes;
-                (slice, GameOutput::PlayerLeave(name))
+                (slice, ServerOutput::PlayerLeave(name))
             }
             3 => {
                 let (bytes, name) = String::from_bytes(slice);
@@ -85,7 +85,7 @@ impl NetworkedBytes for GameOutput {
                 slice = &bytes;
                 (
                     slice,
-                    GameOutput::PlayerJoinTeam {
+                    ServerOutput::PlayerJoinTeam {
                         name: name,
                         team: team,
                     },

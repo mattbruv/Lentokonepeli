@@ -12,7 +12,7 @@ use crate::{
         player::PlayerProperties, runway::RunwayProperties, types::EntityType,
         water::WaterProperties, world_info::WorldInfoProperties, EntityId,
     },
-    output::GameOutput,
+    output::ServerOutput,
 };
 
 use self::encoding::NetworkedBytes;
@@ -34,20 +34,21 @@ pub(crate) fn entity_changes_to_binary(state: &Vec<EntityChange>) -> Vec<u8> {
     state.iter().flat_map(|x| x.to_bytes()).collect()
 }
 
-pub fn game_events_to_binary(events: &Vec<GameOutput>) -> Vec<u8> {
+pub fn game_events_to_binary(events: &Vec<ServerOutput>) -> Vec<u8> {
     events.to_bytes()
 }
 
-pub fn game_events_from_bytes(bytes: &Vec<u8>) -> Vec<GameOutput> {
-    let (_, events) = Vec::<GameOutput>::from_bytes(bytes);
+pub fn game_events_from_bytes(bytes: &Vec<u8>) -> Vec<ServerOutput> {
+    web_sys::console::log_1(&format!("data: {:?}", bytes).into());
+    let (_, events) = Vec::<ServerOutput>::from_bytes(bytes);
     events
 }
 
-pub fn game_events_to_json(events: &Vec<GameOutput>) -> String {
+pub fn game_events_to_json(events: &Vec<ServerOutput>) -> String {
     serde_json::to_string(&events).unwrap()
 }
 
-impl NetworkedBytes for Vec<GameOutput> {
+impl NetworkedBytes for Vec<ServerOutput> {
     fn to_bytes(&self) -> Vec<u8> {
         self.iter().flat_map(|x| x.to_bytes()).collect()
     }
@@ -57,7 +58,7 @@ impl NetworkedBytes for Vec<GameOutput> {
         let mut slice = bytes;
 
         while slice.len() > 0 {
-            let (bytes, event) = GameOutput::from_bytes(slice);
+            let (bytes, event) = ServerOutput::from_bytes(slice);
             events.push(event);
             slice = &bytes;
         }
@@ -66,7 +67,7 @@ impl NetworkedBytes for Vec<GameOutput> {
     }
 }
 
-#[derive(Serialize, Debug, TS)]
+#[derive(Serialize, Debug, Clone, TS)]
 #[ts(export)]
 pub struct EntityChange {
     pub ent_type: EntityType,
@@ -74,7 +75,7 @@ pub struct EntityChange {
     pub update: EntityChangeType,
 }
 
-#[derive(Serialize, Debug, TS)]
+#[derive(Serialize, Debug, Clone, TS)]
 #[ts(export)]
 #[serde(tag = "type", content = "data")]
 pub enum EntityChangeType {
@@ -82,7 +83,7 @@ pub enum EntityChangeType {
     Properties(EntityProperties),
 }
 
-#[derive(Serialize, Debug, TS)]
+#[derive(Serialize, Debug, Clone, TS)]
 #[ts(export)]
 #[serde(tag = "type", content = "props")]
 pub enum EntityProperties {

@@ -12,7 +12,6 @@ import { Runway } from "./entities/runway";
 import { BackgroundItem } from "./entities/backgroundItem";
 import { Bunker } from "./entities/bunker";
 import { Man } from "./entities/man";
-import { GameOutput } from "dogfight-types/GameOutput";
 import { Player } from "./entities/player";
 import { Team } from "dogfight-types/Team";
 import { TeamChooser } from "./teamChooser";
@@ -33,6 +32,7 @@ import { Explosion } from "./entities/explosion";
 import { Hill } from "./entities/hill";
 import { Bullet } from "./entities/bullet";
 import { Radar, RadarObject, RadarObjectType } from "./radar";
+import { ServerOutput } from "dogfight-types/ServerOutput";
 
 export type GameClientCallbacks = {
   chooseTeam: (team: Team | null) => void;
@@ -376,7 +376,7 @@ export class DogfightClient {
     this.gameHUD.radar.refreshRadar(objs)
   }
 
-  public handleGameEvents(events: GameOutput[]) {
+  public handleGameEvents(events: ServerOutput[]) {
     for (const event of events) {
       switch (event.type) {
         case "EntityChanges": {
