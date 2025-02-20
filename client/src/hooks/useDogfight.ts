@@ -109,7 +109,7 @@ export function useDogfight() {
                 //const start = performance.now();
                 gameEngine.current.tick(input_json);
 
-                if (i++ % 6 == 0) {
+                if (i++ % 2 == 0) {
                     const changed_state = gameEngine.current.flush_changed_state();
                     // If data channel is open, send updates.
                     const events_json = gameEngine.current.game_events_from_binary(changed_state);

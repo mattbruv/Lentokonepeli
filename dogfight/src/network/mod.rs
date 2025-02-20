@@ -39,7 +39,7 @@ pub fn game_events_to_binary(events: &Vec<ServerOutput>) -> Vec<u8> {
 }
 
 pub fn game_events_from_bytes(bytes: &Vec<u8>) -> Vec<ServerOutput> {
-    web_sys::console::log_1(&format!("data: {:?}", bytes).into());
+    //web_sys::console::log_1(&format!("data: {:?}", bytes).into());
     let (_, events) = Vec::<ServerOutput>::from_bytes(bytes);
     events
 }
