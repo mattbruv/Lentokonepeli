@@ -188,6 +188,23 @@ impl World {
                 }
             }
 
+            for (man_id, man) in self.men.get_map_mut() {
+                if bomb.check_collision(man) {
+                    actions.push(Action::RemoveEntity(RemoveData {
+                        ent_id: *man_id,
+                        ent_type: man.get_type(),
+                    }));
+                    blow_up(
+                        &mut actions,
+                        bomb_id,
+                        bomb.get_type(),
+                        man.get_client_x(),
+                        man.get_client_y(),
+                    );
+                    continue 'bombs;
+                }
+            }
+
             for (_, runway) in self.runways.get_map_mut() {
                 if bomb.check_collision(runway) {
                     runway.subtract_health(30);
