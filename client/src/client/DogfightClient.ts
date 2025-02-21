@@ -287,9 +287,11 @@ export class DogfightClient {
       this.runwaySelector.container.position.set(x, y);
     }
 
+    /*
     this.debug.beginFill("red");
     this.debug.drawCircle(0, 0, 10);
     this.debug.endFill;
+    */
     window.setTimeout(() => {
       this.viewport.addChild(this.debug);
     }, 100);
