@@ -223,6 +223,26 @@ impl World {
                 }
             }
 
+            for (bomb_id, bomb) in self.bombs.get_map_mut() {
+                // Don't collide our own bullet with our own plane
+                if bullet.check_collision(bomb) {
+                    actions.push(Action::RemoveEntity(RemoveData {
+                        ent_id: *bullet_id,
+                        ent_type: bullet.get_type(),
+                    }));
+
+                    blow_up(
+                        &mut actions,
+                        bomb_id,
+                        bomb.get_type(),
+                        bomb.get_x(),
+                        bomb.get_y(),
+                    );
+
+                    continue 'bullets;
+                }
+            }
+
             for (_, ground) in self.grounds.get_map_mut() {
                 if bullet.check_collision(ground) {
                     actions.push(Action::RemoveEntity(RemoveData {
@@ -417,8 +437,8 @@ pub fn blow_up(
     actions: &mut Vec<Action>,
     ent_id: &EntityId,
     ent_type: EntityType,
-    x: i16,
-    y: i16,
+    explosion_x: i16,
+    explosion_y: i16,
 ) -> () {
     actions.push(Action::RemoveEntity(RemoveData {
         ent_id: *ent_id,
@@ -426,7 +446,7 @@ pub fn blow_up(
     }));
     actions.push(Action::Explosion(ExplosionData {
         team: None,
-        x: x,
-        y: y,
+        x: explosion_x,
+        y: explosion_y,
     }));
 }
