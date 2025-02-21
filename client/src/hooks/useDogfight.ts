@@ -9,48 +9,40 @@ import { ServerInput } from "dogfight-types/ServerInput";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import { PlayerCommand } from "dogfight-types/PlayerCommand";
 import Levels from "../assets/levels.json";
-
-const HOST_NAME = "Host"
-const GUEST_NAME = "Guest"
+import Peer, { DataConnection } from "peerjs";
 
 export function useDogfight() {
     const client = useRef<DogfightClient>(new DogfightClient())
     const gameEngine = useRef<DogfightWeb>(DogfightWeb.new())
-    const ourCommands = useRef<PlayerCommand[]>([])
-    const guestCommands = useRef<PlayerCommand[]>([])
+
+    const [roomCode, setRoomCode] = useState<string | null>(null)
+
+    const ourInput = useRef<ServerInput[]>([])
+    const guestInput = useRef<ServerInput[]>([])
     const doTick = useRef(false)
     const tickInterval = useRef<number | null>(null)
     const paused = useRef<boolean>(false)
-    const [connectionState, setConnectionState] = useState<RTCPeerConnectionState | null>(null)
     const gameMap = useState<keyof typeof Levels>("classic")
 
-    // WebRTC stuff
-    const localConnection = useRef<RTCPeerConnection | null>(null)
-    const localDataChannel = useRef<RTCDataChannel | null>(null)
-    const connectionType = useRef<ConnectionType | null>(null)
+    const tickCounter = useRef(0)
+    const initCallback = useRef<(() => void) | null>(null)
+    const tickCallback = useRef<(() => void) | null>(null)
+    const processCommand = useRef<((command: PlayerCommand) => void) | null>(null)
 
-    function doCommand(command: PlayerCommand) {
-        // If we're the host, just add it to the queue.
-        if (connectionType.current === ConnectionType.Host) {
-            ourCommands.current.push(command)
-        }
-        // If we're the guest, just send the command off.
-        else {
-            localDataChannel.current?.send(JSON.stringify(command))
-        }
-    }
+    // A collection of the connected users
+    const dataConnections = useRef<Map<string, { name: string, conn: DataConnection }>>(new Map())
 
     // Init WebRTC function should be called before this, because we use the value of ConnectionType here
     const initClient = async (div: HTMLDivElement) => {
         const callbacks: GameClientCallbacks = {
             chooseTeam: (team: Team | null): void => {
-                doCommand({
+                if (processCommand.current) processCommand.current({
                     type: "PlayerChooseTeam",
                     data: { team }
                 });
             },
             chooseRunway: (runwayId: number, planeType: PlaneType): void => {
-                doCommand({
+                if (processCommand.current) processCommand.current({
                     type: "PlayerChooseRunway",
                     data: {
                         plane_type: planeType,
@@ -59,7 +51,7 @@ export function useDogfight() {
                 });
             },
             keyChange: (keyboard: PlayerKeyboard): void => {
-                doCommand({
+                if (processCommand.current) processCommand.current({
                     type: "PlayerKeyboard",
                     data: {
                         ...keyboard,
@@ -91,72 +83,25 @@ export function useDogfight() {
             }
         };
 
-        // We are host
-        if (connectionType.current === ConnectionType.Host) {
-            gameEngine.current.load_level(Levels[gameMap[0]]);
-            gameEngine.current.init();
-            client.current.setMyPlayerName(HOST_NAME);
-
-            ourCommands.current.push({ type: "AddPlayer" });
-
-            let i = 0;
-            // If we're the host, define the function which will 
-            // 1. process player inputs,
-            // 2. tick the game
-            // 3. send off updates to connected peers
-            tickInterval.current = window.setInterval(() => {
-                if (paused.current && !doTick.current) return;
-                doTick.current = false;
-                const allCommands = processPlayerCommands()
-                const input_json = JSON.stringify(allCommands);
-                //const start = performance.now();
-                gameEngine.current.tick(input_json);
-
-                if (i++ % 2 == 0) {
-                    const changed_state = gameEngine.current.flush_changed_state();
-                    // If data channel is open, send updates.
-                    const events_json = gameEngine.current.game_events_from_binary(changed_state);
-                    const events = JSON.parse(events_json) as ServerOutput[];
-
-                    if (localDataChannel.current?.readyState === "open") {
-                        // Don't send things off unless there's something to send off.
-                        if (events.length) {
-                            // console.log(changed_state)
-                            localDataChannel.current?.send(changed_state)
-                        }
-                    }
-
-                    client.current.handleGameEvents(events);
-                }
-            }, 1000 / 100);
+        // We want to do specific things when the host inits
+        if (initCallback.current) {
+            initCallback.current();
         }
-        // We are a guest
-        else {
-            // set player name
-            client.current.setMyPlayerName(GUEST_NAME);
-        }
+
+        tickInterval.current = window.setInterval(() => {
+            if (tickCallback.current) {
+                tickCallback.current()
+            }
+        }, 1000 / 100);
     }
 
-    function processPlayerCommands(): ServerInput[] {
+    function clearPlayerCommands(): ServerInput[] {
+        const output: ServerInput[] = [...ourInput.current, ...guestInput.current]
 
-        // Create server input objects which contain the player's name
-        // to validate and correctly attribute commands to a player
-        const serverInput: ServerInput[] =
-            [
-                ...ourCommands.current.map(command => ({
-                    player_name: HOST_NAME,
-                    command
-                })),
-                ...guestCommands.current.map(command => ({
-                    player_name: GUEST_NAME,
-                    command
-                }))
-            ]
+        ourInput.current = [];
+        guestInput.current = [];
 
-        ourCommands.current = [];
-        guestCommands.current = [];
-
-        return serverInput
+        return output
     }
 
     useEffect(() => {
@@ -168,120 +113,153 @@ export function useDogfight() {
         }
     }, [])
 
-    function sendCommandToHost(command: PlayerCommand) {
-        if (!localDataChannel.current) return;
-        localDataChannel.current.send(JSON.stringify(command))
-    }
+    const peer = useRef<Peer | null>(null)
 
-    // Assumes that game assets are loaded before this is ever called.
-    function initWebRTC(type: ConnectionType) {
-        connectionType.current = type
+    function hostLobby(afterConnectionCallback: () => void): void {
+        if (peer.current) return;
 
-        // WebRTC Initialization
-        localConnection.current = new RTCPeerConnection()
+        // If we're the host, define the function which will 
+        // 1. process player inputs,
+        // 2. tick the game
+        // 3. send off updates to connected peers
+        tickCallback.current = () => {
+            if (paused.current && !doTick.current) return;
+            doTick.current = false;
+            const allCommands = clearPlayerCommands()
+            const input_json = JSON.stringify(allCommands);
+            //const start = performance.now();
+            gameEngine.current.tick(input_json);
 
-        localDataChannel.current = localConnection.current.createDataChannel("dogfight", {
-            ordered: true,
-            negotiated: true,
-            id: 0
+            if (tickCounter.current++ % 2 == 0) {
+                const changed_state = gameEngine.current.flush_changed_state();
+                // If data channel is open, send updates.
+                const events_json = gameEngine.current.game_events_from_binary(changed_state);
+                const events = JSON.parse(events_json) as ServerOutput[];
+
+                // Don't send things off unless there's something to send off.
+                if (!events.length) return;
+
+                console.log(changed_state)
+                // Send out events to every connection
+                for (const [_, dataConnection] of dataConnections.current) {
+                    //localDataChannel.current?.send(changed_state)
+                    dataConnection.conn.send(changed_state)
+                }
+                client.current.handleGameEvents(events);
+            }
+        }
+
+        const code = crypto.randomUUID().substring(0, 4)
+        setRoomCode(code)
+
+        peer.current = new Peer(code);
+
+        peer.current.on("open", (id) => {
+            console.log("My Peer id is", id)
+            const hostName = "HOST"
+
+            // If we're hosting, send any of our commands directly to the engine
+            processCommand.current = (command) => {
+                ourInput.current.push({ player_name: hostName, command })
+            }
+
+            initCallback.current = () => {
+                gameEngine.current.load_level(Levels[gameMap[0]]);
+                gameEngine.current.init();
+                client.current.setMyPlayerName(hostName);
+                ourInput.current.push({
+                    player_name: hostName,
+                    command: { type: "AddPlayer", data: hostName }
+                });
+            }
+
+            afterConnectionCallback()
         })
 
-        localDataChannel.current.onopen = () => {
+        peer.current.on("connection", (conn) => {
+            console.log("GUEST JOINED", conn.connectionId)
 
-            // send off the current state of the world if we're the host
-            if (connectionType.current === ConnectionType.Host) {
+            conn.on("open", () => {
+                // Add this player to the collection and send them the full state
+                dataConnections.current.set(conn.connectionId, { name: conn.connectionId, conn })
                 const all_state = gameEngine.current.get_full_state();
-                localDataChannel.current?.send(all_state)
-            }
-            // Otherwise, we're just a guest, let the host know we need to be added
-            else {
-                sendCommandToHost({ type: "AddPlayer" })
-            }
+                conn.send(all_state)
+
+                conn.on("data", (data) => {
+                    console.log(data)
+                    const user = dataConnections.current.get(conn.connectionId)
+
+                    if (user) {
+                        if (typeof data !== "string") return;
+                        // Ensure the guest sent a valid command so things don't break.
+                        if (gameEngine.current.is_valid_command(data)) {
+                            const command = JSON.parse(data) as PlayerCommand
+                            if (command.type == "AddPlayer") {
+                                user.name = command.data
+                            }
+                            guestInput.current.push({ player_name: user.name, command })
+                        }
+                    }
+                })
+            })
+
+            conn.on("close", () => {
+                dataConnections.current.delete(conn.connectionId)
+            })
+        })
+    }
+
+    function joinGame(roomId: string, onConnect: () => void): void {
+        if (peer.current) return;
+
+        initCallback.current = () => {
+            // set player name
+            // client.current.setMyPlayerName(GUEST_NAME);
         }
 
-        localDataChannel.current.onmessage = (m) => {
-            // Receive, parse, and add player input to the queue
-            if (connectionType.current === ConnectionType.Host) {
-                if (typeof m.data !== "string") return;
-                // Ensure the guest sent a valid command so things don't break.
-                if (gameEngine.current.is_valid_command(m.data)) {
-                    const command = JSON.parse(m.data) as PlayerCommand
-                    // console.log(command)
-                    guestCommands.current.push(command)
+        peer.current = new Peer();
+        peer.current.on("open", (x) => {
+
+            console.log("Guest:", x)
+
+            const conn = peer.current!.connect(roomId)
+
+            conn.on("open", () => {
+
+                // If we're the guest, just send the command off.
+                processCommand.current = (command) => {
+                    conn.send(JSON.stringify(command))
                 }
-            }
-            // We are the guest, process the server's updates and send them to our client.
-            else {
-                // The type coming in is an ArrayBuffer, need to make it a Uint8Array for
-                // the WASM bridge -> Rust to receive the right type and for it to work.
-                const buffer = new Uint8Array(m.data as ArrayBuffer)
-                const events_json = gameEngine.current.game_events_from_binary(buffer)
-                const events = JSON.parse(events_json) as ServerOutput[];
-                // console.log(m.data, events_json, events)
-                client.current.handleGameEvents(events)
-            }
-        }
 
-        localConnection.current.onconnectionstatechange = e => {
-            setConnectionState(localConnection.current?.connectionState ?? null)
-        }
+                const myName = crypto.randomUUID().substring(0, 8)
+                const command: PlayerCommand = { type: "AddPlayer", data: myName }
+                client.current.setMyPlayerName(myName)
 
-    }
+                conn.send(JSON.stringify(command))
 
-    async function createOffer(onIceCandidate: (value: string) => void) {
-        if (!localConnection.current) return
+                conn.on("data", (data) => {
+                    console.log(data)
+                    // The type coming in is an ArrayBuffer, need to make it a Uint8Array for
+                    // the WASM bridge -> Rust to receive the right type and for it to work.
+                    const buffer = new Uint8Array(data as ArrayBuffer)
+                    const events_json = gameEngine.current.game_events_from_binary(buffer)
+                    const events = JSON.parse(events_json) as ServerOutput[];
+                    // console.log(m.data, events_json, events)
+                    client.current.handleGameEvents(events)
+                })
 
-        await localConnection.current.setLocalDescription(await localConnection.current.createOffer())
-        localConnection.current.onicecandidate = ({ candidate }) => {
-            if (candidate) return;
-            if (!localConnection.current || !localConnection.current.localDescription) return;
-            onIceCandidate(localConnection.current.localDescription.sdp)
-        }
-    }
-
-    async function createAnswer(offer: string, onIceCandidate: (value: string) => void) {
-        if (!localConnection.current) return;
-        await localConnection.current.setRemoteDescription({
-            type: "offer",
-            sdp: offer
-        });
-        await localConnection.current.setLocalDescription(await localConnection.current.createAnswer());
-        localConnection.current.onicecandidate = ({
-            candidate
-        }) => {
-            if (candidate) return;
-            if (!localConnection.current || !localConnection.current.localDescription) return;
-            onIceCandidate(localConnection.current.localDescription.sdp)
-        };
-    }
-
-    async function acceptAnswer(answer: string) {
-        if (!localConnection.current) return;
-
-        await localConnection.current.setRemoteDescription({
-            type: "answer",
-            sdp: answer
-        });
-    }
-
-    function sendMessage(text: string) {
-        localDataChannel.current?.send(text)
+                onConnect()
+            })
+        })
     }
 
     return {
-        connectionState,
+        client,
+        gameMap,
         initClient,
-        initWebRTC,
-        createOffer,
-        createAnswer,
-        acceptAnswer,
-        sendMessage,
-        gameMap
+        hostLobby,
+        joinGame,
+        roomCode,
+        peer
     }
 }
-
-export enum ConnectionType {
-    Host,
-    Guest
-}
-

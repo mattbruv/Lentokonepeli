@@ -8,7 +8,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f9ef2866-c36e-4a5b-92e2-15200c637f5f" name="Changes" comment="" />
+    <list default="true" id="f9ef2866-c36e-4a5b-92e2-15200c637f5f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.DogfightServer/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DogfightServer/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DogfightServer/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DogfightServer/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DogfightServer/Properties/launchSettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/DogfightServer/Properties/launchSettings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DogfightServer/SignalingHub.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DogfightServer/SignalingHub.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

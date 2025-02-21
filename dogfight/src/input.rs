@@ -28,7 +28,7 @@ pub struct ServerInput {
 #[ts(export)]
 #[serde(tag = "type", content = "data")]
 pub enum PlayerCommand {
-    AddPlayer,
+    AddPlayer(String),
     RemovePlayer,
     PlayerChooseTeam(TeamSelection),
     PlayerChooseRunway(RunwaySelection),
@@ -145,10 +145,10 @@ impl World {
         for input in input_events {
             let name = input.player_name;
             match input.command {
-                PlayerCommand::AddPlayer => {
+                PlayerCommand::AddPlayer(desired_name) => {
                     // Add the player if not already exists
-                    if let None = self.get_player_id_from_name(&name) {
-                        if let Some((_, p)) = self.players.insert(Player::new(name)) {
+                    if let None = self.get_player_id_from_name(&desired_name) {
+                        if let Some((_, p)) = self.players.insert(Player::new(desired_name)) {
                             game_output.push(ServerOutput::PlayerJoin(p.get_name()));
                         }
                     }

@@ -301,6 +301,7 @@ export class DogfightClient {
   }
 
   public setMyPlayerName(name: string) {
+    console.log("Setting name:", name)
     this.myPlayerName = name;
   }
 

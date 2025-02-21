@@ -12,7 +12,6 @@ public class SignalingHub : Hub
         Console.WriteLine($"new connection! ${id}");
         // Send a welcome message to the newly connected client
         await Clients.Client(id).SendAsync("ReceiveMessage",  $"Welcome to the chat! your ID is {id}");
-
         
         await base.OnConnectedAsync();
     }
