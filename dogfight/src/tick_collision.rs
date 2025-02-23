@@ -235,6 +235,21 @@ impl World {
         let mut actions = vec![];
 
         'bullets: for (bullet_id, bullet) in self.bullets.get_map_mut() {
+            for (man_id, man) in self.men.get_map_mut() {
+                if bullet.check_collision(man) {
+                    actions.push(Action::RemoveEntity(RemoveData {
+                        ent_id: *bullet_id,
+                        ent_type: bullet.get_type(),
+                    }));
+                    // Kill man
+                    actions.push(Action::RemoveEntity(RemoveData {
+                        ent_id: *man_id,
+                        ent_type: man.get_type(),
+                    }));
+                    continue 'bullets;
+                }
+            }
+
             for (_, plane) in self.planes.get_map_mut() {
                 // Don't collide our own bullet with our own plane
                 if bullet.player_id() != plane.player_id() && bullet.check_collision(plane) {
