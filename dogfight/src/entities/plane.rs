@@ -485,9 +485,9 @@ impl Plane {
 
         if let Some(keys) = keyboard {
             // Shoot bullets
-            if keys.ctrl && self.last_shot_ms >= self.get_shoot_delay() && self.total_ammo > 0 {
+            if keys.ctrl && (self.last_shot_ms >= self.get_shoot_delay()) && self.total_ammo > 0 {
                 self.last_shot_ms = 0;
-                self.total_ammo -= 1;
+                let new_ammo_amount = self.total_ammo - 1;
 
                 let x = *self.client_x.get();
                 let y = *self.client_y.get();
@@ -503,7 +503,7 @@ impl Plane {
                 i3 = (int)(this.x + this.w / 2 * 100 + Math.cos(d3) * (this.w / 2 + 2) * 100.0D) / 100;
                 i4 = (int)(this.y + this.h / 2 * 100 + Math.sin(d3) * (this.h / 2 + 2) * 100.0D) / 100;
                 */
-                self.set_ammo(self.total_ammo - 1);
+                self.set_ammo(new_ammo_amount);
 
                 actions.push(Action::SpawnBullet(Bullet::new(
                     self.player_id,
