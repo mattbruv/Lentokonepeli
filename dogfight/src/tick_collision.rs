@@ -421,7 +421,12 @@ impl World {
                         continue 'planes;
                     }
 
-                    if plane.can_land_on_runway(runway) {
+                    let plane_has_player = self
+                        .players
+                        .get_player_controlling(plane.get_type(), *plane_id)
+                        .is_some();
+
+                    if plane_has_player && plane.can_land_on_runway(runway) {
                         if plane.flipped() {
                             plane.set_angle(PI);
                         } else {
