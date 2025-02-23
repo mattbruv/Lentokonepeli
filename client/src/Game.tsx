@@ -12,21 +12,21 @@ export function Game() {
 
   const [joinId, setJoinId] = useState("")
 
-  const [tickRate, setTickRate] = useState(100)
+  // const [tickRate, setTickRate] = useState(100)
 
   const [opened, { open, close }] = useDisclosure()
 
   function host() {
     if (!gameContainer.current) return;
     hostLobby(() => {
-      initClient(gameContainer.current!, tickRate)
+      initClient(gameContainer.current!)
     })
   }
 
   async function join(roomId: string) {
     if (!gameContainer.current) return;
 
-    await initClient(gameContainer.current, tickRate)
+    await initClient(gameContainer.current)
     joinGame(roomId, () => {
       close()
     })
@@ -42,13 +42,16 @@ export function Game() {
             Game Code:
             <h1>{roomCode}</h1>
           </div> : null}
+          {/*
           {tickRate != 100 ? (
             <Alert style={{ maxWidth: 300 }} variant="light" color="red" title="Bullet Rendering Issue">
               Bullet update speed on the client will be broken temporarily when playing at a custom tick rate. Please ignore this visual error for now.
             </Alert>
           ) : null}
+          */}
           {!peer.current ?
             <div>
+              {/*
               <div>
                 <InputLabel >Ticks Per Second:</InputLabel>
                 <NumberInput allowDecimal={false} min={1} max={500} value={tickRate} onChange={(e) => setTickRate(typeof e == "string" ? parseInt(e) : e)} placeholder="Enter tick rate (ms)" />
@@ -56,6 +59,7 @@ export function Game() {
                   Tick rate (ms): {(1000 / tickRate).toPrecision(4)}
                 </div>
               </div>
+              */}
               <div>
                 <h3>Host a Game (WebRTC)</h3>
                 <InputLabel >Level:</InputLabel>
