@@ -33,7 +33,7 @@ export function useDogfight() {
     const dataConnections = useRef<Map<string, { name: string, conn: DataConnection }>>(new Map())
 
     // Init WebRTC function should be called before this, because we use the value of ConnectionType here
-    const initClient = async (div: HTMLDivElement) => {
+    const initClient = async (div: HTMLDivElement, refreshRate: number) => {
         const callbacks: GameClientCallbacks = {
             chooseTeam: (team: Team | null): void => {
                 if (processCommand.current) processCommand.current({
@@ -92,7 +92,7 @@ export function useDogfight() {
             if (tickCallback.current) {
                 tickCallback.current()
             }
-        }, 1000 / 100);
+        }, 1000 / refreshRate);
     }
 
     function clearPlayerCommands(): ServerInput[] {
