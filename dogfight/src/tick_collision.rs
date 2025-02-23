@@ -72,9 +72,17 @@ impl World {
                     match man.get_state() {
                         // Update the state to walking only if we're not already doing it.
                         ManState::Falling | ManState::Parachuting => {
-                            man.set_state(ManState::Standing);
-                            let h = man.get_collision_image().unwrap().height();
-                            man.set_client_y(ground.get_collision_bounds().y - h as i16);
+                            // If we're falling faster than a certain speed, kill player.
+                            if man.die_from_fall() {
+                                actions.push(Action::RemoveEntity(RemoveData {
+                                    ent_id: *man_id,
+                                    ent_type: man.get_type(),
+                                }));
+                            } else {
+                                man.set_state(ManState::Standing);
+                                let h = man.get_collision_image().unwrap().height();
+                                man.set_client_y(ground.get_collision_bounds().y - h as i16);
+                            }
                         }
                         _ => {}
                     };

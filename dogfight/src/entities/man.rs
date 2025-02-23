@@ -182,6 +182,11 @@ impl Man {
             }));
         }
     }
+
+    pub fn die_from_fall(&self) -> bool {
+        // log(self.y_speed.to_string());
+        (self.y_speed as f64) >= (SPEED_PER_PIXEL as f64) * 1.5
+    }
 }
 
 impl Entity for Man {
