@@ -139,7 +139,7 @@ export function useDogfight() {
                 // Don't send things off unless there's something to send off.
                 if (!events.length) return;
 
-                console.log(changed_state)
+                //console.log(changed_state)
                 // Send out events to every connection
                 for (const [_, dataConnection] of dataConnections.current) {
                     //localDataChannel.current?.send(changed_state)
@@ -186,7 +186,7 @@ export function useDogfight() {
                 conn.send(all_state)
 
                 conn.on("data", (data) => {
-                    console.log(data)
+                    //console.log(data)
                     const user = dataConnections.current.get(conn.connectionId)
 
                     if (user) {
@@ -238,7 +238,7 @@ export function useDogfight() {
                 conn.send(JSON.stringify(command))
 
                 conn.on("data", (data) => {
-                    console.log(data)
+                    // console.log(data)
                     // The type coming in is an ArrayBuffer, need to make it a Uint8Array for
                     // the WASM bridge -> Rust to receive the right type and for it to work.
                     const buffer = new Uint8Array(data as ArrayBuffer)
