@@ -1,5 +1,3 @@
-use imageproc::geometry::contour_area;
-
 use crate::{
     entities::{
         bomb::Bomb,
@@ -7,7 +5,7 @@ use crate::{
         entity::Entity,
         explosion::Explosion,
         man::Man,
-        player::{self, ControllingEntity, PlayerState},
+        player::{ControllingEntity, PlayerState},
         types::{EntityType, Team},
         EntityId,
     },
@@ -23,8 +21,8 @@ pub struct RemoveData {
 
 pub struct ExplosionData {
     pub team: Option<Team>,
-    pub x: i16,
-    pub y: i16,
+    pub client_x: i16,
+    pub client_y: i16,
 }
 
 pub enum Action {
@@ -104,7 +102,7 @@ impl World {
     fn explode(&mut self, data: ExplosionData) -> Vec<ServerOutput> {
         let mut output = vec![];
 
-        let explosion = Explosion::new(data.team, data.x, data.y);
+        let explosion = Explosion::new(data.team, data.client_x, data.client_y);
         self.explosions.insert(explosion);
 
         output

@@ -3,15 +3,18 @@ use image::RgbaImage;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
+    debug::log,
     images::{get_image, PARACHUTER0, PARACHUTER1},
     input::PlayerKeyboard,
     network::{property::*, EntityProperties, NetworkedEntity},
+    tick_actions::{Action, ExplosionData, RemoveData},
     world::RESOLUTION,
 };
 
 use super::{
     entity::Entity,
     types::{EntityType, Team},
+    EntityId,
 };
 
 const SPEED_PER_PIXEL: i32 = 100;
@@ -59,14 +62,18 @@ impl Man {
         }
     }
 
-    pub fn tick(&mut self, keyboard: &PlayerKeyboard) -> () {
+    pub fn tick(&mut self, man_id: EntityId, keyboard: &PlayerKeyboard) -> Vec<Action> {
+        let mut actions = vec![];
+
         match self.state.get() {
             ManState::Falling => self.fall(keyboard),
             ManState::Parachuting => self.parachute(keyboard),
             ManState::Standing | ManState::WalkingLeft | ManState::WalkingRight => {
-                self.walk(keyboard)
+                self.walk(man_id, keyboard, &mut actions)
             }
         }
+
+        actions
     }
 
     pub fn get_x(&self) -> i32 {
@@ -144,7 +151,7 @@ impl Man {
         }
     }
 
-    fn walk(&mut self, keyboard: &PlayerKeyboard) {
+    fn walk(&mut self, man_id: EntityId, keyboard: &PlayerKeyboard, actions: &mut Vec<Action>) {
         self.state.set(ManState::Standing);
 
         if keyboard.left {
@@ -155,6 +162,24 @@ impl Man {
         if keyboard.right {
             self.set_x(self.x + 100);
             self.state.set(ManState::WalkingRight);
+        }
+
+        if keyboard.shift {
+            actions.push(Action::RemoveEntity(RemoveData {
+                ent_id: man_id,
+                ent_type: self.get_type(),
+            }));
+
+            // We don't want the top left corner, but rather bottom middle
+            let x = self.client_x.get() + (self.image_standing.width() / 2) as i16;
+            let y = self.client_y.get() + (self.image_standing.height()) as i16;
+
+            // log(format!("x: {}, y: {}", x, y));
+            actions.push(Action::Explosion(ExplosionData {
+                team: Some(*self.team.get()),
+                client_x: x,
+                client_y: y,
+            }));
         }
     }
 }

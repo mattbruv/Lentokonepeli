@@ -463,7 +463,7 @@ pub fn blow_up(
     }));
     actions.push(Action::Explosion(ExplosionData {
         team: None,
-        x: explosion_x,
-        y: explosion_y,
+        client_x: explosion_x,
+        client_y: explosion_y,
     }));
 }

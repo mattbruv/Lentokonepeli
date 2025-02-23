@@ -46,7 +46,7 @@ impl World {
                 match controlled.entity_type {
                     EntityType::Man => {
                         if let Some(man) = self.men.get_mut(controlled.id) {
-                            man.tick(player.get_keys());
+                            actions.extend(man.tick(controlled.id, player.get_keys()));
                         }
                     }
                     _ => (),
