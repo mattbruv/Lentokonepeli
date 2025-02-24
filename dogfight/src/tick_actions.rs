@@ -57,7 +57,7 @@ impl World {
     }
 
     fn remove_entity(&mut self, remove_data: RemoveData) -> Vec<ServerOutput> {
-        let mut output = vec![];
+        let output = vec![];
 
         let id = remove_data.ent_id;
         match remove_data.ent_type {
@@ -100,7 +100,7 @@ impl World {
     }
 
     fn explode(&mut self, data: ExplosionData) -> Vec<ServerOutput> {
-        let mut output = vec![];
+        let output = vec![];
 
         let explosion = Explosion::new(data.team, data.client_x, data.client_y);
         self.explosions.insert(explosion);

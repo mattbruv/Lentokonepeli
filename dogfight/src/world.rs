@@ -66,26 +66,20 @@ impl World {
         */
     }
 
+    /*
     fn spawn_debug_bomb(&mut self) -> () {
         //for i in 0..2 {
         //let debug_bomb = Bomb::new(-2490 + i * 50, -300, 0.0, 0.0);
         //self.bombs.insert(debug_bomb);
         //}
     }
+    */
 
     pub fn tick(&mut self, input: Vec<ServerInput>) -> () {
         self.game_tick += 1;
 
         if self.game_tick == 50 {
             self.init_debug();
-        }
-
-        if self.bombs.get_map().len() == 0 {
-            // self.spawn_bomb();
-        }
-
-        if let Some(p) = self.planes.get_mut(0) {
-            // p.set_direction(p.get_direction() + 1);
         }
 
         // process input data

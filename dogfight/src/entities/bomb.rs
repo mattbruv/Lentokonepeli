@@ -1,15 +1,12 @@
-use std::f64::consts::TAU;
-
 use dogfight_macros::Networked;
 use image::RgbaImage;
-use imageproc::geometric_transformations::{rotate, Interpolation};
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
-    images::{get_image, get_rotateable_image, rotate_image, BOMB},
+    images::{get_rotateable_image, rotate_image, BOMB},
     math::radians_to_direction,
     network::{property::Property, EntityProperties, NetworkedEntity},
-    world::{DIRECTIONS, RESOLUTION},
+    world::RESOLUTION,
 };
 
 use super::{entity::Entity, types::EntityType, EntityId};

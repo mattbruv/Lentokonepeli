@@ -1,4 +1,4 @@
-use image::{self, DynamicImage, GenericImage, Rgba, RgbaImage};
+use image::{self, GenericImage, Rgba, RgbaImage};
 use imageproc::geometric_transformations::Interpolation;
 
 pub fn get_rotateable_image(bytes: &[u8]) -> image::RgbaImage {

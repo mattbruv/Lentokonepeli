@@ -29,6 +29,7 @@ use super::{
 };
 
 const MAX_Y: i16 = -570;
+const LANDING_SPEED: f64 = 100.0;
 // const SKY_HEIGHT: i16 = 500;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS, EnumBytes)]
@@ -382,11 +383,11 @@ impl Plane {
         actions: &mut Vec<Action>,
     ) {
         // if going faster than 100, slow down
-        if self.speed > 100.0 {
+        if self.speed > LANDING_SPEED {
             self.speed -= 3.0;
         }
         // if going slower than 100, speed up.
-        if self.speed < 100.0 {
+        if self.speed < LANDING_SPEED {
             self.speed += 3.0;
         }
         // if we're within a range of 3 from 100, set to 100.
@@ -750,8 +751,6 @@ impl Plane {
 
 // Impl Physical Model
 impl Plane {
-    const LANDING_SPEED: f64 = 100.0;
-
     fn run(&mut self) {
         self.gravity();
         self.air_resistance();

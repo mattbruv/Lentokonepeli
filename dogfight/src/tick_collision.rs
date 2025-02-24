@@ -1,17 +1,9 @@
-use std::{any::Any, f64::consts::PI};
-
-use imageproc::utils::Diff;
+use std::f64::consts::PI;
 
 use crate::{
     collision::SolidEntity,
     debug::log,
-    entities::{
-        entity::Entity,
-        man::ManState,
-        plane::{self, PlaneMode},
-        types::EntityType,
-        EntityId,
-    },
+    entities::{entity::Entity, man::ManState, plane::PlaneMode, types::EntityType, EntityId},
     output::ServerOutput,
     tick_actions::{Action, ExplosionData, RemoveData},
     world::World,
@@ -113,7 +105,7 @@ impl World {
             }
 
             // Man -> Water
-            for (water_id, water) in self.waters.get_map_mut() {
+            for (_water_id, water) in self.waters.get_map_mut() {
                 //
                 if man.check_collision(water) {
                     actions.push(Action::RemoveEntity(RemoveData {
@@ -124,8 +116,7 @@ impl World {
                 }
             }
 
-            for (runway_id, runway) in self.runways.get_map_mut() {
-                //
+            for (_runway_id, runway) in self.runways.get_map_mut() {
                 if man.check_collision(runway) {
                     actions.push(Action::RemoveEntity(RemoveData {
                         ent_id: *man_id,
@@ -503,7 +494,7 @@ impl World {
         actions
     }
 
-    // Get bounding boxes of all collidable objects
+    // Get bounding boxes of all collide-able objects
     //
 }
 

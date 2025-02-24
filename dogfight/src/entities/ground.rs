@@ -3,7 +3,7 @@ use image::RgbaImage;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
-    images::{get_image, GROUND1, PARACHUTER0},
+    images::{get_image, GROUND1},
     network::{property::*, EntityProperties, NetworkedEntity},
 };
 

@@ -1,13 +1,9 @@
-use image::{codecs::jpeg::PixelDensity, RgbaImage};
+use image::RgbaImage;
 use serde::Serialize;
 use ts_rs::TS;
 
 use crate::{
-    entities::{
-        entity::Entity,
-        types::{EntityType, Team},
-        EntityId,
-    },
+    entities::{entity::Entity, types::EntityType, EntityId},
     math::Point,
 };
 
