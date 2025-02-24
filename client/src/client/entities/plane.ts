@@ -34,6 +34,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
   private angle: number = 0;
 
   public props: Required<PlaneProperties> = {
+    team: "Allies",
     client_x: 0,
     client_y: 0,
     client_fuel: 0,
@@ -193,6 +194,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
     client_y: () => {
       this.planeSprite.position.y = this.props.client_y
     },
+    team: () => { },
     client_ammo: () => { },
     client_health: () => { },
     client_fuel: () => {
@@ -251,6 +253,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
   public getRadarInfo(): RadarObject {
     return {
       type: RadarObjectType.Plane,
+      team: this.props.team,
       x: this.props.client_x,
       y: this.props.client_y,
     }

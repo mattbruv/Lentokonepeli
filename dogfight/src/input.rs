@@ -186,26 +186,34 @@ impl World {
                     }
                 }
                 PlayerCommand::PlayerChooseRunway(selection) => {
-                    let pid = *self.get_player_from_name(&name).unwrap().0;
+                    if let Some((pid, player)) = self.get_player_from_name(&name) {
+                        if let Some(team) = player.get_team() {
+                            if let Some(runway) = self.runways.get(selection.runway_id) {
+                                let plane = Plane::new(
+                                    *pid,
+                                    *team,
+                                    selection.plane_type,
+                                    selection.runway_id,
+                                    runway,
+                                );
 
-                    if let Some(runway) = self.runways.get(selection.runway_id) {
-                        let plane =
-                            Plane::new(pid, selection.plane_type, selection.runway_id, runway);
-
-                        if let Some((plane_id, _)) = self.planes.insert(plane) {
-                            if let Some((_, player)) = self.get_player_from_name(&name) {
-                                player.set_keys(PlayerKeyboard::new());
-                                player.set_state(PlayerState::Playing);
-                                player.set_controlling(Some(ControllingEntity::new(
-                                    plane_id,
-                                    EntityType::Plane,
-                                )))
+                                if let Some((plane_id, _)) = self.planes.insert(plane) {
+                                    if let Some((_, player)) = self.get_player_from_name_mut(&name)
+                                    {
+                                        player.set_keys(PlayerKeyboard::new());
+                                        player.set_state(PlayerState::Playing);
+                                        player.set_controlling(Some(ControllingEntity::new(
+                                            plane_id,
+                                            EntityType::Plane,
+                                        )))
+                                    }
+                                }
                             }
                         }
                     }
                 }
                 PlayerCommand::PlayerKeyboard(keys) => {
-                    if let Some((_, p)) = self.get_player_from_name(&name) {
+                    if let Some((_, p)) = self.get_player_from_name_mut(&name) {
                         p.set_keys(keys);
                     }
                 }

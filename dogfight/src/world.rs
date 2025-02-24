@@ -120,13 +120,20 @@ impl World {
         output
     }
 
-    pub(crate) fn get_player_from_name(
+    pub(crate) fn get_player_from_name_mut(
         &mut self,
         name: &String,
     ) -> Option<(&EntityId, &mut Player)> {
         self.players
             .get_map_mut()
             .iter_mut()
+            .find(|(_, p)| p.get_name().eq(name))
+    }
+
+    pub(crate) fn get_player_from_name(&self, name: &String) -> Option<(&EntityId, &Player)> {
+        self.players
+            .get_map()
+            .iter()
             .find(|(_, p)| p.get_name().eq(name))
     }
 

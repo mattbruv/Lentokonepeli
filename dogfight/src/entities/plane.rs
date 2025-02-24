@@ -18,7 +18,7 @@ use crate::{
 };
 
 use super::{
-    bomb::{self, Bomb},
+    bomb::Bomb,
     bullet::Bullet,
     entity::Entity,
     man::Man,
@@ -69,6 +69,7 @@ pub struct Plane {
     player_id: EntityId,
     x: i32,
     y: i32,
+    team: Property<Team>,
     client_x: Property<i16>,
     client_y: Property<i16>,
     client_fuel: Property<u8>,
@@ -131,6 +132,7 @@ pub struct Plane {
 impl Plane {
     pub fn new(
         owner_id: EntityId,
+        team: Team,
         plane_type: PlaneType,
         runway_id: EntityId,
         runway: &Runway,
@@ -140,6 +142,7 @@ impl Plane {
             plane_type: Property::new(plane_type),
             x: 0,
             y: 0,
+            team: Property::new(team),
             client_x: Property::new(0),
             client_y: Property::new(0),
             client_fuel: Property::new(0),
@@ -300,7 +303,7 @@ impl Plane {
 
         if let Some(keys) = keyboard {
             if keys.space {
-                self.spawn_man_action(my_id, actions);
+                self.spawn_man_action(*self.team.get(), my_id, actions);
             }
         }
     }
@@ -449,7 +452,7 @@ impl Plane {
 
             // Jump out of plane
             if keys.space || is_out_of_bounds {
-                self.spawn_man_action(my_id, actions);
+                self.spawn_man_action(*self.team.get(), my_id, actions);
                 self.mode.set(PlaneMode::Falling);
             }
         }
@@ -625,8 +628,8 @@ impl Plane {
         ));
     }
 
-    fn spawn_man_action(&mut self, my_id: &u16, actions: &mut Vec<Action>) {
-        let mut man = Man::new(Team::Allies);
+    fn spawn_man_action(&mut self, team: Team, my_id: &u16, actions: &mut Vec<Action>) {
+        let mut man = Man::new(team);
         man.set_x(self.x);
         man.set_y(self.y);
         actions.push(Action::SpawnMan(

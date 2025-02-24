@@ -108,7 +108,7 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
     return {
       type: RadarObjectType.Man,
       x: this.props.client_x,
-      y: this.props.client_y,
+      y: this.props.client_y + this.manSprite.texture.height,
       team: this.props.team
     }
   }

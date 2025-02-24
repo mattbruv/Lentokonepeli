@@ -101,6 +101,9 @@ export class Radar {
         let startX = Math.round((obj.x * RADAR_HEIGHT) / 1000) - 1;
         let startY = Math.round((obj.y * RADAR_HEIGHT) / 1000) - 1;
         let color;
+
+        // console.log(this.myTeam, obj.team)
+
         if (this.myTeam === undefined || obj.team == undefined) {
             color = NEUTRAL_COLOR;
         } else {

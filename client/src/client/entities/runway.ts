@@ -168,7 +168,7 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
   public getRadarInfo(): RadarObject {
     return {
       type: RadarObjectType.Runway,
-      x: this.props.client_x,
+      x: (this.props.team === "Centrals") ? this.props.client_x : this.props.client_x + this.runwaySprite.width,
       y: this.props.client_y,
       health: this.props.client_health,
       team: this.props.team,
