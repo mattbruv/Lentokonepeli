@@ -570,6 +570,42 @@ impl Plane {
         self.total_health
     }
 
+    /**
+     * Returns some pseudo-random value between -0.5 and +0.5
+     */
+    fn deterministic_rotation_value(&self) -> f64 {
+        let x = *self.client_x.get();
+        let y = *self.client_y.get();
+
+        // Combine x and y into a single value, for example by using a hash-like approach
+        let combined = (x as i32 * 31 + y as i32).wrapping_mul(12345);
+
+        // Normalize the combined value to be between -0.5 and +0.5
+        let normalized = (combined as f64) / i32::MAX as f64;
+        normalized / 2.0
+    }
+
+    pub fn do_plane_collision(&mut self) -> () {
+        // only do this if we're in flying mode
+        if let PlaneMode::Flying = self.mode.get() {
+            self.set_mode(PlaneMode::Dodging);
+
+            // calculate rotation factor
+            // the original game uses Math.random()
+            // But we want this game to be deterministic in order to have replays one day.
+            // Old:
+            // PhysicalModel.access$118(this.physicalModel, (Math.random() - 0.5D) * 0.7853981633974483D);
+            // Math.random() - 0.5D * (PI / 4)
+            let rotation_factor = self.deterministic_rotation_value() * (PI / 4.0);
+
+            self.angle += rotation_factor;
+
+            self.flipped.set(!self.flipped.get());
+            self.set_health(self.health() - 25);
+            // TODO: add message for the player who took out this plane if health < 0
+        }
+    }
+
     pub fn subtract_health(&mut self, amount: i32) -> () {
         let new_health = self.total_health - amount;
         self.set_health(new_health);

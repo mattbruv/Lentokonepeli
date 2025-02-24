@@ -5,7 +5,13 @@ use imageproc::utils::Diff;
 use crate::{
     collision::SolidEntity,
     debug::log,
-    entities::{entity::Entity, man::ManState, plane::PlaneMode, types::EntityType, EntityId},
+    entities::{
+        entity::Entity,
+        man::ManState,
+        plane::{self, PlaneMode},
+        types::EntityType,
+        EntityId,
+    },
     output::ServerOutput,
     tick_actions::{Action, ExplosionData, RemoveData},
     world::World,
@@ -374,6 +380,25 @@ impl World {
     fn collide_planes(&mut self) -> Vec<Action> {
         let mut actions = vec![];
 
+        // First let's check plane to plane collision
+        // We need to iterate over the planes in a special way for this
+        // To not have two mutable references to the same thing.
+        let mut planes: Vec<_> = self.planes.get_map_mut().iter_mut().collect();
+
+        // Thanks ChatGPT + clippy for helping me figure out I needed split_at_mut
+        for i in 0..planes.len() {
+            let (left, right) = planes.split_at_mut(i + 1);
+            let (_, plane) = &mut left[i];
+
+            for (_, other) in right.iter_mut() {
+                if plane.check_collision(*other) {
+                    plane.do_plane_collision();
+                    other.do_plane_collision();
+                }
+            }
+        }
+
+        // Check plane collision against everything else
         'planes: for (plane_id, plane) in self.planes.get_map_mut() {
             for (man_id, man) in self.men.get_map_mut() {
                 if plane.check_collision(man) {
@@ -384,7 +409,7 @@ impl World {
                 }
             }
 
-            for (ground_id, ground) in self.grounds.get_map_mut() {
+            for (_, ground) in self.grounds.get_map_mut() {
                 if plane.check_collision(ground) {
                     blow_up(
                         &mut actions,
@@ -397,7 +422,7 @@ impl World {
                 }
             }
 
-            for (coast_id, coast) in self.coasts.get_map_mut() {
+            for (_, coast) in self.coasts.get_map_mut() {
                 if plane.check_collision(coast) {
                     blow_up(
                         &mut actions,
@@ -410,7 +435,7 @@ impl World {
                 }
             }
 
-            for (water_id, water) in self.waters.get_map_mut() {
+            for (_, water) in self.waters.get_map_mut() {
                 if plane.check_collision(water) {
                     actions.push(Action::RemoveEntity(RemoveData {
                         ent_id: *plane_id,
