@@ -402,10 +402,14 @@ impl World {
         'planes: for (plane_id, plane) in self.planes.get_map_mut() {
             for (man_id, man) in self.men.get_map_mut() {
                 if plane.check_collision(man) {
-                    actions.push(Action::RemoveEntity(RemoveData {
-                        ent_id: *man_id,
-                        ent_type: man.get_type(),
-                    }));
+                    // Only kill the man if the invincibility grace period has passed.
+                    //log(format!("{}", man.age_ms));
+                    if man.past_grace_period() {
+                        actions.push(Action::RemoveEntity(RemoveData {
+                            ent_id: *man_id,
+                            ent_type: man.get_type(),
+                        }));
+                    }
                 }
             }
 

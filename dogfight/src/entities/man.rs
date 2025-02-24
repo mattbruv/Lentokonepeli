@@ -19,6 +19,8 @@ use super::{
 
 const SPEED_PER_PIXEL: i32 = 100;
 
+const INVULNERABILITY_TIME: u32 = 200;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS, EnumBytes)]
 #[ts(export)]
 pub enum ManState {
@@ -44,6 +46,8 @@ pub struct Man {
 
     image_standing: RgbaImage,
     image_parachuting: RgbaImage,
+
+    age_ms: u32,
 }
 
 impl Man {
@@ -59,11 +63,18 @@ impl Man {
             y_speed: 1,
             image_standing: get_image(PARACHUTER0),
             image_parachuting: get_image(PARACHUTER1),
+            age_ms: 0,
         }
+    }
+
+    pub fn past_grace_period(&self) -> bool {
+        self.age_ms > INVULNERABILITY_TIME
     }
 
     pub fn tick(&mut self, man_id: EntityId, keyboard: &PlayerKeyboard) -> Vec<Action> {
         let mut actions = vec![];
+
+        self.age_ms += 10;
 
         match self.state.get() {
             ManState::Falling => self.fall(keyboard),
