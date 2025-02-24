@@ -75,6 +75,10 @@ impl World {
     }
     */
 
+    pub(crate) fn get_tick(&self) -> u32 {
+        self.game_tick
+    }
+
     pub fn tick(&mut self, input: Vec<ServerInput>) -> () {
         self.game_tick += 1;
 

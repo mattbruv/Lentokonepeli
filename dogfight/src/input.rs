@@ -1,4 +1,3 @@
-use rand::random;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
@@ -163,11 +162,13 @@ impl World {
                 }
                 PlayerCommand::PlayerChooseTeam(selection) => {
                     let pid = self.get_player_id_from_name(&name);
+                    let tick = self.get_tick();
 
                     if let Some(id) = pid {
                         if let Some(player) = self.players.get_mut(id) {
                             let the_team = selection.team.unwrap_or_else(|| {
-                                if random() {
+                                // "Randomly" pick a team
+                                if tick % 2 == 0 {
                                     Team::Centrals
                                 } else {
                                     Team::Allies
