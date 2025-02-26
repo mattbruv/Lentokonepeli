@@ -134,7 +134,47 @@ impl World {
     fn collide_bombs(&mut self) -> Vec<Action> {
         let mut actions = vec![];
 
+        // First let's check bomb to bomb collision
+        // We need to iterate over the bomb in a special way for this
+        // To not have two mutable references to the same thing.
+        let mut bombs: Vec<_> = self.bombs.get_map_mut().iter_mut().collect();
+
+        for i in 0..bombs.len() {
+            let (left, right) = bombs.split_at_mut(i + 1);
+            let (bomb_id, bomb) = &mut left[i];
+
+            for (other_id, other) in right.iter_mut() {
+                if !bomb.is_alive() || !other.is_alive() {
+                    continue;
+                }
+                if bomb.check_collision(*other) {
+                    // Remove these bombs from processing further on in the tick.
+                    bomb.kill();
+                    other.kill();
+
+                    blow_up(
+                        &mut actions,
+                        &bomb_id,
+                        bomb.get_type(),
+                        bomb.get_x(),
+                        bomb.get_y(),
+                    );
+                    blow_up(
+                        &mut actions,
+                        &other_id,
+                        other.get_type(),
+                        other.get_x(),
+                        other.get_y(),
+                    );
+                }
+            }
+        }
+
         'bombs: for (bomb_id, bomb) in self.bombs.get_map_mut() {
+            if !bomb.is_alive() {
+                continue;
+            }
+
             for (_, ground) in self.grounds.get_map_mut() {
                 if bomb.check_collision(ground) {
                     log("Bomb collision ground!?".to_string());

@@ -24,6 +24,7 @@ pub struct Bomb {
     y_speed: f64,
     image: RgbaImage,
     rotated_image: RgbaImage,
+    is_alive: bool,
 }
 
 impl Bomb {
@@ -42,7 +43,12 @@ impl Bomb {
 
             image: get_rotateable_image(BOMB),
             rotated_image: get_rotateable_image(BOMB),
+            is_alive: true,
         }
+    }
+
+    pub fn kill(&mut self) -> () {
+        self.is_alive = true;
     }
 
     pub fn player_id(&self) -> EntityId {
@@ -105,6 +111,6 @@ impl SolidEntity for Bomb {
     }
 
     fn is_alive(&self) -> bool {
-        true
+        self.is_alive
     }
 }
