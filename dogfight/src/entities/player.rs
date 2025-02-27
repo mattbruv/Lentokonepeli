@@ -39,11 +39,11 @@ impl NetworkedBytes for ControllingEntity {
         bytes
     }
 
-    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        let (slice, id) = EntityId::from_bytes(bytes);
-        let (dice, entity_type) = EntityType::from_bytes(slice);
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
+        let (slice, id) = EntityId::from_bytes(bytes)?;
+        let (dice, entity_type) = EntityType::from_bytes(slice)?;
         let controlling: ControllingEntity = ControllingEntity { id, entity_type };
-        (dice, controlling)
+        Some((dice, controlling))
     }
 }
 

@@ -739,7 +739,7 @@ impl Plane {
                 let pixel = image.get_pixel(x, y);
                 if pixel[3] > 0 {
                     // Check if alpha channel is non-zero (or change condition to fit your needs)
-                    return (y + 1).try_into().unwrap();
+                    return (y + 1).try_into();
                 }
             }
         }

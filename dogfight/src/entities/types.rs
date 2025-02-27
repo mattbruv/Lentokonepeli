@@ -1,6 +1,7 @@
 use crate::network::encoding::NetworkedBytes;
 use dogfight_macros::EnumBytes;
 use serde::{Deserialize, Serialize};
+use std::array::TryFromSliceError;
 use ts_rs::TS;
 
 #[derive(Serialize, Clone, Copy, Debug, TS, PartialEq, Eq, EnumBytes)]

@@ -56,12 +56,12 @@ pub fn enum_bytes(input: TokenStream) -> TokenStream {
                 vec![*self as u8]
             }
 
-            fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+            fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
                 let value = match bytes[0] {
                     #(#mappings)*
                     _ => panic!(#error_string, bytes[0]),
                 };
-                (&bytes[1..], value)
+                Some((&bytes[1..], value))
             }
         }
     })
@@ -116,6 +116,7 @@ pub fn networked(input: TokenStream) -> TokenStream {
     let mut expanded = quote! {
         use serde::Serialize;
         use ts_rs::TS;
+        use std::array::TryFromSliceError;
 
         #[derive(Serialize, Debug, TS, Eq, Clone, PartialEq)]
         #[ts(export)]
@@ -190,7 +191,7 @@ pub fn networked(input: TokenStream) -> TokenStream {
             quote! {
                 // If the header is set, read bytes of that type
                 if header[#index] {
-                    let data = #ty::from_bytes(data_bytes);
+                    let data = #ty::from_bytes(data_bytes)?;
                     parsed.#ident = Some(data.1);
                     // set data byte slice to new range
                     data_bytes = data.0;
@@ -217,7 +218,7 @@ pub fn networked(input: TokenStream) -> TokenStream {
                 header_bytes
             }
 
-            fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+            fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
 
                 let (header, mut data_bytes) = parse_property_header_bytes(bytes, #header_byte_count);
 
@@ -227,7 +228,7 @@ pub fn networked(input: TokenStream) -> TokenStream {
 
                 #(#property_loads)*
 
-                (data_bytes, parsed)
+                Some((data_bytes, parsed))
             }
         }
     };

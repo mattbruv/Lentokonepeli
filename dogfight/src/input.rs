@@ -1,3 +1,5 @@
+use std::array::TryFromSliceError;
+
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
@@ -106,8 +108,8 @@ impl NetworkedBytes for PlayerKeyboard {
         bytes
     }
 
-    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        let (slice, byte) = u8::from_bytes(bytes);
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
+        let (slice, byte) = u8::from_bytes(bytes)?;
 
         let keyboard: PlayerKeyboard = PlayerKeyboard {
             left: byte & (1 << 0) != 0,
@@ -120,7 +122,7 @@ impl NetworkedBytes for PlayerKeyboard {
             ctrl: byte & (1 << 7) != 0,
         };
 
-        (slice, keyboard)
+        Some((slice, keyboard))
     }
 }
 

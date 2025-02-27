@@ -2,7 +2,10 @@ mod utils;
 
 use dogfight::{
     input::{game_input_from_string, is_valid_command},
-    network::{game_events_from_bytes, game_events_to_binary, game_events_to_json},
+    network::{
+        game_events_from_bytes, game_events_to_binary, game_events_to_json,
+        player_command_json_from_binary, player_command_json_to_binary,
+    },
     output::ServerOutput,
     world::World,
 };
@@ -38,6 +41,14 @@ impl DogfightWeb {
 
     pub fn is_valid_command(&self, command_json: &str) -> bool {
         is_valid_command(command_json)
+    }
+
+    pub fn player_command_to_binary(&self, command_json: &str) -> Vec<u8> {
+        player_command_json_to_binary(command_json)
+    }
+
+    pub fn player_command_from_binary(&self, binary: Vec<u8>) -> String {
+        player_command_json_from_binary(&binary)
     }
 
     pub fn tick(&mut self, input_json: String) -> () {

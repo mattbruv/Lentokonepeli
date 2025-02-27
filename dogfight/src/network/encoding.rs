@@ -1,11 +1,24 @@
+use std::array::TryFromSliceError;
+
 use crate::{
     entities::{
-        background_item::BackgroundItemProperties, bomb::BombProperties, bullet::BulletProperties,
-        bunker::BunkerProperties, coast::CoastProperties, explosion::ExplosionProperties,
-        ground::GroundProperties, hill::HillProperties, man::ManProperties, plane::PlaneProperties,
-        player::PlayerProperties, runway::RunwayProperties, types::EntityType,
-        water::WaterProperties, world_info::WorldInfoProperties,
+        background_item::BackgroundItemProperties,
+        bomb::BombProperties,
+        bullet::BulletProperties,
+        bunker::BunkerProperties,
+        coast::CoastProperties,
+        explosion::ExplosionProperties,
+        ground::GroundProperties,
+        hill::HillProperties,
+        man::ManProperties,
+        plane::{PlaneProperties, PlaneType},
+        player::PlayerProperties,
+        runway::RunwayProperties,
+        types::{EntityType, Team},
+        water::WaterProperties,
+        world_info::WorldInfoProperties,
     },
+    input::{PlayerCommand, PlayerKeyboard, RunwaySelection, TeamSelection},
     network::EntityChangeType,
     world::World,
 };
@@ -55,7 +68,9 @@ pub fn parse_property_header_bytes(header_bytes: &[u8], num_bytes: usize) -> (Ve
 
 pub trait NetworkedBytes {
     fn to_bytes(&self) -> Vec<u8>;
-    fn from_bytes(bytes: &[u8]) -> (&[u8], Self);
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)>
+    where
+        Self: Sized;
 }
 
 impl NetworkedBytes for EntityChange {
@@ -113,15 +128,15 @@ impl NetworkedBytes for EntityChange {
         encoded
     }
 
-    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        let (mut bytes, header) = u16::from_bytes(bytes);
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
+        let (mut bytes, header) = u16::from_bytes(bytes)?;
 
         let update_type = header & 1;
 
         let ent_type_bitmask: u16 = 0b1111_1100_0000_0000;
         let ent_byte = ((header & ent_type_bitmask) >> 10) as u8;
         let slice = vec![ent_byte];
-        let (_, ent_type) = EntityType::from_bytes(&slice);
+        let (_, ent_type) = EntityType::from_bytes(&slice)?;
 
         let ent_id_bitmask: u16 = 0b0000_0011_1111_1110;
         let entity_id = (header & ent_id_bitmask) >> 1;
@@ -135,72 +150,72 @@ impl NetworkedBytes for EntityChange {
             // and return the new struct
             1 => match ent_type {
                 EntityType::Man => {
-                    let (slice, props) = ManProperties::from_bytes(bytes);
+                    let (slice, props) = ManProperties::from_bytes(bytes)?;
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::Man(props))
                 }
                 EntityType::Plane => {
-                    let (slice, props) = PlaneProperties::from_bytes(bytes);
+                    let (slice, props) = PlaneProperties::from_bytes(bytes)?;
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::Plane(props))
                 }
                 EntityType::Player => {
-                    let (slice, props) = PlayerProperties::from_bytes(bytes);
+                    let (slice, props) = PlayerProperties::from_bytes(bytes)?;
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::Player(props))
                 }
                 EntityType::BackgroundItem => {
-                    let (slice, props) = BackgroundItemProperties::from_bytes(bytes);
+                    let (slice, props) = BackgroundItemProperties::from_bytes(bytes)?;
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::BackgroundItem(props))
                 }
                 EntityType::Ground => {
-                    let (slice, props) = GroundProperties::from_bytes(bytes);
+                    let (slice, props) = GroundProperties::from_bytes(bytes)?;
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::Ground(props))
                 }
                 EntityType::Coast => {
-                    let (slice, props) = CoastProperties::from_bytes(bytes);
+                    let (slice, props) = CoastProperties::from_bytes(bytes)?;
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::Coast(props))
                 }
                 EntityType::Runway => {
-                    let (slice, props) = RunwayProperties::from_bytes(bytes);
+                    let (slice, props) = RunwayProperties::from_bytes(bytes)?;
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::Runway(props))
                 }
                 EntityType::Water => {
-                    let (slice, props) = WaterProperties::from_bytes(bytes);
+                    let (slice, props) = WaterProperties::from_bytes(bytes)?;
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::Water(props))
                 }
                 EntityType::Bunker => {
-                    let (slice, props) = BunkerProperties::from_bytes(bytes);
+                    let (slice, props) = BunkerProperties::from_bytes(bytes)?;
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::Bunker(props))
                 }
                 EntityType::WorldInfo => {
-                    let (slice, props) = WorldInfoProperties::from_bytes(bytes);
+                    let (slice, props) = WorldInfoProperties::from_bytes(bytes)?;
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::WorldInfo(props))
                 }
                 EntityType::Bomb => {
-                    let (slice, props) = BombProperties::from_bytes(bytes);
+                    let (slice, props) = BombProperties::from_bytes(bytes)?;
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::Bomb(props))
                 }
                 EntityType::Explosion => {
-                    let (slice, props) = ExplosionProperties::from_bytes(bytes);
+                    let (slice, props) = ExplosionProperties::from_bytes(bytes)?;
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::Explosion(props))
                 }
                 EntityType::Hill => {
-                    let (slice, props) = HillProperties::from_bytes(bytes);
+                    let (slice, props) = HillProperties::from_bytes(bytes)?;
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::Hill(props))
                 }
                 EntityType::Bullet => {
-                    let (slice, props) = BulletProperties::from_bytes(bytes);
+                    let (slice, props) = BulletProperties::from_bytes(bytes)?;
                     bytes = slice;
                     EntityChangeType::Properties(EntityProperties::Bullet(props))
                 }
@@ -214,7 +229,7 @@ impl NetworkedBytes for EntityChange {
             update: update,
         };
 
-        (bytes, change)
+        Some((bytes, change))
     }
 }
 
@@ -230,15 +245,15 @@ impl<T: NetworkedBytes> NetworkedBytes for Option<T> {
         }
     }
 
-    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        let (bytes, is_some) = u8::from_bytes(bytes);
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
+        let (bytes, is_some) = u8::from_bytes(bytes)?;
 
         match is_some {
             1 => {
-                let (bytes, thing) = T::from_bytes(bytes);
-                (bytes, Some(thing))
+                let (bytes, thing) = T::from_bytes(bytes)?;
+                Some((bytes, Some(thing)))
             }
-            _ => (bytes, None),
+            _ => Some((bytes, None)),
         }
     }
 }
@@ -251,12 +266,15 @@ impl NetworkedBytes for String {
 
         len
     }
-    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        let (bytes, len) = u32::from_bytes(bytes);
-        let slice = &bytes[0..len as usize];
-        let string_value = std::str::from_utf8(slice).unwrap();
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
+        let (bytes, len) = u32::from_bytes(bytes)?;
+        let slice = bytes.get(0..len as usize)?;
+        let string_value = std::str::from_utf8(slice).ok()?;
 
-        (&bytes[len as usize..], string_value.into())
+        Some((
+            bytes.get(len as usize..).unwrap_or(&[]),
+            string_value.into(),
+        ))
     }
 }
 
@@ -265,9 +283,9 @@ impl NetworkedBytes for i16 {
         i16::to_le_bytes(*self).into()
     }
 
-    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        let value = i16::from_le_bytes(bytes[..2].try_into().unwrap());
-        (&bytes[2..], value)
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
+        let value = i16::from_le_bytes(bytes.get(..2)?.try_into().ok()?);
+        Some((&bytes[2..], value))
     }
 }
 
@@ -276,9 +294,9 @@ impl NetworkedBytes for u16 {
         u16::to_le_bytes(*self).into()
     }
 
-    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        let value = u16::from_le_bytes(bytes[..2].try_into().unwrap());
-        (&bytes[2..], value)
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
+        let value = u16::from_le_bytes(bytes.get(..2)?.try_into().ok()?);
+        Some((&bytes[2..], value))
     }
 }
 
@@ -287,9 +305,9 @@ impl NetworkedBytes for u32 {
         u32::to_le_bytes(*self).into()
     }
 
-    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        let value = u32::from_le_bytes(bytes[..4].try_into().unwrap());
-        (&bytes[4..], value)
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
+        let value = u32::from_le_bytes(bytes.get(..4)?.try_into().ok()?);
+        Some((&bytes[4..], value))
     }
 }
 
@@ -298,9 +316,9 @@ impl NetworkedBytes for i32 {
         i32::to_le_bytes(*self).into()
     }
 
-    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        let value = i32::from_le_bytes(bytes[..4].try_into().unwrap());
-        (&bytes[4..], value)
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
+        let value = i32::from_le_bytes(bytes.get(..4)?.try_into().ok()?);
+        Some((&bytes[4..], value))
     }
 }
 
@@ -309,9 +327,9 @@ impl NetworkedBytes for u8 {
         u8::to_le_bytes(*self).into()
     }
 
-    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        let value = u8::from_le_bytes(bytes[..1].try_into().unwrap());
-        (&bytes[1..], value)
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
+        let value = u8::from_le_bytes(bytes.get(..1)?.try_into().ok()?);
+        Some((&bytes[1..], value))
     }
 }
 
@@ -320,9 +338,9 @@ impl NetworkedBytes for bool {
         vec![if *self { 1 } else { 0 }]
     }
 
-    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
         let value = bytes[0] != 0;
-        (&bytes[1..], value)
+        Some((&bytes[1..], value))
     }
 }
 
@@ -331,9 +349,92 @@ impl NetworkedBytes for i8 {
         i8::to_le_bytes(*self).into()
     }
 
-    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        let value = i8::from_le_bytes(bytes[..1].try_into().unwrap());
-        (&bytes[1..], value)
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
+        let value = i8::from_le_bytes(bytes.get(..1)?.try_into().ok()?);
+        Some((&bytes[1..], value))
+    }
+}
+
+impl NetworkedBytes for PlayerCommand {
+    /*
+           let update: EntityChangeType = match update_type {
+           0 => EntityChangeType::Deleted,
+
+           // for each possible type:
+           // parse the properties from bytes,
+           // advance the byte array,
+           // and return the new struct
+           1 => match ent_type {
+               EntityType::Man => {
+                   let (slice, props) = ManProperties::from_bytes(bytes);
+                   bytes = slice;
+                   EntityChangeType::Properties(EntityProperties::Man(props))
+               }
+               EntityType::Plane => {
+    */
+    fn to_bytes(&self) -> Vec<u8> {
+        let mut bytes = vec![];
+
+        match self {
+            PlayerCommand::PlayerKeyboard(player_keyboard) => {
+                bytes.push(0);
+                bytes.extend(player_keyboard.to_bytes());
+            }
+            PlayerCommand::RemovePlayer => {
+                bytes.push(1);
+            }
+            PlayerCommand::PlayerChooseTeam(team_selection) => {
+                bytes.push(2);
+                bytes.extend(team_selection.team.to_bytes());
+            }
+            PlayerCommand::PlayerChooseRunway(runway_selection) => {
+                bytes.push(3);
+                bytes.extend(runway_selection.runway_id.to_bytes());
+                bytes.extend(runway_selection.plane_type.to_bytes());
+            }
+            PlayerCommand::AddPlayer(name) => {
+                bytes.push(4);
+                bytes.extend(name.to_bytes());
+            }
+        };
+
+        bytes
+    }
+
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
+        let (mut bytes, command_type) = u8::from_bytes(bytes)?;
+
+        let command = match command_type {
+            0 => {
+                let (slice, keyboard) = PlayerKeyboard::from_bytes(bytes)?;
+                bytes = slice;
+                PlayerCommand::PlayerKeyboard(keyboard)
+            }
+            1 => PlayerCommand::RemovePlayer,
+            2 => {
+                let (slice, team) = Option::<Team>::from_bytes(bytes)?;
+                bytes = slice;
+                PlayerCommand::PlayerChooseTeam(TeamSelection { team })
+            }
+            3 => {
+                let (slice, runway_id) = u16::from_bytes(bytes)?;
+                bytes = slice;
+                let (slice, plane_type) = PlaneType::from_bytes(bytes)?;
+                bytes = slice;
+                PlayerCommand::PlayerChooseRunway(RunwaySelection {
+                    runway_id,
+                    plane_type,
+                })
+            }
+            4 => {
+                let (slice, name) = String::from_bytes(bytes)?;
+                bytes = slice;
+                PlayerCommand::AddPlayer(name)
+            }
+            _ => panic!("Unknown command type"),
+        };
+
+        Some((bytes, command))
     }
 }
 

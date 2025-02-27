@@ -12,6 +12,7 @@ use crate::{
         player::PlayerProperties, runway::RunwayProperties, types::EntityType,
         water::WaterProperties, world_info::WorldInfoProperties, EntityId,
     },
+    input::PlayerCommand,
     output::ServerOutput,
 };
 
@@ -38,10 +39,28 @@ pub fn game_events_to_binary(events: &Vec<ServerOutput>) -> Vec<u8> {
     events.to_bytes()
 }
 
+pub fn player_command_json_from_binary(bytes: &Vec<u8>) -> String {
+    match PlayerCommand::from_bytes(bytes) {
+        Some((_, command)) => serde_json::to_string(&command).unwrap_or("".to_string()),
+        None => "".to_string(),
+    }
+}
+
+pub fn player_command_json_to_binary(command_json: &str) -> Vec<u8> {
+    let command = player_command_from_json(command_json);
+    command.to_bytes()
+}
+
+fn player_command_from_json(command_json: &str) -> PlayerCommand {
+    serde_json::from_str::<PlayerCommand>(&command_json).unwrap()
+}
+
 pub fn game_events_from_bytes(bytes: &Vec<u8>) -> Vec<ServerOutput> {
     //web_sys::console::log_1(&format!("data: {:?}", bytes).into());
-    let (_, events) = Vec::<ServerOutput>::from_bytes(bytes);
-    events
+    match Vec::<ServerOutput>::from_bytes(bytes) {
+        Some((_, events)) => events,
+        None => vec![],
+    }
 }
 
 pub fn game_events_to_json(events: &Vec<ServerOutput>) -> String {
@@ -53,17 +72,17 @@ impl NetworkedBytes for Vec<ServerOutput> {
         self.iter().flat_map(|x| x.to_bytes()).collect()
     }
 
-    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
         let mut events = vec![];
         let mut slice = bytes;
 
         while slice.len() > 0 {
-            let (bytes, event) = ServerOutput::from_bytes(slice);
+            let (bytes, event) = ServerOutput::from_bytes(slice)?;
             events.push(event);
             slice = &bytes;
         }
 
-        (bytes, events)
+        Some((bytes, events))
     }
 }
 

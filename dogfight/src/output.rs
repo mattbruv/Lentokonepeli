@@ -1,3 +1,5 @@
+use std::array::TryFromSliceError;
+
 use serde::Serialize;
 use ts_rs::TS;
 
@@ -50,46 +52,46 @@ impl NetworkedBytes for ServerOutput {
         bytes
     }
 
-    fn from_bytes(bytes: &[u8]) -> (&[u8], Self) {
-        let (mut slice, variant) = u8::from_bytes(bytes);
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
+        let (mut slice, variant) = u8::from_bytes(bytes)?;
 
         match variant {
             0 => {
                 // parse entity changes
-                let (bytes, change_length) = u8::from_bytes(slice);
+                let (bytes, change_length) = u8::from_bytes(slice)?;
                 slice = &bytes;
                 let mut changes = vec![];
 
                 for _ in 0..change_length {
-                    let (bytes, update) = EntityChange::from_bytes(slice);
+                    let (bytes, update) = EntityChange::from_bytes(slice)?;
                     slice = &bytes;
                     changes.push(update);
                 }
 
-                (slice, ServerOutput::EntityChanges(changes))
+                Some((slice, ServerOutput::EntityChanges(changes)))
             }
             1 => {
-                let (bytes, name) = String::from_bytes(slice);
+                let (bytes, name) = String::from_bytes(slice)?;
                 slice = &bytes;
-                (slice, ServerOutput::PlayerJoin(name))
+                Some((slice, ServerOutput::PlayerJoin(name)))
             }
             2 => {
-                let (bytes, name) = String::from_bytes(slice);
+                let (bytes, name) = String::from_bytes(slice)?;
                 slice = &bytes;
-                (slice, ServerOutput::PlayerLeave(name))
+                Some((slice, ServerOutput::PlayerLeave(name)))
             }
             3 => {
-                let (bytes, name) = String::from_bytes(slice);
+                let (bytes, name) = String::from_bytes(slice)?;
                 slice = &bytes;
-                let (bytes, team) = Team::from_bytes(slice);
+                let (bytes, team) = Team::from_bytes(slice)?;
                 slice = &bytes;
-                (
+                Some((
                     slice,
                     ServerOutput::PlayerJoinTeam {
                         name: name,
                         team: team,
                     },
-                )
+                ))
             }
             _ => panic!("Unrecognized enum variant in Event: {}", variant),
         }

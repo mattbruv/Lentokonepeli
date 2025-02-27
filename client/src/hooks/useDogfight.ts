@@ -98,6 +98,15 @@ export function useDogfight() {
     function clearPlayerCommands(): ServerInput[] {
         const output: ServerInput[] = [...ourInput.current, ...guestInput.current]
 
+        /*
+        const x = ourInput.current.at(0)
+        if (x) {
+            const bin = gameEngine.current.player_command_to_binary(JSON.stringify(x.command))
+            const out = gameEngine.current.player_command_from_binary(bin)
+            console.log(bin, out)
+        }
+        */
+
         ourInput.current = [];
         guestInput.current = [];
 
@@ -186,19 +195,22 @@ export function useDogfight() {
                 conn.send(all_state)
 
                 conn.on("data", (data) => {
-                    //console.log(data)
+                    // console.log(data)
                     const user = dataConnections.current.get(conn.connectionId)
 
                     if (user) {
-                        if (typeof data !== "string") return;
-                        // Ensure the guest sent a valid command so things don't break.
-                        if (gameEngine.current.is_valid_command(data)) {
-                            const command = JSON.parse(data) as PlayerCommand
-                            if (command.type == "AddPlayer") {
-                                user.name = command.data
-                            }
-                            guestInput.current.push({ player_name: user.name, command })
+                        const buffer = new Uint8Array(data as ArrayBuffer)
+                        //const test = "testjaiasdjfoaijseiofjoieji39393393939393" as unknown as Uint8Array
+                        const command_json = gameEngine.current.player_command_from_binary(buffer)
+                        const command: PlayerCommand = JSON.parse(command_json)
+
+                        if (command.type == "AddPlayer") {
+                            user.name = command.data
                         }
+
+                        // console.log(command)
+
+                        guestInput.current.push({ player_name: user.name, command })
                     }
                 })
             })
@@ -228,14 +240,16 @@ export function useDogfight() {
 
                 // If we're the guest, just send the command off.
                 processCommand.current = (command) => {
-                    conn.send(JSON.stringify(command))
+                    const binary = gameEngine.current.player_command_to_binary(JSON.stringify(command))
+                    conn.send(binary)
                 }
 
                 const myName = crypto.randomUUID().substring(0, 8)
                 const command: PlayerCommand = { type: "AddPlayer", data: myName }
                 client.current.setMyPlayerName(myName)
 
-                conn.send(JSON.stringify(command))
+                const cmd = gameEngine.current.player_command_to_binary(JSON.stringify(command))
+                conn.send(cmd)
 
                 conn.on("data", (data) => {
                     // console.log(data)
