@@ -10,7 +10,7 @@ use crate::{
         types::{EntityType, Team},
         EntityId,
     },
-    network::encoding::NetworkedBytes,
+    network::{encoding::NetworkedBytes, player_command_json_from_binary},
     output::ServerOutput,
     world::World,
 };
@@ -21,11 +21,11 @@ use crate::{
 #[derive(Serialize, Deserialize, Debug, TS)]
 #[ts(export)]
 pub struct ServerInput {
-    player_name: String,
-    command: PlayerCommand,
+    pub player_guid: String,
+    pub command: PlayerCommand,
 }
 
-#[derive(Serialize, Deserialize, Debug, TS)]
+#[derive(Serialize, Deserialize, Debug, TS, Clone)]
 #[ts(export)]
 #[serde(tag = "type", content = "data")]
 pub enum PlayerCommand {
@@ -126,14 +126,14 @@ impl NetworkedBytes for PlayerKeyboard {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, TS)]
+#[derive(Serialize, Deserialize, Debug, TS, Clone)]
 #[ts(export)]
 pub struct RunwaySelection {
     pub runway_id: EntityId,
     pub plane_type: PlaneType,
 }
 
-#[derive(Serialize, Deserialize, Debug, TS)]
+#[derive(Serialize, Deserialize, Debug, TS, Clone)]
 #[ts(export)]
 pub struct TeamSelection {
     pub team: Option<Team>, // None team selection means random
@@ -144,52 +144,48 @@ impl World {
         let mut game_output = vec![];
 
         for input in input_events {
-            let name = input.player_name;
+            let guid = input.player_guid;
             match input.command {
                 PlayerCommand::AddPlayer(desired_name) => {
                     // Add the player if not already exists
-                    if let None = self.get_player_id_from_name(&desired_name) {
-                        if let Some((_, p)) = self.players.insert(Player::new(desired_name)) {
+                    if let None = self.get_player_from_name(&desired_name) {
+                        if let Some((_, p)) = self.players.insert(Player::new(guid, desired_name)) {
                             game_output.push(ServerOutput::PlayerJoin(p.get_name()));
                         }
                     }
                 }
                 PlayerCommand::RemovePlayer => {
-                    let player_id = self.get_player_id_from_name(&name);
-
-                    if let Some(id) = player_id {
-                        self.players.remove(id);
-                        game_output.push(ServerOutput::PlayerLeave(name));
+                    if let Some((id, _)) = self.get_player_from_guid(&guid) {
+                        if let Some(player) = self.players.remove(*id) {
+                            game_output.push(ServerOutput::PlayerLeave(player.get_name()));
+                        }
                     }
                 }
                 PlayerCommand::PlayerChooseTeam(selection) => {
-                    let pid = self.get_player_id_from_name(&name);
                     let tick = self.get_tick();
 
-                    if let Some(id) = pid {
-                        if let Some(player) = self.players.get_mut(id) {
-                            let the_team = selection.team.unwrap_or_else(|| {
-                                // "Randomly" pick a team
-                                if tick % 2 == 0 {
-                                    Team::Centrals
-                                } else {
-                                    Team::Allies
-                                }
-                            });
-
-                            // only join the team if the player already isn't on the team
-                            if let None = player.get_team() {
-                                player.set_team(Some(the_team));
-                                game_output.push(ServerOutput::PlayerJoinTeam {
-                                    name: player.get_name(),
-                                    team: the_team,
-                                })
+                    if let Some((_, player)) = self.get_player_from_guid_mut(&guid) {
+                        let the_team = selection.team.unwrap_or_else(|| {
+                            // "Randomly" pick a team
+                            if tick % 2 == 0 {
+                                Team::Centrals
+                            } else {
+                                Team::Allies
                             }
+                        });
+
+                        // only join the team if the player already isn't on the team
+                        if let None = player.get_team() {
+                            player.set_team(Some(the_team));
+                            game_output.push(ServerOutput::PlayerJoinTeam {
+                                name: player.get_name(),
+                                team: the_team,
+                            })
                         }
                     }
                 }
                 PlayerCommand::PlayerChooseRunway(selection) => {
-                    if let Some((pid, player)) = self.get_player_from_name(&name) {
+                    if let Some((pid, player)) = self.get_player_from_guid(&guid) {
                         if let Some(team) = player.get_team() {
                             if let Some(runway) = self.runways.get(selection.runway_id) {
                                 let plane = Plane::new(
@@ -201,7 +197,7 @@ impl World {
                                 );
 
                                 if let Some((plane_id, _)) = self.planes.insert(plane) {
-                                    if let Some((_, player)) = self.get_player_from_name_mut(&name)
+                                    if let Some((_, player)) = self.get_player_from_guid_mut(&guid)
                                     {
                                         player.set_keys(PlayerKeyboard::new());
                                         player.set_state(PlayerState::Playing);
@@ -216,7 +212,7 @@ impl World {
                     }
                 }
                 PlayerCommand::PlayerKeyboard(keys) => {
-                    if let Some((_, p)) = self.get_player_from_name_mut(&name) {
+                    if let Some((_, p)) = self.get_player_from_guid_mut(&guid) {
                         p.set_keys(keys);
                     }
                 }

@@ -54,6 +54,7 @@ pub struct Player {
     team_kills: i32,
 
     keys: PlayerKeyboard,
+    guid: String,
 
     name: Property<String>,
     #[rustfmt::skip]
@@ -66,7 +67,7 @@ pub struct Player {
 }
 
 impl Player {
-    pub fn new(name: String) -> Self {
+    pub fn new(guid: String, name: String) -> Self {
         Player {
             shots: 0,
             hits: 0,
@@ -77,6 +78,7 @@ impl Player {
             team: Property::new(None),
             state: Property::new(PlayerState::ChoosingTeam),
             controlling: Property::new(None),
+            guid,
         }
     }
 
@@ -102,6 +104,10 @@ impl Player {
 
     pub fn get_name(&self) -> String {
         self.name.get().clone()
+    }
+
+    pub fn get_guid(&self) -> String {
+        self.guid.clone()
     }
 
     pub fn set_team(&mut self, team: Option<Team>) {

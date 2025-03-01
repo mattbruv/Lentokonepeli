@@ -13,15 +13,19 @@
   "dependencies": {
     "@mantine/core": "^7.8.0",
     "@mantine/hooks": "^7.8.0",
+    "@tabler/icons-react": "^3.30.0",
     "dogfight-web": "file:../dogfight/dogfight-web/pkg",
+    "file-saver": "^2.0.5",
     "howler": "^2.2.4",
     "peerjs": "^1.5.4",
     "pixi-viewport": "5.0.1",
     "pixi.js": "7.2.4",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^7.2.0"
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.7",
     "@types/howler": "^2.2.12",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
@@ -31,6 +35,9 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
+    "postcss": "^8.5.3",
+    "postcss-preset-mantine": "^1.17.0",
+    "postcss-simple-vars": "^7.0.1",
     "typescript": "^5.2.2",
     "vite": "^5.2.0",
     "vite-plugin-wasm": "^3.3.0"

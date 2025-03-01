@@ -29,6 +29,9 @@ impl World {
     pub fn load_level(&mut self, level_str: &str) {
         let level_data = parse_level(level_str);
 
+        self.replay_file.level_name = level_data.name;
+        self.replay_file.level_data = level_str.to_string();
+
         for object in level_data.objects {
             match object {
                 LevelObject::Ground(pos, width, terrain) => {

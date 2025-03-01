@@ -4,9 +4,10 @@ use dogfight::{
     input::{game_input_from_string, is_valid_command},
     network::{
         game_events_from_bytes, game_events_to_binary, game_events_to_json,
-        player_command_json_from_binary, player_command_json_to_binary,
+        player_command_json_from_binary, player_command_json_to_binary, replay_file_binary_to_json,
     },
     output::ServerOutput,
+    replay::{get_build_version, get_commit_version},
     world::World,
 };
 use wasm_bindgen::prelude::*;
@@ -37,6 +38,22 @@ impl DogfightWeb {
 
     pub fn init(&mut self) {
         self.world.init();
+    }
+
+    pub fn get_build_version(&self) -> String {
+        get_build_version()
+    }
+
+    pub fn get_commit(&self) -> String {
+        get_commit_version().to_string()
+    }
+
+    pub fn replay_file_binary_to_json(&self, bytes: Vec<u8>) -> String {
+        replay_file_binary_to_json(bytes)
+    }
+
+    pub fn get_replay_file(&self) -> Vec<u8> {
+        self.world.get_replay_file_bytes()
     }
 
     pub fn is_valid_command(&self, command_json: &str) -> bool {

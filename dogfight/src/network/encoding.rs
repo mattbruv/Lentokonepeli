@@ -1,4 +1,7 @@
-use std::array::TryFromSliceError;
+use core::slice;
+use std::collections::{BTreeMap, HashMap};
+
+use imageproc::region_labelling;
 
 use crate::{
     entities::{
@@ -258,6 +261,38 @@ impl<T: NetworkedBytes> NetworkedBytes for Option<T> {
     }
 }
 
+impl<T: NetworkedBytes> NetworkedBytes for Vec<T> {
+    fn to_bytes(&self) -> Vec<u8> {
+        let mut bytes: Vec<u8> = vec![];
+
+        let length: u16 = self.len() as u16;
+        bytes.extend(length.to_bytes());
+        for entry in self.iter() {
+            bytes.extend(entry.to_bytes());
+        }
+
+        bytes
+    }
+
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)>
+    where
+        Self: Sized,
+    {
+        let (bytes, length) = u16::from_bytes(bytes)?; // Extract the length
+
+        let mut remaining_bytes = bytes;
+        let mut vec = Vec::with_capacity(length as usize);
+
+        for _ in 0..length {
+            let (new_bytes, entry) = T::from_bytes(remaining_bytes)?;
+            remaining_bytes = new_bytes;
+            vec.push(entry);
+        }
+
+        Some((remaining_bytes, vec))
+    }
+}
+
 impl NetworkedBytes for String {
     fn to_bytes(&self) -> Vec<u8> {
         let bytes = self.as_bytes();
@@ -319,6 +354,42 @@ impl NetworkedBytes for i32 {
     fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
         let value = i32::from_le_bytes(bytes.get(..4)?.try_into().ok()?);
         Some((&bytes[4..], value))
+    }
+}
+
+impl<K: NetworkedBytes + Ord, V: NetworkedBytes> NetworkedBytes for BTreeMap<K, V> {
+    fn to_bytes(&self) -> Vec<u8> {
+        let len = self.len() as u32;
+        let mut bytes = vec![];
+
+        bytes.extend(len.to_bytes());
+
+        for (key, value) in self.iter() {
+            bytes.extend(key.to_bytes());
+            bytes.extend(value.to_bytes());
+        }
+
+        bytes
+    }
+
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)>
+    where
+        Self: Sized,
+    {
+        let mut btree_map = BTreeMap::new();
+
+        let (bytes, length) = u32::from_bytes(bytes)?;
+
+        let mut slice = bytes;
+
+        for _ in 0..length {
+            let (bytes, guid) = K::from_bytes(slice)?;
+            let (bytes, index) = V::from_bytes(bytes)?;
+            btree_map.insert(guid, index);
+            slice = bytes
+        }
+
+        Some((slice, btree_map))
     }
 }
 
@@ -427,9 +498,9 @@ impl NetworkedBytes for PlayerCommand {
                 })
             }
             4 => {
-                let (slice, name) = String::from_bytes(bytes)?;
+                let (slice, player_name) = String::from_bytes(bytes)?;
                 bytes = slice;
-                PlayerCommand::AddPlayer(name)
+                PlayerCommand::AddPlayer(player_name)
             }
             _ => panic!("Unknown command type"),
         };

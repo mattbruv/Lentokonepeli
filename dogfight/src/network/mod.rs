@@ -12,8 +12,9 @@ use crate::{
         player::PlayerProperties, runway::RunwayProperties, types::EntityType,
         water::WaterProperties, world_info::WorldInfoProperties, EntityId,
     },
-    input::PlayerCommand,
+    input::{PlayerCommand, ServerInput},
     output::ServerOutput,
+    replay::{ReplayFile, ReplayTick},
 };
 
 use self::encoding::NetworkedBytes;
@@ -51,6 +52,30 @@ pub fn player_command_json_to_binary(command_json: &str) -> Vec<u8> {
     command.to_bytes()
 }
 
+pub fn replay_file_json_to_binary(replay_file_json: &str) -> Vec<u8> {
+    let input = serde_json::from_str::<ReplayFile>(&replay_file_json).unwrap();
+    input.to_bytes()
+}
+
+pub fn replay_file_binary_to_json(bytes: Vec<u8>) -> String {
+    match ReplayFile::from_bytes(&bytes) {
+        Some((_, replay_file)) => serde_json::to_string(&replay_file).unwrap(),
+        None => "".to_string(),
+    }
+}
+
+pub fn replay_tick_json_to_binary(replay_tick_json: &str) -> Vec<u8> {
+    let input = serde_json::from_str::<ReplayTick>(&replay_tick_json).unwrap();
+    input.to_bytes()
+}
+pub fn replay_tick_binary_to_json(replay_tick_binary: Vec<u8>) -> String {
+    let value = ReplayTick::from_bytes(&replay_tick_binary);
+    match value {
+        Some((_, replay_tick)) => serde_json::to_string(&replay_tick).unwrap(),
+        None => "".to_string(),
+    }
+}
+
 fn player_command_from_json(command_json: &str) -> PlayerCommand {
     serde_json::from_str::<PlayerCommand>(&command_json).unwrap()
 }
@@ -65,25 +90,6 @@ pub fn game_events_from_bytes(bytes: &Vec<u8>) -> Vec<ServerOutput> {
 
 pub fn game_events_to_json(events: &Vec<ServerOutput>) -> String {
     serde_json::to_string(&events).unwrap()
-}
-
-impl NetworkedBytes for Vec<ServerOutput> {
-    fn to_bytes(&self) -> Vec<u8> {
-        self.iter().flat_map(|x| x.to_bytes()).collect()
-    }
-
-    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
-        let mut events = vec![];
-        let mut slice = bytes;
-
-        while slice.len() > 0 {
-            let (bytes, event) = ServerOutput::from_bytes(slice)?;
-            events.push(event);
-            slice = &bytes;
-        }
-
-        Some((bytes, events))
-    }
 }
 
 #[derive(Serialize, Debug, Clone, TS)]

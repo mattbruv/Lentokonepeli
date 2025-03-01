@@ -7,6 +7,7 @@ use crate::{
     },
     input::ServerInput,
     output::ServerOutput,
+    replay::{ReplayFile, ReplayTick, ReplayTickCommand},
 };
 
 pub const DIRECTIONS: i32 = 256;
@@ -30,6 +31,8 @@ pub struct World {
     pub explosions: EntityContainer<Explosion>,
     pub hills: EntityContainer<Hill>,
     pub bullets: EntityContainer<Bullet>,
+
+    pub replay_file: ReplayFile,
 }
 
 impl World {
@@ -51,6 +54,8 @@ impl World {
             hills: EntityContainer::new(EntityType::Hill),
             bullets: EntityContainer::new(EntityType::Bullet),
             game_output: vec![],
+
+            replay_file: ReplayFile::new(),
         };
 
         world
@@ -85,6 +90,9 @@ impl World {
         if self.game_tick == 50 {
             self.init_debug();
         }
+
+        // add input to replay file
+        self.add_replay_input(self.game_tick, &input);
 
         // process input data
         let input_events = self.handle_input(input);
@@ -135,16 +143,20 @@ impl World {
             .find(|(_, p)| p.get_name().eq(name))
     }
 
-    pub(crate) fn get_player_id_from_name(&self, name: &String) -> Option<EntityId> {
-        let player = self
-            .players
+    pub(crate) fn get_player_from_guid(&self, guid: &String) -> Option<(&EntityId, &Player)> {
+        self.players
             .get_map()
             .iter()
-            .find(|(_, p)| p.get_name().eq(name));
+            .find(|(_, p)| p.get_guid().eq(guid))
+    }
 
-        if let Some((id, _)) = player {
-            return Some(*id);
-        }
-        None
+    pub(crate) fn get_player_from_guid_mut(
+        &mut self,
+        guid: &String,
+    ) -> Option<(&EntityId, &mut Player)> {
+        self.players
+            .get_map_mut()
+            .iter_mut()
+            .find(|(_, p)| p.get_guid().eq(guid))
     }
 }
