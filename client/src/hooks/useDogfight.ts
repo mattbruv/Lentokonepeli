@@ -6,11 +6,15 @@ import { DogfightWeb } from "dogfight-web";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DogfightClient, GameClientCallbacks } from "../client/DogfightClient"
 import { PlayerCommand } from "dogfight-types/PlayerCommand";
+import { GameKey, getDefaultControls, useSettingsContext } from "../contexts/settingsContext";
 
 
 export function useDogfight(handleClientCommand: (command: PlayerCommand) => void) {
     const client = useMemo(() => (new DogfightClient()), [])
     const engine = useMemo(() => (DogfightWeb.new()), [])
+
+    const { settings } = useSettingsContext();
+    const originalKeys = getDefaultControls()
 
     async function initialize(div: HTMLDivElement): Promise<void> {
         // TODO: clean this up, just expose the onCommand directly in the client
@@ -43,11 +47,26 @@ export function useDogfight(handleClientCommand: (command: PlayerCommand) => voi
 
         await client.init(client_callbacks, div);
 
+        // This is ghetto, but it works for now
+        function mapBindingsToOldKey(key: string): string {
+            //console.log(settings.settings.controls)
+            // If this key is mapped, return the original key
+            const entry = Object.entries(settings.controls).find(([_, keys]) => keys.includes(key))
+            if (entry) {
+                return originalKeys[entry[0] as GameKey].at(0)!
+            }
+            return key
+        }
+
         document.onkeydown = (event) => {
-            client.keyboard.onKeyDown(event.key);
+            // Map the user's keybindings to the old keys
+            const key = mapBindingsToOldKey(event.key)
+            client.keyboard.onKeyDown(key);
         };
         document.onkeyup = (event) => {
-            client.keyboard.onKeyUp(event.key);
+            // Map the user's keybindings to the old keys
+            const key = mapBindingsToOldKey(event.key)
+            client.keyboard.onKeyUp(key);
 
             // pause/unpause the game
             if (event.key === "q") {
@@ -58,9 +77,11 @@ export function useDogfight(handleClientCommand: (command: PlayerCommand) => voi
                 //doTick.current = true
             }
 
-            if (event.key === "d") {
-                const debugInfo: DebugEntity[] = JSON.parse(engine.debug())
-                client.renderDebug(debugInfo);
+            if (import.meta.env.DEV) {
+                if (event.key === "d") {
+                    const debugInfo: DebugEntity[] = JSON.parse(engine.debug())
+                    client.renderDebug(debugInfo);
+                }
             }
         };
     }

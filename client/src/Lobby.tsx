@@ -1,9 +1,6 @@
-import { useRef, useState } from "react";
-import { Button, Card, Text, Flex, Grid, Group, InputLabel, Modal, Select, TextInput, Title, Stack } from "@mantine/core";
+import { useState } from "react";
+import { Button, Card, Text, Grid, Group, Modal, Select, TextInput, Title, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { saveAs } from "file-saver";
-import { IconDownload } from "@tabler/icons-react";
-import { useLocalHost } from "./hooks/useLocalHost";
 
 import Levels from "./assets/levels.json"
 import { Host } from "./Host";

@@ -1,5 +1,4 @@
 import { ReplayFile } from "dogfight-types/ReplayFile"
-import { DogfightWeb } from "dogfight-web"
 import { useEffect, useRef, useState } from "react"
 import { useDogfight } from "./useDogfight"
 import { ServerInput } from "dogfight-types/ServerInput"

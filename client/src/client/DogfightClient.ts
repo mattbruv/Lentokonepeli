@@ -182,11 +182,11 @@ export class DogfightClient {
     this.app.stage.addChild(this.runwaySelector.container);
     this.app.stage.addChild(this.gameHUD.container);
 
-    this.viewport.drag().pinch().wheel().decelerate();
 
     this.viewport.sortableChildren = true;
 
-    if (true) { // (import.meta.env.DEV) { /
+    if (import.meta.env.DEV) {
+      this.viewport.drag().pinch().wheel().decelerate();
       this.app.stage.addChild(this.debugPointer);
       this.app.stage.addChild(this.debugCoords);
       this.viewport.addChild(this.debugCollision);

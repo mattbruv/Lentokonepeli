@@ -1,7 +1,7 @@
-import { Text, Button, Card, FileButton, Group, LoadingOverlay, Stack, TextInput, Title, Alert, Tooltip } from "@mantine/core"
+import { Button, Card, FileButton, Group, LoadingOverlay, Stack, Title, Alert, Tooltip } from "@mantine/core"
 import { useRef, useState } from "react"
 import { useReplay } from "./hooks/useReplay";
-import { IconFile, IconFileUpload, IconInfoCircle } from "@tabler/icons-react";
+import { IconFileUpload, IconInfoCircle } from "@tabler/icons-react";
 
 enum ReplayState {
   ProvideFile,

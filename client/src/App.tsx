@@ -1,11 +1,12 @@
 import "./App.css";
-import { AppShell, Group, Text, Burger, UnstyledButton, Button, Tooltip, useMantineColorScheme, colorsTuple } from "@mantine/core";
+import { AppShell, Group, Text, Burger, UnstyledButton, Button, Tooltip, useMantineColorScheme } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import classes from "./App.module.css"
-import { IconBrandDiscord, IconBrandGithub, IconColorPicker, IconMoon, IconSun } from "@tabler/icons-react";
+import { IconBrandDiscord, IconBrandGithub, IconMoon, IconSun } from "@tabler/icons-react";
 import { Lobby } from "./Lobby";
 import { NavLink, Route, Routes } from "react-router-dom";
 import { Replay } from "./Replay";
+import { Settings } from "./Settings";
 
 function App() {
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
@@ -60,11 +61,15 @@ function App() {
           <UnstyledButton className={classes.control}>Watch Replay</UnstyledButton>
         </NavLink>
         <UnstyledButton className={classes.control}>Level Editor</UnstyledButton>
+        <NavLink to={"/settings"}>
+          <UnstyledButton className={classes.control}>Settings</UnstyledButton>
+        </NavLink>
       </AppShell.Navbar>
       <AppShell.Main>
         <Routes>
           <Route path="/" element={<Lobby />} />
           <Route path="/replay" element={<Replay />} />
+          <Route path="/settings" element={<Settings />} />
         </Routes>
       </AppShell.Main>
     </AppShell>
