@@ -16,6 +16,7 @@ use super::{
 
 #[derive(Networked)]
 pub struct Explosion {
+    player_id: Option<EntityId>,
     #[rustfmt::skip]
     team: Property<Option::<Team>>,
     client_x: Property<i16>,
@@ -33,8 +34,9 @@ const PHASE_TIME_MS: u32 = 70;
 const TOTAL_PHASES: u32 = 8;
 
 impl Explosion {
-    pub fn new(team: Option<Team>, x: i16, y: i16) -> Self {
+    pub fn new(player_id: Option<EntityId>, team: Option<Team>, x: i16, y: i16) -> Self {
         Explosion {
+            player_id,
             team: Property::new(team),
             client_x: Property::new(x),
             client_y: Property::new(y),
@@ -46,6 +48,10 @@ impl Explosion {
 
             image: get_image(EXPLOSION0004),
         }
+    }
+
+    pub fn player_id(&self) -> Option<EntityId> {
+        self.player_id
     }
 
     /*

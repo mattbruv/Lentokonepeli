@@ -41,12 +41,12 @@ impl World {
 
         // Tick men
         // TODO: tick all men, not just men controlled by players
-        for (_, player) in self.players.get_map_mut() {
+        for (player_id, player) in self.players.get_map_mut() {
             if let Some(controlled) = player.get_controlling() {
                 match controlled.entity_type {
                     EntityType::Man => {
                         if let Some(man) = self.men.get_mut(controlled.id) {
-                            actions.extend(man.tick(controlled.id, player.get_keys()));
+                            actions.extend(man.tick(*player_id, controlled.id, player.get_keys()));
                         }
                     }
                     _ => (),

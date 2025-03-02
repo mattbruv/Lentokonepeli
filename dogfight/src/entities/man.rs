@@ -3,6 +3,7 @@ use image::RgbaImage;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
+    game_event::{KillEvent, KillMethod},
     images::{get_image, PARACHUTER0, PARACHUTER1},
     input::PlayerKeyboard,
     network::{property::*, EntityProperties, NetworkedEntity},
@@ -70,7 +71,12 @@ impl Man {
         self.age_ms > INVULNERABILITY_TIME
     }
 
-    pub fn tick(&mut self, man_id: EntityId, keyboard: &PlayerKeyboard) -> Vec<Action> {
+    pub fn tick(
+        &mut self,
+        my_owner: EntityId,
+        man_id: EntityId,
+        keyboard: &PlayerKeyboard,
+    ) -> Vec<Action> {
         let mut actions = vec![];
 
         self.age_ms += 10;
@@ -79,7 +85,7 @@ impl Man {
             ManState::Falling => self.fall(keyboard),
             ManState::Parachuting => self.parachute(keyboard),
             ManState::Standing | ManState::WalkingLeft | ManState::WalkingRight => {
-                self.walk(man_id, keyboard, &mut actions)
+                self.walk(my_owner, man_id, keyboard, &mut actions)
             }
         }
 
@@ -161,7 +167,13 @@ impl Man {
         }
     }
 
-    fn walk(&mut self, man_id: EntityId, keyboard: &PlayerKeyboard, actions: &mut Vec<Action>) {
+    fn walk(
+        &mut self,
+        my_owner: EntityId,
+        man_id: EntityId,
+        keyboard: &PlayerKeyboard,
+        actions: &mut Vec<Action>,
+    ) {
         self.state.set(ManState::Standing);
 
         if keyboard.left {
@@ -185,7 +197,13 @@ impl Man {
             let y = self.client_y.get() + (self.image_standing.height()) as i16;
 
             // log(format!("x: {}, y: {}", x, y));
+            actions.push(Action::RegisterKill(KillEvent::new(
+                my_owner,
+                None,
+                KillMethod::Man,
+            )));
             actions.push(Action::Explosion(ExplosionData {
+                explosion_owner: Some(my_owner),
                 team: Some(*self.team.get()),
                 client_x: x,
                 client_y: y,

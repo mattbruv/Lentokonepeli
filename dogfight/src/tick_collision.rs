@@ -1,9 +1,17 @@
-use std::f64::consts::PI;
+use std::{any::Any, f64::consts::PI};
 
 use crate::{
     collision::SolidEntity,
     debug::log,
-    entities::{entity::Entity, man::ManState, plane::PlaneMode, types::EntityType, EntityId},
+    entities::{
+        entity::Entity,
+        man::ManState,
+        plane::{Plane, PlaneMode},
+        player,
+        types::EntityType,
+        EntityId,
+    },
+    game_event::{KillEvent, KillMethod},
     output::ServerOutput,
     tick_actions::{Action, ExplosionData, RemoveData},
     world::World,
@@ -64,6 +72,8 @@ impl World {
         let mut actions = vec![];
 
         'men: for (man_id, man) in self.men.get_map_mut() {
+            let controlling = self.players.get_player_controlling(man.get_type(), *man_id);
+
             // Man -> Ground
             for (_, ground) in self.grounds.get_map_mut() {
                 if man.check_collision(ground) {
@@ -72,6 +82,13 @@ impl World {
                         ManState::Falling | ManState::Parachuting => {
                             // If we're falling faster than a certain speed, kill player.
                             if man.die_from_fall() {
+                                if let Some((pid, _)) = controlling {
+                                    actions.push(Action::RegisterKill(KillEvent::new(
+                                        *pid,
+                                        None,
+                                        KillMethod::Man,
+                                    )));
+                                }
                                 actions.push(Action::RemoveEntity(RemoveData {
                                     ent_id: *man_id,
                                     ent_type: man.get_type(),
@@ -94,6 +111,13 @@ impl World {
             for (_, coast) in self.coasts.get_map_mut() {
                 //
                 if man.check_collision(coast) {
+                    if let Some((pid, _)) = controlling {
+                        actions.push(Action::RegisterKill(KillEvent::new(
+                            *pid,
+                            None,
+                            KillMethod::Man,
+                        )));
+                    }
                     // just kill me
                     actions.push(Action::RemoveEntity(RemoveData {
                         ent_id: *man_id,
@@ -108,6 +132,13 @@ impl World {
             for (_water_id, water) in self.waters.get_map_mut() {
                 //
                 if man.check_collision(water) {
+                    if let Some((pid, _)) = controlling {
+                        actions.push(Action::RegisterKill(KillEvent::new(
+                            *pid,
+                            None,
+                            KillMethod::Man,
+                        )));
+                    }
                     actions.push(Action::RemoveEntity(RemoveData {
                         ent_id: *man_id,
                         ent_type: man.get_type(),
@@ -154,6 +185,7 @@ impl World {
 
                     blow_up(
                         &mut actions,
+                        Some(bomb.player_id()),
                         &bomb_id,
                         bomb.get_type(),
                         bomb.get_x(),
@@ -161,6 +193,7 @@ impl World {
                     );
                     blow_up(
                         &mut actions,
+                        Some(other.player_id()),
                         &other_id,
                         other.get_type(),
                         other.get_x(),
@@ -177,9 +210,10 @@ impl World {
 
             for (_, ground) in self.grounds.get_map_mut() {
                 if bomb.check_collision(ground) {
-                    log("Bomb collision ground!?".to_string());
+                    //log("Bomb collision ground!?".to_string());
                     blow_up(
                         &mut actions,
+                        Some(bomb.player_id()),
                         bomb_id,
                         bomb.get_type(),
                         bomb.get_x(),
@@ -194,6 +228,7 @@ impl World {
                 if bomb.check_collision(coast) {
                     blow_up(
                         &mut actions,
+                        Some(bomb.player_id()),
                         bomb_id,
                         bomb.get_type(),
                         bomb.get_x(),
@@ -217,13 +252,26 @@ impl World {
 
             for (plane_id, plane) in self.planes.get_map_mut() {
                 if bomb.player_id() != plane.player_id() && bomb.check_collision(plane) {
-                    log("Bomb collision plane?".to_string());
+                    // log("Bomb collision plane?".to_string());
+
+                    if let Some((owner_id, _)) = self
+                        .players
+                        .get_player_controlling(plane.get_type(), *plane_id)
+                    {
+                        actions.push(Action::RegisterKill(KillEvent::new(
+                            bomb.player_id(),
+                            Some(*owner_id),
+                            KillMethod::Plane,
+                        )));
+                    }
                     actions.push(Action::RemoveEntity(RemoveData {
                         ent_id: *plane_id,
                         ent_type: plane.get_type(),
                     }));
+
                     blow_up(
                         &mut actions,
+                        Some(bomb.player_id()),
                         bomb_id,
                         bomb.get_type(),
                         plane.get_client_x(),
@@ -235,12 +283,22 @@ impl World {
 
             for (man_id, man) in self.men.get_map_mut() {
                 if bomb.check_collision(man) {
+                    if let Some((owner_id, _)) =
+                        self.players.get_player_controlling(man.get_type(), *man_id)
+                    {
+                        actions.push(Action::RegisterKill(KillEvent::new(
+                            bomb.player_id(),
+                            Some(*owner_id),
+                            KillMethod::Man,
+                        )));
+                    }
                     actions.push(Action::RemoveEntity(RemoveData {
                         ent_id: *man_id,
                         ent_type: man.get_type(),
                     }));
                     blow_up(
                         &mut actions,
+                        Some(bomb.player_id()),
                         bomb_id,
                         bomb.get_type(),
                         man.get_client_x(),
@@ -255,6 +313,7 @@ impl World {
                     runway.subtract_health(30);
                     blow_up(
                         &mut actions,
+                        Some(bomb.player_id()),
                         bomb_id,
                         bomb.get_type(),
                         bomb.get_x(),
@@ -274,11 +333,20 @@ impl World {
         'bullets: for (bullet_id, bullet) in self.bullets.get_map_mut() {
             for (man_id, man) in self.men.get_map_mut() {
                 if bullet.check_collision(man) {
+                    // Kill Man
+                    if let Some((owner_id, _)) =
+                        self.players.get_player_controlling(man.get_type(), *man_id)
+                    {
+                        actions.push(Action::RegisterKill(KillEvent::new(
+                            bullet.player_id(),
+                            Some(*owner_id),
+                            KillMethod::Man,
+                        )));
+                    }
                     actions.push(Action::RemoveEntity(RemoveData {
                         ent_id: *bullet_id,
                         ent_type: bullet.get_type(),
                     }));
-                    // Kill man
                     actions.push(Action::RemoveEntity(RemoveData {
                         ent_id: *man_id,
                         ent_type: man.get_type(),
@@ -287,11 +355,25 @@ impl World {
                 }
             }
 
-            for (_, plane) in self.planes.get_map_mut() {
+            for (plane_id, plane) in self.planes.get_map_mut() {
                 // Don't collide our own bullet with our own plane
                 if bullet.player_id() != plane.player_id() && bullet.check_collision(plane) {
                     let amount = (30.0 * bullet.get_damage_factor()) as i32;
                     plane.subtract_health(amount);
+
+                    if plane.health() <= 0 && plane.get_downed_by().is_none() {
+                        if let Some((owner_id, _)) = self
+                            .players
+                            .get_player_controlling(plane.get_type(), *plane_id)
+                        {
+                            plane.set_downed_by(Some(bullet.player_id()));
+                            actions.push(Action::RegisterKill(KillEvent::new(
+                                bullet.player_id(),
+                                Some(*owner_id),
+                                KillMethod::Plane,
+                            )));
+                        }
+                    }
                     actions.push(Action::RemoveEntity(RemoveData {
                         ent_id: *bullet_id,
                         ent_type: bullet.get_type(),
@@ -310,6 +392,7 @@ impl World {
 
                     blow_up(
                         &mut actions,
+                        Some(bomb.player_id()),
                         bomb_id,
                         bomb.get_type(),
                         bomb.get_x(),
@@ -371,13 +454,35 @@ impl World {
         //
 
         '_explosions: for (_, explosion) in self.explosions.get_map_mut() {
+            let explosion_owner = explosion.player_id();
+
             for (plane_id, plane) in self.planes.get_map_mut() {
                 if explosion.check_collision(plane) {
                     // Do 50 damage, and if this kills the plane, blow it up
                     plane.subtract_health(50);
-                    if plane.health() <= 0 {
+                    if plane.health() <= 0 && plane.get_downed_by().is_none() {
+                        if let Some((owner_id, _)) = self
+                            .players
+                            .get_player_controlling(plane.get_type(), *plane_id)
+                        {
+                            if let Some(killer) = explosion_owner {
+                                plane.set_downed_by(Some(killer));
+                                // Draw kill plane icon and kill man icon
+                                actions.push(Action::RegisterKill(KillEvent::new(
+                                    killer,
+                                    Some(*owner_id),
+                                    KillMethod::Plane,
+                                )));
+                                actions.push(Action::RegisterKill(KillEvent::new(
+                                    killer,
+                                    Some(*owner_id),
+                                    KillMethod::Man,
+                                )));
+                            }
+                        }
                         blow_up(
                             &mut actions,
+                            explosion.player_id(),
                             plane_id,
                             plane.get_type(),
                             plane.get_client_x(),
@@ -389,6 +494,18 @@ impl World {
 
             for (man_id, man) in self.men.get_map_mut() {
                 if explosion.check_collision(man) {
+                    if let Some(killer) = explosion_owner {
+                        if let Some((owner_id, _)) =
+                            self.players.get_player_controlling(man.get_type(), *man_id)
+                        {
+                            // Draw kill plane icon and kill man icon
+                            actions.push(Action::RegisterKill(KillEvent::new(
+                                killer,
+                                Some(*owner_id),
+                                KillMethod::Man,
+                            )));
+                        }
+                    }
                     actions.push(Action::RemoveEntity(RemoveData {
                         ent_id: *man_id,
                         ent_type: man.get_type(),
@@ -409,7 +526,7 @@ impl World {
     }
 
     fn collide_planes(&mut self) -> Vec<Action> {
-        let mut actions = vec![];
+        let mut actions: Vec<Action> = vec![];
 
         // First let's check plane to plane collision
         // We need to iterate over the planes in a special way for this
@@ -425,6 +542,23 @@ impl World {
                 if plane.check_collision(*other) {
                     plane.do_plane_collision();
                     other.do_plane_collision();
+
+                    if plane.health() <= 0 && plane.get_downed_by().is_none() {
+                        plane.set_downed_by(Some(other.player_id()));
+                        actions.push(Action::RegisterKill(KillEvent::new(
+                            other.player_id(),
+                            Some(plane.player_id()),
+                            KillMethod::Plane,
+                        )));
+                    }
+                    if other.health() <= 0 && other.get_downed_by().is_none() {
+                        other.set_downed_by(Some(plane.player_id()));
+                        actions.push(Action::RegisterKill(KillEvent::new(
+                            plane.player_id(),
+                            Some(other.player_id()),
+                            KillMethod::Plane,
+                        )));
+                    }
                 }
             }
         }
@@ -435,7 +569,28 @@ impl World {
                 if plane.check_collision(man) {
                     // Only kill the man if the invincibility grace period has passed.
                     //log(format!("{}", man.age_ms));
+                    let controlling = self.players.get_player_controlling(man.get_type(), *man_id);
+                    let killer = plane.player_id();
+
+                    // we want to know if we hit ourselves or someone else
+                    let victim: Option<EntityId> = match controlling {
+                        // If we hit ourselves, we shouldn't display a victim
+                        Some((controlling_player_id, _)) => {
+                            if killer == *controlling_player_id {
+                                None
+                            } else {
+                                Some(*controlling_player_id)
+                            }
+                        }
+                        None => None,
+                    };
+
                     if man.past_grace_period() {
+                        actions.push(Action::RegisterKill(KillEvent::new(
+                            killer,
+                            victim,
+                            KillMethod::Man,
+                        )));
                         actions.push(Action::RemoveEntity(RemoveData {
                             ent_id: *man_id,
                             ent_type: man.get_type(),
@@ -444,10 +599,16 @@ impl World {
                 }
             }
 
+            let controlling = self
+                .players
+                .get_player_controlling(plane.get_type(), *plane_id);
+
             for (_, ground) in self.grounds.get_map_mut() {
                 if plane.check_collision(ground) {
+                    kill_plane_and_give_credit(&mut actions, plane, &controlling);
                     blow_up(
                         &mut actions,
+                        Some(plane.player_id()),
                         plane_id,
                         plane.get_type(),
                         plane.get_client_x(),
@@ -459,8 +620,10 @@ impl World {
 
             for (_, coast) in self.coasts.get_map_mut() {
                 if plane.check_collision(coast) {
+                    kill_plane_and_give_credit(&mut actions, plane, &controlling);
                     blow_up(
                         &mut actions,
+                        Some(plane.player_id()),
                         plane_id,
                         plane.get_type(),
                         plane.get_client_x(),
@@ -472,6 +635,7 @@ impl World {
 
             for (_, water) in self.waters.get_map_mut() {
                 if plane.check_collision(water) {
+                    kill_plane_and_give_credit(&mut actions, plane, &controlling);
                     actions.push(Action::RemoveEntity(RemoveData {
                         ent_id: *plane_id,
                         ent_type: plane.get_type(),
@@ -496,12 +660,7 @@ impl World {
                         continue 'planes;
                     }
 
-                    let plane_has_player = self
-                        .players
-                        .get_player_controlling(plane.get_type(), *plane_id)
-                        .is_some();
-
-                    if plane_has_player && plane.can_land_on_runway(runway) {
+                    if controlling.is_some() && plane.can_land_on_runway(runway) {
                         if plane.flipped() {
                             plane.set_angle(PI);
                         } else {
@@ -518,8 +677,10 @@ impl World {
                             plane.set_runway(Some(*runway_id));
                         }
                     } else {
+                        kill_plane_and_give_credit(&mut actions, plane, &controlling);
                         blow_up(
                             &mut actions,
+                            Some(plane.player_id()),
                             plane_id,
                             plane.get_type(),
                             plane.get_client_x(),
@@ -538,8 +699,45 @@ impl World {
     //
 }
 
+/**
+ * We need to make sure the person who disabled this plane gets the kill.
+ */
+fn kill_plane_and_give_credit(
+    actions: &mut Vec<Action>,
+    plane: &mut Plane,
+    controlling: &Option<(&u16, &mut player::Player)>,
+) {
+    // If it was downed, that person should be the killer
+    // Otherwise, it's a suicide
+    let killer = match plane.get_downed_by() {
+        Some(killer_id) => killer_id,
+        None => plane.player_id(),
+    };
+    // If we were downed, we are the victim
+    // otherwise, we killed ourself and there is no victim
+    let victim = match plane.get_downed_by() {
+        Some(_) => Some(plane.player_id()),
+        None => None,
+    };
+    if plane.get_downed_by().is_none() {
+        actions.push(Action::RegisterKill(KillEvent::new(
+            killer,
+            victim,
+            KillMethod::Plane,
+        )));
+    }
+    if let Some(_) = *controlling {
+        actions.push(Action::RegisterKill(KillEvent::new(
+            killer,
+            victim,
+            KillMethod::Man,
+        )));
+    }
+}
+
 pub fn blow_up(
     actions: &mut Vec<Action>,
+    player_id: Option<EntityId>,
     ent_id: &EntityId,
     ent_type: EntityType,
     explosion_x: i16,
@@ -550,6 +748,7 @@ pub fn blow_up(
         ent_type: ent_type,
     }));
     actions.push(Action::Explosion(ExplosionData {
+        explosion_owner: player_id,
         team: None,
         client_x: explosion_x,
         client_y: explosion_y,

@@ -9,6 +9,7 @@ use crate::{
         types::{EntityType, Team},
         EntityId,
     },
+    game_event::KillEvent,
     input::PlayerKeyboard,
     output::ServerOutput,
     world::World,
@@ -20,6 +21,7 @@ pub struct RemoveData {
 }
 
 pub struct ExplosionData {
+    pub explosion_owner: Option<EntityId>,
     pub team: Option<Team>,
     pub client_x: i16,
     pub client_y: i16,
@@ -31,6 +33,7 @@ pub enum Action {
     SpawnMan(Man, Option<ControllingEntity>),
     SpawnBomb(Bomb),
     SpawnBullet(Bullet),
+    RegisterKill(KillEvent),
 }
 
 impl World {
@@ -53,6 +56,7 @@ impl World {
             }
             Action::SpawnBomb(bomb) => self.spawn_bomb(bomb),
             Action::SpawnBullet(bullet) => self.spawn_bullet(bullet),
+            Action::RegisterKill(kill_event) => self.register_kill(kill_event),
         }
     }
 
@@ -102,7 +106,12 @@ impl World {
     fn explode(&mut self, data: ExplosionData) -> Vec<ServerOutput> {
         let output = vec![];
 
-        let explosion = Explosion::new(data.team, data.client_x, data.client_y);
+        let explosion = Explosion::new(
+            data.explosion_owner,
+            data.team,
+            data.client_x,
+            data.client_y,
+        );
         self.explosions.insert(explosion);
 
         output
@@ -142,5 +151,10 @@ impl World {
     fn spawn_bullet(&mut self, bullet: Bullet) -> Vec<ServerOutput> {
         self.bullets.insert(bullet);
         vec![]
+    }
+
+    fn register_kill(&mut self, kill_event: KillEvent) -> Vec<ServerOutput> {
+        // TODO: adjust scores
+        vec![ServerOutput::KillEvent(kill_event)]
     }
 }

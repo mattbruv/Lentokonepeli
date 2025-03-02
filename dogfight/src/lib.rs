@@ -1,6 +1,7 @@
 pub mod collision;
 pub mod debug;
 pub mod entities;
+pub mod game_event;
 pub mod images;
 pub mod input;
 pub mod level;

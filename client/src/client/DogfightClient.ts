@@ -33,6 +33,7 @@ import { Hill } from "./entities/hill";
 import { Bullet } from "./entities/bullet";
 import { Radar, RadarObject, RadarObjectType } from "./radar";
 import { ServerOutput } from "dogfight-types/ServerOutput";
+import { KillFeed } from "./killfeed";
 
 export type GameClientCallbacks = {
   chooseTeam: (team: Team | null) => void;
@@ -69,6 +70,7 @@ export class DogfightClient {
   private teamChooser: TeamChooser = new TeamChooser();
   private runwaySelector: RunwaySelector = new RunwaySelector();
   private gameHUD: GameHUD = new GameHUD();
+  private killFeed: KillFeed = new KillFeed();
   public keyboard: GameKeyboard = new GameKeyboard();
 
   private debug: PIXI.Graphics = new PIXI.Graphics();
@@ -178,9 +180,10 @@ export class DogfightClient {
     this.app.stage.addChild(this.sky);
 
     this.app.stage.addChild(this.viewport);
-    this.app.stage.addChild(this.teamChooser.container);
-    this.app.stage.addChild(this.runwaySelector.container);
+    this.app.stage.addChild(this.killFeed.container);
     this.app.stage.addChild(this.gameHUD.container);
+    this.app.stage.addChild(this.runwaySelector.container);
+    this.app.stage.addChild(this.teamChooser.container);
 
 
     this.viewport.sortableChildren = true;
@@ -253,6 +256,7 @@ export class DogfightClient {
     this.runwaySelector.init(this.callbacks);
     this.keyboard.init((keyboard) => this.onKeyChange(keyboard));
     this.gameHUD.init();
+    this.killFeed.init();
 
     const skyTexture = Textures["sky3b.jpg"]
     this.sky.texture = skyTexture
@@ -274,6 +278,12 @@ export class DogfightClient {
     {
       const y = this.app.screen.height - this.gameHUD.container.height;
       this.gameHUD.container.position.set(0, y);
+    }
+
+    // Set KillFeed area
+    {
+      const y = this.app.screen.height - this.gameHUD.container.height;
+      this.killFeed.container.position.set(510, 0)
     }
 
     // set runway selector
@@ -310,6 +320,7 @@ export class DogfightClient {
   private onJoinTeam(team: Team) {
     this.teamChooser.container.visible = false;
     this.gameHUD.setTeam(team);
+    this.killFeed.setTeam(team)
   }
 
   private getMyPlayer(): Player | undefined {
@@ -399,8 +410,25 @@ export class DogfightClient {
           if (event.data.name === this.myPlayerName) {
             this.onJoinTeam(event.data.team);
           }
+          break;
+        }
+        case "KillEvent": {
+          const killer_data = this.players.entries.get(event.data.killer);
+          const victim_data = event.data.victim !== null ? (this.players.entries.get(event.data.victim) ?? null) : null;
+
+          if (killer_data) {
+            this.killFeed.addKillEvent({
+              ...event.data,
+              killer_data,
+              victim_data
+            })
+          }
 
           break;
+        }
+        default: {
+          // Exhaustive check
+          const _: never = event;
         }
       }
     }

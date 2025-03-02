@@ -67,6 +67,7 @@ pub enum PlaneMode {
 
 #[derive(Networked)]
 pub struct Plane {
+    downed_by: Option<EntityId>,
     player_id: EntityId,
     x: i32,
     y: i32,
@@ -139,6 +140,7 @@ impl Plane {
         runway: &Runway,
     ) -> Plane {
         let mut plane = Plane {
+            downed_by: None,
             player_id: owner_id,
             plane_type: Property::new(plane_type),
             x: 0,
@@ -566,7 +568,7 @@ impl Plane {
             .set(get_client_percentage(self.total_ammo, self.get_max_ammo()));
     }
 
-    pub fn player_id(&self) -> u16 {
+    pub fn player_id(&self) -> EntityId {
         self.player_id
     }
 
@@ -746,6 +748,14 @@ impl Plane {
 
         0 // Return 0 if no non-transparent pixels are found
         */
+    }
+
+    pub fn set_downed_by(&mut self, player_id: Option<EntityId>) -> () {
+        self.downed_by = player_id
+    }
+
+    pub fn get_downed_by(&self) -> Option<EntityId> {
+        self.downed_by
     }
 }
 

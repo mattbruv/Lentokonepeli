@@ -1,10 +1,9 @@
-use std::array::TryFromSliceError;
-
 use serde::Serialize;
 use ts_rs::TS;
 
 use crate::{
     entities::types::Team,
+    game_event::KillEvent,
     network::{encoding::NetworkedBytes, entity_changes_to_binary, EntityChange},
 };
 
@@ -20,6 +19,7 @@ pub enum ServerOutput {
     PlayerJoin(String),
     PlayerLeave(String),
     PlayerJoinTeam { name: String, team: Team },
+    KillEvent(KillEvent),
 }
 
 impl NetworkedBytes for ServerOutput {
@@ -46,6 +46,10 @@ impl NetworkedBytes for ServerOutput {
                 bytes.push(3);
                 bytes.extend(String::to_bytes(&name));
                 bytes.extend(Team::to_bytes(team));
+            }
+            ServerOutput::KillEvent(event) => {
+                bytes.push(4);
+                bytes.extend(event.to_bytes());
             }
         }
 
@@ -92,6 +96,11 @@ impl NetworkedBytes for ServerOutput {
                         team: team,
                     },
                 ))
+            }
+            4 => {
+                let (bytes, kill_event) = KillEvent::from_bytes(slice)?;
+                slice = &bytes;
+                Some((slice, ServerOutput::KillEvent(kill_event)))
             }
             _ => panic!("Unrecognized enum variant in Event: {}", variant),
         }
