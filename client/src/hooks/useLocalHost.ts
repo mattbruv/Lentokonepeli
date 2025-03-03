@@ -9,10 +9,10 @@ import { PlayerCommand } from "dogfight-types/PlayerCommand"
 import Levels from "../assets/levels.json";
 import { LevelName } from "src/Lobby"
 import { randomGuid } from "../helpers"
+import { useSettingsContext } from "../contexts/settingsContext"
 
 type ConnectedPlayer = {
     player_guid: string,
-    player_name: string
     connection: DataConnection
 }
 
@@ -20,11 +20,9 @@ export function PeerJSPath(code: string): string {
     return "lentokonepeli-" + code
 }
 
-
-const HOST_NAME = "HOST";
 const HOST_GUID = randomGuid()
 
-export function useLocalHost(gameMap: LevelName, recordGame: boolean) {
+export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: string, clan: string) {
 
     const dogfight = useDogfight((clientCommand) => {
         hostInput.current.push({ player_guid: HOST_GUID, command: clientCommand })
@@ -101,11 +99,11 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean) {
             console.log(dogfight.engine.get_build_version())
             console.log(dogfight.engine.get_commit())
 
-            dogfight.client.setMyPlayerName(HOST_NAME);
+            dogfight.client.setMyPlayerGuid(HOST_GUID);
 
             hostInput.current.push({
                 player_guid: HOST_GUID,
-                command: { type: "AddPlayer", data: HOST_NAME }
+                command: { type: "AddPlayer", data: { guid: HOST_GUID, name: username, clan } }
             });
 
             // Set up function to begin ticking the game
@@ -118,9 +116,9 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean) {
             conn.on("open", () => {
                 // Add this player to the collection and send them the full state
                 //dataConnections.current.set(conn.connectionId, { name: conn.connectionId, conn })
+                const PLAYER_GUID = randomGuid()
                 dataConnections.current.set(conn.connectionId, {
-                    player_guid: randomGuid(),
-                    player_name: conn.connectionId,
+                    player_guid: PLAYER_GUID,
                     connection: conn,
                 })
 
@@ -138,10 +136,15 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean) {
                         const command: PlayerCommand = JSON.parse(command_json)
 
                         if (command.type == "AddPlayer") {
-                            user.player_name = command.data
+                            user.player_guid = PLAYER_GUID
                         }
 
                         guestInput.current.push({ player_guid: user.player_guid, command })
+                        const out: ServerOutput = {
+                            type: "YourPlayerGuid",
+                            data: PLAYER_GUID
+                        }
+                        user.connection.send(JSON.stringify(out))
                     }
                 })
             })

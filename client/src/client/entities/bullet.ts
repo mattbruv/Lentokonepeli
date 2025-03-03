@@ -78,8 +78,8 @@ export class Bullet implements Entity<BulletProperties> {
     this.bulletGraphics.drawRect(0, 0, 2, 2)
     this.bulletGraphics.endFill()
 
-    this.updateCallbacks.client_x()
-    this.updateCallbacks.client_y()
+    this.updateCallbacks.client_x({ ...this.props })
+    this.updateCallbacks.client_y({ ...this.props })
 
   }
 

@@ -1,10 +1,11 @@
 import { Entity, EntityUpdateCallbacks, Followable, Point, RadarEnabled } from "./entity";
 import * as PIXI from "pixi.js";
 import { Textures } from "../textures";
-import { DrawLayer } from "../constants";
+import { DrawLayer, TeamColor } from "../constants";
 import { ManProperties } from "dogfight-types/ManProperties";
 import { Stats } from "../hud";
 import { RadarObject, RadarObjectType } from "../radar";
+import { Team } from "dogfight-types/Team";
 
 export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
 
@@ -16,14 +17,25 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
   };
 
   private container: PIXI.Container;
+  private manContainer: PIXI.Container;
+
   private manSprite: PIXI.Sprite;
+
+  private nameText: PIXI.Text
   private frameCount = 0;
 
   constructor() {
     this.container = new PIXI.Container();
+    this.manContainer = new PIXI.Container();
     this.manSprite = new PIXI.Sprite();
 
     const texture = Textures["parachuter0.gif"];
+    this.nameText = new PIXI.Text("", {
+      fontFamily: "arial",
+      fontSize: 10,
+    });
+    //this.nameText.anchor.set(0.5, 0)
+    this.nameText.position.set(0, -15)
 
     this.manSprite.texture = texture;
 
@@ -31,7 +43,9 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
     this.manSprite.anchor.set(0.5, 0);
     this.manSprite.position.x = texture.width / 2
 
-    this.container.addChild(this.manSprite);
+    this.container.addChild(this.manContainer);
+    this.manContainer.addChild(this.manSprite);
+    this.manContainer.addChild(this.nameText);
 
     this.container.zIndex = DrawLayer.Man;
 
@@ -127,5 +141,27 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
       this.manSprite.texture = Textures["parachuter2.gif"];
       this.frameCount = 0;
     }
+  }
+
+  setPlayerName(name: string | null, team: Team | null) {
+    if (!name) {
+      this.nameText.visible = false;
+      return;
+    }
+
+    this.nameText.text = name.substring(0, 15)
+    this.nameText.style.fill = this.getColor(team)
+    this.nameText.visible = true;
+  }
+
+  private getColor(team: Team | null): TeamColor {
+    if (team === null) return TeamColor.SpectatorForeground
+    if (this.props.team === null) return TeamColor.SpectatorForeground
+
+    if (team === this.props.team) {
+      return TeamColor.OwnForeground
+    }
+
+    return TeamColor.OpponentForeground
   }
 }

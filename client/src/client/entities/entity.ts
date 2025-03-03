@@ -2,10 +2,9 @@ import * as PIXI from "pixi.js";
 import { Stats } from "../hud";
 import { RadarObject } from "../radar";
 
-type NoUndefined<T> = T extends undefined ? never : T;
 
 export type EntityUpdateCallbacks<Source> = {
-  [Property in keyof Source]-?: () => void;
+  [Property in keyof Source]-?: (oldProps: Source) => void;
 };
 
 export type Point = {
@@ -37,6 +36,8 @@ export function updateProps<Props extends Object>(
   entity: Entity<Props>,
   newProps: Props
 ) {
+
+  const oldProps = { ...entity.props }
   entity.props = {
     ...entity.props,
     ...newProps,
@@ -44,7 +45,7 @@ export function updateProps<Props extends Object>(
 
   for (const [key, callback] of Object.entries(entity.updateCallbacks)) {
     if (newProps.hasOwnProperty(key)) {
-      callback();
+      callback(oldProps);
     }
   }
 }

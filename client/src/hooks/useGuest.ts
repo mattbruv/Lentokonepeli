@@ -6,7 +6,7 @@ import { ServerOutput } from "dogfight-types/ServerOutput";
 import { PeerJSPath } from "./useLocalHost";
 
 
-export function useGuest() {
+export function useGuest(myName: string, clan: string) {
     const peer = useRef<Peer | null>(null)
 
     const clientCommandCallback = useRef<((command: PlayerCommand) => void) | null>(null)
@@ -40,22 +40,26 @@ export function useGuest() {
                     conn.send(binary)
                 }
 
-                const myName = crypto.randomUUID().substring(0, 8)
-                const command: PlayerCommand = { type: "AddPlayer", data: myName }
-                dogfight.client.setMyPlayerName(myName)
+                const command: PlayerCommand = { type: "AddPlayer", data: { guid: "", name: myName, clan } }
 
                 const cmd = dogfight.engine.player_command_to_binary(JSON.stringify(command))
                 conn.send(cmd)
 
                 conn.on("data", (data) => {
-                    // console.log(data)
-                    // The type coming in is an ArrayBuffer, need to make it a Uint8Array for
-                    // the WASM bridge -> Rust to receive the right type and for it to work.
-                    const buffer = new Uint8Array(data as ArrayBuffer)
-                    const events_json = dogfight.engine.game_events_from_binary(buffer)
-                    const events = JSON.parse(events_json) as ServerOutput[];
-                    // console.log(m.data, events_json, events)
-                    dogfight.client.handleGameEvents(events)
+                    if (typeof data === "string") {
+                        const output: ServerOutput = JSON.parse(data)
+                        dogfight.client.handleGameEvents([output])
+                    }
+                    else {
+                        // console.log(data)
+                        // The type coming in is an ArrayBuffer, need to make it a Uint8Array for
+                        // the WASM bridge -> Rust to receive the right type and for it to work.
+                        const buffer = new Uint8Array(data as ArrayBuffer)
+                        const events_json = dogfight.engine.game_events_from_binary(buffer)
+                        const events = JSON.parse(events_json) as ServerOutput[];
+                        // console.log(m.data, events_json, events)
+                        dogfight.client.handleGameEvents(events)
+                    }
                 })
             })
         })

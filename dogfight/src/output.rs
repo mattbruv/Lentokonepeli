@@ -2,7 +2,7 @@ use serde::Serialize;
 use ts_rs::TS;
 
 use crate::{
-    entities::types::Team,
+    entities::{types::Team, EntityId},
     game_event::KillEvent,
     network::{encoding::NetworkedBytes, entity_changes_to_binary, EntityChange},
 };
@@ -18,8 +18,9 @@ pub enum ServerOutput {
     EntityChanges(Vec<EntityChange>),
     PlayerJoin(String),
     PlayerLeave(String),
-    PlayerJoinTeam { name: String, team: Team },
+    PlayerJoinTeam { id: EntityId, team: Team },
     KillEvent(KillEvent),
+    YourPlayerGuid(String),
 }
 
 impl NetworkedBytes for ServerOutput {
@@ -42,14 +43,17 @@ impl NetworkedBytes for ServerOutput {
                 bytes.push(2);
                 bytes.extend(String::to_bytes(name));
             }
-            ServerOutput::PlayerJoinTeam { name, team } => {
+            ServerOutput::PlayerJoinTeam { id, team } => {
                 bytes.push(3);
-                bytes.extend(String::to_bytes(&name));
+                bytes.extend(EntityId::to_bytes(&id));
                 bytes.extend(Team::to_bytes(team));
             }
             ServerOutput::KillEvent(event) => {
                 bytes.push(4);
                 bytes.extend(event.to_bytes());
+            }
+            ServerOutput::YourPlayerGuid(_) => {
+                panic!("This should be done client side...")
             }
         }
 
@@ -85,17 +89,11 @@ impl NetworkedBytes for ServerOutput {
                 Some((slice, ServerOutput::PlayerLeave(name)))
             }
             3 => {
-                let (bytes, name) = String::from_bytes(slice)?;
+                let (bytes, id) = EntityId::from_bytes(slice)?;
                 slice = &bytes;
                 let (bytes, team) = Team::from_bytes(slice)?;
                 slice = &bytes;
-                Some((
-                    slice,
-                    ServerOutput::PlayerJoinTeam {
-                        name: name,
-                        team: team,
-                    },
-                ))
+                Some((slice, ServerOutput::PlayerJoinTeam { id, team: team }))
             }
             4 => {
                 let (bytes, kill_event) = KillEvent::from_bytes(slice)?;

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useGuest } from "./hooks/useGuest";
 import { Group, Card, Stack, Text } from "@mantine/core";
+import { useSettingsContext } from "./contexts/settingsContext";
 
 
 type GuestProps = {
@@ -11,10 +12,12 @@ export function Guest({ gameCode }: GuestProps) {
 
     const gameContainer = useRef<HTMLDivElement>(null);
 
+    const { getClan, getUsername } = useSettingsContext()
+
     const {
         initialize,
         joinGame
-    } = useGuest()
+    } = useGuest(getUsername(), getClan())
 
     async function join() {
         if (!gameContainer.current) return;

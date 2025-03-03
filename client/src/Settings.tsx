@@ -85,7 +85,7 @@ export function Settings() {
                     <Accordion.Control icon={<IconUser />}>User Settings</Accordion.Control>
                     <Accordion.Panel>
                         <div>
-                            user settings
+                            TODO: allow editing player names and clan...
                         </div>
                     </Accordion.Panel>
                 </Accordion.Item>

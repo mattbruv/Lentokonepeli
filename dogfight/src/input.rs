@@ -29,7 +29,7 @@ pub struct ServerInput {
 #[ts(export)]
 #[serde(tag = "type", content = "data")]
 pub enum PlayerCommand {
-    AddPlayer(String),
+    AddPlayer(AddPlayerData),
     RemovePlayer,
     PlayerChooseTeam(TeamSelection),
     PlayerChooseRunway(RunwaySelection),
@@ -139,6 +139,35 @@ pub struct TeamSelection {
     pub team: Option<Team>, // None team selection means random
 }
 
+#[derive(Serialize, Deserialize, Debug, TS, Clone)]
+#[ts(export)]
+pub struct AddPlayerData {
+    pub guid: String,
+    pub name: String,
+    pub clan: Option<String>,
+}
+
+impl NetworkedBytes for AddPlayerData {
+    fn to_bytes(&self) -> Vec<u8> {
+        let mut bytes = vec![];
+        bytes.extend(self.guid.to_bytes());
+        bytes.extend(self.name.to_bytes());
+        bytes.extend(self.clan.to_bytes());
+        bytes
+    }
+
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)>
+    where
+        Self: Sized,
+    {
+        let (bytes, guid) = String::from_bytes(bytes)?;
+        let (bytes, name) = String::from_bytes(bytes)?;
+        let (bytes, clan) = Option::<String>::from_bytes(bytes)?;
+
+        Some((bytes, Self { guid, clan, name }))
+    }
+}
+
 impl World {
     pub(crate) fn handle_input(&mut self, input_events: Vec<ServerInput>) -> Vec<ServerOutput> {
         let mut game_output = vec![];
@@ -146,10 +175,12 @@ impl World {
         for input in input_events {
             let guid = input.player_guid;
             match input.command {
-                PlayerCommand::AddPlayer(desired_name) => {
+                PlayerCommand::AddPlayer(data) => {
                     // Add the player if not already exists
-                    if let None = self.get_player_from_name(&desired_name) {
-                        if let Some((_, p)) = self.players.insert(Player::new(guid, desired_name)) {
+                    if let None = self.get_player_from_guid(&guid) {
+                        if let Some((_, p)) =
+                            self.players.insert(Player::new(guid, data.name, data.clan))
+                        {
                             game_output.push(ServerOutput::PlayerJoin(p.get_name()));
                         }
                     }
@@ -164,7 +195,7 @@ impl World {
                 PlayerCommand::PlayerChooseTeam(selection) => {
                     let tick = self.get_tick();
 
-                    if let Some((_, player)) = self.get_player_from_guid_mut(&guid) {
+                    if let Some((player_id, player)) = self.get_player_from_guid_mut(&guid) {
                         let the_team = selection.team.unwrap_or_else(|| {
                             // "Randomly" pick a team
                             if tick % 2 == 0 {
@@ -178,7 +209,7 @@ impl World {
                         if let None = player.get_team() {
                             player.set_team(Some(the_team));
                             game_output.push(ServerOutput::PlayerJoinTeam {
-                                name: player.get_name(),
+                                id: *player_id,
                                 team: the_team,
                             })
                         }

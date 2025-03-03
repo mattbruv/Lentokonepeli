@@ -64,8 +64,8 @@ export class DogfightClient {
   private debugCoords = new PIXI.Text();
   private debugCollision = new PIXI.Graphics();
 
+  private myPlayerGuid: string | null = null;
   private myPlayerId: number | null = null;
-  private myPlayerName: string | null = null;
 
   private teamChooser: TeamChooser = new TeamChooser();
   private runwaySelector: RunwaySelector = new RunwaySelector();
@@ -88,7 +88,48 @@ export class DogfightClient {
   };
 
   private players: EntityGroup<Player> = {
-    new_type: () => new Player(),
+    new_type: () => new Player((oldControlling, newControlling, props) => {
+      // We need to update the player names here.
+      // Idk how we ended up with this pattern but whatever the client code is just a few steps above spaghetti
+
+      if (oldControlling !== null) {
+        if (oldControlling.entity_type === "Plane") {
+          const plane = this.planes.entries.get(oldControlling.id);
+          if (plane) {
+            plane.setPlayerName(null, null)
+          }
+        }
+        if (oldControlling.entity_type === "Man") {
+          const man = this.men.entries.get(oldControlling.id);
+          if (man) {
+            man.setPlayerName(null, null)
+          }
+        }
+      }
+
+      // If we are the player being updated right now, set our team
+      const myPlayer = this.getMyPlayer()
+      const myTeam = myPlayer?.props.team ?? null
+
+
+      if (newControlling !== null && newControlling !== undefined) {
+        const name = props.name?.substring(0, 15) ?? "";
+
+        if (newControlling.entity_type === "Plane") {
+          const plane = this.planes.entries.get(newControlling.id);
+          if (plane) {
+            plane.setPlayerName(name, myTeam)
+          }
+        }
+        if (newControlling.entity_type === "Man") {
+          //debugger
+          const man = this.men.entries.get(newControlling.id);
+          if (man) {
+            man.setPlayerName(name, myTeam)
+          }
+        }
+      }
+    }),
     entries: new Map(),
   };
 
@@ -312,9 +353,12 @@ export class DogfightClient {
     element?.appendChild(this.app.view);
   }
 
-  public setMyPlayerName(name: string) {
-    console.log("Setting name:", name)
-    this.myPlayerName = name;
+  public setMyPlayerGuid(guid: string) {
+    this.myPlayerGuid = guid;
+  }
+
+  public setMyPlayerId(id: number) {
+    this.myPlayerId = id;
   }
 
   private onJoinTeam(team: Team) {
@@ -330,7 +374,7 @@ export class DogfightClient {
   }
 
   private onMyPlayerUpdate(props: PlayerProperties) {
-    console.log(props);
+    // console.log(props);
     const myPlayer = this.getMyPlayer();
     if (!myPlayer) return;
 
@@ -340,6 +384,16 @@ export class DogfightClient {
       // update runway team colors
       for (const [_, runway] of this.runways.entries) {
         runway.setUserTeam(props.team)
+      }
+
+      // update plane/man colors
+      for (const [_, player] of this.players.entries) {
+        if (player.props.controlling?.entity_type === "Plane") {
+          this.planes.entries.get(player.props.controlling.id)?.setPlayerName(player.props.name, props.team)
+        }
+        if (player.props.controlling?.entity_type === "Man") {
+          this.men.entries.get(player.props.controlling.id)?.setPlayerName(player.props.name, props.team)
+        }
       }
     }
 
@@ -406,9 +460,12 @@ export class DogfightClient {
           break;
         }
         case "PlayerJoinTeam": {
-          console.log(event.data.name + " joined " + event.data.team);
-          if (event.data.name === this.myPlayerName) {
-            this.onJoinTeam(event.data.team);
+          const player = this.players.entries.get(event.data.id);
+          if (player) {
+            console.log(event.data.id + " joined " + event.data.team);
+            if (event.data.id === this.myPlayerId) {
+              this.onJoinTeam(event.data.team);
+            }
           }
           break;
         }
@@ -424,6 +481,10 @@ export class DogfightClient {
             })
           }
 
+          break;
+        }
+        case "YourPlayerGuid": {
+          this.setMyPlayerGuid(event.data)
           break;
         }
         default: {
@@ -508,9 +569,11 @@ export class DogfightClient {
       }
 
       if (data.type === "Player") {
-        const name = data.props.name;
+        const {
+          guid
+        } = data.props
 
-        if (name !== undefined && name === this.myPlayerName) {
+        if (guid !== undefined && guid === this.myPlayerGuid) {
           this.myPlayerId = id;
         }
 

@@ -4,9 +4,10 @@ import { PlaneProperties } from "dogfight-types/PlaneProperties";
 import { PlaneType } from "dogfight-types/PlaneType";
 import { Textures } from "../textures";
 import { directionToRadians } from "../helpers";
-import { DrawLayer } from "../constants";
+import { DrawLayer, TeamColor } from "../constants";
 import { Stats } from "../hud";
 import { RadarObject, RadarObjectType } from "../radar";
+import { Team } from "dogfight-types/Team";
 
 const PLANE_TEXTURE_ID: Record<PlaneType, number> = {
   Albatros: 4,
@@ -25,6 +26,8 @@ const BLACK_SMOKE_LIFETIME_MS = 300;
 export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled {
 
   private container: PIXI.Container;
+  private planeContainer: PIXI.Container;
+  private nameText: PIXI.Text;
   private planeSprite: PIXI.Sprite;
   private first_flip: boolean = true;
   private frame = 0;
@@ -54,7 +57,21 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
     this.planeSprite.anchor.set(0.5)
     this.darkSmoke = new PIXI.Container();
 
-    this.container.addChild(this.planeSprite)
+    this.nameText = new PIXI.Text("", {
+      fontFamily: "arial",
+      fontSize: 10,
+    });
+
+    this.nameText.anchor.set(0.5, 0)
+    this.nameText.position.set(0, 25)
+
+    this.planeContainer = new PIXI.Container()
+
+    this.container.addChild(this.planeContainer)
+
+    this.planeContainer.addChild(this.planeSprite)
+    this.planeContainer.addChild(this.nameText)
+
     this.container.addChild(this.darkSmoke)
 
     this.container.zIndex = DrawLayer.Plane;
@@ -71,8 +88,8 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
       const h = tex.height
       const d1 = this.angle
 
-      const x = this.planeSprite.position.x
-      const y = this.planeSprite.position.y
+      const x = this.planeContainer.position.x
+      const y = this.planeContainer.position.y
       //console.log(this.planeSprite.position)
 
       let k = Math.floor(x - Math.cos(d1) * ((w / 2) + 6));
@@ -189,10 +206,10 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
 
   public updateCallbacks: EntityUpdateCallbacks<PlaneProperties> = {
     client_x: () => {
-      this.planeSprite.position.x = this.props.client_x
+      this.planeContainer.position.x = this.props.client_x
     },
     client_y: () => {
-      this.planeSprite.position.y = this.props.client_y
+      this.planeContainer.position.y = this.props.client_y
     },
     team: () => { },
     client_ammo: () => { },
@@ -257,5 +274,36 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
       x: this.props.client_x,
       y: this.props.client_y,
     }
+  }
+
+  public setPlayerName(name: string | null, pov_team: Team | null) {
+    console.log("set player name", name, pov_team)
+
+    if (!name) {
+      this.nameText.visible = false;
+      return;
+    }
+
+    this.nameText.text = name.substring(0, 15)
+    this.nameText.style.fill = this.getColor(pov_team)
+    /*
+    this.nameText = new PIXI.Text(name.substring(0, 15), {
+      fontFamily: "arial",
+      fontSize: 10,
+      fill: this.getColor(this.props.team),
+    })
+      */
+    this.nameText.visible = true;
+  }
+
+  private getColor(team: Team | null): TeamColor {
+    if (team === null) return TeamColor.SpectatorForeground
+    if (this.props.team === null) return TeamColor.SpectatorForeground
+
+    if (team === this.props.team) {
+      return TeamColor.OwnForeground
+    }
+
+    return TeamColor.OpponentForeground
   }
 }

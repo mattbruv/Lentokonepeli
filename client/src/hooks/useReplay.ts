@@ -69,9 +69,9 @@ export function useReplay() {
             if (!spectating) {
                 const host = input.find(x => x.command.type === "AddPlayer")
                 if (host && host.command.type === "AddPlayer") {
-                    const name = host.command.data
+                    const { name, guid } = host.command.data
                     setSpectating(name)
-                    dogfight.client.setMyPlayerName(name)
+                    dogfight.client.setMyPlayerGuid(guid)
                 }
             }
 

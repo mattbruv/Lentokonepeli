@@ -54,8 +54,8 @@ pub struct Player {
     team_kills: i32,
 
     keys: PlayerKeyboard,
-    guid: String,
 
+    guid: Property<String>,
     name: Property<String>,
     #[rustfmt::skip]
     clan: Property<Option::<String>>,
@@ -67,18 +67,18 @@ pub struct Player {
 }
 
 impl Player {
-    pub fn new(guid: String, name: String) -> Self {
+    pub fn new(guid: String, name: String, clan: Option<String>) -> Self {
         Player {
             shots: 0,
             hits: 0,
             team_kills: 0,
             keys: PlayerKeyboard::new(),
+            guid: Property::new(guid),
             name: Property::new(name),
-            clan: Property::new(None),
+            clan: Property::new(clan),
             team: Property::new(None),
             state: Property::new(PlayerState::ChoosingTeam),
             controlling: Property::new(None),
-            guid,
         }
     }
 
@@ -106,8 +106,8 @@ impl Player {
         self.name.get().clone()
     }
 
-    pub fn get_guid(&self) -> String {
-        self.guid.clone()
+    pub fn get_guid(&self) -> &String {
+        self.guid.get()
     }
 
     pub fn set_team(&mut self, team: Option<Team>) {
@@ -117,5 +117,9 @@ impl Player {
 
     pub fn get_team(&self) -> &Option<Team> {
         self.team.get()
+    }
+
+    pub(crate) fn set_clan(&mut self, clan: String) -> () {
+        self.clan.set(Some(clan));
     }
 }

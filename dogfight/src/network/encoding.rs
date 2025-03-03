@@ -1,7 +1,6 @@
-use core::slice;
-use std::collections::{BTreeMap, HashMap};
+use std::collections::BTreeMap;
 
-use imageproc::region_labelling;
+use imageproc::definitions::Clamp;
 
 use crate::{
     entities::{
@@ -15,13 +14,13 @@ use crate::{
         hill::HillProperties,
         man::ManProperties,
         plane::{PlaneProperties, PlaneType},
-        player::PlayerProperties,
+        player::{self, PlayerProperties},
         runway::RunwayProperties,
         types::{EntityType, Team},
         water::WaterProperties,
         world_info::WorldInfoProperties,
     },
-    input::{PlayerCommand, PlayerKeyboard, RunwaySelection, TeamSelection},
+    input::{AddPlayerData, PlayerCommand, PlayerKeyboard, RunwaySelection, TeamSelection},
     network::EntityChangeType,
     world::World,
 };
@@ -463,9 +462,9 @@ impl NetworkedBytes for PlayerCommand {
                 bytes.extend(runway_selection.runway_id.to_bytes());
                 bytes.extend(runway_selection.plane_type.to_bytes());
             }
-            PlayerCommand::AddPlayer(name) => {
+            PlayerCommand::AddPlayer(data) => {
                 bytes.push(4);
-                bytes.extend(name.to_bytes());
+                bytes.extend(data.to_bytes());
             }
         };
 
@@ -498,9 +497,9 @@ impl NetworkedBytes for PlayerCommand {
                 })
             }
             4 => {
-                let (slice, player_name) = String::from_bytes(bytes)?;
+                let (slice, player_data) = AddPlayerData::from_bytes(bytes)?;
                 bytes = slice;
-                PlayerCommand::AddPlayer(player_name)
+                PlayerCommand::AddPlayer(player_data)
             }
             _ => panic!("Unknown command type"),
         };
@@ -514,9 +513,8 @@ impl World {
         let mut state = vec![];
         state.push(self.world_info.get_all_full_state());
         // player state should be serialized first
-        state.extend(self.players.get_all_full_state());
-        state.extend(self.men.get_all_full_state());
         state.extend(self.planes.get_all_full_state());
+        state.extend(self.men.get_all_full_state());
         state.extend(self.background_items.get_all_full_state());
         state.extend(self.grounds.get_all_full_state());
         state.extend(self.coasts.get_all_full_state());
@@ -527,6 +525,7 @@ impl World {
         state.extend(self.explosions.get_all_full_state());
         state.extend(self.hills.get_all_full_state());
         state.extend(self.bullets.get_all_full_state());
+        state.extend(self.players.get_all_full_state());
         state
     }
 
@@ -538,9 +537,8 @@ impl World {
         }
 
         // player state should be serialized first
-        state.extend(self.players.get_all_changed_state());
-        state.extend(self.men.get_all_changed_state());
         state.extend(self.planes.get_all_changed_state());
+        state.extend(self.men.get_all_changed_state());
         state.extend(self.background_items.get_all_changed_state());
         state.extend(self.grounds.get_all_changed_state());
         state.extend(self.coasts.get_all_changed_state());
@@ -551,6 +549,7 @@ impl World {
         state.extend(self.explosions.get_all_changed_state());
         state.extend(self.hills.get_all_changed_state());
         state.extend(self.bullets.get_all_changed_state());
+        state.extend(self.players.get_all_changed_state());
         state
     }
 }

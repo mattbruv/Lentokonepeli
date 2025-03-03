@@ -74,6 +74,17 @@ impl World {
         'men: for (man_id, man) in self.men.get_map_mut() {
             let controlling = self.players.get_player_controlling(man.get_type(), *man_id);
 
+            for (_runway_id, runway) in self.runways.get_map_mut() {
+                if man.check_collision(runway) {
+                    actions.push(Action::RemoveEntity(RemoveData {
+                        ent_id: *man_id,
+                        ent_type: man.get_type(),
+                    }));
+                    // web_sys::console::log_1(&format!("man collide runway!").into());
+                    continue 'men;
+                }
+            }
+
             // Man -> Ground
             for (_, ground) in self.grounds.get_map_mut() {
                 if man.check_collision(ground) {
@@ -146,17 +157,6 @@ impl World {
                     continue 'men;
                 }
             }
-
-            for (_runway_id, runway) in self.runways.get_map_mut() {
-                if man.check_collision(runway) {
-                    actions.push(Action::RemoveEntity(RemoveData {
-                        ent_id: *man_id,
-                        ent_type: man.get_type(),
-                    }));
-                    // web_sys::console::log_1(&format!("man collide runway!").into());
-                    continue 'men;
-                }
-            }
         }
 
         actions
@@ -208,48 +208,6 @@ impl World {
                 continue;
             }
 
-            for (_, ground) in self.grounds.get_map_mut() {
-                if bomb.check_collision(ground) {
-                    //log("Bomb collision ground!?".to_string());
-                    blow_up(
-                        &mut actions,
-                        Some(bomb.player_id()),
-                        bomb_id,
-                        bomb.get_type(),
-                        bomb.get_x(),
-                        bomb.get_y(),
-                    );
-                    //web_sys::console::log_1(&format!("bomb collide ground!").into());
-                    continue 'bombs;
-                }
-            }
-
-            for (_, coast) in self.coasts.get_map_mut() {
-                if bomb.check_collision(coast) {
-                    blow_up(
-                        &mut actions,
-                        Some(bomb.player_id()),
-                        bomb_id,
-                        bomb.get_type(),
-                        bomb.get_x(),
-                        bomb.get_y(),
-                    );
-                    //web_sys::console::log_1(&format!("bomb collide coast!").into());
-                    continue 'bombs;
-                }
-            }
-
-            for (_, water) in self.waters.get_map_mut() {
-                if bomb.check_collision(water) {
-                    actions.push(Action::RemoveEntity(RemoveData {
-                        ent_id: *bomb_id,
-                        ent_type: bomb.get_type(),
-                    }));
-                    //web_sys::console::log_1(&format!("bomb collide water!").into());
-                    continue 'bombs;
-                }
-            }
-
             for (plane_id, plane) in self.planes.get_map_mut() {
                 if bomb.player_id() != plane.player_id() && bomb.check_collision(plane) {
                     // log("Bomb collision plane?".to_string());
@@ -258,10 +216,17 @@ impl World {
                         .players
                         .get_player_controlling(plane.get_type(), *plane_id)
                     {
+                        // Draw plane death icon
                         actions.push(Action::RegisterKill(KillEvent::new(
                             bomb.player_id(),
                             Some(*owner_id),
                             KillMethod::Plane,
+                        )));
+                        // draw man death icon
+                        actions.push(Action::RegisterKill(KillEvent::new(
+                            bomb.player_id(),
+                            Some(*owner_id),
+                            KillMethod::Man,
                         )));
                     }
                     actions.push(Action::RemoveEntity(RemoveData {
@@ -319,6 +284,48 @@ impl World {
                         bomb.get_x(),
                         bomb.get_y(),
                     );
+                    continue 'bombs;
+                }
+            }
+
+            for (_, ground) in self.grounds.get_map_mut() {
+                if bomb.check_collision(ground) {
+                    //log("Bomb collision ground!?".to_string());
+                    blow_up(
+                        &mut actions,
+                        Some(bomb.player_id()),
+                        bomb_id,
+                        bomb.get_type(),
+                        bomb.get_x(),
+                        bomb.get_y(),
+                    );
+                    //web_sys::console::log_1(&format!("bomb collide ground!").into());
+                    continue 'bombs;
+                }
+            }
+
+            for (_, coast) in self.coasts.get_map_mut() {
+                if bomb.check_collision(coast) {
+                    blow_up(
+                        &mut actions,
+                        Some(bomb.player_id()),
+                        bomb_id,
+                        bomb.get_type(),
+                        bomb.get_x(),
+                        bomb.get_y(),
+                    );
+                    //web_sys::console::log_1(&format!("bomb collide coast!").into());
+                    continue 'bombs;
+                }
+            }
+
+            for (_, water) in self.waters.get_map_mut() {
+                if bomb.check_collision(water) {
+                    actions.push(Action::RemoveEntity(RemoveData {
+                        ent_id: *bomb_id,
+                        ent_type: bomb.get_type(),
+                    }));
+                    //web_sys::console::log_1(&format!("bomb collide water!").into());
                     continue 'bombs;
                 }
             }
@@ -403,6 +410,18 @@ impl World {
                 }
             }
 
+            for (_, runway) in self.runways.get_map_mut() {
+                if bullet.check_collision(runway) {
+                    let amount = (4.0 * bullet.get_damage_factor()) as i32;
+                    runway.subtract_health(amount);
+                    actions.push(Action::RemoveEntity(RemoveData {
+                        ent_id: *bullet_id,
+                        ent_type: bullet.get_type(),
+                    }));
+                    continue 'bullets;
+                }
+            }
+
             for (_, ground) in self.grounds.get_map_mut() {
                 if bullet.check_collision(ground) {
                     actions.push(Action::RemoveEntity(RemoveData {
@@ -432,18 +451,6 @@ impl World {
                     continue 'bullets;
                 }
             }
-
-            for (_, runway) in self.runways.get_map_mut() {
-                if bullet.check_collision(runway) {
-                    let amount = (4.0 * bullet.get_damage_factor()) as i32;
-                    runway.subtract_health(amount);
-                    actions.push(Action::RemoveEntity(RemoveData {
-                        ent_id: *bullet_id,
-                        ent_type: bullet.get_type(),
-                    }));
-                    continue 'bullets;
-                }
-            }
         }
 
         actions
@@ -460,7 +467,7 @@ impl World {
                 if explosion.check_collision(plane) {
                     // Do 50 damage, and if this kills the plane, blow it up
                     plane.subtract_health(50);
-                    if plane.health() <= 0 && plane.get_downed_by().is_none() {
+                    if plane.health() <= 0 {
                         if let Some((owner_id, _)) = self
                             .players
                             .get_player_controlling(plane.get_type(), *plane_id)
@@ -603,47 +610,6 @@ impl World {
                 .players
                 .get_player_controlling(plane.get_type(), *plane_id);
 
-            for (_, ground) in self.grounds.get_map_mut() {
-                if plane.check_collision(ground) {
-                    kill_plane_and_give_credit(&mut actions, plane, &controlling);
-                    blow_up(
-                        &mut actions,
-                        Some(plane.player_id()),
-                        plane_id,
-                        plane.get_type(),
-                        plane.get_client_x(),
-                        plane.get_client_y(),
-                    );
-                    continue 'planes;
-                }
-            }
-
-            for (_, coast) in self.coasts.get_map_mut() {
-                if plane.check_collision(coast) {
-                    kill_plane_and_give_credit(&mut actions, plane, &controlling);
-                    blow_up(
-                        &mut actions,
-                        Some(plane.player_id()),
-                        plane_id,
-                        plane.get_type(),
-                        plane.get_client_x(),
-                        plane.get_client_y(),
-                    );
-                    continue 'planes;
-                }
-            }
-
-            for (_, water) in self.waters.get_map_mut() {
-                if plane.check_collision(water) {
-                    kill_plane_and_give_credit(&mut actions, plane, &controlling);
-                    actions.push(Action::RemoveEntity(RemoveData {
-                        ent_id: *plane_id,
-                        ent_type: plane.get_type(),
-                    }));
-                    continue 'planes;
-                }
-            }
-
             for (runway_id, runway) in self.runways.get_map_mut() {
                 if plane.check_collision(runway) {
                     let mode = plane.get_mode();
@@ -687,6 +653,47 @@ impl World {
                             plane.get_client_y(),
                         );
                     }
+                    continue 'planes;
+                }
+            }
+
+            for (_, ground) in self.grounds.get_map_mut() {
+                if plane.check_collision(ground) {
+                    kill_plane_and_give_credit(&mut actions, plane, &controlling);
+                    blow_up(
+                        &mut actions,
+                        Some(plane.player_id()),
+                        plane_id,
+                        plane.get_type(),
+                        plane.get_client_x(),
+                        plane.get_client_y(),
+                    );
+                    continue 'planes;
+                }
+            }
+
+            for (_, coast) in self.coasts.get_map_mut() {
+                if plane.check_collision(coast) {
+                    kill_plane_and_give_credit(&mut actions, plane, &controlling);
+                    blow_up(
+                        &mut actions,
+                        Some(plane.player_id()),
+                        plane_id,
+                        plane.get_type(),
+                        plane.get_client_x(),
+                        plane.get_client_y(),
+                    );
+                    continue 'planes;
+                }
+            }
+
+            for (_, water) in self.waters.get_map_mut() {
+                if plane.check_collision(water) {
+                    kill_plane_and_give_credit(&mut actions, plane, &controlling);
+                    actions.push(Action::RemoveEntity(RemoveData {
+                        ent_id: *plane_id,
+                        ent_type: plane.get_type(),
+                    }));
                     continue 'planes;
                 }
             }

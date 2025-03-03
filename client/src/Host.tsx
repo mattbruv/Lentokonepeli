@@ -5,6 +5,7 @@ import { useLocalHost } from "./hooks/useLocalHost";
 import { LevelName } from "./Lobby";
 import { Button, Card, Group, Paper, Stack, Text } from "@mantine/core";
 import { IconFileDownload, IconFileDownloadFilled, IconWorldDownload } from "@tabler/icons-react";
+import { useSettingsContext } from "./contexts/settingsContext";
 
 type HostProps = {
     level: LevelName
@@ -13,13 +14,14 @@ type HostProps = {
 
 export function Host({ level, recordGame }: HostProps) {
     const gameContainer = useRef<HTMLDivElement>(null);
+    const { getUsername, getClan } = useSettingsContext()
 
     const {
         getReplayBinary,
         initialize,
         roomCode,
         hostGame,
-    } = useLocalHost(level, recordGame)
+    } = useLocalHost(level, recordGame, getUsername(), getClan())
 
     // const [joinId, setJoinId] = useState("")
     // const [tickRate, setTickRate] = useState(100)
