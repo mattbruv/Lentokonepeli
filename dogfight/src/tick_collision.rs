@@ -1,8 +1,9 @@
-use std::{any::Any, f64::consts::PI};
+use std::f64::consts::PI;
+
+use imageproc::geometry::contour_area;
 
 use crate::{
     collision::SolidEntity,
-    debug::log,
     entities::{
         entity::Entity,
         man::ManState,
@@ -714,6 +715,7 @@ fn kill_plane_and_give_credit(
     plane: &mut Plane,
     controlling: &Option<(&u16, &mut player::Player)>,
 ) {
+    /*
     // If it was downed, that person should be the killer
     // Otherwise, it's a suicide
     let killer = match plane.get_downed_by() {
@@ -726,6 +728,22 @@ fn kill_plane_and_give_credit(
         Some(_) => Some(plane.player_id()),
         None => None,
     };
+    */
+    // If the plane is occupied, show plane death and man death
+    if let Some((pid, _player)) = controlling {
+        actions.push(Action::RegisterKill(KillEvent::new(
+            **pid,
+            None,
+            KillMethod::Plane,
+        )));
+        actions.push(Action::RegisterKill(KillEvent::new(
+            **pid,
+            None,
+            KillMethod::Man,
+        )));
+    }
+
+    /*
     if plane.get_downed_by().is_none() {
         actions.push(Action::RegisterKill(KillEvent::new(
             killer,
@@ -740,6 +758,7 @@ fn kill_plane_and_give_credit(
             KillMethod::Man,
         )));
     }
+    */
 }
 
 pub fn blow_up(

@@ -6,6 +6,7 @@ use serde::Deserialize;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
+    game_event::{KillEvent, KillMethod},
     images::{
         get_image, get_rotateable_image, rotate_image, PLANE4, PLANE5, PLANE6, PLANE7, PLANE8,
         PLANE9,
@@ -456,7 +457,16 @@ impl Plane {
             // Jump out of plane
             if keys.space || is_out_of_bounds {
                 self.spawn_man_action(*self.team.get(), my_id, actions);
+
                 self.mode.set(PlaneMode::Falling);
+
+                // Kill plane
+                self.set_health(0);
+                actions.push(Action::RegisterKill(KillEvent::new(
+                    self.player_id,
+                    None,
+                    KillMethod::Plane,
+                )));
             }
         }
 

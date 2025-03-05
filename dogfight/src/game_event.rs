@@ -1,6 +1,5 @@
 use crate::network::encoding::NetworkedBytes;
 use dogfight_macros::EnumBytes;
-use imageproc::seam_carving::VerticalSeam;
 use serde::Serialize;
 use ts_rs::TS;
 
