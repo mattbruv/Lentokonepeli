@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Button, Card, Text, Grid, Group, Modal, Select, TextInput, Title, Stack, Tooltip } from "@mantine/core";
+import { Button, Card, Text, Grid, Group, Modal, Select, TextInput, Title, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
 import Levels from "./assets/levels.json"
 import { Host } from "./Host";
 import { Guest } from "./Guest";
-import { isValidClan, isValidName, useSettingsContext } from "./contexts/settingsContext";
+import { useSettingsContext } from "./contexts/settingsContext";
 import { NameEditor } from "./components/Name";
 
 export type LevelName = keyof typeof Levels
@@ -28,7 +28,7 @@ export function Lobby() {
 
 
   const [opened, { open, close }] = useDisclosure()
-  const { settings, setSettings } = useSettingsContext()
+  const { settings } = useSettingsContext()
 
   function promptUsername() {
     if (!settings.username) {
@@ -40,7 +40,7 @@ export function Lobby() {
   return (
     <div>
       <Modal opened={opened} closeOnClickOutside={false} onClose={close} title="Choose Username">
-        <NameEditor showTip />
+        <NameEditor showTip onSuccess={close} />
         {/* Modal content */}
       </Modal>
       {lobbyState === LobbyState.Choosing && (

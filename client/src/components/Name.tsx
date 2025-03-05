@@ -2,8 +2,11 @@ import { Stack, TextInput, Tooltip, Button, Text } from "@mantine/core";
 import { useState } from "react";
 import { isValidClan, isValidName, useSettingsContext } from "../contexts/settingsContext";
 
-
-export function NameEditor({ showTip = false }: { showTip?: boolean }) {
+export type NameEditorProps = {
+    showTip: boolean,
+    onSuccess?: () => void
+}
+export function NameEditor({ showTip, onSuccess }: NameEditorProps) {
     const { settings, setSettings } = useSettingsContext()
     const [name, setName] = useState<string>(settings.username ?? "")
     const [clan, setClan] = useState<string>(settings.clan ?? "")
@@ -28,7 +31,9 @@ export function NameEditor({ showTip = false }: { showTip?: boolean }) {
             clan: clan
         })
 
-        close()
+        if (onSuccess) {
+            onSuccess()
+        }
     }
 
     return (

@@ -86,7 +86,7 @@ export function Settings() {
                     <Accordion.Control icon={<IconUser />}>User Settings</Accordion.Control>
                     <Accordion.Panel>
                         <div style={{ maxWidth: 300 }}>
-                            <NameEditor />
+                            <NameEditor showTip={false} />
                         </div>
                     </Accordion.Panel>
                 </Accordion.Item>
