@@ -4,6 +4,7 @@ import { Player } from "./entities/player";
 import { Team } from "dogfight-types/Team";
 import { TeamColor } from "./constants";
 import { Textures } from "./textures";
+import { formatName } from "./helpers";
 
 export interface KillEventUIData extends KillEvent {
     killer_data: Player
@@ -55,7 +56,9 @@ export class KillFeed {
         const yOffset = this.entries.children.length * 20
         entry.position.y = yOffset
 
-        const killerText = new PIXI.Text(event.killer_data.props.name, {
+        const { name, clan } = event.killer_data.props
+
+        const killerText = new PIXI.Text(formatName(name, clan), {
             fontFamily: "arial",
             fontSize: 15,
             fill: this.getColor(event.killer_data.props.team),
@@ -71,7 +74,9 @@ export class KillFeed {
         entry.addChild(icon)
 
         if (event.victim !== null && event.victim_data !== null) {
-            const victimText = new PIXI.Text(event.victim_data.props.name, {
+            const { name, clan } = event.victim_data.props
+
+            const victimText = new PIXI.Text(formatName(name, clan), {
                 fontFamily: "arial",
                 fontSize: 15,
                 fill: this.getColor(event.victim_data.props.team),

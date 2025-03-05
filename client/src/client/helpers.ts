@@ -1,6 +1,14 @@
 import * as PIXI from "pixi.js";
 import { Point } from "./entities/entity";
 
+export function formatName(name: string, clan: string | null) {
+  if (clan) {
+    return '[' + clan + ']' + ' ' + name
+  }
+
+  return name
+}
+
 export function directionToRadians(direction: number): number {
   return Math.PI * 2 * direction / 256
 }

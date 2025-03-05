@@ -18,7 +18,7 @@ import { TeamChooser } from "./teamChooser";
 import { GameHUD } from "./hud";
 import { Entity, isFollowable, RadarEnabled, updateProps } from "./entities/entity";
 import { PlayerProperties } from "dogfight-types/PlayerProperties";
-import { toPixiPoint } from "./helpers";
+import { formatName, toPixiPoint } from "./helpers";
 import { RunwaySelection } from "dogfight-types/RunwaySelection";
 import { RunwaySelector } from "./runwaySelector";
 import { GameKeyboard } from "./keyboard";
@@ -114,18 +114,19 @@ export class DogfightClient {
 
       if (newControlling !== null && newControlling !== undefined) {
         const name = props.name?.substring(0, 15) ?? "";
+        const fullName = formatName(name, props.clan ?? null)
 
         if (newControlling.entity_type === "Plane") {
           const plane = this.planes.entries.get(newControlling.id);
           if (plane) {
-            plane.setPlayerName(name, myTeam)
+            plane.setPlayerName(fullName, myTeam)
           }
         }
         if (newControlling.entity_type === "Man") {
           //debugger
           const man = this.men.entries.get(newControlling.id);
           if (man) {
-            man.setPlayerName(name, myTeam)
+            man.setPlayerName(fullName, myTeam)
           }
         }
       }
