@@ -1,7 +1,5 @@
 use std::f64::consts::PI;
 
-use imageproc::geometry::contour_area;
-
 use crate::{
     collision::SolidEntity,
     entities::{
@@ -267,9 +265,11 @@ impl World {
                     if let Some((owner_id, _)) =
                         self.players.get_player_controlling(man.get_type(), *man_id)
                     {
+                        let victim = (bomb.player_id() != *owner_id).then_some(*owner_id);
+
                         actions.push(Action::RegisterKill(KillEvent::new(
                             bomb.player_id(),
-                            Some(*owner_id),
+                            victim,
                             KillMethod::Man,
                         )));
                     }
@@ -521,10 +521,11 @@ impl World {
                         if let Some((owner_id, _)) =
                             self.players.get_player_controlling(man.get_type(), *man_id)
                         {
+                            let victim = (killer != *owner_id).then_some(*owner_id);
                             // Draw kill plane icon and kill man icon
                             actions.push(Action::RegisterKill(KillEvent::new(
                                 killer,
-                                Some(*owner_id),
+                                victim,
                                 KillMethod::Man,
                             )));
                         }
