@@ -77,10 +77,25 @@ impl World {
 
             for (_runway_id, runway) in self.runways.get_map_mut() {
                 if man.check_collision(runway) {
-                    actions.push(Action::RemoveEntity(RemoveData {
-                        ent_id: *man_id,
-                        ent_type: man.get_type(),
-                    }));
+                    // If we're landing on the correct runway, choose a plane
+                    if *runway.get_team() == man.get_team() {
+                        actions.push(Action::RemoveEntity(RemoveData {
+                            ent_id: *man_id,
+                            ent_type: man.get_type(),
+                        }));
+                    }
+                    // Otherwise, kill the man
+                    else {
+                        actions.push(Action::RemoveEntity(RemoveData {
+                            ent_id: *man_id,
+                            ent_type: man.get_type(),
+                        }));
+                        actions.push(Action::RegisterKill(KillEvent::new(
+                            *man_id,
+                            None,
+                            KillMethod::Man,
+                        )));
+                    }
                     // web_sys::console::log_1(&format!("man collide runway!").into());
                     continue 'men;
                 }

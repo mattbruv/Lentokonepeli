@@ -215,6 +215,10 @@ impl Man {
         // log(self.y_speed.to_string());
         (self.y_speed as f64) >= (SPEED_PER_PIXEL as f64) * 1.5
     }
+
+    pub fn get_team(&self) -> Team {
+        *self.team.get()
+    }
 }
 
 impl Entity for Man {
