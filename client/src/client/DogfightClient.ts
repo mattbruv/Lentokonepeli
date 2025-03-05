@@ -360,6 +360,18 @@ export class DogfightClient {
       bullet.destroy()
     }
 
+    for (const [_, man] of this.men.entries) {
+      man.destroy()
+    }
+
+    for (const [_, ent] of this.waters.entries) {
+      ent.destroy()
+    }
+
+    for (const [_, ent] of this.backgroundItems.entries) {
+      ent.destroy()
+    }
+
     this.app.destroy(true, {
       children: true
     })

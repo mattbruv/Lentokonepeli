@@ -102,6 +102,6 @@ export class Water implements Entity<WaterProperties> {
   }
 
   public destroy() {
-    clearInterval(this.waveInterval);
+    window.clearInterval(this.waveInterval);
   }
 }

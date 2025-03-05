@@ -20,6 +20,7 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
   private manContainer: PIXI.Container;
 
   private manSprite: PIXI.Sprite;
+  private walkAnim: number | null = null;
 
   private nameText: PIXI.Text
   private frameCount = 0;
@@ -49,7 +50,7 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
 
     this.container.zIndex = DrawLayer.Man;
 
-    setInterval(() => this.animateWalk(), 100);
+    this.walkAnim = window.setInterval(() => this.animateWalk(), 100);
   }
 
   public callbackOrder: (keyof ManProperties)[] = ["client_x", "client_y"];
@@ -80,7 +81,10 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
     };
   }
 
-  public destroy() { }
+  public destroy() {
+    if (this.walkAnim)
+      window.clearInterval(this.walkAnim)
+  }
 
   private updateX(): void {
     this.container.position.x = this.props.client_x;
@@ -164,4 +168,5 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
 
     return TeamColor.OpponentForeground
   }
+
 }
