@@ -1,15 +1,13 @@
 import { ServerInput } from "dogfight-types/ServerInput"
 import { ServerOutput } from "dogfight-types/ServerOutput"
 import Peer, { DataConnection } from "peerjs"
-import { useRef, useState } from "react"
-import { useReplay } from "./useReplay"
+import { useEffect, useRef, useState } from "react"
 import { useDogfight } from "./useDogfight"
 import { PlayerCommand } from "dogfight-types/PlayerCommand"
 
 import Levels from "../assets/levels.json";
 import { LevelName } from "src/Lobby"
 import { randomGuid } from "../helpers"
-import { useSettingsContext } from "../contexts/settingsContext"
 
 type ConnectedPlayer = {
     player_guid: string,
@@ -167,6 +165,16 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
     function getReplayBinary(): Uint8Array {
         return dogfight.engine.get_replay_file();
     }
+
+    useEffect(() => {
+        return () => {
+            console.log("destroy host")
+            if (tickInterval.current)
+                window.clearInterval(tickInterval.current)
+            peer.current?.removeAllListeners()
+            peer.current?.destroy()
+        }
+    }, [])
 
     return {
         initialize,

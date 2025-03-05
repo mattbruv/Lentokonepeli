@@ -349,6 +349,22 @@ export class DogfightClient {
     this.centerCamera(0, 0);
   }
 
+  public destroy() {
+    console.log("destroying client...")
+
+    for (const [_, plane] of this.planes.entries) {
+      plane.destroy()
+    }
+
+    for (const [_, bullet] of this.bullets.entries) {
+      bullet.destroy()
+    }
+
+    this.app.destroy(true, {
+      children: true
+    })
+  }
+
   private appendView(element: HTMLDivElement) {
     element?.appendChild(this.app.view);
   }

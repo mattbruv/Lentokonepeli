@@ -13,6 +13,7 @@ export function useReplay() {
 
     const [replayFile, setReplayFile] = useState<ReplayFile | null>(null)
     const [spectating, setSpectating] = useState<string | null>(null)
+    const tickInterval = useRef<number | null>(null)
     const tick = useRef(0)
 
     function loadReplay(binary: Uint8Array): boolean {
@@ -45,7 +46,7 @@ export function useReplay() {
         tick.current = 0;
         dogfight.engine.load_level(replayFile.level_data)
 
-        window.setInterval(() => {
+        tickInterval.current = window.setInterval(() => {
             //console.log(tick.current)
             const tickData = replayFile.ticks.find(x => x.tick_number === tick.current)
             tick.current++;
@@ -84,6 +85,13 @@ export function useReplay() {
 
         }, 1000 / 100);
     }, [replayFile])
+
+    useEffect(() => {
+        return (() => {
+            if (tickInterval.current)
+                window.clearInterval(tickInterval.current)
+        })
+    }, [])
 
     return {
         initialize,

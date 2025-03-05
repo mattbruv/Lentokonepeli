@@ -88,6 +88,8 @@ export function useDogfight(handleClientCommand: (command: PlayerCommand) => voi
 
     useEffect(() => {
         return () => {
+            client.destroy()
+            engine.free()
             console.log("UseDogfight hook destructor called.")
         }
     }, [])

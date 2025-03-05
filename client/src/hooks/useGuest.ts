@@ -1,5 +1,5 @@
 import { useDogfight } from "./useDogfight";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import Peer from "peerjs";
 import { PlayerCommand } from "dogfight-types/PlayerCommand";
 import { ServerOutput } from "dogfight-types/ServerOutput";
@@ -15,7 +15,6 @@ export function useGuest(myName: string, clan: string) {
         if (clientCommandCallback.current) {
             clientCommandCallback.current(command)
         }
-
     })
 
     async function initialize(div: HTMLDivElement) {
@@ -64,6 +63,14 @@ export function useGuest(myName: string, clan: string) {
             })
         })
     }
+
+    useEffect(() => {
+        return () => {
+            console.log("destroy guest")
+            peer.current?.removeAllListeners()
+            peer.current?.destroy()
+        }
+    }, [])
 
     return {
         joinGame,
