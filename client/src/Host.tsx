@@ -6,6 +6,8 @@ import { LevelName } from "./Lobby";
 import { Button, Card, Group, Paper, Stack, Text } from "@mantine/core";
 import { IconFileDownload, IconFileDownloadFilled, IconWorldDownload } from "@tabler/icons-react";
 import { useSettingsContext } from "./contexts/settingsContext";
+import { Scoreboard } from "./components/Scoreboard";
+import { Game } from "./components/Game";
 
 type HostProps = {
     level: LevelName
@@ -21,6 +23,9 @@ export function Host({ level, recordGame }: HostProps) {
         initialize,
         roomCode,
         hostGame,
+        playerData,
+        showScoreboard,
+        playerGuid
     } = useLocalHost(level, recordGame, getUsername(), getClan())
 
     // const [joinId, setJoinId] = useState("")
@@ -48,7 +53,7 @@ export function Host({ level, recordGame }: HostProps) {
 
     return (
         <Group>
-            <div ref={gameContainer}></div>
+            <Game ref={gameContainer} myPlayerGuid={playerGuid} playerData={playerData} showScoreboard={showScoreboard} />
             <Card withBorder style={{ height: '100%' }}>
                 <Stack>
                     <Stack>

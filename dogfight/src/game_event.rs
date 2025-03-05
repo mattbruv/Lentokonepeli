@@ -11,7 +11,7 @@ use crate::entities::EntityId;
 // game ending events,
 // player joins, etc.
 
-#[derive(Serialize, Debug, Clone, TS, Copy, EnumBytes)]
+#[derive(Serialize, Debug, Clone, TS, Copy, EnumBytes, PartialEq)]
 #[ts(export)]
 pub enum KillMethod {
     Plane,
@@ -21,9 +21,9 @@ pub enum KillMethod {
 #[derive(Serialize, Debug, Clone, TS)]
 #[ts(export)]
 pub struct KillEvent {
-    killer: EntityId,
-    victim: Option<EntityId>,
-    method: KillMethod,
+    pub killer: EntityId,
+    pub victim: Option<EntityId>,
+    pub method: KillMethod,
 }
 
 impl KillEvent {

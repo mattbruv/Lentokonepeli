@@ -2,6 +2,8 @@ import { useEffect, useRef } from "react";
 import { useGuest } from "./hooks/useGuest";
 import { Group, Card, Stack, Text } from "@mantine/core";
 import { useSettingsContext } from "./contexts/settingsContext";
+import { Scoreboard } from "./components/Scoreboard";
+import { Game } from "./components/Game";
 
 
 type GuestProps = {
@@ -16,7 +18,10 @@ export function Guest({ gameCode }: GuestProps) {
 
     const {
         initialize,
-        joinGame
+        joinGame,
+        playerData,
+        showScoreboard,
+        playerGuid
     } = useGuest(getUsername(), getClan())
 
     async function join() {
@@ -31,7 +36,7 @@ export function Guest({ gameCode }: GuestProps) {
 
     return (
         <Group>
-            <div ref={gameContainer}></div>
+            <Game ref={gameContainer} myPlayerGuid={playerGuid} playerData={playerData} showScoreboard={showScoreboard} />
             <Card withBorder style={{ height: '100%' }}>
                 <Stack>
                     <Text>Joined Game:</Text>

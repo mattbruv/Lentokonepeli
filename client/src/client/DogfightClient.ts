@@ -31,7 +31,7 @@ import { Bomb } from "./entities/bomb";
 import { Explosion } from "./entities/explosion";
 import { Hill } from "./entities/hill";
 import { Bullet } from "./entities/bullet";
-import { Radar, RadarObject, RadarObjectType } from "./radar";
+import { RadarObject, RadarObjectType } from "./radar";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import { KillFeed } from "./killfeed";
 
@@ -39,6 +39,7 @@ export type GameClientCallbacks = {
   chooseTeam: (team: Team | null) => void;
   chooseRunway: (runwayId: number, planeType: PlaneType) => void;
   keyChange: (keyboard: PlayerKeyboard) => void;
+  onPlayerChange: (playerData: PlayerProperties[]) => void
 };
 
 type EntityCollection = {
@@ -76,6 +77,7 @@ export class DogfightClient {
   private debug: PIXI.Graphics = new PIXI.Graphics();
 
   private callbacks?: GameClientCallbacks;
+  private sendPlayerUpdate: boolean = false;
 
   private worldInfo: EntityGroup<WorldInfo> = {
     new_type: () => new WorldInfo(),
@@ -208,6 +210,8 @@ export class DogfightClient {
 
   constructor() {
     this.app = new PIXI.Application<HTMLCanvasElement>({
+      antialias: false,
+      resolution: 1,
       backgroundColor: SKY_COLOR,
       width: VIEW_WIDTH,
       height: VIEW_HEIGHT,
@@ -383,6 +387,7 @@ export class DogfightClient {
   }
 
   public setMyPlayerGuid(guid: string) {
+    console.log("MY GUID", guid)
     this.myPlayerGuid = guid;
   }
 
@@ -474,6 +479,7 @@ export class DogfightClient {
   }
 
   public handleGameEvents(events: ServerOutput[]) {
+    this.sendPlayerUpdate = false;
     for (const event of events) {
       switch (event.type) {
         case "EntityChanges": {
@@ -481,14 +487,17 @@ export class DogfightClient {
           break;
         }
         case "PlayerJoin": {
+          this.sendPlayerUpdate = true
           console.log(event.data + " joined the game!");
           break;
         }
         case "PlayerLeave": {
+          this.sendPlayerUpdate = true
           console.log(event.data + " left the game!");
           break;
         }
         case "PlayerJoinTeam": {
+          this.sendPlayerUpdate = true
           const player = this.players.entries.get(event.data.id);
           if (player) {
             console.log(event.data.id + " joined " + event.data.team);
@@ -499,6 +508,7 @@ export class DogfightClient {
           break;
         }
         case "KillEvent": {
+          this.sendPlayerUpdate = true
           const killer_data = this.players.entries.get(event.data.killer);
           const victim_data = event.data.victim !== null ? (this.players.entries.get(event.data.victim) ?? null) : null;
 
@@ -513,6 +523,7 @@ export class DogfightClient {
           break;
         }
         case "YourPlayerGuid": {
+          this.sendPlayerUpdate = true
           this.setMyPlayerGuid(event.data)
           break;
         }
@@ -522,6 +533,12 @@ export class DogfightClient {
         }
       }
     }
+
+    if (this.sendPlayerUpdate) {
+      this.callbacks?.onPlayerChange(this.getPlayerData())
+    }
+
+    this.sendPlayerUpdate = false;
   }
 
   private updateEntities(changes: EntityChange[]) {
@@ -598,6 +615,7 @@ export class DogfightClient {
       }
 
       if (data.type === "Player") {
+        this.sendPlayerUpdate = true
         const {
           guid
         } = data.props
@@ -647,6 +665,10 @@ export class DogfightClient {
     }
 
     this.debugCollision.endFill()
+  }
+
+  private getPlayerData(): PlayerProperties[] {
+    return [...this.players.entries.entries().map(([_id, player]) => player.props)]
   }
 }
 

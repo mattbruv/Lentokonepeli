@@ -747,11 +747,14 @@ fn kill_plane_and_give_credit(
     */
     // If the plane is occupied, show plane death and man death
     if let Some((pid, _player)) = controlling {
-        actions.push(Action::RegisterKill(KillEvent::new(
-            **pid,
-            None,
-            KillMethod::Plane,
-        )));
+        // If the plane hasn't been downed yet, show this
+        if plane.get_downed_by().is_none() {
+            actions.push(Action::RegisterKill(KillEvent::new(
+                **pid,
+                None,
+                KillMethod::Plane,
+            )));
+        }
         actions.push(Action::RegisterKill(KillEvent::new(
             **pid,
             None,

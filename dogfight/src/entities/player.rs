@@ -64,6 +64,9 @@ pub struct Player {
     state: Property<PlayerState>,
     #[rustfmt::skip]
     controlling: Property<Option::<ControllingEntity>>,
+    kills: Property<i16>,
+    deaths: Property<u16>,
+    score: Property<i16>,
 }
 
 impl Player {
@@ -79,7 +82,31 @@ impl Player {
             team: Property::new(None),
             state: Property::new(PlayerState::ChoosingTeam),
             controlling: Property::new(None),
+            kills: Property::new(0),
+            deaths: Property::new(0),
+            score: Property::new(0),
         }
+    }
+
+    pub fn get_kills(&self) -> i16 {
+        *self.kills.get()
+    }
+
+    pub fn adjust_kills(&mut self, amount: i16) -> () {
+        self.kills.set(amount);
+    }
+
+    pub fn get_deaths(&self) -> u16 {
+        *self.deaths.get()
+    }
+
+    pub fn set_deaths(&mut self, amount: u16) -> () {
+        self.deaths.set(amount);
+    }
+
+    pub fn adjust_score(&mut self, amount: i16) -> () {
+        let new = self.score.get() + amount;
+        self.score.set(new);
     }
 
     pub fn set_state(&mut self, state: PlayerState) {

@@ -22,8 +22,10 @@ const HOST_GUID = randomGuid()
 
 export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: string, clan: string) {
 
-    const dogfight = useDogfight((clientCommand) => {
-        hostInput.current.push({ player_guid: HOST_GUID, command: clientCommand })
+    const dogfight = useDogfight({
+        handleClientCommand: (clientCommand) => {
+            hostInput.current.push({ player_guid: HOST_GUID, command: clientCommand })
+        }
     })
 
     // All players' input state to be processed next tick
@@ -73,7 +75,7 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
             }
 
             // Update client
-            dogfight.client.handleGameEvents(events);
+            dogfight.handleGameEvents(events);
         }
     }
 
@@ -97,7 +99,7 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
             console.log(dogfight.engine.get_build_version())
             console.log(dogfight.engine.get_commit())
 
-            dogfight.client.setMyPlayerGuid(HOST_GUID);
+            dogfight.setMyPlayerGuid(HOST_GUID);
 
             hostInput.current.push({
                 player_guid: HOST_GUID,
@@ -111,10 +113,26 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
         peer.current.on("connection", (conn) => {
             console.log("GUEST JOINED", conn.connectionId)
 
+            const PLAYER_GUID = randomGuid()
+
+            function removePlayer() {
+                dataConnections.current.delete(conn.connectionId)
+                hostInput.current.push({
+                    player_guid: PLAYER_GUID,
+                    command: {
+                        type: "RemovePlayer"
+                    }
+                })
+            }
+
+            // Remove player on disconnect
+            conn.on("close", () => {
+                removePlayer()
+            })
+
             conn.on("open", () => {
                 // Add this player to the collection and send them the full state
                 //dataConnections.current.set(conn.connectionId, { name: conn.connectionId, conn })
-                const PLAYER_GUID = randomGuid()
                 dataConnections.current.set(conn.connectionId, {
                     player_guid: PLAYER_GUID,
                     connection: conn,
@@ -122,6 +140,13 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
 
                 const all_state = dogfight.engine.get_full_state();
                 conn.send(all_state)
+
+                // Set initial guid
+                const out: ServerOutput = {
+                    type: "YourPlayerGuid",
+                    data: PLAYER_GUID
+                }
+                conn.send(JSON.stringify(out))
 
                 conn.on("data", (data) => {
                     // console.log(data)
@@ -138,11 +163,6 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
                         }
 
                         guestInput.current.push({ player_guid: user.player_guid, command })
-                        const out: ServerOutput = {
-                            type: "YourPlayerGuid",
-                            data: PLAYER_GUID
-                        }
-                        user.connection.send(JSON.stringify(out))
                     }
                 })
             })
@@ -180,6 +200,9 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
         initialize,
         hostGame,
         roomCode,
-        getReplayBinary
+        getReplayBinary,
+        showScoreboard: dogfight.showScoreboard,
+        playerData: dogfight.playerData,
+        playerGuid: dogfight.playerGuid,
     }
 }

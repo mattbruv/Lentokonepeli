@@ -7,8 +7,9 @@ import { ServerOutput } from "dogfight-types/ServerOutput"
 export function useReplay() {
     console.log("useReplay called!")
 
-    const dogfight = useDogfight(() => {
+    const dogfight = useDogfight({
         // We don't want to do anything with commands sent to the replay client
+        handleClientCommand: () => { }
     })
 
     const [replayFile, setReplayFile] = useState<ReplayFile | null>(null)
@@ -72,7 +73,7 @@ export function useReplay() {
                 if (host && host.command.type === "AddPlayer") {
                     const { name, guid } = host.command.data
                     setSpectating(name)
-                    dogfight.client.setMyPlayerGuid(guid)
+                    dogfight.setMyPlayerGuid(guid)
                 }
             }
 
@@ -81,7 +82,7 @@ export function useReplay() {
 
             const changed_state = dogfight.engine.flush_changed_state()
             const events = parseServerOutput(changed_state)
-            dogfight.client.handleGameEvents(events)
+            dogfight.handleGameEvents(events)
 
         }, 1000 / 100);
     }, [replayFile])
@@ -96,5 +97,8 @@ export function useReplay() {
     return {
         initialize,
         loadReplay,
+        showScoreboard: dogfight.showScoreboard,
+        playerData: dogfight.playerData,
+        playerGuid: dogfight.playerGuid
     }
 }

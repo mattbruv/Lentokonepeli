@@ -9,7 +9,7 @@ use crate::{
         types::{EntityType, Team},
         EntityId,
     },
-    game_event::KillEvent,
+    game_event::{KillEvent, KillMethod},
     input::PlayerKeyboard,
     output::ServerOutput,
     world::World,
@@ -154,7 +154,45 @@ impl World {
     }
 
     fn register_kill(&mut self, kill_event: KillEvent) -> Vec<ServerOutput> {
-        // TODO: adjust scores
+        // If the man was killed,
+        // Adjust kills, deaths, and points
+        if kill_event.method == KillMethod::Man {
+            match kill_event.victim {
+                // We killed someone else
+                Some(victim) => {
+                    if let Some(vict) = self.players.get_mut(victim) {
+                        vict.set_deaths(vict.get_deaths() + 1);
+                    }
+                    match self.players.get(victim).and_then(|p| *p.get_team()) {
+                        Some(vict_team) => {
+                            if let Some(killer) = self.players.get_mut(kill_event.killer) {
+                                match *killer.get_team() {
+                                    Some(team) => {
+                                        if team == vict_team {
+                                            // If the victim was on our team, we teamkilled :(
+                                            killer.adjust_score(-8);
+                                        } else {
+                                            killer.adjust_kills(1);
+                                            killer.adjust_score(10);
+                                        }
+                                    }
+                                    None => {}
+                                }
+                            }
+                        }
+                        None => {}
+                    }
+                }
+                // If we killed ourselves
+                None => {
+                    if let Some(killer) = self.players.get_mut(kill_event.killer) {
+                        killer.set_deaths(killer.get_deaths() + 1);
+                        killer.adjust_score(-5);
+                    }
+                }
+            }
+        }
+
         vec![ServerOutput::KillEvent(kill_event)]
     }
 }

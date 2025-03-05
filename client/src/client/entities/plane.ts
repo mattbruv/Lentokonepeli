@@ -277,8 +277,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
   }
 
   public setPlayerName(name: string | null, pov_team: Team | null) {
-    console.log("set player name", name, pov_team)
-
+    // console.log("set player name", name, pov_team)
     if (!name) {
       this.nameText.visible = false;
       return;

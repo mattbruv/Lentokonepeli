@@ -2,6 +2,7 @@ import { Button, Card, FileButton, Group, LoadingOverlay, Stack, Title, Alert, T
 import { useRef, useState } from "react"
 import { useReplay } from "./hooks/useReplay";
 import { IconFileUpload, IconInfoCircle } from "@tabler/icons-react";
+import { Game } from "./components/Game";
 
 enum ReplayState {
   ProvideFile,
@@ -11,7 +12,13 @@ enum ReplayState {
 
 export function Replay() {
 
-  const { loadReplay, initialize } = useReplay()
+  const {
+    loadReplay,
+    initialize,
+    playerData,
+    showScoreboard,
+    playerGuid
+  } = useReplay()
 
   const [state, setState] = useState<ReplayState>(ReplayState.ProvideFile)
   const gameContainer = useRef<HTMLDivElement>(null);
@@ -46,8 +53,8 @@ export function Replay() {
 
 
   return (
-    <div>
-      <div ref={gameContainer}></div>
+    <Group>
+      <Game ref={gameContainer} myPlayerGuid={playerGuid} playerData={playerData} showScoreboard={showScoreboard} />
       {state === ReplayState.ProvideFile && (
         <div>
           <Group>
@@ -91,6 +98,6 @@ export function Replay() {
         <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
       )
       }
-    </div>
+    </Group>
   )
 }

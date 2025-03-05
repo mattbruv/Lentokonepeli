@@ -31,9 +31,10 @@ export class GameKeyboard {
     this.onKeyChange = callback;
   }
 
-  public onKeyDown(keyString: string) {
+  public onKeyDown(keyString: string, event: KeyboardEvent) {
     const inMap = keyString in keyMap;
     if (!inMap) return;
+    event.preventDefault()
     const key = keyMap[keyString];
     const keyAlreadyPressed = this.keyboard[key];
 
@@ -45,9 +46,10 @@ export class GameKeyboard {
     }
   }
 
-  public onKeyUp(keyString: string) {
+  public onKeyUp(keyString: string, event: KeyboardEvent) {
     const inMap = keyString in keyMap;
     if (!inMap) return;
+    event.preventDefault()
     const key = keyMap[keyString];
     this.keyboard[key] = false;
     if (this.onKeyChange) {

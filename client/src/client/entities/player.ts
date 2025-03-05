@@ -13,7 +13,10 @@ export class Player implements Entity<PlayerProperties> {
     controlling: null,
     name: "Undefined",
     state: "WaitingRespawn",
-    team: null
+    team: null,
+    kills: 0,
+    deaths: 0,
+    score: 0
   };
 
   private onChange: OnChangeControl
@@ -32,6 +35,9 @@ export class Player implements Entity<PlayerProperties> {
     clan: () => { },
     state: () => { },
     guid: () => { },
+    kills: () => { },
+    deaths: () => { },
+    score: () => { },
     controlling: (oldProps) => {
       if (oldProps.controlling !== undefined)
         this.onChange(oldProps.controlling, this.props.controlling, this.props)

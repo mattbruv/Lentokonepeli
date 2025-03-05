@@ -11,9 +11,11 @@ export function useGuest(myName: string, clan: string) {
 
     const clientCommandCallback = useRef<((command: PlayerCommand) => void) | null>(null)
 
-    const dogfight = useDogfight((command) => {
-        if (clientCommandCallback.current) {
-            clientCommandCallback.current(command)
+    const dogfight = useDogfight({
+        handleClientCommand: (command) => {
+            if (clientCommandCallback.current) {
+                clientCommandCallback.current(command)
+            }
         }
     })
 
@@ -47,7 +49,10 @@ export function useGuest(myName: string, clan: string) {
                 conn.on("data", (data) => {
                     if (typeof data === "string") {
                         const output: ServerOutput = JSON.parse(data)
-                        dogfight.client.handleGameEvents([output])
+                        dogfight.handleGameEvents([output])
+                        if (output.type === "YourPlayerGuid") {
+                            dogfight.setMyPlayerGuid(output.data)
+                        }
                     }
                     else {
                         // console.log(data)
@@ -57,7 +62,7 @@ export function useGuest(myName: string, clan: string) {
                         const events_json = dogfight.engine.game_events_from_binary(buffer)
                         const events = JSON.parse(events_json) as ServerOutput[];
                         // console.log(m.data, events_json, events)
-                        dogfight.client.handleGameEvents(events)
+                        dogfight.handleGameEvents(events)
                     }
                 })
             })
@@ -74,6 +79,9 @@ export function useGuest(myName: string, clan: string) {
 
     return {
         joinGame,
-        initialize
+        initialize,
+        showScoreboard: dogfight.showScoreboard,
+        playerData: dogfight.playerData,
+        playerGuid: dogfight.playerGuid
     }
 }
