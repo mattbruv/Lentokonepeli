@@ -6,6 +6,7 @@ import Levels from "./assets/levels.json"
 import { Host } from "./Host";
 import { Guest } from "./Guest";
 import { isValidClan, isValidName, useSettingsContext } from "./contexts/settingsContext";
+import { NameEditor } from "./components/Name";
 
 export type LevelName = keyof typeof Levels
 
@@ -25,8 +26,6 @@ export function Lobby() {
   // Joining state
   const [joinId, setJoinId] = useState<string>("")
 
-  const [name, setName] = useState<string>("")
-  const [clan, setClan] = useState<string>("")
 
   const [opened, { open, close }] = useDisclosure()
   const { settings, setSettings } = useSettingsContext()
@@ -38,50 +37,10 @@ export function Lobby() {
     }
   }
 
-  function setUsername(event: React.ChangeEvent<HTMLInputElement>): void {
-    setName(event.target.value.trim())
-  }
-
-  function setClanName(event: React.ChangeEvent<HTMLInputElement>): void {
-    setClan(event.target.value.trim())
-  }
-
-  function canSubmitModal() {
-    return isValidName(name) && isValidClan(clan)
-  }
-
-  function confirmName(): void {
-    setSettings({
-      ...settings,
-      username: name,
-      clan: clan
-    })
-
-    close()
-  }
-
   return (
     <div>
       <Modal opened={opened} closeOnClickOutside={false} onClose={close} title="Choose Username">
-        <Stack>
-          <div>
-            <Text size={"lg"}>What name do you want to go by?</Text>
-          </div>
-          <TextInput onChange={setUsername} label="Username" description="You can change this any time in the settings menu" />
-          <TextInput onChange={setClanName} label="Clan" description="An optional clan to prefix to your name" />
-          <Tooltip disabled={canSubmitModal()} label={"Name should be between 3 and 20 characters"} position={"bottom"}>
-            <Button
-              variant="gradient"
-              gradient={{ from: "green", to: "lime", deg: 90 }}
-              disabled={canSubmitModal() == false}
-              size={"lg"}
-              onClick={confirmName}
-            >
-              Set Name
-            </Button>
-          </Tooltip>
-
-        </Stack>
+        <NameEditor showTip />
         {/* Modal content */}
       </Modal>
       {lobbyState === LobbyState.Choosing && (

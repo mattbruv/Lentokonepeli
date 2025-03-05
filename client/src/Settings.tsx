@@ -3,6 +3,7 @@ import { IconDeviceGamepad2, IconPlus, IconRestore, IconTrash, IconUser } from "
 import { GameKey, getDefaultControls, useSettingsContext } from "./contexts/settingsContext";
 import { useDisclosure } from "@mantine/hooks";
 import React, { useState } from "react";
+import { NameEditor } from "./components/Name";
 
 
 
@@ -84,8 +85,8 @@ export function Settings() {
                 <Accordion.Item key={"user"} value={"user"}>
                     <Accordion.Control icon={<IconUser />}>User Settings</Accordion.Control>
                     <Accordion.Panel>
-                        <div>
-                            TODO: allow editing player names and clan...
+                        <div style={{ maxWidth: 300 }}>
+                            <NameEditor />
                         </div>
                     </Accordion.Panel>
                 </Accordion.Item>
