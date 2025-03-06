@@ -93,7 +93,7 @@ impl Player {
     }
 
     pub fn adjust_kills(&mut self, amount: i16) -> () {
-        self.kills.set(amount);
+        self.kills.set(self.kills.get() + amount);
     }
 
     pub fn get_deaths(&self) -> u16 {
