@@ -1,4 +1,5 @@
 use crate::{
+    collision::{BoundingBox, SolidEntity},
     entities::{
         bomb::Bomb,
         bullet::Bullet,
@@ -34,6 +35,7 @@ pub enum Action {
     SpawnBomb(Bomb),
     SpawnBullet(Bullet),
     RegisterKill(KillEvent),
+    ManShootBullet(EntityId),
 }
 
 impl World {
@@ -57,6 +59,7 @@ impl World {
             Action::SpawnBomb(bomb) => self.spawn_bomb(bomb),
             Action::SpawnBullet(bullet) => self.spawn_bullet(bullet),
             Action::RegisterKill(kill_event) => self.register_kill(kill_event),
+            Action::ManShootBullet(man_id) => self.man_shoot_bullet(man_id),
         }
     }
 
@@ -195,4 +198,133 @@ impl World {
 
         vec![ServerOutput::KillEvent(kill_event)]
     }
+
+    fn man_shoot_bullet(&mut self, man_id: EntityId) -> Vec<ServerOutput> {
+        let mut output: Vec<ServerOutput> = vec![];
+        //log(format!("man shoot! {}", man_id));
+
+        // Get all bounding boxes for planes, men, and runways that are alive
+        // Only for objects on the enemy team
+        let mut bounding_boxes: Vec<BoundingBox> = vec![];
+        if let Some(man) = self.men.get(man_id) {
+            bounding_boxes.extend(
+                self.men
+                    .get_map()
+                    .iter()
+                    .filter(|x| x.1.get_team() != man.get_team())
+                    .map(|m| m.1.get_collision_bounds()),
+            );
+
+            bounding_boxes.extend(
+                self.planes
+                    .get_map()
+                    .iter()
+                    .filter(|x| x.1.get_team() != man.get_team())
+                    .map(|m| m.1.get_collision_bounds()),
+            );
+
+            // make sure to filter out dead runways
+            bounding_boxes.extend(
+                self.runways
+                    .get_map()
+                    .iter()
+                    .filter(|(_, runway)| *runway.get_team() != man.get_team() && runway.is_alive())
+                    .map(|m| m.1.get_collision_bounds()),
+            );
+        }
+
+        //log(format!("bounds: {:?}", bounding_boxes));
+
+        let mut angle: f64 = 4.71238898038469;
+        let mut target: Option<BoundingBox> = None;
+        let mut i: i32 = 250_000;
+
+        if let Some(man) = self.men.get(man_id) {
+            let my_box = man.get_collision_bounds();
+
+            // find the object which is the shortest distance away
+            for bbox in bounding_boxes {
+                let dist = count_distance(&my_box, &bbox);
+                //log(format!("dist: {:?}", dist));
+                if dist < i {
+                    i = dist;
+                    target = Some(bbox);
+                }
+            }
+
+            if let Some(closest) = target {
+                angle = count_angle(&my_box, &closest);
+                if angle < 0.0 {
+                    angle += std::f64::consts::TAU; // stop negative angle values
+                }
+                //
+            }
+
+            if (angle < 2.199114857512855) && (angle > 0.9424777960769379) {
+                if let Some(closest) = target {
+                    //System.out.println("Shooting down: " + localObject1 + " " + ((SolidEntity)localObject1).getCollisionBounds() + " " + d + " " + i);
+                } else {
+                    //System.out.println("Shooting down: " + localObject1 + " " + d + " " + i);
+                }
+            }
+
+            //log(format!("ANGLE: {}", angle));
+
+            let j = my_box.x + my_box.width / 2;
+            let m = my_box.y + my_box.height - 10;
+            output.extend(self.spawn_bullet(Bullet::new(man_id, j, m, angle, 0.0)));
+        }
+
+        /*
+           int j = this.x / 100 + this.w / 2;
+           int m = this.y / 100 + this.h - 10;
+           this.toolkit.addEntity(new Bullet(j, m, d, 0.0D, this));
+        */
+        /*
+           if ((d < 2.199114857512855D) && (d > 0.9424777960769379D)) {
+           if (localObject1 != null) {
+               System.out.println("Shooting down: " + localObject1 + " " + ((SolidEntity)localObject1).getCollisionBounds() + " " + d + " " + i);
+           } else {
+               System.out.println("Shooting down: " + localObject1 + " " + d + " " + i);
+           }
+           }
+           int j = this.x / 100 + this.w / 2;
+           int m = this.y / 100 + this.h - 10;
+           this.toolkit.addEntity(new Bullet(j, m, d, 0.0D, this));
+        */
+
+        // log(format!("shortest dist: {:?}", target));
+
+        output
+    }
+}
+
+fn count_angle(my_box: &BoundingBox, bbox: &BoundingBox) -> f64 {
+    let i = (bbox.x + bbox.width / 2) as i32;
+    let j = (bbox.y + bbox.height / 2) as i32;
+    let k = (my_box.x + my_box.width / 2) as i32;
+    let m = (my_box.y + my_box.height / 2) as i32;
+    ((j - m) as f64).atan2((i - k) as f64)
+    /*
+    int i = paramSolidEntity.getCollisionBounds().x + paramSolidEntity.getCollisionBounds().width / 2;
+    int j = paramSolidEntity.getCollisionBounds().y + paramSolidEntity.getCollisionBounds().height / 2;
+    int k = this.x / 100 + this.w / 2;
+    int m = this.y / 100 + this.h / 2;
+    return Math.atan2(j - m, i - k);
+     */
+}
+
+fn count_distance(my_box: &BoundingBox, bbox: &BoundingBox) -> i32 {
+    let i = (bbox.x + bbox.width / 2) as i32;
+    let j = (bbox.y + bbox.height / 2) as i32;
+    let k = (my_box.x + my_box.width / 2) as i32;
+    let m = (my_box.y + my_box.height / 2) as i32;
+    (i - k) * (i - k) + (j - m) * (j - m)
+    /*
+    int i = paramSolidEntity.getCollisionBounds().x + paramSolidEntity.getCollisionBounds().width / 2;
+    int j = paramSolidEntity.getCollisionBounds().y + paramSolidEntity.getCollisionBounds().height / 2;
+    int k = this.x / 100 + this.w / 2;
+    int m = this.y / 100 + this.h / 2;
+    return (i - k) * (i - k) + (j - m) * (j - m);
+     */
 }

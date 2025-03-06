@@ -31,6 +31,8 @@ pub enum ManState {
     WalkingRight,
 }
 
+const SHOOT_DELAY_MS: u32 = 500;
+
 #[derive(Networked)]
 pub struct Man {
     x: i32,
@@ -48,6 +50,8 @@ pub struct Man {
     image_parachuting: RgbaImage,
 
     age_ms: u32,
+
+    last_shot_ms: u32,
 }
 
 impl Man {
@@ -64,6 +68,7 @@ impl Man {
             image_standing: get_image(PARACHUTER0),
             image_parachuting: get_image(PARACHUTER1),
             age_ms: 0,
+            last_shot_ms: SHOOT_DELAY_MS,
         }
     }
 
@@ -80,10 +85,11 @@ impl Man {
         let mut actions = vec![];
 
         self.age_ms += 10;
+        self.last_shot_ms += 10;
 
         match self.state.get() {
             ManState::Falling => self.fall(keyboard),
-            ManState::Parachuting => self.parachute(keyboard),
+            ManState::Parachuting => self.parachute(man_id, keyboard, &mut actions),
             ManState::Standing | ManState::WalkingLeft | ManState::WalkingRight => {
                 self.walk(my_owner, man_id, keyboard, &mut actions)
             }
@@ -148,7 +154,12 @@ impl Man {
         }
     }
 
-    fn parachute(&mut self, keyboard: &PlayerKeyboard) {
+    fn parachute(
+        &mut self,
+        man_id: EntityId,
+        keyboard: &PlayerKeyboard,
+        actions: &mut Vec<Action>,
+    ) {
         self.set_x(self.x + (RESOLUTION * self.x_speed / SPEED_PER_PIXEL));
         self.set_y(self.y + (RESOLUTION * self.y_speed / SPEED_PER_PIXEL));
         self.x_speed = (self.x_speed as f64 - self.x_speed as f64 * 0.01) as i32;
@@ -164,6 +175,12 @@ impl Man {
 
         if keyboard.right {
             self.set_x(self.x + 100);
+        }
+
+        // If we're shooting
+        if keyboard.ctrl && self.last_shot_ms >= SHOOT_DELAY_MS {
+            self.last_shot_ms = 0;
+            actions.push(Action::ManShootBullet(man_id));
         }
     }
 
@@ -208,6 +225,12 @@ impl Man {
                 client_x: x,
                 client_y: y,
             }));
+        }
+
+        // If we're shooting
+        if keyboard.ctrl && self.last_shot_ms >= SHOOT_DELAY_MS {
+            self.last_shot_ms = 0;
+            actions.push(Action::ManShootBullet(man_id));
         }
     }
 

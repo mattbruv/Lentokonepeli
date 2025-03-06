@@ -673,6 +673,10 @@ impl Plane {
         self.runway
     }
 
+    pub fn get_team(&self) -> Team {
+        *self.team.get()
+    }
+
     pub fn set_runway(&mut self, runway: Option<EntityId>) -> () {
         self.runway = runway;
     }

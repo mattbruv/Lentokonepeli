@@ -356,24 +356,28 @@ impl World {
         'bullets: for (bullet_id, bullet) in self.bullets.get_map_mut() {
             for (man_id, man) in self.men.get_map_mut() {
                 if bullet.check_collision(man) {
-                    // Kill Man
                     if let Some((owner_id, _)) =
                         self.players.get_player_controlling(man.get_type(), *man_id)
                     {
-                        actions.push(Action::RegisterKill(KillEvent::new(
-                            bullet.player_id(),
-                            Some(*owner_id),
-                            KillMethod::Man,
-                        )));
+                        // Kill Man if the bullet owner isn't the man owner
+                        if bullet.player_id() != *owner_id {
+                            actions.push(Action::RegisterKill(KillEvent::new(
+                                bullet.player_id(),
+                                Some(*owner_id),
+                                KillMethod::Man,
+                            )));
+
+                            actions.push(Action::RemoveEntity(RemoveData {
+                                ent_id: *bullet_id,
+                                ent_type: bullet.get_type(),
+                            }));
+
+                            actions.push(Action::RemoveEntity(RemoveData {
+                                ent_id: *man_id,
+                                ent_type: man.get_type(),
+                            }));
+                        }
                     }
-                    actions.push(Action::RemoveEntity(RemoveData {
-                        ent_id: *bullet_id,
-                        ent_type: bullet.get_type(),
-                    }));
-                    actions.push(Action::RemoveEntity(RemoveData {
-                        ent_id: *man_id,
-                        ent_type: man.get_type(),
-                    }));
                     continue 'bullets;
                 }
             }

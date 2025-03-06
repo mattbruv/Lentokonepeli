@@ -43,6 +43,14 @@ impl Bullet {
             bullet.speed.set(200);
         }
 
+        /*
+        log(format!(
+            "angle: {} dir: {}",
+            bullet.angle,
+            bullet.direction.get()
+        ));
+        */
+
         bullet
     }
 
