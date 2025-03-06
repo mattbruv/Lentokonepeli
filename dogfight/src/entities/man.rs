@@ -1,5 +1,6 @@
 use dogfight_macros::{EnumBytes, Networked};
 use image::RgbaImage;
+use web_sys::js_sys::Reflect::own_keys;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
@@ -7,7 +8,7 @@ use crate::{
     images::{get_image, PARACHUTER0, PARACHUTER1},
     input::PlayerKeyboard,
     network::{property::*, EntityProperties, NetworkedEntity},
-    tick_actions::{Action, ExplosionData, RemoveData},
+    tick_actions::{Action, ExplosionData, ManShootData, RemoveData},
     world::RESOLUTION,
 };
 
@@ -89,7 +90,7 @@ impl Man {
 
         match self.state.get() {
             ManState::Falling => self.fall(keyboard),
-            ManState::Parachuting => self.parachute(man_id, keyboard, &mut actions),
+            ManState::Parachuting => self.parachute(my_owner, man_id, keyboard, &mut actions),
             ManState::Standing | ManState::WalkingLeft | ManState::WalkingRight => {
                 self.walk(my_owner, man_id, keyboard, &mut actions)
             }
@@ -156,6 +157,7 @@ impl Man {
 
     fn parachute(
         &mut self,
+        my_owner: EntityId,
         man_id: EntityId,
         keyboard: &PlayerKeyboard,
         actions: &mut Vec<Action>,
@@ -180,7 +182,10 @@ impl Man {
         // If we're shooting
         if keyboard.ctrl && self.last_shot_ms >= SHOOT_DELAY_MS {
             self.last_shot_ms = 0;
-            actions.push(Action::ManShootBullet(man_id));
+            actions.push(Action::ManShootBullet(ManShootData {
+                player_id: my_owner,
+                man_ent_id: man_id,
+            }));
         }
     }
 
@@ -230,7 +235,11 @@ impl Man {
         // If we're shooting
         if keyboard.ctrl && self.last_shot_ms >= SHOOT_DELAY_MS {
             self.last_shot_ms = 0;
-            actions.push(Action::ManShootBullet(man_id));
+
+            actions.push(Action::ManShootBullet(ManShootData {
+                man_ent_id: man_id,
+                player_id: my_owner,
+            }));
         }
     }
 

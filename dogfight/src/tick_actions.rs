@@ -28,6 +28,11 @@ pub struct ExplosionData {
     pub client_y: i16,
 }
 
+pub struct ManShootData {
+    pub player_id: EntityId,
+    pub man_ent_id: EntityId,
+}
+
 pub enum Action {
     RemoveEntity(RemoveData),
     Explosion(ExplosionData),
@@ -35,7 +40,7 @@ pub enum Action {
     SpawnBomb(Bomb),
     SpawnBullet(Bullet),
     RegisterKill(KillEvent),
-    ManShootBullet(EntityId),
+    ManShootBullet(ManShootData),
 }
 
 impl World {
@@ -199,14 +204,14 @@ impl World {
         vec![ServerOutput::KillEvent(kill_event)]
     }
 
-    fn man_shoot_bullet(&mut self, man_id: EntityId) -> Vec<ServerOutput> {
+    fn man_shoot_bullet(&mut self, shoot_data: ManShootData) -> Vec<ServerOutput> {
         let mut output: Vec<ServerOutput> = vec![];
         //log(format!("man shoot! {}", man_id));
 
         // Get all bounding boxes for planes, men, and runways that are alive
         // Only for objects on the enemy team
         let mut bounding_boxes: Vec<BoundingBox> = vec![];
-        if let Some(man) = self.men.get(man_id) {
+        if let Some(man) = self.men.get(shoot_data.man_ent_id) {
             bounding_boxes.extend(
                 self.men
                     .get_map()
@@ -239,7 +244,7 @@ impl World {
         let mut target: Option<BoundingBox> = None;
         let mut i: i32 = 250_000;
 
-        if let Some(man) = self.men.get(man_id) {
+        if let Some(man) = self.men.get(shoot_data.man_ent_id) {
             let my_box = man.get_collision_bounds();
 
             // find the object which is the shortest distance away
@@ -275,7 +280,7 @@ impl World {
 
             let j = my_box.x + my_box.width / 2;
             let m = my_box.y + my_box.height - 10;
-            output.extend(self.spawn_bullet(Bullet::new(man_id, j, m, angle, 0.0)));
+            output.extend(self.spawn_bullet(Bullet::new(shoot_data.player_id, j, m, angle, 0.0)));
         }
 
         /*
