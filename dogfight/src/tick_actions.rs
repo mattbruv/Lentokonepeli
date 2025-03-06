@@ -254,6 +254,9 @@ impl World {
 
             if let Some(closest) = target {
                 angle = count_angle(&my_box, &closest);
+                // For some reason the rust version is returning negative angles with atan2
+                // and the java version doesn't, maybe the java version y coords are flipped?
+                // Either way, ChatGPT says this is the way to flip it and it seems to work
                 if angle < 0.0 {
                     angle += std::f64::consts::TAU; // stop negative angle values
                 }

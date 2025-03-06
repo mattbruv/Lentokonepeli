@@ -538,6 +538,9 @@ impl Plane {
 
                 let x = *self.client_x.get();
                 let y = *self.client_y.get();
+
+                // log(format!("angle: {}", self.angle));
+
                 actions.push(Action::SpawnBomb(Bomb::new(
                     self.player_id,
                     x,
