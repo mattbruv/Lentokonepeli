@@ -1,16 +1,14 @@
-use std::array::TryFromSliceError;
-
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 use crate::{
     entities::{
+        container::RunwayId,
         plane::{Plane, PlaneType},
         player::{ControllingEntity, Player, PlayerState},
-        types::{EntityType, Team},
-        EntityId,
+        types::Team,
     },
-    network::{encoding::NetworkedBytes, player_command_json_from_binary},
+    network::encoding::NetworkedBytes,
     output::ServerOutput,
     world::World,
 };
@@ -129,7 +127,7 @@ impl NetworkedBytes for PlayerKeyboard {
 #[derive(Serialize, Deserialize, Debug, TS, Clone)]
 #[ts(export)]
 pub struct RunwaySelection {
-    pub runway_id: EntityId,
+    pub runway_id: RunwayId,
     pub plane_type: PlaneType,
 }
 
@@ -232,9 +230,8 @@ impl World {
                                     {
                                         player.set_keys(PlayerKeyboard::new());
                                         player.set_state(PlayerState::Playing);
-                                        player.set_controlling(Some(ControllingEntity::new(
+                                        player.set_controlling(Some(ControllingEntity::Plane(
                                             plane_id,
-                                            EntityType::Plane,
                                         )))
                                     }
                                 }

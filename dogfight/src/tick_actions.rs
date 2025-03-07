@@ -1,14 +1,14 @@
+
 use crate::{
     collision::{BoundingBox, SolidEntity},
     entities::{
         bomb::Bomb,
         bullet::Bullet,
-        entity::Entity,
+        container::{BombId, BulletId, ExplosionId, ManId, PlaneId, PlayerId},
         explosion::Explosion,
         man::Man,
         player::{ControllingEntity, PlayerState},
-        types::{EntityType, Team},
-        EntityId,
+        types::Team,
     },
     game_event::{KillEvent, KillMethod},
     input::PlayerKeyboard,
@@ -16,21 +16,24 @@ use crate::{
     world::World,
 };
 
-pub struct RemoveData {
-    pub ent_id: EntityId,
-    pub ent_type: EntityType,
+pub enum RemoveData {
+    Man(ManId),
+    Plane(PlaneId),
+    Bomb(BombId),
+    Explosion(ExplosionId),
+    Bullet(BulletId),
 }
 
 pub struct ExplosionData {
-    pub explosion_owner: Option<EntityId>,
+    pub explosion_owner: Option<PlayerId>,
     pub team: Option<Team>,
     pub client_x: i16,
     pub client_y: i16,
 }
 
 pub struct ManShootData {
-    pub player_id: EntityId,
-    pub man_ent_id: EntityId,
+    pub player_id: PlayerId,
+    pub man_ent_id: ManId,
 }
 
 pub enum Action {
@@ -68,44 +71,44 @@ impl World {
         }
     }
 
-    fn remove_entity(&mut self, remove_data: RemoveData) -> Vec<ServerOutput> {
+    fn remove_entity(&mut self, remove_controlling: RemoveData) -> Vec<ServerOutput> {
         let output = vec![];
 
-        let id = remove_data.ent_id;
-        match remove_data.ent_type {
-            EntityType::Man => {
-                self.men.remove(id);
+        match remove_controlling {
+            RemoveData::Man(man_id) => {
+                self.men.remove(man_id);
             }
-            EntityType::Plane => {
-                self.planes.remove(id);
+            RemoveData::Plane(plane_id) => {
+                self.planes.remove(plane_id);
             }
-            EntityType::Bomb => {
-                self.bombs.remove(id);
+            RemoveData::Bomb(bomb_id) => {
+                self.bombs.remove(bomb_id);
             }
-            EntityType::Explosion => {
-                self.explosions.remove(id);
+            RemoveData::Explosion(explosion_id) => {
+                self.explosions.remove(explosion_id);
             }
-            EntityType::Bullet => {
-                self.bullets.remove(id);
+            RemoveData::Bullet(bullet_id) => {
+                self.bullets.remove(bullet_id);
             }
-            EntityType::WorldInfo => {}
-            EntityType::BackgroundItem => {}
-            EntityType::Ground => {}
-            EntityType::Coast => {}
-            EntityType::Runway => {}
-            EntityType::Player => {}
-            EntityType::Water => {}
-            EntityType::Bunker => {}
-            EntityType::Hill => {}
         };
 
-        if let Some((_, player)) = self
-            .players
-            .get_player_controlling(remove_data.ent_type, remove_data.ent_id)
-        {
-            player.set_controlling(None);
-            // TODO: show temporary death screen or something
-            player.set_state(PlayerState::ChoosingRunway);
+        // If we're removing an entity that might be controlled,
+        // we want to check to see if a player is indeed controlling it
+        // and if so, remove that control.
+        let control_test: Option<ControllingEntity> = match remove_controlling {
+            RemoveData::Man(man_id) => Some(ControllingEntity::Man(man_id)),
+            RemoveData::Plane(plane_id) => Some(ControllingEntity::Plane(plane_id)),
+            RemoveData::Bomb(_) => None,
+            RemoveData::Explosion(_) => None,
+            RemoveData::Bullet(_) => None,
+        };
+
+        if let Some(controlled) = control_test {
+            if let Some((_, player)) = self.players.get_player_controlling(controlled) {
+                player.set_controlling(None);
+                // TODO: show temporary death screen or something
+                player.set_state(PlayerState::ChoosingRunway);
+            }
         }
 
         output
@@ -130,20 +133,13 @@ impl World {
         man: Man,
         currently_controlling: Option<ControllingEntity>,
     ) -> Vec<ServerOutput> {
-        if let Some((man_id, man)) = self.men.insert(man) {
+        if let Some((man_id, _man)) = self.men.insert(man) {
             if let Some(current) = currently_controlling {
-                if let Some((_, p)) = self
-                    .players
-                    .get_player_controlling(current.entity_type, current.id)
-                {
+                if let Some((_, p)) = self.players.get_player_controlling(current) {
                     // unset the space/jump key
                     let reset_keys = PlayerKeyboard::new();
                     p.set_keys(reset_keys);
-
-                    p.set_controlling(Some(ControllingEntity {
-                        id: man_id,
-                        entity_type: man.get_type(),
-                    }));
+                    p.set_controlling(Some(ControllingEntity::Man(man_id)));
                 }
             }
         }

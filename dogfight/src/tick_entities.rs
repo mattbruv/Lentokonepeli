@@ -1,5 +1,5 @@
 use crate::{
-    entities::{entity::Entity, types::EntityType},
+    entities::player::ControllingEntity,
     input::PlayerKeyboard,
     tick_actions::Action,
     world::World,
@@ -43,10 +43,10 @@ impl World {
         // TODO: tick all men, not just men controlled by players
         for (player_id, player) in self.players.get_map_mut() {
             if let Some(controlled) = player.get_controlling() {
-                match controlled.entity_type {
-                    EntityType::Man => {
-                        if let Some(man) = self.men.get_mut(controlled.id) {
-                            actions.extend(man.tick(*player_id, controlled.id, player.get_keys()));
+                match controlled {
+                    ControllingEntity::Man(man_id) => {
+                        if let Some(man) = self.men.get_mut(man_id) {
+                            actions.extend(man.tick(*player_id, man_id, player.get_keys()));
                         }
                     }
                     _ => (),
@@ -78,7 +78,7 @@ impl World {
         for (plane_id, plane) in self.planes.get_map_mut() {
             let player = self
                 .players
-                .get_player_controlling(plane.get_type(), *plane_id);
+                .get_player_controlling(ControllingEntity::Plane(*plane_id));
 
             let keyboard: Option<&PlayerKeyboard> = match &player {
                 Some((_, p)) => Some(p.get_keys()),

@@ -5,8 +5,8 @@ use crate::{
 use dogfight_macros::{EnumBytes, Networked};
 
 use super::{
-    types::{EntityType, Team},
-    EntityId,
+    container::{EntityIdWrappedType, ManId, PlaneId},
+    types::Team,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS, EnumBytes)]
@@ -20,30 +20,35 @@ pub enum PlayerState {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS)]
 #[ts(export)]
-pub struct ControllingEntity {
-    pub id: EntityId,
-    pub entity_type: EntityType,
-}
-
-impl ControllingEntity {
-    pub fn new(id: EntityId, entity_type: EntityType) -> Self {
-        Self { id, entity_type }
-    }
+#[serde(tag = "type", content = "id")]
+pub enum ControllingEntity {
+    Man(ManId),
+    Plane(PlaneId),
 }
 
 impl NetworkedBytes for ControllingEntity {
     fn to_bytes(&self) -> Vec<u8> {
         let mut bytes = vec![];
-        bytes.extend(self.id.to_bytes());
-        bytes.extend(self.entity_type.to_bytes());
+        let (ent_type, ent_id): (u8, Vec<u8>) = match self {
+            ControllingEntity::Man(man_id) => (0, man_id.to_bytes()),
+            ControllingEntity::Plane(plane_id) => (1, plane_id.to_bytes()),
+        };
+        bytes.extend(ent_type.to_bytes());
+        bytes.extend(ent_id);
         bytes
     }
 
     fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
-        let (slice, id) = EntityId::from_bytes(bytes)?;
-        let (dice, entity_type) = EntityType::from_bytes(slice)?;
-        let controlling: ControllingEntity = ControllingEntity { id, entity_type };
-        Some((dice, controlling))
+        let (bytes, ent_type) = u8::from_bytes(bytes)?;
+        let (bytes, ent_id) = EntityIdWrappedType::from_bytes(bytes)?;
+
+        let controlling: ControllingEntity = match ent_type {
+            0 => ControllingEntity::Man(ent_id.into()),
+            1 => ControllingEntity::Plane(ent_id.into()),
+            _ => panic!("Invalid controlling ent index: {}", ent_type),
+        };
+
+        Some((bytes, controlling))
     }
 }
 

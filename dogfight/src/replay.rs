@@ -4,7 +4,6 @@ use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 use crate::{
-    debug::log,
     input::{PlayerCommand, ServerInput},
     network::encoding::NetworkedBytes,
     world::World,

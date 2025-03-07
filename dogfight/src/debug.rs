@@ -1,6 +1,5 @@
 use crate::{
-    collision::{DebugEntity, SolidEntity},
-    entities::types::EntityType,
+    collision::{DebugEntity, DebugEntityType, SolidEntity},
     world::World,
 };
 
@@ -15,8 +14,7 @@ impl World {
             .map(|(idx, man)| {
                 let bounds = man.get_collision_bounds();
                 DebugEntity {
-                    ent_id: *idx,
-                    ent_type: EntityType::Man,
+                    ent_type: DebugEntityType::Man(*idx),
                     bounding_box: bounds,
                     pixels: man.get_debug_pixels(),
                 }
@@ -30,8 +28,7 @@ impl World {
             .map(|(idx, water)| {
                 let bounds = water.get_collision_bounds();
                 DebugEntity {
-                    ent_id: *idx,
-                    ent_type: EntityType::Water,
+                    ent_type: DebugEntityType::Water(*idx),
                     bounding_box: bounds,
                     pixels: water.get_debug_pixels(),
                 }
@@ -45,8 +42,7 @@ impl World {
             .map(|(idx, plane)| {
                 let bounds = plane.get_collision_bounds();
                 DebugEntity {
-                    ent_id: *idx,
-                    ent_type: EntityType::Plane,
+                    ent_type: DebugEntityType::Plane(*idx),
                     bounding_box: bounds,
                     pixels: plane.get_debug_pixels(),
                 }
@@ -60,8 +56,7 @@ impl World {
             .map(|(idx, ground)| {
                 let bounds = ground.get_collision_bounds();
                 DebugEntity {
-                    ent_id: *idx,
-                    ent_type: EntityType::Ground,
+                    ent_type: DebugEntityType::Ground(*idx),
                     bounding_box: bounds,
                     pixels: ground.get_debug_pixels(),
                 }
@@ -75,8 +70,7 @@ impl World {
             .map(|(idx, coast)| {
                 let bounds = coast.get_collision_bounds();
                 DebugEntity {
-                    ent_id: *idx,
-                    ent_type: EntityType::Coast,
+                    ent_type: DebugEntityType::Coast(*idx),
                     bounding_box: bounds,
                     pixels: coast.get_debug_pixels(),
                 }
@@ -90,8 +84,7 @@ impl World {
             .map(|(idx, runway)| {
                 let bounds = runway.get_collision_bounds();
                 DebugEntity {
-                    ent_id: *idx,
-                    ent_type: EntityType::Runway,
+                    ent_type: DebugEntityType::Runway(*idx),
                     bounding_box: bounds,
                     pixels: runway.get_debug_pixels(),
                 }
@@ -105,8 +98,7 @@ impl World {
             .map(|(idx, runway)| {
                 let bounds = runway.get_landing_bounds();
                 DebugEntity {
-                    ent_id: *idx,
-                    ent_type: EntityType::Runway,
+                    ent_type: DebugEntityType::Runway(*idx),
                     bounding_box: bounds,
                     pixels: None,
                 }
@@ -120,8 +112,7 @@ impl World {
             .map(|(idx, bomb)| {
                 let bounds = bomb.get_collision_bounds();
                 DebugEntity {
-                    ent_id: *idx,
-                    ent_type: EntityType::Bomb,
+                    ent_type: DebugEntityType::Bomb(*idx),
                     bounding_box: bounds,
                     pixels: bomb.get_debug_pixels(),
                 }
@@ -135,8 +126,7 @@ impl World {
             .map(|(idx, explosion)| {
                 let bounds = explosion.get_collision_bounds();
                 DebugEntity {
-                    ent_id: *idx,
-                    ent_type: EntityType::Explosion,
+                    ent_type: DebugEntityType::Explosion(*idx),
                     bounding_box: bounds,
                     pixels: explosion.get_debug_pixels(),
                 }
@@ -150,8 +140,7 @@ impl World {
             .map(|(idx, bullet)| {
                 let bounds = bullet.get_collision_bounds();
                 DebugEntity {
-                    ent_id: *idx,
-                    ent_type: EntityType::Bullet,
+                    ent_type: DebugEntityType::Bullet(*idx),
                     bounding_box: bounds,
                     pixels: bullet.get_debug_pixels(),
                 }

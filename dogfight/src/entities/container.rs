@@ -2,24 +2,93 @@ use std::collections::HashMap;
 
 use crate::network::{EntityChange, EntityChangeType, NetworkedEntity};
 
-use super::{player::Player, EntityId};
+use super::player::ControllingEntity;
+use super::player::Player;
 use crate::entities::types::EntityType;
+use crate::network::encoding::NetworkedBytes;
+use serde::Deserialize;
+use serde::Serialize;
+use ts_rs::TS;
 
-pub struct EntityContainer<T> {
-    ent_type: EntityType,
-    ids: Vec<EntityId>,
-    removed_ids: Vec<EntityId>,
-    map: HashMap<EntityId, T>,
+pub type EntityIdWrappedType = u16;
+
+macro_rules! impl_from_u16 {
+    ($($id_type:ident),*) => {
+        $(
+            #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, TS, Deserialize)]
+            #[ts(export)]
+            pub struct $id_type(EntityIdWrappedType);
+
+            impl From<EntityIdWrappedType> for $id_type {
+                fn from(id: EntityIdWrappedType) -> Self {
+                    $id_type(id)
+                }
+            }
+
+            impl EntityId for $id_type {
+                fn raw_value(self) -> u16 {
+                    self.0
+                }
+            }
+
+            impl NetworkedBytes for $id_type {
+                fn to_bytes(&self) -> Vec<u8> {
+                    let mut bytes: Vec<u8> = vec![];
+                    // Extract u16 value to bytes
+                    bytes.extend(self.0.to_bytes());
+                    bytes
+                }
+
+                fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
+                    let (bytes, val) = u16::from_bytes(bytes)?;
+                    Some((bytes, Self(val)))
+                }
+            }
+        )*
+    };
 }
 
-impl<T> EntityContainer<T>
+pub trait EntityId {
+    fn raw_value(self) -> u16;
+}
+
+// Use the macro for multiple ID types
+impl_from_u16!(
+    PlayerId,
+    PlaneId, //
+    BackgroundItemId,
+    ManId,
+    GroundId,
+    CoastId,
+    RunwayId,
+    WaterId,
+    BunkerId,
+    BombId,
+    ExplosionId,
+    HillId,
+    BulletId
+);
+
+pub struct EntityContainer<T, EntId>
 where
     T: NetworkedEntity,
+    EntId: From<u16> + Copy + Eq + std::hash::Hash,
 {
-    pub fn new(ent_type: EntityType) -> EntityContainer<T> {
-        let container = EntityContainer {
+    ent_type: EntityType,
+    ids: Vec<EntId>,
+    removed_ids: Vec<EntId>,
+    map: HashMap<EntId, T>,
+}
+
+impl<T, EntId> EntityContainer<T, EntId>
+where
+    T: NetworkedEntity,
+    EntId: From<u16> + Copy + Eq + std::hash::Hash + EntityId,
+{
+    pub fn new(ent_type: EntityType) -> EntityContainer<T, EntId> {
+        let container: EntityContainer<T, EntId> = EntityContainer {
             ent_type: ent_type,
-            ids: (0..(2 as EntityId).pow(9)).rev().collect(), // generate list of 0 to 2^9 = 512 Ids
+            ids: (0..2_u16.pow(9)).rev().map(EntId::from).collect(), // generate list of 0 to 2^9 = 512 Ids
             removed_ids: vec![],
             map: HashMap::new(),
         };
@@ -33,7 +102,7 @@ where
      * returns the entity if it was successfully inserted,
      * otherwise returns None
      */
-    pub fn insert(&mut self, entity: T) -> Option<(EntityId, &T)> {
+    pub fn insert(&mut self, entity: T) -> Option<(EntId, &T)> {
         // Try to get an available ID
         if let Some(id) = self.ids.pop() {
             // If an entity already exists, cancel this operation
@@ -52,7 +121,7 @@ where
         None
     }
 
-    pub fn remove(&mut self, id: EntityId) -> Option<T> {
+    pub fn remove(&mut self, id: EntId) -> Option<T> {
         let ent = self.map.remove(&id);
 
         if let Some(_) = ent {
@@ -62,19 +131,19 @@ where
         ent
     }
 
-    pub fn get_mut(&mut self, id: EntityId) -> Option<&mut T> {
+    pub fn get_mut(&mut self, id: EntId) -> Option<&mut T> {
         self.map.get_mut(&id)
     }
 
-    pub fn get(&self, id: EntityId) -> Option<&T> {
+    pub fn get(&self, id: EntId) -> Option<&T> {
         self.map.get(&id)
     }
 
-    pub fn get_map_mut(&mut self) -> &mut HashMap<EntityId, T> {
+    pub fn get_map_mut(&mut self) -> &mut HashMap<EntId, T> {
         &mut self.map
     }
 
-    pub fn get_map(&self) -> &HashMap<EntityId, T> {
+    pub fn get_map(&self) -> &HashMap<EntId, T> {
         &self.map
     }
 
@@ -83,7 +152,7 @@ where
             .iter()
             .map(|(id, ent)| EntityChange {
                 ent_type: self.ent_type,
-                id: *id,
+                id: id.raw_value(),
                 update: EntityChangeType::Properties(ent.get_full_properties()),
             })
             .collect()
@@ -96,14 +165,14 @@ where
             .filter(|(_, ent)| ent.has_changes())
             .map(|(id, ent)| EntityChange {
                 ent_type: self.ent_type,
-                id: *id,
+                id: id.raw_value(),
                 update: EntityChangeType::Properties(ent.get_changed_properties_and_reset()),
             })
             .collect();
 
         let removed = self.removed_ids.iter().map(|id| EntityChange {
             ent_type: self.ent_type,
-            id: *id,
+            id: id.raw_value(),
             update: EntityChangeType::Deleted,
         });
 
@@ -123,16 +192,15 @@ where
     }
 }
 
-impl EntityContainer<Player> {
+impl EntityContainer<Player, PlayerId> {
     pub fn get_player_controlling(
         &mut self,
-        ent_type: EntityType,
-        ent_id: EntityId,
-    ) -> Option<(&u16, &mut Player)> {
+        ent: ControllingEntity,
+    ) -> Option<(&PlayerId, &mut Player)> {
         self.get_map_mut()
             .iter_mut()
             .find(|(_, p)| match p.get_controlling() {
-                Some(controlled) => controlled.entity_type == ent_type && controlled.id == ent_id,
+                Some(controlled) => controlled == ent,
                 None => false,
             })
     }

@@ -2,7 +2,7 @@ use serde::Serialize;
 use ts_rs::TS;
 
 use crate::{
-    entities::{types::Team, EntityId},
+    entities::{container::PlayerId, types::Team},
     game_event::KillEvent,
     network::{encoding::NetworkedBytes, entity_changes_to_binary, EntityChange},
 };
@@ -18,7 +18,7 @@ pub enum ServerOutput {
     EntityChanges(Vec<EntityChange>),
     PlayerJoin(String),
     PlayerLeave(String),
-    PlayerJoinTeam { id: EntityId, team: Team },
+    PlayerJoinTeam { id: PlayerId, team: Team },
     KillEvent(KillEvent),
     YourPlayerGuid(String),
 }
@@ -45,7 +45,7 @@ impl NetworkedBytes for ServerOutput {
             }
             ServerOutput::PlayerJoinTeam { id, team } => {
                 bytes.push(3);
-                bytes.extend(EntityId::to_bytes(&id));
+                bytes.extend(&id.to_bytes());
                 bytes.extend(Team::to_bytes(team));
             }
             ServerOutput::KillEvent(event) => {
@@ -89,7 +89,7 @@ impl NetworkedBytes for ServerOutput {
                 Some((slice, ServerOutput::PlayerLeave(name)))
             }
             3 => {
-                let (bytes, id) = EntityId::from_bytes(slice)?;
+                let (bytes, id) = PlayerId::from_bytes(slice)?;
                 slice = &bytes;
                 let (bytes, team) = Team::from_bytes(slice)?;
                 slice = &bytes;

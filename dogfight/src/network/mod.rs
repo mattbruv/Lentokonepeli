@@ -7,12 +7,13 @@ use ts_rs::TS;
 use crate::{
     entities::{
         background_item::BackgroundItemProperties, bomb::BombProperties, bullet::BulletProperties,
-        bunker::BunkerProperties, coast::CoastProperties, explosion::ExplosionProperties,
-        ground::GroundProperties, hill::HillProperties, man::ManProperties, plane::PlaneProperties,
-        player::PlayerProperties, runway::RunwayProperties, types::EntityType,
-        water::WaterProperties, world_info::WorldInfoProperties, EntityId,
+        bunker::BunkerProperties, coast::CoastProperties, container::EntityIdWrappedType,
+        explosion::ExplosionProperties, ground::GroundProperties, hill::HillProperties,
+        man::ManProperties, plane::PlaneProperties, player::PlayerProperties,
+        runway::RunwayProperties, types::EntityType, water::WaterProperties,
+        world_info::WorldInfoProperties,
     },
-    input::{PlayerCommand, ServerInput},
+    input::PlayerCommand,
     output::ServerOutput,
     replay::{ReplayFile, ReplayTick},
 };
@@ -96,7 +97,7 @@ pub fn game_events_to_json(events: &Vec<ServerOutput>) -> String {
 #[ts(export)]
 pub struct EntityChange {
     pub ent_type: EntityType,
-    pub id: EntityId,
+    pub id: EntityIdWrappedType,
     pub update: EntityChangeType,
 }
 

@@ -1,6 +1,5 @@
 use dogfight_macros::{EnumBytes, Networked};
 use image::RgbaImage;
-use web_sys::js_sys::Reflect::own_keys;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
@@ -13,9 +12,9 @@ use crate::{
 };
 
 use super::{
+    container::{ManId, PlayerId},
     entity::Entity,
     types::{EntityType, Team},
-    EntityId,
 };
 
 const SPEED_PER_PIXEL: i32 = 100;
@@ -79,8 +78,8 @@ impl Man {
 
     pub fn tick(
         &mut self,
-        my_owner: EntityId,
-        man_id: EntityId,
+        my_owner: PlayerId,
+        man_id: ManId,
         keyboard: &PlayerKeyboard,
     ) -> Vec<Action> {
         let mut actions = vec![];
@@ -157,8 +156,8 @@ impl Man {
 
     fn parachute(
         &mut self,
-        my_owner: EntityId,
-        man_id: EntityId,
+        my_owner: PlayerId,
+        man_id: ManId,
         keyboard: &PlayerKeyboard,
         actions: &mut Vec<Action>,
     ) {
@@ -191,8 +190,8 @@ impl Man {
 
     fn walk(
         &mut self,
-        my_owner: EntityId,
-        man_id: EntityId,
+        my_owner: PlayerId,
+        man_id: ManId,
         keyboard: &PlayerKeyboard,
         actions: &mut Vec<Action>,
     ) {
@@ -209,10 +208,7 @@ impl Man {
         }
 
         if keyboard.shift {
-            actions.push(Action::RemoveEntity(RemoveData {
-                ent_id: man_id,
-                ent_type: self.get_type(),
-            }));
+            actions.push(Action::RemoveEntity(RemoveData::Man(man_id)));
 
             // We don't want the top left corner, but rather bottom middle
             let x = self.client_x.get() + (self.image_standing.width() / 2) as i16;

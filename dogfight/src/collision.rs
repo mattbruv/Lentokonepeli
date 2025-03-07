@@ -3,15 +3,34 @@ use serde::Serialize;
 use ts_rs::TS;
 
 use crate::{
-    entities::{entity::Entity, types::EntityType, EntityId},
+    entities::{
+        container::{
+            BombId, BulletId, CoastId, ExplosionId, GroundId, ManId, PlaneId, RunwayId, WaterId,
+        },
+        entity::Entity,
+    },
     math::Point,
 };
 
 #[derive(Debug, Clone, Serialize, TS)]
 #[ts(export)]
+#[serde(tag = "type", content = "id")]
+pub enum DebugEntityType {
+    Man(ManId),
+    Water(WaterId),
+    Plane(PlaneId),
+    Runway(RunwayId),
+    Ground(GroundId),
+    Coast(CoastId),
+    Bomb(BombId),
+    Explosion(ExplosionId),
+    Bullet(BulletId),
+}
+
+#[derive(Debug, Clone, Serialize, TS)]
+#[ts(export)]
 pub struct DebugEntity {
-    pub ent_id: EntityId,
-    pub ent_type: EntityType,
+    pub ent_type: DebugEntityType,
     pub bounding_box: BoundingBox,
     pub pixels: Option<Vec<Point>>,
 }

@@ -21,12 +21,12 @@ use crate::{
 use super::{
     bomb::Bomb,
     bullet::Bullet,
+    container::{PlaneId, PlayerId, RunwayId},
     entity::Entity,
     man::Man,
     player::ControllingEntity,
     runway::Runway,
     types::{EntityType, Facing, Team},
-    EntityId,
 };
 
 const MAX_Y: i16 = -570;
@@ -68,8 +68,8 @@ pub enum PlaneMode {
 
 #[derive(Networked)]
 pub struct Plane {
-    downed_by: Option<EntityId>,
-    player_id: EntityId,
+    downed_by: Option<PlayerId>,
+    player_id: PlayerId,
     x: i32,
     y: i32,
     team: Property<Team>,
@@ -106,7 +106,7 @@ pub struct Plane {
     takeoff_counter: i32,
     dodge_counter: i32,
 
-    runway: Option<EntityId>,
+    runway: Option<RunwayId>,
 
     // Physical Model
     air_resistance: f64,
@@ -134,10 +134,10 @@ pub struct Plane {
 
 impl Plane {
     pub fn new(
-        owner_id: EntityId,
+        owner_id: PlayerId,
         team: Team,
         plane_type: PlaneType,
-        runway_id: EntityId,
+        runway_id: RunwayId,
         runway: &Runway,
     ) -> Plane {
         let mut plane = Plane {
@@ -230,7 +230,7 @@ impl Plane {
 
     pub fn tick(
         &mut self,
-        my_id: &EntityId,
+        my_id: &PlaneId,
         runway: Option<&Runway>,
         keyboard: Option<&PlayerKeyboard>,
     ) -> Vec<Action> {
@@ -288,7 +288,7 @@ impl Plane {
 
     fn tick_falling(
         &mut self,
-        my_id: &u16,
+        my_id: &PlaneId,
         keyboard: Option<&PlayerKeyboard>,
         actions: &mut Vec<Action>,
     ) {
@@ -381,7 +381,7 @@ impl Plane {
 
     fn tick_landing(
         &mut self,
-        my_id: &EntityId,
+        my_id: &PlaneId,
         runway: Option<&Runway>,
         actions: &mut Vec<Action>,
     ) {
@@ -412,17 +412,14 @@ impl Plane {
             };
 
             if landed {
-                actions.push(Action::RemoveEntity(RemoveData {
-                    ent_id: *my_id,
-                    ent_type: self.get_type(),
-                }));
+                actions.push(Action::RemoveEntity(RemoveData::Plane(*my_id)));
             }
         }
     }
 
     fn tick_flying(
         &mut self,
-        my_id: &u16,
+        my_id: &PlaneId,
         keyboard: Option<&PlayerKeyboard>,
         actions: &mut Vec<Action>,
     ) {
@@ -581,7 +578,7 @@ impl Plane {
             .set(get_client_percentage(self.total_ammo, self.get_max_ammo()));
     }
 
-    pub fn player_id(&self) -> EntityId {
+    pub fn player_id(&self) -> PlayerId {
         self.player_id
     }
 
@@ -644,16 +641,13 @@ impl Plane {
         ));
     }
 
-    fn spawn_man_action(&mut self, team: Team, my_id: &u16, actions: &mut Vec<Action>) {
+    fn spawn_man_action(&mut self, team: Team, my_id: &PlaneId, actions: &mut Vec<Action>) {
         let mut man = Man::new(team);
         man.set_x(self.x);
         man.set_y(self.y);
         actions.push(Action::SpawnMan(
             man,
-            Some(ControllingEntity {
-                id: *my_id,
-                entity_type: self.get_type(),
-            }),
+            Some(ControllingEntity::Plane(*my_id)),
         ));
     }
 
@@ -672,7 +666,7 @@ impl Plane {
         self.direction.set(radians_to_direction(self.angle));
     }
 
-    pub fn get_runway(&self) -> Option<EntityId> {
+    pub fn get_runway(&self) -> Option<RunwayId> {
         self.runway
     }
 
@@ -680,7 +674,7 @@ impl Plane {
         *self.team.get()
     }
 
-    pub fn set_runway(&mut self, runway: Option<EntityId>) -> () {
+    pub fn set_runway(&mut self, runway: Option<RunwayId>) -> () {
         self.runway = runway;
     }
 
@@ -767,11 +761,11 @@ impl Plane {
         */
     }
 
-    pub fn set_downed_by(&mut self, player_id: Option<EntityId>) -> () {
+    pub fn set_downed_by(&mut self, player_id: Option<PlayerId>) -> () {
         self.downed_by = player_id
     }
 
-    pub fn get_downed_by(&self) -> Option<EntityId> {
+    pub fn get_downed_by(&self) -> Option<PlayerId> {
         self.downed_by
     }
 }

@@ -1,13 +1,28 @@
 use crate::{
     entities::{
-        background_item::BackgroundItem, bomb::Bomb, bullet::Bullet, bunker::Bunker, coast::Coast,
-        container::EntityContainer, explosion::Explosion, ground::Ground, hill::Hill, man::Man,
-        plane::Plane, player::Player, runway::Runway, types::EntityType, water::Water,
-        world_info::WorldInfo, EntityId,
+        background_item::BackgroundItem,
+        bomb::Bomb,
+        bullet::Bullet,
+        bunker::Bunker,
+        coast::Coast,
+        container::{
+            BackgroundItemId, BombId, BulletId, BunkerId, CoastId, EntityContainer, ExplosionId,
+            GroundId, HillId, ManId, PlaneId, PlayerId, RunwayId, WaterId,
+        },
+        explosion::Explosion,
+        ground::Ground,
+        hill::Hill,
+        man::Man,
+        plane::Plane,
+        player::Player,
+        runway::Runway,
+        types::EntityType,
+        water::Water,
+        world_info::WorldInfo,
     },
     input::ServerInput,
     output::ServerOutput,
-    replay::{ReplayFile, ReplayTick, ReplayTickCommand},
+    replay::ReplayFile,
 };
 
 pub const DIRECTIONS: i32 = 256;
@@ -18,19 +33,19 @@ pub struct World {
     game_tick: u32,
     game_output: Vec<ServerOutput>,
     pub world_info: WorldInfo,
-    pub players: EntityContainer<Player>,
-    pub planes: EntityContainer<Plane>,
-    pub background_items: EntityContainer<BackgroundItem>,
-    pub men: EntityContainer<Man>,
-    pub grounds: EntityContainer<Ground>,
-    pub coasts: EntityContainer<Coast>,
-    pub runways: EntityContainer<Runway>,
-    pub waters: EntityContainer<Water>,
-    pub bunkers: EntityContainer<Bunker>,
-    pub bombs: EntityContainer<Bomb>,
-    pub explosions: EntityContainer<Explosion>,
-    pub hills: EntityContainer<Hill>,
-    pub bullets: EntityContainer<Bullet>,
+    pub players: EntityContainer<Player, PlayerId>,
+    pub planes: EntityContainer<Plane, PlaneId>,
+    pub background_items: EntityContainer<BackgroundItem, BackgroundItemId>,
+    pub men: EntityContainer<Man, ManId>,
+    pub grounds: EntityContainer<Ground, GroundId>,
+    pub coasts: EntityContainer<Coast, CoastId>,
+    pub runways: EntityContainer<Runway, RunwayId>,
+    pub waters: EntityContainer<Water, WaterId>,
+    pub bunkers: EntityContainer<Bunker, BunkerId>,
+    pub bombs: EntityContainer<Bomb, BombId>,
+    pub explosions: EntityContainer<Explosion, ExplosionId>,
+    pub hills: EntityContainer<Hill, HillId>,
+    pub bullets: EntityContainer<Bullet, BulletId>,
 
     pub replay_file: ReplayFile,
 }
@@ -129,21 +144,21 @@ impl World {
     pub(crate) fn get_player_from_name_mut(
         &mut self,
         name: &String,
-    ) -> Option<(&EntityId, &mut Player)> {
+    ) -> Option<(&PlayerId, &mut Player)> {
         self.players
             .get_map_mut()
             .iter_mut()
             .find(|(_, p)| p.get_name().eq(name))
     }
 
-    pub(crate) fn get_player_from_name(&self, name: &String) -> Option<(&EntityId, &Player)> {
+    pub(crate) fn get_player_from_name(&self, name: &String) -> Option<(&PlayerId, &Player)> {
         self.players
             .get_map()
             .iter()
             .find(|(_, p)| p.get_name().eq(name))
     }
 
-    pub(crate) fn get_player_from_guid(&self, guid: &String) -> Option<(&EntityId, &Player)> {
+    pub(crate) fn get_player_from_guid(&self, guid: &String) -> Option<(&PlayerId, &Player)> {
         self.players
             .get_map()
             .iter()
@@ -153,7 +168,7 @@ impl World {
     pub(crate) fn get_player_from_guid_mut(
         &mut self,
         guid: &String,
-    ) -> Option<(&EntityId, &mut Player)> {
+    ) -> Option<(&PlayerId, &mut Player)> {
         self.players
             .get_map_mut()
             .iter_mut()

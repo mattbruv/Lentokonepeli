@@ -95,13 +95,13 @@ export class DogfightClient {
       // Idk how we ended up with this pattern but whatever the client code is just a few steps above spaghetti
 
       if (oldControlling !== null) {
-        if (oldControlling.entity_type === "Plane") {
+        if (oldControlling.type === "Plane") {
           const plane = this.planes.entries.get(oldControlling.id);
           if (plane) {
             plane.setPlayerName(null, null)
           }
         }
-        if (oldControlling.entity_type === "Man") {
+        if (oldControlling.type === "Man") {
           const man = this.men.entries.get(oldControlling.id);
           if (man) {
             man.setPlayerName(null, null)
@@ -118,13 +118,13 @@ export class DogfightClient {
         const name = props.name?.substring(0, 15) ?? "";
         const fullName = formatName(name, props.clan ?? null)
 
-        if (newControlling.entity_type === "Plane") {
+        if (newControlling.type === "Plane") {
           const plane = this.planes.entries.get(newControlling.id);
           if (plane) {
             plane.setPlayerName(fullName, myTeam)
           }
         }
-        if (newControlling.entity_type === "Man") {
+        if (newControlling.type === "Man") {
           //debugger
           const man = this.men.entries.get(newControlling.id);
           if (man) {
@@ -422,10 +422,10 @@ export class DogfightClient {
 
       // update plane/man colors
       for (const [_, player] of this.players.entries) {
-        if (player.props.controlling?.entity_type === "Plane") {
+        if (player.props.controlling?.type === "Plane") {
           this.planes.entries.get(player.props.controlling.id)?.setPlayerName(player.props.name, props.team)
         }
-        if (player.props.controlling?.entity_type === "Man") {
+        if (player.props.controlling?.type === "Man") {
           this.men.entries.get(player.props.controlling.id)?.setPlayerName(player.props.name, props.team)
         }
       }
@@ -596,7 +596,7 @@ export class DogfightClient {
         if (me.props.controlling) {
           if (
             id === me.props.controlling.id &&
-            data.type === me.props.controlling.entity_type
+            data.type === me.props.controlling.type
           ) {
             if (isFollowable(entity)) {
               //console.log("followable!");
@@ -638,11 +638,11 @@ export class DogfightClient {
     for (const entry of debugInfo) {
 
       this.debugCollision.lineStyle({
-        color: DEBUG_COLORS[entry.ent_type],
+        color: DEBUG_COLORS[entry.ent_type.type],
         width: 1,
       })
 
-      if (entry.ent_type === "Runway" && !entry.pixels) {
+      if (entry.ent_type.type === "Runway" && !entry.pixels) {
         this.debugCollision.lineStyle({
           color: "magenta",
           width: 1,

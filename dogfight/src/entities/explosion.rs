@@ -9,14 +9,14 @@ use crate::{
 };
 
 use super::{
+    container::{ExplosionId, PlayerId},
     entity::Entity,
     types::{EntityType, Team},
-    EntityId,
 };
 
 #[derive(Networked)]
 pub struct Explosion {
-    player_id: Option<EntityId>,
+    player_id: Option<PlayerId>,
     #[rustfmt::skip]
     team: Property<Option::<Team>>,
     client_x: Property<i16>,
@@ -34,7 +34,7 @@ const PHASE_TIME_MS: u32 = 70;
 const TOTAL_PHASES: u32 = 8;
 
 impl Explosion {
-    pub fn new(player_id: Option<EntityId>, team: Option<Team>, x: i16, y: i16) -> Self {
+    pub fn new(player_id: Option<PlayerId>, team: Option<Team>, x: i16, y: i16) -> Self {
         Explosion {
             player_id,
             team: Property::new(team),
@@ -50,7 +50,7 @@ impl Explosion {
         }
     }
 
-    pub fn player_id(&self) -> Option<EntityId> {
+    pub fn player_id(&self) -> Option<PlayerId> {
         self.player_id
     }
 
@@ -76,7 +76,7 @@ impl Explosion {
         *self.client_y.get()
     }
 
-    pub fn tick(&mut self, my_id: EntityId) -> Vec<Action> {
+    pub fn tick(&mut self, my_id: ExplosionId) -> Vec<Action> {
         let mut actions = vec![];
 
         // Assuming the game is always going to run at 1 tick per 10 MS
@@ -94,10 +94,7 @@ impl Explosion {
 
         // Mark this explosion to be destroyed if older than max phase.
         if self.age_ms > TOTAL_PHASES * PHASE_TIME_MS {
-            actions.push(Action::RemoveEntity(RemoveData {
-                ent_id: my_id,
-                ent_type: self.get_type(),
-            }));
+            actions.push(Action::RemoveEntity(RemoveData::Explosion(my_id)));
         }
 
         actions

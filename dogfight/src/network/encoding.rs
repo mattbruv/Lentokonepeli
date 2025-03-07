@@ -1,7 +1,5 @@
 use std::collections::BTreeMap;
 
-use imageproc::definitions::Clamp;
-
 use crate::{
     entities::{
         background_item::BackgroundItemProperties,
@@ -9,12 +7,13 @@ use crate::{
         bullet::BulletProperties,
         bunker::BunkerProperties,
         coast::CoastProperties,
+        container::RunwayId,
         explosion::ExplosionProperties,
         ground::GroundProperties,
         hill::HillProperties,
         man::ManProperties,
         plane::{PlaneProperties, PlaneType},
-        player::{self, PlayerProperties},
+        player::PlayerProperties,
         runway::RunwayProperties,
         types::{EntityType, Team},
         water::WaterProperties,
@@ -487,7 +486,7 @@ impl NetworkedBytes for PlayerCommand {
                 PlayerCommand::PlayerChooseTeam(TeamSelection { team })
             }
             3 => {
-                let (slice, runway_id) = u16::from_bytes(bytes)?;
+                let (slice, runway_id) = RunwayId::from_bytes(bytes)?;
                 bytes = slice;
                 let (slice, plane_type) = PlaneType::from_bytes(bytes)?;
                 bytes = slice;

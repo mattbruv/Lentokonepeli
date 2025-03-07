@@ -1,9 +1,7 @@
-use crate::network::encoding::NetworkedBytes;
+use crate::{entities::container::PlayerId, network::encoding::NetworkedBytes};
 use dogfight_macros::EnumBytes;
 use serde::Serialize;
 use ts_rs::TS;
-
-use crate::entities::EntityId;
 
 // Here we are defining anything related to game events
 // such as players killing each other,
@@ -21,13 +19,13 @@ pub enum KillMethod {
 #[derive(Serialize, Debug, Clone, TS)]
 #[ts(export)]
 pub struct KillEvent {
-    pub killer: EntityId,
-    pub victim: Option<EntityId>,
+    pub killer: PlayerId,
+    pub victim: Option<PlayerId>,
     pub method: KillMethod,
 }
 
 impl KillEvent {
-    pub fn new(killer: EntityId, victim: Option<EntityId>, method: KillMethod) -> Self {
+    pub fn new(killer: PlayerId, victim: Option<PlayerId>, method: KillMethod) -> Self {
         Self {
             killer,
             victim,
@@ -49,8 +47,8 @@ impl NetworkedBytes for KillEvent {
     where
         Self: Sized,
     {
-        let (bytes, killer) = u16::from_bytes(bytes)?;
-        let (bytes, victim) = Option::<u16>::from_bytes(bytes)?;
+        let (bytes, killer) = PlayerId::from_bytes(bytes)?;
+        let (bytes, victim) = Option::<PlayerId>::from_bytes(bytes)?;
         let (bytes, method) = KillMethod::from_bytes(bytes)?;
 
         Some((

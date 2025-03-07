@@ -9,11 +9,15 @@ use crate::{
     world::RESOLUTION,
 };
 
-use super::{entity::Entity, types::EntityType, EntityId};
+use super::{
+    container::{BulletId, PlayerId},
+    entity::Entity,
+    types::EntityType,
+};
 
 #[derive(Networked)]
 pub struct Bullet {
-    player_id: EntityId,
+    player_id: PlayerId,
     x: i32,
     y: i32,
     client_x: Property<i16>,
@@ -25,7 +29,7 @@ pub struct Bullet {
 }
 
 impl Bullet {
-    pub fn new(owner: EntityId, x: i16, y: i16, angle: f64, speed: f64) -> Bullet {
+    pub fn new(owner: PlayerId, x: i16, y: i16, angle: f64, speed: f64) -> Bullet {
         let dir = radians_to_direction(angle);
         let mut bullet = Bullet {
             player_id: owner,
@@ -54,7 +58,7 @@ impl Bullet {
         bullet
     }
 
-    pub fn tick(&mut self, my_id: &EntityId) -> Vec<Action> {
+    pub fn tick(&mut self, my_bullet_id: &BulletId) -> Vec<Action> {
         let mut actions = vec![];
 
         self.age += 1;
@@ -62,10 +66,7 @@ impl Bullet {
         self.move_bullet();
 
         if self.age == 175 {
-            actions.push(Action::RemoveEntity(RemoveData {
-                ent_id: *my_id,
-                ent_type: self.get_type(),
-            }));
+            actions.push(Action::RemoveEntity(RemoveData::Bullet(*my_bullet_id)));
         }
 
         actions
@@ -78,7 +79,7 @@ impl Bullet {
         //self.client_y.set((self.y / RESOLUTION) as i16);
     }
 
-    pub fn player_id(&self) -> u16 {
+    pub fn player_id(&self) -> PlayerId {
         self.player_id
     }
 
