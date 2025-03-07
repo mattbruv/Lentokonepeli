@@ -26,6 +26,7 @@ pub struct Bullet {
     speed: Property<u8>,
     angle: f64,
     age: i32,
+    is_alive: bool,
 }
 
 impl Bullet {
@@ -41,6 +42,7 @@ impl Bullet {
             speed: Property::new(((speed + 4.0) * 25.0) as u8),
             angle: angle,
             age: 0,
+            is_alive: true,
         };
 
         if *bullet.speed.get() > 200 {
@@ -101,6 +103,10 @@ impl Bullet {
     pub fn get_y(&self) -> i16 {
         (self.y / RESOLUTION) as i16
     }
+
+    pub fn kill(&mut self) -> () {
+        self.is_alive = false;
+    }
 }
 
 impl Entity for Bullet {
@@ -126,6 +132,6 @@ impl SolidEntity for Bullet {
     fn do_rotate_collision_image(&mut self) -> () {}
 
     fn is_alive(&self) -> bool {
-        true
+        self.is_alive
     }
 }

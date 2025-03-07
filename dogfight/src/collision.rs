@@ -80,7 +80,7 @@ pub trait SolidEntity: Entity {
     fn do_rotate_collision_image(&mut self) -> ();
 
     fn check_collision(&mut self, other: &mut dyn SolidEntity) -> bool {
-        if !other.is_alive() {
+        if !self.is_alive() || !other.is_alive() {
             return false;
         }
 

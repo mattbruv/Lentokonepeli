@@ -326,6 +326,30 @@ impl World {
     fn collide_bullets(&mut self) -> Vec<Action> {
         let mut actions = vec![];
 
+        // First let's check bullet to bullet collision
+        // We need to iterate over the bullet in a special way for this
+        // To not have two mutable references to the same thing.
+        let mut bullets: Vec<_> = self.bullets.get_map_mut().iter_mut().collect();
+
+        for i in 0..bullets.len() {
+            let (left, right) = bullets.split_at_mut(i + 1);
+            let (bullet_id, bullet) = &mut left[i];
+
+            for (other_id, other) in right.iter_mut() {
+                if !bullet.is_alive() || !other.is_alive() {
+                    continue;
+                }
+                if bullet.check_collision(*other) {
+                    // Remove these bullets from processing further on in the tick.
+                    bullet.kill();
+                    other.kill();
+
+                    actions.push(Action::RemoveEntity(RemoveData::Bullet(**bullet_id)));
+                    actions.push(Action::RemoveEntity(RemoveData::Bullet(**other_id)));
+                }
+            }
+        }
+
         'bullets: for (bullet_id, bullet) in self.bullets.get_map_mut() {
             for (man_id, man) in self.men.get_map_mut() {
                 if bullet.check_collision(man) {
