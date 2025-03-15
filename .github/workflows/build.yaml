@@ -38,7 +38,7 @@ jobs:
           ls -la client/dist || echo "No dist directory found"
 
       - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: client-dist
           path: client/dist
@@ -51,7 +51,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Download Build Artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: client-dist
           path: client/dist
