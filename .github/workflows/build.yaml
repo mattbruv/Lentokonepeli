@@ -13,14 +13,14 @@ jobs:
     concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           rustflags: ""
       - uses: jetli/wasm-pack-action@v0.4.0
         with:
           version: "latest"
-      - name: Checkout
-        uses: actions/checkout@v3
 
       - name: Build Game
         run: |
@@ -30,16 +30,31 @@ jobs:
       - name: Build Client
         run: |
           cd client
-          npm install
+          npm ci
           npm run build
+
+      - name: Verify Build Output
+        run: |
+          ls -la client/dist || echo "No dist directory found"
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: client-dist
+          path: client/dist
 
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: client-dist
+          path: client/dist
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
