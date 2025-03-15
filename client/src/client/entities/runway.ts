@@ -2,7 +2,7 @@ import { Entity, EntityUpdateCallbacks, Followable, Point, RadarEnabled } from "
 import * as PIXI from "pixi.js";
 import { Textures } from "../textures";
 import { Facing } from "dogfight-types/Facing";
-import { DrawLayer, TeamColor, TERRAIN_WATER_COLOR } from "../constants";
+import { DrawLayer, TeamColor } from "../constants";
 import { RunwayProperties } from "dogfight-types/RunwayProperties";
 import { Stats } from "../hud";
 import { RadarObject, RadarObjectType } from "../radar";
@@ -166,10 +166,13 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
   public destroy() { }
 
   public getRadarInfo(): RadarObject {
+    // The original game shows the runway dot in the middle
+    const halfWidth = Math.round(this.runwaySprite.width / 2);
+    const x = (this.props.team === "Centrals") ? this.props.client_x : this.props.client_x + this.runwaySprite.width
     return {
       type: RadarObjectType.Runway,
-      x: (this.props.team === "Centrals") ? this.props.client_x : this.props.client_x + this.runwaySprite.width,
-      y: this.props.client_y,
+      x: x + halfWidth,
+      y: this.props.client_y + this.runwaySprite.height,
       health: this.props.client_health,
       team: this.props.team,
       width: this.runwaySprite.width,
