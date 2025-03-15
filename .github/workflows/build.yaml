@@ -9,8 +9,6 @@ jobs:
   build-and-deploy:
     concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
     runs-on: ubuntu-latest
-    env:
-      token: ${{ secrets.LENTO_TOKEN }}
     steps:
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
@@ -38,7 +36,5 @@ jobs:
         with:
           branch: gh-pages
           folder: client/dist # The folder the action should deploy.
-          repository-name: mattbruv/Lentokonepeli
-          token: ${{ secrets.LENTO_TOKEN }}
           force: true
           single-commit: true
