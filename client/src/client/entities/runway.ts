@@ -169,9 +169,10 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
     // The original game shows the runway dot in the middle
     const halfWidth = Math.round(this.runwaySprite.width / 2);
     const x = (this.props.team === "Centrals") ? this.props.client_x : this.props.client_x + this.runwaySprite.width
+    const offset = (this.props.team === "Centrals") ? halfWidth : -halfWidth
     return {
       type: RadarObjectType.Runway,
-      x: x + halfWidth,
+      x: x + offset,
       y: this.props.client_y + this.runwaySprite.height,
       health: this.props.client_health,
       team: this.props.team,
