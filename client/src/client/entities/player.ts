@@ -1,8 +1,7 @@
-import { Entity, EntityUpdateCallbacks } from "./entity";
-import * as PIXI from "pixi.js";
-import { PlayerProperties } from "dogfight-types/PlayerProperties";
 import { ControllingEntity } from "dogfight-types/ControllingEntity";
-import { Team } from "dogfight-types/Team";
+import { PlayerProperties } from "dogfight-types/PlayerProperties";
+import * as PIXI from "pixi.js";
+import { Entity, EntityUpdateCallbacks } from "./entity";
 
 type OnChangeControl = (
     previous: ControllingEntity | null,

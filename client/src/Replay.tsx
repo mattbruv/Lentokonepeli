@@ -1,8 +1,8 @@
-import { Button, Card, FileButton, Group, LoadingOverlay, Stack, Title, Alert, Tooltip } from "@mantine/core";
-import { useRef, useState } from "react";
-import { useReplay } from "./hooks/useReplay";
+import { Alert, Button, Card, FileButton, Group, LoadingOverlay, Stack, Title, Tooltip } from "@mantine/core";
 import { IconFileUpload, IconInfoCircle } from "@tabler/icons-react";
+import { useRef, useState } from "react";
 import { Game } from "./components/Game";
+import { useReplay } from "./hooks/useReplay";
 
 enum ReplayState {
     ProvideFile,
@@ -23,7 +23,7 @@ export function Replay() {
 
         const reader = new FileReader();
 
-        reader.onloadend = (event) => {
+        reader.onloadend = (_event) => {
             if (reader.result instanceof ArrayBuffer) {
                 const bytes = new Uint8Array(reader.result);
 

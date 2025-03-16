@@ -1,12 +1,12 @@
+import { PlayerCommand } from "dogfight-types/PlayerCommand";
 import { ServerInput } from "dogfight-types/ServerInput";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import Peer, { DataConnection } from "peerjs";
 import { useEffect, useRef, useState } from "react";
 import { useDogfight } from "./useDogfight";
-import { PlayerCommand } from "dogfight-types/PlayerCommand";
 
-import Levels from "../assets/levels.json";
 import { LevelName } from "src/Lobby";
+import Levels from "../assets/levels.json";
 import { randomGuid } from "../helpers";
 
 type ConnectedPlayer = {
@@ -171,7 +171,7 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
         });
     }
 
-    function clearPlayerCommands(tick: number): ServerInput[] {
+    function clearPlayerCommands(_tick: number): ServerInput[] {
         const serverInput: ServerInput[] = [...hostInput.current, ...guestInput.current];
 
         hostInput.current = [];

@@ -1,8 +1,8 @@
-import { Entity, EntityUpdateCallbacks } from "./entity";
+import { ExplosionProperties } from "dogfight-types/ExplosionProperties";
 import * as PIXI from "pixi.js";
 import { DrawLayer } from "../constants";
-import { ExplosionProperties } from "dogfight-types/ExplosionProperties";
 import { Textures } from "../textures";
+import { Entity, EntityUpdateCallbacks } from "./entity";
 
 const PHASE_TEXTURES: Record<number, keyof typeof Textures> = {
     0: "explosion0001.gif",
@@ -56,7 +56,8 @@ export class Explosion implements Entity<ExplosionProperties> {
 
         const sound = new Howl({
             src: "audio/explosion.mp3",
-        }).play();
+        });
+        sound.play();
     }
 
     public getContainer(): PIXI.Container {

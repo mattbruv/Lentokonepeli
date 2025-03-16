@@ -1,10 +1,8 @@
-import { GroundProperties } from "dogfight-types/GroundProperties";
-import { Entity, EntityUpdateCallbacks } from "./entity";
-import * as PIXI from "pixi.js";
 import { WaterProperties } from "dogfight-types/WaterProperties";
+import * as PIXI from "pixi.js";
 import { DrawLayer, TERRAIN_WATER_COLOR } from "../constants";
 import { Textures } from "../textures";
-import { Facing } from "dogfight-types/Facing";
+import { Entity, EntityUpdateCallbacks } from "./entity";
 
 export class Water implements Entity<WaterProperties> {
     public props: Required<WaterProperties> = {

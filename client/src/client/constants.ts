@@ -36,13 +36,15 @@ export const TERRAIN_WATER_COLOR: Record<Terrain, WaterColor> = {
 
 export const SKY_COLOR = 14540287;
 
-export enum TeamColor {
-    OwnForeground = 0x0000ff, // blue
-    OwnBackground = 0x8ecbff,
-    OpponentForeground = 0xff0000, // red
-    OpponentBackground = 0xffb574,
-    SpectatorForeground = 0x000000,
-    SpectatorBackground = 0xffffff,
-    UnchosenForeground = 0x000000,
-    UnchosenBackground = 0xffffff,
-}
+export const TeamColor = {
+    OwnForeground: 0x0000ff, // blue
+    OwnBackground: 0x8ecbff,
+    OpponentForeground: 0xff0000, // red
+    OpponentBackground: 0xffb574,
+    SpectatorForeground: 0x000000,
+    SpectatorBackground: 0xffffff,
+    UnchosenForeground: 0x000000,
+    UnchosenBackground: 0xffffff,
+} as const;
+
+export type TeamColor = (typeof TeamColor)[keyof typeof TeamColor];
