@@ -5,44 +5,47 @@ import { useSettingsContext } from "./contexts/settingsContext";
 import { Scoreboard } from "./components/Scoreboard";
 import { Game } from "./components/Game";
 
-
 type GuestProps = {
-    gameCode: string
-}
+    gameCode: string;
+};
 
 export function Guest({ gameCode }: GuestProps) {
-
     const gameContainer = useRef<HTMLDivElement>(null);
 
-    const { getClan, getUsername } = useSettingsContext()
+    const { getClan, getUsername } = useSettingsContext();
 
-    const {
-        initialize,
-        joinGame,
-        playerData,
-        showScoreboard,
-        playerGuid
-    } = useGuest(getUsername(), getClan())
+    const { initialize, joinGame, playerData, showScoreboard, playerGuid } = useGuest(getUsername(), getClan());
 
     async function join() {
         if (!gameContainer.current) return;
-        await initialize(gameContainer.current)
-        joinGame(gameCode)
+        await initialize(gameContainer.current);
+        joinGame(gameCode);
     }
 
     useEffect(() => {
-        join()
-    }, [])
+        join();
+    }, []);
 
     return (
         <Group>
-            <Game ref={gameContainer} myPlayerGuid={playerGuid} playerData={playerData} showScoreboard={showScoreboard} />
-            <Card withBorder style={{ height: '100%' }}>
+            <Game
+                ref={gameContainer}
+                myPlayerGuid={playerGuid}
+                playerData={playerData}
+                showScoreboard={showScoreboard}
+            />
+            <Card withBorder style={{ height: "100%" }}>
                 <Stack>
                     <Text>Joined Game:</Text>
-                    <Text style={{ color: "gray", fontSize: "1.5rem", fontFamily: "monospace" }} size={"xl"} fw={"bold"}>{gameCode}</Text>
+                    <Text
+                        style={{ color: "gray", fontSize: "1.5rem", fontFamily: "monospace" }}
+                        size={"xl"}
+                        fw={"bold"}
+                    >
+                        {gameCode}
+                    </Text>
                 </Stack>
             </Card>
         </Group>
-    )
+    );
 }

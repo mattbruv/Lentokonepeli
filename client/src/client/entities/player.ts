@@ -4,45 +4,49 @@ import { PlayerProperties } from "dogfight-types/PlayerProperties";
 import { ControllingEntity } from "dogfight-types/ControllingEntity";
 import { Team } from "dogfight-types/Team";
 
-type OnChangeControl = (previous: ControllingEntity | null, next: ControllingEntity | null, props: PlayerProperties) => void
+type OnChangeControl = (
+    previous: ControllingEntity | null,
+    next: ControllingEntity | null,
+    props: PlayerProperties,
+) => void;
 
 export class Player implements Entity<PlayerProperties> {
-  public props: Required<PlayerProperties> = {
-    guid: "",
-    clan: null,
-    controlling: null,
-    name: "Undefined",
-    state: "WaitingRespawn",
-    team: null,
-    kills: 0,
-    deaths: 0,
-    score: 0
-  };
+    public props: Required<PlayerProperties> = {
+        guid: "",
+        clan: null,
+        controlling: null,
+        name: "Undefined",
+        state: "WaitingRespawn",
+        team: null,
+        kills: 0,
+        deaths: 0,
+        score: 0,
+    };
 
-  private onChange: OnChangeControl
+    private onChange: OnChangeControl;
 
-  constructor(onControlChange: OnChangeControl) {
-    this.onChange = onControlChange
-  }
+    constructor(onControlChange: OnChangeControl) {
+        this.onChange = onControlChange;
+    }
 
-  public getContainer(): PIXI.Container {
-    return new PIXI.Container();
-  }
+    public getContainer(): PIXI.Container {
+        return new PIXI.Container();
+    }
 
-  public updateCallbacks: EntityUpdateCallbacks<PlayerProperties> = {
-    team: () => { },
-    name: () => { },
-    clan: () => { },
-    state: () => { },
-    guid: () => { },
-    kills: () => { },
-    deaths: () => { },
-    score: () => { },
-    controlling: (oldProps) => {
-      if (oldProps.controlling !== undefined)
-        this.onChange(oldProps.controlling, this.props.controlling, this.props)
-    },
-  };
+    public updateCallbacks: EntityUpdateCallbacks<PlayerProperties> = {
+        team: () => {},
+        name: () => {},
+        clan: () => {},
+        state: () => {},
+        guid: () => {},
+        kills: () => {},
+        deaths: () => {},
+        score: () => {},
+        controlling: (oldProps) => {
+            if (oldProps.controlling !== undefined)
+                this.onChange(oldProps.controlling, this.props.controlling, this.props);
+        },
+    };
 
-  public destroy() { }
+    public destroy() {}
 }

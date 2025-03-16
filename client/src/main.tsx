@@ -8,11 +8,11 @@ import { HashRouter } from "react-router-dom";
 import { SettingsProvider } from "./contexts/settingsContext.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <SettingsProvider>
-    <MantineProvider>
-      <HashRouter>
-        <App />
-      </HashRouter>
-    </MantineProvider>
-  </SettingsProvider>
+    <SettingsProvider>
+        <MantineProvider>
+            <HashRouter>
+                <App />
+            </HashRouter>
+        </MantineProvider>
+    </SettingsProvider>,
 );
