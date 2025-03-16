@@ -92,8 +92,8 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
       const y = this.planeContainer.position.y
       //console.log(this.planeSprite.position)
 
-      let k = Math.floor(x - Math.cos(d1) * ((w / 2) + 6));
-      let m = Math.floor(y - Math.sin(d1) * ((h / 2) + 6));
+      const k = Math.floor(x - Math.cos(d1) * ((w / 2) + 6));
+      const m = Math.floor(y - Math.sin(d1) * ((h / 2) + 6));
 
       const smoke = new PIXI.Sprite(Textures["smoke1.gif"])
       smoke.anchor.set(0.5)

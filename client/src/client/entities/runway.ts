@@ -41,7 +41,7 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
 
       if (this.props.client_health < this.lastHealth && !this.blinking) {
         // blink
-        let filter = new PIXI.ColorMatrixFilter();
+        const filter = new PIXI.ColorMatrixFilter();
         filter.matrix = [
           1, 0, 0, 0, 255, // Red
           0, 1, 0, 0, 255, // Green

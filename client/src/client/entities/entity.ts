@@ -32,7 +32,7 @@ export type Entity<Props> = {
   destroy: () => void;
 };
 
-export function updateProps<Props extends Object>(
+export function updateProps<Props extends object>(
   entity: Entity<Props>,
   newProps: Props
 ) {

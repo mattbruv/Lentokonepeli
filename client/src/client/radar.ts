@@ -98,8 +98,8 @@ export class Radar {
     }
 
     private renderObject(obj: RadarObject): void {
-        let startX = Math.round((obj.x * RADAR_HEIGHT) / 1000) - 1;
-        let startY = Math.round((obj.y * RADAR_HEIGHT) / 1000) - 1;
+        const startX = Math.round((obj.x * RADAR_HEIGHT) / 1000) - 1;
+        const startY = Math.round((obj.y * RADAR_HEIGHT) / 1000) - 1;
         let color;
 
         // console.log(this.myTeam, obj.team)
