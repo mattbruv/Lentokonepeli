@@ -2,8 +2,10 @@ import * as PIXI from "pixi.js";
 import { Stats } from "../hud";
 import { RadarObject } from "../radar";
 
+type EntityUpdateCallback<Source> = (oldProps: Source) => void;
+
 export type EntityUpdateCallbacks<Source> = {
-    [Property in keyof Source]-?: (oldProps: Source) => void;
+    [Property in keyof Source]-?: EntityUpdateCallback<Source>;
 };
 
 export type Point = {
@@ -38,7 +40,7 @@ export function updateProps<Props extends object>(entity: Entity<Props>, newProp
         ...newProps,
     };
 
-    for (const [key, callback] of Object.entries(entity.updateCallbacks)) {
+    for (const [key, callback] of Object.entries<EntityUpdateCallback<Props>>(entity.updateCallbacks)) {
         if (newProps.hasOwnProperty(key)) {
             callback(oldProps);
         }
