@@ -624,7 +624,9 @@ impl World {
 
                         web_sys::console::log_1(&format!("plane can land on runway").into());
                         plane.set_client_y(runway.get_landable_y() - plane.get_bottom_height());
-                        if plane.is_facing_runway_correctly(runway) {
+                        if plane.is_facing_runway_correctly(runway)
+                            && plane.get_team() == *runway.get_team()
+                        {
                             web_sys::console::log_1(
                                 &format!("plane facing runway correctly").into(),
                             );
