@@ -1,49 +1,48 @@
-import { ServerInput } from "dogfight-types/ServerInput"
-import { ServerOutput } from "dogfight-types/ServerOutput"
-import Peer, { DataConnection } from "peerjs"
-import { useEffect, useRef, useState } from "react"
-import { useDogfight } from "./useDogfight"
-import { PlayerCommand } from "dogfight-types/PlayerCommand"
+import { ServerInput } from "dogfight-types/ServerInput";
+import { ServerOutput } from "dogfight-types/ServerOutput";
+import Peer, { DataConnection } from "peerjs";
+import { useEffect, useRef, useState } from "react";
+import { useDogfight } from "./useDogfight";
+import { PlayerCommand } from "dogfight-types/PlayerCommand";
 
 import Levels from "../assets/levels.json";
-import { LevelName } from "src/Lobby"
-import { randomGuid } from "../helpers"
+import { LevelName } from "src/Lobby";
+import { randomGuid } from "../helpers";
 
 type ConnectedPlayer = {
-    player_guid: string,
-    connection: DataConnection
-}
+    player_guid: string;
+    connection: DataConnection;
+};
 
 export function PeerJSPath(code: string): string {
-    return "lentokonepeli-" + code
+    return "lentokonepeli-" + code;
 }
 
-const HOST_GUID = randomGuid()
+const HOST_GUID = randomGuid();
 
 export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: string, clan: string) {
-
     const dogfight = useDogfight({
         handleClientCommand: (clientCommand) => {
-            hostInput.current.push({ player_guid: HOST_GUID, command: clientCommand })
-        }
-    })
+            hostInput.current.push({ player_guid: HOST_GUID, command: clientCommand });
+        },
+    });
 
     // All players' input state to be processed next tick
-    const hostInput = useRef<ServerInput[]>([])
-    const guestInput = useRef<ServerInput[]>([])
+    const hostInput = useRef<ServerInput[]>([]);
+    const guestInput = useRef<ServerInput[]>([]);
 
     // Lobby state
-    const [roomCode, setRoomCode] = useState<string | null>(null)
+    const [roomCode, setRoomCode] = useState<string | null>(null);
 
     // Game Tick State
-    const tickInterval = useRef<number | null>(null)
-    const paused = useRef<boolean>(false)
-    const tickCounter = useRef(0)
+    const tickInterval = useRef<number | null>(null);
+    const paused = useRef<boolean>(false);
+    const tickCounter = useRef(0);
     // When set to true, this advances the game one tick
-    const doTick = useRef(false)
+    const doTick = useRef(false);
 
     // A collection of the connected users
-    const dataConnections = useRef<Map<string, ConnectedPlayer>>(new Map())
+    const dataConnections = useRef<Map<string, ConnectedPlayer>>(new Map());
 
     async function initialize(div: HTMLDivElement) {
         await dogfight.initialize(div);
@@ -53,7 +52,7 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
         if (paused.current && !doTick.current) return;
         doTick.current = false;
         tickCounter.current++;
-        const allCommands = clearPlayerCommands(tickCounter.current)
+        const allCommands = clearPlayerCommands(tickCounter.current);
         const input_json = JSON.stringify(allCommands);
         //const start = performance.now();
         dogfight.engine.tick(input_json);
@@ -71,7 +70,7 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
             // Send out events to every connection
             for (const [_, dataConnection] of dataConnections.current) {
                 //localDataChannel.current?.send(changed_state)
-                dataConnection.connection.send(changed_state)
+                dataConnection.connection.send(changed_state);
             }
 
             // Update client
@@ -79,56 +78,55 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
         }
     }
 
-    const peer = useRef<Peer | null>(null)
+    const peer = useRef<Peer | null>(null);
 
     function hostGame(): void {
+        const code = randomGuid().substring(0, 4);
+        setRoomCode(code);
 
-        const code = randomGuid().substring(0, 4)
-        setRoomCode(code)
-
-        peer.current = new Peer(PeerJSPath(code))
+        peer.current = new Peer(PeerJSPath(code));
 
         peer.current.on("open", (id) => {
-            console.log("My Peer id is", id)
+            console.log("My Peer id is", id);
 
             // for now, only support original maps
             // TODO: extend this for custom maps in the future
-            const level = Levels[gameMap]
+            const level = Levels[gameMap];
             dogfight.engine.load_level(level);
             dogfight.engine.init();
-            console.log(dogfight.engine.get_build_version())
-            console.log(dogfight.engine.get_commit())
+            console.log(dogfight.engine.get_build_version());
+            console.log(dogfight.engine.get_commit());
 
             dogfight.setMyPlayerGuid(HOST_GUID);
 
             hostInput.current.push({
                 player_guid: HOST_GUID,
-                command: { type: "AddPlayer", data: { guid: HOST_GUID, name: username, clan } }
+                command: { type: "AddPlayer", data: { guid: HOST_GUID, name: username, clan } },
             });
 
             // Set up function to begin ticking the game
             tickInterval.current = window.setInterval(() => tickGame(), 1000 / 100);
-        })
+        });
 
         peer.current.on("connection", (conn) => {
-            console.log("GUEST JOINED", conn.connectionId)
+            console.log("GUEST JOINED", conn.connectionId);
 
-            const PLAYER_GUID = randomGuid()
+            const PLAYER_GUID = randomGuid();
 
             function removePlayer() {
-                dataConnections.current.delete(conn.connectionId)
+                dataConnections.current.delete(conn.connectionId);
                 hostInput.current.push({
                     player_guid: PLAYER_GUID,
                     command: {
-                        type: "RemovePlayer"
-                    }
-                })
+                        type: "RemovePlayer",
+                    },
+                });
             }
 
             // Remove player on disconnect
             conn.on("close", () => {
-                removePlayer()
-            })
+                removePlayer();
+            });
 
             conn.on("open", () => {
                 // Add this player to the collection and send them the full state
@@ -136,50 +134,50 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
                 dataConnections.current.set(conn.connectionId, {
                     player_guid: PLAYER_GUID,
                     connection: conn,
-                })
+                });
 
                 const all_state = dogfight.engine.get_full_state();
-                conn.send(all_state)
+                conn.send(all_state);
 
                 // Set initial guid
                 const out: ServerOutput = {
                     type: "YourPlayerGuid",
-                    data: PLAYER_GUID
-                }
-                conn.send(JSON.stringify(out))
+                    data: PLAYER_GUID,
+                };
+                conn.send(JSON.stringify(out));
 
                 conn.on("data", (data) => {
                     // console.log(data)
-                    const user = dataConnections.current.get(conn.connectionId)
+                    const user = dataConnections.current.get(conn.connectionId);
 
                     if (user) {
-                        const buffer = new Uint8Array(data as ArrayBuffer)
+                        const buffer = new Uint8Array(data as ArrayBuffer);
                         //const test = "testjaiasdjfoaijseiofjoieji39393393939393" as unknown as Uint8Array
-                        const command_json = dogfight.engine.player_command_from_binary(buffer)
-                        const command: PlayerCommand = JSON.parse(command_json)
+                        const command_json = dogfight.engine.player_command_from_binary(buffer);
+                        const command: PlayerCommand = JSON.parse(command_json);
 
                         if (command.type == "AddPlayer") {
-                            user.player_guid = PLAYER_GUID
+                            user.player_guid = PLAYER_GUID;
                         }
 
-                        guestInput.current.push({ player_guid: user.player_guid, command })
+                        guestInput.current.push({ player_guid: user.player_guid, command });
                     }
-                })
-            })
+                });
+            });
 
             conn.on("close", () => {
-                dataConnections.current.delete(conn.connectionId)
-            })
-        })
+                dataConnections.current.delete(conn.connectionId);
+            });
+        });
     }
 
     function clearPlayerCommands(tick: number): ServerInput[] {
-        const serverInput: ServerInput[] = [...hostInput.current, ...guestInput.current]
+        const serverInput: ServerInput[] = [...hostInput.current, ...guestInput.current];
 
         hostInput.current = [];
         guestInput.current = [];
 
-        return serverInput
+        return serverInput;
     }
 
     function getReplayBinary(): Uint8Array {
@@ -188,13 +186,12 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
 
     useEffect(() => {
         return () => {
-            console.log("destroy host")
-            if (tickInterval.current)
-                window.clearInterval(tickInterval.current)
-            peer.current?.removeAllListeners()
-            peer.current?.destroy()
-        }
-    }, [])
+            console.log("destroy host");
+            if (tickInterval.current) window.clearInterval(tickInterval.current);
+            peer.current?.removeAllListeners();
+            peer.current?.destroy();
+        };
+    }, []);
 
     return {
         initialize,
@@ -204,5 +201,5 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
         showScoreboard: dogfight.showScoreboard,
         playerData: dogfight.playerData,
         playerGuid: dogfight.playerGuid,
-    }
+    };
 }

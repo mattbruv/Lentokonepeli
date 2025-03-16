@@ -3,21 +3,21 @@ import * as PIXI from "pixi.js";
 import { WorldInfoProperties } from "dogfight-types/WorldInfoProperties";
 
 export class WorldInfo implements Entity<WorldInfoProperties> {
-  public props: Required<WorldInfoProperties> = {
-    state: "Intermission",
-    winner: "Allies"
-  };
+    public props: Required<WorldInfoProperties> = {
+        state: "Intermission",
+        winner: "Allies",
+    };
 
-  constructor() { }
+    constructor() {}
 
-  public getContainer(): PIXI.Container {
-    return new PIXI.Container();
-  }
+    public getContainer(): PIXI.Container {
+        return new PIXI.Container();
+    }
 
-  public updateCallbacks: EntityUpdateCallbacks<WorldInfoProperties> = {
-    state: () => { },
-    winner: () => { },
-  };
+    public updateCallbacks: EntityUpdateCallbacks<WorldInfoProperties> = {
+        state: () => {},
+        winner: () => {},
+    };
 
-  public destroy() { }
+    public destroy() {}
 }

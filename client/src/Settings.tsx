@@ -5,8 +5,6 @@ import { useDisclosure } from "@mantine/hooks";
 import React, { useState } from "react";
 import { NameEditor } from "./components/Name";
 
-
-
 const keyDescriptions: Record<GameKey, string> = {
     left: "Move Left",
     right: "Move Right",
@@ -15,60 +13,59 @@ const keyDescriptions: Record<GameKey, string> = {
     shift: "Bomb",
     space: "Eject, Open Parachute",
     enter: "Enter",
-    ctrl: "Shoot"
-}
+    ctrl: "Shoot",
+};
 
 export function Settings() {
+    const { settings, setSettings } = useSettingsContext();
 
-    const { settings, setSettings } = useSettingsContext()
-
-    const [addToGameKey, setAddToGameKey] = useState<GameKey | null>(null)
+    const [addToGameKey, setAddToGameKey] = useState<GameKey | null>(null);
     const [opened, { open, close }] = useDisclosure(false);
 
     function removeKey(gameKey: GameKey): void {
-        console.log(gameKey)
+        console.log(gameKey);
 
         setSettings((prev) => {
-            const next = prev.controls[gameKey].slice(0, -1)
-            console.log(next)
-            return ({
+            const next = prev.controls[gameKey].slice(0, -1);
+            console.log(next);
+            return {
                 ...prev,
                 controls: {
                     ...prev.controls,
-                    [gameKey]: next
-                }
-            });
-        })
+                    [gameKey]: next,
+                },
+            };
+        });
     }
 
     function resetControls(): void {
-        setSettings(prev => ({
+        setSettings((prev) => ({
             ...prev,
-            controls: getDefaultControls()
-        }))
+            controls: getDefaultControls(),
+        }));
     }
 
     function addKey(gameKey: GameKey): void {
-        setAddToGameKey(gameKey)
-        open()
+        setAddToGameKey(gameKey);
+        open();
     }
 
     function registerKey(event: React.KeyboardEvent): void {
         if (!addToGameKey) return;
         const existing = settings.controls[addToGameKey];
-        const newKey = event.key
+        const newKey = event.key;
 
         if (!existing.includes(newKey)) {
-            setSettings(prev => ({
+            setSettings((prev) => ({
                 ...prev,
                 controls: {
                     ...prev.controls,
-                    [addToGameKey]: prev.controls[addToGameKey].concat(newKey)
-                }
-            }))
+                    [addToGameKey]: prev.controls[addToGameKey].concat(newKey),
+                },
+            }));
         }
 
-        close()
+        close();
     }
 
     return (
@@ -98,18 +95,34 @@ export function Settings() {
                                 {Object.entries(settings.controls).map(([gameKey, keys]) => (
                                     <Group key={gameKey}>
                                         {keyDescriptions[gameKey as GameKey]}:
-                                        {keys.map(key => {
-                                            const count = Object.values(settings.controls).flatMap(x => x).filter(x => x === key).length;
+                                        {keys.map((key) => {
+                                            const count = Object.values(settings.controls)
+                                                .flatMap((x) => x)
+                                                .filter((x) => x === key).length;
                                             return (
-                                                <Kbd style={{ backgroundColor: count > 1 ? "red" : "" }} key={key}>{key === " " ? "Space" : key}</Kbd>
+                                                <Kbd style={{ backgroundColor: count > 1 ? "red" : "" }} key={key}>
+                                                    {key === " " ? "Space" : key}
+                                                </Kbd>
                                             );
                                         })}
                                         <Tooltip openDelay={250} label="Add New Key">
-                                            <ActionIcon onClick={() => addKey(gameKey as GameKey)} color={"green"} variant={"subtle"}><IconPlus /></ActionIcon>
+                                            <ActionIcon
+                                                onClick={() => addKey(gameKey as GameKey)}
+                                                color={"green"}
+                                                variant={"subtle"}
+                                            >
+                                                <IconPlus />
+                                            </ActionIcon>
                                         </Tooltip>
                                         {keys.length > 0 && (
                                             <Tooltip openDelay={250} label="Unbind Last Key">
-                                                <ActionIcon onClick={() => removeKey(gameKey as GameKey)} color={"red"} variant={"subtle"}><IconTrash /></ActionIcon>
+                                                <ActionIcon
+                                                    onClick={() => removeKey(gameKey as GameKey)}
+                                                    color={"red"}
+                                                    variant={"subtle"}
+                                                >
+                                                    <IconTrash />
+                                                </ActionIcon>
                                             </Tooltip>
                                         )}
                                     </Group>
@@ -126,7 +139,6 @@ export function Settings() {
                     </Accordion.Panel>
                 </Accordion.Item>
             </Accordion>
-
         </div>
-    )
+    );
 }

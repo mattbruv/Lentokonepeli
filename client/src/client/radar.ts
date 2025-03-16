@@ -17,17 +17,17 @@ export enum RadarObjectType {
     Ground,
     Runway,
     Plane,
-    Man
-};
+    Man,
+}
 
 export type RadarObject = {
-    type: RadarObjectType
-    x: number
-    y: number
-    width?: number
-    health?: number
-    team?: Team
-}
+    type: RadarObjectType;
+    x: number;
+    y: number;
+    width?: number;
+    health?: number;
+    team?: Team;
+};
 
 const ENEMY_COLOR = 0xff0000;
 const TEAM_COLOR = 0x0000ff;
@@ -76,7 +76,7 @@ export class Radar {
             [RadarObjectType.Man]: (e) => this.renderObject(e),
             [RadarObjectType.Plane]: (e) => this.renderObject(e),
             [RadarObjectType.Runway]: (e) => this.renderRunway(e),
-        }
+        };
     }
 
     public centerCamera(x: number, y: number): void {
@@ -93,13 +93,13 @@ export class Radar {
         this.radarGraphics.clear();
 
         for (const obj of radarObjects) {
-            this.renderFunctions[obj.type](obj)
+            this.renderFunctions[obj.type](obj);
         }
     }
 
     private renderObject(obj: RadarObject): void {
-        let startX = Math.round((obj.x * RADAR_HEIGHT) / 1000) - 1;
-        let startY = Math.round((obj.y * RADAR_HEIGHT) / 1000) - 1;
+        const startX = Math.round((obj.x * RADAR_HEIGHT) / 1000) - 1;
+        const startY = Math.round((obj.y * RADAR_HEIGHT) / 1000) - 1;
         let color;
 
         // console.log(this.myTeam, obj.team)
@@ -131,9 +131,7 @@ export class Radar {
 
     private renderGround(ground: RadarObject): void {
         if (!ground.width) return;
-        const startX = Math.round(
-            ((ground.x) * RADAR_HEIGHT) / 1000
-        );
+        const startX = Math.round((ground.x * RADAR_HEIGHT) / 1000);
         const startY = Math.round((ground.y * RADAR_HEIGHT) / 1000);
         const rGroundWidth = Math.round((ground.width * RADAR_HEIGHT) / 1000);
         this.radarGraphics.beginFill(0x111111);

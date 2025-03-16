@@ -1,6 +1,3 @@
-
-
-
 export function randomGuid() {
-    return crypto.randomUUID()
+    return crypto.randomUUID();
 }

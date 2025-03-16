@@ -4,36 +4,35 @@ import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 import { Team } from "dogfight-types/Team";
 import { DogfightWeb } from "dogfight-web";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, version } from "react";
-import { DogfightClient, GameClientCallbacks } from "../client/DogfightClient"
+import { DogfightClient, GameClientCallbacks } from "../client/DogfightClient";
 import { PlayerCommand } from "dogfight-types/PlayerCommand";
 import { GameKey, getDefaultControls, useSettingsContext } from "../contexts/settingsContext";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import { PlayerProperties } from "dogfight-types/PlayerProperties";
 
-
 export type DogfightCallbacks = {
-    handleClientCommand: (command: PlayerCommand) => void
-}
+    handleClientCommand: (command: PlayerCommand) => void;
+};
 
 export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
-    const client = useMemo(() => (new DogfightClient()), [])
-    const engine = useMemo(() => (DogfightWeb.new()), [])
+    const client = useMemo(() => new DogfightClient(), []);
+    const engine = useMemo(() => DogfightWeb.new(), []);
 
     const { settings } = useSettingsContext();
-    const originalKeys = getDefaultControls()
+    const originalKeys = getDefaultControls();
 
     // Scoreboard related information
-    const [playerData, setPlayerData] = useState<PlayerProperties[]>([])
-    const [playerGuid, setPlayerGuid] = useState<string | null>(null)
-    const [showScoreboard, setShowScoreboard] = useState(false)
+    const [playerData, setPlayerData] = useState<PlayerProperties[]>([]);
+    const [playerGuid, setPlayerGuid] = useState<string | null>(null);
+    const [showScoreboard, setShowScoreboard] = useState(false);
 
     function handleGameEvents(events: ServerOutput[]): void {
-        client.handleGameEvents(events)
+        client.handleGameEvents(events);
     }
 
     function setMyPlayerGuid(guid: string): void {
-        setPlayerGuid(guid)
-        client.setMyPlayerGuid(guid)
+        setPlayerGuid(guid);
+        client.setMyPlayerGuid(guid);
     }
 
     async function initialize(div: HTMLDivElement): Promise<void> {
@@ -43,7 +42,7 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
             chooseTeam: (team: Team | null): void => {
                 handleClientCommand({
                     type: "PlayerChooseTeam",
-                    data: { team }
+                    data: { team },
                 });
             },
             chooseRunway: (runwayId: number, planeType: PlaneType): void => {
@@ -52,7 +51,7 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
                     data: {
                         plane_type: planeType,
                         runway_id: runwayId,
-                    }
+                    },
                 });
             },
             keyChange: (keyboard: PlayerKeyboard): void => {
@@ -60,12 +59,12 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
                     type: "PlayerKeyboard",
                     data: {
                         ...keyboard,
-                    }
+                    },
                 });
             },
             onPlayerChange: (playerInfo: PlayerProperties[]): void => {
-                setPlayerData(playerInfo)
-            }
+                setPlayerData(playerInfo);
+            },
         };
 
         await client.init(client_callbacks, div);
@@ -74,31 +73,31 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
         function mapBindingsToOldKey(key: string): string {
             //console.log(settings.settings.controls)
             // If this key is mapped, return the original key
-            const entry = Object.entries(settings.controls).find(([_, keys]) => keys.includes(key))
+            const entry = Object.entries(settings.controls).find(([_, keys]) => keys.includes(key));
             if (entry) {
-                return originalKeys[entry[0] as GameKey].at(0)!
+                return originalKeys[entry[0] as GameKey].at(0)!;
             }
-            return key
+            return key;
         }
 
         document.onkeydown = (event) => {
             // Map the user's keybindings to the old keys
-            const key = mapBindingsToOldKey(event.key)
+            const key = mapBindingsToOldKey(event.key);
             client.keyboard.onKeyDown(key, event);
 
             if (event.key === "Tab") {
-                event.preventDefault()
-                setShowScoreboard(true)
+                event.preventDefault();
+                setShowScoreboard(true);
             }
         };
         document.onkeyup = (event) => {
             // Map the user's keybindings to the old keys
-            const key = mapBindingsToOldKey(event.key)
+            const key = mapBindingsToOldKey(event.key);
             client.keyboard.onKeyUp(key, event);
 
             if (event.key === "Tab") {
-                event.preventDefault()
-                setShowScoreboard(false)
+                event.preventDefault();
+                setShowScoreboard(false);
             }
 
             // pause/unpause the game
@@ -112,7 +111,7 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
 
             if (import.meta.env.DEV) {
                 if (event.key === "d") {
-                    const debugInfo: DebugEntity[] = JSON.parse(engine.debug())
+                    const debugInfo: DebugEntity[] = JSON.parse(engine.debug());
                     client.renderDebug(debugInfo);
                 }
             }
@@ -121,13 +120,13 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
 
     useEffect(() => {
         return () => {
-            client.destroy()
-            engine.free()
-            document.onkeydown = null
-            document.onkeyup = null
-            console.log("UseDogfight hook destructor called.")
-        }
-    }, [])
+            client.destroy();
+            engine.free();
+            document.onkeydown = null;
+            document.onkeyup = null;
+            console.log("UseDogfight hook destructor called.");
+        };
+    }, []);
 
     return {
         initialize,
@@ -137,5 +136,5 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
         playerGuid,
         playerData,
         engine,
-    }
+    };
 }
