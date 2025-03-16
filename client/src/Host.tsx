@@ -1,13 +1,11 @@
-import { useDisclosure } from "@mantine/hooks";
+import { Button, Card, Group, Stack, Text } from "@mantine/core";
+import { IconFileDownloadFilled } from "@tabler/icons-react";
 import saveAs from "file-saver";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { Game } from "./components/Game";
+import { useSettingsContext } from "./contexts/settingsContext";
 import { useLocalHost } from "./hooks/useLocalHost";
 import { LevelName } from "./Lobby";
-import { Button, Card, Group, Paper, Stack, Text } from "@mantine/core";
-import { IconFileDownload, IconFileDownloadFilled, IconWorldDownload } from "@tabler/icons-react";
-import { useSettingsContext } from "./contexts/settingsContext";
-import { Scoreboard } from "./components/Scoreboard";
-import { Game } from "./components/Game";
 
 type HostProps = {
     level: LevelName;

@@ -1,39 +1,38 @@
-import * as PIXI from "pixi.js";
-import { DrawLayer, SKY_COLOR, VIEW_HEIGHT, VIEW_WIDTH } from "./constants";
-import { Viewport } from "pixi-viewport";
-import { Ground } from "./entities/ground";
-import { Water } from "./entities/water";
+import { DebugEntity } from "dogfight-types/DebugEntity";
 import { EntityChange } from "dogfight-types/EntityChange";
 import { EntityProperties } from "dogfight-types/EntityProperties";
 import { EntityType } from "dogfight-types/EntityType";
-import { loadTextures, Textures } from "./textures";
-import { Coast } from "./entities/coast";
-import { Runway } from "./entities/runway";
-import { BackgroundItem } from "./entities/backgroundItem";
-import { Bunker } from "./entities/bunker";
-import { Man } from "./entities/man";
-import { Player } from "./entities/player";
-import { Team } from "dogfight-types/Team";
-import { TeamChooser } from "./teamChooser";
-import { GameHUD } from "./hud";
-import { Entity, isFollowable, RadarEnabled, updateProps } from "./entities/entity";
-import { PlayerProperties } from "dogfight-types/PlayerProperties";
-import { formatName, toPixiPoint } from "./helpers";
-import { RunwaySelection } from "dogfight-types/RunwaySelection";
-import { RunwaySelector } from "./runwaySelector";
-import { GameKeyboard } from "./keyboard";
-import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 import { PlaneType } from "dogfight-types/PlaneType";
-import { WorldInfo } from "./entities/worldInfo";
-import { Plane } from "./entities/plane";
-import { DebugEntity } from "dogfight-types/DebugEntity";
-import { Bomb } from "./entities/bomb";
-import { Explosion } from "./entities/explosion";
-import { Hill } from "./entities/hill";
-import { Bullet } from "./entities/bullet";
-import { RadarObject, RadarObjectType } from "./radar";
+import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
+import { PlayerProperties } from "dogfight-types/PlayerProperties";
 import { ServerOutput } from "dogfight-types/ServerOutput";
+import { Team } from "dogfight-types/Team";
+import { Viewport } from "pixi-viewport";
+import * as PIXI from "pixi.js";
+import { SKY_COLOR, VIEW_HEIGHT, VIEW_WIDTH } from "./constants";
+import { BackgroundItem } from "./entities/backgroundItem";
+import { Bomb } from "./entities/bomb";
+import { Bullet } from "./entities/bullet";
+import { Bunker } from "./entities/bunker";
+import { Coast } from "./entities/coast";
+import { Entity, isFollowable, RadarEnabled, updateProps } from "./entities/entity";
+import { Explosion } from "./entities/explosion";
+import { Ground } from "./entities/ground";
+import { Hill } from "./entities/hill";
+import { Man } from "./entities/man";
+import { Plane } from "./entities/plane";
+import { Player } from "./entities/player";
+import { Runway } from "./entities/runway";
+import { Water } from "./entities/water";
+import { WorldInfo } from "./entities/worldInfo";
+import { formatName } from "./helpers";
+import { GameHUD } from "./hud";
+import { GameKeyboard } from "./keyboard";
 import { KillFeed } from "./killfeed";
+import { RadarObject, RadarObjectType } from "./radar";
+import { RunwaySelector } from "./runwaySelector";
+import { TeamChooser } from "./teamChooser";
+import { loadTextures, Textures } from "./textures";
 
 export type GameClientCallbacks = {
     chooseTeam: (team: Team | null) => void;
@@ -50,8 +49,6 @@ export type EntityGroup<T> = {
     new_type: () => T;
     entries: Map<number, T>;
 };
-
-const SKY_Y = -300;
 
 export class DogfightClient {
     // https://pixijs.download/v7.x/docs/index.html
@@ -327,7 +324,6 @@ export class DogfightClient {
 
         // Set KillFeed area
         {
-            const y = this.app.screen.height - this.gameHUD.container.height;
             this.killFeed.container.position.set(510, 0);
         }
 
@@ -582,9 +578,9 @@ export class DogfightClient {
             if (entity) {
                 // Not sure why Typescript wants to error when I call the set() function here.
                 // It's making the set param a union type for some reason I don't understand
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 ent_map.entries.set(id, entity as any);
                 this.viewport.addChild(entity.getContainer());
-                //console.log("create", data.type, "id:", id, "total:", ent_map.entries.size)
             }
         }
 

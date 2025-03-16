@@ -1,14 +1,14 @@
 import { DebugEntity } from "dogfight-types/DebugEntity";
 import { PlaneType } from "dogfight-types/PlaneType";
+import { PlayerCommand } from "dogfight-types/PlayerCommand";
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
+import { PlayerProperties } from "dogfight-types/PlayerProperties";
+import { ServerOutput } from "dogfight-types/ServerOutput";
 import { Team } from "dogfight-types/Team";
 import { DogfightWeb } from "dogfight-web";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, version } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DogfightClient, GameClientCallbacks } from "../client/DogfightClient";
-import { PlayerCommand } from "dogfight-types/PlayerCommand";
 import { GameKey, getDefaultControls, useSettingsContext } from "../contexts/settingsContext";
-import { ServerOutput } from "dogfight-types/ServerOutput";
-import { PlayerProperties } from "dogfight-types/PlayerProperties";
 
 export type DogfightCallbacks = {
     handleClientCommand: (command: PlayerCommand) => void;

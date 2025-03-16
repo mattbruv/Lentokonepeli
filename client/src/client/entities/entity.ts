@@ -22,7 +22,7 @@ export interface RadarEnabled {
     getRadarInfo: () => RadarObject;
 }
 
-export function isFollowable(object: {}): object is Followable {
+export function isFollowable(object: object): object is Followable {
     return "getCenter" in object;
 }
 
@@ -41,7 +41,7 @@ export function updateProps<Props extends object>(entity: Entity<Props>, newProp
     };
 
     for (const [key, callback] of Object.entries<EntityUpdateCallback<Props>>(entity.updateCallbacks)) {
-        if (newProps.hasOwnProperty(key)) {
+        if (Object.hasOwn(newProps, key)) {
             callback(oldProps);
         }
     }

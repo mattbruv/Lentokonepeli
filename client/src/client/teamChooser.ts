@@ -1,7 +1,6 @@
 import * as PIXI from "pixi.js";
-import { Textures } from "./textures";
-import { DrawLayer } from "./constants";
 import { GameClientCallbacks } from "./DogfightClient";
+import { Textures } from "./textures";
 
 export class TeamChooser {
     public container: PIXI.Container;

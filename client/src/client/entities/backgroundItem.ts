@@ -1,10 +1,9 @@
-import { Entity, EntityUpdateCallbacks } from "./entity";
-import * as PIXI from "pixi.js";
-import { Textures } from "../textures";
-import { Facing } from "dogfight-types/Facing";
-import { DrawLayer } from "../constants";
 import { BackgroundItemProperties } from "dogfight-types/BackgroundItemProperties";
 import { BackgroundItemType } from "dogfight-types/BackgroundItemType";
+import * as PIXI from "pixi.js";
+import { DrawLayer } from "../constants";
+import { Textures } from "../textures";
+import { Entity, EntityUpdateCallbacks } from "./entity";
 
 type FlagTypes = "FlagAllies" | "FlagCentrals";
 

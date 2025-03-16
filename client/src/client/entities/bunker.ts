@@ -1,9 +1,9 @@
-import { Entity, EntityUpdateCallbacks } from "./entity";
-import * as PIXI from "pixi.js";
-import { Textures } from "../textures";
-import { DrawLayer } from "../constants";
 import { BunkerProperties } from "dogfight-types/BunkerProperties";
 import { Team } from "dogfight-types/Team";
+import * as PIXI from "pixi.js";
+import { DrawLayer } from "../constants";
+import { Textures } from "../textures";
+import { Entity, EntityUpdateCallbacks } from "./entity";
 
 export class Bunker implements Entity<BunkerProperties> {
     public props: Required<BunkerProperties> = {
@@ -51,7 +51,7 @@ export class Bunker implements Entity<BunkerProperties> {
         },
     };
 
-    public updateProps(props: BunkerProperties): void {}
+    public updateProps(_props: BunkerProperties): void {}
 
     public destroy() {}
 }

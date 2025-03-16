@@ -22,7 +22,9 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
+        "source.fixAll.eslint": "always",
+        "source.organizeImports": "always",
+        "source.sortMembers": "always"
     },
     "eslint.nodePath": "./node_modules",
     "eslint.workingDirectories": [{ "mode": "auto" }],

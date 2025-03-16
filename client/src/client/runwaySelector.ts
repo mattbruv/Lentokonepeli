@@ -1,12 +1,11 @@
-import * as PIXI from "pixi.js";
-import { Textures } from "./textures";
-import { DogfightClient, EntityGroup, GameClientCallbacks } from "./DogfightClient";
 import { PlaneType } from "dogfight-types/PlaneType";
-import { Team } from "dogfight-types/Team";
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
-import { Runway } from "./entities/runway";
+import { Team } from "dogfight-types/Team";
+import * as PIXI from "pixi.js";
+import { EntityGroup, GameClientCallbacks } from "./DogfightClient";
 import { Point } from "./entities/entity";
-import { Player } from "./entities/player";
+import { Runway } from "./entities/runway";
+import { Textures } from "./textures";
 
 type PlaneData = {
     plane_type: PlaneType;

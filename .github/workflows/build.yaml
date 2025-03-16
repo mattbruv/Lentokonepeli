@@ -31,6 +31,7 @@ jobs:
         run: |
           cd client
           npm ci
+          npm run lint
           npm run build
 
       - name: Verify Build Output
