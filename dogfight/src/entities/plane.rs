@@ -697,22 +697,38 @@ impl Plane {
     pub fn can_land_on_runway(&self, runway: &Runway) -> bool {
         let x = *self.client_x.get();
 
-        // Holy mother of if statements
-        if (*self.mode.get() != PlaneMode::Landing)
-            && (x > runway.get_landable_x())
-            && (x + self.get_width() < runway.get_landable_x() + runway.get_landable_width())
-            && (!self.motor_on.get())
-            && (self.speed < 250.0 + self.get_speed_modifier())
-            && (((!*self.flipped.get())
-                && ((self.angle < 0.8975979010256552) || (self.angle > 5.385587406153931)))
-                || ((*self.flipped.get())
-                    && (self.angle < 4.039190554615448)
-                    && (self.angle > 2.243994752564138)))
-        {
-            return true;
+        if *self.mode.get() == PlaneMode::Landing {
+            return false;
         }
 
-        false
+        if x <= runway.get_landable_x() {
+            return false;
+        }
+
+        if x + self.get_width() >= runway.get_landable_x() + runway.get_landable_width() {
+            return false;
+        }
+
+        if *self.motor_on.get() {
+            return false;
+        }
+
+        if self.speed >= 250.0 + self.get_speed_modifier() {
+            return false;
+        }
+
+        if !self.is_valid_landing_angle() {
+            return false;
+        }
+
+        true
+    }
+
+    fn is_valid_landing_angle(&self) -> bool {
+        if !*self.flipped.get() {
+            return self.angle < 0.8975979010256552 || self.angle > 5.385587406153931;
+        }
+        self.angle < 4.039190554615448 && self.angle > 2.243994752564138
     }
 
     pub(crate) fn get_mode(&self) -> PlaneMode {
