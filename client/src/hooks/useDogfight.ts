@@ -1,14 +1,15 @@
-import { DebugEntity } from "dogfight-types/DebugEntity";
 import { PlaneType } from "dogfight-types/PlaneType";
-import { PlayerCommand } from "dogfight-types/PlayerCommand";
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
-import { PlayerProperties } from "dogfight-types/PlayerProperties";
-import { ServerOutput } from "dogfight-types/ServerOutput";
 import { Team } from "dogfight-types/Team";
 import { DogfightWeb } from "dogfight-web";
 import { useEffect, useMemo, useState } from "react";
 import { DogfightClient, GameClientCallbacks } from "../client/DogfightClient";
-import { GameKey, getDefaultControls, useSettingsContext } from "../contexts/settingsContext";
+import { PlayerCommand } from "dogfight-types/PlayerCommand";
+import { ServerOutput } from "dogfight-types/ServerOutput";
+import { PlayerProperties } from "dogfight-types/PlayerProperties";
+import { useGameKeybinds } from "./keybinds/useGameKeybinds";
+import { useDevKeybinds } from "./keybinds/useDevKeybinds";
+import { useGlobalKeybinds } from "./keybinds/useGlobalKeybinds";
 
 export type DogfightCallbacks = {
     handleClientCommand: (command: PlayerCommand) => void;
@@ -18,13 +19,14 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
     const client = useMemo(() => new DogfightClient(), []);
     const engine = useMemo(() => DogfightWeb.new(), []);
 
-    const { settings } = useSettingsContext();
-    const originalKeys = getDefaultControls();
-
     // Scoreboard related information
     const [playerData, setPlayerData] = useState<PlayerProperties[]>([]);
     const [playerGuid, setPlayerGuid] = useState<string | null>(null);
     const [showScoreboard, setShowScoreboard] = useState(false);
+
+    useGameKeybinds({ client, engine });
+    useGlobalKeybinds({ toggleScoreboard: setShowScoreboard });
+    useDevKeybinds({ client, engine });
 
     function handleGameEvents(events: ServerOutput[]): void {
         client.handleGameEvents(events);
@@ -68,54 +70,6 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
         };
 
         await client.init(client_callbacks, div);
-
-        // This is ghetto, but it works for now
-        function mapBindingsToOldKey(key: string): string {
-            //console.log(settings.settings.controls)
-            // If this key is mapped, return the original key
-            const entry = Object.entries(settings.controls).find(([_, keys]) => keys.includes(key));
-            if (entry) {
-                return originalKeys[entry[0] as GameKey].at(0)!;
-            }
-            return key;
-        }
-
-        document.onkeydown = (event) => {
-            // Map the user's keybindings to the old keys
-            const key = mapBindingsToOldKey(event.key);
-            client.keyboard.onKeyDown(key, event);
-
-            if (event.key === "Tab") {
-                event.preventDefault();
-                setShowScoreboard(true);
-            }
-        };
-        document.onkeyup = (event) => {
-            // Map the user's keybindings to the old keys
-            const key = mapBindingsToOldKey(event.key);
-            client.keyboard.onKeyUp(key, event);
-
-            if (event.key === "Tab") {
-                event.preventDefault();
-                setShowScoreboard(false);
-            }
-
-            // pause/unpause the game
-            if (event.key === "q") {
-                //paused.current = !paused.current
-            }
-
-            if (event.key === "t") {
-                //doTick.current = true
-            }
-
-            if (import.meta.env.DEV) {
-                if (event.key === "d") {
-                    const debugInfo: DebugEntity[] = JSON.parse(engine.debug());
-                    client.renderDebug(debugInfo);
-                }
-            }
-        };
     }
 
     useEffect(() => {
