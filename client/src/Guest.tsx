@@ -13,7 +13,10 @@ export function Guest({ gameCode }: GuestProps) {
 
     const { getClan, getUsername } = useSettingsContext();
 
-    const { initialize, joinGame, playerData, showScoreboard, playerGuid } = useGuest(getUsername(), getClan());
+    const { initialize, joinGame, playerData, showScoreboard, showChat, playerGuid } = useGuest(
+        getUsername(),
+        getClan(),
+    );
 
     async function join() {
         if (!gameContainer.current) return;
@@ -32,6 +35,7 @@ export function Guest({ gameCode }: GuestProps) {
                 myPlayerGuid={playerGuid}
                 playerData={playerData}
                 showScoreboard={showScoreboard}
+                showChat={showChat}
             />
             <Card withBorder style={{ height: "100%" }}>
                 <Stack>

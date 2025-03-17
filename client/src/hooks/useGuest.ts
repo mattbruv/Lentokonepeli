@@ -1,8 +1,8 @@
-import { useDogfight } from "./useDogfight";
-import { useEffect, useRef } from "react";
-import Peer from "peerjs";
 import { PlayerCommand } from "dogfight-types/PlayerCommand";
 import { ServerOutput } from "dogfight-types/ServerOutput";
+import Peer from "peerjs";
+import { useEffect, useRef } from "react";
+import { useDogfight } from "./useDogfight";
 import { PeerJSPath } from "./useLocalHost";
 
 export function useGuest(myName: string, clan: string) {
@@ -77,6 +77,7 @@ export function useGuest(myName: string, clan: string) {
         joinGame,
         initialize,
         showScoreboard: dogfight.showScoreboard,
+        showChat: dogfight.showChat,
         playerData: dogfight.playerData,
         playerGuid: dogfight.playerGuid,
     };

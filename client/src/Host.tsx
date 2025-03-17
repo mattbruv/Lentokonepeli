@@ -16,12 +16,8 @@ export function Host({ level, recordGame }: HostProps) {
     const gameContainer = useRef<HTMLDivElement>(null);
     const { getUsername, getClan } = useSettingsContext();
 
-    const { getReplayBinary, initialize, roomCode, hostGame, playerData, showScoreboard, playerGuid } = useLocalHost(
-        level,
-        recordGame,
-        getUsername(),
-        getClan(),
-    );
+    const { getReplayBinary, initialize, roomCode, hostGame, playerData, showScoreboard, showChat, playerGuid } =
+        useLocalHost(level, recordGame, getUsername(), getClan());
 
     // const [joinId, setJoinId] = useState("")
     // const [tickRate, setTickRate] = useState(100)
@@ -53,6 +49,7 @@ export function Host({ level, recordGame }: HostProps) {
                 myPlayerGuid={playerGuid}
                 playerData={playerData}
                 showScoreboard={showScoreboard}
+                showChat={showChat}
             />
             <Card withBorder style={{ height: "100%" }}>
                 <Stack>
