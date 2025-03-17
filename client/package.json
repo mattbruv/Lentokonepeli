@@ -9,6 +9,7 @@
     "copy": "cp -r dist/* ../DogfightServer/DogfightServer/wwwroot/",
     "lint": "./node_modules/.bin/eslint . --report-unused-disable-directives --max-warnings 0",
     "format": "./node_modules/.bin/prettier --write 'src/**/*.{ts,tsx,js,jsx}'",
+    "typecheck": "tsc --noEmit",
     "preview": "vite preview"
   },
   "dependencies": {

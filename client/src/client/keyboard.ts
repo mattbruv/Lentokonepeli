@@ -1,18 +1,7 @@
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
-
-const keyMap: Record<string, keyof PlayerKeyboard> = {
-    ArrowLeft: "left",
-    ArrowRight: "right",
-    ArrowDown: "down",
-    ArrowUp: "up",
-    " ": "space",
-    Enter: "enter",
-    Shift: "shift",
-    Control: "ctrl",
-};
+import { GameAction } from "../hooks/keybinds/models";
 
 type keyboardChangeCallback = (keyboard: PlayerKeyboard) => void;
-
 export class GameKeyboard {
     private keyboard: PlayerKeyboard = {
         left: false,
@@ -25,35 +14,20 @@ export class GameKeyboard {
         ctrl: false,
     };
 
-    private onKeyChange?: keyboardChangeCallback;
+    private callback?: keyboardChangeCallback;
 
     public init(callback: keyboardChangeCallback) {
-        this.onKeyChange = callback;
+        this.callback = callback;
     }
 
-    public onKeyDown(keyString: string, event: KeyboardEvent) {
-        const inMap = keyString in keyMap;
-        if (!inMap) return;
-        event.preventDefault();
-        const key = keyMap[keyString];
-        const keyAlreadyPressed = this.keyboard[key];
+    public onKeyChange(action: GameAction, type: "up" | "down") {
+        const currentlyPressed = this.keyboard[action];
+        const nextPressed = type === "down";
+        const keyChanged = currentlyPressed !== nextPressed;
+        if (!keyChanged) return;
 
-        if (!keyAlreadyPressed) {
-            this.keyboard[key] = true;
-            if (this.onKeyChange) {
-                this.onKeyChange(structuredClone(this.keyboard));
-            }
-        }
-    }
+        this.keyboard[action] = nextPressed;
 
-    public onKeyUp(keyString: string, event: KeyboardEvent) {
-        const inMap = keyString in keyMap;
-        if (!inMap) return;
-        event.preventDefault();
-        const key = keyMap[keyString];
-        this.keyboard[key] = false;
-        if (this.onKeyChange) {
-            this.onKeyChange(structuredClone(this.keyboard));
-        }
+        this.callback?.(structuredClone(this.keyboard));
     }
 }

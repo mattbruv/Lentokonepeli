@@ -1,11 +1,12 @@
 import { Accordion, Card, Text, Group, Kbd, Stack, ActionIcon, Tooltip, Button, Modal } from "@mantine/core";
 import { IconDeviceGamepad2, IconPlus, IconRestore, IconTrash, IconUser } from "@tabler/icons-react";
-import { GameKey, getDefaultControls, useSettingsContext } from "./contexts/settingsContext";
+import { DEFAULT_GAME_KEYBINDS, useSettingsContext } from "./contexts/settingsContext";
 import { useDisclosure } from "@mantine/hooks";
 import React, { useState } from "react";
 import { NameEditor } from "./components/Name";
+import { GameAction } from "./hooks/keybinds/models";
 
-const keyDescriptions: Record<GameKey, string> = {
+const keyDescriptions: Record<GameAction, string> = {
     left: "Move Left",
     right: "Move Right",
     down: "Toggle Motor",
@@ -18,50 +19,36 @@ const keyDescriptions: Record<GameKey, string> = {
 
 export function Settings() {
     const { settings, setSettings } = useSettingsContext();
-
-    const [addToGameKey, setAddToGameKey] = useState<GameKey | null>(null);
+    const [addToAction, setAddToAction] = useState<GameAction | null>(null);
     const [opened, { open, close }] = useDisclosure(false);
 
-    function removeKey(gameKey: GameKey): void {
-        console.log(gameKey);
-
-        setSettings((prev) => {
-            const next = prev.controls[gameKey].slice(0, -1);
-            console.log(next);
-            return {
-                ...prev,
-                controls: {
-                    ...prev.controls,
-                    [gameKey]: next,
-                },
-            };
-        });
+    function removeKey(action: string): void {
+        setSettings((prev) => ({
+            ...prev,
+            controls: prev.controls.filter((bind) => bind.action !== action),
+        }));
     }
 
     function resetControls(): void {
         setSettings((prev) => ({
             ...prev,
-            controls: getDefaultControls(),
+            controls: DEFAULT_GAME_KEYBINDS,
         }));
     }
 
-    function addKey(gameKey: GameKey): void {
-        setAddToGameKey(gameKey);
+    function addKey(action: GameAction): void {
+        setAddToAction(action);
         open();
     }
 
     function registerKey(event: React.KeyboardEvent): void {
-        if (!addToGameKey) return;
-        const existing = settings.controls[addToGameKey];
+        if (!addToAction) return;
         const newKey = event.key;
 
-        if (!existing.includes(newKey)) {
+        if (!settings.controls.some((bind) => bind.key === newKey && bind.action === addToAction)) {
             setSettings((prev) => ({
                 ...prev,
-                controls: {
-                    ...prev.controls,
-                    [addToGameKey]: prev.controls[addToGameKey].concat(newKey),
-                },
+                controls: [...prev.controls, { key: newKey, action: addToAction }],
             }));
         }
 
@@ -70,10 +57,10 @@ export function Settings() {
 
     return (
         <div>
-            {addToGameKey && (
+            {addToAction && (
                 <Modal onKeyDown={registerKey} opened={opened} onClose={close} title="Add Key Binding">
                     <Text size={"xl"} fw={"bold"}>
-                        {keyDescriptions[addToGameKey]}
+                        {keyDescriptions[addToAction]}
                     </Text>
                     Press any key...
                 </Modal>
@@ -92,32 +79,37 @@ export function Settings() {
                     <Accordion.Panel>
                         <Card>
                             <Stack>
-                                {Object.entries(settings.controls).map(([gameKey, keys]) => (
-                                    <Group key={gameKey}>
-                                        {keyDescriptions[gameKey as GameKey]}:
-                                        {keys.map((key) => {
-                                            const count = Object.values(settings.controls)
-                                                .flatMap((x) => x)
-                                                .filter((x) => x === key).length;
-                                            return (
-                                                <Kbd style={{ backgroundColor: count > 1 ? "red" : "" }} key={key}>
-                                                    {key === " " ? "Space" : key}
-                                                </Kbd>
-                                            );
-                                        })}
+                                {Object.entries(keyDescriptions).map(([action, description]) => (
+                                    <Group key={action}>
+                                        {description}:
+                                        {settings.controls
+                                            .filter((bind) => bind.action === action)
+                                            .map((bind) => {
+                                                const count = settings.controls.filter(
+                                                    (b) => b.key === bind.key,
+                                                ).length;
+                                                return (
+                                                    <Kbd
+                                                        style={{ backgroundColor: count > 1 ? "red" : "" }}
+                                                        key={bind.key}
+                                                    >
+                                                        {bind.key === " " ? "Space" : bind.key}
+                                                    </Kbd>
+                                                );
+                                            })}
                                         <Tooltip openDelay={250} label="Add New Key">
                                             <ActionIcon
-                                                onClick={() => addKey(gameKey as GameKey)}
+                                                onClick={() => addKey(action as GameAction)}
                                                 color={"green"}
                                                 variant={"subtle"}
                                             >
                                                 <IconPlus />
                                             </ActionIcon>
                                         </Tooltip>
-                                        {keys.length > 0 && (
+                                        {settings.controls.some((bind) => bind.action === action) && (
                                             <Tooltip openDelay={250} label="Unbind Last Key">
                                                 <ActionIcon
-                                                    onClick={() => removeKey(gameKey as GameKey)}
+                                                    onClick={() => removeKey(action)}
                                                     color={"red"}
                                                     variant={"subtle"}
                                                 >
@@ -128,7 +120,7 @@ export function Settings() {
                                     </Group>
                                 ))}
                                 <div>
-                                    {JSON.stringify(settings.controls) !== JSON.stringify(getDefaultControls()) && (
+                                    {JSON.stringify(settings.controls) !== JSON.stringify(DEFAULT_GAME_KEYBINDS) && (
                                         <Button onClick={resetControls} rightSection={<IconRestore />}>
                                             Reset Controls
                                         </Button>
