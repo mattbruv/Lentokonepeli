@@ -1,8 +1,9 @@
 import { ReplayFile } from "dogfight-types/ReplayFile";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDogfight } from "./useDogfight";
 import { ServerInput } from "dogfight-types/ServerInput";
 import { ServerOutput } from "dogfight-types/ServerOutput";
+import { gameLoop } from "../gameLoop";
 
 export function useReplay() {
     console.log("useReplay called!");
@@ -14,8 +15,6 @@ export function useReplay() {
 
     const [replayFile, setReplayFile] = useState<ReplayFile | null>(null);
     const [spectating, setSpectating] = useState<string | null>(null);
-    const tickInterval = useRef<number | null>(null);
-    const tick = useRef(0);
 
     function loadReplay(binary: Uint8Array): boolean {
         const replay_string = dogfight.engine.replay_file_binary_to_json(binary);
@@ -44,13 +43,10 @@ export function useReplay() {
         console.log("REPLAY FILE CHANGED");
         if (!replayFile) return;
 
-        tick.current = 0;
         dogfight.engine.load_level(replayFile.level_data);
 
-        tickInterval.current = window.setInterval(() => {
-            //console.log(tick.current)
-            const tickData = replayFile.ticks.find((x) => x.tick_number === tick.current);
-            tick.current++;
+        const updateFn = (currentTick: number) => {
+            const tickData = replayFile.ticks.find((x) => x.tick_number === currentTick);
 
             let input: ServerInput[] = [];
             if (tickData) {
@@ -84,12 +80,14 @@ export function useReplay() {
             const changed_state = dogfight.engine.flush_changed_state();
             const events = parseServerOutput(changed_state);
             dogfight.handleGameEvents(events);
-        }, 1000 / 100);
+        };
+
+        gameLoop.setHostEngineUpdateFn(updateFn).start();
     }, [replayFile]);
 
     useEffect(() => {
         return () => {
-            if (tickInterval.current) window.clearInterval(tickInterval.current);
+            gameLoop.pause();
         };
     }, []);
 

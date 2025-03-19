@@ -8,6 +8,7 @@ import { useDogfight } from "./useDogfight";
 import { LevelName } from "src/Lobby";
 import Levels from "../assets/levels.json";
 import { randomGuid } from "../helpers";
+import { gameLoop } from "../gameLoop";
 
 type ConnectedPlayer = {
     player_guid: string;
@@ -34,13 +35,6 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
     // Lobby state
     const [roomCode, setRoomCode] = useState<string | null>(null);
 
-    // Game Tick State
-    const tickInterval = useRef<number | null>(null);
-    const paused = useRef<boolean>(false);
-    const tickCounter = useRef(0);
-    // When set to true, this advances the game one tick
-    const doTick = useRef(false);
-
     // A collection of the connected users
     const dataConnections = useRef<Map<string, ConnectedPlayer>>(new Map());
 
@@ -48,16 +42,12 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
         await dogfight.initialize(div);
     }
 
-    function tickGame() {
-        if (paused.current && !doTick.current) return;
-        doTick.current = false;
-        tickCounter.current++;
-        const allCommands = clearPlayerCommands(tickCounter.current);
+    function tickGame(currentTick: number) {
+        const allCommands = clearPlayerCommands(currentTick);
         const input_json = JSON.stringify(allCommands);
-        //const start = performance.now();
         dogfight.engine.tick(input_json);
 
-        if (tickCounter.current % 2 == 0) {
+        if (currentTick % 2 == 0) {
             const changed_state = dogfight.engine.flush_changed_state();
             // If data channel is open, send updates.
             const events_json = dogfight.engine.game_events_from_binary(changed_state);
@@ -66,10 +56,8 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
             // Don't send things off unless there's something to send off.
             if (!events.length) return;
 
-            //console.log(changed_state)
             // Send out events to every connection
             for (const [_, dataConnection] of dataConnections.current) {
-                //localDataChannel.current?.send(changed_state)
                 dataConnection.connection.send(changed_state);
             }
 
@@ -105,7 +93,7 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
             });
 
             // Set up function to begin ticking the game
-            tickInterval.current = window.setInterval(() => tickGame(), 1000 / 100);
+            gameLoop.setHostEngineUpdateFn(tickGame).start();
         });
 
         peer.current.on("connection", (conn) => {
@@ -187,7 +175,7 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
     useEffect(() => {
         return () => {
             console.log("destroy host");
-            if (tickInterval.current) window.clearInterval(tickInterval.current);
+            gameLoop.pause();
             peer.current?.removeAllListeners();
             peer.current?.destroy();
         };

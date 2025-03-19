@@ -4,6 +4,7 @@ import * as PIXI from "pixi.js";
 import { DrawLayer } from "../constants";
 import { Textures } from "../textures";
 import { Entity, EntityUpdateCallbacks } from "./entity";
+import { animationRunner } from "../../gameLoop";
 
 type FlagTypes = "FlagAllies" | "FlagCentrals";
 
@@ -24,7 +25,6 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
 
     private itemTextures: Record<BackgroundItemType, PIXI.Texture>;
     private flagTypes: BackgroundItemType[];
-    private flagInterval: number | null = null;
     private flagTextures: FlagTextureMap;
     private flagIndex = 0;
 
@@ -66,20 +66,21 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
         return this.container;
     }
 
+    private animate = () => {
+        this.waveFlag();
+    };
+
     public updateCallbacks: EntityUpdateCallbacks<BackgroundItemProperties> = {
         bg_item_type: () => {
             const { bg_item_type } = this.props;
             if (bg_item_type === undefined) return;
             if (!this.props.bg_item_type) return;
-            if (this.flagInterval !== null) {
-                clearInterval(this.flagInterval);
-            }
 
             const texture = this.itemTextures[bg_item_type];
             this.itemSprite.texture = texture;
 
             if (this.flagTypes.includes(bg_item_type)) {
-                this.flagInterval = window.setInterval(() => this.waveFlag(), 100);
+                animationRunner.registerAnimation(this.animate, 10);
             }
         },
         facing: () => {
@@ -118,8 +119,6 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
     }
 
     public destroy() {
-        if (this.flagInterval !== null) {
-            clearInterval(this.flagInterval);
-        }
+        animationRunner.unregisterAnimation(this.animate);
     }
 }

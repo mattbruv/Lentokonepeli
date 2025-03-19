@@ -6,6 +6,7 @@ import { ManProperties } from "dogfight-types/ManProperties";
 import { Stats } from "../hud";
 import { RadarObject, RadarObjectType } from "../radar";
 import { Team } from "dogfight-types/Team";
+import { animationRunner } from "../../gameLoop";
 
 export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
     public props: Required<ManProperties> = {
@@ -19,10 +20,13 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
     private manContainer: PIXI.Container;
 
     private manSprite: PIXI.Sprite;
-    private walkAnim: number | null = null;
 
     private nameText: PIXI.Text;
     private frameCount = 0;
+
+    private animate = () => {
+        this.animateWalk();
+    };
 
     constructor() {
         this.container = new PIXI.Container();
@@ -49,7 +53,7 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
 
         this.container.zIndex = DrawLayer.Man;
 
-        this.walkAnim = window.setInterval(() => this.animateWalk(), 100);
+        animationRunner.registerAnimation(this.animate, 10);
     }
 
     public callbackOrder: (keyof ManProperties)[] = ["client_x", "client_y"];
@@ -81,7 +85,7 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
     }
 
     public destroy() {
-        if (this.walkAnim) window.clearInterval(this.walkAnim);
+        animationRunner.unregisterAnimation(this.animate);
     }
 
     private updateX(): void {

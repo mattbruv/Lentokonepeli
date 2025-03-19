@@ -4,6 +4,7 @@ import Peer from "peerjs";
 import { PlayerCommand } from "dogfight-types/PlayerCommand";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import { PeerJSPath } from "./useLocalHost";
+import { gameLoop } from "../gameLoop";
 
 export function useGuest(myName: string, clan: string) {
     const peer = useRef<Peer | null>(null);
@@ -29,6 +30,7 @@ export function useGuest(myName: string, clan: string) {
         peer.current.on("open", (x) => {
             console.log("Guest:", x);
 
+            gameLoop.start();
             const conn = peer.current!.connect(PeerJSPath(roomId));
 
             conn.on("open", () => {
@@ -70,6 +72,7 @@ export function useGuest(myName: string, clan: string) {
             console.log("destroy guest");
             peer.current?.removeAllListeners();
             peer.current?.destroy();
+            gameLoop.pause();
         };
     }, []);
 
