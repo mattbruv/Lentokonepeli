@@ -26,13 +26,12 @@ class GameLoop {
 
     private gameLoop = (time: number) => {
         let delta = time - this.lastTime;
-        if (delta >= this.tickInterval) {
-            while (delta >= this.tickInterval) {
-                this.currentTick++;
-                delta -= this.tickInterval;
-                this.updateFn(this.currentTick);
-                this.animationRunner.runAnimations(this.currentTick);
-            }
+
+        while (delta >= this.tickInterval) {
+            this.currentTick++;
+            delta -= this.tickInterval;
+            this.updateFn(this.currentTick);
+            this.animationRunner.runAnimations(this.currentTick);
             this.lastTime += this.tickInterval;
         }
 
@@ -40,22 +39,21 @@ class GameLoop {
     };
 
     private startLoop() {
-        if (!this.isRunning) {
-            this.isRunning = true;
-            this.lastTime = performance.now();
-            this.requestId = requestAnimationFrame(this.gameLoop);
-        }
+        if (this.isRunning) return;
+        this.isRunning = true;
+        this.lastTime = performance.now();
+        this.requestId = requestAnimationFrame(this.gameLoop);
     }
 
     private pauseLoop() {
         this.isRunning = false;
-        if (this.requestId !== null) {
-            cancelAnimationFrame(this.requestId);
-            this.requestId = null;
-        }
+        if (!this.requestId) return;
+        cancelAnimationFrame(this.requestId);
+        this.requestId = null;
     }
 
     public start() {
+        if (this.isRunning) return;
         this.currentTick = 0;
         this.lastTime = performance.now();
         this.startLoop();
