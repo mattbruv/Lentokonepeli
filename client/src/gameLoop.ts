@@ -25,17 +25,18 @@ class GameLoop {
     }
 
     private gameLoop = (time: number) => {
-        this.requestId = requestAnimationFrame(this.gameLoop);
-
         let delta = time - this.lastTime;
-        while (delta >= this.tickInterval) {
-            this.currentTick++;
-            delta -= this.tickInterval;
+        if (delta >= this.tickInterval) {
+            while (delta >= this.tickInterval) {
+                this.currentTick++;
+                delta -= this.tickInterval;
+                this.updateFn(this.currentTick);
+                this.animationRunner.runAnimations(this.currentTick);
+            }
             this.lastTime += this.tickInterval;
-
-            this.updateFn(this.currentTick);
-            this.animationRunner.runAnimations(this.currentTick);
         }
+
+        this.requestId = requestAnimationFrame(this.gameLoop);
     };
 
     private startLoop() {
