@@ -4,7 +4,6 @@ const noop = () => {};
 class GameLoop {
     private currentTick: number = 0;
     private lastTime: number = performance.now();
-    private isRunning: boolean = false;
     private requestId: number | null = null;
     private tickInterval: number = 10;
     private updateFn: UpdateFn = noop;
@@ -39,21 +38,19 @@ class GameLoop {
     };
 
     private startLoop() {
-        if (this.isRunning) return;
-        this.isRunning = true;
+        if (this.requestId) return;
         this.lastTime = performance.now();
         this.requestId = requestAnimationFrame(this.gameLoop);
     }
 
     private pauseLoop() {
-        this.isRunning = false;
         if (!this.requestId) return;
         cancelAnimationFrame(this.requestId);
         this.requestId = null;
     }
 
     public start() {
-        if (this.isRunning) return;
+        if (this.requestId) return;
         this.currentTick = 0;
         this.lastTime = performance.now();
         this.startLoop();
