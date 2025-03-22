@@ -1,3 +1,4 @@
+import { ChatMessage } from "dogfight-types/ChatMessage";
 import { PlaneType } from "dogfight-types/PlaneType";
 import { PlayerCommand } from "dogfight-types/PlayerCommand";
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
@@ -21,6 +22,7 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
     // Scoreboard related information
     const [playerData, setPlayerData] = useState<PlayerProperties[]>([]);
     const [playerGuid, setPlayerGuid] = useState<string | null>(null);
+    const [messages, setMessages] = useState<ChatMessage[]>([]);
 
     useGameKeybinds({ client, engine });
     useDevKeybinds({ client, engine });
@@ -64,6 +66,13 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
             onPlayerChange: (playerInfo: PlayerProperties[]): void => {
                 setPlayerData(playerInfo);
             },
+            onMessage: (message: ChatMessage): void => {
+                console.log(message);
+                setMessages((prev) => {
+                    prev.push(message);
+                    return prev.slice(-2);
+                });
+            },
         };
 
         await client.init(client_callbacks, div);
@@ -84,6 +93,7 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
         handleGameEvents,
         setMyPlayerGuid,
         playerGuid,
+        messages,
         playerData,
         engine,
     };

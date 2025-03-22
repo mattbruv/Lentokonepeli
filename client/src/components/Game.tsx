@@ -1,8 +1,8 @@
 import { forwardRef, useEffect, useState } from "react";
-import { Chat } from "./Chat";
+import { Chat, ChatProps } from "./Chat";
 import { Scoreboard, ScoreboardProps } from "./Scoreboard";
 
-interface GameProps extends ScoreboardProps {}
+interface GameProps extends ScoreboardProps, ChatProps {}
 
 export const Game = forwardRef<HTMLDivElement, GameProps>((props, ref) => {
     const [isScoreboardVisible, setScoreboardVisible] = useState(false);
@@ -43,7 +43,7 @@ export const Game = forwardRef<HTMLDivElement, GameProps>((props, ref) => {
     return (
         <div ref={ref} style={{ position: "relative" }}>
             {isScoreboardVisible && <Scoreboard playerData={props.playerData} myPlayerGuid={props.myPlayerGuid} />}
-            {isChatOpen && <Chat />}
+            {isChatOpen && <Chat messages={props.messages} />}
         </div>
     );
 });

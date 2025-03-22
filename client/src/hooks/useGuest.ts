@@ -78,5 +78,6 @@ export function useGuest(myName: string, clan: string) {
         initialize,
         playerData: dogfight.playerData,
         playerGuid: dogfight.playerGuid,
+        messages: dogfight.messages,
     };
 }

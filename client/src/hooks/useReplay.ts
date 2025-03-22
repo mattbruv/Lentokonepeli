@@ -98,5 +98,6 @@ export function useReplay() {
         loadReplay,
         playerData: dogfight.playerData,
         playerGuid: dogfight.playerGuid,
+        messages: dogfight.messages,
     };
 }

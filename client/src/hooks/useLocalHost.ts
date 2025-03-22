@@ -200,5 +200,6 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
         getReplayBinary,
         playerData: dogfight.playerData,
         playerGuid: dogfight.playerGuid,
+        messages: dogfight.messages,
     };
 }

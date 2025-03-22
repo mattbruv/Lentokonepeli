@@ -68,7 +68,7 @@ impl NetworkedBytes for KillEvent {
 #[derive(Serialize, Debug, Clone, TS)]
 #[ts(export)]
 pub struct ChatMessage {
-    pub sender: Option<PlayerId>,
+    pub sender_name: Option<String>,
     pub team: Option<Team>,
     pub private: bool,
     pub message: String,
@@ -77,7 +77,7 @@ pub struct ChatMessage {
 impl NetworkedBytes for ChatMessage {
     fn to_bytes(&self) -> Vec<u8> {
         let mut bytes = vec![];
-        bytes.extend(self.sender.to_bytes());
+        bytes.extend(self.sender_name.to_bytes());
         bytes.extend(self.team.to_bytes());
         bytes.extend(self.private.to_bytes());
         bytes.extend(self.message.to_bytes());
@@ -88,7 +88,7 @@ impl NetworkedBytes for ChatMessage {
     where
         Self: Sized,
     {
-        let (bytes, sender) = Option::<PlayerId>::from_bytes(bytes)?;
+        let (bytes, sender_name) = Option::<String>::from_bytes(bytes)?;
         let (bytes, team) = Option::<Team>::from_bytes(bytes)?;
         let (bytes, private) = bool::from_bytes(bytes)?;
         let (bytes, message) = String::from_bytes(bytes)?;
@@ -96,7 +96,7 @@ impl NetworkedBytes for ChatMessage {
         Some((
             bytes,
             Self {
-                sender,
+                sender_name,
                 team,
                 private,
                 message,

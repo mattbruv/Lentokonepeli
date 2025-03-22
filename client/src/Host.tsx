@@ -16,7 +16,7 @@ export function Host({ level, recordGame }: HostProps) {
     const gameContainer = useRef<HTMLDivElement>(null);
     const { getUsername, getClan } = useSettingsContext();
 
-    const { getReplayBinary, initialize, roomCode, hostGame, playerData, playerGuid } = useLocalHost(
+    const { getReplayBinary, initialize, roomCode, hostGame, playerData, playerGuid, messages } = useLocalHost(
         level,
         recordGame,
         getUsername(),
@@ -48,7 +48,7 @@ export function Host({ level, recordGame }: HostProps) {
 
     return (
         <Group>
-            <Game ref={gameContainer} myPlayerGuid={playerGuid} playerData={playerData} />
+            <Game ref={gameContainer} myPlayerGuid={playerGuid} playerData={playerData} messages={messages} />
             <Card withBorder style={{ height: "100%" }}>
                 <Stack>
                     <Stack>
