@@ -9,7 +9,6 @@ import { useEffect, useMemo, useState } from "react";
 import { DogfightClient, GameClientCallbacks } from "../client/DogfightClient";
 import { useDevKeybinds } from "./keybinds/useDevKeybinds";
 import { useGameKeybinds } from "./keybinds/useGameKeybinds";
-import { useGlobalKeybinds } from "./keybinds/useGlobalKeybinds";
 
 export type DogfightCallbacks = {
     handleClientCommand: (command: PlayerCommand) => void;
@@ -22,11 +21,8 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
     // Scoreboard related information
     const [playerData, setPlayerData] = useState<PlayerProperties[]>([]);
     const [playerGuid, setPlayerGuid] = useState<string | null>(null);
-    const [showScoreboard, setShowScoreboard] = useState(false);
-    const [showChat, setShowChat] = useState(false);
 
     useGameKeybinds({ client, engine });
-    useGlobalKeybinds({ toggleScoreboard: setShowScoreboard, toggleChat: setShowChat });
     useDevKeybinds({ client, engine });
 
     function handleGameEvents(events: ServerOutput[]): void {
@@ -87,8 +83,6 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
         initialize,
         handleGameEvents,
         setMyPlayerGuid,
-        showScoreboard,
-        showChat,
         playerGuid,
         playerData,
         engine,
