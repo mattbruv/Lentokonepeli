@@ -3,7 +3,7 @@ use ts_rs::TS;
 
 use crate::{
     entities::{container::PlayerId, types::Team},
-    game_event::KillEvent,
+    game_event::{ChatMessage, KillEvent},
     network::{encoding::NetworkedBytes, entity_changes_to_binary, EntityChange},
 };
 
@@ -21,6 +21,7 @@ pub enum ServerOutput {
     PlayerJoinTeam { id: PlayerId, team: Team },
     KillEvent(KillEvent),
     YourPlayerGuid(String),
+    ChatMessage(ChatMessage),
 }
 
 impl NetworkedBytes for ServerOutput {
@@ -51,6 +52,10 @@ impl NetworkedBytes for ServerOutput {
             ServerOutput::KillEvent(event) => {
                 bytes.push(4);
                 bytes.extend(event.to_bytes());
+            }
+            ServerOutput::ChatMessage(message) => {
+                bytes.push(5);
+                bytes.extend(message.to_bytes());
             }
             ServerOutput::YourPlayerGuid(_) => {
                 panic!("This should be done client side...")
@@ -99,6 +104,11 @@ impl NetworkedBytes for ServerOutput {
                 let (bytes, kill_event) = KillEvent::from_bytes(slice)?;
                 slice = &bytes;
                 Some((slice, ServerOutput::KillEvent(kill_event)))
+            }
+            5 => {
+                let (bytes, chat_message) = ChatMessage::from_bytes(slice)?;
+                slice = &bytes;
+                Some((slice, ServerOutput::ChatMessage(chat_message)))
             }
             _ => panic!("Unrecognized enum variant in Event: {}", variant),
         }
