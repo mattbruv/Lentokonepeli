@@ -1,4 +1,4 @@
-import { Flex } from "@mantine/core";
+import { Box, Flex, Stack } from "@mantine/core";
 import { ChatMessage } from "dogfight-types/ChatMessage";
 import { useState } from "react";
 import "./Chat.css";
@@ -11,15 +11,20 @@ export function Chat({ messages }: ChatProps) {
     const [message, setMessage] = useState("");
 
     return (
-        <div className="chat">
-            <Flex direction={"column"}>
-                <div className="message">hi mom</div>
-                <div className="all-messages">
+        <div className="chat active">
+            <Flex direction={"column"} h={"100%"}>
+                <Box className="message">hi mom</Box>
+                <Stack mt={"auto"} className="all-messages">
                     {messages.map((msg, i) => {
+                        const msgClass = (!msg.private ? "global" : "private") + " message";
                         const output = msg.sender_name + " " + msg.message;
-                        return <div key={i}>{output.trim()}</div>;
+                        return (
+                            <div className={msgClass} key={i}>
+                                {output.trim()}
+                            </div>
+                        );
                     })}
-                </div>
+                </Stack>
             </Flex>
         </div>
     );

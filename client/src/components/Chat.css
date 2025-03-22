@@ -3,8 +3,28 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    background-color: rebeccapurple;
+    height: 510px;
+
+    /* Font styles */
+    font-size: large;
+    font-weight: bolder;
+    -webkit-text-stroke: #8ecbff;
+}
+
+.chat.active {
+    border: 3px solid yellow;
+}
+
+.message {
+    margin: 5px;
+}
+
+.chat .global {
+    color: yellow;
+}
+
+.chat .private {
+    color: blue;
 }
 
 .chat .noteam {
