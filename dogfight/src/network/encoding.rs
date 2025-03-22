@@ -465,6 +465,11 @@ impl NetworkedBytes for PlayerCommand {
                 bytes.push(4);
                 bytes.extend(data.to_bytes());
             }
+            PlayerCommand::SendMessage(msg, is_global) => {
+                bytes.push(5);
+                bytes.extend(msg.to_bytes());
+                bytes.extend(is_global.to_bytes());
+            }
         };
 
         bytes
@@ -499,6 +504,12 @@ impl NetworkedBytes for PlayerCommand {
                 let (slice, player_data) = AddPlayerData::from_bytes(bytes)?;
                 bytes = slice;
                 PlayerCommand::AddPlayer(player_data)
+            }
+            5 => {
+                let (slice, msg) = String::from_bytes(bytes)?;
+                let (slice, is_global) = bool::from_bytes(slice)?;
+                bytes = slice;
+                PlayerCommand::SendMessage(msg, is_global)
             }
             _ => panic!("Unknown command type"),
         };
