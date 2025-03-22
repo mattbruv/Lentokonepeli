@@ -96,8 +96,6 @@ export function useReplay() {
     return {
         initialize,
         loadReplay,
-        showScoreboard: dogfight.showScoreboard,
-        showChat: dogfight.showChat,
         playerData: dogfight.playerData,
         playerGuid: dogfight.playerGuid,
     };

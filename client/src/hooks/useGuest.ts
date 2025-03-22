@@ -76,8 +76,6 @@ export function useGuest(myName: string, clan: string) {
     return {
         joinGame,
         initialize,
-        showScoreboard: dogfight.showScoreboard,
-        showChat: dogfight.showChat,
         playerData: dogfight.playerData,
         playerGuid: dogfight.playerGuid,
     };

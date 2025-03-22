@@ -523,6 +523,10 @@ export class DogfightClient {
                     this.setMyPlayerGuid(event.data);
                     break;
                 }
+                case "ChatMessage": {
+                    console.log(event.data);
+                    break;
+                }
                 default: {
                     // Exhaustive check
                     const _: never = event;

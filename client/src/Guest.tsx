@@ -13,10 +13,7 @@ export function Guest({ gameCode }: GuestProps) {
 
     const { getClan, getUsername } = useSettingsContext();
 
-    const { initialize, joinGame, playerData, showScoreboard, showChat, playerGuid } = useGuest(
-        getUsername(),
-        getClan(),
-    );
+    const { initialize, joinGame, playerData, playerGuid } = useGuest(getUsername(), getClan());
 
     async function join() {
         if (!gameContainer.current) return;
@@ -30,13 +27,7 @@ export function Guest({ gameCode }: GuestProps) {
 
     return (
         <Group>
-            <Game
-                ref={gameContainer}
-                myPlayerGuid={playerGuid}
-                playerData={playerData}
-                showScoreboard={showScoreboard}
-                showChat={showChat}
-            />
+            <Game ref={gameContainer} myPlayerGuid={playerGuid} playerData={playerData} />
             <Card withBorder style={{ height: "100%" }}>
                 <Stack>
                     <Text>Joined Game:</Text>
