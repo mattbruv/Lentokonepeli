@@ -47,7 +47,8 @@ export function useGuest(myName: string, clan: string) {
 
                 sendMessageCallback.current = (msg, global) => {
                     const message_command: PlayerCommand = { type: "SendMessage", data: [msg, global] };
-                    conn.send(message_command);
+                    const binary = dogfight.engine.player_command_to_binary(JSON.stringify(message_command));
+                    conn.send(binary);
                 };
 
                 const command: PlayerCommand = { type: "AddPlayer", data: { guid: "", name: myName, clan } };
