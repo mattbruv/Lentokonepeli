@@ -193,11 +193,22 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
         };
     }, []);
 
+    function sendChatMessage(message: string, global: boolean) {
+        hostInput.current.push({
+            player_guid: HOST_GUID,
+            command: {
+                type: "SendMessage",
+                data: [message, global],
+            },
+        });
+    }
+
     return {
         initialize,
         hostGame,
         roomCode,
         getReplayBinary,
+        sendChatMessage,
         playerData: dogfight.playerData,
         playerGuid: dogfight.playerGuid,
         messages: dogfight.messages,

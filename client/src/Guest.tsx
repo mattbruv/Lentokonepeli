@@ -13,7 +13,10 @@ export function Guest({ gameCode }: GuestProps) {
 
     const { getClan, getUsername } = useSettingsContext();
 
-    const { initialize, joinGame, playerData, playerGuid, messages } = useGuest(getUsername(), getClan());
+    const { initialize, joinGame, playerData, playerGuid, messages, sendChatMessage } = useGuest(
+        getUsername(),
+        getClan(),
+    );
 
     async function join() {
         if (!gameContainer.current) return;
@@ -27,7 +30,13 @@ export function Guest({ gameCode }: GuestProps) {
 
     return (
         <Group>
-            <Game ref={gameContainer} myPlayerGuid={playerGuid} playerData={playerData} messages={messages} />
+            <Game
+                ref={gameContainer}
+                myPlayerGuid={playerGuid}
+                playerData={playerData}
+                messages={messages}
+                onSendMessage={sendChatMessage}
+            />
             <Card withBorder style={{ height: "100%" }}>
                 <Stack>
                     <Text>Joined Game:</Text>

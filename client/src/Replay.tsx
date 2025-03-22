@@ -45,7 +45,13 @@ export function Replay() {
 
     return (
         <Group>
-            <Game ref={gameContainer} myPlayerGuid={playerGuid} playerData={playerData} messages={messages} />
+            <Game
+                ref={gameContainer}
+                myPlayerGuid={playerGuid}
+                playerData={playerData}
+                messages={messages}
+                onSendMessage={() => {}}
+            />
             {state === ReplayState.ProvideFile && (
                 <div>
                     <Group>

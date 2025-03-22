@@ -43,7 +43,7 @@ export const Game = forwardRef<HTMLDivElement, GameProps>((props, ref) => {
     return (
         <div ref={ref} style={{ position: "relative" }}>
             {isScoreboardVisible && <Scoreboard playerData={props.playerData} myPlayerGuid={props.myPlayerGuid} />}
-            {isChatOpen && <Chat messages={props.messages} />}
+            {isChatOpen && <Chat messages={props.messages} onSendMessage={props.onSendMessage} />}
         </div>
     );
 });
