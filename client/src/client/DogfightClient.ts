@@ -566,7 +566,9 @@ export class DogfightClient {
         const group = this.entities[ent_type];
         const entity = group.entries.get(id);
         if (!entity) return;
-        this.viewport.removeChild(entity.getContainer());
+        const container = entity.getContainer();
+        const containers = Array.isArray(container) ? container : [container];
+        this.viewport.removeChild(...containers);
         entity.destroy();
         group.entries.delete(id);
     }
@@ -586,7 +588,9 @@ export class DogfightClient {
                 // It's making the set param a union type for some reason I don't understand
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 ent_map.entries.set(id, entity as any);
-                this.viewport.addChild(entity.getContainer());
+                const container = entity.getContainer();
+                const containers = Array.isArray(container) ? container : [container];
+                this.viewport.addChild(...containers);
             }
         }
 

@@ -29,7 +29,7 @@ export function isFollowable(object: object): object is Followable {
 export type Entity<Props> = {
     props: Required<Props>;
     updateCallbacks: EntityUpdateCallbacks<Props>;
-    getContainer: () => PIXI.Container;
+    getContainer: () => PIXI.Container | Array<PIXI.Container>;
     destroy: () => void;
 };
 

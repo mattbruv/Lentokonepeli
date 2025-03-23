@@ -19,7 +19,8 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
 
     private userTeam: Team;
 
-    private container: PIXI.Container;
+    private backContainer: PIXI.Container;
+    private frontContainer: PIXI.Container;
     private runwaySprite: PIXI.Sprite;
     private runwayBack: PIXI.Sprite;
     private healthBar: PIXI.Graphics;
@@ -97,19 +98,22 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
 
     constructor() {
         this.userTeam = "Allies";
-        this.container = new PIXI.Container();
-        this.runwaySprite = new PIXI.Sprite();
-        this.runwayBack = new PIXI.Sprite(Textures["runway2b.gif"]);
-        this.runwayBack.visible = false;
         this.props.facing = "Left";
 
+        this.backContainer = new PIXI.Container();
+        this.runwayBack = new PIXI.Sprite(Textures["runway2b.gif"]);
+        this.runwayBack.visible = false;
+
+        this.backContainer.addChild(this.runwayBack);
+        this.backContainer.zIndex = DrawLayer.RunwayBack;
+
+        this.frontContainer = new PIXI.Container();
+        this.runwaySprite = new PIXI.Sprite();
         this.healthBar = new PIXI.Graphics();
 
-        this.container.addChild(this.runwayBack);
-        this.container.addChild(this.runwaySprite);
-        this.container.addChild(this.healthBar);
-
-        this.container.zIndex = DrawLayer.Runway;
+        this.frontContainer.addChild(this.runwaySprite);
+        this.frontContainer.addChild(this.healthBar);
+        this.frontContainer.zIndex = DrawLayer.Runway;
     }
 
     public setUserTeam(userTeam: Team): void {
@@ -173,8 +177,8 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
         this.healthBar.endFill();
     }
 
-    public getContainer(): PIXI.Container {
-        return this.container;
+    public getContainer() {
+        return [this.backContainer, this.frontContainer];
     }
 
     public destroy() {}
