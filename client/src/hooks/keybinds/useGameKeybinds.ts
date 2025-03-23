@@ -12,32 +12,42 @@ export const useGameKeybinds = ({ client }: { client: DogfightClient; engine: Do
     const { chatState } = globalState;
 
     const handleGameEvent: KeybindCallback<GameAction> = (action, type, event) => {
+        if (chatState !== ChatMode.Passive) return;
+
         event.preventDefault();
-        client.keyboard.onKeyChange(action, type);
 
-        if (action === "viewScoreboard") {
-            const viewingScoreboard = type === "down";
-            setGlobalState((prev) => ({
-                ...prev,
-                viewingScoreboard,
-            }));
-        }
-
-        if (action === "chatAll") {
-            setGlobalState((prev) => ({
-                ...prev,
-                chatState: ChatMode.MessagingGlobal,
-            }));
-        }
-        if (action === "chatTeam") {
-            setGlobalState((prev) => ({
-                ...prev,
-                chatState: ChatMode.MessagingTeam,
-            }));
+        switch (action) {
+            case "viewScoreboard": {
+                const viewingScoreboard = type === "down";
+                setGlobalState((prev) => ({
+                    ...prev,
+                    viewingScoreboard,
+                }));
+                break;
+            }
+            case "chatAll": {
+                setGlobalState((prev) => ({
+                    ...prev,
+                    chatState: ChatMode.MessagingGlobal,
+                }));
+                break;
+            }
+            case "chatTeam": {
+                setGlobalState((prev) => ({
+                    ...prev,
+                    chatState: ChatMode.MessagingTeam,
+                }));
+                break;
+            }
+            default: {
+                client.keyboard.onKeyChange(action, type);
+            }
         }
     };
 
     const handleChatEvent: KeybindCallback<ChatAction> = (action, type, event) => {
+        if (chatState === ChatMode.Passive) return;
+
         event.preventDefault();
 
         switch (action) {
@@ -80,15 +90,14 @@ export const useGameKeybinds = ({ client }: { client: DogfightClient; engine: Do
     };
 
     useEffect(() => {
-        let unregisterKeybinds: () => void;
+        const unregisterGameKeybinds = registerKeybinds(gameKeybinds);
+        const unregisterChatKeybinds = registerKeybinds(chatKeybinds);
 
-        if (chatState === ChatMode.Passive) {
-            unregisterKeybinds = registerKeybinds(gameKeybinds);
-        } else {
-            unregisterKeybinds = registerKeybinds(chatKeybinds);
-        }
-        console.log("registered keybinds for ", ChatMode[chatState]);
+        const unregisterKeybinds = () => {
+            unregisterGameKeybinds();
+            unregisterChatKeybinds();
+        };
 
         return unregisterKeybinds;
-    }, [client.keyboard, globalState, sendChatMessage, sendChatMessage.current]);
+    }, []);
 };
