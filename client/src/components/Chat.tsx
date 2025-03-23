@@ -1,4 +1,4 @@
-import { Box, Flex, TextInput } from "@mantine/core";
+import { Box, Flex, Kbd, TextInput } from "@mantine/core";
 import { ChatMessage } from "dogfight-types/ChatMessage";
 import { useEffect, useState } from "react";
 import "./Chat.css";
@@ -40,6 +40,11 @@ export function Chat({ messages, onSendMessage }: ChatProps) {
                         value={message}
                         placeholder={"Send a message..."}
                     />
+                    <div>
+                        <span>
+                            <Kbd>Esc</Kbd> to close chat
+                        </span>
+                    </div>
                 </Box>
                 <Box mt={"auto"} className="all-messages">
                     {messages.map((msg, i) => {
