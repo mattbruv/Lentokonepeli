@@ -15,13 +15,21 @@ export const useGameKeybinds = ({ client }: { client: DogfightClient; engine: Do
         event.preventDefault();
         client.keyboard.onKeyChange(action, type);
 
-        if (action === "ChatAll") {
+        if (action === "viewScoreboard") {
+            const viewingScoreboard = type === "down";
+            setGlobalState((prev) => ({
+                ...prev,
+                viewingScoreboard,
+            }));
+        }
+
+        if (action === "chatAll") {
             setGlobalState((prev) => ({
                 ...prev,
                 chatState: ChatMode.MessagingGlobal,
             }));
         }
-        if (action === "ChatTeam") {
+        if (action === "chatTeam") {
             setGlobalState((prev) => ({
                 ...prev,
                 chatState: ChatMode.MessagingTeam,
@@ -41,7 +49,6 @@ export const useGameKeybinds = ({ client }: { client: DogfightClient; engine: Do
                 break;
             }
             case "send": {
-                console.log("SEND!");
                 if (sendChatMessage.current) {
                     sendChatMessage.current();
                 }

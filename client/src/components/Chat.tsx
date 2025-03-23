@@ -11,6 +11,7 @@ export enum ChatMode {
 }
 
 export interface ChatMessageTimed extends ChatMessage {
+    guid: string;
     isNewMessage: boolean;
 }
 
@@ -72,7 +73,7 @@ export function Chat({ messages, onSendMessage }: ChatProps) {
                         const msgClass = (!msg.private ? "global" : "private") + " message";
                         const output = msg.sender_name + ": " + msg.message;
                         return (
-                            <div className={msgClass} key={i}>
+                            <div className={msgClass} key={msg.guid}>
                                 {output.trim()}
                             </div>
                         );

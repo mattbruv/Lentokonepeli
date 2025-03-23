@@ -15,8 +15,9 @@ const keyDescriptions: Record<GameAction, string> = {
     space: "Eject, Open Parachute",
     enter: "Enter",
     ctrl: "Shoot",
-    ChatAll: "Chat All",
-    ChatTeam: "Chat Team",
+    chatAll: "Chat All",
+    chatTeam: "Chat Team",
+    viewScoreboard: "View Scoreboard",
 };
 
 export function Settings() {

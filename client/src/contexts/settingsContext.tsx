@@ -14,6 +14,7 @@ export type DogfightSettings = {
 };
 
 export type GlobalState = {
+    viewingScoreboard: boolean;
     chatState: ChatMode;
 };
 
@@ -61,8 +62,9 @@ export const DEFAULT_GAME_KEYBINDS: DogfightControls = [
     { key: "Control", action: "ctrl" },
     { key: "-", action: "ctrl" },
     { key: "Enter", action: "enter" },
-    { key: "y", action: "ChatAll" },
-    { key: "u", action: "ChatTeam" },
+    { key: "y", action: "chatAll" },
+    { key: "u", action: "chatTeam" },
+    { key: "tab", action: "viewScoreboard" },
 ];
 
 export const DEFAULT_SETTINGS: DogfightSettings = {
@@ -84,6 +86,7 @@ const getInitialSettings = (): DogfightSettings => {
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const [settings, setSettings] = useState(getInitialSettings);
     const [globalState, setGlobalState] = useState<GlobalState>({
+        viewingScoreboard: false,
         chatState: ChatMode.Passive,
     });
     const sendChatMessage = useRef<(() => void) | null>(null);

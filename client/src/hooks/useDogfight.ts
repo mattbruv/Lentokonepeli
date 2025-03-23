@@ -7,8 +7,9 @@ import { ServerOutput } from "dogfight-types/ServerOutput";
 import { Team } from "dogfight-types/Team";
 import { DogfightWeb } from "dogfight-web";
 import { useEffect, useMemo, useState } from "react";
-import { ChatMessageTimed } from "src/components/Chat";
 import { DogfightClient, GameClientCallbacks } from "../client/DogfightClient";
+import { ChatMessageTimed } from "../components/Chat";
+import { randomGuid } from "../helpers";
 import { useDevKeybinds } from "./keybinds/useDevKeybinds";
 import { useGameKeybinds } from "./keybinds/useGameKeybinds";
 
@@ -71,11 +72,21 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
                 const timedMessage: ChatMessageTimed = {
                     ...message,
                     isNewMessage: true,
+                    guid: randomGuid(),
                 };
 
                 // stop displaying the message passively after 5 seconds
                 setTimeout(() => {
-                    timedMessage.isNewMessage = false;
+                    setMessages((prev) =>
+                        prev.map((msg) =>
+                            msg.guid === timedMessage.guid
+                                ? {
+                                      ...timedMessage,
+                                      isNewMessage: false,
+                                  }
+                                : msg,
+                        ),
+                    );
                 }, 5000);
 
                 setMessages((prev) => {
