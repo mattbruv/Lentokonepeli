@@ -1,7 +1,7 @@
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 
 // Different actions that can be run through keyboard input (as unions)
-export type GameAction = keyof PlayerKeyboard | "chatAll" | "chatTeam" | "viewScoreboard";
+export type GameAction = keyof PlayerKeyboard | "chatAll" | "chatTeam" | "viewScoreboard" | "toggleMute";
 export type ChatAction = "send" | "close";
 export type DevAction = "debug";
 

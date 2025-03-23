@@ -2,15 +2,18 @@ import React, { createContext, MutableRefObject, useContext, useEffect, useRef, 
 import { ChatMode } from "../components/Chat";
 import { randomGuid } from "../helpers";
 import { GameAction, Keybind } from "../hooks/keybinds/models";
+import { soundManager } from "../client/soundManager";
 
 export type DogfightControls = Keybind<GameAction>[];
 
 export type DogfightSettings = {
     username?: string;
     clan?: string;
-
     // Maps a series of keyboard keys to a game action
     controls: DogfightControls;
+    audioSettings: {
+        muted: boolean;
+    };
 };
 
 export type GlobalState = {
@@ -36,7 +39,7 @@ export type DogfightSettingsContext = {
     getClan: () => string;
 };
 
-export const SETTINGS_KEY = "dogfightSettings_v3";
+export const SETTINGS_KEY = "dogfightSettings_v3" as const;
 
 export const SettingsContext = createContext<DogfightSettingsContext | null>(null);
 
@@ -65,10 +68,39 @@ export const DEFAULT_GAME_KEYBINDS: DogfightControls = [
     { key: "y", action: "chatAll" },
     { key: "u", action: "chatTeam" },
     { key: "tab", action: "viewScoreboard" },
+    { key: "m", action: "toggleMute" },
 ];
 
 export const DEFAULT_SETTINGS: DogfightSettings = {
     controls: DEFAULT_GAME_KEYBINDS,
+    audioSettings: {
+        muted: false,
+    },
+};
+
+export const SETTING_DESCRIPTIONS = {
+    left: "Move Left",
+    right: "Move Right",
+    down: "Toggle Motor",
+    up: "Flip Plane",
+    shift: "Bomb",
+    space: "Eject, Open Parachute",
+    enter: "Enter",
+    ctrl: "Shoot",
+    chatAll: "Chat All",
+    chatTeam: "Chat Team",
+    viewScoreboard: "View Scoreboard",
+    toggleMute: "Toggle Game Sounds",
+} as const satisfies Record<GameAction, string>;
+
+/**
+ * This fn can be used to migrate old setting versions to new.
+ * So if old settings don't have some new setting, we can implement some merging strategy for it here.
+ * If merging seems too complex, one can just update the SETTINGS_KEY,
+ * so old user defined settings will be reset if they are from some old version
+ */
+const mergeSettings = (overrides: Partial<DogfightSettings>) => {
+    return { ...DEFAULT_SETTINGS, ...overrides };
 };
 
 const getInitialSettings = (): DogfightSettings => {
@@ -76,19 +108,22 @@ const getInitialSettings = (): DogfightSettings => {
     if (!storedSettings) return DEFAULT_SETTINGS;
     try {
         const parsed = JSON.parse(storedSettings) as DogfightSettings;
-        return parsed;
+        const merged = mergeSettings(parsed);
+        return merged;
     } catch {
         return DEFAULT_SETTINGS;
     }
 };
 
+const getInitialGlobalState = (): GlobalState => ({
+    viewingScoreboard: false,
+    chatState: ChatMode.Passive,
+});
+
 // Provider component
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const [settings, setSettings] = useState(getInitialSettings);
-    const [globalState, setGlobalState] = useState<GlobalState>({
-        viewingScoreboard: false,
-        chatState: ChatMode.Passive,
-    });
+    const [globalState, setGlobalState] = useState(getInitialGlobalState);
     const sendChatMessage = useRef<(() => void) | null>(null);
 
     function getUsername(): string {
@@ -108,6 +143,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     // Update localStorage whenever settings change
     useEffect(() => {
         localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+        soundManager.setIsMuted(settings.audioSettings.muted);
     }, [settings]);
 
     return (

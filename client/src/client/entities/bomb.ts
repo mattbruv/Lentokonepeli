@@ -5,6 +5,7 @@ import { DrawLayer } from "../constants";
 import { directionToRadians } from "../helpers";
 import { Textures } from "../textures";
 import { Entity, EntityUpdateCallbacks } from "./entity";
+import { soundManager } from "../soundManager";
 
 export class Bomb implements Entity<BombProperties> {
     private container: PIXI.Container;
@@ -32,7 +33,7 @@ export class Bomb implements Entity<BombProperties> {
             src: "audio/bombdrop.mp3",
         });
 
-        this.sound.play();
+        soundManager.playSound(this.sound);
     }
 
     public getContainer(): PIXI.Container {

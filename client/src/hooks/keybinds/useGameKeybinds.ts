@@ -8,7 +8,7 @@ import { ChatAction, GameAction, KeybindCallback, KeybindConfig } from "./models
 import { registerKeybinds } from "./registerKeybinds";
 
 export const useGameKeybinds = ({ client }: { client: DogfightClient; engine: DogfightWeb }) => {
-    const { settings, globalState, setGlobalState, sendChatMessage } = useSettingsContext();
+    const { settings, globalState, setSettings, setGlobalState, sendChatMessage } = useSettingsContext();
     const { chatState } = globalState;
 
     const handleGameEvent: KeybindCallback<GameAction> = (action, type, event) => {
@@ -36,6 +36,14 @@ export const useGameKeybinds = ({ client }: { client: DogfightClient; engine: Do
                 setGlobalState((prev) => ({
                     ...prev,
                     chatState: ChatMode.MessagingTeam,
+                }));
+                break;
+            }
+            case "toggleMute": {
+                if (type === "down") return;
+                setSettings((settings) => ({
+                    ...settings,
+                    audioSettings: { ...settings.audioSettings, muted: !settings.audioSettings.muted },
                 }));
                 break;
             }

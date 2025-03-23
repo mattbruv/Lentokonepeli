@@ -3,22 +3,8 @@ import { useDisclosure } from "@mantine/hooks";
 import { IconDeviceGamepad2, IconPlus, IconRestore, IconTrash, IconUser } from "@tabler/icons-react";
 import React, { useState } from "react";
 import { NameEditor } from "./components/Name";
-import { DEFAULT_GAME_KEYBINDS, useSettingsContext } from "./contexts/settingsContext";
+import { DEFAULT_GAME_KEYBINDS, SETTING_DESCRIPTIONS, useSettingsContext } from "./contexts/settingsContext";
 import { GameAction } from "./hooks/keybinds/models";
-
-const keyDescriptions: Record<GameAction, string> = {
-    left: "Move Left",
-    right: "Move Right",
-    down: "Toggle Motor",
-    up: "Flip Plane",
-    shift: "Bomb",
-    space: "Eject, Open Parachute",
-    enter: "Enter",
-    ctrl: "Shoot",
-    chatAll: "Chat All",
-    chatTeam: "Chat Team",
-    viewScoreboard: "View Scoreboard",
-};
 
 export function Settings() {
     const { settings, setSettings } = useSettingsContext();
@@ -63,7 +49,7 @@ export function Settings() {
             {addToAction && (
                 <Modal onKeyDown={registerKey} opened={opened} onClose={close} title="Add Key Binding">
                     <Text size={"xl"} fw={"bold"}>
-                        {keyDescriptions[addToAction]}
+                        {SETTING_DESCRIPTIONS[addToAction]}
                     </Text>
                     Press any key...
                 </Modal>
@@ -82,7 +68,7 @@ export function Settings() {
                     <Accordion.Panel>
                         <Card>
                             <Stack>
-                                {Object.entries(keyDescriptions).map(([action, description]) => (
+                                {Object.entries(SETTING_DESCRIPTIONS).map(([action, description]) => (
                                     <Group key={action}>
                                         {description}:
                                         {settings.controls

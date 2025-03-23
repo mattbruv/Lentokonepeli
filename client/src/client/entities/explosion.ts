@@ -3,6 +3,7 @@ import * as PIXI from "pixi.js";
 import { DrawLayer } from "../constants";
 import { Textures } from "../textures";
 import { Entity, EntityUpdateCallbacks } from "./entity";
+import { soundManager } from "../soundManager";
 
 const PHASE_TEXTURES: Record<number, keyof typeof Textures> = {
     0: "explosion0001.gif",
@@ -54,10 +55,11 @@ export class Explosion implements Entity<ExplosionProperties> {
 
         this.container.zIndex = DrawLayer.Bomb;
 
-        const sound = new Howl({
-            src: "audio/explosion.mp3",
-        });
-        sound.play();
+        soundManager.playSound(
+            new Howl({
+                src: "audio/explosion.mp3",
+            }),
+        );
     }
 
     public getContainer(): PIXI.Container {
