@@ -1,12 +1,22 @@
 import { forwardRef, useEffect, useState } from "react";
+import { useSettingsContext } from "../contexts/settingsContext";
 import { Chat, ChatProps } from "./Chat";
 import { Scoreboard, ScoreboardProps } from "./Scoreboard";
 
 interface GameProps extends ScoreboardProps, ChatProps {}
 
 export const Game = forwardRef<HTMLDivElement, GameProps>((props, ref) => {
+    const { setGlobalState } = useSettingsContext();
     const [isScoreboardVisible, setScoreboardVisible] = useState(false);
     const [isChatOpen, setChatOpen] = useState(false);
+
+    function setChatOpened(value: boolean) {
+        setChatOpen(value);
+        setGlobalState((prev) => ({
+            ...prev,
+            isChatOpen: value,
+        }));
+    }
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -17,10 +27,10 @@ export const Game = forwardRef<HTMLDivElement, GameProps>((props, ref) => {
                 setScoreboardVisible(true);
             }
             if ((key === "y" || key === "u") && !isChatOpen) {
-                setChatOpen(true);
+                setChatOpened(true);
             }
             if (key === "escape") {
-                setChatOpen(false);
+                setChatOpened(false);
             }
         };
 

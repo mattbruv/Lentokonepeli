@@ -12,6 +12,10 @@ export type DogfightSettings = {
     controls: DogfightControls;
 };
 
+export type GlobalState = {
+    isChatOpen: boolean;
+};
+
 export function isValidName(name: string): boolean {
     return name.length >= 3 && name.length <= 20;
 }
@@ -22,7 +26,9 @@ export function isValidClan(clan: string): boolean {
 
 export type DogfightSettingsContext = {
     settings: DogfightSettings;
+    globalState: GlobalState;
     setSettings: React.Dispatch<React.SetStateAction<DogfightSettings>>;
+    setGlobalState: React.Dispatch<React.SetStateAction<GlobalState>>;
     getUsername: () => string;
     getClan: () => string;
 };
@@ -73,6 +79,9 @@ const getInitialSettings = (): DogfightSettings => {
 // Provider component
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const [settings, setSettings] = useState(getInitialSettings);
+    const [globalState, setGlobalState] = useState<GlobalState>({
+        isChatOpen: false,
+    });
 
     function getUsername(): string {
         if (settings.username?.trim() && isValidName(settings.username.trim())) {
@@ -94,7 +103,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     }, [settings]);
 
     return (
-        <SettingsContext.Provider value={{ settings, setSettings, getUsername, getClan }}>
+        <SettingsContext.Provider value={{ settings, setSettings, globalState, setGlobalState, getUsername, getClan }}>
             {children}
         </SettingsContext.Provider>
     );

@@ -1,14 +1,14 @@
-import { registerKeybinds } from "./registerKeybinds";
-import { useEffect } from "react";
 import { DogfightWeb } from "dogfight-web";
+import { useEffect } from "react";
 import { DogfightClient } from "../../client/DogfightClient";
 import { useSettingsContext } from "../../contexts/settingsContext";
 import { GameAction, KeybindCallback, KeybindConfig } from "./models";
+import { registerKeybinds } from "./registerKeybinds";
 
 export const useGameKeybinds = ({ client }: { client: DogfightClient; engine: DogfightWeb }) => {
-    const { settings } = useSettingsContext();
-
+    const { settings, globalState } = useSettingsContext();
     const handleEvent: KeybindCallback<GameAction> = (action, type, event) => {
+        if (globalState.isChatOpen) return;
         event.preventDefault();
         client.keyboard.onKeyChange(action, type);
     };
@@ -22,5 +22,5 @@ export const useGameKeybinds = ({ client }: { client: DogfightClient; engine: Do
         const unregisterKeybinds = registerKeybinds(keybinds);
 
         return unregisterKeybinds;
-    }, [client.keyboard]);
+    }, [client.keyboard, globalState]);
 };

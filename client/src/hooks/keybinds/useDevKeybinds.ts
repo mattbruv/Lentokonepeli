@@ -1,13 +1,16 @@
 import { DebugEntity } from "dogfight-types/DebugEntity";
-import { registerKeybinds } from "./registerKeybinds";
 import { DogfightWeb } from "dogfight-web";
-import { DogfightClient } from "../../client/DogfightClient";
 import { useEffect } from "react";
-import { DevAction, KeybindCallback, KeybindConfig } from "./models";
+import { DogfightClient } from "../../client/DogfightClient";
+import { useSettingsContext } from "../../contexts/settingsContext";
 import { assertNever } from "../../helpers";
+import { DevAction, KeybindCallback, KeybindConfig } from "./models";
+import { registerKeybinds } from "./registerKeybinds";
 
 export const useDevKeybinds = ({ client, engine }: { client: DogfightClient; engine: DogfightWeb }) => {
+    const { globalState } = useSettingsContext();
     const handleEvent: KeybindCallback<DevAction> = (action, type) => {
+        if (globalState.isChatOpen) return;
         if (type === "down") return;
         switch (action) {
             case "debug": {
@@ -32,9 +35,7 @@ export const useDevKeybinds = ({ client, engine }: { client: DogfightClient; eng
 
     useEffect(() => {
         if (!import.meta.env.DEV) return;
-
         const unregisterKeybinds = registerKeybinds(keybinds);
-
         return unregisterKeybinds;
-    }, []);
+    }, [globalState]);
 };
