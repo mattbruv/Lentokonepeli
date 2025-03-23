@@ -1,3 +1,5 @@
+use std::fmt::format;
+
 use crate::{
     input::PlayerKeyboard,
     network::{property::*, EntityProperties, NetworkedEntity},
@@ -132,6 +134,16 @@ impl Player {
 
     pub fn get_keys(&self) -> &PlayerKeyboard {
         &self.keys
+    }
+
+    pub fn get_full_name(&self) -> String {
+        let name = self.get_name();
+        let clan = self.clan.get();
+
+        match clan {
+            Some(tag) => format!("[{tag}] {name}").trim().to_owned(),
+            None => name.trim().to_owned(),
+        }
     }
 
     pub fn get_name(&self) -> String {

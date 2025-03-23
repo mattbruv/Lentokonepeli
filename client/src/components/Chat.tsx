@@ -1,4 +1,4 @@
-import { Box, Flex, Stack, TextInput } from "@mantine/core";
+import { Box, Flex, TextInput } from "@mantine/core";
 import { ChatMessage } from "dogfight-types/ChatMessage";
 import { useEffect, useState } from "react";
 import "./Chat.css";
@@ -34,25 +34,24 @@ export function Chat({ messages, onSendMessage }: ChatProps) {
     return (
         <div className="chat active">
             <Flex direction={"column"} h={"100%"}>
-                <Box className="message">
+                <Box className="new-message">
                     <TextInput
                         onChange={(event) => setMessage(event.target.value)}
                         value={message}
                         placeholder={"Send a message..."}
                     />
                 </Box>
-                {message}
-                <Stack mt={"auto"} className="all-messages">
+                <Box mt={"auto"} className="all-messages">
                     {messages.map((msg, i) => {
                         const msgClass = (!msg.private ? "global" : "private") + " message";
-                        const output = msg.sender_name + " " + msg.message;
+                        const output = msg.sender_name + ": " + msg.message;
                         return (
                             <div className={msgClass} key={i}>
                                 {output.trim()}
                             </div>
                         );
                     })}
-                </Stack>
+                </Box>
             </Flex>
         </div>
     );

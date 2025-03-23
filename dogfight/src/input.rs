@@ -251,7 +251,7 @@ impl World {
                         game_output.push(ServerOutput::ChatMessage(ChatMessage {
                             message,
                             private: !is_global,
-                            sender_name: Some(player.get_name()),
+                            sender_name: Some(player.get_full_name()),
                             team: *player.get_team(),
                         }));
                     }
