@@ -4,6 +4,7 @@ import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 
 export type GlobalAction = "scoreboard" | "chat";
 export type GameAction = keyof PlayerKeyboard;
+export type ChatAction = "send" | "open" | "close";
 export type DevAction = "debug";
 
 export type Keybind<T extends string> = {
