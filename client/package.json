@@ -10,7 +10,9 @@
     "lint": "./node_modules/.bin/eslint . --report-unused-disable-directives --max-warnings 0",
     "format": "./node_modules/.bin/prettier --write 'src/**/*.{ts,tsx,js,jsx}'",
     "typecheck": "tsc --noEmit",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "extract": "formatjs extract \"src/**/*.ts*\" --ignore \"**/*.d.ts\" --out-file lang/default.json --id-interpolation-pattern \"[sha512:contenthash:base64:6]\"",
+    "compile": "formatjs compile"
   },
   "dependencies": {
     "@mantine/core": "^7.8.0",
@@ -24,15 +26,18 @@
     "pixi.js": "7.2.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-intl": "^7.1.7",
     "react-router-dom": "^7.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
+    "@formatjs/cli": "^6.6.2",
     "@types/file-saver": "^2.0.7",
     "@types/howler": "^2.2.12",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@vitejs/plugin-react": "^4.2.1",
+    "babel-plugin-formatjs": "^10.5.36",
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-prettier": "^5.2.3",

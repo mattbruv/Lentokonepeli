@@ -3,6 +3,7 @@ import { ChatMode } from "../components/Chat";
 import { randomGuid } from "../helpers";
 import { GameAction, Keybind } from "../hooks/keybinds/models";
 import { soundManager } from "../client/soundManager";
+import { DEFAULT_LOCALE } from "../intl/IntlProvider";
 
 export type DogfightControls = Keybind<GameAction>[];
 
@@ -14,6 +15,7 @@ export type DogfightSettings = {
     audioSettings: {
         muted: boolean;
     };
+    locale?: "en" | "fi";
 };
 
 export type GlobalState = {
@@ -76,6 +78,7 @@ export const DEFAULT_SETTINGS: DogfightSettings = {
     audioSettings: {
         muted: false,
     },
+    locale: DEFAULT_LOCALE,
 };
 
 export const SETTING_DESCRIPTIONS = {

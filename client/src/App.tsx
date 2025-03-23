@@ -7,6 +7,7 @@ import { Lobby } from "./Lobby";
 import { NavLink, Route, Routes } from "react-router-dom";
 import { Replay } from "./Replay";
 import { Settings } from "./Settings";
+import { FormattedMessage } from "react-intl";
 
 function App() {
     const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
@@ -73,6 +74,7 @@ function App() {
                 <NavLink to={"/settings"}>
                     <UnstyledButton className={classes.control}>Settings</UnstyledButton>
                 </NavLink>
+                <FormattedMessage defaultMessage={"joo joo 123"} />
             </AppShell.Navbar>
             <AppShell.Main>
                 <Routes>
