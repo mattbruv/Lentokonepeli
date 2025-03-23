@@ -43,7 +43,7 @@ export function Chat({ messages, onSendMessage }: ChatProps) {
         if (globalState.chatState != ChatMode.Passive) {
             return "chat active";
         }
-        return "chat";
+        return "chat passive";
     }
 
     return (

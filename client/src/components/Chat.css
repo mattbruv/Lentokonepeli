@@ -1,8 +1,5 @@
 /* Adds a transparent div rendering the chat overlaid on top of the game */
 .chat {
-    /* This is needed to allow the user to click game items through the empty chat overlay */
-    pointer-events: none;
-
     position: absolute;
     top: 0;
     left: 0;
@@ -15,8 +12,13 @@
     font-weight: bold;
 }
 
+/* This is needed to allow the user to click game items through the empty chat overlay */
 .chat.active {
-    border: 2px solid yellow;
+    pointer-events: auto;
+}
+/* This is needed to allow the user to click game items through the empty chat overlay */
+.chat.passive {
+    pointer-events: none;
 }
 
 .new-message {
