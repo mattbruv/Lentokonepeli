@@ -1,14 +1,16 @@
 import { DogfightWeb } from "dogfight-web";
 import { useEffect } from "react";
 import { DogfightClient } from "../../client/DogfightClient";
+import { ChatMode } from "../../components/Chat";
 import { useSettingsContext } from "../../contexts/settingsContext";
 import { GameAction, KeybindCallback, KeybindConfig } from "./models";
 import { registerKeybinds } from "./registerKeybinds";
 
 export const useGameKeybinds = ({ client }: { client: DogfightClient; engine: DogfightWeb }) => {
     const { settings, globalState } = useSettingsContext();
+    const { chatState } = globalState;
     const handleEvent: KeybindCallback<GameAction> = (action, type, event) => {
-        if (globalState.isChatOpen) return;
+        if (chatState !== ChatMode.Passive) return;
         event.preventDefault();
         client.keyboard.onKeyChange(action, type);
     };

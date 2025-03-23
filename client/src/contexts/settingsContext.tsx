@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { ChatMode } from "../components/Chat";
 import { randomGuid } from "../helpers";
 import { GameAction, Keybind } from "../hooks/keybinds/models";
 
@@ -13,7 +14,7 @@ export type DogfightSettings = {
 };
 
 export type GlobalState = {
-    isChatOpen: boolean;
+    chatState: ChatMode;
 };
 
 export function isValidName(name: string): boolean {
@@ -80,7 +81,7 @@ const getInitialSettings = (): DogfightSettings => {
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const [settings, setSettings] = useState(getInitialSettings);
     const [globalState, setGlobalState] = useState<GlobalState>({
-        isChatOpen: false,
+        chatState: ChatMode.Passive,
     });
 
     function getUsername(): string {
