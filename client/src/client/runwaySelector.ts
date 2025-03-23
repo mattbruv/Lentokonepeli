@@ -9,6 +9,8 @@ import { Textures } from "./textures";
 
 type PlaneData = {
     plane_type: PlaneType;
+    plane_name: string;
+    plane_description: string;
     texture: PIXI.Texture;
 };
 
@@ -19,6 +21,8 @@ export class RunwaySelector {
 
     public infoBox: PIXI.Sprite;
     public planeImage: PIXI.Sprite;
+    public planeNameText: PIXI.Text;
+    public planeDescriptionText: PIXI.Text;
 
     public planeMap: PlaneMap;
     private team: Team = "Centrals";
@@ -32,12 +36,31 @@ export class RunwaySelector {
 
         this.infoBox = new PIXI.Sprite();
         this.planeImage = new PIXI.Sprite();
+        this.planeNameText = new PIXI.Text("", {
+            fontFamily: "Arial",
+            fontSize: 20,
+            fill: 0xffffff,
+            fontWeight: "600",
+        });
+        this.planeDescriptionText = new PIXI.Text("", {
+            fontFamily: "Arial",
+            fontSize: 16,
+            lineHeight: 24,
+            fill: 0,
+            wordWrap: true,
+            wordWrapWidth: 250,
+            fontWeight: "600",
+        });
 
         this.container.addChild(this.infoBox);
         this.container.addChild(this.planeImage);
+        this.container.addChild(this.planeNameText);
+        this.container.addChild(this.planeDescriptionText);
         this.container.visible = false;
 
         this.planeImage.position.set(10);
+        this.planeNameText.position.set(11, 138);
+        this.planeDescriptionText.position.set(14, 171);
 
         this.planeMap = {
             Allies: [],
@@ -52,39 +75,63 @@ export class RunwaySelector {
         this.planeMap.Centrals.push({
             plane_type: "Albatros",
             texture: Textures["pic_plane4.gif"],
+            plane_name: "Albatros D.II",
+            plane_description:
+                "Konekiväärillä varustettu peruskone ilman erityisen hyviä tai huonoja puolia. Hyvä valinta aloittelijalle.",
         });
 
         this.planeMap.Centrals.push({
             plane_type: "Fokker",
             texture: Textures["pic_plane6.gif"],
+            plane_name: "Fokker DR.I",
+            plane_description: "Legendaarinen kolmitaso. Erittäin kettärä ja myös mainio maksimilentokorkeus.",
         });
 
         this.planeMap.Centrals.push({
             plane_type: "Junkers",
             texture: Textures["pic_plane5.gif"],
+            plane_name: "Junkers J.1",
+            plane_description: "Konekiväärin lisäksi pommeilla varustettu, erittäin kestävä, mutta kömpelö kone.",
         });
 
         this.planeMap.Allies.push({
             plane_type: "Bristol",
             texture: Textures["pic_plane7.gif"],
+            plane_name: "Bristol F.2b",
+            plane_description:
+                "Sangen tulivoimaisella konekiväärillä varustettu kone. Hyvä valinta etenkin aloitteleville lentäjille.",
         });
 
         this.planeMap.Allies.push({
             plane_type: "Sopwith",
             texture: Textures["pic_plane9.gif"],
+            plane_name: "Sopwith Camel",
+            plane_description: "Erittäin ketterä. ei suositella aloitteleville lentäjille.",
         });
 
         this.planeMap.Allies.push({
             plane_type: "Salmson",
             texture: Textures["pic_plane8.gif"],
+            plane_name: "Salmson 2",
+            plane_description:
+                "Monipuolinen keskitaso. Konekiväärin lisäksi pommit. Nopea ja vahvamoottorinen kone, joskaan ei ketterä.",
         });
 
-        this.planeImage.texture = Textures["pic_plane4.gif"];
+        this.updatePlaneInfo();
     }
 
     setTeam(team: Team) {
         this.team = team;
         this.planeImage.texture = this.planeMap[this.team][this.index].texture;
+        this.updatePlaneInfo();
+    }
+
+    private updatePlaneInfo() {
+        const map = this.planeMap[this.team];
+        this.planeImage.texture = map[this.index].texture;
+        const planeData = map[this.index];
+        this.planeNameText.text = planeData.plane_name;
+        this.planeDescriptionText.text = planeData.plane_description;
     }
 
     processKeys(
@@ -103,7 +150,7 @@ export class RunwaySelector {
             this.index = this.index + 1 >= map.length ? 0 : this.index + 1;
         }
 
-        this.planeImage.texture = map[this.index].texture;
+        this.updatePlaneInfo(); // Update name and description when plane changes
 
         const myRunways = this.getMyRunways(runways);
 
