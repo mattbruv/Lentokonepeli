@@ -21,6 +21,8 @@ export class GameKeyboard {
     }
 
     public onKeyChange(action: GameAction, type: "up" | "down") {
+        if (action === "y") return;
+
         const currentlyPressed = this.keyboard[action];
         const nextPressed = type === "down";
         const keyChanged = currentlyPressed !== nextPressed;

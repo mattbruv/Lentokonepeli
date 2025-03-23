@@ -1,9 +1,9 @@
-import { Accordion, Card, Text, Group, Kbd, Stack, ActionIcon, Tooltip, Button, Modal } from "@mantine/core";
-import { IconDeviceGamepad2, IconPlus, IconRestore, IconTrash, IconUser } from "@tabler/icons-react";
-import { DEFAULT_GAME_KEYBINDS, useSettingsContext } from "./contexts/settingsContext";
+import { Accordion, ActionIcon, Button, Card, Group, Kbd, Modal, Stack, Text, Tooltip } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { IconDeviceGamepad2, IconPlus, IconRestore, IconTrash, IconUser } from "@tabler/icons-react";
 import React, { useState } from "react";
 import { NameEditor } from "./components/Name";
+import { DEFAULT_GAME_KEYBINDS, useSettingsContext } from "./contexts/settingsContext";
 import { GameAction } from "./hooks/keybinds/models";
 
 const keyDescriptions: Record<GameAction, string> = {
@@ -15,6 +15,7 @@ const keyDescriptions: Record<GameAction, string> = {
     space: "Eject, Open Parachute",
     enter: "Enter",
     ctrl: "Shoot",
+    y: "Chat All",
 };
 
 export function Settings() {
