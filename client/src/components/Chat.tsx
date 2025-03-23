@@ -1,6 +1,6 @@
 import { Box, Flex, Kbd, TextInput } from "@mantine/core";
 import { ChatMessage } from "dogfight-types/ChatMessage";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSettingsContext } from "../contexts/settingsContext";
 import "./Chat.css";
 
@@ -21,7 +21,20 @@ export type ChatProps = {
 
 export function Chat({ messages, onSendMessage }: ChatProps) {
     const [message, setMessage] = useState("");
-    const { globalState } = useSettingsContext();
+    const { globalState, sendChatMessage } = useSettingsContext();
+    const { chatState } = globalState;
+
+    useEffect(() => {
+        if (chatState === ChatMode.Passive) {
+            setMessage("");
+        } else {
+            sendChatMessage.current = () => {
+                if (message) {
+                    onSendMessage(message, chatState === ChatMode.MessagingGlobal);
+                }
+            };
+        }
+    }, [chatState, message]);
 
     function getChatClass(): string {
         if (globalState.chatState != ChatMode.Passive) {

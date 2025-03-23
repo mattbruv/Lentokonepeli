@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, MutableRefObject, useContext, useEffect, useRef, useState } from "react";
 import { ChatMode } from "../components/Chat";
 import { randomGuid } from "../helpers";
 import { GameAction, Keybind } from "../hooks/keybinds/models";
@@ -30,6 +30,7 @@ export type DogfightSettingsContext = {
     globalState: GlobalState;
     setSettings: React.Dispatch<React.SetStateAction<DogfightSettings>>;
     setGlobalState: React.Dispatch<React.SetStateAction<GlobalState>>;
+    sendChatMessage: MutableRefObject<(() => void) | null>;
     getUsername: () => string;
     getClan: () => string;
 };
@@ -85,6 +86,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const [globalState, setGlobalState] = useState<GlobalState>({
         chatState: ChatMode.Passive,
     });
+    const sendChatMessage = useRef<(() => void) | null>(null);
 
     function getUsername(): string {
         if (settings.username?.trim() && isValidName(settings.username.trim())) {
@@ -106,7 +108,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     }, [settings]);
 
     return (
-        <SettingsContext.Provider value={{ settings, setSettings, globalState, setGlobalState, getUsername, getClan }}>
+        <SettingsContext.Provider
+            value={{ settings, setSettings, sendChatMessage, globalState, setGlobalState, getUsername, getClan }}
+        >
             {children}
         </SettingsContext.Provider>
     );

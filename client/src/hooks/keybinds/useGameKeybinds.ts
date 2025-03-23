@@ -8,7 +8,7 @@ import { ChatAction, GameAction, KeybindCallback, KeybindConfig } from "./models
 import { registerKeybinds } from "./registerKeybinds";
 
 export const useGameKeybinds = ({ client }: { client: DogfightClient; engine: DogfightWeb }) => {
-    const { settings, globalState, setGlobalState } = useSettingsContext();
+    const { settings, globalState, setGlobalState, sendChatMessage } = useSettingsContext();
     const { chatState } = globalState;
 
     const handleGameEvent: KeybindCallback<GameAction> = (action, type, event) => {
@@ -41,10 +41,14 @@ export const useGameKeybinds = ({ client }: { client: DogfightClient; engine: Do
                 break;
             }
             case "send": {
-                setGlobalState((prev) => ({
-                    ...prev,
-                    chatState: ChatMode.Passive,
-                }));
+                console.log("SEND!");
+                if (sendChatMessage.current) {
+                    sendChatMessage.current();
+                    setGlobalState((prev) => ({
+                        ...prev,
+                        chatState: ChatMode.Passive,
+                    }));
+                }
                 break;
             }
             default: {
@@ -83,5 +87,5 @@ export const useGameKeybinds = ({ client }: { client: DogfightClient; engine: Do
         console.log("registered keybinds for ", ChatMode[chatState]);
 
         return unregisterKeybinds;
-    }, [client.keyboard, globalState]);
+    }, [client.keyboard, globalState, sendChatMessage, sendChatMessage.current]);
 };
