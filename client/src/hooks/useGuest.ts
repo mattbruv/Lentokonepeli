@@ -1,14 +1,15 @@
-import { useDogfight } from "./useDogfight";
-import { useEffect, useRef } from "react";
-import Peer from "peerjs";
 import { PlayerCommand } from "dogfight-types/PlayerCommand";
 import { ServerOutput } from "dogfight-types/ServerOutput";
+import Peer from "peerjs";
+import { useEffect, useRef } from "react";
+import { useDogfight } from "./useDogfight";
 import { PeerJSPath } from "./useLocalHost";
 
 export function useGuest(myName: string, clan: string) {
     const peer = useRef<Peer | null>(null);
 
     const clientCommandCallback = useRef<((command: PlayerCommand) => void) | null>(null);
+    const sendMessageCallback = useRef<((message: string, isGlobal: boolean) => void) | null>(null);
 
     const dogfight = useDogfight({
         handleClientCommand: (command) => {
@@ -20,6 +21,12 @@ export function useGuest(myName: string, clan: string) {
 
     async function initialize(div: HTMLDivElement) {
         await dogfight.initialize(div);
+    }
+
+    function sendChatMessage(message: string, global: boolean) {
+        if (sendMessageCallback.current) {
+            sendMessageCallback.current(message, global);
+        }
     }
 
     function joinGame(roomId: string): void {
@@ -35,6 +42,12 @@ export function useGuest(myName: string, clan: string) {
                 // We're the guest, so just send the command off to the remote host.
                 clientCommandCallback.current = (command) => {
                     const binary = dogfight.engine.player_command_to_binary(JSON.stringify(command));
+                    conn.send(binary);
+                };
+
+                sendMessageCallback.current = (msg, global) => {
+                    const message_command: PlayerCommand = { type: "SendMessage", data: [msg, global] };
+                    const binary = dogfight.engine.player_command_to_binary(JSON.stringify(message_command));
                     conn.send(binary);
                 };
 
@@ -76,8 +89,9 @@ export function useGuest(myName: string, clan: string) {
     return {
         joinGame,
         initialize,
-        showScoreboard: dogfight.showScoreboard,
+        sendChatMessage,
         playerData: dogfight.playerData,
         playerGuid: dogfight.playerGuid,
+        messages: dogfight.messages,
     };
 }

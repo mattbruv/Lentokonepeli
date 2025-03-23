@@ -1,8 +1,8 @@
 import { ReplayFile } from "dogfight-types/ReplayFile";
-import { useEffect, useRef, useState } from "react";
-import { useDogfight } from "./useDogfight";
 import { ServerInput } from "dogfight-types/ServerInput";
 import { ServerOutput } from "dogfight-types/ServerOutput";
+import { useEffect, useRef, useState } from "react";
+import { useDogfight } from "./useDogfight";
 
 export function useReplay() {
     console.log("useReplay called!");
@@ -96,8 +96,8 @@ export function useReplay() {
     return {
         initialize,
         loadReplay,
-        showScoreboard: dogfight.showScoreboard,
         playerData: dogfight.playerData,
         playerGuid: dogfight.playerGuid,
+        messages: dogfight.messages,
     };
 }

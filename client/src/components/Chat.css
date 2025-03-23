@@ -1,0 +1,60 @@
+/* Adds a transparent div rendering the chat overlaid on top of the game */
+.chat {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 510px;
+
+    /* Font styles */
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: larger;
+    font-weight: bold;
+}
+
+/* This is needed to allow the user to click game items through the empty chat overlay */
+.chat.active {
+    pointer-events: auto;
+}
+/* This is needed to allow the user to click game items through the empty chat overlay */
+.chat.passive {
+    pointer-events: none;
+}
+
+.new-message {
+    margin: 10px;
+}
+
+.all-messages {
+    overflow: auto;
+    margin-left: 5px;
+    margin-bottom: 4px;
+}
+
+.message {
+    text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000;
+}
+
+.chat .global {
+    color: yellow;
+}
+
+.chat .private {
+    color: blue;
+}
+
+.chat .noteam {
+    color: white;
+}
+
+.chat .friendly {
+    color: #8ecbff;
+}
+
+.chat .enemy {
+    color: #ffb574;
+}

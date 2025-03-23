@@ -8,6 +8,7 @@ use crate::{
         player::{ControllingEntity, Player, PlayerState},
         types::Team,
     },
+    game_event::ChatMessage,
     network::encoding::NetworkedBytes,
     output::ServerOutput,
     world::World,
@@ -32,6 +33,7 @@ pub enum PlayerCommand {
     PlayerChooseTeam(TeamSelection),
     PlayerChooseRunway(RunwaySelection),
     PlayerKeyboard(PlayerKeyboard),
+    SendMessage(String, bool),
 }
 
 pub fn game_input_from_string(input: String) -> Vec<ServerInput> {
@@ -242,6 +244,16 @@ impl World {
                 PlayerCommand::PlayerKeyboard(keys) => {
                     if let Some((_, p)) = self.get_player_from_guid_mut(&guid) {
                         p.set_keys(keys);
+                    }
+                }
+                PlayerCommand::SendMessage(message, is_global) => {
+                    if let Some((_, player)) = self.get_player_from_guid(&guid) {
+                        game_output.push(ServerOutput::ChatMessage(ChatMessage {
+                            message,
+                            private: !is_global,
+                            sender_name: Some(player.get_full_name()),
+                            team: *player.get_team(),
+                        }));
                     }
                 }
             };

@@ -11,7 +11,7 @@ enum ReplayState {
 }
 
 export function Replay() {
-    const { loadReplay, initialize, playerData, showScoreboard, playerGuid } = useReplay();
+    const { loadReplay, initialize, playerData, playerGuid, messages } = useReplay();
 
     const [state, setState] = useState<ReplayState>(ReplayState.ProvideFile);
     const gameContainer = useRef<HTMLDivElement>(null);
@@ -49,7 +49,8 @@ export function Replay() {
                 ref={gameContainer}
                 myPlayerGuid={playerGuid}
                 playerData={playerData}
-                showScoreboard={showScoreboard}
+                messages={messages}
+                onSendMessage={() => {}}
             />
             {state === ReplayState.ProvideFile && (
                 <div>

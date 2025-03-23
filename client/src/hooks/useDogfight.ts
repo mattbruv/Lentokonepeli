@@ -1,15 +1,17 @@
+import { ChatMessage } from "dogfight-types/ChatMessage";
 import { PlaneType } from "dogfight-types/PlaneType";
+import { PlayerCommand } from "dogfight-types/PlayerCommand";
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
+import { PlayerProperties } from "dogfight-types/PlayerProperties";
+import { ServerOutput } from "dogfight-types/ServerOutput";
 import { Team } from "dogfight-types/Team";
 import { DogfightWeb } from "dogfight-web";
 import { useEffect, useMemo, useState } from "react";
 import { DogfightClient, GameClientCallbacks } from "../client/DogfightClient";
-import { PlayerCommand } from "dogfight-types/PlayerCommand";
-import { ServerOutput } from "dogfight-types/ServerOutput";
-import { PlayerProperties } from "dogfight-types/PlayerProperties";
-import { useGameKeybinds } from "./keybinds/useGameKeybinds";
+import { ChatMessageTimed } from "../components/Chat";
+import { randomGuid } from "../helpers";
 import { useDevKeybinds } from "./keybinds/useDevKeybinds";
-import { useGlobalKeybinds } from "./keybinds/useGlobalKeybinds";
+import { useGameKeybinds } from "./keybinds/useGameKeybinds";
 
 export type DogfightCallbacks = {
     handleClientCommand: (command: PlayerCommand) => void;
@@ -22,10 +24,9 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
     // Scoreboard related information
     const [playerData, setPlayerData] = useState<PlayerProperties[]>([]);
     const [playerGuid, setPlayerGuid] = useState<string | null>(null);
-    const [showScoreboard, setShowScoreboard] = useState(false);
+    const [messages, setMessages] = useState<ChatMessageTimed[]>([]);
 
     useGameKeybinds({ client, engine });
-    useGlobalKeybinds({ toggleScoreboard: setShowScoreboard });
     useDevKeybinds({ client, engine });
 
     function handleGameEvents(events: ServerOutput[]): void {
@@ -67,6 +68,33 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
             onPlayerChange: (playerInfo: PlayerProperties[]): void => {
                 setPlayerData(playerInfo);
             },
+            onMessage: (message: ChatMessage): void => {
+                const timedMessage: ChatMessageTimed = {
+                    ...message,
+                    isNewMessage: true,
+                    guid: randomGuid(),
+                };
+
+                // stop displaying the message passively after 5 seconds
+                setTimeout(() => {
+                    setMessages((prev) =>
+                        prev.map((msg) =>
+                            msg.guid === timedMessage.guid
+                                ? {
+                                      ...timedMessage,
+                                      isNewMessage: false,
+                                  }
+                                : msg,
+                        ),
+                    );
+                }, 5000);
+
+                setMessages((prev) => {
+                    prev.push(timedMessage);
+                    // Show last 10 messages
+                    return prev.slice(-10);
+                });
+            },
         };
 
         await client.init(client_callbacks, div);
@@ -86,8 +114,8 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
         initialize,
         handleGameEvents,
         setMyPlayerGuid,
-        showScoreboard,
         playerGuid,
+        messages,
         playerData,
         engine,
     };

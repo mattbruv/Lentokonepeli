@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, MutableRefObject, useContext, useEffect, useRef, useState } from "react";
+import { ChatMode } from "../components/Chat";
 import { randomGuid } from "../helpers";
 import { GameAction, Keybind } from "../hooks/keybinds/models";
 
@@ -12,6 +13,11 @@ export type DogfightSettings = {
     controls: DogfightControls;
 };
 
+export type GlobalState = {
+    viewingScoreboard: boolean;
+    chatState: ChatMode;
+};
+
 export function isValidName(name: string): boolean {
     return name.length >= 3 && name.length <= 20;
 }
@@ -22,12 +28,15 @@ export function isValidClan(clan: string): boolean {
 
 export type DogfightSettingsContext = {
     settings: DogfightSettings;
+    globalState: GlobalState;
     setSettings: React.Dispatch<React.SetStateAction<DogfightSettings>>;
+    setGlobalState: React.Dispatch<React.SetStateAction<GlobalState>>;
+    sendChatMessage: MutableRefObject<(() => void) | null>;
     getUsername: () => string;
     getClan: () => string;
 };
 
-export const SETTINGS_KEY = "dogfightSettings_v2";
+export const SETTINGS_KEY = "dogfightSettings_v3";
 
 export const SettingsContext = createContext<DogfightSettingsContext | null>(null);
 
@@ -53,6 +62,9 @@ export const DEFAULT_GAME_KEYBINDS: DogfightControls = [
     { key: "Control", action: "ctrl" },
     { key: "-", action: "ctrl" },
     { key: "Enter", action: "enter" },
+    { key: "y", action: "chatAll" },
+    { key: "u", action: "chatTeam" },
+    { key: "tab", action: "viewScoreboard" },
 ];
 
 export const DEFAULT_SETTINGS: DogfightSettings = {
@@ -73,6 +85,11 @@ const getInitialSettings = (): DogfightSettings => {
 // Provider component
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const [settings, setSettings] = useState(getInitialSettings);
+    const [globalState, setGlobalState] = useState<GlobalState>({
+        viewingScoreboard: false,
+        chatState: ChatMode.Passive,
+    });
+    const sendChatMessage = useRef<(() => void) | null>(null);
 
     function getUsername(): string {
         if (settings.username?.trim() && isValidName(settings.username.trim())) {
@@ -94,7 +111,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     }, [settings]);
 
     return (
-        <SettingsContext.Provider value={{ settings, setSettings, getUsername, getClan }}>
+        <SettingsContext.Provider
+            value={{ settings, setSettings, sendChatMessage, globalState, setGlobalState, getUsername, getClan }}
+        >
             {children}
         </SettingsContext.Provider>
     );

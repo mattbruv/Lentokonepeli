@@ -1,4 +1,7 @@
-use crate::{entities::container::PlayerId, network::encoding::NetworkedBytes};
+use crate::{
+    entities::{container::PlayerId, types::Team},
+    network::encoding::NetworkedBytes,
+};
 use dogfight_macros::EnumBytes;
 use serde::Serialize;
 use ts_rs::TS;
@@ -57,6 +60,46 @@ impl NetworkedBytes for KillEvent {
                 killer,
                 victim,
                 method,
+            },
+        ))
+    }
+}
+
+#[derive(Serialize, Debug, Clone, TS)]
+#[ts(export)]
+pub struct ChatMessage {
+    pub sender_name: Option<String>,
+    pub team: Option<Team>,
+    pub private: bool,
+    pub message: String,
+}
+
+impl NetworkedBytes for ChatMessage {
+    fn to_bytes(&self) -> Vec<u8> {
+        let mut bytes = vec![];
+        bytes.extend(self.sender_name.to_bytes());
+        bytes.extend(self.team.to_bytes());
+        bytes.extend(self.private.to_bytes());
+        bytes.extend(self.message.to_bytes());
+        bytes
+    }
+
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)>
+    where
+        Self: Sized,
+    {
+        let (bytes, sender_name) = Option::<String>::from_bytes(bytes)?;
+        let (bytes, team) = Option::<Team>::from_bytes(bytes)?;
+        let (bytes, private) = bool::from_bytes(bytes)?;
+        let (bytes, message) = String::from_bytes(bytes)?;
+
+        Some((
+            bytes,
+            Self {
+                sender_name,
+                team,
+                private,
+                message,
             },
         ))
     }

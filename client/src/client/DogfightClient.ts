@@ -1,3 +1,4 @@
+import { ChatMessage } from "dogfight-types/ChatMessage";
 import { DebugEntity } from "dogfight-types/DebugEntity";
 import { EntityChange } from "dogfight-types/EntityChange";
 import { EntityProperties } from "dogfight-types/EntityProperties";
@@ -39,6 +40,7 @@ export type GameClientCallbacks = {
     chooseRunway: (runwayId: number, planeType: PlaneType) => void;
     keyChange: (keyboard: PlayerKeyboard) => void;
     onPlayerChange: (playerData: PlayerProperties[]) => void;
+    onMessage: (message: ChatMessage) => void;
 };
 
 type EntityCollection = {
@@ -521,6 +523,10 @@ export class DogfightClient {
                 case "YourPlayerGuid": {
                     this.sendPlayerUpdate = true;
                     this.setMyPlayerGuid(event.data);
+                    break;
+                }
+                case "ChatMessage": {
+                    this.callbacks?.onMessage(event.data);
                     break;
                 }
                 default: {
