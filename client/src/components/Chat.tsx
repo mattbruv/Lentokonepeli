@@ -1,6 +1,6 @@
 import { Box, Flex, Kbd, TextInput } from "@mantine/core";
 import { ChatMessage } from "dogfight-types/ChatMessage";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSettingsContext } from "../contexts/settingsContext";
 import "./Chat.css";
 
@@ -24,13 +24,18 @@ export function Chat({ messages, onSendMessage }: ChatProps) {
     const [message, setMessage] = useState("");
     const { globalState, sendChatMessage, setGlobalState } = useSettingsContext();
     const { chatState } = globalState;
+    const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         if (chatState === ChatMode.Passive) {
             setMessage("");
         } else {
+            // Set the focus to the chat input on chat load
+            if (inputRef.current) {
+                inputRef.current.focus();
+            }
             sendChatMessage.current = () => {
-                if (message) {
+                if (message.trim()) {
                     onSendMessage(message, chatState === ChatMode.MessagingGlobal);
                     setGlobalState((prev) => ({
                         ...prev,
@@ -57,6 +62,7 @@ export function Chat({ messages, onSendMessage }: ChatProps) {
                 {globalState.chatState !== ChatMode.Passive && (
                     <Box className="new-message">
                         <TextInput
+                            ref={inputRef}
                             onChange={(event) => setMessage(event.target.value)}
                             value={message}
                             placeholder={"Send a message..."}

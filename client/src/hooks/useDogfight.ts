@@ -91,7 +91,8 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
 
                 setMessages((prev) => {
                     prev.push(timedMessage);
-                    return prev.slice(-2);
+                    // Show last 10 messages
+                    return prev.slice(-10);
                 });
             },
         };

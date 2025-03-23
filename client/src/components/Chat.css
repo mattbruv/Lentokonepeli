@@ -26,9 +26,11 @@
 }
 
 .all-messages {
+    overflow: auto;
     margin-left: 5px;
     margin-bottom: 4px;
 }
+
 .message {
 }
 
