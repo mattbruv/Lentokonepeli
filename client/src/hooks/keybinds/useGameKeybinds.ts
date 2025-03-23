@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { DogfightClient } from "../../client/DogfightClient";
 import { ChatMode } from "../../components/Chat";
 import { useSettingsContext } from "../../contexts/settingsContext";
+import { assertNever } from "../../helpers";
 import { ChatAction, GameAction, KeybindCallback, KeybindConfig } from "./models";
 import { registerKeybinds } from "./registerKeybinds";
 
@@ -11,15 +12,19 @@ export const useGameKeybinds = ({ client }: { client: DogfightClient; engine: Do
     const { chatState } = globalState;
 
     const handleGameEvent: KeybindCallback<GameAction> = (action, type, event) => {
-        console.log("GAME EVENT HANDLER");
         event.preventDefault();
         client.keyboard.onKeyChange(action, type);
 
-        // global chat
-        if (event.key == "y") {
+        if (action === "ChatAll") {
             setGlobalState((prev) => ({
                 ...prev,
                 chatState: ChatMode.MessagingGlobal,
+            }));
+        }
+        if (action === "ChatTeam") {
+            setGlobalState((prev) => ({
+                ...prev,
+                chatState: ChatMode.MessagingTeam,
             }));
         }
     };
@@ -27,11 +32,24 @@ export const useGameKeybinds = ({ client }: { client: DogfightClient; engine: Do
     const handleChatEvent: KeybindCallback<ChatAction> = (action, type, event) => {
         event.preventDefault();
 
-        if (action === "close") {
-            setGlobalState((prev) => ({
-                ...prev,
-                chatState: ChatMode.Passive,
-            }));
+        switch (action) {
+            case "close": {
+                setGlobalState((prev) => ({
+                    ...prev,
+                    chatState: ChatMode.Passive,
+                }));
+                break;
+            }
+            case "send": {
+                setGlobalState((prev) => ({
+                    ...prev,
+                    chatState: ChatMode.Passive,
+                }));
+                break;
+            }
+            default: {
+                assertNever(action);
+            }
         }
     };
 
@@ -46,6 +64,10 @@ export const useGameKeybinds = ({ client }: { client: DogfightClient; engine: Do
             {
                 action: "close",
                 key: "Escape",
+            },
+            {
+                action: "send",
+                key: "Enter",
             },
         ],
     };

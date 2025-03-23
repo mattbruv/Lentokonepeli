@@ -7,6 +7,7 @@ import { ServerOutput } from "dogfight-types/ServerOutput";
 import { Team } from "dogfight-types/Team";
 import { DogfightWeb } from "dogfight-web";
 import { useEffect, useMemo, useState } from "react";
+import { ChatMessageTimed } from "src/components/Chat";
 import { DogfightClient, GameClientCallbacks } from "../client/DogfightClient";
 import { useDevKeybinds } from "./keybinds/useDevKeybinds";
 import { useGameKeybinds } from "./keybinds/useGameKeybinds";
@@ -22,7 +23,7 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
     // Scoreboard related information
     const [playerData, setPlayerData] = useState<PlayerProperties[]>([]);
     const [playerGuid, setPlayerGuid] = useState<string | null>(null);
-    const [messages, setMessages] = useState<ChatMessage[]>([]);
+    const [messages, setMessages] = useState<ChatMessageTimed[]>([]);
 
     useGameKeybinds({ client, engine });
     useDevKeybinds({ client, engine });
@@ -67,9 +68,18 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
                 setPlayerData(playerInfo);
             },
             onMessage: (message: ChatMessage): void => {
-                console.log(message);
+                const timedMessage: ChatMessageTimed = {
+                    ...message,
+                    isNewMessage: true,
+                };
+
+                // stop displaying the message passively after 5 seconds
+                setTimeout(() => {
+                    timedMessage.isNewMessage = false;
+                }, 5000);
+
                 setMessages((prev) => {
-                    prev.push(message);
+                    prev.push(timedMessage);
                     return prev.slice(-2);
                 });
             },

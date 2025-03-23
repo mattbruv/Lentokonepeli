@@ -3,8 +3,8 @@ import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 // Different actions that can be run through keyboard input (as unions)
 
 export type GlobalAction = "scoreboard" | "chat";
-export type GameAction = keyof PlayerKeyboard | "y";
-export type ChatAction = "send" | "open" | "close";
+export type GameAction = keyof PlayerKeyboard | "ChatAll" | "ChatTeam";
+export type ChatAction = "send" | "close";
 export type DevAction = "debug";
 
 export type Keybind<T extends string> = {

@@ -1,6 +1,6 @@
 import { Box, Flex, Kbd, TextInput } from "@mantine/core";
 import { ChatMessage } from "dogfight-types/ChatMessage";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSettingsContext } from "../contexts/settingsContext";
 import "./Chat.css";
 
@@ -10,8 +10,12 @@ export enum ChatMode {
     MessagingTeam,
 }
 
+export interface ChatMessageTimed extends ChatMessage {
+    isNewMessage: boolean;
+}
+
 export type ChatProps = {
-    messages: ChatMessage[];
+    messages: ChatMessageTimed[];
     onSendMessage: (message: string, isGlobal: boolean) => void;
 };
 
@@ -19,32 +23,15 @@ export function Chat({ messages, onSendMessage }: ChatProps) {
     const [message, setMessage] = useState("");
     const { globalState } = useSettingsContext();
 
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            const key = event.key.toLowerCase();
-
-            if (key === "enter") {
-                event.preventDefault(); // Prevents default browser behavior
-                if (message) {
-                    onSendMessage(message, true);
-                    setMessage("");
-                }
-            }
-        };
-
-        window.addEventListener("keydown", handleKeyDown);
-
-        return () => {
-            window.removeEventListener("keydown", handleKeyDown);
-        };
-    }, [message, globalState.chatState]);
-
     function getChatClass(): string {
         if (globalState.chatState != ChatMode.Passive) {
             return "chat active";
         }
         return "chat passive";
     }
+
+    const renderMessages =
+        globalState.chatState === ChatMode.Passive ? messages.filter((x) => x.isNewMessage) : messages;
 
     return (
         <div className={getChatClass()}>
@@ -64,7 +51,7 @@ export function Chat({ messages, onSendMessage }: ChatProps) {
                     </Box>
                 )}
                 <Box mt={"auto"} className="all-messages">
-                    {messages.map((msg, i) => {
+                    {renderMessages.map((msg, i) => {
                         const msgClass = (!msg.private ? "global" : "private") + " message";
                         const output = msg.sender_name + ": " + msg.message;
                         return (

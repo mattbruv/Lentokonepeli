@@ -34,7 +34,7 @@ export type DogfightSettingsContext = {
     getClan: () => string;
 };
 
-export const SETTINGS_KEY = "dogfightSettings_v2";
+export const SETTINGS_KEY = "dogfightSettings_v3";
 
 export const SettingsContext = createContext<DogfightSettingsContext | null>(null);
 
@@ -60,6 +60,8 @@ export const DEFAULT_GAME_KEYBINDS: DogfightControls = [
     { key: "Control", action: "ctrl" },
     { key: "-", action: "ctrl" },
     { key: "Enter", action: "enter" },
+    { key: "y", action: "ChatAll" },
+    { key: "u", action: "ChatTeam" },
 ];
 
 export const DEFAULT_SETTINGS: DogfightSettings = {
