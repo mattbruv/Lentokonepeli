@@ -75,7 +75,7 @@ export function Chat({ messages, onSendMessage }: ChatProps) {
                     </Box>
                 )}
                 <Box mt={"auto"} className="all-messages">
-                    {renderMessages.map((msg, i) => {
+                    {renderMessages.map((msg) => {
                         const msgClass = (!msg.private ? "global" : "private") + " message";
                         const output = msg.sender_name + ": " + msg.message;
                         return (
