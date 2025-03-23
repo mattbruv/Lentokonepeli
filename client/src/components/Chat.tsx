@@ -21,7 +21,7 @@ export type ChatProps = {
 
 export function Chat({ messages, onSendMessage }: ChatProps) {
     const [message, setMessage] = useState("");
-    const { globalState, sendChatMessage } = useSettingsContext();
+    const { globalState, sendChatMessage, setGlobalState } = useSettingsContext();
     const { chatState } = globalState;
 
     useEffect(() => {
@@ -31,6 +31,10 @@ export function Chat({ messages, onSendMessage }: ChatProps) {
             sendChatMessage.current = () => {
                 if (message) {
                     onSendMessage(message, chatState === ChatMode.MessagingGlobal);
+                    setGlobalState((prev) => ({
+                        ...prev,
+                        chatState: ChatMode.Passive,
+                    }));
                 }
             };
         }

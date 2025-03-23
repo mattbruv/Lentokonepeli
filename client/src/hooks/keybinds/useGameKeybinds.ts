@@ -44,10 +44,6 @@ export const useGameKeybinds = ({ client }: { client: DogfightClient; engine: Do
                 console.log("SEND!");
                 if (sendChatMessage.current) {
                     sendChatMessage.current();
-                    setGlobalState((prev) => ({
-                        ...prev,
-                        chatState: ChatMode.Passive,
-                    }));
                 }
                 break;
             }
