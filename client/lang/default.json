@@ -11,9 +11,17 @@
     "defaultMessage": "A legendary triplane. Extremely agile and also excellent at maximum flight altitude.",
     "description": "Description of the Fokker DR.I aircraft"
   },
+  "3R2xaB": {
+    "defaultMessage": "Shoot",
+    "description": "Title for the 'Shoot' action shown on the keybind settings section"
+  },
   "4GxiBe": {
     "defaultMessage": "Select a game map...",
     "description": "Infotext for input used to select which map will be used for the hosted game"
+  },
+  "4MNKGm": {
+    "defaultMessage": "Eject, Open Parachute",
+    "description": "Title for the 'Eject, Open Parachute' action shown on the keybind settings section"
   },
   "7kZMTs": {
     "defaultMessage": "The replay system is currently experimental, lacking features, and still inactive development. You may experience problems until the replay feature isin a stable state.",
@@ -22,6 +30,10 @@
   "8Am/Pl": {
     "defaultMessage": "Basic aircraft equipped with a machine gun, without particularly good or bad qualities. A good choice for a beginner.",
     "description": "Description of the Albatros D.II aircraft"
+  },
+  "8WM3G7": {
+    "defaultMessage": "Enter",
+    "description": "Title for the 'Enter' action shown on the keybind settings section"
   },
   "8iVdSN": {
     "defaultMessage": "Control Settings",
@@ -63,6 +75,10 @@
     "defaultMessage": "Extremely agile. Not recommended for beginner pilots.",
     "description": "Description of the Sopwith Camel aircraft"
   },
+  "Nbb2Yc": {
+    "defaultMessage": "Move Right",
+    "description": "Title for the 'Move Right' action shown on the keybind settings section"
+  },
   "U/mSA3": {
     "defaultMessage": "Reset Controls",
     "description": "Button used to reset user defined keybinds on the settings page"
@@ -78,6 +94,10 @@
   "WYS1bQ": {
     "defaultMessage": "Press any key...",
     "description": "Info text explaining to press any key to set a keybind for a game action"
+  },
+  "Wjn/We": {
+    "defaultMessage": "View Scoreboard",
+    "description": "Title for the 'View Scoreboard' action shown on the keybind settings section"
   },
   "Y5ZG9P": {
     "defaultMessage": "You can change this any time in the settings menu",
@@ -103,9 +123,17 @@
     "defaultMessage": "Salmson 2",
     "description": "Name of the Salmson 2 aircraft"
   },
+  "dPTAzZ": {
+    "defaultMessage": "Move Left",
+    "description": "Title for the 'Move Left' action shown on the keybind settings section"
+  },
   "ezKLsY": {
     "defaultMessage": "Fokker DR.I",
     "description": "Name of the Fokker DR.I aircraft"
+  },
+  "f3ix4b": {
+    "defaultMessage": "Bomb",
+    "description": "Title for the 'Bomb' action shown on the keybind settings section"
   },
   "gAAkRv": {
     "defaultMessage": "Name should be between 3 and 20 characters",
@@ -131,6 +159,10 @@
     "defaultMessage": "Watch Replay",
     "description": "Sidebar link description for the Replay System page"
   },
+  "ohIqzI": {
+    "defaultMessage": "Toggle Motor",
+    "description": "Title for the 'Toggle Motor' action shown on the keybind settings section"
+  },
   "p1ezxU": {
     "defaultMessage": "Host Game",
     "description": "Call to action button text for button which starts a new game as a Host"
@@ -142,6 +174,10 @@
   "scT0m8": {
     "defaultMessage": "Replay System Notice",
     "description": "title for a notice section for the Replay System"
+  },
+  "tN8/0L": {
+    "defaultMessage": "Chat Team",
+    "description": "Title for the 'Chat Team' action shown on the keybind settings section"
   },
   "urz5xm": {
     "defaultMessage": "Unbind Last Key",
@@ -159,9 +195,17 @@
     "defaultMessage": "Join us on Discord!",
     "description": "Navbar hover for discord button"
   },
+  "xPJ6oZ": {
+    "defaultMessage": "Flip Plane",
+    "description": "Title for the 'Flip Plane' action shown on the keybind settings section"
+  },
   "xRGqrp": {
     "defaultMessage": "Set name",
     "description": "Call to action on setting section button which sets the name user has input"
+  },
+  "y49T/p": {
+    "defaultMessage": "Chat All",
+    "description": "Title for the 'Chat All' action shown on the keybind settings section"
   },
   "yRjHTu": {
     "defaultMessage": "Junkers J.1",

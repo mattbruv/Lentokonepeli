@@ -17,10 +17,22 @@
       "value": "A legendary triplane. Extremely agile and also excellent at maximum flight altitude."
     }
   ],
+  "3R2xaB": [
+    {
+      "type": 0,
+      "value": "Shoot"
+    }
+  ],
   "4GxiBe": [
     {
       "type": 0,
       "value": "Select a game map..."
+    }
+  ],
+  "4MNKGm": [
+    {
+      "type": 0,
+      "value": "Eject, Open Parachute"
     }
   ],
   "7kZMTs": [
@@ -33,6 +45,12 @@
     {
       "type": 0,
       "value": "Basic aircraft equipped with a machine gun, without particularly good or bad qualities. A good choice for a beginner."
+    }
+  ],
+  "8WM3G7": [
+    {
+      "type": 0,
+      "value": "Enter"
     }
   ],
   "8iVdSN": [
@@ -95,6 +113,12 @@
       "value": "Extremely agile. Not recommended for beginner pilots."
     }
   ],
+  "Nbb2Yc": [
+    {
+      "type": 0,
+      "value": "Move Right"
+    }
+  ],
   "U/mSA3": [
     {
       "type": 0,
@@ -117,6 +141,12 @@
     {
       "type": 0,
       "value": "Press any key..."
+    }
+  ],
+  "Wjn/We": [
+    {
+      "type": 0,
+      "value": "View Scoreboard"
     }
   ],
   "Y5ZG9P": [
@@ -155,10 +185,22 @@
       "value": "Salmson 2"
     }
   ],
+  "dPTAzZ": [
+    {
+      "type": 0,
+      "value": "Move Left"
+    }
+  ],
   "ezKLsY": [
     {
       "type": 0,
       "value": "Fokker DR.I"
+    }
+  ],
+  "f3ix4b": [
+    {
+      "type": 0,
+      "value": "Bomb"
     }
   ],
   "gAAkRv": [
@@ -197,6 +239,12 @@
       "value": "Watch Replay"
     }
   ],
+  "ohIqzI": [
+    {
+      "type": 0,
+      "value": "Toggle Motor"
+    }
+  ],
   "p1ezxU": [
     {
       "type": 0,
@@ -213,6 +261,12 @@
     {
       "type": 0,
       "value": "Replay System Notice"
+    }
+  ],
+  "tN8/0L": [
+    {
+      "type": 0,
+      "value": "Chat Team"
     }
   ],
   "urz5xm": [
@@ -239,10 +293,22 @@
       "value": "Join us on Discord!"
     }
   ],
+  "xPJ6oZ": [
+    {
+      "type": 0,
+      "value": "Flip Plane"
+    }
+  ],
   "xRGqrp": [
     {
       "type": 0,
       "value": "Set name"
+    }
+  ],
+  "y49T/p": [
+    {
+      "type": 0,
+      "value": "Chat All"
     }
   ],
   "yRjHTu": [

@@ -7,7 +7,7 @@ import { Point } from "./entities/entity";
 import { Runway } from "./entities/runway";
 import { Textures } from "./textures";
 import { IntlShape } from "react-intl";
-import { GAME_INTL } from "../intl/gameIntl";
+import { GAME_INTL } from "../intl/messages";
 
 type PlaneData = {
     plane_type: PlaneType;

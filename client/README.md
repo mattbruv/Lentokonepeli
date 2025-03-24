@@ -16,4 +16,4 @@ TODO: fill further once process is clearer
 3. Translate stuff
 4. Compile translations into app
 
-- `npm run compile -- <some_locale>/fi.json --ast --out-file src/compiled-lang/<some_locale>.json`
+- `npm run compile -- lang/<some_locale>.json --ast --out-file src/compiled-lang/<some_locale>.json`

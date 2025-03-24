@@ -3,10 +3,11 @@ import { useDisclosure } from "@mantine/hooks";
 import { IconDeviceGamepad2, IconPlus, IconRestore, IconSitemap, IconTrash, IconUser } from "@tabler/icons-react";
 import React, { useState } from "react";
 import { NameEditor } from "./components/Name";
-import { DEFAULT_GAME_KEYBINDS, SETTING_DESCRIPTIONS, useSettingsContext } from "./contexts/settingsContext";
+import { DEFAULT_GAME_KEYBINDS, useSettingsContext } from "./contexts/settingsContext";
 import { GameAction } from "./hooks/keybinds/models";
 import { FormattedMessage, useIntl } from "react-intl";
 import { DEFAULT_LOCALE } from "./intl/IntlProvider";
+import { KEYBIND_INTL } from "./intl/messages";
 
 export function Settings() {
     const { settings, setSettings } = useSettingsContext();
@@ -60,7 +61,7 @@ export function Settings() {
                     })}
                 >
                     <Text size={"xl"} fw={"bold"}>
-                        {SETTING_DESCRIPTIONS[addToAction]}
+                        {intl.formatMessage(KEYBIND_INTL[addToAction])}
                     </Text>
                     <FormattedMessage
                         defaultMessage={"Press any key..."}
@@ -92,9 +93,9 @@ export function Settings() {
                     <Accordion.Panel>
                         <Card>
                             <Stack>
-                                {Object.entries(SETTING_DESCRIPTIONS).map(([action, description]) => (
+                                {Object.entries(KEYBIND_INTL).map(([action, descriptor]) => (
                                     <Group key={action}>
-                                        {description}:
+                                        {intl.formatMessage(descriptor)}:
                                         {settings.controls
                                             .filter((bind) => bind.action === action)
                                             .map((bind) => {

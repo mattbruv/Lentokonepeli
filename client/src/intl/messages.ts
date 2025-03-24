@@ -1,4 +1,52 @@
-import { defineMessage } from "react-intl";
+import { defineMessage, MessageDescriptor } from "react-intl";
+import { GameAction } from "../hooks/keybinds/models";
+
+export const KEYBIND_INTL: Record<GameAction, MessageDescriptor> = {
+    left: defineMessage({
+        defaultMessage: "Move Left",
+        description: "Title for the 'Move Left' action shown on the keybind settings section",
+    }),
+    right: defineMessage({
+        defaultMessage: "Move Right",
+        description: "Title for the 'Move Right' action shown on the keybind settings section",
+    }),
+    down: defineMessage({
+        defaultMessage: "Toggle Motor",
+        description: "Title for the 'Toggle Motor' action shown on the keybind settings section",
+    }),
+    up: defineMessage({
+        defaultMessage: "Flip Plane",
+        description: "Title for the 'Flip Plane' action shown on the keybind settings section",
+    }),
+    shift: defineMessage({
+        defaultMessage: "Bomb",
+        description: "Title for the 'Bomb' action shown on the keybind settings section",
+    }),
+    space: defineMessage({
+        defaultMessage: "Eject, Open Parachute",
+        description: "Title for the 'Eject, Open Parachute' action shown on the keybind settings section",
+    }),
+    enter: defineMessage({
+        defaultMessage: "Enter",
+        description: "Title for the 'Enter' action shown on the keybind settings section",
+    }),
+    ctrl: defineMessage({
+        defaultMessage: "Shoot",
+        description: "Title for the 'Shoot' action shown on the keybind settings section",
+    }),
+    chatAll: defineMessage({
+        defaultMessage: "Chat All",
+        description: "Title for the 'Chat All' action shown on the keybind settings section",
+    }),
+    chatTeam: defineMessage({
+        defaultMessage: "Chat Team",
+        description: "Title for the 'Chat Team' action shown on the keybind settings section",
+    }),
+    viewScoreboard: defineMessage({
+        defaultMessage: "View Scoreboard",
+        description: "Title for the 'View Scoreboard' action shown on the keybind settings section",
+    }),
+};
 
 export const GAME_INTL = {
     plane_name_Albatros: defineMessage({
@@ -52,4 +100,4 @@ export const GAME_INTL = {
             "Versatile mid-tier aircraft. Equipped with bombs in addition to a machine gun. Fast and powerful engine, though not agile.",
         description: "Description of the Salmson 2 aircraft",
     }),
-} as const;
+} as const satisfies Record<string, MessageDescriptor>;

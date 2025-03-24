@@ -27,7 +27,7 @@ export const IntlProvider: FC<PropsWithChildren> = ({ children }) => {
     }
 
     return (
-        <ReactIntlIntlProvider defaultLocale={DEFAULT_LOCALE} locale={locale} messages={messages}>
+        <ReactIntlIntlProvider onError={() => {}} defaultLocale={DEFAULT_LOCALE} locale={locale} messages={messages}>
             {children}
         </ReactIntlIntlProvider>
     );
