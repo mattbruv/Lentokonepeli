@@ -2,14 +2,8 @@ import { FC, PropsWithChildren, useEffect, useState } from "react";
 import { useSettingsContext } from "../contexts/settingsContext";
 import { MessageFormatElement, IntlProvider as ReactIntlIntlProvider } from "react-intl";
 
-async function loadLocaleData(locale: string): Promise<Record<string, MessageFormatElement[]>> {
-    switch (locale) {
-        case "fi":
-            return import("../compiled-lang/fi.json").then((file) => file.default);
-        default:
-            return import("../compiled-lang/en.json").then((file) => file.default);
-    }
-}
+const loadLocaleData = (locale: string): Promise<Record<string, MessageFormatElement[]>> =>
+    import(`../compiled-lang/${locale}.json`).then((file) => file.default);
 
 export const KNOWN_LOCALES = ["fi", "en"] as const;
 export const DEFAULT_LOCALE = "en" satisfies KnownLocale;
