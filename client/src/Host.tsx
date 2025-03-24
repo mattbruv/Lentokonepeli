@@ -55,7 +55,13 @@ export function Host({ level, recordGame }: HostProps) {
             <Card withBorder style={{ height: "100%" }}>
                 <Stack>
                     <Stack>
-                        <Text>Game Code:</Text>
+                        <Text>
+                            <FormattedMessage
+                                defaultMessage={"Game Code"}
+                                description={"Title shown above the shareable room code"}
+                            />
+                            :
+                        </Text>
                         <Text
                             style={{ color: "gray", fontSize: "1.5rem", fontFamily: "monospace" }}
                             size={"xl"}

@@ -63,6 +63,10 @@
     "defaultMessage": "Sopwith Camel",
     "description": "Name of the Sopwith Camel aircraft"
   },
+  "H6qNPr": {
+    "defaultMessage": "Join a Game",
+    "description": "Title for part for joining the game"
+  },
   "INGml3": {
     "defaultMessage": "Enter the 4 digit game code...",
     "description": "Infotext for input which is used to insert 4 digit game code to join games"
@@ -78,6 +82,14 @@
   "Nbb2Yc": {
     "defaultMessage": "Move Right",
     "description": "Title for the 'Move Right' action shown on the keybind settings section"
+  },
+  "Qt6faF": {
+    "defaultMessage": "Host a Game",
+    "description": "Title for section used for hosting a game"
+  },
+  "Sxp4im": {
+    "defaultMessage": "Code",
+    "description": "Title for selection used to insert the game code"
   },
   "U/mSA3": {
     "defaultMessage": "Reset Controls",
@@ -171,6 +183,10 @@
     "defaultMessage": "Join Game",
     "description": "Call to action button text for button which joins a an existing game"
   },
+  "q/xC9j": {
+    "defaultMessage": "Level",
+    "description": "Title for selection used to choose the game level"
+  },
   "scT0m8": {
     "defaultMessage": "Replay System Notice",
     "description": "title for a notice section for the Replay System"
@@ -214,5 +230,9 @@
   "zV7RzE": {
     "defaultMessage": "Equipped with bombs in addition to a machine gun, extremely durable, but a clumsy aircraft.",
     "description": "Description of the Junkers J.1 aircraft"
+  },
+  "zvKn4f": {
+    "defaultMessage": "Game Code",
+    "description": "Title shown above the shareable room code"
   }
 }

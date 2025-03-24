@@ -63,6 +63,10 @@
     "defaultMessage": "Sopwith Camel",
     "description": "Name of the Sopwith Camel aircraft"
   },
+  "H6qNPr": {
+    "defaultMessage": "Liity peliin",
+    "description": "Title for part for joining the game"
+  },
   "INGml3": {
     "defaultMessage": "Syötä 4 merkkiä sisältävä pelikoodi...",
     "description": "Infotext for input which is used to insert 4 digit game code to join games"
@@ -78,6 +82,14 @@
   "Nbb2Yc": {
     "defaultMessage": "Liiku oikealle",
     "description": "Title for the 'Move Right' action shown on the keybind settings section"
+  },
+  "Qt6faF": {
+    "defaultMessage": "Isännöi peli",
+    "description": "Title for section used for hosting a game"
+  },
+  "Sxp4im": {
+    "defaultMessage": "Pelikoodi",
+    "description": "Title for selection used to insert the game code"
   },
   "U/mSA3": {
     "defaultMessage": "Nollaa asetukset",
@@ -164,12 +176,16 @@
     "description": "Title for the 'Toggle Motor' action shown on the keybind settings section"
   },
   "p1ezxU": {
-    "defaultMessage": "Isännöi peli",
+    "defaultMessage": "Isännöi",
     "description": "Call to action button text for button which starts a new game as a Host"
   },
   "pd7fXb": {
-    "defaultMessage": "Liity peliin",
+    "defaultMessage": "Liity",
     "description": "Call to action button text for button which joins a an existing game"
+  },
+  "q/xC9j": {
+    "defaultMessage": "Kenttä",
+    "description": "Title for selection used to choose the game level"
   },
   "scT0m8": {
     "defaultMessage": "Uusintojen huomautus",
@@ -214,5 +230,9 @@
   "zV7RzE": {
     "defaultMessage": "Konekiväärin lisäksi pommeilla varustettu, erittäin kestävä, mutta kömpelö kone.",
     "description": "Description of the Junkers J.1 aircraft"
+  },
+  "zvKn4f": {
+    "defaultMessage": "Pelikoodi",
+    "description": "Title shown above the shareable room code"
   }
 }

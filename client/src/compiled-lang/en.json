@@ -95,6 +95,12 @@
       "value": "Sopwith Camel"
     }
   ],
+  "H6qNPr": [
+    {
+      "type": 0,
+      "value": "Join a Game"
+    }
+  ],
   "INGml3": [
     {
       "type": 0,
@@ -117,6 +123,18 @@
     {
       "type": 0,
       "value": "Move Right"
+    }
+  ],
+  "Qt6faF": [
+    {
+      "type": 0,
+      "value": "Host a Game"
+    }
+  ],
+  "Sxp4im": [
+    {
+      "type": 0,
+      "value": "Code"
     }
   ],
   "U/mSA3": [
@@ -257,6 +275,12 @@
       "value": "Join Game"
     }
   ],
+  "q/xC9j": [
+    {
+      "type": 0,
+      "value": "Level"
+    }
+  ],
   "scT0m8": [
     {
       "type": 0,
@@ -321,6 +345,12 @@
     {
       "type": 0,
       "value": "Equipped with bombs in addition to a machine gun, extremely durable, but a clumsy aircraft."
+    }
+  ],
+  "zvKn4f": [
+    {
+      "type": 0,
+      "value": "Game Code"
     }
   ]
 }

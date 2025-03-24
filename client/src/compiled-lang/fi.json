@@ -95,6 +95,12 @@
       "value": "Sopwith Camel"
     }
   ],
+  "H6qNPr": [
+    {
+      "type": 0,
+      "value": "Liity peliin"
+    }
+  ],
   "INGml3": [
     {
       "type": 0,
@@ -117,6 +123,18 @@
     {
       "type": 0,
       "value": "Liiku oikealle"
+    }
+  ],
+  "Qt6faF": [
+    {
+      "type": 0,
+      "value": "Isännöi peli"
+    }
+  ],
+  "Sxp4im": [
+    {
+      "type": 0,
+      "value": "Pelikoodi"
     }
   ],
   "U/mSA3": [
@@ -248,13 +266,19 @@
   "p1ezxU": [
     {
       "type": 0,
-      "value": "Isännöi peli"
+      "value": "Isännöi"
     }
   ],
   "pd7fXb": [
     {
       "type": 0,
-      "value": "Liity peliin"
+      "value": "Liity"
+    }
+  ],
+  "q/xC9j": [
+    {
+      "type": 0,
+      "value": "Kenttä"
     }
   ],
   "scT0m8": [
@@ -321,6 +345,12 @@
     {
       "type": 0,
       "value": "Konekiväärin lisäksi pommeilla varustettu, erittäin kestävä, mutta kömpelö kone."
+    }
+  ],
+  "zvKn4f": [
+    {
+      "type": 0,
+      "value": "Pelikoodi"
     }
   ]
 }

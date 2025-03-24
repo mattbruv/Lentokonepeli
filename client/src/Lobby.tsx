@@ -66,9 +66,22 @@ export function Lobby() {
                             style={{ width: "80%", textAlign: "center" }}
                         >
                             <Stack>
-                                <Title order={2}>Join a Game</Title>
+                                <Title order={2}>
+                                    {" "}
+                                    <FormattedMessage
+                                        defaultMessage={"Join a Game"}
+                                        description={"Title for part for joining the game"}
+                                    />
+                                </Title>
                                 <Group>
-                                    <Text>Code:</Text>
+                                    <Text>
+                                        {" "}
+                                        <FormattedMessage
+                                            defaultMessage={"Code"}
+                                            description={"Title for selection used to insert the game code"}
+                                        />
+                                        :
+                                    </Text>
                                     <TextInput
                                         value={joinId}
                                         onChange={(e) => setJoinId(e.target.value)}
@@ -112,9 +125,21 @@ export function Lobby() {
                             style={{ width: "80%", textAlign: "center" }}
                         >
                             <Stack>
-                                <Title order={2}>Host a Game</Title>
+                                <Title order={2}>
+                                    {" "}
+                                    <FormattedMessage
+                                        defaultMessage={"Host a Game"}
+                                        description={"Title for section used for hosting a game"}
+                                    />
+                                </Title>
                                 <Group>
-                                    <Text>Level:</Text>
+                                    <Text>
+                                        <FormattedMessage
+                                            defaultMessage={"Level"}
+                                            description={"Title for selection used to choose the game level"}
+                                        />
+                                        :
+                                    </Text>
                                     <Select
                                         data={Object.keys(Levels)}
                                         value={gameMap}
