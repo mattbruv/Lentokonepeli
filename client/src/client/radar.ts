@@ -18,6 +18,7 @@ export enum RadarObjectType {
     Runway,
     Plane,
     Man,
+    Bunker,
 }
 
 export type RadarObject = {
@@ -76,6 +77,7 @@ export class Radar {
             [RadarObjectType.Man]: (e) => this.renderObject(e),
             [RadarObjectType.Plane]: (e) => this.renderObject(e),
             [RadarObjectType.Runway]: (e) => this.renderRunway(e),
+            [RadarObjectType.Bunker]: (e) => this.renderRunway(e),
         };
     }
 

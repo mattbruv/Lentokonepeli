@@ -2,12 +2,13 @@ import { BunkerProperties } from "dogfight-types/BunkerProperties";
 import * as PIXI from "pixi.js";
 import { DrawLayer, TeamColor } from "../constants";
 import { Textures } from "../textures";
-import { Entity, EntityUpdateCallbacks } from "./entity";
+import { Entity, EntityUpdateCallbacks, RadarEnabled } from "./entity";
 import { soundManager } from "../soundManager";
 import { Team } from "dogfight-types/Team";
 import { Runway } from "./runway";
+import { RadarObject, RadarObjectType } from "../radar";
 
-export class Bunker implements Entity<BunkerProperties> {
+export class Bunker implements Entity<BunkerProperties>, RadarEnabled {
     public props: Required<BunkerProperties> = {
         team: "Allies",
         client_x: 0,
@@ -16,7 +17,7 @@ export class Bunker implements Entity<BunkerProperties> {
     };
 
     private container: PIXI.Container;
-    private bunkerTexture: PIXI.Sprite;
+    private bunkerSprite: PIXI.Sprite;
     private healthBar: PIXI.Graphics;
     private blinking = false;
     private lastHealth = 0;
@@ -30,13 +31,28 @@ export class Bunker implements Entity<BunkerProperties> {
 
     constructor() {
         this.container = new PIXI.Container();
-        this.bunkerTexture = new PIXI.Sprite();
+        this.bunkerSprite = new PIXI.Sprite();
         this.healthBar = new PIXI.Graphics();
 
-        this.container.addChild(this.bunkerTexture);
+        this.container.addChild(this.bunkerSprite);
         this.container.addChild(this.healthBar);
 
         this.container.zIndex = DrawLayer.Bunker;
+    }
+
+    public getRadarInfo(): RadarObject {
+        // The original game shows the runway dot in the middle
+        const halfWidth = Math.round(this.bunkerSprite.width / 2);
+        const x = this.props.client_x;
+        const offset = halfWidth;
+        return {
+            type: RadarObjectType.Bunker,
+            x: x + offset,
+            y: this.props.client_y + this.container.height - 5,
+            health: this.props.client_health,
+            team: this.props.team,
+            width: this.bunkerSprite.width,
+        };
     }
 
     public getContainer(): PIXI.Container {
@@ -58,7 +74,7 @@ export class Bunker implements Entity<BunkerProperties> {
                 // blink
                 const filter = new PIXI.ColorMatrixFilter();
                 filter.matrix = Runway.getHealthBarMatrix();
-                this.bunkerTexture.filters = [filter];
+                this.bunkerSprite.filters = [filter];
                 this.blinking = true;
 
                 // play blink sound
@@ -70,7 +86,7 @@ export class Bunker implements Entity<BunkerProperties> {
 
                 window.setTimeout(() => {
                     this.blinking = false;
-                    this.bunkerTexture.filters = null;
+                    this.bunkerSprite.filters = null;
                 }, 100);
             }
 
@@ -123,6 +139,6 @@ export class Bunker implements Entity<BunkerProperties> {
     }
 
     private updateTexture() {
-        this.bunkerTexture.texture = this.getTexture();
+        this.bunkerSprite.texture = this.getTexture();
     }
 }

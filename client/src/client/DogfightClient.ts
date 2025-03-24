@@ -468,6 +468,7 @@ export class DogfightClient {
             [RadarObjectType.Man]: this.men,
             [RadarObjectType.Plane]: this.planes,
             [RadarObjectType.Runway]: this.runways,
+            [RadarObjectType.Bunker]: this.bunkers,
         };
 
         for (const [_, objects] of Object.entries(radarObjs)) {
