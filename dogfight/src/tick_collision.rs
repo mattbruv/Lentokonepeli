@@ -96,6 +96,30 @@ impl World {
                 }
             }
 
+            for (_bunker_id, bunker) in self.bunkers.get_map_mut() {
+                if man.check_collision(bunker) {
+                    match man.get_state() {
+                        // If we're walking into a bunker, don't move forward
+                        ManState::Standing | ManState::WalkingLeft | ManState::WalkingRight => {
+                            man.set_to_previous_x();
+                        }
+                        // Otherwise, kill the man
+                        _ => {
+                            actions.push(Action::RemoveEntity(RemoveData::Man(*man_id)));
+
+                            if let Some((pid, _)) = controlling {
+                                actions.push(Action::RegisterKill(KillEvent::new(
+                                    *pid,
+                                    None,
+                                    KillMethod::Man,
+                                )));
+                            }
+                        }
+                    }
+                    continue 'men;
+                }
+            }
+
             // Man -> Ground
             for (_, ground) in self.grounds.get_map_mut() {
                 if man.check_collision(ground) {
