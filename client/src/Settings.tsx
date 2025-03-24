@@ -2,11 +2,11 @@ import { Accordion, ActionIcon, Button, Card, Group, Kbd, Modal, Select, Stack, 
 import { useDisclosure } from "@mantine/hooks";
 import { IconDeviceGamepad2, IconPlus, IconRestore, IconSitemap, IconTrash, IconUser } from "@tabler/icons-react";
 import React, { useState } from "react";
+import { FormattedMessage, useIntl } from "react-intl";
 import { NameEditor } from "./components/Name";
 import { DEFAULT_GAME_KEYBINDS, useSettingsContext } from "./contexts/settingsContext";
 import { GameAction } from "./hooks/keybinds/models";
-import { FormattedMessage, useIntl } from "react-intl";
-import { DEFAULT_LOCALE, KNOWN_LOCALE_DROPDOWN_VALUES } from "./intl/IntlProvider";
+import { getDefaultLocale, KNOWN_LOCALE_DROPDOWN_VALUES, KnownLocale } from "./intl/IntlProvider";
 import { KEYBIND_INTL } from "./intl/messages";
 
 export function Settings() {
@@ -177,8 +177,7 @@ export function Settings() {
                             onChange={(_, item) => {
                                 setSettings({
                                     ...settings,
-                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                    locale: (item?.value as any) ?? DEFAULT_LOCALE,
+                                    locale: (item?.value as KnownLocale) ?? getDefaultLocale(),
                                 });
                             }}
                             data={KNOWN_LOCALE_DROPDOWN_VALUES}
