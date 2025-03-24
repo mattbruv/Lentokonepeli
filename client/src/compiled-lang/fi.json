@@ -17,6 +17,12 @@
       "value": "Legendaarinen kolmitaso. Erittäin kettärä ja myös mainio maksimilentokorkeus."
     }
   ],
+  "2w7ZSO": [
+    {
+      "type": 0,
+      "value": "Kuolleet"
+    }
+  ],
   "3R2xaB": [
     {
       "type": 0,
@@ -119,10 +125,22 @@
       "value": "Erittäin ketterä. ei suositella aloitteleville lentäjille."
     }
   ],
+  "MGsduE": [
+    {
+      "type": 0,
+      "value": "Joukkue"
+    }
+  ],
   "Nbb2Yc": [
     {
       "type": 0,
       "value": "Liiku oikealle"
+    }
+  ],
+  "PEq6j5": [
+    {
+      "type": 0,
+      "value": "sulkea chat"
     }
   ],
   "Qj15PN": [
@@ -177,6 +195,12 @@
     {
       "type": 0,
       "value": "Avaa tulostaulu"
+    }
+  ],
+  "Wo8cms": [
+    {
+      "type": 0,
+      "value": "Pisteet"
     }
   ],
   "Y5ZG9P": [
@@ -251,6 +275,18 @@
       "value": "Lisää pikanäppäin"
     }
   ],
+  "iu4I/w": [
+    {
+      "type": 0,
+      "value": "Tarkkuus"
+    }
+  ],
+  "ivAE2s": [
+    {
+      "type": 0,
+      "value": "Ping"
+    }
+  ],
   "izomYD": [
     {
       "type": 0,
@@ -261,6 +297,12 @@
     {
       "type": 0,
       "value": "Asetukset"
+    }
+  ],
+  "l2d2GO": [
+    {
+      "type": 0,
+      "value": "Nimi"
     }
   ],
   "lA7naj": [
@@ -297,6 +339,12 @@
     {
       "type": 0,
       "value": "Kenttä"
+    }
+  ],
+  "r1oUWJ": [
+    {
+      "type": 0,
+      "value": "Näytä kaikki viestit"
     }
   ],
   "scT0m8": [
@@ -351,6 +399,18 @@
     {
       "type": 0,
       "value": "Aseta nimi"
+    }
+  ],
+  "xS6Oh+": [
+    {
+      "type": 0,
+      "value": "Lähetä viesti..."
+    }
+  ],
+  "xVnyJE": [
+    {
+      "type": 0,
+      "value": "Tappaa"
     }
   ],
   "y49T/p": [

@@ -1,8 +1,9 @@
-import { PlayerProperties } from "dogfight-types/PlayerProperties";
-import "./Scoreboard.css";
 import { Center, Table } from "@mantine/core";
-import { formatName } from "../client/helpers";
+import { PlayerProperties } from "dogfight-types/PlayerProperties";
 import { Team } from "dogfight-types/Team";
+import { useIntl } from "react-intl";
+import { formatName } from "../client/helpers";
+import "./Scoreboard.css";
 
 export type ScoreboardProps = {
     myPlayerGuid: string | null;
@@ -27,6 +28,7 @@ function getTeamClass(myTeam: Team, theirs: Team | null | undefined): "noteam" |
 }
 
 export function Scoreboard({ playerData, myPlayerGuid }: ScoreboardProps) {
+    const intl = useIntl();
     const me = playerData.find((x) => x.guid === myPlayerGuid);
     const myTeam = me?.team ?? "Centrals";
 
@@ -42,22 +44,57 @@ export function Scoreboard({ playerData, myPlayerGuid }: ScoreboardProps) {
                 <Table.Thead>
                     <Table.Tr className="header">
                         <Table.Th>
-                            <Center>Team</Center>
-                        </Table.Th>
-                        <Table.Th>Name</Table.Th>
-                        <Table.Th>
-                            <Center>Score</Center>
-                        </Table.Th>
-                        <Table.Th>
-                            <Center>Frags</Center>
+                            <Center>
+                                {intl.formatMessage({
+                                    defaultMessage: "Team",
+                                    description: "scoreboard: Team",
+                                })}
+                            </Center>
                         </Table.Th>
                         <Table.Th>
-                            <Center>Deaths</Center>
+                            {intl.formatMessage({
+                                defaultMessage: "Name",
+                                description: "scoreboard: Name",
+                            })}
                         </Table.Th>
                         <Table.Th>
-                            <Center>Accuracy</Center>
+                            <Center>
+                                {intl.formatMessage({
+                                    defaultMessage: "Score",
+                                    description: "scoreboard: Score",
+                                })}
+                            </Center>
                         </Table.Th>
-                        <Table.Th>Ping</Table.Th>
+                        <Table.Th>
+                            <Center>
+                                {intl.formatMessage({
+                                    defaultMessage: "Frags",
+                                    description: "scoreboard: Frags",
+                                })}
+                            </Center>
+                        </Table.Th>
+                        <Table.Th>
+                            <Center>
+                                {intl.formatMessage({
+                                    defaultMessage: "Deaths",
+                                    description: "scoreboard: Deaths",
+                                })}
+                            </Center>
+                        </Table.Th>
+                        <Table.Th>
+                            <Center>
+                                {intl.formatMessage({
+                                    defaultMessage: "Accuracy",
+                                    description: "scoreboard: Accuracy",
+                                })}
+                            </Center>
+                        </Table.Th>
+                        <Table.Th>
+                            {intl.formatMessage({
+                                defaultMessage: "Ping",
+                                description: "scoreboard: Ping",
+                            })}
+                        </Table.Th>
                     </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>

@@ -1,6 +1,8 @@
-import { Box, Flex, Kbd, TextInput } from "@mantine/core";
+import { Box, Flex, Group, Kbd, Switch, TextInput } from "@mantine/core";
 import { ChatMessage } from "dogfight-types/ChatMessage";
+import { Team } from "dogfight-types/Team";
 import { useEffect, useRef, useState } from "react";
+import { useIntl } from "react-intl";
 import { useSettingsContext } from "../contexts/settingsContext";
 import "./Chat.css";
 
@@ -16,15 +18,19 @@ export interface ChatMessageTimed extends ChatMessage {
 }
 
 export type ChatProps = {
+    myTeam: Team | null;
     messages: ChatMessageTimed[];
     onSendMessage: (message: string, isGlobal: boolean) => void;
 };
 
-export function Chat({ messages, onSendMessage }: ChatProps) {
+export function Chat({ messages, onSendMessage, myTeam }: ChatProps) {
+    const intl = useIntl();
     const [message, setMessage] = useState("");
     const { globalState, sendChatMessage, setGlobalState } = useSettingsContext();
     const { chatState } = globalState;
     const inputRef = useRef<HTMLInputElement>(null);
+
+    const [showHistory, setShowHistory] = useState(false);
 
     useEffect(() => {
         if (chatState === ChatMode.Passive) {
@@ -53,8 +59,11 @@ export function Chat({ messages, onSendMessage }: ChatProps) {
         return "chat passive";
     }
 
+    let filteredMessages = messages.filter((x) => !x.private || x.team === myTeam);
+    filteredMessages = showHistory ? filteredMessages : filteredMessages.slice(-5);
+
     const renderMessages =
-        globalState.chatState === ChatMode.Passive ? messages.filter((x) => x.isNewMessage) : messages;
+        globalState.chatState === ChatMode.Passive ? filteredMessages.filter((x) => x.isNewMessage) : filteredMessages;
 
     return (
         <div className={getChatClass()}>
@@ -65,13 +74,30 @@ export function Chat({ messages, onSendMessage }: ChatProps) {
                             ref={inputRef}
                             onChange={(event) => setMessage(event.target.value)}
                             value={message}
-                            placeholder={"Send a message..."}
+                            placeholder={intl.formatMessage({
+                                defaultMessage: "Send a message...",
+                                description: "chat: new message input placeholder",
+                            })}
                         />
-                        <div>
-                            <span>
-                                <Kbd>Esc</Kbd> to close chat
-                            </span>
-                        </div>
+                        <Group>
+                            <div>
+                                <span>
+                                    <Kbd>Esc</Kbd>{" "}
+                                    {intl.formatMessage({
+                                        defaultMessage: "to close chat",
+                                        description: "message indicating 'Esc' closes the chat",
+                                    })}
+                                </span>
+                            </div>
+                            <Switch
+                                label={intl.formatMessage({
+                                    defaultMessage: "Show All Messages",
+                                    description: "'show all messages' switch text",
+                                })}
+                                checked={showHistory}
+                                onClick={(e) => setShowHistory(e.currentTarget.checked)}
+                            />
+                        </Group>
                     </Box>
                 )}
                 <Box mt={"auto"} className="all-messages">

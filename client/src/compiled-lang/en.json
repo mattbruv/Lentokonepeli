@@ -17,6 +17,12 @@
       "value": "A legendary triplane. Extremely agile and also excellent at maximum flight altitude."
     }
   ],
+  "2w7ZSO": [
+    {
+      "type": 0,
+      "value": "Deaths"
+    }
+  ],
   "3R2xaB": [
     {
       "type": 0,
@@ -119,10 +125,22 @@
       "value": "Extremely agile. Not recommended for beginner pilots."
     }
   ],
+  "MGsduE": [
+    {
+      "type": 0,
+      "value": "Team"
+    }
+  ],
   "Nbb2Yc": [
     {
       "type": 0,
       "value": "Move Right"
+    }
+  ],
+  "PEq6j5": [
+    {
+      "type": 0,
+      "value": "to close chat"
     }
   ],
   "Qj15PN": [
@@ -177,6 +195,12 @@
     {
       "type": 0,
       "value": "View Scoreboard"
+    }
+  ],
+  "Wo8cms": [
+    {
+      "type": 0,
+      "value": "Score"
     }
   ],
   "Y5ZG9P": [
@@ -251,6 +275,18 @@
       "value": "Add Key Binding"
     }
   ],
+  "iu4I/w": [
+    {
+      "type": 0,
+      "value": "Accuracy"
+    }
+  ],
+  "ivAE2s": [
+    {
+      "type": 0,
+      "value": "Ping"
+    }
+  ],
   "izomYD": [
     {
       "type": 0,
@@ -261,6 +297,12 @@
     {
       "type": 0,
       "value": "Settings"
+    }
+  ],
+  "l2d2GO": [
+    {
+      "type": 0,
+      "value": "Name"
     }
   ],
   "lA7naj": [
@@ -297,6 +339,12 @@
     {
       "type": 0,
       "value": "Level"
+    }
+  ],
+  "r1oUWJ": [
+    {
+      "type": 0,
+      "value": "Show All Messages"
     }
   ],
   "scT0m8": [
@@ -351,6 +399,18 @@
     {
       "type": 0,
       "value": "Set name"
+    }
+  ],
+  "xS6Oh+": [
+    {
+      "type": 0,
+      "value": "Send a message..."
+    }
+  ],
+  "xVnyJE": [
+    {
+      "type": 0,
+      "value": "Frags"
     }
   ],
   "y49T/p": [

@@ -11,6 +11,10 @@
     "defaultMessage": "Legendaarinen kolmitaso. Erittäin kettärä ja myös mainio maksimilentokorkeus.",
     "description": "Description of the Fokker DR.I aircraft"
   },
+  "2w7ZSO": {
+    "defaultMessage": "Kuolleet",
+    "description": "scoreboard: Deaths"
+  },
   "3R2xaB": {
     "defaultMessage": "Ammu",
     "description": "Title for the 'Shoot' action shown on the keybind settings section"
@@ -79,9 +83,17 @@
     "defaultMessage": "Erittäin ketterä. ei suositella aloitteleville lentäjille.",
     "description": "Description of the Sopwith Camel aircraft"
   },
+  "MGsduE": {
+    "defaultMessage": "Joukkue",
+    "description": "scoreboard: Team"
+  },
   "Nbb2Yc": {
     "defaultMessage": "Liiku oikealle",
     "description": "Title for the 'Move Right' action shown on the keybind settings section"
+  },
+  "PEq6j5": {
+    "defaultMessage": "sulkea chat",
+    "description": "message indicating 'Esc' closes the chat"
   },
   "Qj15PN": {
     "defaultMessage": "Vaihda Light-teema",
@@ -118,6 +130,10 @@
   "Wjn/We": {
     "defaultMessage": "Avaa tulostaulu",
     "description": "Title for the 'View Scoreboard' action shown on the keybind settings section"
+  },
+  "Wo8cms": {
+    "defaultMessage": "Pisteet",
+    "description": "scoreboard: Score"
   },
   "Y5ZG9P": {
     "defaultMessage": "Tämän voi vaihtaa jälkeenpäin asetuksista",
@@ -167,6 +183,14 @@
     "defaultMessage": "Lisää pikanäppäin",
     "description": "Title for modal where keybinds are added"
   },
+  "iu4I/w": {
+    "defaultMessage": "Tarkkuus",
+    "description": "scoreboard: Accuracy"
+  },
+  "ivAE2s": {
+    "defaultMessage": "Ping",
+    "description": "scoreboard: Ping"
+  },
   "izomYD": {
     "defaultMessage": "Katso pelin uusinta",
     "description": "Title for the Replay System page"
@@ -174,6 +198,10 @@
   "kfnjH9": {
     "defaultMessage": "Asetukset",
     "description": "Sidebar link description for the Settings page"
+  },
+  "l2d2GO": {
+    "defaultMessage": "Nimi",
+    "description": "scoreboard: Name"
   },
   "lA7naj": {
     "defaultMessage": "Lisää näppäin",
@@ -198,6 +226,10 @@
   "q/xC9j": {
     "defaultMessage": "Kenttä",
     "description": "Title for selection used to choose the game level"
+  },
+  "r1oUWJ": {
+    "defaultMessage": "Näytä kaikki viestit",
+    "description": "'show all messages' switch text"
   },
   "scT0m8": {
     "defaultMessage": "Uusintojen huomautus",
@@ -234,6 +266,14 @@
   "xRGqrp": {
     "defaultMessage": "Aseta nimi",
     "description": "Call to action on setting section button which sets the name user has input"
+  },
+  "xS6Oh+": {
+    "defaultMessage": "Lähetä viesti...",
+    "description": "chat: new message input placeholder"
+  },
+  "xVnyJE": {
+    "defaultMessage": "Tappaa",
+    "description": "scoreboard: Frags"
   },
   "y49T/p": {
     "defaultMessage": "Viestitä kaikille",

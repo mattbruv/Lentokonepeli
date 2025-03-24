@@ -11,6 +11,10 @@
     "defaultMessage": "A legendary triplane. Extremely agile and also excellent at maximum flight altitude.",
     "description": "Description of the Fokker DR.I aircraft"
   },
+  "2w7ZSO": {
+    "defaultMessage": "Deaths",
+    "description": "scoreboard: Deaths"
+  },
   "3R2xaB": {
     "defaultMessage": "Shoot",
     "description": "Title for the 'Shoot' action shown on the keybind settings section"
@@ -79,9 +83,17 @@
     "defaultMessage": "Extremely agile. Not recommended for beginner pilots.",
     "description": "Description of the Sopwith Camel aircraft"
   },
+  "MGsduE": {
+    "defaultMessage": "Team",
+    "description": "scoreboard: Team"
+  },
   "Nbb2Yc": {
     "defaultMessage": "Move Right",
     "description": "Title for the 'Move Right' action shown on the keybind settings section"
+  },
+  "PEq6j5": {
+    "defaultMessage": "to close chat",
+    "description": "message indicating 'Esc' closes the chat"
   },
   "Qj15PN": {
     "defaultMessage": "Toggle Light Mode",
@@ -118,6 +130,10 @@
   "Wjn/We": {
     "defaultMessage": "View Scoreboard",
     "description": "Title for the 'View Scoreboard' action shown on the keybind settings section"
+  },
+  "Wo8cms": {
+    "defaultMessage": "Score",
+    "description": "scoreboard: Score"
   },
   "Y5ZG9P": {
     "defaultMessage": "You can change this any time in the settings menu",
@@ -167,6 +183,14 @@
     "defaultMessage": "Add Key Binding",
     "description": "Title for modal where keybinds are added"
   },
+  "iu4I/w": {
+    "defaultMessage": "Accuracy",
+    "description": "scoreboard: Accuracy"
+  },
+  "ivAE2s": {
+    "defaultMessage": "Ping",
+    "description": "scoreboard: Ping"
+  },
   "izomYD": {
     "defaultMessage": "Watch a Game Replay",
     "description": "Title for the Replay System page"
@@ -174,6 +198,10 @@
   "kfnjH9": {
     "defaultMessage": "Settings",
     "description": "Sidebar link description for the Settings page"
+  },
+  "l2d2GO": {
+    "defaultMessage": "Name",
+    "description": "scoreboard: Name"
   },
   "lA7naj": {
     "defaultMessage": "Add new key",
@@ -198,6 +226,10 @@
   "q/xC9j": {
     "defaultMessage": "Level",
     "description": "Title for selection used to choose the game level"
+  },
+  "r1oUWJ": {
+    "defaultMessage": "Show All Messages",
+    "description": "'show all messages' switch text"
   },
   "scT0m8": {
     "defaultMessage": "Replay System Notice",
@@ -234,6 +266,14 @@
   "xRGqrp": {
     "defaultMessage": "Set name",
     "description": "Call to action on setting section button which sets the name user has input"
+  },
+  "xS6Oh+": {
+    "defaultMessage": "Send a message...",
+    "description": "chat: new message input placeholder"
+  },
+  "xVnyJE": {
+    "defaultMessage": "Frags",
+    "description": "scoreboard: Frags"
   },
   "y49T/p": {
     "defaultMessage": "Chat All",

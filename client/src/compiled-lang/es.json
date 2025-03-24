@@ -17,6 +17,12 @@
       "value": "Un triplano legendario. Extremadamente ágil y también excelente a máxima altitud de vuelo."
     }
   ],
+  "2w7ZSO": [
+    {
+      "type": 0,
+      "value": "Muertes"
+    }
+  ],
   "3R2xaB": [
     {
       "type": 0,
@@ -119,10 +125,22 @@
       "value": "Extremadamente ágil. No recomendado para pilotos novatos."
     }
   ],
+  "MGsduE": [
+    {
+      "type": 0,
+      "value": "Equipo"
+    }
+  ],
   "Nbb2Yc": [
     {
       "type": 0,
       "value": "Mover a la derecha"
+    }
+  ],
+  "PEq6j5": [
+    {
+      "type": 0,
+      "value": "Cerrar el chat"
     }
   ],
   "Qj15PN": [
@@ -177,6 +195,12 @@
     {
       "type": 0,
       "value": "Ver el marcador"
+    }
+  ],
+  "Wo8cms": [
+    {
+      "type": 0,
+      "value": "Puntos"
     }
   ],
   "Y5ZG9P": [
@@ -251,6 +275,18 @@
       "value": "Añadir enlace de teclas"
     }
   ],
+  "iu4I/w": [
+    {
+      "type": 0,
+      "value": "Precisión"
+    }
+  ],
+  "ivAE2s": [
+    {
+      "type": 0,
+      "value": "Ping"
+    }
+  ],
   "izomYD": [
     {
       "type": 0,
@@ -261,6 +297,12 @@
     {
       "type": 0,
       "value": "Ajustes"
+    }
+  ],
+  "l2d2GO": [
+    {
+      "type": 0,
+      "value": "Nombre"
     }
   ],
   "lA7naj": [
@@ -297,6 +339,12 @@
     {
       "type": 0,
       "value": "Mapa"
+    }
+  ],
+  "r1oUWJ": [
+    {
+      "type": 0,
+      "value": "Ver todos los mensajes"
     }
   ],
   "scT0m8": [
@@ -351,6 +399,18 @@
     {
       "type": 0,
       "value": "Establecer Nombre"
+    }
+  ],
+  "xS6Oh+": [
+    {
+      "type": 0,
+      "value": "Envía un mensaje..."
+    }
+  ],
+  "xVnyJE": [
+    {
+      "type": 0,
+      "value": "Mata"
     }
   ],
   "y49T/p": [

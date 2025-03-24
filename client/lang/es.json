@@ -11,6 +11,10 @@
     "defaultMessage": "Un triplano legendario. Extremadamente ágil y también excelente a máxima altitud de vuelo.",
     "description": "Description of the Fokker DR.I aircraft"
   },
+  "2w7ZSO": {
+    "defaultMessage": "Muertes",
+    "description": "scoreboard: Deaths"
+  },
   "3R2xaB": {
     "defaultMessage": "Disparar",
     "description": "Title for the 'Shoot' action shown on the keybind settings section"
@@ -79,9 +83,17 @@
     "defaultMessage": "Extremadamente ágil. No recomendado para pilotos novatos.",
     "description": "Description of the Sopwith Camel aircraft"
   },
+  "MGsduE": {
+    "defaultMessage": "Equipo",
+    "description": "scoreboard: Team"
+  },
   "Nbb2Yc": {
     "defaultMessage": "Mover a la derecha",
     "description": "Title for the 'Move Right' action shown on the keybind settings section"
+  },
+  "PEq6j5": {
+    "defaultMessage": "Cerrar el chat",
+    "description": "message indicating 'Esc' closes the chat"
   },
   "Qj15PN": {
     "defaultMessage": "Alternar tema luminoso",
@@ -118,6 +130,10 @@
   "Wjn/We": {
     "defaultMessage": "Ver el marcador",
     "description": "Title for the 'View Scoreboard' action shown on the keybind settings section"
+  },
+  "Wo8cms": {
+    "defaultMessage": "Puntos",
+    "description": "scoreboard: Score"
   },
   "Y5ZG9P": {
     "defaultMessage": "Puedes cambiar esto en cualquier momento en el menú de ajustes",
@@ -167,6 +183,14 @@
     "defaultMessage": "Añadir enlace de teclas",
     "description": "Title for modal where keybinds are added"
   },
+  "iu4I/w": {
+    "defaultMessage": "Precisión",
+    "description": "scoreboard: Accuracy"
+  },
+  "ivAE2s": {
+    "defaultMessage": "Ping",
+    "description": "scoreboard: Ping"
+  },
   "izomYD": {
     "defaultMessage": "Ver la repetición de un partido",
     "description": "Title for the Replay System page"
@@ -174,6 +198,10 @@
   "kfnjH9": {
     "defaultMessage": "Ajustes",
     "description": "Sidebar link description for the Settings page"
+  },
+  "l2d2GO": {
+    "defaultMessage": "Nombre",
+    "description": "scoreboard: Name"
   },
   "lA7naj": {
     "defaultMessage": "Añadir nueva tecla",
@@ -198,6 +226,10 @@
   "q/xC9j": {
     "defaultMessage": "Mapa",
     "description": "Title for selection used to choose the game level"
+  },
+  "r1oUWJ": {
+    "defaultMessage": "Ver todos los mensajes",
+    "description": "'show all messages' switch text"
   },
   "scT0m8": {
     "defaultMessage": "Aviso sobre el sistema de repetición",
@@ -234,6 +266,14 @@
   "xRGqrp": {
     "defaultMessage": "Establecer Nombre",
     "description": "Call to action on setting section button which sets the name user has input"
+  },
+  "xS6Oh+": {
+    "defaultMessage": "Envía un mensaje...",
+    "description": "chat: new message input placeholder"
+  },
+  "xVnyJE": {
+    "defaultMessage": "Mata",
+    "description": "scoreboard: Frags"
   },
   "y49T/p": {
     "defaultMessage": "Chatear con todos",

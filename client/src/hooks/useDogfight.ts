@@ -7,12 +7,12 @@ import { ServerOutput } from "dogfight-types/ServerOutput";
 import { Team } from "dogfight-types/Team";
 import { DogfightWeb } from "dogfight-web";
 import { useEffect, useMemo, useState } from "react";
+import { useIntl } from "react-intl";
 import { DogfightClient, GameClientCallbacks } from "../client/DogfightClient";
 import { ChatMessageTimed } from "../components/Chat";
 import { randomGuid } from "../helpers";
 import { useDevKeybinds } from "./keybinds/useDevKeybinds";
 import { useGameKeybinds } from "./keybinds/useGameKeybinds";
-import { useIntl } from "react-intl";
 
 export type DogfightCallbacks = {
     handleClientCommand: (command: PlayerCommand) => void;
@@ -92,9 +92,7 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
                 }, 5000);
 
                 setMessages((prev) => {
-                    prev.push(timedMessage);
-                    // Show last 10 messages
-                    return prev.slice(-10);
+                    return [...prev, timedMessage];
                 });
             },
         };
