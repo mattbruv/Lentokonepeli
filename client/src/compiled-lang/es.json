@@ -125,10 +125,22 @@
       "value": "Mover a la derecha"
     }
   ],
+  "Qj15PN": [
+    {
+      "type": 0,
+      "value": "Alternar tema luminoso"
+    }
+  ],
   "Qt6faF": [
     {
       "type": 0,
       "value": "Organizar un partido"
+    }
+  ],
+  "SDo2PQ": [
+    {
+      "type": 0,
+      "value": "Ver el código fuente en GitHub"
     }
   ],
   "Sxp4im": [
@@ -297,6 +309,12 @@
     {
       "type": 0,
       "value": "Chatear con el equipo"
+    }
+  ],
+  "twmPPM": [
+    {
+      "type": 0,
+      "value": "Activar tema oscuro"
     }
   ],
   "urz5xm": [

@@ -1,13 +1,13 @@
-import "./App.css";
-import { AppShell, Group, Text, Burger, UnstyledButton, Button, Tooltip, useMantineColorScheme } from "@mantine/core";
+import { AppShell, Burger, Button, Group, Text, Tooltip, UnstyledButton, useMantineColorScheme } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import classes from "./App.module.css";
 import { IconBrandDiscord, IconBrandGithub, IconMoon, IconSun } from "@tabler/icons-react";
-import { Lobby } from "./Lobby";
+import { FormattedMessage, useIntl } from "react-intl";
 import { NavLink, Route, Routes } from "react-router-dom";
+import "./App.css";
+import classes from "./App.module.css";
+import { Lobby } from "./Lobby";
 import { Replay } from "./Replay";
 import { Settings } from "./Settings";
-import { FormattedMessage, useIntl } from "react-intl";
 
 function App() {
     const intl = useIntl();
@@ -15,7 +15,15 @@ function App() {
 
     const { toggleColorScheme, colorScheme } = useMantineColorScheme();
 
-    const toggleText = "Toggle " + (colorScheme === "dark" ? "Light" : "Dark") + " Mode";
+    const toggleLight = intl.formatMessage({
+        defaultMessage: "Toggle Light Mode",
+        description: "Toggle light mode button text",
+    });
+    const toggleDark = intl.formatMessage({
+        defaultMessage: "Toggle Dark Mode",
+        description: "Toggle dark mode button text",
+    });
+    const toggleText = colorScheme === "dark" ? toggleLight : toggleDark;
 
     return (
         <AppShell
@@ -54,7 +62,12 @@ function App() {
                                         <IconBrandDiscord />
                                     </Button>
                                 </Tooltip>
-                                <Tooltip label="Github">
+                                <Tooltip
+                                    label={intl.formatMessage({
+                                        defaultMessage: "View the Source Code on GitHub",
+                                        description: "Navbar hover for viewing the source code",
+                                    })}
+                                >
                                     <Button
                                         component="a"
                                         target={"_blank"}

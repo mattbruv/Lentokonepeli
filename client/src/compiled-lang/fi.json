@@ -125,10 +125,22 @@
       "value": "Liiku oikealle"
     }
   ],
+  "Qj15PN": [
+    {
+      "type": 0,
+      "value": "Vaihda Light-teema"
+    }
+  ],
   "Qt6faF": [
     {
       "type": 0,
       "value": "Isännöi peli"
+    }
+  ],
+  "SDo2PQ": [
+    {
+      "type": 0,
+      "value": "Katso lähdekoodi GitHubissa"
     }
   ],
   "Sxp4im": [
@@ -297,6 +309,12 @@
     {
       "type": 0,
       "value": "Viestitä tiimille"
+    }
+  ],
+  "twmPPM": [
+    {
+      "type": 0,
+      "value": "Vaihda tumma teema"
     }
   ],
   "urz5xm": [

@@ -6,6 +6,8 @@ Project uses react-intl for the copies, they can be extracted automatically and 
 
 ### Add new language to translate
 
+Find your two-digit language code here: https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes
+
 1. add new locale to `LOCALES_TO_TRANSLATE` in `./update_translations.py`
 2. run `python3 ./update_translations.py`
 3. add new locale to `KNOWN_LOCALES` in `./src/intl/IntlProvider.tsx`

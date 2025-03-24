@@ -83,9 +83,17 @@
     "defaultMessage": "Move Right",
     "description": "Title for the 'Move Right' action shown on the keybind settings section"
   },
+  "Qj15PN": {
+    "defaultMessage": "Toggle Light Mode",
+    "description": "Toggle light mode button text"
+  },
   "Qt6faF": {
     "defaultMessage": "Host a Game",
     "description": "Title for section used for hosting a game"
+  },
+  "SDo2PQ": {
+    "defaultMessage": "View the Source Code on GitHub",
+    "description": "Navbar hover for viewing the source code"
   },
   "Sxp4im": {
     "defaultMessage": "Code",
@@ -198,6 +206,10 @@
   "tN8/0L": {
     "defaultMessage": "Chat Team",
     "description": "Title for the 'Chat Team' action shown on the keybind settings section"
+  },
+  "twmPPM": {
+    "defaultMessage": "Toggle Dark Mode",
+    "description": "Toggle dark mode button text"
   },
   "urz5xm": {
     "defaultMessage": "Unbind Last Key",

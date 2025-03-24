@@ -83,9 +83,17 @@
     "defaultMessage": "Mover a la derecha",
     "description": "Title for the 'Move Right' action shown on the keybind settings section"
   },
+  "Qj15PN": {
+    "defaultMessage": "Alternar tema luminoso",
+    "description": "Toggle light mode button text"
+  },
   "Qt6faF": {
     "defaultMessage": "Organizar un partido",
     "description": "Title for section used for hosting a game"
+  },
+  "SDo2PQ": {
+    "defaultMessage": "Ver el código fuente en GitHub",
+    "description": "Navbar hover for viewing the source code"
   },
   "Sxp4im": {
     "defaultMessage": "Código",
@@ -198,6 +206,10 @@
   "tN8/0L": {
     "defaultMessage": "Chatear con el equipo",
     "description": "Title for the 'Chat Team' action shown on the keybind settings section"
+  },
+  "twmPPM": {
+    "defaultMessage": "Activar tema oscuro",
+    "description": "Toggle dark mode button text"
   },
   "urz5xm": {
     "defaultMessage": "Desvincular última tecla",
