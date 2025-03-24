@@ -6,6 +6,8 @@ import { EntityGroup, GameClientCallbacks } from "./DogfightClient";
 import { Point } from "./entities/entity";
 import { Runway } from "./entities/runway";
 import { Textures } from "./textures";
+import { IntlShape } from "react-intl";
+import { GAME_INTL } from "../intl/gameIntl";
 
 type PlaneData = {
     plane_type: PlaneType;
@@ -48,7 +50,7 @@ export class RunwaySelector {
             lineHeight: 24,
             fill: 0,
             wordWrap: true,
-            wordWrapWidth: 250,
+            wordWrapWidth: 280,
             fontWeight: "600",
         });
 
@@ -68,53 +70,50 @@ export class RunwaySelector {
         };
     }
 
-    public init(callbacks: GameClientCallbacks) {
+    public init(callbacks: GameClientCallbacks, intl: IntlShape) {
         this.callbacks = callbacks;
         this.infoBox.texture = Textures["selectionScreen.gif"];
 
         this.planeMap.Centrals.push({
             plane_type: "Albatros",
             texture: Textures["pic_plane4.gif"],
-            plane_name: "Albatros D.II",
-            plane_description:
-                "Konekiväärillä varustettu peruskone ilman erityisen hyviä tai huonoja puolia. Hyvä valinta aloittelijalle.",
+            plane_name: intl.formatMessage(GAME_INTL.plane_name_Albatros),
+            plane_description: intl.formatMessage(GAME_INTL.plane_description_Albatros),
         });
 
         this.planeMap.Centrals.push({
             plane_type: "Fokker",
             texture: Textures["pic_plane6.gif"],
-            plane_name: "Fokker DR.I",
-            plane_description: "Legendaarinen kolmitaso. Erittäin kettärä ja myös mainio maksimilentokorkeus.",
+            plane_name: intl.formatMessage(GAME_INTL.plane_name_Fokker),
+            plane_description: intl.formatMessage(GAME_INTL.plane_description_Fokker),
         });
 
         this.planeMap.Centrals.push({
             plane_type: "Junkers",
             texture: Textures["pic_plane5.gif"],
-            plane_name: "Junkers J.1",
-            plane_description: "Konekiväärin lisäksi pommeilla varustettu, erittäin kestävä, mutta kömpelö kone.",
+            plane_name: intl.formatMessage(GAME_INTL.plane_name_Junkers),
+            plane_description: intl.formatMessage(GAME_INTL.plane_description_Junkers),
         });
 
         this.planeMap.Allies.push({
             plane_type: "Bristol",
             texture: Textures["pic_plane7.gif"],
-            plane_name: "Bristol F.2b",
-            plane_description:
-                "Sangen tulivoimaisella konekiväärillä varustettu kone. Hyvä valinta etenkin aloitteleville lentäjille.",
+            plane_name: intl.formatMessage(GAME_INTL.plane_name_Bristol),
+            plane_description: intl.formatMessage(GAME_INTL.plane_description_Bristol),
         });
 
         this.planeMap.Allies.push({
             plane_type: "Sopwith",
             texture: Textures["pic_plane9.gif"],
-            plane_name: "Sopwith Camel",
-            plane_description: "Erittäin ketterä. ei suositella aloitteleville lentäjille.",
+            plane_name: intl.formatMessage(GAME_INTL.plane_name_Sopwith),
+            plane_description: intl.formatMessage(GAME_INTL.plane_description_Sopwith),
         });
 
         this.planeMap.Allies.push({
             plane_type: "Salmson",
             texture: Textures["pic_plane8.gif"],
-            plane_name: "Salmson 2",
-            plane_description:
-                "Monipuolinen keskitaso. Konekiväärin lisäksi pommit. Nopea ja vahvamoottorinen kone, joskaan ei ketterä.",
+            plane_name: intl.formatMessage(GAME_INTL.plane_name_Salmson),
+            plane_description: intl.formatMessage(GAME_INTL.plane_description_Salmson),
         });
 
         this.updatePlaneInfo();

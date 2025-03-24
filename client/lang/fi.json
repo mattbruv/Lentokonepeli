@@ -1,0 +1,30 @@
+{
+  "+NFaSb": {
+    "defaultMessage": "Lentokonepeli (Kehityksessä)",
+    "description": "Main title of site shown on nav"
+  },
+  "1eTw3/": {
+    "defaultMessage": "Monipuolinen keskitaso. Konekiväärin lisäksi pommit. Nopea ja vahvamoottorinen kone, joskaan ei ketterä.",
+    "description": "Description of the Salmson 2 aircraft"
+  },
+  "1nUWUC": {
+    "defaultMessage": "Konekiväärin lisäksi pommeilla varustettu, erittäin kestävä, mutta kömpelö kone.",
+    "description": "Description of the Junkers J.1 aircraft"
+  },
+  "W8o0YR": {
+    "defaultMessage": "Sangen tulivoimaisella konekiväärillä varustettu kone. Hyvä valinta etenkin aloitteleville lentäjille.",
+    "description": "Description of the Bristol F.2b aircraft"
+  },
+  "jdWziJ": {
+    "defaultMessage": "Legendaarinen kolmitaso. Erittäin kettärä ja myös mainio maksimilentokorkeus.",
+    "description": "Description of the Fokker DR.I aircraft"
+  },
+  "mr3BWC": {
+    "defaultMessage": "Erittäin ketterä. ei suositella aloitteleville lentäjille.",
+    "description": "Description of the Sopwith Camel aircraft"
+  },
+  "uzYIPJ": {
+    "defaultMessage": "Konekiväärillä varustettu peruskone ilman erityisen hyviä tai huonoja puolia. Hyvä valinta aloittelijalle.",
+    "description": "Description of the Albatros D.II aircraft"
+  }
+}

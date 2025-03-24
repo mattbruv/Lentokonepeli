@@ -6,6 +6,7 @@ import { Game } from "./components/Game";
 import { useSettingsContext } from "./contexts/settingsContext";
 import { useLocalHost } from "./hooks/useLocalHost";
 import { LevelName } from "./Lobby";
+import { FormattedMessage } from "react-intl";
 
 type HostProps = {
     level: LevelName;
@@ -65,7 +66,10 @@ export function Host({ level, recordGame }: HostProps) {
                     </Stack>
                     <Stack>
                         <Button onClick={saveReplay} rightSection={<IconFileDownloadFilled />}>
-                            Save Replay File
+                            <FormattedMessage
+                                defaultMessage={"Save Replay File"}
+                                description={"Button text for button which saves replay file"}
+                            />
                         </Button>
                     </Stack>
                 </Stack>
