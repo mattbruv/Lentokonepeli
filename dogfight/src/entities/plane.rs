@@ -174,7 +174,7 @@ impl Plane {
             last_shot_ms: 0,
 
             last_motor_on_ms: 0,
-            motor_on_delay_ms: 500,
+            motor_on_delay_ms: 200,
 
             takeoff_counter: 0,
             dodge_counter: 0,
