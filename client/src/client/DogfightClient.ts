@@ -34,6 +34,7 @@ import { RadarObject, RadarObjectType } from "./radar";
 import { RunwaySelector } from "./runwaySelector";
 import { TeamChooser } from "./teamChooser";
 import { loadTextures, Textures } from "./textures";
+import { IntlShape } from "react-intl";
 
 export type GameClientCallbacks = {
     chooseTeam: (team: Team | null) => void;
@@ -292,12 +293,12 @@ export class DogfightClient {
         }
     }
 
-    public async init(callbacks: GameClientCallbacks, element: HTMLDivElement) {
+    public async init(callbacks: GameClientCallbacks, element: HTMLDivElement, intl: IntlShape) {
         await loadTextures();
         this.appendView(element);
         this.callbacks = callbacks;
         this.teamChooser.init(this.callbacks);
-        this.runwaySelector.init(this.callbacks);
+        this.runwaySelector.init(this.callbacks, intl);
         this.keyboard.init((keyboard) => this.onKeyChange(keyboard));
         this.gameHUD.init();
         this.killFeed.init();

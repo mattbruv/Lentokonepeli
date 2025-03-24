@@ -1,30 +1,20 @@
-# React + TypeScript + Vite
+# Lentokonepeli client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Translations
 
-Currently, two official plugins are available:
+Project uses react-intl for the copies, they can be extracted automatically and translated.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Add new language to translate
 
-## Expanding the ESLint configuration
+Find your two-digit language code here: https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1. add new locale to `LOCALES_TO_TRANSLATE` in `./update_translations.py`
+2. run `python3 ./update_translations.py`
+3. add new locale to `KNOWN_LOCALES` in `./src/intl/IntlProvider.tsx`
+4. ready to translate as per instructions below
 
-- Configure the top-level `parserOptions` property like this:
+### Translating copies for locale
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+1. make translation files up to date by running `python3 ./update_translations.py`
+2. translate copies generated into `lang/<locale>.json`
+3. run `python3 ./update_translations.py` again

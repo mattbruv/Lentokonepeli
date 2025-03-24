@@ -1,19 +1,29 @@
-import "./App.css";
-import { AppShell, Group, Text, Burger, UnstyledButton, Button, Tooltip, useMantineColorScheme } from "@mantine/core";
+import { AppShell, Burger, Button, Group, Text, Tooltip, UnstyledButton, useMantineColorScheme } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import classes from "./App.module.css";
 import { IconBrandDiscord, IconBrandGithub, IconMoon, IconSun } from "@tabler/icons-react";
-import { Lobby } from "./Lobby";
+import { FormattedMessage, useIntl } from "react-intl";
 import { NavLink, Route, Routes } from "react-router-dom";
+import "./App.css";
+import classes from "./App.module.css";
+import { Lobby } from "./Lobby";
 import { Replay } from "./Replay";
 import { Settings } from "./Settings";
 
 function App() {
+    const intl = useIntl();
     const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
     const { toggleColorScheme, colorScheme } = useMantineColorScheme();
 
-    const toggleText = "Toggle " + (colorScheme === "dark" ? "Light" : "Dark") + " Mode";
+    const toggleLight = intl.formatMessage({
+        defaultMessage: "Toggle Light Mode",
+        description: "Toggle light mode button text",
+    });
+    const toggleDark = intl.formatMessage({
+        defaultMessage: "Toggle Dark Mode",
+        description: "Toggle dark mode button text",
+    });
+    const toggleText = colorScheme === "dark" ? toggleLight : toggleDark;
 
     return (
         <AppShell
@@ -29,10 +39,20 @@ function App() {
                 <Group h="100%" px="md">
                     <Burger opened={desktopOpened} onClick={toggleDesktop} visibleFrom="sm" size="sm" />
                     <Group justify="space-between" style={{ flex: 1 }}>
-                        <Text size={"lg"}>Lentokonepeli (In Development)</Text>
+                        <Text size={"lg"}>
+                            <FormattedMessage
+                                defaultMessage={"Lentokonepeli (In Development)"}
+                                description={"Main title of site shown on nav"}
+                            />
+                        </Text>
                         <Group ml="xl" gap={0} visibleFrom="sm">
                             <Button.Group>
-                                <Tooltip label="Join us on Discord!">
+                                <Tooltip
+                                    label={intl.formatMessage({
+                                        defaultMessage: "Join us on Discord!",
+                                        description: "Navbar hover for discord button",
+                                    })}
+                                >
                                     <Button
                                         component="a"
                                         target={"_blank"}
@@ -42,7 +62,12 @@ function App() {
                                         <IconBrandDiscord />
                                     </Button>
                                 </Tooltip>
-                                <Tooltip label="Github">
+                                <Tooltip
+                                    label={intl.formatMessage({
+                                        defaultMessage: "View the Source Code on GitHub",
+                                        description: "Navbar hover for viewing the source code",
+                                    })}
+                                >
                                     <Button
                                         component="a"
                                         target={"_blank"}
@@ -64,14 +89,37 @@ function App() {
             </AppShell.Header>
             <AppShell.Navbar py="md" px={4}>
                 <NavLink to={"/"}>
-                    <UnstyledButton className={classes.control}>Play</UnstyledButton>
+                    <UnstyledButton className={classes.control}>
+                        <FormattedMessage
+                            defaultMessage={"Play"}
+                            description={"Sidebar link description for the main game page used to play the game"}
+                        />
+                    </UnstyledButton>
                 </NavLink>
                 <NavLink to={"/replay"}>
-                    <UnstyledButton className={classes.control}>Watch Replay</UnstyledButton>
+                    <UnstyledButton className={classes.control}>
+                        {" "}
+                        <FormattedMessage
+                            defaultMessage={"Watch Replay"}
+                            description={"Sidebar link description for the Replay System page"}
+                        />
+                    </UnstyledButton>
                 </NavLink>
-                <UnstyledButton className={classes.control}>Level Editor</UnstyledButton>
+                <UnstyledButton className={classes.control}>
+                    {" "}
+                    <FormattedMessage
+                        defaultMessage={"Level Editor"}
+                        description={"Sidebar link description for the Level Editor"}
+                    />
+                </UnstyledButton>
                 <NavLink to={"/settings"}>
-                    <UnstyledButton className={classes.control}>Settings</UnstyledButton>
+                    <UnstyledButton className={classes.control}>
+                        {" "}
+                        <FormattedMessage
+                            defaultMessage={"Settings"}
+                            description={"Sidebar link description for the Settings page"}
+                        />
+                    </UnstyledButton>
                 </NavLink>
             </AppShell.Navbar>
             <AppShell.Main>

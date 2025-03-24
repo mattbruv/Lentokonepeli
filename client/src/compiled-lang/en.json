@@ -1,0 +1,380 @@
+{
+  "+NFaSb": [
+    {
+      "type": 0,
+      "value": "Lentokonepeli (In Development)"
+    }
+  ],
+  "/KlrcC": [
+    {
+      "type": 0,
+      "value": "Username"
+    }
+  ],
+  "07P703": [
+    {
+      "type": 0,
+      "value": "A legendary triplane. Extremely agile and also excellent at maximum flight altitude."
+    }
+  ],
+  "3R2xaB": [
+    {
+      "type": 0,
+      "value": "Shoot"
+    }
+  ],
+  "4GxiBe": [
+    {
+      "type": 0,
+      "value": "Select a game map..."
+    }
+  ],
+  "4MNKGm": [
+    {
+      "type": 0,
+      "value": "Eject, Open Parachute"
+    }
+  ],
+  "7kZMTs": [
+    {
+      "type": 0,
+      "value": "The replay system is currently experimental, lacking features, and still inactive development. You may experience problems until the replay feature isin a stable state."
+    }
+  ],
+  "8Am/Pl": [
+    {
+      "type": 0,
+      "value": "Basic aircraft equipped with a machine gun, without particularly good or bad qualities. A good choice for a beginner."
+    }
+  ],
+  "8WM3G7": [
+    {
+      "type": 0,
+      "value": "Enter"
+    }
+  ],
+  "8iVdSN": [
+    {
+      "type": 0,
+      "value": "Control Settings"
+    }
+  ],
+  "B1CMe5": [
+    {
+      "type": 0,
+      "value": "A replay file can be downloaded at any time when hosting a game."
+    }
+  ],
+  "BLykMd": [
+    {
+      "type": 0,
+      "value": "Clan"
+    }
+  ],
+  "DWNyUG": [
+    {
+      "type": 0,
+      "value": "Select Replay"
+    }
+  ],
+  "E/uHyU": [
+    {
+      "type": 0,
+      "value": "An aircraft equipped with a fairly powerful machine gun. A good choice, especially for beginner pilots."
+    }
+  ],
+  "G7DhrV": [
+    {
+      "type": 0,
+      "value": "Play"
+    }
+  ],
+  "GEspS4": [
+    {
+      "type": 0,
+      "value": "Sopwith Camel"
+    }
+  ],
+  "H6qNPr": [
+    {
+      "type": 0,
+      "value": "Join a Game"
+    }
+  ],
+  "INGml3": [
+    {
+      "type": 0,
+      "value": "Enter the 4 digit game code..."
+    }
+  ],
+  "M2xffJ": [
+    {
+      "type": 0,
+      "value": "Save Replay File"
+    }
+  ],
+  "M9/1jj": [
+    {
+      "type": 0,
+      "value": "Extremely agile. Not recommended for beginner pilots."
+    }
+  ],
+  "Nbb2Yc": [
+    {
+      "type": 0,
+      "value": "Move Right"
+    }
+  ],
+  "Qj15PN": [
+    {
+      "type": 0,
+      "value": "Toggle Light Mode"
+    }
+  ],
+  "Qt6faF": [
+    {
+      "type": 0,
+      "value": "Host a Game"
+    }
+  ],
+  "SDo2PQ": [
+    {
+      "type": 0,
+      "value": "View the Source Code on GitHub"
+    }
+  ],
+  "Sxp4im": [
+    {
+      "type": 0,
+      "value": "Code"
+    }
+  ],
+  "U/mSA3": [
+    {
+      "type": 0,
+      "value": "Reset Controls"
+    }
+  ],
+  "URI5Vx": [
+    {
+      "type": 0,
+      "value": "User Settings"
+    }
+  ],
+  "WWTrIb": [
+    {
+      "type": 0,
+      "value": "Versatile mid-tier aircraft. Equipped with bombs in addition to a machine gun. Fast and powerful engine, though not agile."
+    }
+  ],
+  "WYS1bQ": [
+    {
+      "type": 0,
+      "value": "Press any key..."
+    }
+  ],
+  "Wjn/We": [
+    {
+      "type": 0,
+      "value": "View Scoreboard"
+    }
+  ],
+  "Y5ZG9P": [
+    {
+      "type": 0,
+      "value": "You can change this any time in the settings menu"
+    }
+  ],
+  "aLjUL6": [
+    {
+      "type": 0,
+      "value": "Level Editor"
+    }
+  ],
+  "aSDY0F": [
+    {
+      "type": 0,
+      "value": "Albatros D.II"
+    }
+  ],
+  "buqDOb": [
+    {
+      "type": 0,
+      "value": "Choose Username"
+    }
+  ],
+  "cFDrGv": [
+    {
+      "type": 0,
+      "value": "An optional clan to prefix to your name"
+    }
+  ],
+  "crlI8a": [
+    {
+      "type": 0,
+      "value": "Salmson 2"
+    }
+  ],
+  "d2cMrt": [
+    {
+      "type": 0,
+      "value": "Toggle Mute"
+    }
+  ],
+  "dPTAzZ": [
+    {
+      "type": 0,
+      "value": "Move Left"
+    }
+  ],
+  "ezKLsY": [
+    {
+      "type": 0,
+      "value": "Fokker DR.I"
+    }
+  ],
+  "f3ix4b": [
+    {
+      "type": 0,
+      "value": "Bomb"
+    }
+  ],
+  "gAAkRv": [
+    {
+      "type": 0,
+      "value": "Name should be between 3 and 20 characters"
+    }
+  ],
+  "gg+aZq": [
+    {
+      "type": 0,
+      "value": "Add Key Binding"
+    }
+  ],
+  "izomYD": [
+    {
+      "type": 0,
+      "value": "Watch a Game Replay"
+    }
+  ],
+  "kfnjH9": [
+    {
+      "type": 0,
+      "value": "Settings"
+    }
+  ],
+  "lA7naj": [
+    {
+      "type": 0,
+      "value": "Add new key"
+    }
+  ],
+  "mq7h++": [
+    {
+      "type": 0,
+      "value": "Watch Replay"
+    }
+  ],
+  "ohIqzI": [
+    {
+      "type": 0,
+      "value": "Toggle Motor"
+    }
+  ],
+  "p1ezxU": [
+    {
+      "type": 0,
+      "value": "Host Game"
+    }
+  ],
+  "pd7fXb": [
+    {
+      "type": 0,
+      "value": "Join Game"
+    }
+  ],
+  "q/xC9j": [
+    {
+      "type": 0,
+      "value": "Level"
+    }
+  ],
+  "scT0m8": [
+    {
+      "type": 0,
+      "value": "Replay System Notice"
+    }
+  ],
+  "tN8/0L": [
+    {
+      "type": 0,
+      "value": "Chat Team"
+    }
+  ],
+  "twmPPM": [
+    {
+      "type": 0,
+      "value": "Toggle Dark Mode"
+    }
+  ],
+  "urz5xm": [
+    {
+      "type": 0,
+      "value": "Unbind Last Key"
+    }
+  ],
+  "vL5iqo": [
+    {
+      "type": 0,
+      "value": "Site Settings"
+    }
+  ],
+  "vrJzQq": [
+    {
+      "type": 0,
+      "value": "Bristol F.2b"
+    }
+  ],
+  "wpH/Pl": [
+    {
+      "type": 0,
+      "value": "Join us on Discord!"
+    }
+  ],
+  "xPJ6oZ": [
+    {
+      "type": 0,
+      "value": "Flip Plane"
+    }
+  ],
+  "xRGqrp": [
+    {
+      "type": 0,
+      "value": "Set name"
+    }
+  ],
+  "y49T/p": [
+    {
+      "type": 0,
+      "value": "Chat All"
+    }
+  ],
+  "yRjHTu": [
+    {
+      "type": 0,
+      "value": "Junkers J.1"
+    }
+  ],
+  "zV7RzE": [
+    {
+      "type": 0,
+      "value": "Equipped with bombs in addition to a machine gun, extremely durable, but a clumsy aircraft."
+    }
+  ],
+  "zvKn4f": [
+    {
+      "type": 0,
+      "value": "Game Code"
+    }
+  ]
+}

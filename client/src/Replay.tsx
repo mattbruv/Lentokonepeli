@@ -3,6 +3,7 @@ import { IconFileUpload, IconInfoCircle } from "@tabler/icons-react";
 import { useRef, useState } from "react";
 import { Game } from "./components/Game";
 import { useReplay } from "./hooks/useReplay";
+import { FormattedMessage, useIntl } from "react-intl";
 
 enum ReplayState {
     ProvideFile,
@@ -11,6 +12,7 @@ enum ReplayState {
 }
 
 export function Replay() {
+    const intl = useIntl();
     const { loadReplay, initialize, playerData, playerGuid, messages } = useReplay();
 
     const [state, setState] = useState<ReplayState>(ReplayState.ProvideFile);
@@ -63,14 +65,24 @@ export function Replay() {
                             style={{ maxWidth: 500, textAlign: "center" }}
                         >
                             <Stack>
-                                <Title order={2}>Watch a Game Replay</Title>
+                                <Title order={2}>
+                                    <FormattedMessage
+                                        defaultMessage={"Watch a Game Replay"}
+                                        description={"Title for the Replay System page"}
+                                    />
+                                </Title>
                                 <Stack>
                                     <FileButton onChange={onUploadFile} accept=".lento">
                                         {(props) => (
                                             <Tooltip
                                                 openDelay={500}
                                                 position={"bottom"}
-                                                label="A replay file can be downloaded at any time when hosting a game."
+                                                label={intl.formatMessage({
+                                                    defaultMessage:
+                                                        "A replay file can be downloaded at any time when hosting a game.",
+                                                    description:
+                                                        "Tooltip for a button explaining that replay files can be downloaded during gameplay, this button will be used to find a replay file from the user's computer",
+                                                })}
                                             >
                                                 <Button
                                                     {...props}
@@ -81,7 +93,12 @@ export function Replay() {
                                                     size={"lg"}
                                                     rightSection={<IconFileUpload />}
                                                 >
-                                                    Select Replay
+                                                    <FormattedMessage
+                                                        defaultMessage={"Select Replay"}
+                                                        description={
+                                                            "Button text for a button which opens system file system to select a lentokonepeli replay file from"
+                                                        }
+                                                    />
                                                 </Button>
                                             </Tooltip>
                                         )}
@@ -90,13 +107,21 @@ export function Replay() {
                                         style={{ maxWidth: 400 }}
                                         variant="light"
                                         color="yellow"
-                                        title="Replay System Notice"
+                                        title={intl.formatMessage({
+                                            defaultMessage: "Replay System Notice",
+                                            description: "title for a notice section for the Replay System",
+                                        })}
                                         icon={<IconInfoCircle />}
                                     >
                                         <div>
-                                            The replay system is currently experimental, lacking features, and still in
-                                            active development. You may experience problems until the replay feature is
-                                            in a stable state.
+                                            <FormattedMessage
+                                                defaultMessage={
+                                                    "The replay system is currently experimental, lacking features, and still inactive development. You may experience problems until the replay feature isin a stable state."
+                                                }
+                                                description={
+                                                    "Informative text about the current state of the replay system"
+                                                }
+                                            />
                                         </div>
                                     </Alert>
                                 </Stack>

@@ -1,0 +1,254 @@
+{
+  "+NFaSb": {
+    "defaultMessage": "Lentokonepeli (Kehityksessä)",
+    "description": "Main title of site shown on nav"
+  },
+  "/KlrcC": {
+    "defaultMessage": "Käyttäjänimi",
+    "description": "Settings section title used to modify the username"
+  },
+  "07P703": {
+    "defaultMessage": "Legendaarinen kolmitaso. Erittäin kettärä ja myös mainio maksimilentokorkeus.",
+    "description": "Description of the Fokker DR.I aircraft"
+  },
+  "3R2xaB": {
+    "defaultMessage": "Ammu",
+    "description": "Title for the 'Shoot' action shown on the keybind settings section"
+  },
+  "4GxiBe": {
+    "defaultMessage": "Valitse pelattava kartta...",
+    "description": "Infotext for input used to select which map will be used for the hosted game"
+  },
+  "4MNKGm": {
+    "defaultMessage": "Laukaise heittoistuin, Avaa laskuvarjo",
+    "description": "Title for the 'Eject, Open Parachute' action shown on the keybind settings section"
+  },
+  "7kZMTs": {
+    "defaultMessage": "Pelien uusinta on tällä hetkellä kokeellinen, eikä siinä ole kaikkia ominaisuuksia, ja se on edelleen kehityksessä. Saatat kohdata ongelmia, kunnes toistotoiminto on vakaa.",
+    "description": "Informative text about the current state of the replay system"
+  },
+  "8Am/Pl": {
+    "defaultMessage": "Konekiväärillä varustettu peruskone ilman erityisen hyviä tai huonoja puolia. Hyvä valinta aloittelijalle.",
+    "description": "Description of the Albatros D.II aircraft"
+  },
+  "8WM3G7": {
+    "defaultMessage": "Enter",
+    "description": "Title for the 'Enter' action shown on the keybind settings section"
+  },
+  "8iVdSN": {
+    "defaultMessage": "Pikanäppäinasetukset",
+    "description": "Title for a settings section used to modify the keybinds used in-game"
+  },
+  "B1CMe5": {
+    "defaultMessage": "Pelin uusintoja voi ladata isännöidessä pelejä",
+    "description": "Tooltip for a button explaining that replay files can be downloaded during gameplay, this button will be used to find a replay file from the user's computer"
+  },
+  "BLykMd": {
+    "defaultMessage": "Klaani",
+    "description": "Settings section title used to modify the clan name"
+  },
+  "DWNyUG": {
+    "defaultMessage": "Valitse uusintatiedosto",
+    "description": "Button text for a button which opens system file system to select a lentokonepeli replay file from"
+  },
+  "E/uHyU": {
+    "defaultMessage": "Sangen tulivoimaisella konekiväärillä varustettu kone. Hyvä valinta etenkin aloitteleville lentäjille.",
+    "description": "Description of the Bristol F.2b aircraft"
+  },
+  "G7DhrV": {
+    "defaultMessage": "Pelaa",
+    "description": "Sidebar link description for the main game page used to play the game"
+  },
+  "GEspS4": {
+    "defaultMessage": "Sopwith Camel",
+    "description": "Name of the Sopwith Camel aircraft"
+  },
+  "H6qNPr": {
+    "defaultMessage": "Liity peliin",
+    "description": "Title for part for joining the game"
+  },
+  "INGml3": {
+    "defaultMessage": "Syötä 4 merkkiä sisältävä pelikoodi...",
+    "description": "Infotext for input which is used to insert 4 digit game code to join games"
+  },
+  "M2xffJ": {
+    "defaultMessage": "Tallenna uusinta",
+    "description": "Button text for button which saves replay file"
+  },
+  "M9/1jj": {
+    "defaultMessage": "Erittäin ketterä. ei suositella aloitteleville lentäjille.",
+    "description": "Description of the Sopwith Camel aircraft"
+  },
+  "Nbb2Yc": {
+    "defaultMessage": "Liiku oikealle",
+    "description": "Title for the 'Move Right' action shown on the keybind settings section"
+  },
+  "Qj15PN": {
+    "defaultMessage": "Vaihda Light-teema",
+    "description": "Toggle light mode button text"
+  },
+  "Qt6faF": {
+    "defaultMessage": "Isännöi peli",
+    "description": "Title for section used for hosting a game"
+  },
+  "SDo2PQ": {
+    "defaultMessage": "Katso lähdekoodi GitHubissa",
+    "description": "Navbar hover for viewing the source code"
+  },
+  "Sxp4im": {
+    "defaultMessage": "Pelikoodi",
+    "description": "Title for selection used to insert the game code"
+  },
+  "U/mSA3": {
+    "defaultMessage": "Nollaa asetukset",
+    "description": "Button used to reset user defined keybinds on the settings page"
+  },
+  "URI5Vx": {
+    "defaultMessage": "Käyttäjäasetukset",
+    "description": "Title for a settings section used to modify user info used in-game"
+  },
+  "WWTrIb": {
+    "defaultMessage": "Monipuolinen keskitaso. Konekiväärin lisäksi pommit. Nopea ja vahvamoottorinen kone, joskaan ei ketterä.",
+    "description": "Description of the Salmson 2 aircraft"
+  },
+  "WYS1bQ": {
+    "defaultMessage": "Paina mitä tahansa näppäintä...",
+    "description": "Info text explaining to press any key to set a keybind for a game action"
+  },
+  "Wjn/We": {
+    "defaultMessage": "Avaa tulostaulu",
+    "description": "Title for the 'View Scoreboard' action shown on the keybind settings section"
+  },
+  "Y5ZG9P": {
+    "defaultMessage": "Tämän voi vaihtaa jälkeenpäin asetuksista",
+    "description": "Tooltip for the käyttäjänimi setting section"
+  },
+  "aLjUL6": {
+    "defaultMessage": "Kenttäeditori",
+    "description": "Sidebar link description for the Level Editor"
+  },
+  "aSDY0F": {
+    "defaultMessage": "Albatros D.II",
+    "description": "Name of the Albatros D.II aircraft"
+  },
+  "buqDOb": {
+    "defaultMessage": "Valitse Käyttäjänimi",
+    "description": "Title for modal used to choose username"
+  },
+  "cFDrGv": {
+    "defaultMessage": "Valinnainen etuliite käyttääjänimen eteen",
+    "description": "Tooltip for the clan setting section"
+  },
+  "crlI8a": {
+    "defaultMessage": "Salmson 2",
+    "description": "Name of the Salmson 2 aircraft"
+  },
+  "d2cMrt": {
+    "defaultMessage": "Vaihda äänien tila",
+    "description": "Title for the 'Toggle Mute' action shown on the keybind settings section"
+  },
+  "dPTAzZ": {
+    "defaultMessage": "Liiku vasemmalle",
+    "description": "Title for the 'Move Left' action shown on the keybind settings section"
+  },
+  "ezKLsY": {
+    "defaultMessage": "Fokker DR.I",
+    "description": "Name of the Fokker DR.I aircraft"
+  },
+  "f3ix4b": {
+    "defaultMessage": "Pommita",
+    "description": "Title for the 'Bomb' action shown on the keybind settings section"
+  },
+  "gAAkRv": {
+    "defaultMessage": "Nimen tulee olla vähintään 3 ja enintään 20 merkkiä",
+    "description": "Label explaining username constraints"
+  },
+  "gg+aZq": {
+    "defaultMessage": "Lisää pikanäppäin",
+    "description": "Title for modal where keybinds are added"
+  },
+  "izomYD": {
+    "defaultMessage": "Katso pelin uusinta",
+    "description": "Title for the Replay System page"
+  },
+  "kfnjH9": {
+    "defaultMessage": "Asetukset",
+    "description": "Sidebar link description for the Settings page"
+  },
+  "lA7naj": {
+    "defaultMessage": "Lisää näppäin",
+    "description": "Tooltip for a button used to add a new keybind for an action"
+  },
+  "mq7h++": {
+    "defaultMessage": "Uusinnat",
+    "description": "Sidebar link description for the Replay System page"
+  },
+  "ohIqzI": {
+    "defaultMessage": "Vaihda moottorin tila",
+    "description": "Title for the 'Toggle Motor' action shown on the keybind settings section"
+  },
+  "p1ezxU": {
+    "defaultMessage": "Isännöi",
+    "description": "Call to action button text for button which starts a new game as a Host"
+  },
+  "pd7fXb": {
+    "defaultMessage": "Liity",
+    "description": "Call to action button text for button which joins a an existing game"
+  },
+  "q/xC9j": {
+    "defaultMessage": "Kenttä",
+    "description": "Title for selection used to choose the game level"
+  },
+  "scT0m8": {
+    "defaultMessage": "Uusintojen huomautus",
+    "description": "title for a notice section for the Replay System"
+  },
+  "tN8/0L": {
+    "defaultMessage": "Viestitä tiimille",
+    "description": "Title for the 'Chat Team' action shown on the keybind settings section"
+  },
+  "twmPPM": {
+    "defaultMessage": "Vaihda tumma teema",
+    "description": "Toggle dark mode button text"
+  },
+  "urz5xm": {
+    "defaultMessage": "Poista viimeisin pikanäppäin",
+    "description": "Tooltip for a button used to remove last keybind from an action"
+  },
+  "vL5iqo": {
+    "defaultMessage": "Sivustoasetukset",
+    "description": "Title for a settings section used to modify general site settings"
+  },
+  "vrJzQq": {
+    "defaultMessage": "Bristol F.2b",
+    "description": "Name of the Bristol F.2b aircraft"
+  },
+  "wpH/Pl": {
+    "defaultMessage": "Liity discord palvelimelle!",
+    "description": "Navbar hover for discord button"
+  },
+  "xPJ6oZ": {
+    "defaultMessage": "Käännä lentokone",
+    "description": "Title for the 'Flip Plane' action shown on the keybind settings section"
+  },
+  "xRGqrp": {
+    "defaultMessage": "Aseta nimi",
+    "description": "Call to action on setting section button which sets the name user has input"
+  },
+  "y49T/p": {
+    "defaultMessage": "Viestitä kaikille",
+    "description": "Title for the 'Chat All' action shown on the keybind settings section"
+  },
+  "yRjHTu": {
+    "defaultMessage": "Junkers J.1",
+    "description": "Name of the Junkers J.1 aircraft"
+  },
+  "zV7RzE": {
+    "defaultMessage": "Konekiväärin lisäksi pommeilla varustettu, erittäin kestävä, mutta kömpelö kone.",
+    "description": "Description of the Junkers J.1 aircraft"
+  },
+  "zvKn4f": {
+    "defaultMessage": "Pelikoodi",
+    "description": "Title shown above the shareable room code"
+  }
+}
