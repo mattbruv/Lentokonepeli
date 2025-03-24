@@ -4,16 +4,17 @@
 
 Project uses react-intl for the copies, they can be extracted automatically and translated.
 
-### Process
 
-TODO: fill further once process is clearer
+### Add new language to translate
 
-1. Extract messages from react code
+1. add new locale to `LOCALES_TO_TRANSLATE` in `./update_translation_files.sh`
+2. run `./update_translation_files.sh`
+3. add new locale to `KNOWN_LOCALES` in `./src/intl/IntlProvider.tsx`
+4. ready to translate as per instructions below
 
-- `npm run extract`
+### Translating copies for locale
 
-2. Copy created `default.json` file to `<some_locale>.json`
-3. Translate stuff
-4. Compile translations into app
+1. make translation files up to date by running `./update_translation_files.sh`
+2. translate copies generated into `lang/<locale>.json`
+3. run `./update_translation_files.sh` again
 
-- `npm run compile -- lang/<some_locale>.json --ast --out-file src/compiled-lang/<some_locale>.json`

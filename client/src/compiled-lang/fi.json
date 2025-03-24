@@ -5,40 +5,322 @@
       "value": "Lentokonepeli (Kehityksessä)"
     }
   ],
-  "1eTw3/": [
+  "/KlrcC": [
     {
       "type": 0,
-      "value": "Monipuolinen keskitaso. Konekiväärin lisäksi pommit. Nopea ja vahvamoottorinen kone, joskaan ei ketterä."
+      "value": "Username"
     }
   ],
-  "1nUWUC": [
-    {
-      "type": 0,
-      "value": "Konekiväärin lisäksi pommeilla varustettu, erittäin kestävä, mutta kömpelö kone."
-    }
-  ],
-  "W8o0YR": [
-    {
-      "type": 0,
-      "value": "Sangen tulivoimaisella konekiväärillä varustettu kone. Hyvä valinta etenkin aloitteleville lentäjille."
-    }
-  ],
-  "jdWziJ": [
+  "07P703": [
     {
       "type": 0,
       "value": "Legendaarinen kolmitaso. Erittäin kettärä ja myös mainio maksimilentokorkeus."
     }
   ],
-  "mr3BWC": [
+  "3R2xaB": [
+    {
+      "type": 0,
+      "value": "Shoot"
+    }
+  ],
+  "4GxiBe": [
+    {
+      "type": 0,
+      "value": "Select a game map..."
+    }
+  ],
+  "4MNKGm": [
+    {
+      "type": 0,
+      "value": "Eject, Open Parachute"
+    }
+  ],
+  "7kZMTs": [
+    {
+      "type": 0,
+      "value": "The replay system is currently experimental, lacking features, and still inactive development. You may experience problems until the replay feature isin a stable state."
+    }
+  ],
+  "8Am/Pl": [
+    {
+      "type": 0,
+      "value": "Konekiväärillä varustettu peruskone ilman erityisen hyviä tai huonoja puolia. Hyvä valinta aloittelijalle."
+    }
+  ],
+  "8WM3G7": [
+    {
+      "type": 0,
+      "value": "Enter"
+    }
+  ],
+  "8iVdSN": [
+    {
+      "type": 0,
+      "value": "Control Settings"
+    }
+  ],
+  "B1CMe5": [
+    {
+      "type": 0,
+      "value": "A replay file can be downloaded at any time when hosting a game."
+    }
+  ],
+  "BLykMd": [
+    {
+      "type": 0,
+      "value": "Clan"
+    }
+  ],
+  "DWNyUG": [
+    {
+      "type": 0,
+      "value": "Select Replay"
+    }
+  ],
+  "E/uHyU": [
+    {
+      "type": 0,
+      "value": "Sangen tulivoimaisella konekiväärillä varustettu kone. Hyvä valinta etenkin aloitteleville lentäjille."
+    }
+  ],
+  "G7DhrV": [
+    {
+      "type": 0,
+      "value": "Play"
+    }
+  ],
+  "GEspS4": [
     {
       "type": 0,
       "value": "Erittäin ketterä. ei suositella aloitteleville lentäjille."
     }
   ],
-  "uzYIPJ": [
+  "INGml3": [
     {
       "type": 0,
-      "value": "Konekiväärillä varustettu peruskone ilman erityisen hyviä tai huonoja puolia. Hyvä valinta aloittelijalle."
+      "value": "Enter the 4 digit game code..."
+    }
+  ],
+  "M2xffJ": [
+    {
+      "type": 0,
+      "value": "Save Replay File"
+    }
+  ],
+  "M9/1jj": [
+    {
+      "type": 0,
+      "value": "Extremely agile. Not recommended for beginner pilots."
+    }
+  ],
+  "Nbb2Yc": [
+    {
+      "type": 0,
+      "value": "Move Right"
+    }
+  ],
+  "U/mSA3": [
+    {
+      "type": 0,
+      "value": "Reset Controls"
+    }
+  ],
+  "URI5Vx": [
+    {
+      "type": 0,
+      "value": "User Settings"
+    }
+  ],
+  "WWTrIb": [
+    {
+      "type": 0,
+      "value": "Monipuolinen keskitaso. Konekiväärin lisäksi pommit. Nopea ja vahvamoottorinen kone, joskaan ei ketterä."
+    }
+  ],
+  "WYS1bQ": [
+    {
+      "type": 0,
+      "value": "Press any key..."
+    }
+  ],
+  "Wjn/We": [
+    {
+      "type": 0,
+      "value": "View Scoreboard"
+    }
+  ],
+  "Y5ZG9P": [
+    {
+      "type": 0,
+      "value": "You can change this any time in the settings menu"
+    }
+  ],
+  "aLjUL6": [
+    {
+      "type": 0,
+      "value": "Level Editor"
+    }
+  ],
+  "aSDY0F": [
+    {
+      "type": 0,
+      "value": "Albatros D.II"
+    }
+  ],
+  "buqDOb": [
+    {
+      "type": 0,
+      "value": "Choose Username"
+    }
+  ],
+  "cFDrGv": [
+    {
+      "type": 0,
+      "value": "An optional clan to prefix to your name"
+    }
+  ],
+  "crlI8a": [
+    {
+      "type": 0,
+      "value": "Salmson 2"
+    }
+  ],
+  "dPTAzZ": [
+    {
+      "type": 0,
+      "value": "Move Left"
+    }
+  ],
+  "ezKLsY": [
+    {
+      "type": 0,
+      "value": "Fokker DR.I"
+    }
+  ],
+  "f3ix4b": [
+    {
+      "type": 0,
+      "value": "Bomb"
+    }
+  ],
+  "gAAkRv": [
+    {
+      "type": 0,
+      "value": "Name should be between 3 and 20 characters"
+    }
+  ],
+  "gg+aZq": [
+    {
+      "type": 0,
+      "value": "Add Key Binding"
+    }
+  ],
+  "izomYD": [
+    {
+      "type": 0,
+      "value": "Watch a Game Replay"
+    }
+  ],
+  "kfnjH9": [
+    {
+      "type": 0,
+      "value": "Settings"
+    }
+  ],
+  "lA7naj": [
+    {
+      "type": 0,
+      "value": "Add new key"
+    }
+  ],
+  "mq7h++": [
+    {
+      "type": 0,
+      "value": "Watch Replay"
+    }
+  ],
+  "ohIqzI": [
+    {
+      "type": 0,
+      "value": "Toggle Motor"
+    }
+  ],
+  "p1ezxU": [
+    {
+      "type": 0,
+      "value": "Host Game"
+    }
+  ],
+  "pd7fXb": [
+    {
+      "type": 0,
+      "value": "Join Game"
+    }
+  ],
+  "scT0m8": [
+    {
+      "type": 0,
+      "value": "Replay System Notice"
+    }
+  ],
+  "tN8/0L": [
+    {
+      "type": 0,
+      "value": "Chat Team"
+    }
+  ],
+  "urz5xm": [
+    {
+      "type": 0,
+      "value": "Unbind Last Key"
+    }
+  ],
+  "vL5iqo": [
+    {
+      "type": 0,
+      "value": "Site Settings"
+    }
+  ],
+  "vrJzQq": [
+    {
+      "type": 0,
+      "value": "Bristol F.2b"
+    }
+  ],
+  "wpH/Pl": [
+    {
+      "type": 0,
+      "value": "Join us on Discord!"
+    }
+  ],
+  "xPJ6oZ": [
+    {
+      "type": 0,
+      "value": "Flip Plane"
+    }
+  ],
+  "xRGqrp": [
+    {
+      "type": 0,
+      "value": "Set name"
+    }
+  ],
+  "y49T/p": [
+    {
+      "type": 0,
+      "value": "Chat All"
+    }
+  ],
+  "yRjHTu": [
+    {
+      "type": 0,
+      "value": "Junkers J.1"
+    }
+  ],
+  "zV7RzE": [
+    {
+      "type": 0,
+      "value": "Konekiväärin lisäksi pommeilla varustettu, erittäin kestävä, mutta kömpelö kone."
     }
   ]
 }

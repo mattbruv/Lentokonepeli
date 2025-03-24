@@ -6,7 +6,7 @@ import { NameEditor } from "./components/Name";
 import { DEFAULT_GAME_KEYBINDS, useSettingsContext } from "./contexts/settingsContext";
 import { GameAction } from "./hooks/keybinds/models";
 import { FormattedMessage, useIntl } from "react-intl";
-import { DEFAULT_LOCALE } from "./intl/IntlProvider";
+import { DEFAULT_LOCALE, KNOWN_LOCALE_DROPDOWN_VALUES } from "./intl/IntlProvider";
 import { KEYBIND_INTL } from "./intl/messages";
 
 export function Settings() {
@@ -181,10 +181,7 @@ export function Settings() {
                                     locale: (item?.value as any) ?? DEFAULT_LOCALE,
                                 });
                             }}
-                            data={[
-                                { value: "en", label: "English" },
-                                { value: "fi", label: "Finnish" },
-                            ]}
+                            data={KNOWN_LOCALE_DROPDOWN_VALUES}
                             placeholder="Choose locale"
                         />
                     </Accordion.Panel>

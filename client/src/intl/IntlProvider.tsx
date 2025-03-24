@@ -11,7 +11,20 @@ async function loadLocaleData(locale: string): Promise<Record<string, MessageFor
     }
 }
 
-export const DEFAULT_LOCALE = "en";
+export const KNOWN_LOCALES = ["fi", "en"] as const;
+export const DEFAULT_LOCALE = "en" satisfies KnownLocale;
+
+export type KnownLocale = (typeof KNOWN_LOCALES)[number];
+
+export const KNOWN_LOCALE_LABEL = {
+    en: "English",
+    fi: "Finnish (Suomi)",
+} satisfies Record<KnownLocale, string>;
+
+export const KNOWN_LOCALE_DROPDOWN_VALUES = Object.entries(KNOWN_LOCALE_LABEL).map(([locale, label]) => ({
+    value: locale,
+    label,
+}));
 
 export const IntlProvider: FC<PropsWithChildren> = ({ children }) => {
     const settings = useSettingsContext();
