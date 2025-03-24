@@ -1,11 +1,11 @@
 import { FC, PropsWithChildren, useEffect, useState } from "react";
-import { useSettingsContext } from "../contexts/settingsContext";
 import { MessageFormatElement, IntlProvider as ReactIntlIntlProvider } from "react-intl";
+import { useSettingsContext } from "../contexts/settingsContext";
 
 const loadLocaleData = (locale: string): Promise<Record<string, MessageFormatElement[]>> =>
     import(`../compiled-lang/${locale}.json`).then((file) => file.default);
 
-export const KNOWN_LOCALES = ["fi", "en"] as const;
+export const KNOWN_LOCALES = ["fi", "en", "es"] as const;
 export const DEFAULT_LOCALE = "en" satisfies KnownLocale;
 
 export type KnownLocale = (typeof KNOWN_LOCALES)[number];
@@ -13,6 +13,7 @@ export type KnownLocale = (typeof KNOWN_LOCALES)[number];
 export const KNOWN_LOCALE_LABEL = {
     en: "English",
     fi: "Finnish (Suomi)",
+    es: "Spanish (Español)",
 } satisfies Record<KnownLocale, string>;
 
 export const KNOWN_LOCALE_DROPDOWN_VALUES = Object.entries(KNOWN_LOCALE_LABEL).map(([locale, label]) => ({
