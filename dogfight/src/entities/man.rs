@@ -260,16 +260,13 @@ impl SolidEntity for Man {
         BoundingBox {
             x: (self.x / RESOLUTION) as i16,
             y: (self.y / RESOLUTION) as i16,
-            width: self.image_parachuting.width() as i16,
-            height: self.image_parachuting.height() as i16,
+            width: self.image_standing.width() as i16,
+            height: self.image_standing.height() as i16,
         }
     }
 
     fn get_collision_image(&self) -> Option<&RgbaImage> {
-        match self.state.get() {
-            ManState::Parachuting => Some(&self.image_parachuting),
-            _ => Some(&self.image_standing),
-        }
+        Some(&self.image_standing)
     }
 
     fn do_rotate_collision_image(&mut self) -> () {}
