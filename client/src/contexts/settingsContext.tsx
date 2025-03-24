@@ -1,9 +1,9 @@
 import React, { createContext, MutableRefObject, useContext, useEffect, useRef, useState } from "react";
+import { soundManager } from "../client/soundManager";
 import { ChatMode } from "../components/Chat";
 import { randomGuid } from "../helpers";
 import { GameAction, Keybind } from "../hooks/keybinds/models";
-import { soundManager } from "../client/soundManager";
-import { DEFAULT_LOCALE, KnownLocale } from "../intl/IntlProvider";
+import { getDefaultLocale, KnownLocale } from "../intl/IntlProvider";
 
 export type DogfightControls = Keybind<GameAction>[];
 
@@ -78,7 +78,7 @@ export const DEFAULT_SETTINGS: DogfightSettings = {
     audioSettings: {
         muted: false,
     },
-    locale: DEFAULT_LOCALE,
+    locale: getDefaultLocale(),
 };
 
 export const SETTING_DESCRIPTIONS = {

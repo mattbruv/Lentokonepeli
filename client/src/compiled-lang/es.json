@@ -2,91 +2,91 @@
   "+NFaSb": [
     {
       "type": 0,
-      "value": "Lentokonepeli (Kehityksessä)"
+      "value": "Lentokonepeli (En desarrollo)"
     }
   ],
   "/KlrcC": [
     {
       "type": 0,
-      "value": "Käyttäjänimi"
+      "value": "Nombre de usuario"
     }
   ],
   "07P703": [
     {
       "type": 0,
-      "value": "Legendaarinen kolmitaso. Erittäin kettärä ja myös mainio maksimilentokorkeus."
+      "value": "Un triplano legendario. Extremadamente ágil y también excelente a máxima altitud de vuelo."
     }
   ],
   "3R2xaB": [
     {
       "type": 0,
-      "value": "Ammu"
+      "value": "Disparar"
     }
   ],
   "4GxiBe": [
     {
       "type": 0,
-      "value": "Valitse pelattava kartta..."
+      "value": "Selecciona un mapa del juego..."
     }
   ],
   "4MNKGm": [
     {
       "type": 0,
-      "value": "Laukaise heittoistuin, Avaa laskuvarjo"
+      "value": "Soltar, abrir paracaídas"
     }
   ],
   "7kZMTs": [
     {
       "type": 0,
-      "value": "Pelien uusinta on tällä hetkellä kokeellinen, eikä siinä ole kaikkia ominaisuuksia, ja se on edelleen kehityksessä. Saatat kohdata ongelmia, kunnes toistotoiminto on vakaa."
+      "value": "El sistema de repetición es actualmente experimental, carece de funciones y aún está inactivo. Es posible que experimentes problemas hasta que la función de repetición esté en un estado estable."
     }
   ],
   "8Am/Pl": [
     {
       "type": 0,
-      "value": "Konekiväärillä varustettu peruskone ilman erityisen hyviä tai huonoja puolia. Hyvä valinta aloittelijalle."
+      "value": "Avión básico equipado con una ametralladora, sin cualidades particularmente buenas o malas. Una buena elección para un novato."
     }
   ],
   "8WM3G7": [
     {
       "type": 0,
-      "value": "Enter"
+      "value": "Intro"
     }
   ],
   "8iVdSN": [
     {
       "type": 0,
-      "value": "Pikanäppäinasetukset"
+      "value": "Ajustes de control"
     }
   ],
   "B1CMe5": [
     {
       "type": 0,
-      "value": "Pelin uusintoja voi ladata isännöidessä pelejä"
+      "value": "Se puede descargar un archivo de repetición en cualquier momento cuando se aloja un partido."
     }
   ],
   "BLykMd": [
     {
       "type": 0,
-      "value": "Klaani"
+      "value": "Clan"
     }
   ],
   "DWNyUG": [
     {
       "type": 0,
-      "value": "Valitse uusintatiedosto"
+      "value": "Seleccione un archivo de repetición"
     }
   ],
   "E/uHyU": [
     {
       "type": 0,
-      "value": "Sangen tulivoimaisella konekiväärillä varustettu kone. Hyvä valinta etenkin aloitteleville lentäjille."
+      "value": "Avión equipado con una ametralladora bastante potente. Una buena elección, especialmente para pilotos novatos."
     }
   ],
   "G7DhrV": [
     {
       "type": 0,
-      "value": "Pelaa"
+      "value": "Jugar"
     }
   ],
   "GEspS4": [
@@ -98,97 +98,97 @@
   "H6qNPr": [
     {
       "type": 0,
-      "value": "Liity peliin"
+      "value": "Unirse a un Juego"
     }
   ],
   "INGml3": [
     {
       "type": 0,
-      "value": "Syötä 4 merkkiä sisältävä pelikoodi..."
+      "value": "Introduce el código de juego de 4 dígitos..."
     }
   ],
   "M2xffJ": [
     {
       "type": 0,
-      "value": "Tallenna uusinta"
+      "value": "Guardar archivo de repetición"
     }
   ],
   "M9/1jj": [
     {
       "type": 0,
-      "value": "Erittäin ketterä. ei suositella aloitteleville lentäjille."
+      "value": "Extremadamente ágil. No recomendado para pilotos novatos."
     }
   ],
   "Nbb2Yc": [
     {
       "type": 0,
-      "value": "Liiku oikealle"
+      "value": "Mover a la derecha"
     }
   ],
   "Qj15PN": [
     {
       "type": 0,
-      "value": "Vaihda Light-teema"
+      "value": "Alternar tema luminoso"
     }
   ],
   "Qt6faF": [
     {
       "type": 0,
-      "value": "Isännöi peli"
+      "value": "Organizar un partido"
     }
   ],
   "SDo2PQ": [
     {
       "type": 0,
-      "value": "Katso lähdekoodi GitHubissa"
+      "value": "Ver el código fuente en GitHub"
     }
   ],
   "Sxp4im": [
     {
       "type": 0,
-      "value": "Pelikoodi"
+      "value": "Código"
     }
   ],
   "U/mSA3": [
     {
       "type": 0,
-      "value": "Nollaa asetukset"
+      "value": "Restablecer controles"
     }
   ],
   "URI5Vx": [
     {
       "type": 0,
-      "value": "Käyttäjäasetukset"
+      "value": "Configuración del Usuario"
     }
   ],
   "WWTrIb": [
     {
       "type": 0,
-      "value": "Monipuolinen keskitaso. Konekiväärin lisäksi pommit. Nopea ja vahvamoottorinen kone, joskaan ei ketterä."
+      "value": "Avión versátil de nivel medio. Equipado con bombas además de una ametralladora. Motor rápido y potente, aunque no ágil."
     }
   ],
   "WYS1bQ": [
     {
       "type": 0,
-      "value": "Paina mitä tahansa näppäintä..."
+      "value": "Pulsa cualquier tecla..."
     }
   ],
   "Wjn/We": [
     {
       "type": 0,
-      "value": "Avaa tulostaulu"
+      "value": "Ver el marcador"
     }
   ],
   "Y5ZG9P": [
     {
       "type": 0,
-      "value": "Tämän voi vaihtaa jälkeenpäin asetuksista"
+      "value": "Puedes cambiar esto en cualquier momento en el menú de ajustes"
     }
   ],
   "aLjUL6": [
     {
       "type": 0,
-      "value": "Kenttäeditori"
+      "value": "Editor de Mapas"
     }
   ],
   "aSDY0F": [
@@ -200,13 +200,13 @@
   "buqDOb": [
     {
       "type": 0,
-      "value": "Valitse Käyttäjänimi"
+      "value": "Elegir nombre de usuario"
     }
   ],
   "cFDrGv": [
     {
       "type": 0,
-      "value": "Valinnainen etuliite käyttääjänimen eteen"
+      "value": "Un clan opcional para anteponer a su nombre"
     }
   ],
   "crlI8a": [
@@ -218,13 +218,13 @@
   "d2cMrt": [
     {
       "type": 0,
-      "value": "Vaihda äänien tila"
+      "value": "Silenciar los sonidos del juego"
     }
   ],
   "dPTAzZ": [
     {
       "type": 0,
-      "value": "Liiku vasemmalle"
+      "value": "Mover a la izquierda"
     }
   ],
   "ezKLsY": [
@@ -236,97 +236,97 @@
   "f3ix4b": [
     {
       "type": 0,
-      "value": "Pommita"
+      "value": "Bomba"
     }
   ],
   "gAAkRv": [
     {
       "type": 0,
-      "value": "Nimen tulee olla vähintään 3 ja enintään 20 merkkiä"
+      "value": "El nombre debe tener entre 3 y 20 caracteres"
     }
   ],
   "gg+aZq": [
     {
       "type": 0,
-      "value": "Lisää pikanäppäin"
+      "value": "Añadir enlace de teclas"
     }
   ],
   "izomYD": [
     {
       "type": 0,
-      "value": "Katso pelin uusinta"
+      "value": "Ver la repetición de un partido"
     }
   ],
   "kfnjH9": [
     {
       "type": 0,
-      "value": "Asetukset"
+      "value": "Ajustes"
     }
   ],
   "lA7naj": [
     {
       "type": 0,
-      "value": "Lisää näppäin"
+      "value": "Añadir nueva tecla"
     }
   ],
   "mq7h++": [
     {
       "type": 0,
-      "value": "Uusinnat"
+      "value": "Ver una Repetición "
     }
   ],
   "ohIqzI": [
     {
       "type": 0,
-      "value": "Vaihda moottorin tila"
+      "value": "Activar el motor"
     }
   ],
   "p1ezxU": [
     {
       "type": 0,
-      "value": "Isännöi"
+      "value": "Organizar un partido"
     }
   ],
   "pd7fXb": [
     {
       "type": 0,
-      "value": "Liity"
+      "value": "Unirse a un juego"
     }
   ],
   "q/xC9j": [
     {
       "type": 0,
-      "value": "Kenttä"
+      "value": "Mapa"
     }
   ],
   "scT0m8": [
     {
       "type": 0,
-      "value": "Uusintojen huomautus"
+      "value": "Aviso sobre el sistema de repetición"
     }
   ],
   "tN8/0L": [
     {
       "type": 0,
-      "value": "Viestitä tiimille"
+      "value": "Chatear con el equipo"
     }
   ],
   "twmPPM": [
     {
       "type": 0,
-      "value": "Vaihda tumma teema"
+      "value": "Activar tema oscuro"
     }
   ],
   "urz5xm": [
     {
       "type": 0,
-      "value": "Poista viimeisin pikanäppäin"
+      "value": "Desvincular última tecla"
     }
   ],
   "vL5iqo": [
     {
       "type": 0,
-      "value": "Sivustoasetukset"
+      "value": "Configuración del sitio"
     }
   ],
   "vrJzQq": [
@@ -338,25 +338,25 @@
   "wpH/Pl": [
     {
       "type": 0,
-      "value": "Liity discord palvelimelle!"
+      "value": "¡Únete a nosotros en Discord!"
     }
   ],
   "xPJ6oZ": [
     {
       "type": 0,
-      "value": "Käännä lentokone"
+      "value": "Voltear el avión"
     }
   ],
   "xRGqrp": [
     {
       "type": 0,
-      "value": "Aseta nimi"
+      "value": "Establecer Nombre"
     }
   ],
   "y49T/p": [
     {
       "type": 0,
-      "value": "Viestitä kaikille"
+      "value": "Chatear con todos"
     }
   ],
   "yRjHTu": [
@@ -368,13 +368,13 @@
   "zV7RzE": [
     {
       "type": 0,
-      "value": "Konekiväärin lisäksi pommeilla varustettu, erittäin kestävä, mutta kömpelö kone."
+      "value": "Equipado con bombas además de una ametralladora, extremadamente duradero, pero un avión torpe."
     }
   ],
   "zvKn4f": [
     {
       "type": 0,
-      "value": "Pelikoodi"
+      "value": "Código del juego"
     }
   ]
 }

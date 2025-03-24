@@ -125,10 +125,22 @@
       "value": "Move Right"
     }
   ],
+  "Qj15PN": [
+    {
+      "type": 0,
+      "value": "Toggle Light Mode"
+    }
+  ],
   "Qt6faF": [
     {
       "type": 0,
       "value": "Host a Game"
+    }
+  ],
+  "SDo2PQ": [
+    {
+      "type": 0,
+      "value": "View the Source Code on GitHub"
     }
   ],
   "Sxp4im": [
@@ -297,6 +309,12 @@
     {
       "type": 0,
       "value": "Chat Team"
+    }
+  ],
+  "twmPPM": [
+    {
+      "type": 0,
+      "value": "Toggle Dark Mode"
     }
   ],
   "urz5xm": [
