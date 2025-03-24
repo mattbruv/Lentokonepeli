@@ -1,9 +1,10 @@
-import { Entity, EntityUpdateCallbacks } from "./entity";
-import * as PIXI from "pixi.js";
-import { Textures } from "../textures";
-import { directionToRadians } from "../helpers";
 import { BombProperties } from "dogfight-types/BombProperties";
 import { Howl } from "howler";
+import * as PIXI from "pixi.js";
+import { DrawLayer } from "../constants";
+import { directionToRadians } from "../helpers";
+import { Textures } from "../textures";
+import { Entity, EntityUpdateCallbacks } from "./entity";
 
 export class Bomb implements Entity<BombProperties> {
     private container: PIXI.Container;
@@ -24,6 +25,7 @@ export class Bomb implements Entity<BombProperties> {
         this.bombSprite.anchor.set(0.5, 0.5);
         this.bombSprite.position.set(texture.width / 2, texture.height / 2);
         this.container.addChild(this.bombSprite);
+        this.container.zIndex = DrawLayer.Bomb;
 
         // play bomb sound
         this.sound = new Howl({
