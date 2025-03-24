@@ -135,6 +135,10 @@
     "defaultMessage": "Salmson 2",
     "description": "Name of the Salmson 2 aircraft"
   },
+  "d2cMrt": {
+    "defaultMessage": "Toggle Mute",
+    "description": "Title for the 'Toggle Mute' action shown on the keybind settings section"
+  },
   "dPTAzZ": {
     "defaultMessage": "Move Left",
     "description": "Title for the 'Move Left' action shown on the keybind settings section"

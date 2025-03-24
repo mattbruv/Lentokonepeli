@@ -203,6 +203,12 @@
       "value": "Salmson 2"
     }
   ],
+  "d2cMrt": [
+    {
+      "type": 0,
+      "value": "Toggle Mute"
+    }
+  ],
   "dPTAzZ": [
     {
       "type": 0,

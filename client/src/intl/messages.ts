@@ -46,6 +46,10 @@ export const KEYBIND_INTL: Record<GameAction, MessageDescriptor> = {
         defaultMessage: "View Scoreboard",
         description: "Title for the 'View Scoreboard' action shown on the keybind settings section",
     }),
+    toggleMute: defineMessage({
+        defaultMessage: "Toggle Mute",
+        description: "Title for the 'Toggle Mute' action shown on the keybind settings section",
+    }),
 };
 
 export const GAME_INTL = {
