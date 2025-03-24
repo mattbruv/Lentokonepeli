@@ -4,7 +4,7 @@
     "description": "Main title of site shown on nav"
   },
   "/KlrcC": {
-    "defaultMessage": "Username",
+    "defaultMessage": "Käyttäjänimi",
     "description": "Settings section title used to modify the username"
   },
   "07P703": {
@@ -12,19 +12,19 @@
     "description": "Description of the Fokker DR.I aircraft"
   },
   "3R2xaB": {
-    "defaultMessage": "Shoot",
+    "defaultMessage": "Ammu",
     "description": "Title for the 'Shoot' action shown on the keybind settings section"
   },
   "4GxiBe": {
-    "defaultMessage": "Select a game map...",
+    "defaultMessage": "Valitse pelattava kartta...",
     "description": "Infotext for input used to select which map will be used for the hosted game"
   },
   "4MNKGm": {
-    "defaultMessage": "Eject, Open Parachute",
+    "defaultMessage": "Laukaise heittoistuin, Avaa laskuvarjo",
     "description": "Title for the 'Eject, Open Parachute' action shown on the keybind settings section"
   },
   "7kZMTs": {
-    "defaultMessage": "The replay system is currently experimental, lacking features, and still inactive development. You may experience problems until the replay feature isin a stable state.",
+    "defaultMessage": "Pelien uusinta on tällä hetkellä kokeellinen, eikä siinä ole kaikkia ominaisuuksia, ja se on edelleen kehityksessä. Saatat kohdata ongelmia, kunnes toistotoiminto on vakaa.",
     "description": "Informative text about the current state of the replay system"
   },
   "8Am/Pl": {
@@ -36,19 +36,19 @@
     "description": "Title for the 'Enter' action shown on the keybind settings section"
   },
   "8iVdSN": {
-    "defaultMessage": "Control Settings",
+    "defaultMessage": "Pikanäppäinasetukset",
     "description": "Title for a settings section used to modify the keybinds used in-game"
   },
   "B1CMe5": {
-    "defaultMessage": "A replay file can be downloaded at any time when hosting a game.",
+    "defaultMessage": "Pelin uusintoja voi ladata isännöidessä pelejä",
     "description": "Tooltip for a button explaining that replay files can be downloaded during gameplay, this button will be used to find a replay file from the user's computer"
   },
   "BLykMd": {
-    "defaultMessage": "Clan",
+    "defaultMessage": "Klaani",
     "description": "Settings section title used to modify the clan name"
   },
   "DWNyUG": {
-    "defaultMessage": "Select Replay",
+    "defaultMessage": "Valitse uusintatiedosto",
     "description": "Button text for a button which opens system file system to select a lentokonepeli replay file from"
   },
   "E/uHyU": {
@@ -56,35 +56,35 @@
     "description": "Description of the Bristol F.2b aircraft"
   },
   "G7DhrV": {
-    "defaultMessage": "Play",
+    "defaultMessage": "Pelaa",
     "description": "Sidebar link description for the main game page used to play the game"
   },
   "GEspS4": {
-    "defaultMessage": "Erittäin ketterä. ei suositella aloitteleville lentäjille.",
-    "description": "Description of the Sopwith Camel aircraft"
+    "defaultMessage": "Sopwith Camel",
+    "description": "Name of the Sopwith Camel aircraft"
   },
   "INGml3": {
-    "defaultMessage": "Enter the 4 digit game code...",
+    "defaultMessage": "Syötä 4 merkkiä sisältävä pelikoodi...",
     "description": "Infotext for input which is used to insert 4 digit game code to join games"
   },
   "M2xffJ": {
-    "defaultMessage": "Save Replay File",
+    "defaultMessage": "Tallenna uusinta",
     "description": "Button text for button which saves replay file"
   },
   "M9/1jj": {
-    "defaultMessage": "Extremely agile. Not recommended for beginner pilots.",
+    "defaultMessage": "Erittäin ketterä. ei suositella aloitteleville lentäjille.",
     "description": "Description of the Sopwith Camel aircraft"
   },
   "Nbb2Yc": {
-    "defaultMessage": "Move Right",
+    "defaultMessage": "Liiku oikealle",
     "description": "Title for the 'Move Right' action shown on the keybind settings section"
   },
   "U/mSA3": {
-    "defaultMessage": "Reset Controls",
+    "defaultMessage": "Nollaa asetukset",
     "description": "Button used to reset user defined keybinds on the settings page"
   },
   "URI5Vx": {
-    "defaultMessage": "User Settings",
+    "defaultMessage": "Käyttäjäasetukset",
     "description": "Title for a settings section used to modify user info used in-game"
   },
   "WWTrIb": {
@@ -92,19 +92,19 @@
     "description": "Description of the Salmson 2 aircraft"
   },
   "WYS1bQ": {
-    "defaultMessage": "Press any key...",
+    "defaultMessage": "Paina mitä tahansa näppäintä...",
     "description": "Info text explaining to press any key to set a keybind for a game action"
   },
   "Wjn/We": {
-    "defaultMessage": "View Scoreboard",
+    "defaultMessage": "Avaa tulostaulu",
     "description": "Title for the 'View Scoreboard' action shown on the keybind settings section"
   },
   "Y5ZG9P": {
-    "defaultMessage": "You can change this any time in the settings menu",
-    "description": "Tooltip for the username setting section"
+    "defaultMessage": "Tämän voi vaihtaa jälkeenpäin asetuksista",
+    "description": "Tooltip for the käyttäjänimi setting section"
   },
   "aLjUL6": {
-    "defaultMessage": "Level Editor",
+    "defaultMessage": "Kenttäeditori",
     "description": "Sidebar link description for the Level Editor"
   },
   "aSDY0F": {
@@ -112,11 +112,11 @@
     "description": "Name of the Albatros D.II aircraft"
   },
   "buqDOb": {
-    "defaultMessage": "Choose Username",
+    "defaultMessage": "Valitse Käyttäjänimi",
     "description": "Title for modal used to choose username"
   },
   "cFDrGv": {
-    "defaultMessage": "An optional clan to prefix to your name",
+    "defaultMessage": "Valinnainen etuliite käyttääjänimen eteen",
     "description": "Tooltip for the clan setting section"
   },
   "crlI8a": {
@@ -124,7 +124,7 @@
     "description": "Name of the Salmson 2 aircraft"
   },
   "dPTAzZ": {
-    "defaultMessage": "Move Left",
+    "defaultMessage": "Liiku vasemmalle",
     "description": "Title for the 'Move Left' action shown on the keybind settings section"
   },
   "ezKLsY": {
@@ -132,59 +132,59 @@
     "description": "Name of the Fokker DR.I aircraft"
   },
   "f3ix4b": {
-    "defaultMessage": "Bomb",
+    "defaultMessage": "Pommita",
     "description": "Title for the 'Bomb' action shown on the keybind settings section"
   },
   "gAAkRv": {
-    "defaultMessage": "Name should be between 3 and 20 characters",
+    "defaultMessage": "Nimen tulee olla vähintään 3 ja enintään 20 merkkiä",
     "description": "Label explaining username constraints"
   },
   "gg+aZq": {
-    "defaultMessage": "Add Key Binding",
+    "defaultMessage": "Lisää pikanäppäin",
     "description": "Title for modal where keybinds are added"
   },
   "izomYD": {
-    "defaultMessage": "Watch a Game Replay",
+    "defaultMessage": "Katso pelin uusinta",
     "description": "Title for the Replay System page"
   },
   "kfnjH9": {
-    "defaultMessage": "Settings",
+    "defaultMessage": "Asetukset",
     "description": "Sidebar link description for the Settings page"
   },
   "lA7naj": {
-    "defaultMessage": "Add new key",
+    "defaultMessage": "Lisää näppäin",
     "description": "Tooltip for a button used to add a new keybind for an action"
   },
   "mq7h++": {
-    "defaultMessage": "Watch Replay",
+    "defaultMessage": "Uusinnat",
     "description": "Sidebar link description for the Replay System page"
   },
   "ohIqzI": {
-    "defaultMessage": "Toggle Motor",
+    "defaultMessage": "Vaihda moottorin tila",
     "description": "Title for the 'Toggle Motor' action shown on the keybind settings section"
   },
   "p1ezxU": {
-    "defaultMessage": "Host Game",
+    "defaultMessage": "Isännöi peli",
     "description": "Call to action button text for button which starts a new game as a Host"
   },
   "pd7fXb": {
-    "defaultMessage": "Join Game",
+    "defaultMessage": "Liity peliin",
     "description": "Call to action button text for button which joins a an existing game"
   },
   "scT0m8": {
-    "defaultMessage": "Replay System Notice",
+    "defaultMessage": "Uusintojen huomautus",
     "description": "title for a notice section for the Replay System"
   },
   "tN8/0L": {
-    "defaultMessage": "Chat Team",
+    "defaultMessage": "Viestitä tiimille",
     "description": "Title for the 'Chat Team' action shown on the keybind settings section"
   },
   "urz5xm": {
-    "defaultMessage": "Unbind Last Key",
+    "defaultMessage": "Poista viimeisin pikanäppäin",
     "description": "Tooltip for a button used to remove last keybind from an action"
   },
   "vL5iqo": {
-    "defaultMessage": "Site Settings",
+    "defaultMessage": "Sangen tulivoimaisella konekiväärillä varustettu kone. Hyvä valinta etenkin aloitteleville lentäjille.",
     "description": "Title for a settings section used to modify general site settings"
   },
   "vrJzQq": {
@@ -192,19 +192,19 @@
     "description": "Name of the Bristol F.2b aircraft"
   },
   "wpH/Pl": {
-    "defaultMessage": "Join us on Discord!",
+    "defaultMessage": "Liity discord palvelimelle!",
     "description": "Navbar hover for discord button"
   },
   "xPJ6oZ": {
-    "defaultMessage": "Flip Plane",
+    "defaultMessage": "Käännä lentokone",
     "description": "Title for the 'Flip Plane' action shown on the keybind settings section"
   },
   "xRGqrp": {
-    "defaultMessage": "Set name",
+    "defaultMessage": "Aseta nimi",
     "description": "Call to action on setting section button which sets the name user has input"
   },
   "y49T/p": {
-    "defaultMessage": "Chat All",
+    "defaultMessage": "Viestitä kaikille",
     "description": "Title for the 'Chat All' action shown on the keybind settings section"
   },
   "yRjHTu": {

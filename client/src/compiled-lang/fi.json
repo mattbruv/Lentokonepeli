@@ -8,7 +8,7 @@
   "/KlrcC": [
     {
       "type": 0,
-      "value": "Username"
+      "value": "Käyttäjänimi"
     }
   ],
   "07P703": [
@@ -20,25 +20,25 @@
   "3R2xaB": [
     {
       "type": 0,
-      "value": "Shoot"
+      "value": "Ammu"
     }
   ],
   "4GxiBe": [
     {
       "type": 0,
-      "value": "Select a game map..."
+      "value": "Valitse pelattava kartta..."
     }
   ],
   "4MNKGm": [
     {
       "type": 0,
-      "value": "Eject, Open Parachute"
+      "value": "Laukaise heittoistuin, Avaa laskuvarjo"
     }
   ],
   "7kZMTs": [
     {
       "type": 0,
-      "value": "The replay system is currently experimental, lacking features, and still inactive development. You may experience problems until the replay feature isin a stable state."
+      "value": "Pelien uusinta on tällä hetkellä kokeellinen, eikä siinä ole kaikkia ominaisuuksia, ja se on edelleen kehityksessä. Saatat kohdata ongelmia, kunnes toistotoiminto on vakaa."
     }
   ],
   "8Am/Pl": [
@@ -56,25 +56,25 @@
   "8iVdSN": [
     {
       "type": 0,
-      "value": "Control Settings"
+      "value": "Pikanäppäinasetukset"
     }
   ],
   "B1CMe5": [
     {
       "type": 0,
-      "value": "A replay file can be downloaded at any time when hosting a game."
+      "value": "Pelin uusintoja voi ladata isännöidessä pelejä"
     }
   ],
   "BLykMd": [
     {
       "type": 0,
-      "value": "Clan"
+      "value": "Klaani"
     }
   ],
   "DWNyUG": [
     {
       "type": 0,
-      "value": "Select Replay"
+      "value": "Valitse uusintatiedosto"
     }
   ],
   "E/uHyU": [
@@ -86,49 +86,49 @@
   "G7DhrV": [
     {
       "type": 0,
-      "value": "Play"
+      "value": "Pelaa"
     }
   ],
   "GEspS4": [
     {
       "type": 0,
-      "value": "Erittäin ketterä. ei suositella aloitteleville lentäjille."
+      "value": "Sopwith Camel"
     }
   ],
   "INGml3": [
     {
       "type": 0,
-      "value": "Enter the 4 digit game code..."
+      "value": "Syötä 4 merkkiä sisältävä pelikoodi..."
     }
   ],
   "M2xffJ": [
     {
       "type": 0,
-      "value": "Save Replay File"
+      "value": "Tallenna uusinta"
     }
   ],
   "M9/1jj": [
     {
       "type": 0,
-      "value": "Extremely agile. Not recommended for beginner pilots."
+      "value": "Erittäin ketterä. ei suositella aloitteleville lentäjille."
     }
   ],
   "Nbb2Yc": [
     {
       "type": 0,
-      "value": "Move Right"
+      "value": "Liiku oikealle"
     }
   ],
   "U/mSA3": [
     {
       "type": 0,
-      "value": "Reset Controls"
+      "value": "Nollaa asetukset"
     }
   ],
   "URI5Vx": [
     {
       "type": 0,
-      "value": "User Settings"
+      "value": "Käyttäjäasetukset"
     }
   ],
   "WWTrIb": [
@@ -140,25 +140,25 @@
   "WYS1bQ": [
     {
       "type": 0,
-      "value": "Press any key..."
+      "value": "Paina mitä tahansa näppäintä..."
     }
   ],
   "Wjn/We": [
     {
       "type": 0,
-      "value": "View Scoreboard"
+      "value": "Avaa tulostaulu"
     }
   ],
   "Y5ZG9P": [
     {
       "type": 0,
-      "value": "You can change this any time in the settings menu"
+      "value": "Tämän voi vaihtaa jälkeenpäin asetuksista"
     }
   ],
   "aLjUL6": [
     {
       "type": 0,
-      "value": "Level Editor"
+      "value": "Kenttäeditori"
     }
   ],
   "aSDY0F": [
@@ -170,13 +170,13 @@
   "buqDOb": [
     {
       "type": 0,
-      "value": "Choose Username"
+      "value": "Valitse Käyttäjänimi"
     }
   ],
   "cFDrGv": [
     {
       "type": 0,
-      "value": "An optional clan to prefix to your name"
+      "value": "Valinnainen etuliite käyttääjänimen eteen"
     }
   ],
   "crlI8a": [
@@ -188,7 +188,7 @@
   "dPTAzZ": [
     {
       "type": 0,
-      "value": "Move Left"
+      "value": "Liiku vasemmalle"
     }
   ],
   "ezKLsY": [
@@ -200,85 +200,85 @@
   "f3ix4b": [
     {
       "type": 0,
-      "value": "Bomb"
+      "value": "Pommita"
     }
   ],
   "gAAkRv": [
     {
       "type": 0,
-      "value": "Name should be between 3 and 20 characters"
+      "value": "Nimen tulee olla vähintään 3 ja enintään 20 merkkiä"
     }
   ],
   "gg+aZq": [
     {
       "type": 0,
-      "value": "Add Key Binding"
+      "value": "Lisää pikanäppäin"
     }
   ],
   "izomYD": [
     {
       "type": 0,
-      "value": "Watch a Game Replay"
+      "value": "Katso pelin uusinta"
     }
   ],
   "kfnjH9": [
     {
       "type": 0,
-      "value": "Settings"
+      "value": "Asetukset"
     }
   ],
   "lA7naj": [
     {
       "type": 0,
-      "value": "Add new key"
+      "value": "Lisää näppäin"
     }
   ],
   "mq7h++": [
     {
       "type": 0,
-      "value": "Watch Replay"
+      "value": "Uusinnat"
     }
   ],
   "ohIqzI": [
     {
       "type": 0,
-      "value": "Toggle Motor"
+      "value": "Vaihda moottorin tila"
     }
   ],
   "p1ezxU": [
     {
       "type": 0,
-      "value": "Host Game"
+      "value": "Isännöi peli"
     }
   ],
   "pd7fXb": [
     {
       "type": 0,
-      "value": "Join Game"
+      "value": "Liity peliin"
     }
   ],
   "scT0m8": [
     {
       "type": 0,
-      "value": "Replay System Notice"
+      "value": "Uusintojen huomautus"
     }
   ],
   "tN8/0L": [
     {
       "type": 0,
-      "value": "Chat Team"
+      "value": "Viestitä tiimille"
     }
   ],
   "urz5xm": [
     {
       "type": 0,
-      "value": "Unbind Last Key"
+      "value": "Poista viimeisin pikanäppäin"
     }
   ],
   "vL5iqo": [
     {
       "type": 0,
-      "value": "Site Settings"
+      "value": "Sangen tulivoimaisella konekiväärillä varustettu kone. Hyvä valinta etenkin aloitteleville lentäjille."
     }
   ],
   "vrJzQq": [
@@ -290,25 +290,25 @@
   "wpH/Pl": [
     {
       "type": 0,
-      "value": "Join us on Discord!"
+      "value": "Liity discord palvelimelle!"
     }
   ],
   "xPJ6oZ": [
     {
       "type": 0,
-      "value": "Flip Plane"
+      "value": "Käännä lentokone"
     }
   ],
   "xRGqrp": [
     {
       "type": 0,
-      "value": "Set name"
+      "value": "Aseta nimi"
     }
   ],
   "y49T/p": [
     {
       "type": 0,
-      "value": "Chat All"
+      "value": "Viestitä kaikille"
     }
   ],
   "yRjHTu": [
