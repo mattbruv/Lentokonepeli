@@ -43,7 +43,6 @@ export class Bunker implements Entity<BunkerProperties>, RadarEnabled {
     }
 
     public getRadarInfo(): RadarObject {
-        // The original game shows the runway dot in the middle
         const halfWidth = Math.round(this.bunkerSprite.width / 2);
         const x = this.props.client_x;
         const offset = halfWidth;

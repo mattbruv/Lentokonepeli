@@ -570,7 +570,7 @@ impl World {
                 if explosion.check_collision(bunker) {
                     // TODO: check for team
                     // NOTE: based on original code the damage taken was always 17 on explosion. above todo maybe irrelevant
-                    // damage runway
+                    // damage bunker
                     bunker.subtract_health(17);
                 }
             }
