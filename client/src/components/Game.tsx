@@ -1,9 +1,9 @@
 import { forwardRef } from "react";
 import { useSettingsContext } from "../contexts/settingsContext";
-import { Chat, ChatProps } from "./Chat";
+import { Chat, ChatGlobalProps } from "./Chat";
 import { Scoreboard, ScoreboardProps } from "./Scoreboard";
 
-interface GameProps extends ScoreboardProps, ChatProps {}
+interface GameProps extends ScoreboardProps, ChatGlobalProps {}
 
 export const Game = forwardRef<HTMLDivElement, GameProps>((props, ref) => {
     const { globalState } = useSettingsContext();

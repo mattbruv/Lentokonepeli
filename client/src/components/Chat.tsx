@@ -17,13 +17,16 @@ export interface ChatMessageTimed extends ChatMessage {
     isNewMessage: boolean;
 }
 
-export type ChatProps = {
-    myTeam: Team | null;
+export interface ChatGlobalProps {
     messages: ChatMessageTimed[];
     onSendMessage: (message: string, isGlobal: boolean) => void;
-};
+}
 
-export function Chat({ messages, onSendMessage, myTeam }: ChatProps) {
+export interface ChatLocalProps extends ChatGlobalProps {
+    myTeam: Team | null;
+}
+
+export function Chat({ messages, onSendMessage, myTeam }: ChatLocalProps) {
     const intl = useIntl();
     const [message, setMessage] = useState("");
     const { globalState, sendChatMessage, setGlobalState } = useSettingsContext();
