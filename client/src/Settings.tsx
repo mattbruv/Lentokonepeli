@@ -1,15 +1,19 @@
-import { Accordion, ActionIcon, Button, Card, Group, Kbd, Modal, Stack, Text, Tooltip } from "@mantine/core";
+import { Accordion, ActionIcon, Button, Card, Group, Kbd, Modal, Select, Stack, Text, Tooltip } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconDeviceGamepad2, IconPlus, IconRestore, IconTrash, IconUser } from "@tabler/icons-react";
+import { IconDeviceGamepad2, IconPlus, IconRestore, IconSitemap, IconTrash, IconUser } from "@tabler/icons-react";
 import React, { useState } from "react";
+import { FormattedMessage, useIntl } from "react-intl";
 import { NameEditor } from "./components/Name";
-import { DEFAULT_GAME_KEYBINDS, SETTING_DESCRIPTIONS, useSettingsContext } from "./contexts/settingsContext";
+import { DEFAULT_GAME_KEYBINDS, useSettingsContext } from "./contexts/settingsContext";
 import { GameAction } from "./hooks/keybinds/models";
+import { getDefaultLocale, KNOWN_LOCALE_DROPDOWN_VALUES, KnownLocale } from "./intl/IntlProvider";
+import { KEYBIND_INTL } from "./intl/messages";
 
 export function Settings() {
     const { settings, setSettings } = useSettingsContext();
     const [addToAction, setAddToAction] = useState<GameAction | null>(null);
     const [opened, { open, close }] = useDisclosure(false);
+    const intl = useIntl();
 
     function removeKey(action: string): void {
         setSettings((prev) => ({
@@ -47,16 +51,32 @@ export function Settings() {
     return (
         <div>
             {addToAction && (
-                <Modal onKeyDown={registerKey} opened={opened} onClose={close} title="Add Key Binding">
+                <Modal
+                    onKeyDown={registerKey}
+                    opened={opened}
+                    onClose={close}
+                    title={intl.formatMessage({
+                        defaultMessage: "Add Key Binding",
+                        description: "Title for modal where keybinds are added",
+                    })}
+                >
                     <Text size={"xl"} fw={"bold"}>
-                        {SETTING_DESCRIPTIONS[addToAction]}
+                        {intl.formatMessage(KEYBIND_INTL[addToAction])}
                     </Text>
-                    Press any key...
+                    <FormattedMessage
+                        defaultMessage={"Press any key..."}
+                        description={"Info text explaining to press any key to set a keybind for a game action"}
+                    />
                 </Modal>
             )}
             <Accordion defaultValue="Apples">
                 <Accordion.Item key={"user"} value={"user"}>
-                    <Accordion.Control icon={<IconUser />}>User Settings</Accordion.Control>
+                    <Accordion.Control icon={<IconUser />}>
+                        <FormattedMessage
+                            defaultMessage={"User Settings"}
+                            description={"Title for a settings section used to modify user info used in-game"}
+                        />
+                    </Accordion.Control>
                     <Accordion.Panel>
                         <div style={{ maxWidth: 300 }}>
                             <NameEditor showTip={false} />
@@ -64,13 +84,18 @@ export function Settings() {
                     </Accordion.Panel>
                 </Accordion.Item>
                 <Accordion.Item key={"controls"} value={"controls"}>
-                    <Accordion.Control icon={<IconDeviceGamepad2 />}>Control Settings</Accordion.Control>
+                    <Accordion.Control icon={<IconDeviceGamepad2 />}>
+                        <FormattedMessage
+                            defaultMessage={"Control Settings"}
+                            description={"Title for a settings section used to modify the keybinds used in-game"}
+                        />
+                    </Accordion.Control>
                     <Accordion.Panel>
                         <Card>
                             <Stack>
-                                {Object.entries(SETTING_DESCRIPTIONS).map(([action, description]) => (
+                                {Object.entries(KEYBIND_INTL).map(([action, descriptor]) => (
                                     <Group key={action}>
-                                        {description}:
+                                        {intl.formatMessage(descriptor)}:
                                         {settings.controls
                                             .filter((bind) => bind.action === action)
                                             .map((bind) => {
@@ -86,7 +111,14 @@ export function Settings() {
                                                     </Kbd>
                                                 );
                                             })}
-                                        <Tooltip openDelay={250} label="Add New Key">
+                                        <Tooltip
+                                            openDelay={250}
+                                            label={intl.formatMessage({
+                                                defaultMessage: "Add new key",
+                                                description:
+                                                    "Tooltip for a button used to add a new keybind for an action",
+                                            })}
+                                        >
                                             <ActionIcon
                                                 onClick={() => addKey(action as GameAction)}
                                                 color={"green"}
@@ -96,7 +128,14 @@ export function Settings() {
                                             </ActionIcon>
                                         </Tooltip>
                                         {settings.controls.some((bind) => bind.action === action) && (
-                                            <Tooltip openDelay={250} label="Unbind Last Key">
+                                            <Tooltip
+                                                openDelay={250}
+                                                label={intl.formatMessage({
+                                                    defaultMessage: "Unbind Last Key",
+                                                    description:
+                                                        "Tooltip for a button used to remove last keybind from an action",
+                                                })}
+                                            >
                                                 <ActionIcon
                                                     onClick={() => removeKey(action)}
                                                     color={"red"}
@@ -111,12 +150,39 @@ export function Settings() {
                                 <div>
                                     {JSON.stringify(settings.controls) !== JSON.stringify(DEFAULT_GAME_KEYBINDS) && (
                                         <Button onClick={resetControls} rightSection={<IconRestore />}>
-                                            Reset Controls
+                                            <FormattedMessage
+                                                defaultMessage={"Reset Controls"}
+                                                description={
+                                                    "Button used to reset user defined keybinds on the settings page"
+                                                }
+                                            />
                                         </Button>
                                     )}
                                 </div>
                             </Stack>
                         </Card>
+                    </Accordion.Panel>
+                </Accordion.Item>
+                <Accordion.Item key={"site"} value={"site"}>
+                    <Accordion.Control icon={<IconSitemap />}>
+                        <FormattedMessage
+                            defaultMessage={"Site Settings"}
+                            description={"Title for a settings section used to modify general site settings"}
+                        />
+                    </Accordion.Control>
+                    <Accordion.Panel>
+                        <Select
+                            label="Select Locale"
+                            value={settings.locale}
+                            onChange={(_, item) => {
+                                setSettings({
+                                    ...settings,
+                                    locale: (item?.value as KnownLocale) ?? getDefaultLocale(),
+                                });
+                            }}
+                            data={KNOWN_LOCALE_DROPDOWN_VALUES}
+                            placeholder="Choose locale"
+                        />
                     </Accordion.Panel>
                 </Accordion.Item>
             </Accordion>

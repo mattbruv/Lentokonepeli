@@ -12,12 +12,14 @@ import { ChatMessageTimed } from "../components/Chat";
 import { randomGuid } from "../helpers";
 import { useDevKeybinds } from "./keybinds/useDevKeybinds";
 import { useGameKeybinds } from "./keybinds/useGameKeybinds";
+import { useIntl } from "react-intl";
 
 export type DogfightCallbacks = {
     handleClientCommand: (command: PlayerCommand) => void;
 };
 
 export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
+    const intl = useIntl();
     const client = useMemo(() => new DogfightClient(), []);
     const engine = useMemo(() => DogfightWeb.new(), []);
 
@@ -97,7 +99,7 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
             },
         };
 
-        await client.init(client_callbacks, div);
+        await client.init(client_callbacks, div, intl);
     }
 
     useEffect(() => {

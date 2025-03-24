@@ -1,12 +1,14 @@
 import { Stack, TextInput, Tooltip, Button, Text } from "@mantine/core";
 import { useState } from "react";
 import { isValidClan, isValidName, useSettingsContext } from "../contexts/settingsContext";
+import { FormattedMessage, useIntl } from "react-intl";
 
 export type NameEditorProps = {
     showTip: boolean;
     onSuccess?: () => void;
 };
 export function NameEditor({ showTip, onSuccess }: NameEditorProps) {
+    const intl = useIntl();
     const { settings, setSettings } = useSettingsContext();
     const [name, setName] = useState<string>(settings.username ?? "");
     const [clan, setClan] = useState<string>(settings.clan ?? "");
@@ -45,18 +47,37 @@ export function NameEditor({ showTip, onSuccess }: NameEditorProps) {
             <TextInput
                 value={name}
                 onChange={setUsername}
-                label="Username"
-                description={showTip ? "You can change this any time in the settings menu" : ""}
+                label={intl.formatMessage({
+                    defaultMessage: "Username",
+                    description: "Settings section title used to modify the username",
+                })}
+                description={
+                    showTip
+                        ? intl.formatMessage({
+                              defaultMessage: "You can change this any time in the settings menu",
+                              description: "Tooltip for the username setting section",
+                          })
+                        : ""
+                }
             />
             <TextInput
                 value={clan}
                 onChange={setClanName}
-                label="Clan"
-                description="An optional clan to prefix to your name"
+                label={intl.formatMessage({
+                    defaultMessage: "Clan",
+                    description: "Settings section title used to modify the clan name",
+                })}
+                description={intl.formatMessage({
+                    defaultMessage: "An optional clan to prefix to your name",
+                    description: "Tooltip for the clan setting section",
+                })}
             />
             <Tooltip
                 disabled={canSubmitModal()}
-                label={"Name should be between 3 and 20 characters"}
+                label={intl.formatMessage({
+                    defaultMessage: "Name should be between 3 and 20 characters",
+                    description: "Label explaining username constraints",
+                })}
                 position={"bottom"}
             >
                 <Button
@@ -66,7 +87,10 @@ export function NameEditor({ showTip, onSuccess }: NameEditorProps) {
                     size={"lg"}
                     onClick={confirmName}
                 >
-                    Set Name
+                    <FormattedMessage
+                        defaultMessage={"Set name"}
+                        description={"Call to action on setting section button which sets the name user has input"}
+                    />
                 </Button>
             </Tooltip>
         </Stack>

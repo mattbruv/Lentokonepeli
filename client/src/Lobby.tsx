@@ -7,6 +7,7 @@ import { Host } from "./Host";
 import { Guest } from "./Guest";
 import { useSettingsContext } from "./contexts/settingsContext";
 import { NameEditor } from "./components/Name";
+import { FormattedMessage, useIntl } from "react-intl";
 
 export type LevelName = keyof typeof Levels;
 
@@ -17,6 +18,7 @@ enum LobbyState {
 }
 
 export function Lobby() {
+    const intl = useIntl();
     const [lobbyState, setLobbyState] = useState<LobbyState>(LobbyState.Choosing);
 
     // Hosting state
@@ -37,7 +39,15 @@ export function Lobby() {
 
     return (
         <div>
-            <Modal opened={opened} closeOnClickOutside={false} onClose={close} title="Choose Username">
+            <Modal
+                opened={opened}
+                closeOnClickOutside={false}
+                onClose={close}
+                title={intl.formatMessage({
+                    defaultMessage: "Choose Username",
+                    description: "Title for modal used to choose username",
+                })}
+            >
                 <NameEditor showTip onSuccess={close} />
                 {/* Modal content */}
             </Modal>
@@ -56,13 +66,30 @@ export function Lobby() {
                             style={{ width: "80%", textAlign: "center" }}
                         >
                             <Stack>
-                                <Title order={2}>Join a Game</Title>
+                                <Title order={2}>
+                                    {" "}
+                                    <FormattedMessage
+                                        defaultMessage={"Join a Game"}
+                                        description={"Title for part for joining the game"}
+                                    />
+                                </Title>
                                 <Group>
-                                    <Text>Code:</Text>
+                                    <Text>
+                                        {" "}
+                                        <FormattedMessage
+                                            defaultMessage={"Code"}
+                                            description={"Title for selection used to insert the game code"}
+                                        />
+                                        :
+                                    </Text>
                                     <TextInput
                                         value={joinId}
                                         onChange={(e) => setJoinId(e.target.value)}
-                                        placeholder="Enter the 4 digit game code..."
+                                        placeholder={intl.formatMessage({
+                                            defaultMessage: "Enter the 4 digit game code...",
+                                            description:
+                                                "Infotext for input which is used to insert 4 digit game code to join games",
+                                        })}
                                     />
                                 </Group>
                                 <Button
@@ -74,7 +101,12 @@ export function Lobby() {
                                     size={"lg"}
                                     onClick={() => setLobbyState(LobbyState.Joining)}
                                 >
-                                    Join Game
+                                    <FormattedMessage
+                                        defaultMessage={"Join Game"}
+                                        description={
+                                            "Call to action button text for button which joins a an existing game"
+                                        }
+                                    />
                                 </Button>
                             </Stack>
                         </Card>
@@ -93,9 +125,21 @@ export function Lobby() {
                             style={{ width: "80%", textAlign: "center" }}
                         >
                             <Stack>
-                                <Title order={2}>Host a Game</Title>
+                                <Title order={2}>
+                                    {" "}
+                                    <FormattedMessage
+                                        defaultMessage={"Host a Game"}
+                                        description={"Title for section used for hosting a game"}
+                                    />
+                                </Title>
                                 <Group>
-                                    <Text>Level:</Text>
+                                    <Text>
+                                        <FormattedMessage
+                                            defaultMessage={"Level"}
+                                            description={"Title for selection used to choose the game level"}
+                                        />
+                                        :
+                                    </Text>
                                     <Select
                                         data={Object.keys(Levels)}
                                         value={gameMap}
@@ -104,7 +148,11 @@ export function Lobby() {
                                                 setGameMap(v as keyof typeof Levels);
                                             }
                                         }}
-                                        placeholder="Select a game map..."
+                                        placeholder={intl.formatMessage({
+                                            defaultMessage: "Select a game map...",
+                                            description:
+                                                "Infotext for input used to select which map will be used for the hosted game",
+                                        })}
                                     />
                                 </Group>
                                 <Button
@@ -115,7 +163,12 @@ export function Lobby() {
                                     disabled={false}
                                     onClick={() => setLobbyState(LobbyState.Hosting)}
                                 >
-                                    Host Game
+                                    <FormattedMessage
+                                        defaultMessage={"Host Game"}
+                                        description={
+                                            "Call to action button text for button which starts a new game as a Host"
+                                        }
+                                    />
                                 </Button>
                             </Stack>
                         </Card>

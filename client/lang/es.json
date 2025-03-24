@@ -1,0 +1,254 @@
+{
+  "+NFaSb": {
+    "defaultMessage": "Lentokonepeli (En desarrollo)",
+    "description": "Main title of site shown on nav"
+  },
+  "/KlrcC": {
+    "defaultMessage": "Nombre de usuario",
+    "description": "Settings section title used to modify the username"
+  },
+  "07P703": {
+    "defaultMessage": "Un triplano legendario. Extremadamente ágil y también excelente a máxima altitud de vuelo.",
+    "description": "Description of the Fokker DR.I aircraft"
+  },
+  "3R2xaB": {
+    "defaultMessage": "Disparar",
+    "description": "Title for the 'Shoot' action shown on the keybind settings section"
+  },
+  "4GxiBe": {
+    "defaultMessage": "Selecciona un mapa del juego...",
+    "description": "Infotext for input used to select which map will be used for the hosted game"
+  },
+  "4MNKGm": {
+    "defaultMessage": "Soltar, abrir paracaídas",
+    "description": "Title for the 'Eject, Open Parachute' action shown on the keybind settings section"
+  },
+  "7kZMTs": {
+    "defaultMessage": "El sistema de repetición es actualmente experimental, carece de funciones y aún está inactivo. Es posible que experimentes problemas hasta que la función de repetición esté en un estado estable.",
+    "description": "Informative text about the current state of the replay system"
+  },
+  "8Am/Pl": {
+    "defaultMessage": "Avión básico equipado con una ametralladora, sin cualidades particularmente buenas o malas. Una buena elección para un novato.",
+    "description": "Description of the Albatros D.II aircraft"
+  },
+  "8WM3G7": {
+    "defaultMessage": "Intro",
+    "description": "Title for the 'Enter' action shown on the keybind settings section"
+  },
+  "8iVdSN": {
+    "defaultMessage": "Ajustes de control",
+    "description": "Title for a settings section used to modify the keybinds used in-game"
+  },
+  "B1CMe5": {
+    "defaultMessage": "Se puede descargar un archivo de repetición en cualquier momento cuando se aloja un partido.",
+    "description": "Tooltip for a button explaining that replay files can be downloaded during gameplay, this button will be used to find a replay file from the user's computer"
+  },
+  "BLykMd": {
+    "defaultMessage": "Clan",
+    "description": "Settings section title used to modify the clan name"
+  },
+  "DWNyUG": {
+    "defaultMessage": "Seleccione un archivo de repetición",
+    "description": "Button text for a button which opens system file system to select a lentokonepeli replay file from"
+  },
+  "E/uHyU": {
+    "defaultMessage": "Avión equipado con una ametralladora bastante potente. Una buena elección, especialmente para pilotos novatos.",
+    "description": "Description of the Bristol F.2b aircraft"
+  },
+  "G7DhrV": {
+    "defaultMessage": "Jugar",
+    "description": "Sidebar link description for the main game page used to play the game"
+  },
+  "GEspS4": {
+    "defaultMessage": "Sopwith Camel",
+    "description": "Name of the Sopwith Camel aircraft"
+  },
+  "H6qNPr": {
+    "defaultMessage": "Unirse a un Juego",
+    "description": "Title for part for joining the game"
+  },
+  "INGml3": {
+    "defaultMessage": "Introduce el código de juego de 4 dígitos...",
+    "description": "Infotext for input which is used to insert 4 digit game code to join games"
+  },
+  "M2xffJ": {
+    "defaultMessage": "Guardar archivo de repetición",
+    "description": "Button text for button which saves replay file"
+  },
+  "M9/1jj": {
+    "defaultMessage": "Extremadamente ágil. No recomendado para pilotos novatos.",
+    "description": "Description of the Sopwith Camel aircraft"
+  },
+  "Nbb2Yc": {
+    "defaultMessage": "Mover a la derecha",
+    "description": "Title for the 'Move Right' action shown on the keybind settings section"
+  },
+  "Qj15PN": {
+    "defaultMessage": "Alternar tema luminoso",
+    "description": "Toggle light mode button text"
+  },
+  "Qt6faF": {
+    "defaultMessage": "Organizar un partido",
+    "description": "Title for section used for hosting a game"
+  },
+  "SDo2PQ": {
+    "defaultMessage": "Ver el código fuente en GitHub",
+    "description": "Navbar hover for viewing the source code"
+  },
+  "Sxp4im": {
+    "defaultMessage": "Código",
+    "description": "Title for selection used to insert the game code"
+  },
+  "U/mSA3": {
+    "defaultMessage": "Restablecer controles",
+    "description": "Button used to reset user defined keybinds on the settings page"
+  },
+  "URI5Vx": {
+    "defaultMessage": "Configuración del Usuario",
+    "description": "Title for a settings section used to modify user info used in-game"
+  },
+  "WWTrIb": {
+    "defaultMessage": "Avión versátil de nivel medio. Equipado con bombas además de una ametralladora. Motor rápido y potente, aunque no ágil.",
+    "description": "Description of the Salmson 2 aircraft"
+  },
+  "WYS1bQ": {
+    "defaultMessage": "Pulsa cualquier tecla...",
+    "description": "Info text explaining to press any key to set a keybind for a game action"
+  },
+  "Wjn/We": {
+    "defaultMessage": "Ver el marcador",
+    "description": "Title for the 'View Scoreboard' action shown on the keybind settings section"
+  },
+  "Y5ZG9P": {
+    "defaultMessage": "Puedes cambiar esto en cualquier momento en el menú de ajustes",
+    "description": "Tooltip for the username setting section"
+  },
+  "aLjUL6": {
+    "defaultMessage": "Editor de Mapas",
+    "description": "Sidebar link description for the Level Editor"
+  },
+  "aSDY0F": {
+    "defaultMessage": "Albatros D.II",
+    "description": "Name of the Albatros D.II aircraft"
+  },
+  "buqDOb": {
+    "defaultMessage": "Elegir nombre de usuario",
+    "description": "Title for modal used to choose username"
+  },
+  "cFDrGv": {
+    "defaultMessage": "Un clan opcional para anteponer a su nombre",
+    "description": "Tooltip for the clan setting section"
+  },
+  "crlI8a": {
+    "defaultMessage": "Salmson 2",
+    "description": "Name of the Salmson 2 aircraft"
+  },
+  "d2cMrt": {
+    "defaultMessage": "Silenciar los sonidos del juego",
+    "description": "Title for the 'Toggle Mute' action shown on the keybind settings section"
+  },
+  "dPTAzZ": {
+    "defaultMessage": "Mover a la izquierda",
+    "description": "Title for the 'Move Left' action shown on the keybind settings section"
+  },
+  "ezKLsY": {
+    "defaultMessage": "Fokker DR.I",
+    "description": "Name of the Fokker DR.I aircraft"
+  },
+  "f3ix4b": {
+    "defaultMessage": "Bomba",
+    "description": "Title for the 'Bomb' action shown on the keybind settings section"
+  },
+  "gAAkRv": {
+    "defaultMessage": "El nombre debe tener entre 3 y 20 caracteres",
+    "description": "Label explaining username constraints"
+  },
+  "gg+aZq": {
+    "defaultMessage": "Añadir enlace de teclas",
+    "description": "Title for modal where keybinds are added"
+  },
+  "izomYD": {
+    "defaultMessage": "Ver la repetición de un partido",
+    "description": "Title for the Replay System page"
+  },
+  "kfnjH9": {
+    "defaultMessage": "Ajustes",
+    "description": "Sidebar link description for the Settings page"
+  },
+  "lA7naj": {
+    "defaultMessage": "Añadir nueva tecla",
+    "description": "Tooltip for a button used to add a new keybind for an action"
+  },
+  "mq7h++": {
+    "defaultMessage": "Ver una Repetición ",
+    "description": "Sidebar link description for the Replay System page"
+  },
+  "ohIqzI": {
+    "defaultMessage": "Activar el motor",
+    "description": "Title for the 'Toggle Motor' action shown on the keybind settings section"
+  },
+  "p1ezxU": {
+    "defaultMessage": "Organizar un partido",
+    "description": "Call to action button text for button which starts a new game as a Host"
+  },
+  "pd7fXb": {
+    "defaultMessage": "Unirse a un juego",
+    "description": "Call to action button text for button which joins a an existing game"
+  },
+  "q/xC9j": {
+    "defaultMessage": "Mapa",
+    "description": "Title for selection used to choose the game level"
+  },
+  "scT0m8": {
+    "defaultMessage": "Aviso sobre el sistema de repetición",
+    "description": "title for a notice section for the Replay System"
+  },
+  "tN8/0L": {
+    "defaultMessage": "Chatear con el equipo",
+    "description": "Title for the 'Chat Team' action shown on the keybind settings section"
+  },
+  "twmPPM": {
+    "defaultMessage": "Activar tema oscuro",
+    "description": "Toggle dark mode button text"
+  },
+  "urz5xm": {
+    "defaultMessage": "Desvincular última tecla",
+    "description": "Tooltip for a button used to remove last keybind from an action"
+  },
+  "vL5iqo": {
+    "defaultMessage": "Configuración del sitio",
+    "description": "Title for a settings section used to modify general site settings"
+  },
+  "vrJzQq": {
+    "defaultMessage": "Bristol F.2b",
+    "description": "Name of the Bristol F.2b aircraft"
+  },
+  "wpH/Pl": {
+    "defaultMessage": "¡Únete a nosotros en Discord!",
+    "description": "Navbar hover for discord button"
+  },
+  "xPJ6oZ": {
+    "defaultMessage": "Voltear el avión",
+    "description": "Title for the 'Flip Plane' action shown on the keybind settings section"
+  },
+  "xRGqrp": {
+    "defaultMessage": "Establecer Nombre",
+    "description": "Call to action on setting section button which sets the name user has input"
+  },
+  "y49T/p": {
+    "defaultMessage": "Chatear con todos",
+    "description": "Title for the 'Chat All' action shown on the keybind settings section"
+  },
+  "yRjHTu": {
+    "defaultMessage": "Junkers J.1",
+    "description": "Name of the Junkers J.1 aircraft"
+  },
+  "zV7RzE": {
+    "defaultMessage": "Equipado con bombas además de una ametralladora, extremadamente duradero, pero un avión torpe.",
+    "description": "Description of the Junkers J.1 aircraft"
+  },
+  "zvKn4f": {
+    "defaultMessage": "Código del juego",
+    "description": "Title shown above the shareable room code"
+  }
+}
