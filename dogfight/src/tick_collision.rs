@@ -423,6 +423,15 @@ impl World {
                 }
             }
 
+            for (_, bunker) in self.bunkers.get_map_mut() {
+                if bullet.check_collision(bunker) {
+                    let amount = (4.0 * bullet.get_damage_factor()) as i32;
+                    bunker.subtract_health(amount);
+                    actions.push(Action::RemoveEntity(RemoveData::Bullet(*bullet_id)));
+                    continue 'bullets;
+                }
+            }
+
             for (_, ground) in self.grounds.get_map_mut() {
                 if bullet.check_collision(ground) {
                     actions.push(Action::RemoveEntity(RemoveData::Bullet(*bullet_id)));

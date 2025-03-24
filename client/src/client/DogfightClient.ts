@@ -417,6 +417,10 @@ export class DogfightClient {
                 runway.setUserTeam(props.team);
             }
 
+            for (const [_, bunker] of this.bunkers.entries) {
+                bunker.setUserTeam(props.team);
+            }
+
             // update plane/man colors
             for (const [_, player] of this.players.entries) {
                 if (player.props.controlling?.type === "Plane") {
