@@ -536,8 +536,18 @@ impl World {
             for (_, runway) in self.runways.get_map_mut() {
                 if explosion.check_collision(runway) {
                     // TODO: check for team
+                    // // NOTE: based on original code the damage taken was always 17 on explosion. above todo maybe irrelevant
                     // damage runway
                     runway.subtract_health(17);
+                }
+            }
+
+            for (_, bunker) in self.bunkers.get_map_mut() {
+                if explosion.check_collision(bunker) {
+                    // TODO: check for team
+                    // NOTE: based on original code the damage taken was always 17 on explosion. above todo maybe irrelevant
+                    // damage runway
+                    bunker.subtract_health(17);
                 }
             }
         }
