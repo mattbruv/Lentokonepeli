@@ -96,6 +96,30 @@ impl World {
                 }
             }
 
+            for (_bunker_id, bunker) in self.bunkers.get_map_mut() {
+                if man.check_collision(bunker) {
+                    match man.get_state() {
+                        // If we're walking into a bunker, don't move forward
+                        ManState::Standing | ManState::WalkingLeft | ManState::WalkingRight => {
+                            man.set_to_previous_x();
+                        }
+                        // Otherwise, kill the man
+                        _ => {
+                            actions.push(Action::RemoveEntity(RemoveData::Man(*man_id)));
+
+                            if let Some((pid, _)) = controlling {
+                                actions.push(Action::RegisterKill(KillEvent::new(
+                                    *pid,
+                                    None,
+                                    KillMethod::Man,
+                                )));
+                            }
+                        }
+                    }
+                    continue 'men;
+                }
+            }
+
             // Man -> Ground
             for (_, ground) in self.grounds.get_map_mut() {
                 if man.check_collision(ground) {
@@ -282,6 +306,20 @@ impl World {
                 }
             }
 
+            for (_, bunker) in self.bunkers.get_map_mut() {
+                if bomb.check_collision(bunker) {
+                    bunker.subtract_health(30);
+                    blow_up(
+                        &mut actions,
+                        Some(bomb.player_id()),
+                        RemoveData::Bomb(*bomb_id),
+                        bomb.get_x(),
+                        bomb.get_y(),
+                    );
+                    continue 'bombs;
+                }
+            }
+
             for (_, ground) in self.grounds.get_map_mut() {
                 if bomb.check_collision(ground) {
                     //log("Bomb collision ground!?".to_string());
@@ -423,6 +461,15 @@ impl World {
                 }
             }
 
+            for (_, bunker) in self.bunkers.get_map_mut() {
+                if bullet.check_collision(bunker) {
+                    let amount = (4.0 * bullet.get_damage_factor()) as i32;
+                    bunker.subtract_health(amount);
+                    actions.push(Action::RemoveEntity(RemoveData::Bullet(*bullet_id)));
+                    continue 'bullets;
+                }
+            }
+
             for (_, ground) in self.grounds.get_map_mut() {
                 if bullet.check_collision(ground) {
                     actions.push(Action::RemoveEntity(RemoveData::Bullet(*bullet_id)));
@@ -513,8 +560,18 @@ impl World {
             for (_, runway) in self.runways.get_map_mut() {
                 if explosion.check_collision(runway) {
                     // TODO: check for team
+                    // // NOTE: based on original code the damage taken was always 17 on explosion. above todo maybe irrelevant
                     // damage runway
                     runway.subtract_health(17);
+                }
+            }
+
+            for (_, bunker) in self.bunkers.get_map_mut() {
+                if explosion.check_collision(bunker) {
+                    // TODO: check for team
+                    // NOTE: based on original code the damage taken was always 17 on explosion. above todo maybe irrelevant
+                    // damage bunker
+                    bunker.subtract_health(17);
                 }
             }
         }
@@ -643,6 +700,21 @@ impl World {
                             plane.get_client_y(),
                         );
                     }
+                    continue 'planes;
+                }
+            }
+
+            for (_, bunker) in self.bunkers.get_map_mut() {
+                if plane.check_collision(bunker) {
+                    kill_plane_and_give_credit(&mut actions, plane, &controlling);
+                    blow_up(
+                        &mut actions,
+                        Some(plane.player_id()),
+                        RemoveData::Plane(*plane_id),
+                        plane.get_client_x(),
+                        plane.get_client_y(),
+                    );
+
                     continue 'planes;
                 }
             }

@@ -418,6 +418,10 @@ export class DogfightClient {
                 runway.setUserTeam(props.team);
             }
 
+            for (const [_, bunker] of this.bunkers.entries) {
+                bunker.setUserTeam(props.team);
+            }
+
             // update plane/man colors
             for (const [_, player] of this.players.entries) {
                 if (player.props.controlling?.type === "Plane") {
@@ -465,6 +469,7 @@ export class DogfightClient {
             [RadarObjectType.Man]: this.men,
             [RadarObjectType.Plane]: this.planes,
             [RadarObjectType.Runway]: this.runways,
+            [RadarObjectType.Bunker]: this.bunkers,
         };
 
         for (const [_, objects] of Object.entries(radarObjs)) {

@@ -38,6 +38,8 @@ pub struct Man {
     x: i32,
     y: i32,
 
+    previous_x: i32,
+
     x_speed: i32,
     y_speed: i32,
 
@@ -59,6 +61,7 @@ impl Man {
         Man {
             x: 0,
             y: 0,
+            previous_x: 0,
             team: Property::new(team),
             client_x: Property::new(0),
             client_y: Property::new(0),
@@ -103,6 +106,7 @@ impl Man {
     }
 
     pub fn set_x(&mut self, x: i32) -> () {
+        self.previous_x = self.x;
         self.x = x;
         self.client_x.set((x / RESOLUTION) as i16);
     }
@@ -246,6 +250,10 @@ impl Man {
 
     pub fn get_team(&self) -> Team {
         *self.team.get()
+    }
+
+    pub fn set_to_previous_x(&mut self) -> () {
+        self.set_x(self.previous_x);
     }
 }
 
