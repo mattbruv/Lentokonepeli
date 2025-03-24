@@ -4,6 +4,7 @@ import { Howl } from "howler";
 import { BulletProperties } from "dogfight-types/BulletProperties";
 import { directionToRadians } from "../helpers";
 import { DrawLayer } from "../constants";
+import { soundManager } from "../soundManager";
 
 const COLORS: string[] = ["#000000", "#171717", "#515151", "#606060", "#999999"];
 
@@ -42,7 +43,7 @@ export class Bullet implements Entity<BulletProperties> {
             src: "audio/m16.mp3",
         });
 
-        this.sound.play();
+        soundManager.playSound(this.sound);
 
         this.container.zIndex = DrawLayer.Bullet;
 

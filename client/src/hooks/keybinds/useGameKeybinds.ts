@@ -8,32 +8,46 @@ import { ChatAction, GameAction, KeybindCallback, KeybindConfig } from "./models
 import { registerKeybinds } from "./registerKeybinds";
 
 export const useGameKeybinds = ({ client }: { client: DogfightClient; engine: DogfightWeb }) => {
-    const { settings, globalState, setGlobalState, sendChatMessage } = useSettingsContext();
+    const { settings, globalState, setSettings, setGlobalState, sendChatMessage } = useSettingsContext();
     const { chatState } = globalState;
 
     const handleGameEvent: KeybindCallback<GameAction> = (action, type, event) => {
         event.preventDefault();
-        client.keyboard.onKeyChange(action, type);
 
-        if (action === "viewScoreboard") {
-            const viewingScoreboard = type === "down";
-            setGlobalState((prev) => ({
-                ...prev,
-                viewingScoreboard,
-            }));
-        }
-
-        if (action === "chatAll") {
-            setGlobalState((prev) => ({
-                ...prev,
-                chatState: ChatMode.MessagingGlobal,
-            }));
-        }
-        if (action === "chatTeam") {
-            setGlobalState((prev) => ({
-                ...prev,
-                chatState: ChatMode.MessagingTeam,
-            }));
+        switch (action) {
+            case "viewScoreboard": {
+                const viewingScoreboard = type === "down";
+                setGlobalState((prev) => ({
+                    ...prev,
+                    viewingScoreboard,
+                }));
+                break;
+            }
+            case "chatAll": {
+                setGlobalState((prev) => ({
+                    ...prev,
+                    chatState: ChatMode.MessagingGlobal,
+                }));
+                break;
+            }
+            case "chatTeam": {
+                setGlobalState((prev) => ({
+                    ...prev,
+                    chatState: ChatMode.MessagingTeam,
+                }));
+                break;
+            }
+            case "toggleMute": {
+                if (type === "down") return;
+                setSettings((settings) => ({
+                    ...settings,
+                    audioSettings: { ...settings.audioSettings, muted: !settings.audioSettings.muted },
+                }));
+                break;
+            }
+            default: {
+                client.keyboard.onKeyChange(action, type);
+            }
         }
     };
 
@@ -80,15 +94,9 @@ export const useGameKeybinds = ({ client }: { client: DogfightClient; engine: Do
     };
 
     useEffect(() => {
-        let unregisterKeybinds: () => void;
-
-        if (chatState === ChatMode.Passive) {
-            unregisterKeybinds = registerKeybinds(gameKeybinds);
-        } else {
-            unregisterKeybinds = registerKeybinds(chatKeybinds);
-        }
-        console.log("registered keybinds for ", ChatMode[chatState]);
+        const unregisterKeybinds =
+            chatState === ChatMode.Passive ? registerKeybinds(gameKeybinds) : registerKeybinds(chatKeybinds);
 
         return unregisterKeybinds;
-    }, [client.keyboard, globalState, sendChatMessage, sendChatMessage.current]);
+    }, [chatState]);
 };

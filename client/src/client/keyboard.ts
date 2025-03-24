@@ -1,5 +1,4 @@
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
-import { GameAction } from "../hooks/keybinds/models";
 
 type keyboardChangeCallback = (keyboard: PlayerKeyboard) => void;
 export class GameKeyboard {
@@ -20,9 +19,7 @@ export class GameKeyboard {
         this.callback = callback;
     }
 
-    public onKeyChange(action: GameAction, type: "up" | "down") {
-        if (action === "chatAll" || action === "chatTeam" || action === "viewScoreboard") return;
-
+    public onKeyChange(action: keyof PlayerKeyboard, type: "up" | "down") {
         const currentlyPressed = this.keyboard[action];
         const nextPressed = type === "down";
         const keyChanged = currentlyPressed !== nextPressed;

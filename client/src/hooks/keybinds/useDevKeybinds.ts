@@ -40,5 +40,5 @@ export const useDevKeybinds = ({ client, engine }: { client: DogfightClient; eng
         if (!import.meta.env.DEV) return;
         const unregisterKeybinds = registerKeybinds(keybinds);
         return unregisterKeybinds;
-    }, [globalState]);
+    }, []);
 };
