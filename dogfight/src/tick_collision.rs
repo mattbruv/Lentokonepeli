@@ -282,6 +282,20 @@ impl World {
                 }
             }
 
+            for (_, bunker) in self.bunkers.get_map_mut() {
+                if bomb.check_collision(bunker) {
+                    bunker.subtract_health(30);
+                    blow_up(
+                        &mut actions,
+                        Some(bomb.player_id()),
+                        RemoveData::Bomb(*bomb_id),
+                        bomb.get_x(),
+                        bomb.get_y(),
+                    );
+                    continue 'bombs;
+                }
+            }
+
             for (_, ground) in self.grounds.get_map_mut() {
                 if bomb.check_collision(ground) {
                     //log("Bomb collision ground!?".to_string());
@@ -652,6 +666,21 @@ impl World {
                             plane.get_client_y(),
                         );
                     }
+                    continue 'planes;
+                }
+            }
+
+            for (_, bunker) in self.bunkers.get_map_mut() {
+                if plane.check_collision(bunker) {
+                    kill_plane_and_give_credit(&mut actions, plane, &controlling);
+                    blow_up(
+                        &mut actions,
+                        Some(plane.player_id()),
+                        RemoveData::Plane(*plane_id),
+                        plane.get_client_x(),
+                        plane.get_client_y(),
+                    );
+
                     continue 'planes;
                 }
             }
