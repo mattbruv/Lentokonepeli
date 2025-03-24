@@ -8,6 +8,7 @@ import { DrawLayer, TeamColor } from "../constants";
 import { Stats } from "../hud";
 import { RadarObject, RadarObjectType } from "../radar";
 import { Team } from "dogfight-types/Team";
+import { soundManager } from "../soundManager";
 
 const PLANE_TEXTURE_ID: Record<PlaneType, number> = {
     Albatros: 4,
@@ -245,6 +246,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         },
 
         motor_on: () => {
+            soundManager.handlePlayMotorSound(this.props.motor_on);
             console.log("motor on", this.props.motor_on);
         },
 
@@ -262,6 +264,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
     public destroy() {
         window.clearInterval(this.animation_gray_smoke);
         window.clearTimeout(this.dark_smoke_timeout);
+        if (this.props.motor_on) soundManager.handlePlayMotorSound(false);
     }
 
     public getRadarInfo(): RadarObject {

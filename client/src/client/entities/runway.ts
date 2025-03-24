@@ -7,6 +7,7 @@ import { RunwayProperties } from "dogfight-types/RunwayProperties";
 import { Stats } from "../hud";
 import { RadarObject, RadarObjectType } from "../radar";
 import { Team } from "dogfight-types/Team";
+import { soundManager } from "../soundManager";
 
 export class Runway implements Entity<RunwayProperties>, Followable, RadarEnabled {
     public props: Required<RunwayProperties> = {
@@ -69,9 +70,12 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
                 this.blinking = true;
 
                 // play blink sound
-                new Howl({
-                    src: "audio/hit.mp3",
-                }).play();
+                soundManager.playSound(
+                    new Howl({
+                        src: "audio/hit.mp3",
+                    }),
+                );
+
                 window.setTimeout(() => {
                     this.blinking = false;
                     this.runwayBack.filters = null;
