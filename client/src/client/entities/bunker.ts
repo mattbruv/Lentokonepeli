@@ -1,12 +1,12 @@
 import { BunkerProperties } from "dogfight-types/BunkerProperties";
+import { Team } from "dogfight-types/Team";
 import * as PIXI from "pixi.js";
 import { DrawLayer, TeamColor } from "../constants";
+import { RadarObject, RadarObjectType } from "../radar";
+import { soundManager } from "../soundManager";
 import { Textures } from "../textures";
 import { Entity, EntityUpdateCallbacks, RadarEnabled } from "./entity";
-import { soundManager } from "../soundManager";
-import { Team } from "dogfight-types/Team";
 import { Runway } from "./runway";
-import { RadarObject, RadarObjectType } from "../radar";
 
 export class Bunker implements Entity<BunkerProperties>, RadarEnabled {
     public props: Required<BunkerProperties> = {
@@ -23,7 +23,9 @@ export class Bunker implements Entity<BunkerProperties>, RadarEnabled {
     private lastHealth = 0;
     private userTeam: Team = "Allies";
 
-    static textures = {
+    // This can't be static, because the textures will return undefined if they haven't loaded before
+    // this file is ran in JS for the first time.
+    private textures = {
         Centrals: Textures["headquarter_germans.gif"],
         Allies: Textures["headquarter_raf.gif"],
         Destroyed: Textures["headquarter_broke.gif"],
@@ -134,8 +136,8 @@ export class Bunker implements Entity<BunkerProperties>, RadarEnabled {
     }
 
     private getTexture() {
-        if (this.props.client_health <= 0) return Bunker.textures.Destroyed;
-        return Bunker.textures[this.props.team];
+        if (this.props.client_health <= 0) return this.textures.Destroyed;
+        return this.textures[this.props.team];
     }
 
     private updateTexture() {
