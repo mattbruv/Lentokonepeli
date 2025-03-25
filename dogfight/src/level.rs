@@ -336,7 +336,7 @@ fn parse_layer(layer: &str) -> Vec<LevelObject> {
                         Facing::Right,
                     ))
                 }
-                MapPiece::RunwayCentralsLeft => {
+                MapPiece::RunwayAlliesLeft => {
                     let img = get_image(RUNWAY2);
                     objects.push(LevelObject::Runway(
                         Point {
