@@ -46,6 +46,7 @@ macro_rules! map_pieces {
 }
 
 map_pieces!(
+    Air = '.',
     GroundNormal = '#',
     GroundDesert = '_',
     WaterNormalLeft = '/',
