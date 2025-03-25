@@ -55,5 +55,8 @@
     "vite": "^5.2.0",
     "vite-plugin-wasm": "^3.3.0",
     "vitest": "^3.0.9"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.37.0"
   }
 }
