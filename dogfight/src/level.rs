@@ -5,6 +5,7 @@
 // some types should be repeatable, others not
 
 use std::vec;
+use ts_rs::TS;
 
 use crate::{
     entities::{
@@ -24,6 +25,54 @@ use crate::{
     math::Point,
     world::World,
 };
+
+macro_rules! map_pieces {
+    ($($name:ident = $char:expr),* $(,)?) => {
+        #[derive(Debug, Clone, Copy, PartialEq, Eq, TS)]
+        #[ts(export)]
+        pub enum MapPiece {
+            $($name = $char as isize),*
+        }
+
+        impl MapPiece {
+            pub fn from_char(c: char) -> Option<Self> {
+                match c {
+                    $($char => Some(MapPiece::$name)),*,
+                    _ => None,
+                }
+            }
+        }
+    };
+}
+
+map_pieces!(
+    GroundNormal = '#',
+    GroundDesert = '_',
+    WaterNormalLeft = '/',
+    WaterNormalRight = '\\',
+    WaterDesertLeft = '(',
+    WaterDesertRight = ')',
+    HillNormal = 'H',
+    HillDesert = 'S',
+    CoastNormalRight = '>',
+    CoastNormalLeft = '<',
+    CoastDesertLeft = '[',
+    CoastDesertRight = ']',
+    RunwayCentralsLeft = 'L',
+    RunwayCentralsRight = 'R',
+    RunwayAlliesLeft = 'l',
+    RunwayAlliesRight = 'r',
+    PalmTreeLeft = 'p',
+    PalmTreeRight = 'P',
+    ControlTowerLeft = 't',
+    ControlTowerRight = 'T',
+    DesertTowerLeft = 'd',
+    DesertTowerRight = 'D',
+    FlagAllies = 'f',
+    FlagCentrals = 'F',
+    BunkerCentrals = 'I',
+    BunkerAllies = 'i',
+);
 
 impl World {
     pub fn load_level(&mut self, level_str: &str) {
@@ -169,239 +218,237 @@ fn parse_layer(layer: &str) -> Vec<LevelObject> {
             i = 22000;
         }
 
-        // return {j, i, index}
-        // ground = (1=x, 2=y, 3=width)
-
-        match piece.character {
-            '#' => objects.push(LevelObject::Ground(
-                Point { x: j, y: 0 },
-                i,
-                Terrain::Normal,
-            )),
-            '_' => objects.push(LevelObject::Ground(
-                Point { x: j, y: 0 },
-                i,
-                Terrain::Desert,
-            )),
-            '/' => objects.push(LevelObject::Water(
-                Point { x: j, y: 25 },
-                i,
-                Terrain::Normal,
-                Facing::Left,
-            )),
-            '\\' => objects.push(LevelObject::Water(
-                Point { x: j, y: 25 },
-                i,
-                Terrain::Normal,
-                Facing::Right,
-            )),
-            '(' => objects.push(LevelObject::Water(
-                Point { x: j, y: 25 },
-                i,
-                Terrain::Desert,
-                Facing::Left,
-            )),
-            ')' => objects.push(LevelObject::Water(
-                Point { x: j, y: 25 },
-                i,
-                Terrain::Desert,
-                Facing::Right,
-            )),
-            _ => println!(
-                "Unimpleneted continued piece in map file: {}",
-                piece.character
-            ),
+        if let Some(map_piece) = MapPiece::from_char(piece.character) {
+            match map_piece {
+                MapPiece::GroundNormal => objects.push(LevelObject::Ground(
+                    Point { x: j, y: 0 },
+                    i,
+                    Terrain::Normal,
+                )),
+                MapPiece::GroundDesert => objects.push(LevelObject::Ground(
+                    Point { x: j, y: 0 },
+                    i,
+                    Terrain::Desert,
+                )),
+                MapPiece::WaterNormalLeft => objects.push(LevelObject::Water(
+                    Point { x: j, y: 25 },
+                    i,
+                    Terrain::Normal,
+                    Facing::Left,
+                )),
+                MapPiece::WaterNormalRight => objects.push(LevelObject::Water(
+                    Point { x: j, y: 25 },
+                    i,
+                    Terrain::Normal,
+                    Facing::Right,
+                )),
+                MapPiece::WaterDesertLeft => objects.push(LevelObject::Water(
+                    Point { x: j, y: 25 },
+                    i,
+                    Terrain::Desert,
+                    Facing::Left,
+                )),
+                MapPiece::WaterDesertRight => objects.push(LevelObject::Water(
+                    Point { x: j, y: 25 },
+                    i,
+                    Terrain::Desert,
+                    Facing::Right,
+                )),
+                _ => println!("Unimplemented continued piece in map file: {:?}", map_piece),
+            }
         }
     }
 
     for piece in uniques {
         let i = -(piece.length as i32) * 100 / 2;
         let j = piece.index as i32;
-        match piece.character {
-            'H' => objects.push(LevelObject::Hill(
-                Point {
-                    x: (i + j * 100 + 50) * 8 / 10,
-                    y: -40,
-                },
-                Terrain::Normal,
-            )),
-            'S' => objects.push(LevelObject::Hill(
-                Point {
-                    x: (i + j * 100 + 50) * 8 / 10,
-                    y: -45, // yes, the Y value is different for sand hills
-                },
-                Terrain::Desert,
-            )),
-            // coast(x, y, type)
-            '>' => {
-                let k = j * 100;
-                objects.push(LevelObject::Coast(
-                    Point { x: i + k, y: 0 },
+
+        if let Some(map_piece) = MapPiece::from_char(piece.character) {
+            match map_piece {
+                MapPiece::HillNormal => objects.push(LevelObject::Hill(
+                    Point {
+                        x: (i + j * 100 + 50) * 8 / 10,
+                        y: -40,
+                    },
                     Terrain::Normal,
-                    Facing::Right,
-                ));
-            }
-            '<' => {
-                let img = get_image(BEACH_L);
-                let k = (j + 1) * 100 - img.width() as i32;
-                objects.push(LevelObject::Coast(
-                    Point { x: i + k, y: 0 },
-                    Terrain::Normal,
-                    Facing::Left,
-                ));
-            }
-            '[' => {
-                let img = get_image(BEACH_L_DESERT);
-                let k = (j + 1) * 100 - img.width() as i32;
-                objects.push(LevelObject::Coast(
-                    Point { x: i + k, y: 0 },
+                )),
+                MapPiece::HillDesert => objects.push(LevelObject::Hill(
+                    Point {
+                        x: (i + j * 100 + 50) * 8 / 10,
+                        y: -45, // yes, the Y value is different for sand hills
+                    },
                     Terrain::Desert,
+                )),
+                MapPiece::CoastNormalRight => {
+                    let k = j * 100;
+                    objects.push(LevelObject::Coast(
+                        Point { x: i + k, y: 0 },
+                        Terrain::Normal,
+                        Facing::Right,
+                    ));
+                }
+                MapPiece::CoastNormalLeft => {
+                    let img = get_image(BEACH_L);
+                    let k = (j + 1) * 100 - img.width() as i32;
+                    objects.push(LevelObject::Coast(
+                        Point { x: i + k, y: 0 },
+                        Terrain::Normal,
+                        Facing::Left,
+                    ));
+                }
+                MapPiece::CoastDesertLeft => {
+                    let img = get_image(BEACH_L_DESERT);
+                    let k = (j + 1) * 100 - img.width() as i32;
+                    objects.push(LevelObject::Coast(
+                        Point { x: i + k, y: 0 },
+                        Terrain::Desert,
+                        Facing::Left,
+                    ));
+                }
+                MapPiece::CoastDesertRight => {
+                    let k = j * 100;
+                    objects.push(LevelObject::Coast(
+                        Point { x: i + k, y: 0 },
+                        Terrain::Desert,
+                        Facing::Right,
+                    ));
+                }
+                MapPiece::RunwayCentralsLeft => {
+                    let img = get_image(RUNWAY2);
+                    objects.push(LevelObject::Runway(
+                        Point {
+                            x: i + j * 100 + 50 - (img.width() / 2) as i32,
+                            y: -25,
+                        },
+                        Team::Centrals,
+                        Facing::Left,
+                    ))
+                }
+                MapPiece::RunwayCentralsRight => {
+                    let img = get_image(RUNWAY);
+                    objects.push(LevelObject::Runway(
+                        Point {
+                            x: i + j * 100 + 50 - (img.width() / 2) as i32,
+                            y: -25,
+                        },
+                        Team::Centrals,
+                        Facing::Right,
+                    ))
+                }
+                MapPiece::RunwayCentralsLeft => {
+                    let img = get_image(RUNWAY2);
+                    objects.push(LevelObject::Runway(
+                        Point {
+                            x: i + j * 100 + 50 - (img.width() / 2) as i32,
+                            y: -25,
+                        },
+                        Team::Allies,
+                        Facing::Left,
+                    ))
+                }
+                MapPiece::RunwayAlliesRight => {
+                    let img = get_image(RUNWAY);
+                    objects.push(LevelObject::Runway(
+                        Point {
+                            x: i + j * 100 + 50 - (img.width() / 2) as i32,
+                            y: -25,
+                        },
+                        Team::Allies,
+                        Facing::Right,
+                    ))
+                }
+                MapPiece::PalmTreeRight => objects.push(LevelObject::BackgroundItem(
+                    Point {
+                        x: i + j * 100 + 50,
+                        y: 5,
+                    },
+                    BackgroundItemType::PalmTree,
+                    Facing::Right,
+                )),
+                MapPiece::PalmTreeLeft => objects.push(LevelObject::BackgroundItem(
+                    Point {
+                        x: i + j * 100 + 50,
+                        y: 5,
+                    },
+                    BackgroundItemType::PalmTree,
                     Facing::Left,
-                ));
-            }
-            ']' => {
-                let k = j * 100;
-                objects.push(LevelObject::Coast(
-                    Point { x: i + k, y: 0 },
-                    Terrain::Desert,
-                    Facing::Right,
-                ));
-            }
-            'L' => {
-                let img = get_image(RUNWAY2);
-                objects.push(LevelObject::Runway(
+                )),
+                MapPiece::ControlTowerLeft => objects.push(LevelObject::BackgroundItem(
                     Point {
-                        x: i + j * 100 + 50 - (img.width() / 2) as i32, //
-                        y: -25,
+                        x: i + j * 100 + 50,
+                        y: 5,
                     },
-                    Team::Centrals,
+                    BackgroundItemType::ControlTower,
                     Facing::Left,
-                ))
-            }
-            'R' => {
-                let img = get_image(RUNWAY);
-                objects.push(LevelObject::Runway(
+                )),
+                MapPiece::ControlTowerRight => objects.push(LevelObject::BackgroundItem(
                     Point {
-                        x: i + j * 100 + 50 - (img.width() / 2) as i32, //
-                        y: -25,
+                        x: i + j * 100 + 50,
+                        y: 5,
                     },
-                    Team::Centrals,
+                    BackgroundItemType::ControlTower,
                     Facing::Right,
-                ))
-            }
-            'l' => {
-                let img = get_image(RUNWAY2);
-                objects.push(LevelObject::Runway(
+                )),
+                MapPiece::DesertTowerLeft => objects.push(LevelObject::BackgroundItem(
                     Point {
-                        x: i + j * 100 + 50 - (img.width() / 2) as i32, //
-                        y: -25,
+                        x: i + j * 100 + 50,
+                        y: 5,
                     },
-                    Team::Allies,
+                    BackgroundItemType::DesertTower,
                     Facing::Left,
-                ))
-            }
-            'r' => {
-                let img = get_image(RUNWAY);
-                objects.push(LevelObject::Runway(
+                )),
+                MapPiece::DesertTowerRight => objects.push(LevelObject::BackgroundItem(
                     Point {
-                        x: i + j * 100 + 50 - (img.width() / 2) as i32, //
-                        y: -25,
+                        x: i + j * 100 + 50,
+                        y: 5,
                     },
-                    Team::Allies,
+                    BackgroundItemType::DesertTower,
                     Facing::Right,
-                ))
+                )),
+                MapPiece::FlagAllies => {
+                    let flag = get_image(FLAG_GER_1);
+                    objects.push(LevelObject::BackgroundItem(
+                        Point {
+                            x: i + j * 100 + 50 - (flag.width() as i32) / 2,
+                            y: -90,
+                        },
+                        BackgroundItemType::FlagAllies,
+                        Facing::Right,
+                    ));
+                }
+                MapPiece::FlagCentrals => {
+                    let flag = get_image(FLAG_GER_1);
+                    objects.push(LevelObject::BackgroundItem(
+                        Point {
+                            x: i + j * 100 + 50 - (flag.width() as i32) / 2,
+                            y: -90,
+                        },
+                        BackgroundItemType::FlagCentrals,
+                        Facing::Right,
+                    ));
+                }
+                MapPiece::BunkerCentrals => {
+                    let img = get_image(HEADQUARTER_GERMANS);
+                    objects.push(LevelObject::Bunker(
+                        Point {
+                            x: i + j * 100 + 50 - (img.width() as i32) / 2,
+                            y: 0 - (img.height() as i32) + 7,
+                        },
+                        Team::Centrals,
+                    ));
+                }
+                MapPiece::BunkerAllies => {
+                    let img = get_image(HEADQUARTER_RAF);
+                    objects.push(LevelObject::Bunker(
+                        Point {
+                            x: i + j * 100 + 50 - (img.width() as i32) / 2,
+                            y: 0 - (img.height() as i32) + 7,
+                        },
+                        Team::Allies,
+                    ));
+                }
+                _ => println!("Unimplemented unique piece in map file: {:?}", map_piece),
             }
-            'P' => objects.push(LevelObject::BackgroundItem(
-                Point {
-                    x: i + j * 100 + 50,
-                    y: 5,
-                },
-                BackgroundItemType::PalmTree,
-                Facing::Right,
-            )),
-            'p' => objects.push(LevelObject::BackgroundItem(
-                Point {
-                    x: i + j * 100 + 50,
-                    y: 5,
-                },
-                BackgroundItemType::PalmTree,
-                Facing::Left,
-            )),
-            't' => objects.push(LevelObject::BackgroundItem(
-                Point {
-                    x: i + j * 100 + 50,
-                    y: 5,
-                },
-                BackgroundItemType::ControlTower,
-                Facing::Left,
-            )),
-            'T' => objects.push(LevelObject::BackgroundItem(
-                Point {
-                    x: i + j * 100 + 50,
-                    y: 5,
-                },
-                BackgroundItemType::ControlTower,
-                Facing::Right,
-            )),
-            'd' => objects.push(LevelObject::BackgroundItem(
-                Point {
-                    x: i + j * 100 + 50,
-                    y: 5,
-                },
-                BackgroundItemType::DesertTower,
-                Facing::Left,
-            )),
-            'D' => objects.push(LevelObject::BackgroundItem(
-                Point {
-                    x: i + j * 100 + 50,
-                    y: 5,
-                },
-                BackgroundItemType::DesertTower,
-                Facing::Right,
-            )),
-            'f' => {
-                let flag = get_image(FLAG_GER_1);
-                objects.push(LevelObject::BackgroundItem(
-                    Point {
-                        x: i + j * 100 + 50 - (flag.width() as i32) / 2,
-                        y: -90,
-                    },
-                    BackgroundItemType::FlagAllies,
-                    Facing::Right,
-                ));
-            }
-            'F' => {
-                let flag = get_image(FLAG_GER_1);
-                objects.push(LevelObject::BackgroundItem(
-                    Point {
-                        x: i + j * 100 + 50 - (flag.width() as i32) / 2,
-                        y: -90,
-                    },
-                    BackgroundItemType::FlagCentrals,
-                    Facing::Right,
-                ));
-            }
-            'I' => {
-                let img = get_image(HEADQUARTER_GERMANS);
-                objects.push(LevelObject::Bunker(
-                    Point {
-                        x: i + j * 100 + 50 - (img.width() as i32) / 2,
-                        y: 0 - (img.height() as i32) + 7,
-                    },
-                    Team::Centrals,
-                ));
-            }
-            'i' => {
-                let img = get_image(HEADQUARTER_RAF);
-                objects.push(LevelObject::Bunker(
-                    Point {
-                        x: i + j * 100 + 50 - (img.width() as i32) / 2,
-                        y: 0 - (img.height() as i32) + 7,
-                    },
-                    Team::Allies,
-                ));
-            }
-            _ => println!("Unimpleneted unique piece in map file: {}", piece.character),
         }
     }
 
@@ -424,10 +471,17 @@ fn get_unique_pieces(piece: &CharInfo) -> Vec<CharInfo> {
 }
 
 fn is_continued_piece(piece: &CharInfo) -> bool {
-    match piece.character {
-        '#' | '_' | '/' | '\\' | '(' | ')' => true,
-        _ => false,
-    }
+    MapPiece::from_char(piece.character).map_or(false, |p| {
+        matches!(
+            p,
+            MapPiece::GroundNormal
+                | MapPiece::GroundDesert
+                | MapPiece::WaterNormalLeft
+                | MapPiece::WaterNormalRight
+                | MapPiece::WaterDesertLeft
+                | MapPiece::WaterDesertRight
+        )
+    })
 }
 
 // charInfo, (charinfo => T) => Vec<T>
