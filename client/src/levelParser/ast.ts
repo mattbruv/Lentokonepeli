@@ -1,4 +1,4 @@
-import { LayoutPiece, TimeWinner } from "./spec";
+import { MapPiece, TimeWinner } from "./spec";
 
 export type LevelNode = {
     kind: "Level";
@@ -16,7 +16,7 @@ export type NameNode = {
 export type LayerNode = {
     kind: "Layer";
     ordinal: number;
-    pieces: LayoutPiece[];
+    pieces: MapPiece[];
 };
 
 export type DesignerNode = {

@@ -1,6 +1,6 @@
 import { combine, fail, Parser, succ, tok, Token } from "typescript-parsec";
 import { TokenKind } from "./lexer";
-import { KNOWN_LAYOUT_PIECES, KNOWN_TIME_WINNERS, LayoutPiece, TimeWinner } from "./spec";
+import { KNOWN_MAP_PIECE_CHARACTERS, KNOWN_TIME_WINNERS, MapPiece, TimeWinner } from "./spec";
 
 /** Parse exact string tokens */
 export const literal = (toMatch: string): Parser<TokenKind, Token<TokenKind.String>> =>
@@ -9,8 +9,8 @@ export const literal = (toMatch: string): Parser<TokenKind, Token<TokenKind.Stri
     );
 
 /** Parse known level layout pieces */
-export const LayoutPieces: Parser<TokenKind, LayoutPiece[]> = combine(tok(TokenKind.String), (token) => {
-    const pieces = stringToLayoutPieces(token.text);
+export const LayoutPieces: Parser<TokenKind, MapPiece[]> = combine(tok(TokenKind.String), (token) => {
+    const pieces = stringToMapPieces(token.text);
     if (!pieces.length) {
         return fail("Layer has no known pieces");
     }
@@ -32,11 +32,11 @@ export const TimeWinnerValue: Parser<TokenKind, TimeWinner> = combine(tok(TokenK
     return KNOWN_TIME_WINNERS.includes(value) ? succ(value) : fail(`Received unknown time_winner value "${value}"`);
 });
 
-const stringToLayoutPieces = (str: string): LayoutPiece[] => {
-    const pieces: LayoutPiece[] = [];
+const stringToMapPieces = (str: string): MapPiece[] => {
+    const pieces: MapPiece[] = [];
     let text = str;
     nextToken: while (text) {
-        for (const piece of KNOWN_LAYOUT_PIECES) {
+        for (const piece of KNOWN_MAP_PIECE_CHARACTERS) {
             if (text.startsWith(piece)) {
                 pieces.push(piece);
                 text = text.slice(piece.length);
