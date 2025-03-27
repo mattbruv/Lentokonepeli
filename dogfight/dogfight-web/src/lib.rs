@@ -2,6 +2,7 @@ mod utils;
 
 use dogfight::{
     input::{game_input_from_string, is_valid_command},
+    level::parse_level_to_json,
     network::{
         game_events_from_bytes, game_events_to_binary, game_events_to_json,
         player_command_json_from_binary, player_command_json_to_binary, replay_file_binary_to_json,
@@ -50,6 +51,10 @@ impl DogfightWeb {
 
     pub fn replay_file_binary_to_json(&self, bytes: Vec<u8>) -> String {
         replay_file_binary_to_json(bytes)
+    }
+
+    pub fn parse_level(&self, level_str: &str) -> String {
+        parse_level_to_json(level_str)
     }
 
     pub fn get_replay_file(&self) -> Vec<u8> {
