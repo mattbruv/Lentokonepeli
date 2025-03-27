@@ -4,6 +4,7 @@
 
 // some types should be repeatable, others not
 
+use serde::Serialize;
 use std::vec;
 use ts_rs::TS;
 
@@ -128,7 +129,8 @@ struct CharInfo {
     length: usize,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, TS)]
+#[ts(export)]
 pub struct Level {
     pub name: String,
     pub designer: String,
@@ -136,7 +138,8 @@ pub struct Level {
     pub objects: Vec<LevelObject>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, TS)]
+#[ts(export)]
 pub enum LevelObject {
     Ground(Point, i32, Terrain),
     Water(Point, i32, Terrain, Facing),
@@ -145,6 +148,11 @@ pub enum LevelObject {
     Runway(Point, Team, Facing),
     Bunker(Point, Team),
     BackgroundItem(Point, BackgroundItemType, Facing),
+}
+
+pub fn parse_level_to_json(level_string: &str) -> String {
+    let level: Level = parse_level(level_string);
+    serde_json::to_string(&level).unwrap()
 }
 
 fn parse_level(level_str: &str) -> Level {
