@@ -5,9 +5,9 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { NavLink, Route, Routes } from "react-router-dom";
 import "./App.css";
 import classes from "./App.module.css";
-import { Lobby } from "./Lobby";
-import { Replay } from "./Replay";
-import { Settings } from "./Settings";
+import { Lobby } from "./views/Lobby";
+import { Replay } from "./views/Replay";
+import { Settings } from "./views/Settings";
 
 function App() {
     const intl = useIntl();
@@ -98,7 +98,6 @@ function App() {
                 </NavLink>
                 <NavLink to={"/replay"}>
                     <UnstyledButton className={classes.control}>
-                        {" "}
                         <FormattedMessage
                             defaultMessage={"Watch Replay"}
                             description={"Sidebar link description for the Replay System page"}
@@ -106,7 +105,6 @@ function App() {
                     </UnstyledButton>
                 </NavLink>
                 <UnstyledButton className={classes.control}>
-                    {" "}
                     <FormattedMessage
                         defaultMessage={"Level Editor"}
                         description={"Sidebar link description for the Level Editor"}
@@ -114,7 +112,6 @@ function App() {
                 </UnstyledButton>
                 <NavLink to={"/settings"}>
                     <UnstyledButton className={classes.control}>
-                        {" "}
                         <FormattedMessage
                             defaultMessage={"Settings"}
                             description={"Sidebar link description for the Settings page"}

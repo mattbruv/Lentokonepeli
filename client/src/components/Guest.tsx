@@ -1,8 +1,8 @@
 import { Card, Group, Stack, Text } from "@mantine/core";
 import { useEffect, useRef } from "react";
-import { Game } from "./components/Game";
-import { useSettingsContext } from "./contexts/settingsContext";
-import { useGuest } from "./hooks/useGuest";
+import { useSettingsContext } from "../contexts/settingsContext";
+import { useGuest } from "../hooks/useGuest";
+import { Game } from "./Game";
 
 type GuestProps = {
     gameCode: string;

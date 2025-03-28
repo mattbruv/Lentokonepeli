@@ -5,7 +5,7 @@ import Peer, { DataConnection } from "peerjs";
 import { useEffect, useRef, useState } from "react";
 import { useDogfight } from "./useDogfight";
 
-import { LevelName } from "src/Lobby";
+import { LevelName } from "src/views/Lobby";
 import Levels from "../assets/levels.json";
 import { randomGuid } from "../helpers";
 
