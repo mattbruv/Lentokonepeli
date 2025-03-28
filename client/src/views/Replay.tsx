@@ -1,9 +1,9 @@
 import { Alert, Button, Card, FileButton, Group, LoadingOverlay, Stack, Title, Tooltip } from "@mantine/core";
 import { IconFileUpload, IconInfoCircle } from "@tabler/icons-react";
 import { useRef, useState } from "react";
-import { Game } from "./components/Game";
-import { useReplay } from "./hooks/useReplay";
 import { FormattedMessage, useIntl } from "react-intl";
+import { Game } from "../components/Game";
+import { useReplay } from "../hooks/useReplay";
 
 enum ReplayState {
     ProvideFile,
@@ -46,7 +46,7 @@ export function Replay() {
     }
 
     return (
-        <Group>
+        <Group justify="center">
             <Game
                 ref={gameContainer}
                 myPlayerGuid={playerGuid}

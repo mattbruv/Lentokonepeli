@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { Button, Card, Text, Grid, Group, Modal, Select, TextInput, Title, Stack } from "@mantine/core";
+import { Button, Card, Grid, Group, Modal, Select, Stack, Text, TextInput, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { useState } from "react";
+import Levels from "../assets/levels.json";
 
-import Levels from "./assets/levels.json";
-import { Host } from "./Host";
-import { Guest } from "./Guest";
-import { useSettingsContext } from "./contexts/settingsContext";
-import { NameEditor } from "./components/Name";
 import { FormattedMessage, useIntl } from "react-intl";
+import { Guest } from "../components/Guest";
+import { Host } from "../components/Host";
+import { NameEditor } from "../components/NameEditor";
+import { useSettingsContext } from "../contexts/settingsContext";
 
 export type LevelName = keyof typeof Levels;
 
@@ -67,7 +67,6 @@ export function Lobby() {
                         >
                             <Stack>
                                 <Title order={2}>
-                                    {" "}
                                     <FormattedMessage
                                         defaultMessage={"Join a Game"}
                                         description={"Title for part for joining the game"}
@@ -75,7 +74,6 @@ export function Lobby() {
                                 </Title>
                                 <Group>
                                     <Text>
-                                        {" "}
                                         <FormattedMessage
                                             defaultMessage={"Code"}
                                             description={"Title for selection used to insert the game code"}
@@ -126,7 +124,6 @@ export function Lobby() {
                         >
                             <Stack>
                                 <Title order={2}>
-                                    {" "}
                                     <FormattedMessage
                                         defaultMessage={"Host a Game"}
                                         description={"Title for section used for hosting a game"}

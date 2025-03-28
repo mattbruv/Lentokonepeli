@@ -1,7 +1,7 @@
-import { Stack, TextInput, Tooltip, Button, Text } from "@mantine/core";
+import { Button, Stack, Text, TextInput, Tooltip } from "@mantine/core";
 import { useState } from "react";
-import { isValidClan, isValidName, useSettingsContext } from "../contexts/settingsContext";
 import { FormattedMessage, useIntl } from "react-intl";
+import { isValidClan, isValidName, useSettingsContext } from "../contexts/settingsContext";
 
 export type NameEditorProps = {
     showTip: boolean;

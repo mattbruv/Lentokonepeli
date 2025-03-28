@@ -3,11 +3,11 @@ import { useDisclosure } from "@mantine/hooks";
 import { IconDeviceGamepad2, IconPlus, IconRestore, IconSitemap, IconTrash, IconUser } from "@tabler/icons-react";
 import React, { useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
-import { NameEditor } from "./components/Name";
-import { DEFAULT_GAME_KEYBINDS, useSettingsContext } from "./contexts/settingsContext";
-import { GameAction } from "./hooks/keybinds/models";
-import { getDefaultLocale, KNOWN_LOCALE_DROPDOWN_VALUES, KnownLocale } from "./intl/IntlProvider";
-import { KEYBIND_INTL } from "./intl/messages";
+import { NameEditor } from "../components/NameEditor";
+import { DEFAULT_GAME_KEYBINDS, useSettingsContext } from "../contexts/settingsContext";
+import { GameAction } from "../hooks/keybinds/models";
+import { getDefaultLocale, KNOWN_LOCALE_DROPDOWN_VALUES, KnownLocale } from "../intl/IntlProvider";
+import { KEYBIND_INTL } from "../intl/messages";
 
 export function Settings() {
     const { settings, setSettings } = useSettingsContext();

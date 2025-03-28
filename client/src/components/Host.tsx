@@ -2,11 +2,11 @@ import { Button, Card, Group, Stack, Text } from "@mantine/core";
 import { IconFileDownloadFilled } from "@tabler/icons-react";
 import saveAs from "file-saver";
 import { useEffect, useRef } from "react";
-import { Game } from "./components/Game";
-import { useSettingsContext } from "./contexts/settingsContext";
-import { useLocalHost } from "./hooks/useLocalHost";
-import { LevelName } from "./Lobby";
 import { FormattedMessage } from "react-intl";
+import { useSettingsContext } from "../contexts/settingsContext";
+import { useLocalHost } from "../hooks/useLocalHost";
+import { LevelName } from "../views/Lobby";
+import { Game } from "./Game";
 
 type HostProps = {
     level: LevelName;
@@ -44,7 +44,7 @@ export function Host({ level, recordGame }: HostProps) {
     }, []);
 
     return (
-        <Group>
+        <Group justify="center">
             <Game
                 ref={gameContainer}
                 myPlayerGuid={playerGuid}
