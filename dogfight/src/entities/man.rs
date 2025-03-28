@@ -204,32 +204,23 @@ impl Man {
         if keyboard.left {
             self.set_x(self.x - 100);
             self.state.set(ManState::WalkingLeft);
+
+            if self.get_client_x() < -20_000 {
+                self.blow_me_up(my_owner, actions, man_id);
+            }
         }
 
         if keyboard.right {
             self.set_x(self.x + 100);
             self.state.set(ManState::WalkingRight);
+
+            if self.get_client_x() > 20_000 {
+                self.blow_me_up(my_owner, actions, man_id);
+            }
         }
 
         if keyboard.shift {
-            actions.push(Action::RemoveEntity(RemoveData::Man(man_id)));
-
-            // We don't want the top left corner, but rather bottom middle
-            let x = self.client_x.get() + (self.image_standing.width() / 2) as i16;
-            let y = self.client_y.get() + (self.image_standing.height()) as i16;
-
-            // log(format!("x: {}, y: {}", x, y));
-            actions.push(Action::RegisterKill(KillEvent::new(
-                my_owner,
-                None,
-                KillMethod::Man,
-            )));
-            actions.push(Action::Explosion(ExplosionData {
-                explosion_owner: Some(my_owner),
-                team: Some(*self.team.get()),
-                client_x: x,
-                client_y: y,
-            }));
+            self.blow_me_up(my_owner, actions, man_id);
         }
 
         // If we're shooting
@@ -241,6 +232,27 @@ impl Man {
                 player_id: my_owner,
             }));
         }
+    }
+
+    fn blow_me_up(&mut self, my_owner: PlayerId, actions: &mut Vec<Action>, man_id: ManId) {
+        actions.push(Action::RemoveEntity(RemoveData::Man(man_id)));
+
+        // We don't want the top left corner, but rather bottom middle
+        let x = self.client_x.get() + (self.image_standing.width() / 2) as i16;
+        let y = self.client_y.get() + (self.image_standing.height()) as i16;
+
+        // log(format!("x: {}, y: {}", x, y));
+        actions.push(Action::RegisterKill(KillEvent::new(
+            my_owner,
+            None,
+            KillMethod::Man,
+        )));
+        actions.push(Action::Explosion(ExplosionData {
+            explosion_owner: Some(my_owner),
+            team: Some(*self.team.get()),
+            client_x: x,
+            client_y: y,
+        }));
     }
 
     pub fn die_from_fall(&self) -> bool {
