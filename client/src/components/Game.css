@@ -1,0 +1,5 @@
+canvas {
+    max-width: 100%;
+    /* remove topbar, remove padding, ensure game fits on screen  */
+    max-height: calc(100vh - 60px - 2rem);
+}

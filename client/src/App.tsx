@@ -12,6 +12,7 @@ import { Settings } from "./views/Settings";
 function App() {
     const intl = useIntl();
     const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+    const [mobileOpened, { toggle: toggleMobile, close: closeMobile }] = useDisclosure(false);
 
     const { toggleColorScheme, colorScheme } = useMantineColorScheme();
 
@@ -29,15 +30,16 @@ function App() {
         <AppShell
             header={{ height: 60 }}
             navbar={{
-                width: 300,
-                breakpoint: "sm",
-                collapsed: { desktop: !desktopOpened },
+                width: 200,
+                breakpoint: "xs",
+                collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
             }}
             padding="md"
         >
             <AppShell.Header>
                 <Group h="100%" px="md">
-                    <Burger opened={desktopOpened} onClick={toggleDesktop} visibleFrom="sm" size="sm" />
+                    <Burger opened={mobileOpened} onClick={toggleMobile} hiddenFrom="xs" size="sm" />
+                    <Burger opened={desktopOpened} onClick={toggleDesktop} visibleFrom="xs" size="sm" />
                     <Group justify="space-between" style={{ flex: 1 }}>
                         <Text size={"lg"}>
                             <FormattedMessage
@@ -88,7 +90,7 @@ function App() {
                 </Group>
             </AppShell.Header>
             <AppShell.Navbar py="md" px={4}>
-                <NavLink to={"/"}>
+                <NavLink to={"/"} onClick={closeMobile}>
                     <UnstyledButton className={classes.control}>
                         <FormattedMessage
                             defaultMessage={"Play"}
@@ -96,7 +98,7 @@ function App() {
                         />
                     </UnstyledButton>
                 </NavLink>
-                <NavLink to={"/replay"}>
+                <NavLink to={"/replay"} onClick={closeMobile}>
                     <UnstyledButton className={classes.control}>
                         <FormattedMessage
                             defaultMessage={"Watch Replay"}
@@ -104,13 +106,13 @@ function App() {
                         />
                     </UnstyledButton>
                 </NavLink>
-                <UnstyledButton className={classes.control}>
+                <UnstyledButton className={classes.control} onClick={closeMobile}>
                     <FormattedMessage
                         defaultMessage={"Level Editor"}
                         description={"Sidebar link description for the Level Editor"}
                     />
                 </UnstyledButton>
-                <NavLink to={"/settings"}>
+                <NavLink to={"/settings"} onClick={closeMobile}>
                     <UnstyledButton className={classes.control}>
                         <FormattedMessage
                             defaultMessage={"Settings"}

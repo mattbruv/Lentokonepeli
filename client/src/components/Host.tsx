@@ -44,7 +44,7 @@ export function Host({ level, recordGame }: HostProps) {
     }, []);
 
     return (
-        <Group>
+        <Group justify="center">
             <Game
                 ref={gameContainer}
                 myPlayerGuid={playerGuid}

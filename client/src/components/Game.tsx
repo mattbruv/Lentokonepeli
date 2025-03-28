@@ -1,6 +1,7 @@
 import { forwardRef } from "react";
 import { useSettingsContext } from "../contexts/settingsContext";
 import { Chat, ChatGlobalProps } from "./Chat";
+import "./Game.css";
 import { Scoreboard, ScoreboardProps } from "./Scoreboard";
 
 interface GameProps extends ScoreboardProps, ChatGlobalProps {}

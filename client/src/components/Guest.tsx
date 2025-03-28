@@ -29,7 +29,7 @@ export function Guest({ gameCode }: GuestProps) {
     }, []);
 
     return (
-        <Group>
+        <Group justify="center">
             <Game
                 ref={gameContainer}
                 myPlayerGuid={playerGuid}

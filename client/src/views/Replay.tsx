@@ -46,7 +46,7 @@ export function Replay() {
     }
 
     return (
-        <Group>
+        <Group justify="center">
             <Game
                 ref={gameContainer}
                 myPlayerGuid={playerGuid}
