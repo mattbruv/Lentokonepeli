@@ -5,6 +5,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { NavLink, Route, Routes } from "react-router-dom";
 import "./App.css";
 import classes from "./App.module.css";
+import { Editor } from "./views/Editor";
 import { Lobby } from "./views/Lobby";
 import { Replay } from "./views/Replay";
 import { Settings } from "./views/Settings";
@@ -126,6 +127,7 @@ function App() {
                     <Route path="/" element={<Lobby />} />
                     <Route path="/replay" element={<Replay />} />
                     <Route path="/settings" element={<Settings />} />
+                    <Route path="/editor" element={<Editor />} />
                 </Routes>
             </AppShell.Main>
         </AppShell>
