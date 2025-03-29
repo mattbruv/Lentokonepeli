@@ -5,10 +5,12 @@ export let Textures: TextureMap = {} as unknown as TextureMap;
 export async function loadTextures() {
     const spritesheet = await PIXI.Assets.load<PIXI.Spritesheet>("./images/images.json");
     spritesheet.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-    Textures = spritesheet.textures as unknown as TextureMap;
+    const textures = spritesheet.textures as unknown as TextureMap;
+    Textures = textures;
+    return textures;
 }
 
-interface TextureMap {
+export interface TextureMap {
     "beach-l.gif": PIXI.Texture<PIXI.Resource>;
     "beach-l_desert.gif": PIXI.Texture<PIXI.Resource>;
     "beach-r_desert.gif": PIXI.Texture<PIXI.Resource>;

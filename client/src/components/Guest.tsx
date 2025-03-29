@@ -18,9 +18,9 @@ export function Guest({ gameCode }: GuestProps) {
         getClan(),
     );
 
-    async function join() {
+    function join() {
         if (!gameContainer.current) return;
-        await initialize(gameContainer.current);
+        initialize(gameContainer.current);
         joinGame(gameCode);
     }
 

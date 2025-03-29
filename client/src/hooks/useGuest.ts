@@ -19,8 +19,8 @@ export function useGuest(myName: string, clan: string) {
         },
     });
 
-    async function initialize(div: HTMLDivElement) {
-        await dogfight.initialize(div);
+    function initialize(div: HTMLDivElement) {
+        dogfight.initialize(div);
     }
 
     function sendChatMessage(message: string, global: boolean) {

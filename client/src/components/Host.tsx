@@ -23,9 +23,9 @@ export function Host({ level, recordGame }: HostProps) {
     // const [joinId, setJoinId] = useState("")
     // const [tickRate, setTickRate] = useState(100)
 
-    async function host() {
+    function host() {
         if (!gameContainer.current) return;
-        await initialize(gameContainer.current);
+        initialize(gameContainer.current);
         hostGame();
     }
 

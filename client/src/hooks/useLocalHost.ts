@@ -44,8 +44,8 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
     // A collection of the connected users
     const dataConnections = useRef<Map<string, ConnectedPlayer>>(new Map());
 
-    async function initialize(div: HTMLDivElement) {
-        await dogfight.initialize(div);
+    function initialize(div: HTMLDivElement) {
+        dogfight.initialize(div);
     }
 
     function tickGame() {

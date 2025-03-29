@@ -40,7 +40,7 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
         client.setMyPlayerGuid(guid);
     }
 
-    async function initialize(div: HTMLDivElement): Promise<void> {
+    function initialize(div: HTMLDivElement) {
         // TODO: clean this up, just expose the onCommand directly in the client
         // and write out the command in the client
         const client_callbacks: GameClientCallbacks = {
@@ -97,7 +97,7 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
             },
         };
 
-        await client.init(client_callbacks, div, intl);
+        client.init(client_callbacks, div, intl);
     }
 
     useEffect(() => {

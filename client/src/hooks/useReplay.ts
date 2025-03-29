@@ -30,8 +30,8 @@ export function useReplay() {
         return true;
     }
 
-    async function initialize(div: HTMLDivElement) {
-        await dogfight.initialize(div);
+    function initialize(div: HTMLDivElement) {
+        dogfight.initialize(div);
     }
 
     function parseServerOutput(bytes: Uint8Array): ServerOutput[] {
