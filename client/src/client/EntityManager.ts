@@ -21,16 +21,14 @@ export type EntityGroup<T> = {
     collection: Map<number, T>;
 };
 
-type Constructor<T> = () => T;
+type EntityEntry<T extends EntityType, C> = [T, () => C];
 
-type EntityManagerEntry<T extends EntityType, C> = [type: T, constructor: Constructor<C>];
-
-type EntityCollection<T extends EntityType, E extends EntityManagerEntry<EntityType, any>> = {
-    [K in T]: EntityGroup<Extract<E, [K, Constructor<any>]> extends [K, Constructor<infer U>] ? U : never>;
+type EntityCollection<E extends EntityEntry<EntityType, any>[]> = {
+    [K in E[number] as K[0]]: EntityGroup<ReturnType<K[1]>>;
 };
 
 /**
- * Player added later where needed as it requires its own kind of construction
+ * Default entity types
  */
 export const DEFAULT_ENTITIES = [
     ["WorldInfo", () => new WorldInfo()],
@@ -46,31 +44,25 @@ export const DEFAULT_ENTITIES = [
     ["Explosion", () => new Explosion()],
     ["Hill", () => new Hill()],
     ["Bullet", () => new Bullet()],
-] as const satisfies EntityManagerEntry<EntityType, any>[];
+] as const satisfies EntityEntry<EntityType, any>[];
 
 /**
- * In typesafe manner create entity collection where only the provided entities are in the result type
+ * Creates an entity collection with strict type safety
  */
-export function entityCollection<T extends EntityType, E extends EntityManagerEntry<T, any>>(entries: E[]) {
-    const entities: Partial<EntityCollection<T, E>> = {};
-
-    for (const [name, constructor] of entries) {
-        entities[name] = {
-            new_type: constructor,
-            collection: new Map(),
-        };
-    }
-
-    return entities as EntityCollection<T, E>;
+export function entityCollection<E extends EntityEntry<EntityType, any>[]>(entries: E) {
+    return Object.fromEntries(
+        entries.map(([name, constructor]) => [name, { new_type: constructor, collection: new Map() }]),
+    ) as EntityCollection<E>;
 }
 
-export function destroyEntities(entities: EntityCollection<any, any>) {
-    console.log("destroying entities...");
+/**
+ * Destroys all entities in the collection
+ */
+export function destroyEntities(entities: EntityCollection<any>) {
+    console.log("Destroying entities...");
     for (const group of Object.values(entities)) {
-        if (group) {
-            for (const entity of (group as EntityGroup<any>).collection.values()) {
-                entity.destroy();
-            }
+        for (const entity of group.collection.values()) {
+            entity.destroy();
         }
     }
 }
