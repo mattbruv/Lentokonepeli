@@ -107,6 +107,12 @@
       "value": "Unirse a un Juego"
     }
   ],
+  "HUQWTK": [
+    {
+      "type": 0,
+      "value": "Piezas compatibles"
+    }
+  ],
   "INGml3": [
     {
       "type": 0,
@@ -263,6 +269,12 @@
       "value": "Bomba"
     }
   ],
+  "fhbvwH": [
+    {
+      "type": 0,
+      "value": "El sistema del editor de niveles es actualmente altamente experimental, carece de muchas funciones relevantes y aún está en desarrollo activo. Puede experimentar problemas hasta que la función de reproducción esté en un estado estable."
+    }
+  ],
   "gAAkRv": [
     {
       "type": 0,
@@ -357,6 +369,12 @@
     {
       "type": 0,
       "value": "Chatear con el equipo"
+    }
+  ],
+  "tOuqsq": [
+    {
+      "type": 0,
+      "value": "Aviso del Editor de Niveles"
     }
   ],
   "twmPPM": [

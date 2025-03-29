@@ -71,6 +71,10 @@
     "defaultMessage": "Unirse a un Juego",
     "description": "Title for part for joining the game"
   },
+  "HUQWTK": {
+    "defaultMessage": "Piezas compatibles",
+    "description": "supported pieces to be used in level editor"
+  },
   "INGml3": {
     "defaultMessage": "Introduce el código de juego de 4 dígitos...",
     "description": "Infotext for input which is used to insert 4 digit game code to join games"
@@ -175,6 +179,10 @@
     "defaultMessage": "Bomba",
     "description": "Title for the 'Bomb' action shown on the keybind settings section"
   },
+  "fhbvwH": {
+    "defaultMessage": "El sistema del editor de niveles es actualmente altamente experimental, carece de muchas funciones relevantes y aún está en desarrollo activo. Puede experimentar problemas hasta que la función de reproducción esté en un estado estable.",
+    "description": "Informative text about the current state of the replay system"
+  },
   "gAAkRv": {
     "defaultMessage": "El nombre debe tener entre 3 y 20 caracteres",
     "description": "Label explaining username constraints"
@@ -238,6 +246,10 @@
   "tN8/0L": {
     "defaultMessage": "Chatear con el equipo",
     "description": "Title for the 'Chat Team' action shown on the keybind settings section"
+  },
+  "tOuqsq": {
+    "defaultMessage": "Aviso del Editor de Niveles",
+    "description": "title for a notice section for the Level Editor System"
   },
   "twmPPM": {
     "defaultMessage": "Activar tema oscuro",

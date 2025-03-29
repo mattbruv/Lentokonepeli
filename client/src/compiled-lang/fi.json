@@ -107,6 +107,12 @@
       "value": "Liity peliin"
     }
   ],
+  "HUQWTK": [
+    {
+      "type": 0,
+      "value": "Tuetut rakennuspalikat"
+    }
+  ],
   "INGml3": [
     {
       "type": 0,
@@ -263,6 +269,12 @@
       "value": "Pommita"
     }
   ],
+  "fhbvwH": [
+    {
+      "type": 0,
+      "value": "Kenttäeditori on toistaiseksi erittäin kokeellinen, ja siitä puuttuu monia oleellisia ominaisuuksia. Kenttäeditorin käyttäminen voi nykyisessä tilassaan olla työlästä sekä hankalaa."
+    }
+  ],
   "gAAkRv": [
     {
       "type": 0,
@@ -357,6 +369,12 @@
     {
       "type": 0,
       "value": "Viestitä tiimille"
+    }
+  ],
+  "tOuqsq": [
+    {
+      "type": 0,
+      "value": "Kenttäeditorin huomautus"
     }
   ],
   "twmPPM": [
