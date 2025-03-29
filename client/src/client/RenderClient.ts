@@ -69,11 +69,11 @@ export class RenderClient {
                 const y = Math.round(pos.y);
                 this.debugPointer.text = `${x}, ${y}`;
             };
-        }
 
-        window.setTimeout(() => {
-            this.viewport.addChild(this.debug);
-        }, 100);
+            window.setTimeout(() => {
+                this.viewport.addChild(this.debug);
+            }, 100);
+        }
     }
 
     private positionRelativeGameObjects(x: number, y: number) {
