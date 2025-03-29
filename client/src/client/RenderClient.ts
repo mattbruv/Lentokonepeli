@@ -3,6 +3,7 @@ import { EntityType } from "dogfight-types/EntityType";
 import { Viewport } from "pixi-viewport";
 import * as PIXI from "pixi.js";
 import { SKY_COLOR, VIEW_HEIGHT, VIEW_WIDTH } from "./constants";
+import { Entity } from "./entities/entity";
 
 export class RenderClient {
     // https://pixijs.download/v7.x/docs/index.html
@@ -81,6 +82,18 @@ export class RenderClient {
                 this.viewport.addChild(this.debug);
             }, 100);
         }
+    }
+
+    public addEntity(entity: Entity<unknown>) {
+        const container = entity.getContainer();
+        const containers = Array.isArray(container) ? container : [container];
+        this.viewport.addChild(...containers);
+    }
+
+    public removeEntity(entity: Entity<unknown>) {
+        const container = entity.getContainer();
+        const containers = Array.isArray(container) ? container : [container];
+        this.viewport.removeChild(...containers);
     }
 
     private positionRelativeGameObjects(x: number, y: number) {

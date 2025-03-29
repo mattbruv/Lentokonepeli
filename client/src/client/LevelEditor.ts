@@ -1,13 +1,10 @@
-import { EntityProperties } from "dogfight-types/EntityProperties";
-import { EntityType } from "dogfight-types/EntityType";
 import { MapPiece as MapPieceType } from "dogfight-types/MapPiece";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import { DogfightWeb } from "dogfight-web";
 import * as PIXI from "pixi.js";
 import Levels from "../assets/levels.json";
 import { DogfightSettings } from "../contexts/settingsContext";
-import { updateProps } from "./entities/entity";
-import { DEFAULT_ENTITIES, entityCollection } from "./EntityManager";
+import { DEFAULT_ENTITIES, deleteEntity, destroyEntities, entityCollection, upsertEntity } from "./EntityManager";
 import { RenderClient } from "./RenderClient";
 import { Textures } from "./textures";
 
@@ -66,7 +63,7 @@ export class LevelEditor {
     }
 
     public render(world: string) {
-        this.destroyEntities();
+        destroyEntities(this.entities, { onRemove: this.renderClient.removeEntity.bind(this.renderClient) });
         this.engine.load_level(world);
         const events: ServerOutput[] = JSON.parse(
             this.engine.game_events_from_binary(this.engine.flush_changed_state()),
@@ -76,11 +73,15 @@ export class LevelEditor {
             for (const { id, update, ent_type } of data) {
                 switch (update.type) {
                     case "Properties": {
-                        this.upsertEntity(id, update.data);
+                        upsertEntity(this.entities, id, update.data, {
+                            onAdd: this.renderClient.addEntity.bind(this.renderClient),
+                        });
                         break;
                     }
                     case "Deleted": {
-                        this.deleteEntity(id, ent_type);
+                        deleteEntity(this.entities, id, ent_type, {
+                            onRemove: this.renderClient.removeEntity.bind(this.renderClient),
+                        });
                         break;
                     }
                 }
@@ -93,51 +94,8 @@ export class LevelEditor {
         this.engine.init();
     }
 
-    private addOrGetEntity(id: number, type: keyof typeof this.entities) {
-        const ent_map = this.entities[type];
-        const ent = ent_map.collection.get(id);
-        if (ent) return ent;
-        const newEnt = ent_map.new_type();
-        // @ts-expect-error ts mumbo jumbo
-        ent_map.collection.set(id, newEnt);
-        const container = newEnt.getContainer();
-        const containers = Array.isArray(container) ? container : [container];
-        this.renderClient.viewport.addChild(...containers);
-        return newEnt;
-    }
-
-    private upsertEntity(id: number, data: EntityProperties) {
-        if (data.type === "Player") return;
-        const entity = this.addOrGetEntity(id, data.type);
-        updateProps(entity, data.props);
-    }
-
-    private deleteEntity(id: number, ent_type: EntityType) {
-        const ent_map = this.entities[ent_type as keyof typeof this.entities];
-        if (!ent_map) return;
-        const entity = ent_map.collection.get(id);
-        if (!entity) return;
-        const container = entity.getContainer();
-        const containers = Array.isArray(container) ? container : [container];
-        this.renderClient.viewport.removeChild(...containers);
-        entity.destroy();
-        ent_map.collection.delete(id);
-    }
-
-    private destroyEntities() {
-        for (const group of Object.values(this.entities)) {
-            for (const [id, entity] of group.collection.entries()) {
-                const container = entity.getContainer();
-                const containers = Array.isArray(container) ? container : [container];
-                this.renderClient.viewport.removeChild(...containers);
-                entity.destroy();
-                group.collection.delete(id);
-            }
-        }
-    }
-
     public destroy() {
-        this.destroyEntities();
+        destroyEntities(this.entities, { onRemove: this.renderClient.removeEntity.bind(this.renderClient) });
         this.renderClient.app.destroy(true, {
             children: true,
         });
