@@ -250,23 +250,13 @@ export class DogfightClient {
     }
 
     private updateRadar() {
-        const objs: RadarObject[] = [];
-
-        const radarObjs: Record<RadarObjectType, EntityGroup<RadarEnabled>> = {
-            [RadarObjectType.Ground]: this.entities.Ground,
-            [RadarObjectType.Man]: this.entities.Man,
-            [RadarObjectType.Plane]: this.entities.Plane,
-            [RadarObjectType.Runway]: this.entities.Runway,
-            [RadarObjectType.Bunker]: this.entities.Bunker,
-        };
-
-        for (const [_, objects] of Object.entries(radarObjs)) {
-            for (const [_, obj] of objects.collection) {
-                objs.push(obj.getRadarInfo());
-            }
-        }
-
-        this.gameHUD.radar.refreshRadar(objs);
+        this.gameHUD.radar.refreshRadar([
+            this.entities.Ground,
+            this.entities.Man,
+            this.entities.Plane,
+            this.entities.Runway,
+            this.entities.Bunker,
+        ]);
     }
 
     public handleGameEvents(events: ServerOutput[]) {
