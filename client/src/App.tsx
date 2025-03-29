@@ -107,12 +107,14 @@ function App() {
                         />
                     </UnstyledButton>
                 </NavLink>
-                <UnstyledButton className={classes.control} onClick={closeMobile}>
-                    <FormattedMessage
-                        defaultMessage={"Level Editor"}
-                        description={"Sidebar link description for the Level Editor"}
-                    />
-                </UnstyledButton>
+                <NavLink to={"/editor"} onClick={closeMobile}>
+                    <UnstyledButton className={classes.control} onClick={closeMobile}>
+                        <FormattedMessage
+                            defaultMessage={"Level Editor"}
+                            description={"Sidebar link description for the Level Editor"}
+                        />
+                    </UnstyledButton>
+                </NavLink>
                 <NavLink to={"/settings"} onClick={closeMobile}>
                     <UnstyledButton className={classes.control}>
                         <FormattedMessage

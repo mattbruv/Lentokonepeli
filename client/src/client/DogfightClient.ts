@@ -346,7 +346,7 @@ export class DogfightClient {
                     break;
                 }
                 case "Properties": {
-                    this.updateEntity(id, update.data);
+                    this.upsertEntity(id, update.data);
                 }
             }
         }
@@ -365,54 +365,51 @@ export class DogfightClient {
         group.collection.delete(id);
     }
 
-    private updateEntity(id: number, data: EntityProperties) {
+    private addOrGetEntity(id: number, type: keyof typeof this.entities) {
+        const ent_map = this.entities[type];
+        const ent = ent_map.collection.get(id);
+        if (ent) return ent;
+        const newEnt = ent_map.new_type();
+        // @ts-expect-error ts mumbo jumbo
+        ent_map.collection.set(id, newEnt);
+        const container = newEnt.getContainer();
+        const containers = Array.isArray(container) ? container : [container];
+        this.renderClient.viewport.addChild(...containers);
+        return newEnt;
+    }
+
+    private upsertEntity(id: number, data: EntityProperties) {
         const ent_map = this.entities[data.type];
         if (!ent_map) return;
 
-        let entity = ent_map.collection.get(id);
+        const entity = this.addOrGetEntity(id, data.type);
+        if (!entity) return;
 
-        // If the entity doesn't exist, create a new one
-        // and add it to the stage
-        if (!entity) {
-            entity = ent_map.new_type();
-            if (entity) {
-                // Not sure why Typescript wants to error when I call the set() function here.
-                // It's making the set param a union type for some reason I don't understand
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                ent_map.collection.set(id, entity as any);
-                const container = entity.getContainer();
-                const containers = Array.isArray(container) ? container : [container];
-                this.renderClient.viewport.addChild(...containers);
+        updateProps(entity, data.props);
+
+        const me = this.getMyPlayer();
+
+        if (me?.props.controlling) {
+            if (id === me.props.controlling.id && data.type === me.props.controlling.type) {
+                if (isFollowable(entity)) {
+                    const pos = entity.getCenter();
+                    this.renderClient.debugCoords.text = `${pos.x}, ${pos.y}`;
+                    this.centerCamera(pos.x, pos.y);
+                    this.gameHUD.updateStats(entity.getStats());
+                }
             }
         }
 
-        if (entity) {
-            updateProps(entity, data.props);
+        if (data.type === "Player") {
+            this.sendPlayerUpdate = true;
+            const { guid } = data.props;
 
-            const me = this.getMyPlayer();
-
-            if (me?.props.controlling) {
-                if (id === me.props.controlling.id && data.type === me.props.controlling.type) {
-                    if (isFollowable(entity)) {
-                        const pos = entity.getCenter();
-                        this.renderClient.debugCoords.text = `${pos.x}, ${pos.y}`;
-                        this.centerCamera(pos.x, pos.y);
-                        this.gameHUD.updateStats(entity.getStats());
-                    }
-                }
+            if (guid !== undefined && guid === this.myPlayerGuid) {
+                this.myPlayerId = id;
             }
 
-            if (data.type === "Player") {
-                this.sendPlayerUpdate = true;
-                const { guid } = data.props;
-
-                if (guid !== undefined && guid === this.myPlayerGuid) {
-                    this.myPlayerId = id;
-                }
-
-                if (this.myPlayerId === id) {
-                    this.onMyPlayerUpdate(data.props);
-                }
+            if (this.myPlayerId === id) {
+                this.onMyPlayerUpdate(data.props);
             }
         }
     }
