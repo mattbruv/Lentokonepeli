@@ -168,7 +168,7 @@ export class DogfightClient {
         }
     }
 
-    public async init(callbacks: GameClientCallbacks, element: HTMLDivElement, intl: IntlShape) {
+    public init(callbacks: GameClientCallbacks, element: HTMLDivElement, intl: IntlShape) {
         this.appendView(element);
         this.callbacks = callbacks;
         this.teamChooser.init(this.callbacks);

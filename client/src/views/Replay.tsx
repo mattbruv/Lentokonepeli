@@ -30,15 +30,14 @@ export function Replay() {
                 const bytes = new Uint8Array(reader.result);
 
                 if (gameContainer.current) {
-                    initialize(gameContainer.current).then(() => {
-                        const didReadFile = loadReplay(bytes);
+                    initialize(gameContainer.current);
+                    const didReadFile = loadReplay(bytes);
 
-                        if (didReadFile) {
-                            setState(ReplayState.Watching);
-                        } else {
-                            setState(ReplayState.ProvideFile);
-                        }
-                    });
+                    if (didReadFile) {
+                        setState(ReplayState.Watching);
+                    } else {
+                        setState(ReplayState.ProvideFile);
+                    }
                 }
             }
         };
