@@ -86,7 +86,7 @@ export function useGuest(myName: string, clan: string) {
             console.log("destroy guest");
             peer.current?.removeAllListeners();
             peer.current?.destroy();
-            gameLoop.pause();
+            gameLoop.stop();
         };
     }, []);
 

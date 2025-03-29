@@ -87,7 +87,7 @@ export function useReplay() {
 
     useEffect(() => {
         return () => {
-            gameLoop.pause();
+            gameLoop.stop();
         };
     }, []);
 

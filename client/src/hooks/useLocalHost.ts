@@ -7,8 +7,8 @@ import { useDogfight } from "./useDogfight";
 
 import { LevelName } from "src/views/Lobby";
 import Levels from "../assets/levels.json";
-import { randomGuid } from "../helpers";
 import { gameLoop } from "../gameLoop";
+import { randomGuid } from "../helpers";
 
 type ConnectedPlayer = {
     player_guid: string;
@@ -175,7 +175,7 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
     useEffect(() => {
         return () => {
             console.log("destroy host");
-            gameLoop.pause();
+            gameLoop.stop();
             peer.current?.removeAllListeners();
             peer.current?.destroy();
         };

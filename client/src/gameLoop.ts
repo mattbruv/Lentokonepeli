@@ -1,6 +1,9 @@
 type UpdateFn = (currentTick: number) => void;
 const noop = () => {};
 
+/**
+ * When facing a case where useInterval seems handy, use this GameLoop instead
+ */
 class GameLoop {
     private currentTick: number = 0;
     private lastTime: number = performance.now();
@@ -18,6 +21,11 @@ class GameLoop {
         return this;
     }
 
+    /**
+     * Function that handles updating the engine ticks
+     * This needs to be called when hosting a game,
+     * this should not be called when joining a game
+     */
     public setHostEngineUpdateFn(updateFn: UpdateFn) {
         this.updateFn = updateFn;
         return this;
@@ -51,11 +59,13 @@ class GameLoop {
     }
 
     public start() {
+        this.currentTick = 0;
+        console.log("starting game loop");
         if (this.requestId) return;
         this.startLoop();
     }
 
-    public pause() {
+    public stop() {
         this.pauseLoop();
     }
 
