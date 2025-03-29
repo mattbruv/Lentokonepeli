@@ -679,7 +679,6 @@ impl Plane {
     }
 
     pub fn is_facing_runway_correctly(&self, runway: &mut Runway) -> bool {
-        // TODO: check to make sure the runway team is same as player team
         let facing = runway.get_facing();
         if (((facing == Facing::Right) && (self.angle == PI))
             || ((facing == Facing::Left) && (self.angle == 0.0)))
