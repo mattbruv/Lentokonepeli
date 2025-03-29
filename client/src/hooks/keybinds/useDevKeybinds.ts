@@ -18,7 +18,7 @@ export const useDevKeybinds = ({ client, engine }: { client: DogfightClient; eng
         switch (action) {
             case "debug": {
                 const debugInfo: DebugEntity[] = JSON.parse(engine.debug());
-                client.renderDebug(debugInfo);
+                client.renderClient.renderDebug(debugInfo);
                 return;
             }
             default:

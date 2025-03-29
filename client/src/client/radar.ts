@@ -1,5 +1,7 @@
-import * as PIXI from "pixi.js";
 import { Team } from "dogfight-types/Team";
+import * as PIXI from "pixi.js";
+import { EntityGroup } from "./EntityManager";
+import { RadarEnabled } from "./entities/entity";
 
 const BackgroundColor = 0xc7d3df;
 
@@ -91,11 +93,13 @@ export class Radar {
         this.myTeam = newTeam;
     }
 
-    public refreshRadar(radarObjects: RadarObject[]): void {
+    public refreshRadar(entities: Array<EntityGroup<RadarEnabled>>): void {
         this.radarGraphics.clear();
-
-        for (const obj of radarObjects) {
-            this.renderFunctions[obj.type](obj);
+        for (const group of entities) {
+            for (const [_, obj] of group.collection) {
+                const x = obj.getRadarInfo();
+                this.renderFunctions[x.type](x);
+            }
         }
     }
 
