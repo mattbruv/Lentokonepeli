@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { EntityProperties } from "dogfight-types/EntityProperties";
 import { BackgroundItem } from "./entities/backgroundItem";
 import { Bomb } from "./entities/bomb";
 import { Bullet } from "./entities/bullet";
 import { Bunker } from "./entities/bunker";
 import { Coast } from "./entities/coast";
+import { Entity } from "./entities/entity";
 import { Explosion } from "./entities/explosion";
 import { Ground } from "./entities/ground";
 import { Hill } from "./entities/hill";
@@ -23,7 +23,7 @@ export type EntityGroup<T> = {
 
 type EntityEntry<T extends EntityType, C> = [T, () => C];
 
-type EntityCollection<E extends EntityEntry<EntityType, any>[]> = {
+type EntityCollection<E extends EntityEntry<EntityType, Entity<unknown>>[]> = {
     [K in E[number] as K[0]]: EntityGroup<ReturnType<K[1]>>;
 };
 
@@ -44,12 +44,12 @@ export const DEFAULT_ENTITIES = [
     ["Explosion", () => new Explosion()],
     ["Hill", () => new Hill()],
     ["Bullet", () => new Bullet()],
-] as const satisfies EntityEntry<EntityType, any>[];
+] as const satisfies EntityEntry<EntityType, Entity<unknown>>[];
 
 /**
  * Creates an entity collection with strict type safety
  */
-export function entityCollection<E extends EntityEntry<EntityType, any>[]>(entries: E) {
+export function entityCollection<E extends EntityEntry<EntityType, Entity<unknown>>[]>(entries: E) {
     return Object.fromEntries(
         entries.map(([name, constructor]) => [name, { new_type: constructor, collection: new Map() }]),
     ) as EntityCollection<E>;
