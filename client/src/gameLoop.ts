@@ -60,7 +60,7 @@ class GameLoop {
 
     public start() {
         this.currentTick = 0;
-        console.log("starting game loop");
+
         if (this.requestId) return;
         this.startLoop();
     }

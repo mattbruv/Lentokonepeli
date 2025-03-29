@@ -59,7 +59,6 @@ export function useGuest(myName: string, clan: string) {
                 conn.send(cmd);
 
                 conn.on("data", (data) => {
-                    console.log(data);
                     if (typeof data === "string") {
                         const output: ServerOutput = JSON.parse(data);
                         dogfight.handleGameEvents([output]);

@@ -60,7 +60,6 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
 
         const x = this.planeContainer.position.x;
         const y = this.planeContainer.position.y;
-        //console.log(this.planeSprite.position)
 
         const k = Math.floor(x - Math.cos(d1) * (w / 2 + 6));
         const m = Math.floor(y - Math.sin(d1) * (h / 2 + 6));
@@ -68,7 +67,6 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         const smoke = new PIXI.Sprite(Textures["smoke1.gif"]);
         smoke.anchor.set(0.5);
         smoke.position.set(k, m);
-        //console.log(k, m)
         this.container.addChild(smoke);
 
         window.setTimeout(() => {
@@ -215,9 +213,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         team: () => {},
         client_ammo: () => {},
         client_health: () => {},
-        client_fuel: () => {
-            //console.log("fuel", this.props.client_fuel)
-        },
+        client_fuel: () => {},
 
         total_bombs: () => {
             console.log("Bombs", this.props.total_bombs);
@@ -236,10 +232,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
             if (do_flip) {
                 this.frame = 0;
                 this.renderFrame();
-                //console.log(this.frame)
             }
-
-            //console.log("flipped", this.props.flipped)
         },
 
         mode: () => {
@@ -256,7 +249,6 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         },
 
         direction: () => {
-            // console.log(this.props.direction)
             this.angle = directionToRadians(this.props.direction);
             this.planeSprite.rotation = this.angle;
         },
@@ -278,7 +270,6 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
     }
 
     public setPlayerName(name: string | null, pov_team: Team | null) {
-        // console.log("set player name", name, pov_team)
         if (!name) {
             this.nameText.visible = false;
             return;
