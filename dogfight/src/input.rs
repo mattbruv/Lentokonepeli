@@ -6,7 +6,7 @@ use crate::{
         container::RunwayId,
         plane::{Plane, PlaneType},
         player::{ControllingEntity, Player, PlayerState},
-        runway,
+        runway::RunwayReservation,
         types::Team,
     },
     game_event::ChatMessage,
@@ -225,7 +225,7 @@ impl World {
                     if let Some(team) = maybe_team {
                         if let Some(pid) = maybe_pid {
                             if let Some(runway) = self.runways.get_mut(selection.runway_id) {
-                                if runway.reserve_for(runway::RunwayReservation::Takeoff) {
+                                if runway.reserve_for(RunwayReservation::Takeoff) {
                                     let plane = Plane::new(
                                         pid,
                                         team,

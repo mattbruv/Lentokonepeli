@@ -13,6 +13,7 @@ use super::{
     types::{EntityType, Facing, Team},
 };
 
+#[derive(Debug)]
 pub enum RunwayReservation {
     Takeoff = 1,
     Landing = 2,
@@ -170,6 +171,13 @@ impl Runway {
             }
         };
 
+        /*
+        log(format!(
+            "reserve_timer: {}, delay: {}, ",
+            self.reserve_timer, delay
+        ));
+        */
+
         if self.reserve_timer < delay {
             return false;
         }
@@ -177,6 +185,13 @@ impl Runway {
         if self.is_alive() == false {
             return false;
         }
+
+        /*
+        log(format!(
+            "delay: {delay}, reservation: {:?}, last_reserve: {:?} timer: {}",
+            reservation, self.last_reserve, self.reserve_timer
+        ));
+        */
 
         self.reserve_timer = 0;
         self.last_reserve = Some(reservation);
