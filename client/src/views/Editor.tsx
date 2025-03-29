@@ -27,9 +27,15 @@ export const Editor = () => {
     const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setRawInput(event.target.value);
+        const newRawInput = event.target.value;
+        setRawInput(newRawInput);
+
         if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
-        debounceTimeout.current = setTimeout(() => setWorld(LevelEditor.sanitizeWorldString(world)), 300);
+
+        debounceTimeout.current = setTimeout(() => {
+            const sanitized = LevelEditor.sanitizeWorldString(newRawInput);
+            setWorld(sanitized);
+        }, 300);
     };
 
     useEffect(() => {
