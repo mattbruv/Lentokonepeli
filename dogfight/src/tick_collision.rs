@@ -681,6 +681,10 @@ impl World {
 
                         web_sys::console::log_1(&format!("plane can land on runway").into());
                         plane.set_client_y(runway.get_landable_y() - plane.get_bottom_height());
+
+                        // We want to do the team check before is_facing_runway
+                        // because is_facing_runway makes a plane reservation if possible to land,
+                        // so we only want to do that if this is our team's runway
                         if plane.get_team() == *runway.get_team()
                             && plane.is_facing_runway_correctly(runway)
                         {
