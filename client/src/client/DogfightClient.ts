@@ -11,7 +11,7 @@ import * as PIXI from "pixi.js";
 import { IntlShape } from "react-intl";
 import { isFollowable, updateProps } from "./entities/entity";
 import { Player } from "./entities/player";
-import { DEFAULT_ENTITIES, destroyEntities, entityCollection } from "./EntityManager";
+import { DEFAULT_ENTITIES, entityCollection } from "./EntityManager";
 import { formatName } from "./helpers";
 import { GameHUD } from "./hud";
 import { GameKeyboard } from "./keyboard";
@@ -159,9 +159,21 @@ export class DogfightClient {
         this.centerCamera(0, 0);
     }
 
+    private destroyEntities() {
+        for (const group of Object.values(this.entities)) {
+            for (const [id, entity] of group.collection.entries()) {
+                const container = entity.getContainer();
+                const containers = Array.isArray(container) ? container : [container];
+                this.renderClient.viewport.removeChild(...containers);
+                entity.destroy();
+                group.collection.delete(id);
+            }
+        }
+    }
+
     public destroy() {
         console.log("destroying client...");
-        destroyEntities(this.entities);
+        this.destroyEntities();
 
         this.renderClient.app.destroy(true, {
             children: true,

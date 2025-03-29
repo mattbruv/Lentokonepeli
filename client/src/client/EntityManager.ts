@@ -54,15 +54,3 @@ export function entityCollection<E extends EntityEntry<EntityType, any>[]>(entri
         entries.map(([name, constructor]) => [name, { new_type: constructor, collection: new Map() }]),
     ) as EntityCollection<E>;
 }
-
-/**
- * Destroys all entities in the collection
- */
-export function destroyEntities(entities: EntityCollection<any>) {
-    console.log("Destroying entities...");
-    for (const group of Object.values(entities)) {
-        for (const entity of group.collection.values()) {
-            entity.destroy();
-        }
-    }
-}
