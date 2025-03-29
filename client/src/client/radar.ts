@@ -94,14 +94,13 @@ export class Radar {
     }
 
     public refreshRadar(entities: Array<EntityGroup<RadarEnabled>>): void {
+        this.radarGraphics.clear();
         for (const group of entities) {
             for (const [_, obj] of group.collection) {
                 const x = obj.getRadarInfo();
                 this.renderFunctions[x.type](x);
             }
         }
-
-        this.radarGraphics.clear();
     }
 
     private renderObject(obj: RadarObject): void {
