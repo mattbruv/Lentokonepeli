@@ -81,6 +81,7 @@ export function deleteEntity<TYPE extends EntityType, ENTRIES extends EntityEntr
     const entity = group.collection.get(id);
     if (!entity) return;
 
+    console.log("del");
     onRemove?.(entity, id, undefined);
     entity.destroy();
     group.collection.delete(id);
@@ -118,15 +119,15 @@ export function addOrGetEntity<TYPE extends EntityType, ENTRIES extends EntityEn
     entities: EntityCollection<TYPE, ENTRIES>,
     id: number,
     ent_type: TYPE,
-    { onAdd, onGet }: { onAdd?: EntityManagerCallback; onGet?: EntityManagerCallback },
+    { onAdd }: { onAdd?: EntityManagerCallback },
 ) {
     const group = entities[ent_type] as EntityGroup<Entity<unknown>>;
     const entity = group.collection.get(id);
     if (entity) {
-        onGet?.(entity, id, undefined);
         return entity;
     }
 
+    console.log("add");
     const newEnt = group.new_type();
     group.collection.set(id, newEnt);
 
@@ -146,15 +147,10 @@ export function upsertEntity<TYPE extends EntityType, ENTRIES extends EntityEntr
     entities: EntityCollection<TYPE, ENTRIES>,
     id: number,
     data: Extract<EntityProperties, { type: TYPE }>,
-    {
-        onAdd,
-        onUpdate,
-        onGet,
-    }: { onAdd?: EntityManagerCallback; onUpdate?: EntityManagerCallback; onGet?: EntityManagerCallback },
+    { onAdd, onUpdate }: { onAdd?: EntityManagerCallback; onUpdate?: EntityManagerCallback },
 ) {
     const entity = addOrGetEntity(entities, id, data.type, {
         onAdd,
-        onGet,
     });
     updateProps(entity, data.props);
     // Note this is called even during insert
