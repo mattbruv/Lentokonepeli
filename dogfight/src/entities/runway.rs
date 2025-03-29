@@ -13,6 +13,18 @@ use super::{
     types::{EntityType, Facing, Team},
 };
 
+#[derive(Debug)]
+pub enum RunwayReservation {
+    Takeoff = 1,
+    Landing = 2,
+}
+
+// Yes, these are named like in the original, somewhat confusing
+const RESERVE_TAKEOFF_LANDING_DELAY: i32 = 1000;
+const RESERVE_LANDING_TAKEOFF_DELAY: i32 = 2000;
+const RESERVE_LANDING_LANDING_DELAY: i32 = 1000;
+const RESERVE_TAKEOFF_TAKEOFF_DELAY: i32 = 1000;
+
 #[derive(Networked)]
 pub struct Runway {
     team: Property<Team>,
@@ -23,6 +35,9 @@ pub struct Runway {
 
     total_health: i32,
     health_timer: i32,
+
+    last_reserve: Option<RunwayReservation>,
+    reserve_timer: i32,
 
     image_runway: RgbaImage,
     image_runway2: RgbaImage,
@@ -40,6 +55,8 @@ impl Runway {
             health_timer: 0,
             image_runway: get_image(RUNWAY),
             image_runway2: get_image(RUNWAY2),
+            last_reserve: None,
+            reserve_timer: 10_000, // setting this to a high value to allow the player to immediately take off on game load
         };
 
         runway.set_health(runway.get_max_health());
@@ -48,6 +65,8 @@ impl Runway {
     }
 
     pub fn tick(&mut self) -> () {
+        self.reserve_timer += 10;
+
         if self.total_health > 0 && self.total_health < self.get_max_health() {
             self.health_timer = (self.health_timer + 1) % 50;
 
@@ -133,9 +152,51 @@ impl Runway {
         }
     }
 
-    pub(crate) fn reserve_for(&self, _arg: i32) -> bool {
-        // TODO: Fill this out
-        true
+    // Lentokonepeli Air traffic controller logic :)
+    pub(crate) fn reserve_for(&mut self, reservation: RunwayReservation) -> bool {
+        let delay = match reservation {
+            RunwayReservation::Landing => {
+                if let Some(RunwayReservation::Landing) = self.last_reserve {
+                    RESERVE_TAKEOFF_LANDING_DELAY
+                } else {
+                    RESERVE_TAKEOFF_TAKEOFF_DELAY
+                }
+            }
+            RunwayReservation::Takeoff => {
+                if let Some(RunwayReservation::Takeoff) = self.last_reserve {
+                    RESERVE_LANDING_TAKEOFF_DELAY
+                } else {
+                    RESERVE_LANDING_LANDING_DELAY
+                }
+            }
+        };
+
+        /*
+        log(format!(
+            "reserve_timer: {}, delay: {}, ",
+            self.reserve_timer, delay
+        ));
+        */
+
+        if self.reserve_timer < delay {
+            return false;
+        }
+
+        if self.is_alive() == false {
+            return false;
+        }
+
+        /*
+        log(format!(
+            "delay: {delay}, reservation: {:?}, last_reserve: {:?} timer: {}",
+            reservation, self.last_reserve, self.reserve_timer
+        ));
+        */
+
+        self.reserve_timer = 0;
+        self.last_reserve = Some(reservation);
+        // Clear for landing/takeoff :)
+        return true;
     }
 }
 

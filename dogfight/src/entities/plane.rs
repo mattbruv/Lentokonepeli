@@ -25,7 +25,7 @@ use super::{
     entity::Entity,
     man::Man,
     player::ControllingEntity,
-    runway::Runway,
+    runway::{Runway, RunwayReservation},
     types::{EntityType, Facing, Team},
 };
 
@@ -678,11 +678,11 @@ impl Plane {
         self.runway = runway;
     }
 
-    pub fn is_facing_runway_correctly(&self, runway: &Runway) -> bool {
-        // TODO: check to make sure the runway team is same as player team
+    pub fn is_facing_runway_correctly(&self, runway: &mut Runway) -> bool {
         let facing = runway.get_facing();
-        if ((facing == Facing::Right) && (self.angle == PI))
-            || ((facing == Facing::Left) && (self.angle == 0.0) && (runway.reserve_for(2)))
+        if (((facing == Facing::Right) && (self.angle == PI))
+            || ((facing == Facing::Left) && (self.angle == 0.0)))
+            && (runway.reserve_for(RunwayReservation::Landing))
         {
             return true;
         }
