@@ -682,9 +682,8 @@ impl Plane {
         // TODO: check to make sure the runway team is same as player team
         let facing = runway.get_facing();
         if ((facing == Facing::Right) && (self.angle == PI))
-            || ((facing == Facing::Left)
-                && (self.angle == 0.0)
-                && (runway.reserve_for(RunwayReservation::Landing)))
+            || ((facing == Facing::Left) && (self.angle == 0.0))
+                && (runway.reserve_for(RunwayReservation::Landing))
         {
             return true;
         }
