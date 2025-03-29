@@ -1,5 +1,4 @@
 import { ChatMessage } from "dogfight-types/ChatMessage";
-import { DebugEntity } from "dogfight-types/DebugEntity";
 import { EntityChange } from "dogfight-types/EntityChange";
 import { EntityProperties } from "dogfight-types/EntityProperties";
 import { EntityType } from "dogfight-types/EntityType";
@@ -8,18 +7,16 @@ import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 import { PlayerProperties } from "dogfight-types/PlayerProperties";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import { Team } from "dogfight-types/Team";
-import { Viewport } from "pixi-viewport";
 import * as PIXI from "pixi.js";
 import { IntlShape } from "react-intl";
-import { SKY_COLOR, VIEW_HEIGHT, VIEW_WIDTH } from "./constants";
-import { isFollowable, RadarEnabled, updateProps } from "./entities/entity";
+import { isFollowable, updateProps } from "./entities/entity";
 import { Player } from "./entities/player";
-import { DEFAULT_ENTITIES, destroyEntities, entityCollection, EntityGroup } from "./EntityManager";
+import { DEFAULT_ENTITIES, destroyEntities, entityCollection } from "./EntityManager";
 import { formatName } from "./helpers";
 import { GameHUD } from "./hud";
 import { GameKeyboard } from "./keyboard";
 import { KillFeed } from "./killfeed";
-import { RadarObject, RadarObjectType } from "./radar";
+import { RenderClient } from "./RenderClient";
 import { RunwaySelector } from "./runwaySelector";
 import { TeamChooser } from "./teamChooser";
 import { Textures } from "./textures";
@@ -56,17 +53,9 @@ function createNewPlayer(this: DogfightClient) {
         }
     });
 }
+
 export class DogfightClient {
-    // https://pixijs.download/v7.x/docs/index.html
-    private app: PIXI.Application<HTMLCanvasElement>;
-    private viewport: Viewport;
-
     private sky: PIXI.TilingSprite;
-
-    // Debugging helpers
-    private debugPointer = new PIXI.Text();
-    private debugCoords = new PIXI.Text();
-    private debugCollision = new PIXI.Graphics();
 
     private myPlayerGuid: string | null = null;
     private myPlayerId: number | null = null;
@@ -82,49 +71,21 @@ export class DogfightClient {
     private callbacks?: GameClientCallbacks;
     private sendPlayerUpdate: boolean = false;
     public entities = entityCollection([...DEFAULT_ENTITIES, ["Player", createNewPlayer.bind(this)]]);
+    public renderClient: RenderClient;
 
     constructor() {
-        this.app = new PIXI.Application<HTMLCanvasElement>({
-            antialias: false,
-            resolution: 1,
-            backgroundColor: SKY_COLOR,
-            width: VIEW_WIDTH,
-            height: VIEW_HEIGHT,
-        });
-
-        this.viewport = new Viewport({
-            events: this.app.renderer.events,
-        });
+        const skyTexture = Textures["sky3b.jpg"];
 
         this.sky = new PIXI.TilingSprite(Textures["sky3b.jpg"]);
+        this.sky.texture = skyTexture;
+        this.sky.width = skyTexture.width;
+        this.sky.height = skyTexture.height;
+
         this.sky.position.set(0, -250);
-        this.app.stage.addChild(this.sky);
 
-        this.app.stage.addChild(this.viewport);
-        this.app.stage.addChild(this.killFeed.container);
-        this.app.stage.addChild(this.gameHUD.container);
-        this.app.stage.addChild(this.runwaySelector.container);
-        this.app.stage.addChild(this.teamChooser.container);
+        const containers = [this.killFeed.container, this.runwaySelector.container, this.teamChooser.container];
 
-        this.viewport.sortableChildren = true;
-
-        if (import.meta.env.DEV) {
-            this.viewport.drag().pinch().wheel().decelerate();
-            this.app.stage.addChild(this.debugPointer);
-            this.app.stage.addChild(this.debugCoords);
-            this.viewport.addChild(this.debugCollision);
-            this.debugCollision.zIndex = 999;
-            this.debugCoords.position.set(0, 30);
-            this.debugPointer.style.fontFamily = "monospace";
-            this.debugCoords.style.fontFamily = "monospace";
-
-            this.viewport.onpointermove = (e) => {
-                const pos = this.viewport.toWorld(e.data.global);
-                const x = Math.round(pos.x);
-                const y = Math.round(pos.y);
-                this.debugPointer.text = `${x}, ${y}`;
-            };
-        }
+        this.renderClient = new RenderClient({ background: this.sky, containers, hud: this.gameHUD.container });
     }
 
     // Handle key events and dispatch the proper callback calls
@@ -155,21 +116,9 @@ export class DogfightClient {
         }
     }
 
-    private positionRelativeGameObjects(x: number, y: number) {
-        const x1 = x / 6;
-        const y1 = y / 3 + 125;
-
-        // reposition sky
-        this.sky.tilePosition.set(-x1, -y1);
-
-        // update hills
-        for (const [_, hill] of this.entities.Hill.collection) {
-            hill.setPosition(x, y);
-        }
-    }
-
     public init(callbacks: GameClientCallbacks, element: HTMLDivElement, intl: IntlShape) {
-        this.appendView(element);
+        element?.appendChild(this.renderClient.app.view);
+
         this.callbacks = callbacks;
         this.teamChooser.init(this.callbacks);
         this.runwaySelector.init(this.callbacks, intl);
@@ -177,13 +126,8 @@ export class DogfightClient {
         this.gameHUD.init();
         this.killFeed.init();
 
-        const skyTexture = Textures["sky3b.jpg"];
-        this.sky.texture = skyTexture;
-        this.sky.width = skyTexture.width;
-        this.sky.height = skyTexture.height;
-
-        const width = this.app.screen.width / 2;
-        const height = this.app.screen.height / 2;
+        const width = this.renderClient.app.screen.width / 2;
+        const height = this.renderClient.app.screen.height / 2;
         // center the team chooser on the screen
         {
             const chooserWidth = this.teamChooser.container.width;
@@ -195,7 +139,7 @@ export class DogfightClient {
 
         // set HUD on screen properly
         {
-            const y = this.app.screen.height - this.gameHUD.container.height;
+            const y = this.renderClient.app.screen.height - this.gameHUD.container.height;
             this.gameHUD.container.position.set(0, y);
         }
 
@@ -215,7 +159,7 @@ export class DogfightClient {
         }
 
         window.setTimeout(() => {
-            this.viewport.addChild(this.debug);
+            this.renderClient.viewport.addChild(this.debug);
         }, 100);
         this.centerCamera(0, 0);
     }
@@ -224,13 +168,9 @@ export class DogfightClient {
         console.log("destroying client...");
         destroyEntities(this.entities);
 
-        this.app.destroy(true, {
+        this.renderClient.app.destroy(true, {
             children: true,
         });
-    }
-
-    private appendView(element: HTMLDivElement) {
-        element?.appendChild(this.app.view);
     }
 
     public setMyPlayerGuid(guid: string) {
@@ -255,7 +195,6 @@ export class DogfightClient {
     }
 
     private onMyPlayerUpdate(props: PlayerProperties) {
-        // console.log(props);
         const myPlayer = this.getMyPlayer();
         if (!myPlayer) return;
 
@@ -306,11 +245,7 @@ export class DogfightClient {
      * Coordinates must be in game world space.
      */
     private centerCamera(x: number, y: number): void {
-        const x1 = x - this.app.screen.width / 2;
-        const y1 = y - (this.app.screen.height - this.gameHUD.container.height) / 2;
-        //console.log(x, y, x1, y1);
-        this.viewport.moveCorner(x1, y1);
-        this.positionRelativeGameObjects(x, y);
+        this.renderClient.centerCamera(x, y);
         this.gameHUD.radar.centerCamera(-x, -y);
     }
 
@@ -410,7 +345,6 @@ export class DogfightClient {
 
             switch (update.type) {
                 case "Deleted": {
-                    //console.log(`DELETED: type ${ent_type} -> id ${id}`)
                     this.deleteEntity(id, ent_type);
                     break;
                 }
@@ -429,7 +363,7 @@ export class DogfightClient {
         if (!entity) return;
         const container = entity.getContainer();
         const containers = Array.isArray(container) ? container : [container];
-        this.viewport.removeChild(...containers);
+        this.renderClient.viewport.removeChild(...containers);
         entity.destroy();
         group.collection.delete(id);
     }
@@ -451,7 +385,7 @@ export class DogfightClient {
                 ent_map.collection.set(id, entity as any);
                 const container = entity.getContainer();
                 const containers = Array.isArray(container) ? container : [container];
-                this.viewport.addChild(...containers);
+                this.renderClient.viewport.addChild(...containers);
             }
         }
 
@@ -459,21 +393,14 @@ export class DogfightClient {
             updateProps(entity, data.props);
 
             const me = this.getMyPlayer();
-            if (me) {
-                if (me.props.controlling) {
-                    if (id === me.props.controlling.id && data.type === me.props.controlling.type) {
-                        if (isFollowable(entity)) {
-                            //console.log("followable!");
-                            const pos = entity.getCenter();
-                            /*
-              const pos = this.viewport.toWorld(e.data.global);
-              const x = Math.round(pos.x);
-              const y = Math.round(pos.y);
-              */
-                            this.debugCoords.text = `${pos.x}, ${pos.y}`;
-                            this.centerCamera(pos.x, pos.y);
-                            this.gameHUD.updateStats(entity.getStats());
-                        }
+
+            if (me?.props.controlling) {
+                if (id === me.props.controlling.id && data.type === me.props.controlling.type) {
+                    if (isFollowable(entity)) {
+                        const pos = entity.getCenter();
+                        this.renderClient.debugCoords.text = `${pos.x}, ${pos.y}`;
+                        this.centerCamera(pos.x, pos.y);
+                        this.gameHUD.updateStats(entity.getStats());
                     }
                 }
             }
@@ -493,59 +420,7 @@ export class DogfightClient {
         }
     }
 
-    public renderDebug(debugInfo: DebugEntity[]) {
-        this.debugCollision.clear();
-        this.viewport.sortChildren();
-
-        for (const entry of debugInfo) {
-            this.debugCollision.lineStyle({
-                color: DEBUG_COLORS[entry.ent_type.type],
-                width: 1,
-            });
-
-            if (entry.ent_type.type === "Runway" && !entry.pixels) {
-                this.debugCollision.lineStyle({
-                    color: "magenta",
-                    width: 1,
-                });
-            }
-
-            const { x, y, width, height } = entry.bounding_box;
-
-            // console.log(entry)
-
-            this.debugCollision.drawRect(x, y, width, height);
-
-            if (entry.pixels) {
-                for (const pixel of entry.pixels) {
-                    const px = x + pixel.x;
-                    const py = y + pixel.y;
-                    this.debugCollision.drawRect(px, py, 1, 1);
-                }
-            }
-        }
-
-        this.debugCollision.endFill();
-    }
-
     private getPlayerData(): PlayerProperties[] {
         return [...this.entities.Player.collection.entries().map(([_id, player]) => player.props)];
     }
 }
-
-const DEBUG_COLORS: Record<EntityType, string> = {
-    WorldInfo: "gray",
-    Man: "magenta",
-    Plane: "red",
-    Player: "gray",
-    BackgroundItem: "",
-    Ground: "orange",
-    Coast: "peru",
-    Runway: "purple",
-    Water: "blue",
-    Bunker: "brown",
-    Bomb: "black",
-    Explosion: "lime",
-    Hill: "green",
-    Bullet: "pink",
-};
