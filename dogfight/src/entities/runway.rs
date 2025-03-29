@@ -56,7 +56,7 @@ impl Runway {
             image_runway: get_image(RUNWAY),
             image_runway2: get_image(RUNWAY2),
             last_reserve: None,
-            reserve_timer: 0,
+            reserve_timer: 10_000, // setting this to a high value to allow the player to immediately take off on game load
         };
 
         runway.set_health(runway.get_max_health());
