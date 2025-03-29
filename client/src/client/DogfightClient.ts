@@ -22,7 +22,7 @@ import { KillFeed } from "./killfeed";
 import { RadarObject, RadarObjectType } from "./radar";
 import { RunwaySelector } from "./runwaySelector";
 import { TeamChooser } from "./teamChooser";
-import { loadTextures, Textures } from "./textures";
+import { Textures } from "./textures";
 
 export type GameClientCallbacks = {
     chooseTeam: (team: Team | null) => void;
@@ -169,7 +169,6 @@ export class DogfightClient {
     }
 
     public async init(callbacks: GameClientCallbacks, element: HTMLDivElement, intl: IntlShape) {
-        await loadTextures();
         this.appendView(element);
         this.callbacks = callbacks;
         this.teamChooser.init(this.callbacks);
