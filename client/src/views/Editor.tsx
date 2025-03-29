@@ -29,7 +29,7 @@ export const Editor = () => {
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setRawInput(event.target.value);
         if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
-        debounceTimeout.current = setTimeout(() => setWorld(LevelEditor.sanitizeWorld(world)), 300);
+        debounceTimeout.current = setTimeout(() => setWorld(LevelEditor.sanitizeWorldString(world)), 300);
     };
 
     useEffect(() => {

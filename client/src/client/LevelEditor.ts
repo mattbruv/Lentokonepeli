@@ -143,17 +143,17 @@ export class LevelEditor {
         });
     }
 
-    static sanitizeWorld(world: string): string {
+    static sanitizeWorldString(world: string): string {
         return world
             .split("\n")
             .map((line) => {
-                if (!line.startsWith("layer")) return line;
+                if (!line.startsWith("layer")) return line.trim();
                 const [identifier, pieces] = line.split("=");
                 const validatedPieces = pieces
                     .split("")
                     .filter((char) => KNOWN_MAP_PIECES.includes(char as MapPiece))
                     .join("");
-                return identifier + "=" + validatedPieces;
+                return identifier.trim() + "=" + validatedPieces.trim();
             })
             .join("\n");
     }
