@@ -1,10 +1,11 @@
-import { Entity, EntityUpdateCallbacks } from "./entity";
-import * as PIXI from "pixi.js";
-import { Howl } from "howler";
 import { BulletProperties } from "dogfight-types/BulletProperties";
-import { directionToRadians } from "../helpers";
+import { Howl } from "howler";
+import * as PIXI from "pixi.js";
+import { animationRunner } from "../../gameLoop";
 import { DrawLayer } from "../constants";
+import { directionToRadians } from "../helpers";
 import { soundManager } from "../soundManager";
+import { Entity, EntityUpdateCallbacks } from "./entity";
 
 const COLORS: string[] = ["#000000", "#171717", "#515151", "#606060", "#999999"];
 
@@ -14,7 +15,6 @@ export class Bullet implements Entity<BulletProperties> {
 
     private sound: Howl;
     private age = 1;
-    private bullet_interval: number;
 
     public isGameRunning: boolean = true;
 
@@ -23,6 +23,12 @@ export class Bullet implements Entity<BulletProperties> {
         client_y: 0,
         speed: 0,
         direction: 0,
+    };
+
+    private animate = () => {
+        if (this.isGameRunning) {
+            this.move_bullet();
+        }
     };
 
     constructor() {
@@ -47,11 +53,7 @@ export class Bullet implements Entity<BulletProperties> {
 
         this.container.zIndex = DrawLayer.Bullet;
 
-        this.bullet_interval = window.setInterval(() => {
-            if (this.isGameRunning) {
-                this.move_bullet();
-            }
-        }, 10);
+        animationRunner.registerAnimation(this.animate, 1);
     }
 
     private move_bullet() {
@@ -100,6 +102,6 @@ export class Bullet implements Entity<BulletProperties> {
 
     public destroy() {
         this.sound.stop();
-        window.clearInterval(this.bullet_interval);
+        animationRunner.unregisterAnimation(this.animate);
     }
 }

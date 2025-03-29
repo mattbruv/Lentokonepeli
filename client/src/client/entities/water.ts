@@ -3,6 +3,7 @@ import * as PIXI from "pixi.js";
 import { DrawLayer, TERRAIN_WATER_COLOR } from "../constants";
 import { Textures } from "../textures";
 import { Entity, EntityUpdateCallbacks } from "./entity";
+import { animationRunner } from "../../gameLoop";
 
 export class Water implements Entity<WaterProperties> {
     public props: Required<WaterProperties> = {
@@ -17,7 +18,10 @@ export class Water implements Entity<WaterProperties> {
     private waves: PIXI.TilingSprite;
 
     private waveIndex = 0;
-    private waveInterval: number;
+
+    private animate = () => {
+        this.waveStep();
+    };
 
     constructor() {
         this.container = new PIXI.Container();
@@ -27,9 +31,7 @@ export class Water implements Entity<WaterProperties> {
         this.waves = new PIXI.TilingSprite(wave1);
         this.waves.height = wave1.height;
 
-        this.waveInterval = window.setInterval(() => {
-            this.waveStep();
-        }, 200);
+        animationRunner.registerAnimation(this.animate, 20);
 
         this.container.addChild(this.waterGraphics);
         this.container.addChild(this.waves);
@@ -100,6 +102,6 @@ export class Water implements Entity<WaterProperties> {
     }
 
     public destroy() {
-        window.clearInterval(this.waveInterval);
+        animationRunner.unregisterAnimation(this.animate);
     }
 }
