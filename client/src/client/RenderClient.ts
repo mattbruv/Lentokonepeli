@@ -15,6 +15,7 @@ export class RenderClient {
     public debugPointer = new PIXI.Text();
     public debugCoords = new PIXI.Text();
     public debugCollision = new PIXI.Graphics();
+    public debug = new PIXI.Graphics();
 
     constructor({
         background,
@@ -69,6 +70,10 @@ export class RenderClient {
                 this.debugPointer.text = `${x}, ${y}`;
             };
         }
+
+        window.setTimeout(() => {
+            this.viewport.addChild(this.debug);
+        }, 100);
     }
 
     private positionRelativeGameObjects(x: number, y: number) {

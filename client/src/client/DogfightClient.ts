@@ -66,8 +66,6 @@ export class DogfightClient {
     private killFeed: KillFeed = new KillFeed();
     public keyboard: GameKeyboard = new GameKeyboard();
 
-    private debug: PIXI.Graphics = new PIXI.Graphics();
-
     private callbacks?: GameClientCallbacks;
     private sendPlayerUpdate: boolean = false;
     public entities = entityCollection([...DEFAULT_ENTITIES, ["Player", createNewPlayer.bind(this)]]);
@@ -158,9 +156,6 @@ export class DogfightClient {
             this.runwaySelector.container.position.set(x, y);
         }
 
-        window.setTimeout(() => {
-            this.renderClient.viewport.addChild(this.debug);
-        }, 100);
         this.centerCamera(0, 0);
     }
 
