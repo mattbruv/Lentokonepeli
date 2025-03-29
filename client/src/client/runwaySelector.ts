@@ -2,12 +2,13 @@ import { PlaneType } from "dogfight-types/PlaneType";
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 import { Team } from "dogfight-types/Team";
 import * as PIXI from "pixi.js";
-import { EntityGroup, GameClientCallbacks } from "./DogfightClient";
-import { Point } from "./entities/entity";
-import { Runway } from "./entities/runway";
-import { Textures } from "./textures";
 import { IntlShape } from "react-intl";
 import { GAME_INTL } from "../intl/messages";
+import { GameClientCallbacks } from "./DogfightClient";
+import { Point } from "./entities/entity";
+import { Runway } from "./entities/runway";
+import { EntityGroup } from "./EntityManager";
+import { Textures } from "./textures";
 
 type PlaneData = {
     plane_type: PlaneType;
@@ -178,7 +179,7 @@ export class RunwaySelector {
     }
 
     private getMyRunways(runways: EntityGroup<Runway>): [number, Runway][] {
-        return [...runways.entries.entries()]
+        return [...runways.collection.entries()]
             .filter(
                 ([_, runway]) => runway.props.team === this.team,
                 // TODO: health

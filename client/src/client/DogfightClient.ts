@@ -10,22 +10,11 @@ import { ServerOutput } from "dogfight-types/ServerOutput";
 import { Team } from "dogfight-types/Team";
 import { Viewport } from "pixi-viewport";
 import * as PIXI from "pixi.js";
+import { IntlShape } from "react-intl";
 import { SKY_COLOR, VIEW_HEIGHT, VIEW_WIDTH } from "./constants";
-import { BackgroundItem } from "./entities/backgroundItem";
-import { Bomb } from "./entities/bomb";
-import { Bullet } from "./entities/bullet";
-import { Bunker } from "./entities/bunker";
-import { Coast } from "./entities/coast";
-import { Entity, isFollowable, RadarEnabled, updateProps } from "./entities/entity";
-import { Explosion } from "./entities/explosion";
-import { Ground } from "./entities/ground";
-import { Hill } from "./entities/hill";
-import { Man } from "./entities/man";
-import { Plane } from "./entities/plane";
+import { isFollowable, RadarEnabled, updateProps } from "./entities/entity";
 import { Player } from "./entities/player";
-import { Runway } from "./entities/runway";
-import { Water } from "./entities/water";
-import { WorldInfo } from "./entities/worldInfo";
+import { DEFAULT_ENTITIES, destroyEntities, entityCollection, EntityGroup } from "./EntityManager";
 import { formatName } from "./helpers";
 import { GameHUD } from "./hud";
 import { GameKeyboard } from "./keyboard";
@@ -34,7 +23,6 @@ import { RadarObject, RadarObjectType } from "./radar";
 import { RunwaySelector } from "./runwaySelector";
 import { TeamChooser } from "./teamChooser";
 import { loadTextures, Textures } from "./textures";
-import { IntlShape } from "react-intl";
 
 export type GameClientCallbacks = {
     chooseTeam: (team: Team | null) => void;
@@ -44,15 +32,30 @@ export type GameClientCallbacks = {
     onMessage: (message: ChatMessage) => void;
 };
 
-type EntityCollection = {
-    [E in EntityProperties as E["type"]]: EntityGroup<Entity<E["props"]>>;
-};
+function createNewPlayer(this: DogfightClient) {
+    return new Player((oldControlling, newControlling, props) => {
+        if (oldControlling) {
+            if (oldControlling.type === "Plane") {
+                this.entities.Plane.collection.get(oldControlling.id)?.setPlayerName(null, null);
+            }
+            if (oldControlling.type === "Man") {
+                this.entities.Man.collection.get(oldControlling.id)?.setPlayerName(null, null);
+            }
+        }
 
-export type EntityGroup<T> = {
-    new_type: () => T;
-    entries: Map<number, T>;
-};
+        if (newControlling && newControlling) {
+            const myTeam = this.getMyPlayer()?.props.team ?? null;
+            const name = props.name?.substring(0, 15) ?? "";
+            const fullName = formatName(name, props.clan ?? null);
 
+            if (newControlling.type === "Plane") {
+                this.entities.Plane.collection.get(newControlling.id)?.setPlayerName(fullName, myTeam);
+            } else if (newControlling.type === "Man") {
+                this.entities.Man.collection.get(newControlling.id)?.setPlayerName(fullName, myTeam);
+            }
+        }
+    });
+}
 export class DogfightClient {
     // https://pixijs.download/v7.x/docs/index.html
     private app: PIXI.Application<HTMLCanvasElement>;
@@ -78,135 +81,7 @@ export class DogfightClient {
 
     private callbacks?: GameClientCallbacks;
     private sendPlayerUpdate: boolean = false;
-
-    private worldInfo: EntityGroup<WorldInfo> = {
-        new_type: () => new WorldInfo(),
-        entries: new Map(),
-    };
-
-    private planes: EntityGroup<Plane> = {
-        new_type: () => new Plane(),
-        entries: new Map(),
-    };
-
-    private players: EntityGroup<Player> = {
-        new_type: () =>
-            new Player((oldControlling, newControlling, props) => {
-                // We need to update the player names here.
-                // Idk how we ended up with this pattern but whatever the client code is just a few steps above spaghetti
-
-                if (oldControlling !== null) {
-                    if (oldControlling.type === "Plane") {
-                        const plane = this.planes.entries.get(oldControlling.id);
-                        if (plane) {
-                            plane.setPlayerName(null, null);
-                        }
-                    }
-                    if (oldControlling.type === "Man") {
-                        const man = this.men.entries.get(oldControlling.id);
-                        if (man) {
-                            man.setPlayerName(null, null);
-                        }
-                    }
-                }
-
-                // If we are the player being updated right now, set our team
-                const myPlayer = this.getMyPlayer();
-                const myTeam = myPlayer?.props.team ?? null;
-
-                if (newControlling !== null && newControlling !== undefined) {
-                    const name = props.name?.substring(0, 15) ?? "";
-                    const fullName = formatName(name, props.clan ?? null);
-
-                    if (newControlling.type === "Plane") {
-                        const plane = this.planes.entries.get(newControlling.id);
-                        if (plane) {
-                            plane.setPlayerName(fullName, myTeam);
-                        }
-                    }
-                    if (newControlling.type === "Man") {
-                        //debugger
-                        const man = this.men.entries.get(newControlling.id);
-                        if (man) {
-                            man.setPlayerName(fullName, myTeam);
-                        }
-                    }
-                }
-            }),
-        entries: new Map(),
-    };
-
-    private grounds: EntityGroup<Ground> = {
-        new_type: () => new Ground(),
-        entries: new Map(),
-    };
-
-    private backgroundItems: EntityGroup<BackgroundItem> = {
-        new_type: () => new BackgroundItem(),
-        entries: new Map(),
-    };
-
-    private waters: EntityGroup<Water> = {
-        new_type: () => new Water(),
-        entries: new Map(),
-    };
-
-    private coasts: EntityGroup<Coast> = {
-        new_type: () => new Coast(),
-        entries: new Map(),
-    };
-
-    private runways: EntityGroup<Runway> = {
-        new_type: () => new Runway(),
-        entries: new Map(),
-    };
-
-    private bunkers: EntityGroup<Bunker> = {
-        new_type: () => new Bunker(),
-        entries: new Map(),
-    };
-
-    private bombs: EntityGroup<Bomb> = {
-        new_type: () => new Bomb(),
-        entries: new Map(),
-    };
-
-    private men: EntityGroup<Man> = {
-        new_type: () => new Man(),
-        entries: new Map(),
-    };
-
-    private explosions: EntityGroup<Explosion> = {
-        new_type: () => new Explosion(),
-        entries: new Map(),
-    };
-
-    private hills: EntityGroup<Hill> = {
-        new_type: () => new Hill(),
-        entries: new Map(),
-    };
-
-    private bullets: EntityGroup<Bullet> = {
-        new_type: () => new Bullet(),
-        entries: new Map(),
-    };
-
-    private entities: EntityCollection = {
-        WorldInfo: this.worldInfo,
-        Plane: this.planes,
-        Man: this.men,
-        Player: this.players,
-        BackgroundItem: this.backgroundItems,
-        Ground: this.grounds,
-        Coast: this.coasts,
-        Runway: this.runways,
-        Water: this.waters,
-        Bunker: this.bunkers,
-        Bomb: this.bombs,
-        Explosion: this.explosions,
-        Hill: this.hills,
-        Bullet: this.bullets,
-    };
+    public entities = entityCollection([...DEFAULT_ENTITIES, ["Player", createNewPlayer.bind(this)]]);
 
     constructor() {
         this.app = new PIXI.Application<HTMLCanvasElement>({
@@ -266,7 +141,7 @@ export class DogfightClient {
                 if (myPlayer.props.team) {
                     this.runwaySelector.processKeys(
                         keys,
-                        this.runways,
+                        this.entities.Runway,
                         (runwayPos) => {
                             this.centerCamera(runwayPos.x, runwayPos.y);
                         },
@@ -288,7 +163,7 @@ export class DogfightClient {
         this.sky.tilePosition.set(-x1, -y1);
 
         // update hills
-        for (const [_, hill] of this.hills.entries) {
+        for (const [_, hill] of this.entities.Hill.collection) {
             hill.setPosition(x, y);
         }
     }
@@ -337,15 +212,9 @@ export class DogfightClient {
             const x = width - w / 2;
             // idk why i have to divide hud height by 2, but thats what works
             const y = height - h / 2 - this.gameHUD.container.height / 2;
-            //console.log(w, h, x, y);
             this.runwaySelector.container.position.set(x, y);
         }
 
-        /*
-    this.debug.beginFill("red");
-    this.debug.drawCircle(0, 0, 10);
-    this.debug.endFill;
-    */
         window.setTimeout(() => {
             this.viewport.addChild(this.debug);
         }, 100);
@@ -354,26 +223,7 @@ export class DogfightClient {
 
     public destroy() {
         console.log("destroying client...");
-
-        for (const [_, plane] of this.planes.entries) {
-            plane.destroy();
-        }
-
-        for (const [_, bullet] of this.bullets.entries) {
-            bullet.destroy();
-        }
-
-        for (const [_, man] of this.men.entries) {
-            man.destroy();
-        }
-
-        for (const [_, ent] of this.waters.entries) {
-            ent.destroy();
-        }
-
-        for (const [_, ent] of this.backgroundItems.entries) {
-            ent.destroy();
-        }
+        destroyEntities(this.entities);
 
         this.app.destroy(true, {
             children: true,
@@ -399,9 +249,9 @@ export class DogfightClient {
         this.killFeed.setTeam(team);
     }
 
-    private getMyPlayer(): Player | undefined {
+    public getMyPlayer(): Player | undefined {
         if (this.myPlayerId === null) return undefined;
-        const myPlayer = this.players.entries.get(this.myPlayerId);
+        const myPlayer = this.entities.Player.collection.get(this.myPlayerId);
         return myPlayer;
     }
 
@@ -414,21 +264,25 @@ export class DogfightClient {
             this.runwaySelector.setTeam(props.team);
 
             // update runway team colors
-            for (const [_, runway] of this.runways.entries) {
+            for (const [_, runway] of this.entities.Runway.collection) {
                 runway.setUserTeam(props.team);
             }
 
-            for (const [_, bunker] of this.bunkers.entries) {
+            for (const [_, bunker] of this.entities.Bunker.collection) {
                 bunker.setUserTeam(props.team);
             }
 
             // update plane/man colors
-            for (const [_, player] of this.players.entries) {
+            for (const [_, player] of this.entities.Player.collection) {
                 if (player.props.controlling?.type === "Plane") {
-                    this.planes.entries.get(player.props.controlling.id)?.setPlayerName(player.props.name, props.team);
+                    this.entities.Plane.collection
+                        .get(player.props.controlling.id)
+                        ?.setPlayerName(player.props.name, props.team);
                 }
                 if (player.props.controlling?.type === "Man") {
-                    this.men.entries.get(player.props.controlling.id)?.setPlayerName(player.props.name, props.team);
+                    this.entities.Man.collection
+                        .get(player.props.controlling.id)
+                        ?.setPlayerName(player.props.name, props.team);
                 }
             }
         }
@@ -436,7 +290,7 @@ export class DogfightClient {
         switch (props.state) {
             case "ChoosingRunway": {
                 this.runwaySelector.container.visible = true;
-                this.runwaySelector.selectRunway(this.runways, (runwayPos) => {
+                this.runwaySelector.selectRunway(this.entities.Runway, (runwayPos) => {
                     this.centerCamera(runwayPos.x, runwayPos.y);
                 });
                 break;
@@ -465,15 +319,15 @@ export class DogfightClient {
         const objs: RadarObject[] = [];
 
         const radarObjs: Record<RadarObjectType, EntityGroup<RadarEnabled>> = {
-            [RadarObjectType.Ground]: this.grounds,
-            [RadarObjectType.Man]: this.men,
-            [RadarObjectType.Plane]: this.planes,
-            [RadarObjectType.Runway]: this.runways,
-            [RadarObjectType.Bunker]: this.bunkers,
+            [RadarObjectType.Ground]: this.entities.Ground,
+            [RadarObjectType.Man]: this.entities.Man,
+            [RadarObjectType.Plane]: this.entities.Plane,
+            [RadarObjectType.Runway]: this.entities.Runway,
+            [RadarObjectType.Bunker]: this.entities.Bunker,
         };
 
         for (const [_, objects] of Object.entries(radarObjs)) {
-            for (const [_, obj] of objects.entries) {
+            for (const [_, obj] of objects.collection) {
                 objs.push(obj.getRadarInfo());
             }
         }
@@ -501,7 +355,7 @@ export class DogfightClient {
                 }
                 case "PlayerJoinTeam": {
                     this.sendPlayerUpdate = true;
-                    const player = this.players.entries.get(event.data.id);
+                    const player = this.entities.Player.collection.get(event.data.id);
                     if (player) {
                         console.log(event.data.id + " joined " + event.data.team);
                         if (event.data.id === this.myPlayerId) {
@@ -512,9 +366,11 @@ export class DogfightClient {
                 }
                 case "KillEvent": {
                     this.sendPlayerUpdate = true;
-                    const killer_data = this.players.entries.get(event.data.killer);
+                    const killer_data = this.entities.Player.collection.get(event.data.killer);
                     const victim_data =
-                        event.data.victim !== null ? (this.players.entries.get(event.data.victim) ?? null) : null;
+                        event.data.victim !== null
+                            ? (this.entities.Player.collection.get(event.data.victim) ?? null)
+                            : null;
 
                     if (killer_data) {
                         this.killFeed.addKillEvent({
@@ -570,20 +426,20 @@ export class DogfightClient {
 
     private deleteEntity(id: number, ent_type: EntityType) {
         const group = this.entities[ent_type];
-        const entity = group.entries.get(id);
+        const entity = group.collection.get(id);
         if (!entity) return;
         const container = entity.getContainer();
         const containers = Array.isArray(container) ? container : [container];
         this.viewport.removeChild(...containers);
         entity.destroy();
-        group.entries.delete(id);
+        group.collection.delete(id);
     }
 
     private updateEntity(id: number, data: EntityProperties) {
         const ent_map = this.entities[data.type];
         if (!ent_map) return;
 
-        let entity = ent_map.entries.get(id);
+        let entity = ent_map.collection.get(id);
 
         // If the entity doesn't exist, create a new one
         // and add it to the stage
@@ -593,7 +449,7 @@ export class DogfightClient {
                 // Not sure why Typescript wants to error when I call the set() function here.
                 // It's making the set param a union type for some reason I don't understand
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                ent_map.entries.set(id, entity as any);
+                ent_map.collection.set(id, entity as any);
                 const container = entity.getContainer();
                 const containers = Array.isArray(container) ? container : [container];
                 this.viewport.addChild(...containers);
@@ -674,7 +530,7 @@ export class DogfightClient {
     }
 
     private getPlayerData(): PlayerProperties[] {
-        return [...this.players.entries.entries().map(([_id, player]) => player.props)];
+        return [...this.entities.Player.collection.entries().map(([_id, player]) => player.props)];
     }
 }
 
