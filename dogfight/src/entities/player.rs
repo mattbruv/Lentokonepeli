@@ -1,5 +1,3 @@
-use std::fmt::format;
-
 use crate::{
     input::PlayerKeyboard,
     network::{property::*, EntityProperties, NetworkedEntity},
@@ -7,7 +5,8 @@ use crate::{
 use dogfight_macros::{EnumBytes, Networked};
 
 use super::{
-    container::{EntityIdWrappedType, ManId, PlaneId},
+    container::{ManId, PlaneId, RunwayId},
+    plane::PlaneType,
     types::Team,
 };
 
@@ -18,35 +17,54 @@ pub enum PlayerState {
     ChoosingRunway,
     WaitingRespawn,
     Playing,
+    Refueling,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS)]
 #[ts(export)]
-#[serde(tag = "type", content = "id")]
+#[serde(tag = "type", content = "data")]
 pub enum ControllingEntity {
     Man(ManId),
     Plane(PlaneId),
+    Runway(RunwayId, PlaneType),
 }
 
 impl NetworkedBytes for ControllingEntity {
     fn to_bytes(&self) -> Vec<u8> {
         let mut bytes = vec![];
-        let (ent_type, ent_id): (u8, Vec<u8>) = match self {
+        let (ent_type, data_bytes): (u8, Vec<u8>) = match self {
             ControllingEntity::Man(man_id) => (0, man_id.to_bytes()),
             ControllingEntity::Plane(plane_id) => (1, plane_id.to_bytes()),
+            ControllingEntity::Runway(runway_id, plane_type) => {
+                let mut runway_info = vec![];
+                runway_info.extend(runway_id.to_bytes());
+                runway_info.extend(plane_type.to_bytes());
+                (2, runway_info)
+            }
         };
         bytes.extend(ent_type.to_bytes());
-        bytes.extend(ent_id);
+        bytes.extend(data_bytes);
         bytes
     }
 
     fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
         let (bytes, ent_type) = u8::from_bytes(bytes)?;
-        let (bytes, ent_id) = EntityIdWrappedType::from_bytes(bytes)?;
+        //let (bytes, ent_id) = EntityIdWrappedType::from_bytes(bytes)?;
 
-        let controlling: ControllingEntity = match ent_type {
-            0 => ControllingEntity::Man(ent_id.into()),
-            1 => ControllingEntity::Plane(ent_id.into()),
+        let (bytes, controlling) = match ent_type {
+            0 => {
+                let (bytes, man_id) = ManId::from_bytes(bytes)?;
+                (bytes, ControllingEntity::Man(man_id))
+            }
+            1 => {
+                let (bytes, plane_id) = PlaneId::from_bytes(bytes)?;
+                (bytes, ControllingEntity::Plane(plane_id))
+            }
+            2 => {
+                let (bytes, runway_id) = RunwayId::from_bytes(bytes)?;
+                let (bytes, plane_type) = PlaneType::from_bytes(bytes)?;
+                (bytes, ControllingEntity::Runway(runway_id, plane_type))
+            }
             _ => panic!("Invalid controlling ent index: {}", ent_type),
         };
 
