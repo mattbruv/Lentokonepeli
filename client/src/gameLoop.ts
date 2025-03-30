@@ -1,19 +1,19 @@
-type UpdateFn = (currentTick: number) => void;
+export type TaskFn = (currentTick: number) => void;
 const noop = () => {};
 
 /**
- * When facing a case where useInterval seems handy, use this GameLoop instead
+ * When facing a case where useInterval or short setTimeout seems handy, use this GameLoop instead
  */
 class GameLoop {
     private currentTick: number = 0;
     private lastTime: number = performance.now();
     private requestId: number | null = null;
     private tickInterval: number = -1;
-    private updateFn: UpdateFn = noop;
-    private animationRunner: AnimationRunner;
+    private engineUpdateFn: TaskFn = noop;
+    private scheduler: Scheduler;
 
-    constructor(animationRunner: AnimationRunner) {
-        this.animationRunner = animationRunner;
+    constructor(scheduler: Scheduler) {
+        this.scheduler = scheduler;
     }
 
     public setTickInterval(tickInterval: number) {
@@ -26,8 +26,8 @@ class GameLoop {
      * This needs to be called when hosting a game,
      * this should not be called when joining a game
      */
-    public setHostEngineUpdateFn(updateFn: UpdateFn) {
-        this.updateFn = updateFn;
+    public setHostEngineUpdateFn(updateFn: TaskFn) {
+        this.engineUpdateFn = updateFn;
         return this;
     }
 
@@ -36,37 +36,26 @@ class GameLoop {
 
         while (delta >= this.tickInterval) {
             this.currentTick++;
+            this.engineUpdateFn(this.currentTick);
+            this.scheduler.runTasks(this.currentTick);
             delta -= this.tickInterval;
-            this.updateFn(this.currentTick);
-            this.animationRunner.runAnimations(this.currentTick);
         }
 
         this.lastTime = time - delta;
-
         this.requestId = requestAnimationFrame(this.gameLoop);
     };
 
-    private startLoop() {
+    public start() {
         if (this.requestId) return;
+        this.currentTick = 0;
         this.lastTime = performance.now();
         this.requestId = requestAnimationFrame(this.gameLoop);
     }
 
-    private pauseLoop() {
+    public stop() {
         if (!this.requestId) return;
         cancelAnimationFrame(this.requestId);
         this.requestId = null;
-    }
-
-    public start() {
-        this.currentTick = 0;
-
-        if (this.requestId) return;
-        this.startLoop();
-    }
-
-    public stop() {
-        this.pauseLoop();
     }
 
     public isRunning() {
@@ -74,31 +63,56 @@ class GameLoop {
     }
 }
 
-class AnimationRunner {
-    private animations: Map<UpdateFn, number> = new Map();
-    private nextExecutionTicks: Map<UpdateFn, number> = new Map();
+class Scheduler {
+    private recurringTasks: Map<TaskFn, number> = new Map();
+    private oneTimeTasks: Map<TaskFn, number> = new Map();
+    private nextExecutionTicks: Map<TaskFn, number> = new Map();
+    private oneTimeTasksQueue: Array<[TaskFn, number]> = [];
 
     /**
-     * @param animation some fn that does animations manually
-     * @param tickInterval how many game ticks should be between each animation tick
+     * @param task some fn that performs tasks (for example animations)
+     * @param tickInterval how many game ticks should be between each task call
      */
-    registerAnimation(animation: UpdateFn, tickInterval: number) {
-        this.animations.set(animation, tickInterval);
+    scheduleRecurring(task: TaskFn, tickInterval: number) {
+        this.recurringTasks.set(task, tickInterval);
     }
 
-    unregisterAnimation(animation: UpdateFn) {
-        this.animations.delete(animation);
+    /**
+     * Schedules a task that should be run once
+     */
+    scheduleTask(task: TaskFn, ticksUntil: number) {
+        this.oneTimeTasksQueue.push([task, ticksUntil]);
     }
 
-    runAnimations(currentTick: number) {
-        for (const [animate, tickInterval] of this.animations.entries()) {
-            if (currentTick >= (this.nextExecutionTicks.get(animate) ?? 0)) {
-                animate(currentTick);
-                this.nextExecutionTicks.set(animate, currentTick + tickInterval);
+    /**
+     * Unregister both recurring or one time tasks from bein run
+     */
+    unregister(task: TaskFn) {
+        this.recurringTasks.delete(task);
+        this.oneTimeTasks.delete(task);
+    }
+
+    runTasks(currentTick: number) {
+        for (const [task, tickInterval] of this.recurringTasks.entries()) {
+            if (currentTick >= (this.nextExecutionTicks.get(task) ?? 0)) {
+                task(currentTick);
+                this.nextExecutionTicks.set(task, currentTick + tickInterval);
+            }
+        }
+
+        for (const [task, ticksUntil] of this.oneTimeTasksQueue) {
+            this.oneTimeTasks.set(task, ticksUntil + currentTick);
+        }
+        this.oneTimeTasksQueue.length = 0;
+
+        for (const [task, onTick] of this.oneTimeTasks.entries()) {
+            if (currentTick >= onTick) {
+                this.oneTimeTasks.delete(task);
+                task(currentTick);
             }
         }
     }
 }
 
-export const animationRunner = new AnimationRunner();
-export const gameLoop = new GameLoop(animationRunner).setTickInterval(10);
+export const scheduler = new Scheduler();
+export const gameLoop = new GameLoop(scheduler).setTickInterval(10);

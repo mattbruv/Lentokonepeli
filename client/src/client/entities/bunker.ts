@@ -1,12 +1,11 @@
 import { BunkerProperties } from "dogfight-types/BunkerProperties";
 import { Team } from "dogfight-types/Team";
 import * as PIXI from "pixi.js";
+import { Blinker } from "../Blinker";
 import { DrawLayer, TeamColor } from "../constants";
 import { RadarObject, RadarObjectType } from "../radar";
-import { soundManager } from "../soundManager";
 import { Textures } from "../textures";
 import { Entity, EntityUpdateCallbacks, RadarEnabled } from "./entity";
-import { Runway } from "./runway";
 
 export class Bunker implements Entity<BunkerProperties>, RadarEnabled {
     public props: Required<BunkerProperties> = {
@@ -19,7 +18,6 @@ export class Bunker implements Entity<BunkerProperties>, RadarEnabled {
     private container: PIXI.Container;
     private bunkerSprite: PIXI.Sprite;
     private healthBar: PIXI.Graphics;
-    private blinking = false;
     private lastHealth = 0;
     private userTeam: Team = "Allies";
 
@@ -30,6 +28,7 @@ export class Bunker implements Entity<BunkerProperties>, RadarEnabled {
         Allies: Textures["headquarter_raf.gif"],
         Destroyed: Textures["headquarter_broke.gif"],
     };
+    blinker: Blinker;
 
     constructor() {
         this.container = new PIXI.Container();
@@ -40,6 +39,7 @@ export class Bunker implements Entity<BunkerProperties>, RadarEnabled {
         this.container.addChild(this.healthBar);
 
         this.container.zIndex = DrawLayer.Bunker;
+        this.blinker = new Blinker([this.bunkerSprite]);
     }
 
     public getRadarInfo(): RadarObject {
@@ -71,24 +71,8 @@ export class Bunker implements Entity<BunkerProperties>, RadarEnabled {
             this.updateTexture();
             this.drawHealthBar();
 
-            if (this.props.client_health < this.lastHealth && !this.blinking) {
-                // blink
-                const filter = new PIXI.ColorMatrixFilter();
-                filter.matrix = Runway.getHealthBarMatrix();
-                this.bunkerSprite.filters = [filter];
-                this.blinking = true;
-
-                // play blink sound
-                soundManager.playSound(
-                    new Howl({
-                        src: "audio/hit.mp3",
-                    }),
-                );
-
-                window.setTimeout(() => {
-                    this.blinking = false;
-                    this.bunkerSprite.filters = null;
-                }, 100);
+            if (this.props.client_health < this.lastHealth) {
+                this.blinker.tryBlink();
             }
 
             this.lastHealth = this.props.client_health;

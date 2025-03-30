@@ -1,7 +1,7 @@
 import { BulletProperties } from "dogfight-types/BulletProperties";
 import { Howl } from "howler";
 import * as PIXI from "pixi.js";
-import { animationRunner } from "../../gameLoop";
+import { scheduler } from "../../gameLoop";
 import { DrawLayer } from "../constants";
 import { directionToRadians } from "../helpers";
 import { soundManager } from "../soundManager";
@@ -53,7 +53,7 @@ export class Bullet implements Entity<BulletProperties> {
 
         this.container.zIndex = DrawLayer.Bullet;
 
-        animationRunner.registerAnimation(this.animate, 1);
+        scheduler.scheduleRecurring(this.animate, 1);
     }
 
     private move_bullet() {
@@ -102,6 +102,6 @@ export class Bullet implements Entity<BulletProperties> {
 
     public destroy() {
         this.sound.stop();
-        animationRunner.unregisterAnimation(this.animate);
+        scheduler.unregister(this.animate);
     }
 }
