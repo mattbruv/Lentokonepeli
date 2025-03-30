@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { AnimationFn, animationRunner } from "../gameLoop";
+import { TaskFn, scheduler } from "../gameLoop";
 import { soundManager } from "./soundManager";
 
 export class Blinker {
@@ -14,7 +14,7 @@ export class Blinker {
         this.filter.matrix = getHealthBarMatrix();
     }
 
-    private stopBlink: AnimationFn = () => {
+    private stopBlink: TaskFn = () => {
         this.blinking = false;
         for (const target of this.targets) {
             target.filters = null;
@@ -28,7 +28,7 @@ export class Blinker {
         for (const target of this.targets) {
             target.filters = [this.filter];
         }
-        animationRunner.scheduleOneTimeAnimation(this.stopBlink, 10);
+        scheduler.scheduleTask(this.stopBlink, 10);
     }
 }
 

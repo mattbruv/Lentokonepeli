@@ -1,12 +1,12 @@
-import { Entity, EntityUpdateCallbacks, Followable, Point, RadarEnabled } from "./entity";
-import * as PIXI from "pixi.js";
-import { Textures } from "../textures";
-import { DrawLayer, TeamColor } from "../constants";
 import { ManProperties } from "dogfight-types/ManProperties";
+import { Team } from "dogfight-types/Team";
+import * as PIXI from "pixi.js";
+import { scheduler } from "../../gameLoop";
+import { DrawLayer, TeamColor } from "../constants";
 import { Stats } from "../hud";
 import { RadarObject, RadarObjectType } from "../radar";
-import { Team } from "dogfight-types/Team";
-import { animationRunner } from "../../gameLoop";
+import { Textures } from "../textures";
+import { Entity, EntityUpdateCallbacks, Followable, Point, RadarEnabled } from "./entity";
 
 export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
     public props: Required<ManProperties> = {
@@ -53,7 +53,7 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
 
         this.container.zIndex = DrawLayer.Man;
 
-        animationRunner.registerAnimation(this.animate, 10);
+        scheduler.scheduleRecurring(this.animate, 10);
     }
 
     public callbackOrder: (keyof ManProperties)[] = ["client_x", "client_y"];
@@ -85,7 +85,7 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
     }
 
     public destroy() {
-        animationRunner.unregisterAnimation(this.animate);
+        scheduler.unregisterSchedule(this.animate);
     }
 
     private updateX(): void {

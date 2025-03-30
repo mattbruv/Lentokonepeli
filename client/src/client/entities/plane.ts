@@ -2,7 +2,7 @@ import { PlaneProperties } from "dogfight-types/PlaneProperties";
 import { PlaneType } from "dogfight-types/PlaneType";
 import { Team } from "dogfight-types/Team";
 import * as PIXI from "pixi.js";
-import { AnimationFn, animationRunner } from "../../gameLoop";
+import { TaskFn, scheduler } from "../../gameLoop";
 import { DrawLayer, TeamColor } from "../constants";
 import { directionToRadians } from "../helpers";
 import { Stats } from "../hud";
@@ -45,7 +45,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         client_health: 0,
     };
 
-    private createGraySmoke: AnimationFn = () => {
+    private createGraySmoke: TaskFn = () => {
         console.log("gray");
         const tex = this.getTexture();
         const w = tex.width;
@@ -63,17 +63,17 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         smoke.position.set(k, m);
         this.container.addChild(smoke);
 
-        animationRunner.scheduleOneTimeAnimation(() => this.container.removeChild(smoke), 30);
+        scheduler.scheduleTask(() => this.container.removeChild(smoke), 30);
     };
 
-    private createDarkSmoke: AnimationFn = () => {
+    private createDarkSmoke: TaskFn = () => {
         console.log("dark");
         const percentage = this.props.client_health / 255;
 
         let ticksUntilNext = 30;
 
         if (percentage > 0.9) {
-            animationRunner.scheduleOneTimeAnimation(this.createDarkSmoke, ticksUntilNext);
+            scheduler.scheduleTask(this.createDarkSmoke, ticksUntilNext);
             return;
         }
 
@@ -93,11 +93,11 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
             ticksUntilNext = 10;
         }
 
-        animationRunner.scheduleOneTimeAnimation(() => this.darkSmoke.removeChild(smoke), 30);
-        animationRunner.scheduleOneTimeAnimation(this.createDarkSmoke, ticksUntilNext);
+        scheduler.scheduleTask(() => this.darkSmoke.removeChild(smoke), 30);
+        scheduler.scheduleTask(this.createDarkSmoke, ticksUntilNext);
     };
 
-    private animate: AnimationFn = (currentTick: number) => {
+    private animate: TaskFn = (currentTick: number) => {
         if (!this.props.motor_on || this.props.mode !== "Flying") return;
         return this.createGraySmoke(currentTick);
     };
@@ -127,8 +127,8 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
 
         this.container.zIndex = DrawLayer.Plane;
 
-        animationRunner.registerAnimation(this.animate, 10);
-        animationRunner.scheduleOneTimeAnimation(this.createDarkSmoke, 30);
+        scheduler.scheduleRecurring(this.animate, 10);
+        scheduler.scheduleTask(this.createDarkSmoke, 30);
     }
 
     private getSmokePosition(center: boolean): { x: number; y: number } {
@@ -184,7 +184,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         return Textures[key];
     }
 
-    private renderFlip: AnimationFn = () => {
+    private renderFlip: TaskFn = () => {
         const flipFrame = this.flipFrame;
         this.planeSprite.texture = this.getFlipTexture(flipFrame);
 
@@ -194,7 +194,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         }
 
         this.flipFrame++;
-        animationRunner.scheduleOneTimeAnimation(this.renderFlip, 7);
+        scheduler.scheduleTask(this.renderFlip, 7);
     };
 
     public updateCallbacks: EntityUpdateCallbacks<PlaneProperties> = {
@@ -219,7 +219,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
                 this.first_flip = false;
                 return;
             }
-            animationRunner.unregisterAnimation(this.renderFlip);
+            scheduler.unregisterSchedule(this.renderFlip);
             this.flipFrame = 0;
             this.renderFlip(0);
         },
@@ -244,8 +244,8 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
     };
 
     public destroy() {
-        animationRunner.unregisterAnimation(this.animate);
-        animationRunner.unregisterAnimation(this.createDarkSmoke);
+        scheduler.unregisterSchedule(this.animate);
+        scheduler.unregisterSchedule(this.createDarkSmoke);
         if (this.props.motor_on) soundManager.handlePlayMotorSound(false);
     }
 

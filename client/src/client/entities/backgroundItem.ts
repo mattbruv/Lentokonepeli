@@ -1,10 +1,10 @@
 import { BackgroundItemProperties } from "dogfight-types/BackgroundItemProperties";
 import { BackgroundItemType } from "dogfight-types/BackgroundItemType";
 import * as PIXI from "pixi.js";
+import { scheduler } from "../../gameLoop";
 import { DrawLayer } from "../constants";
 import { Textures } from "../textures";
 import { Entity, EntityUpdateCallbacks } from "./entity";
-import { animationRunner } from "../../gameLoop";
 
 type FlagTypes = "FlagAllies" | "FlagCentrals";
 
@@ -80,7 +80,7 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
             this.itemSprite.texture = texture;
 
             if (this.flagTypes.includes(bg_item_type)) {
-                animationRunner.registerAnimation(this.animate, 10);
+                scheduler.scheduleRecurring(this.animate, 10);
             }
         },
         facing: () => {
@@ -119,6 +119,6 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
     }
 
     public destroy() {
-        animationRunner.unregisterAnimation(this.animate);
+        scheduler.unregisterSchedule(this.animate);
     }
 }

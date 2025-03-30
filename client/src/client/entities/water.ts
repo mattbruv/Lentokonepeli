@@ -1,9 +1,9 @@
 import { WaterProperties } from "dogfight-types/WaterProperties";
 import * as PIXI from "pixi.js";
+import { scheduler } from "../../gameLoop";
 import { DrawLayer, TERRAIN_WATER_COLOR } from "../constants";
 import { Textures } from "../textures";
 import { Entity, EntityUpdateCallbacks } from "./entity";
-import { animationRunner } from "../../gameLoop";
 
 export class Water implements Entity<WaterProperties> {
     public props: Required<WaterProperties> = {
@@ -31,7 +31,7 @@ export class Water implements Entity<WaterProperties> {
         this.waves = new PIXI.TilingSprite(wave1);
         this.waves.height = wave1.height;
 
-        animationRunner.registerAnimation(this.animate, 20);
+        scheduler.scheduleRecurring(this.animate, 20);
 
         this.container.addChild(this.waterGraphics);
         this.container.addChild(this.waves);
@@ -102,6 +102,6 @@ export class Water implements Entity<WaterProperties> {
     }
 
     public destroy() {
-        animationRunner.unregisterAnimation(this.animate);
+        scheduler.unregisterSchedule(this.animate);
     }
 }

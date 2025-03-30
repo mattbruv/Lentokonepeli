@@ -1,4 +1,4 @@
-export type AnimationFn = (currentTick: number) => void;
+export type TaskFn = (currentTick: number) => void;
 const noop = () => {};
 
 /**
@@ -9,11 +9,11 @@ class GameLoop {
     private lastTime: number = performance.now();
     private requestId: number | null = null;
     private tickInterval: number = -1;
-    private updateFn: AnimationFn = noop;
-    private animationRunner: AnimationRunner;
+    private engineUpdateFn: TaskFn = noop;
+    private scheduler: Scheduler;
 
-    constructor(animationRunner: AnimationRunner) {
-        this.animationRunner = animationRunner;
+    constructor(scheduler: Scheduler) {
+        this.scheduler = scheduler;
     }
 
     public setTickInterval(tickInterval: number) {
@@ -26,8 +26,8 @@ class GameLoop {
      * This needs to be called when hosting a game,
      * this should not be called when joining a game
      */
-    public setHostEngineUpdateFn(updateFn: AnimationFn) {
-        this.updateFn = updateFn;
+    public setHostEngineUpdateFn(updateFn: TaskFn) {
+        this.engineUpdateFn = updateFn;
         return this;
     }
 
@@ -36,8 +36,8 @@ class GameLoop {
 
         while (delta >= this.tickInterval) {
             this.currentTick++;
-            this.updateFn(this.currentTick);
-            this.animationRunner.runAnimations(this.currentTick);
+            this.engineUpdateFn(this.currentTick);
+            this.scheduler.runTasks(this.currentTick);
             delta -= this.tickInterval;
         }
 
@@ -63,53 +63,53 @@ class GameLoop {
     }
 }
 
-class AnimationRunner {
-    private animations: Map<AnimationFn, number> = new Map();
-    private oneTimeAnimations: Map<AnimationFn, number> = new Map();
-    private nextExecutionTicks: Map<AnimationFn, number> = new Map();
-    private oneTimeAnimationQueue: Array<[AnimationFn, number]> = [];
+class Scheduler {
+    private recurringTasks: Map<TaskFn, number> = new Map();
+    private oneTimeTasks: Map<TaskFn, number> = new Map();
+    private nextExecutionTicks: Map<TaskFn, number> = new Map();
+    private oneTimeTasksQueue: Array<[TaskFn, number]> = [];
 
     /**
-     * @param animation some fn that does animations manually
-     * @param tickInterval how many game ticks should be between each animation tick
+     * @param task some fn that performs tasks (for example animations)
+     * @param tickInterval how many game ticks should be between each task call
      */
-    registerAnimation(animation: AnimationFn, tickInterval: number) {
-        this.animations.set(animation, tickInterval);
+    scheduleRecurring(task: TaskFn, tickInterval: number) {
+        this.recurringTasks.set(task, tickInterval);
     }
 
     /**
-     * Animation that should be run once
+     * Schedules a task that should be run once
      */
-    scheduleOneTimeAnimation(animation: AnimationFn, ticksUntil: number) {
-        this.oneTimeAnimationQueue.push([animation, ticksUntil]);
+    scheduleTask(task: TaskFn, ticksUntil: number) {
+        this.oneTimeTasksQueue.push([task, ticksUntil]);
     }
 
-    unregisterAnimation(animation: AnimationFn) {
-        this.animations.delete(animation);
-        this.oneTimeAnimations.delete(animation);
+    unregisterSchedule(task: TaskFn) {
+        this.recurringTasks.delete(task);
+        this.oneTimeTasks.delete(task);
     }
 
-    runAnimations(currentTick: number) {
-        for (const [animate, tickInterval] of this.animations.entries()) {
-            if (currentTick >= (this.nextExecutionTicks.get(animate) ?? 0)) {
-                animate(currentTick);
-                this.nextExecutionTicks.set(animate, currentTick + tickInterval);
+    runTasks(currentTick: number) {
+        for (const [task, tickInterval] of this.recurringTasks.entries()) {
+            if (currentTick >= (this.nextExecutionTicks.get(task) ?? 0)) {
+                task(currentTick);
+                this.nextExecutionTicks.set(task, currentTick + tickInterval);
             }
         }
 
-        for (const [animation, ticksUntil] of this.oneTimeAnimationQueue) {
-            this.oneTimeAnimations.set(animation, ticksUntil + currentTick);
+        for (const [task, ticksUntil] of this.oneTimeTasksQueue) {
+            this.oneTimeTasks.set(task, ticksUntil + currentTick);
         }
-        this.oneTimeAnimationQueue.length = 0;
+        this.oneTimeTasksQueue.length = 0;
 
-        for (const [animate, onTick] of this.oneTimeAnimations.entries()) {
+        for (const [task, onTick] of this.oneTimeTasks.entries()) {
             if (currentTick >= onTick) {
-                this.oneTimeAnimations.delete(animate);
-                animate(currentTick);
+                this.oneTimeTasks.delete(task);
+                task(currentTick);
             }
         }
     }
 }
 
-export const animationRunner = new AnimationRunner();
-export const gameLoop = new GameLoop(animationRunner).setTickInterval(10);
+export const scheduler = new Scheduler();
+export const gameLoop = new GameLoop(scheduler).setTickInterval(10);
