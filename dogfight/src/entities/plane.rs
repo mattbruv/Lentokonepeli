@@ -231,7 +231,8 @@ impl Plane {
     pub fn tick(
         &mut self,
         my_id: &PlaneId,
-        runway: Option<&Runway>,
+        controlling_player: Option<PlayerId>,
+        runway: Option<(RunwayId, &Runway)>,
         keyboard: Option<&PlayerKeyboard>,
     ) -> Vec<Action> {
         let mut actions = vec![];
@@ -246,7 +247,9 @@ impl Plane {
 
         match self.mode.get() {
             PlaneMode::Flying => self.tick_flying(my_id, keyboard, &mut actions),
-            PlaneMode::Landing => self.tick_landing(my_id, runway, &mut actions),
+            PlaneMode::Landing => {
+                self.tick_landing(my_id, controlling_player, runway, &mut actions)
+            }
             PlaneMode::Landed => self.tick_landed(keyboard),
             PlaneMode::TakingOff => self.tick_takeoff(),
             PlaneMode::Falling => self.tick_falling(my_id, keyboard, &mut actions),
@@ -382,7 +385,8 @@ impl Plane {
     fn tick_landing(
         &mut self,
         my_id: &PlaneId,
-        runway: Option<&Runway>,
+        controlling_player: Option<PlayerId>,
+        maybe_runway: Option<(RunwayId, &Runway)>,
         actions: &mut Vec<Action>,
     ) {
         // if going faster than 100, slow down
@@ -403,16 +407,17 @@ impl Plane {
             self.client_x.set((self.x / RESOLUTION) as i16);
         }
 
-        if let Some(r) = runway {
-            let runway_x = r.get_start_x();
+        if let Some((runway_id, runway)) = maybe_runway {
+            let runway_x = runway.get_start_x();
             let plane_x = self.get_client_x();
-            let landed = match r.get_facing() {
+            let landed = match runway.get_facing() {
                 Facing::Right => plane_x <= runway_x,
                 Facing::Left => plane_x >= runway_x,
             };
 
             if landed {
-                actions.push(Action::RemoveEntity(RemoveData::Plane(*my_id)));
+                self.set_mode(PlaneMode::Landed);
+                actions.push(Action::LandPlane(controlling_player, runway_id, *my_id));
             }
         }
     }
@@ -783,6 +788,10 @@ impl Plane {
 
     pub fn get_downed_by(&self) -> Option<PlayerId> {
         self.downed_by
+    }
+
+    pub fn get_plane_type(&self) -> PlaneType {
+        *self.plane_type.get()
     }
 }
 

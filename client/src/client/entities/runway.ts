@@ -107,7 +107,12 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
     }
 
     public getStats(): Stats {
-        return {};
+        return {
+            ammo: 0,
+            bombs: 0,
+            fuel: 0,
+            health: this.props.client_health / 255,
+        };
     }
 
     public getCenter(): Point {

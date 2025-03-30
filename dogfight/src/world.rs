@@ -15,7 +15,7 @@ use crate::{
         man::Man,
         plane::Plane,
         player::Player,
-        runway::Runway,
+        runway::{self, Runway},
         types::EntityType,
         water::Water,
         world_info::WorldInfo,
