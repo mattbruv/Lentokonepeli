@@ -1,15 +1,15 @@
-type UpdateFn = (currentTick: number) => void;
+export type AnimationFn = (currentTick: number) => void;
 const noop = () => {};
 
 /**
- * When facing a case where useInterval seems handy, use this GameLoop instead
+ * When facing a case where useInterval or short setTimeout seems handy, use this GameLoop instead
  */
 class GameLoop {
     private currentTick: number = 0;
     private lastTime: number = performance.now();
     private requestId: number | null = null;
     private tickInterval: number = -1;
-    private updateFn: UpdateFn = noop;
+    private updateFn: AnimationFn = noop;
     private animationRunner: AnimationRunner;
 
     constructor(animationRunner: AnimationRunner) {
@@ -26,7 +26,7 @@ class GameLoop {
      * This needs to be called when hosting a game,
      * this should not be called when joining a game
      */
-    public setHostEngineUpdateFn(updateFn: UpdateFn) {
+    public setHostEngineUpdateFn(updateFn: AnimationFn) {
         this.updateFn = updateFn;
         return this;
     }
@@ -36,37 +36,26 @@ class GameLoop {
 
         while (delta >= this.tickInterval) {
             this.currentTick++;
-            delta -= this.tickInterval;
             this.updateFn(this.currentTick);
             this.animationRunner.runAnimations(this.currentTick);
+            delta -= this.tickInterval;
         }
 
         this.lastTime = time - delta;
-
         this.requestId = requestAnimationFrame(this.gameLoop);
     };
 
-    private startLoop() {
+    public start() {
         if (this.requestId) return;
+        this.currentTick = 0;
         this.lastTime = performance.now();
         this.requestId = requestAnimationFrame(this.gameLoop);
     }
 
-    private pauseLoop() {
+    public stop() {
         if (!this.requestId) return;
         cancelAnimationFrame(this.requestId);
         this.requestId = null;
-    }
-
-    public start() {
-        this.currentTick = 0;
-
-        if (this.requestId) return;
-        this.startLoop();
-    }
-
-    public stop() {
-        this.pauseLoop();
     }
 
     public isRunning() {
@@ -75,19 +64,29 @@ class GameLoop {
 }
 
 class AnimationRunner {
-    private animations: Map<UpdateFn, number> = new Map();
-    private nextExecutionTicks: Map<UpdateFn, number> = new Map();
+    private animations: Map<AnimationFn, number> = new Map();
+    private oneTimeAnimations: Map<AnimationFn, number> = new Map();
+    private nextExecutionTicks: Map<AnimationFn, number> = new Map();
+    private oneTimeAnimationQueue: Array<[AnimationFn, number]> = [];
 
     /**
      * @param animation some fn that does animations manually
      * @param tickInterval how many game ticks should be between each animation tick
      */
-    registerAnimation(animation: UpdateFn, tickInterval: number) {
+    registerAnimation(animation: AnimationFn, tickInterval: number) {
         this.animations.set(animation, tickInterval);
     }
 
-    unregisterAnimation(animation: UpdateFn) {
+    /**
+     * Animation that should be run once
+     */
+    scheduleOneTimeAnimation(animation: AnimationFn, ticksUntil: number) {
+        this.oneTimeAnimationQueue.push([animation, ticksUntil]);
+    }
+
+    unregisterAnimation(animation: AnimationFn) {
         this.animations.delete(animation);
+        this.oneTimeAnimations.delete(animation);
     }
 
     runAnimations(currentTick: number) {
@@ -95,6 +94,18 @@ class AnimationRunner {
             if (currentTick >= (this.nextExecutionTicks.get(animate) ?? 0)) {
                 animate(currentTick);
                 this.nextExecutionTicks.set(animate, currentTick + tickInterval);
+            }
+        }
+
+        for (const [animation, ticksUntil] of this.oneTimeAnimationQueue) {
+            this.oneTimeAnimations.set(animation, ticksUntil + currentTick);
+        }
+        this.oneTimeAnimationQueue.length = 0;
+
+        for (const [animate, onTick] of this.oneTimeAnimations.entries()) {
+            if (currentTick >= onTick) {
+                this.oneTimeAnimations.delete(animate);
+                animate(currentTick);
             }
         }
     }

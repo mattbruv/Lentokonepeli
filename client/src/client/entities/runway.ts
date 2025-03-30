@@ -1,13 +1,13 @@
-import { Entity, EntityUpdateCallbacks, Followable, Point, RadarEnabled } from "./entity";
-import * as PIXI from "pixi.js";
-import { Textures } from "../textures";
 import { Facing } from "dogfight-types/Facing";
-import { DrawLayer, TeamColor } from "../constants";
 import { RunwayProperties } from "dogfight-types/RunwayProperties";
+import { Team } from "dogfight-types/Team";
+import * as PIXI from "pixi.js";
+import { Blinker } from "../Blinker";
+import { DrawLayer, TeamColor } from "../constants";
 import { Stats } from "../hud";
 import { RadarObject, RadarObjectType } from "../radar";
-import { Team } from "dogfight-types/Team";
-import { soundManager } from "../soundManager";
+import { Textures } from "../textures";
+import { Entity, EntityUpdateCallbacks, Followable, Point, RadarEnabled } from "./entity";
 
 export class Runway implements Entity<RunwayProperties>, Followable, RadarEnabled {
     public props: Required<RunwayProperties> = {
@@ -26,31 +26,7 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
     private runwayBack: PIXI.Sprite;
     private healthBar: PIXI.Graphics;
 
-    private blinking = false;
     private lastHealth = 0;
-
-    static getHealthBarMatrix = (): PIXI.ColorMatrix => [
-        1,
-        0,
-        0,
-        0,
-        255, // Red
-        0,
-        1,
-        0,
-        0,
-        255, // Green
-        0,
-        0,
-        1,
-        0,
-        255, // Blue
-        0,
-        0,
-        0,
-        1,
-        0, // Alpha
-    ];
 
     public updateCallbacks: EntityUpdateCallbacks<RunwayProperties> = {
         client_x: () => {
@@ -63,26 +39,8 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
             this.updateTexture();
             this.drawHealthBar();
 
-            if (this.props.client_health < this.lastHealth && !this.blinking) {
-                // blink
-                const filter = new PIXI.ColorMatrixFilter();
-                filter.matrix = Runway.getHealthBarMatrix();
-                this.runwayBack.filters = [filter];
-                this.runwaySprite.filters = [filter];
-                this.blinking = true;
-
-                // play blink sound
-                soundManager.playSound(
-                    new Howl({
-                        src: "audio/hit.mp3",
-                    }),
-                );
-
-                window.setTimeout(() => {
-                    this.blinking = false;
-                    this.runwayBack.filters = null;
-                    this.runwaySprite.filters = null;
-                }, 100);
+            if (this.props.client_health < this.lastHealth) {
+                this.blinker.tryBlink();
             }
 
             this.lastHealth = this.props.client_health;
@@ -101,6 +59,7 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
         },
         team: () => {},
     };
+    blinker: Blinker;
 
     constructor() {
         this.userTeam = "Allies";
@@ -120,6 +79,8 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
         this.frontContainer.addChild(this.runwaySprite);
         this.frontContainer.addChild(this.healthBar);
         this.frontContainer.zIndex = DrawLayer.Runway;
+
+        this.blinker = new Blinker([this.runwayBack, this.runwaySprite]);
     }
 
     public setUserTeam(userTeam: Team): void {

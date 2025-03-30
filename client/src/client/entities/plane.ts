@@ -2,7 +2,7 @@ import { PlaneProperties } from "dogfight-types/PlaneProperties";
 import { PlaneType } from "dogfight-types/PlaneType";
 import { Team } from "dogfight-types/Team";
 import * as PIXI from "pixi.js";
-import { animationRunner } from "../../gameLoop";
+import { AnimationFn, animationRunner } from "../../gameLoop";
 import { DrawLayer, TeamColor } from "../constants";
 import { directionToRadians } from "../helpers";
 import { Stats } from "../hud";
@@ -11,18 +11,14 @@ import { soundManager } from "../soundManager";
 import { Textures } from "../textures";
 import { Entity, EntityUpdateCallbacks, Followable, Point, RadarEnabled } from "./entity";
 
-const PLANE_TEXTURE_ID: Record<PlaneType, number> = {
+const PLANE_TEXTURE_ID = {
     Albatros: 4,
     Junkers: 5,
     Fokker: 6,
     Bristol: 7,
     Salmson: 8,
     Sopwith: 9,
-};
-
-const GRAY_SMOKE_LIFETIME_MS = 300;
-
-const BLACK_SMOKE_LIFETIME_MS = 300;
+} as const satisfies Record<PlaneType, number>;
 
 export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled {
     private container: PIXI.Container;
@@ -30,10 +26,9 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
     private nameText: PIXI.Text;
     private planeSprite: PIXI.Sprite;
     private first_flip: boolean = true;
-    private frame = 0;
-    private dark_smoke_timeout: number;
     private darkSmoke: PIXI.Container;
     private angle: number = 0;
+    private flipFrame: 0 | 1 | 2 | 3 = 0;
 
     public props: Required<PlaneProperties> = {
         team: "Allies",
@@ -50,9 +45,8 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         client_health: 0,
     };
 
-    private animate = () => {
-        if (!this.props.motor_on || this.props.mode !== "Flying") return;
-
+    private createGraySmoke: AnimationFn = () => {
+        console.log("gray");
         const tex = this.getTexture();
         const w = tex.width;
         const h = tex.height;
@@ -69,9 +63,43 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         smoke.position.set(k, m);
         this.container.addChild(smoke);
 
-        window.setTimeout(() => {
-            this.container.removeChild(smoke);
-        }, GRAY_SMOKE_LIFETIME_MS);
+        animationRunner.scheduleOneTimeAnimation(() => this.container.removeChild(smoke), 30);
+    };
+
+    private createDarkSmoke: AnimationFn = () => {
+        console.log("dark");
+        const percentage = this.props.client_health / 255;
+
+        let ticksUntilNext = 30;
+
+        if (percentage > 0.9) {
+            animationRunner.scheduleOneTimeAnimation(this.createDarkSmoke, ticksUntilNext);
+            return;
+        }
+
+        const smokeTex = Textures["smoke2.gif"];
+        const smoke = new PIXI.Sprite(smokeTex);
+        const smokePos = this.getSmokePosition(true);
+
+        smoke.anchor.set(0.5);
+        smoke.position.set(smokePos.x, smokePos.y);
+
+        this.darkSmoke.addChild(smoke);
+
+        if (percentage <= 0.66) {
+            ticksUntilNext = 20;
+        }
+        if (percentage <= 0.33) {
+            ticksUntilNext = 10;
+        }
+
+        animationRunner.scheduleOneTimeAnimation(() => this.darkSmoke.removeChild(smoke), 30);
+        animationRunner.scheduleOneTimeAnimation(this.createDarkSmoke, ticksUntilNext);
+    };
+
+    private animate: AnimationFn = (currentTick: number) => {
+        if (!this.props.motor_on || this.props.mode !== "Flying") return;
+        return this.createGraySmoke(currentTick);
     };
 
     constructor() {
@@ -99,43 +127,8 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
 
         this.container.zIndex = DrawLayer.Plane;
 
-        this.dark_smoke_timeout = window.setTimeout(() => {
-            this.createDarkSmoke();
-        });
-
         animationRunner.registerAnimation(this.animate, 10);
-    }
-
-    private createDarkSmoke(): void {
-        const percentage = this.props.client_health / 255;
-
-        let smokeFrequency = 300;
-
-        if (percentage < 0.9) {
-            const smokeTex = Textures["smoke2.gif"];
-            const smoke = new PIXI.Sprite(smokeTex);
-            const smokePos = this.getSmokePosition(true);
-
-            smoke.anchor.set(0.5);
-            smoke.position.set(smokePos.x, smokePos.y);
-
-            this.darkSmoke.addChild(smoke);
-
-            if (percentage <= 0.66) {
-                smokeFrequency = 200;
-            }
-            if (percentage <= 0.33) {
-                smokeFrequency = 100;
-            }
-
-            window.setTimeout(() => {
-                this.darkSmoke.removeChild(smoke);
-            }, BLACK_SMOKE_LIFETIME_MS);
-        }
-
-        this.dark_smoke_timeout = window.setTimeout((): void => {
-            this.createDarkSmoke();
-        }, smokeFrequency);
+        animationRunner.scheduleOneTimeAnimation(this.createDarkSmoke, 30);
     }
 
     private getSmokePosition(center: boolean): { x: number; y: number } {
@@ -181,27 +174,28 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
 
     private getTexture() {
         const id = PLANE_TEXTURE_ID[this.props.plane_type];
-        const flip = this.frame > 0 ? `_flip${this.frame}` : "";
-        const key = `plane${id}${flip}.gif`;
-        return Textures[key as keyof typeof Textures];
+        return Textures[`plane${id}.gif`];
     }
 
-    private renderFrame() {
-        this.frame++;
-
-        if (this.frame > 2) {
-            this.frame = 0;
-        }
-
-        const texture = this.getTexture();
-        this.planeSprite.texture = texture;
-
-        if (this.frame !== 0) {
-            window.setTimeout(() => {
-                this.renderFrame();
-            }, 80);
-        }
+    private getFlipTexture(flipFrame: typeof this.flipFrame) {
+        if (flipFrame === 0 || flipFrame === 3) return this.getTexture();
+        const id = PLANE_TEXTURE_ID[this.props.plane_type];
+        const key = `plane${id}_flip${flipFrame}.gif` as const;
+        return Textures[key];
     }
+
+    private renderFlip: AnimationFn = () => {
+        const flipFrame = this.flipFrame;
+        this.planeSprite.texture = this.getFlipTexture(flipFrame);
+
+        if (flipFrame === 3) {
+            this.flipFrame = 0;
+            return;
+        }
+
+        this.flipFrame++;
+        animationRunner.scheduleOneTimeAnimation(this.renderFlip, 7);
+    };
 
     public updateCallbacks: EntityUpdateCallbacks<PlaneProperties> = {
         client_x: () => {
@@ -220,19 +214,14 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         },
 
         flipped: () => {
-            let do_flip = false;
+            this.planeSprite.scale.y = this.props.flipped ? -1 : 1;
             if (this.first_flip) {
                 this.first_flip = false;
-            } else {
-                do_flip = true;
+                return;
             }
-
-            this.planeSprite.scale.y = this.props.flipped ? -1 : 1;
-
-            if (do_flip) {
-                this.frame = 0;
-                this.renderFrame();
-            }
+            animationRunner.unregisterAnimation(this.renderFlip);
+            this.flipFrame = 0;
+            this.renderFlip(0);
         },
 
         mode: () => {
@@ -256,7 +245,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
 
     public destroy() {
         animationRunner.unregisterAnimation(this.animate);
-        window.clearTimeout(this.dark_smoke_timeout);
+        animationRunner.unregisterAnimation(this.createDarkSmoke);
         if (this.props.motor_on) soundManager.handlePlayMotorSound(false);
     }
 
