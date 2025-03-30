@@ -3,6 +3,7 @@ import { EntityType } from "dogfight-types/EntityType";
 import { Viewport } from "pixi-viewport";
 import * as PIXI from "pixi.js";
 import { SKY_COLOR, VIEW_HEIGHT, VIEW_WIDTH } from "./constants";
+import { Entity } from "./entities/entity";
 
 export class RenderClient {
     // https://pixijs.download/v7.x/docs/index.html
@@ -21,10 +22,12 @@ export class RenderClient {
         background,
         containers,
         hud,
+        enableMouseDragging,
     }: {
         hud: PIXI.Container | null;
         background: PIXI.TilingSprite;
         containers: PIXI.DisplayObject[];
+        enableMouseDragging?: boolean;
     }) {
         this.app = new PIXI.Application<HTMLCanvasElement>({
             antialias: false,
@@ -49,12 +52,17 @@ export class RenderClient {
             this.app.stage.addChild(hud);
         }
 
-        this.app.stage.addChild(...containers);
+        if (containers.length) {
+            this.app.stage.addChild(...containers);
+        }
 
         this.viewport.sortableChildren = true;
 
-        if (import.meta.env.DEV) {
+        if (enableMouseDragging || import.meta.env.DEV) {
             this.viewport.drag().pinch().wheel().decelerate();
+        }
+
+        if (import.meta.env.DEV) {
             this.app.stage.addChild(this.debugPointer);
             this.app.stage.addChild(this.debugCoords);
             this.viewport.addChild(this.debugCollision);
@@ -74,6 +82,18 @@ export class RenderClient {
                 this.viewport.addChild(this.debug);
             }, 100);
         }
+    }
+
+    public addEntity(entity: Entity<unknown>) {
+        const container = entity.getContainer();
+        const containers = Array.isArray(container) ? container : [container];
+        this.viewport.addChild(...containers);
+    }
+
+    public removeEntity(entity: Entity<unknown>) {
+        const container = entity.getContainer();
+        const containers = Array.isArray(container) ? container : [container];
+        this.viewport.removeChild(...containers);
     }
 
     private positionRelativeGameObjects(x: number, y: number) {

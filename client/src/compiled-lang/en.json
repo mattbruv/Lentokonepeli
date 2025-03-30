@@ -107,6 +107,12 @@
       "value": "Join a Game"
     }
   ],
+  "HUQWTK": [
+    {
+      "type": 0,
+      "value": "Supported pieces"
+    }
+  ],
   "INGml3": [
     {
       "type": 0,
@@ -263,6 +269,12 @@
       "value": "Bomb"
     }
   ],
+  "fhbvwH": [
+    {
+      "type": 0,
+      "value": "The level editor system is currently highly experimental, lacking many relevant features, and still in active development. You may experience problems until the replay feature is in a stable state."
+    }
+  ],
   "gAAkRv": [
     {
       "type": 0,
@@ -357,6 +369,12 @@
     {
       "type": 0,
       "value": "Chat Team"
+    }
+  ],
+  "tOuqsq": [
+    {
+      "type": 0,
+      "value": "Level Editor Notice"
     }
   ],
   "twmPPM": [

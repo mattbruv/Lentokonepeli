@@ -71,6 +71,10 @@
     "defaultMessage": "Join a Game",
     "description": "Title for part for joining the game"
   },
+  "HUQWTK": {
+    "defaultMessage": "Supported pieces",
+    "description": "supported pieces to be used in level editor"
+  },
   "INGml3": {
     "defaultMessage": "Enter the 4 digit game code...",
     "description": "Infotext for input which is used to insert 4 digit game code to join games"
@@ -175,6 +179,10 @@
     "defaultMessage": "Bomb",
     "description": "Title for the 'Bomb' action shown on the keybind settings section"
   },
+  "fhbvwH": {
+    "defaultMessage": "The level editor system is currently highly experimental, lacking many relevant features, and still in active development. You may experience problems until the replay feature is in a stable state.",
+    "description": "Informative text about the current state of the replay system"
+  },
   "gAAkRv": {
     "defaultMessage": "Name should be between 3 and 20 characters",
     "description": "Label explaining username constraints"
@@ -238,6 +246,10 @@
   "tN8/0L": {
     "defaultMessage": "Chat Team",
     "description": "Title for the 'Chat Team' action shown on the keybind settings section"
+  },
+  "tOuqsq": {
+    "defaultMessage": "Level Editor Notice",
+    "description": "title for a notice section for the Level Editor System"
   },
   "twmPPM": {
     "defaultMessage": "Toggle Dark Mode",

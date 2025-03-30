@@ -71,6 +71,10 @@
     "defaultMessage": "Liity peliin",
     "description": "Title for part for joining the game"
   },
+  "HUQWTK": {
+    "defaultMessage": "Tuetut rakennuspalikat",
+    "description": "supported pieces to be used in level editor"
+  },
   "INGml3": {
     "defaultMessage": "Syötä 4 merkkiä sisältävä pelikoodi...",
     "description": "Infotext for input which is used to insert 4 digit game code to join games"
@@ -175,6 +179,10 @@
     "defaultMessage": "Pommita",
     "description": "Title for the 'Bomb' action shown on the keybind settings section"
   },
+  "fhbvwH": {
+    "defaultMessage": "Kenttäeditori on toistaiseksi erittäin kokeellinen, ja siitä puuttuu monia oleellisia ominaisuuksia. Kenttäeditorin käyttäminen voi nykyisessä tilassaan olla työlästä sekä hankalaa.",
+    "description": "Informative text about the current state of the replay system"
+  },
   "gAAkRv": {
     "defaultMessage": "Nimen tulee olla vähintään 3 ja enintään 20 merkkiä",
     "description": "Label explaining username constraints"
@@ -238,6 +246,10 @@
   "tN8/0L": {
     "defaultMessage": "Viestitä tiimille",
     "description": "Title for the 'Chat Team' action shown on the keybind settings section"
+  },
+  "tOuqsq": {
+    "defaultMessage": "Kenttäeditorin huomautus",
+    "description": "title for a notice section for the Level Editor System"
   },
   "twmPPM": {
     "defaultMessage": "Vaihda tumma teema",

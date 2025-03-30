@@ -1,7 +1,6 @@
 import { ChatMessage } from "dogfight-types/ChatMessage";
 import { EntityChange } from "dogfight-types/EntityChange";
 import { EntityProperties } from "dogfight-types/EntityProperties";
-import { EntityType } from "dogfight-types/EntityType";
 import { PlaneType } from "dogfight-types/PlaneType";
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 import { PlayerProperties } from "dogfight-types/PlayerProperties";
@@ -9,9 +8,9 @@ import { ServerOutput } from "dogfight-types/ServerOutput";
 import { Team } from "dogfight-types/Team";
 import * as PIXI from "pixi.js";
 import { IntlShape } from "react-intl";
-import { isFollowable, updateProps } from "./entities/entity";
+import { Entity, isFollowable } from "./entities/entity";
 import { Player } from "./entities/player";
-import { DEFAULT_ENTITIES, entityCollection } from "./EntityManager";
+import { DEFAULT_ENTITIES, deleteEntity, destroyEntities, entityCollection, upsertEntity } from "./EntityManager";
 import { formatName } from "./helpers";
 import { GameHUD } from "./hud";
 import { GameKeyboard } from "./keyboard";
@@ -159,21 +158,11 @@ export class DogfightClient {
         this.centerCamera(0, 0);
     }
 
-    private destroyEntities() {
-        for (const group of Object.values(this.entities)) {
-            for (const [id, entity] of group.collection.entries()) {
-                const container = entity.getContainer();
-                const containers = Array.isArray(container) ? container : [container];
-                this.renderClient.viewport.removeChild(...containers);
-                entity.destroy();
-                group.collection.delete(id);
-            }
-        }
-    }
-
     public destroy() {
         console.log("destroying client...");
-        this.destroyEntities();
+        destroyEntities(this.entities, {
+            onRemove: this.onEntityRemoved.bind(this),
+        });
 
         this.renderClient.app.destroy(true, {
             children: true,
@@ -342,11 +331,16 @@ export class DogfightClient {
 
             switch (update.type) {
                 case "Deleted": {
-                    this.deleteEntity(id, ent_type);
+                    deleteEntity(this.entities, id, ent_type, {
+                        onRemove: this.onEntityRemoved.bind(this),
+                    });
                     break;
                 }
                 case "Properties": {
-                    this.updateEntity(id, update.data);
+                    upsertEntity(this.entities, id, update.data, {
+                        onAdd: this.onEntityAdded.bind(this),
+                        onUpdate: this.onEntityUpdated.bind(this),
+                    });
                 }
             }
         }
@@ -354,67 +348,40 @@ export class DogfightClient {
         this.updateRadar();
     }
 
-    private deleteEntity(id: number, ent_type: EntityType) {
-        const group = this.entities[ent_type];
-        const entity = group.collection.get(id);
-        if (!entity) return;
-        const container = entity.getContainer();
-        const containers = Array.isArray(container) ? container : [container];
-        this.renderClient.viewport.removeChild(...containers);
-        entity.destroy();
-        group.collection.delete(id);
+    private onEntityUpdated(entity: Entity<unknown>, id: number, data?: EntityProperties) {
+        const me = this.getMyPlayer();
+
+        if (me?.props.controlling) {
+            if (id === me.props.controlling.id && data?.type === me.props.controlling.type) {
+                if (isFollowable(entity)) {
+                    const pos = entity.getCenter();
+                    this.renderClient.debugCoords.text = `${pos.x}, ${pos.y}`;
+                    this.centerCamera(pos.x, pos.y);
+                    this.gameHUD.updateStats(entity.getStats());
+                }
+            }
+        }
+
+        if (data?.type === "Player") {
+            this.sendPlayerUpdate = true;
+            const { guid } = data.props;
+
+            if (guid !== undefined && guid === this.myPlayerGuid) {
+                this.myPlayerId = id;
+            }
+
+            if (this.myPlayerId === id) {
+                this.onMyPlayerUpdate(data.props);
+            }
+        }
     }
 
-    private updateEntity(id: number, data: EntityProperties) {
-        const ent_map = this.entities[data.type];
-        if (!ent_map) return;
+    private onEntityAdded(entity: Entity<unknown>) {
+        this.renderClient.addEntity(entity);
+    }
 
-        let entity = ent_map.collection.get(id);
-
-        // If the entity doesn't exist, create a new one
-        // and add it to the stage
-        if (!entity) {
-            entity = ent_map.new_type();
-            if (entity) {
-                // Not sure why Typescript wants to error when I call the set() function here.
-                // It's making the set param a union type for some reason I don't understand
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                ent_map.collection.set(id, entity as any);
-                const container = entity.getContainer();
-                const containers = Array.isArray(container) ? container : [container];
-                this.renderClient.viewport.addChild(...containers);
-            }
-        }
-
-        if (entity) {
-            updateProps(entity, data.props);
-
-            const me = this.getMyPlayer();
-
-            if (me?.props.controlling) {
-                if (id === me.props.controlling.id && data.type === me.props.controlling.type) {
-                    if (isFollowable(entity)) {
-                        const pos = entity.getCenter();
-                        this.renderClient.debugCoords.text = `${pos.x}, ${pos.y}`;
-                        this.centerCamera(pos.x, pos.y);
-                        this.gameHUD.updateStats(entity.getStats());
-                    }
-                }
-            }
-
-            if (data.type === "Player") {
-                this.sendPlayerUpdate = true;
-                const { guid } = data.props;
-
-                if (guid !== undefined && guid === this.myPlayerGuid) {
-                    this.myPlayerId = id;
-                }
-
-                if (this.myPlayerId === id) {
-                    this.onMyPlayerUpdate(data.props);
-                }
-            }
-        }
+    private onEntityRemoved(entity: Entity<unknown>) {
+        this.renderClient.removeEntity(entity);
     }
 
     private getPlayerData(): PlayerProperties[] {
