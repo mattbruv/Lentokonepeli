@@ -1,17 +1,17 @@
-
 use crate::{
     collision::{BoundingBox, SolidEntity},
     entities::{
         bomb::Bomb,
         bullet::Bullet,
-        container::{BombId, BulletId, ExplosionId, ManId, PlaneId, PlayerId},
+        container::{BombId, BulletId, ExplosionId, ManId, PlaneId, PlayerId, RunwayId},
         explosion::Explosion,
         man::Man,
+        plane::PlaneType,
         player::{ControllingEntity, PlayerState},
         types::Team,
     },
     game_event::{KillEvent, KillMethod},
-    input::PlayerKeyboard,
+    input::{PlayerKeyboard, RunwaySelection},
     output::ServerOutput,
     world::World,
 };
@@ -44,6 +44,8 @@ pub enum Action {
     SpawnBullet(Bullet),
     RegisterKill(KillEvent),
     ManShootBullet(ManShootData),
+    LandPlane(Option<PlayerId>, RunwayId, PlaneId),
+    ProcessTakeoff(PlayerId, RunwayId, PlaneType),
 }
 
 impl World {
@@ -68,7 +70,64 @@ impl World {
             Action::SpawnBullet(bullet) => self.spawn_bullet(bullet),
             Action::RegisterKill(kill_event) => self.register_kill(kill_event),
             Action::ManShootBullet(man_id) => self.man_shoot_bullet(man_id),
+            Action::LandPlane(player_id, runway_id, plane_id) => {
+                self.land_plane(player_id, runway_id, plane_id)
+            }
+            Action::ProcessTakeoff(player_id, runway_id, plane_type) => {
+                self.process_takeoff_action(player_id, runway_id, plane_type)
+            }
         }
+    }
+
+    pub fn land_plane(
+        &mut self,
+        player_id: Option<PlayerId>,
+        runway_id: RunwayId,
+        plane_id: PlaneId,
+    ) -> Vec<ServerOutput> {
+        let mut output = vec![];
+
+        if let Some(player) = player_id.and_then(|pid| self.players.get_mut(pid)) {
+            match self.planes.get(plane_id) {
+                Some(plane) => {
+                    player.set_controlling(Some(ControllingEntity::Runway(
+                        runway_id,
+                        plane.get_plane_type(),
+                    )));
+                }
+                None => {
+                    player.set_controlling(None);
+                }
+            };
+        }
+
+        output.extend(self.remove_entity(RemoveData::Plane(plane_id)));
+        output
+    }
+    pub fn process_takeoff_action(
+        &mut self,
+        player_id: PlayerId,
+        runway_id: RunwayId,
+        plane_type: PlaneType,
+    ) -> Vec<ServerOutput> {
+        let output = vec![];
+
+        let maybe_guid = self
+            .players
+            .get(player_id)
+            .and_then(|p| Some(p.get_guid().clone()));
+
+        if let Some(guid) = maybe_guid {
+            self.process_takeoff(
+                &guid,
+                RunwaySelection {
+                    runway_id,
+                    plane_type,
+                },
+            );
+        }
+
+        output
     }
 
     fn remove_entity(&mut self, remove_controlling: RemoveData) -> Vec<ServerOutput> {

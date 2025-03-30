@@ -32,10 +32,10 @@ function createNewPlayer(this: DogfightClient) {
     return new Player((oldControlling, newControlling, props) => {
         if (oldControlling) {
             if (oldControlling.type === "Plane") {
-                this.entities.Plane.collection.get(oldControlling.id)?.setPlayerName(null, null);
+                this.entities.Plane.collection.get(oldControlling.data)?.setPlayerName(null, null);
             }
             if (oldControlling.type === "Man") {
-                this.entities.Man.collection.get(oldControlling.id)?.setPlayerName(null, null);
+                this.entities.Man.collection.get(oldControlling.data)?.setPlayerName(null, null);
             }
         }
 
@@ -45,9 +45,9 @@ function createNewPlayer(this: DogfightClient) {
             const fullName = formatName(name, props.clan ?? null);
 
             if (newControlling.type === "Plane") {
-                this.entities.Plane.collection.get(newControlling.id)?.setPlayerName(fullName, myTeam);
+                this.entities.Plane.collection.get(newControlling.data)?.setPlayerName(fullName, myTeam);
             } else if (newControlling.type === "Man") {
-                this.entities.Man.collection.get(newControlling.id)?.setPlayerName(fullName, myTeam);
+                this.entities.Man.collection.get(newControlling.data)?.setPlayerName(fullName, myTeam);
             }
         }
     });
@@ -194,6 +194,16 @@ export class DogfightClient {
         const myPlayer = this.getMyPlayer();
         if (!myPlayer) return;
 
+        // If we're controlling the runway,
+        // this means we just landed and we want to center on the runway
+        if (props.controlling?.type === "Runway") {
+            const runway = this.entities.Runway.collection.get(props.controlling.data[0]);
+
+            if (runway) {
+                this.followEntity(runway);
+            }
+        }
+
         if (props.team) {
             this.runwaySelector.setTeam(props.team);
 
@@ -210,12 +220,12 @@ export class DogfightClient {
             for (const [_, player] of this.entities.Player.collection) {
                 if (player.props.controlling?.type === "Plane") {
                     this.entities.Plane.collection
-                        .get(player.props.controlling.id)
+                        .get(player.props.controlling.data)
                         ?.setPlayerName(player.props.name, props.team);
                 }
                 if (player.props.controlling?.type === "Man") {
                     this.entities.Man.collection
-                        .get(player.props.controlling.id)
+                        .get(player.props.controlling.data)
                         ?.setPlayerName(player.props.name, props.team);
                 }
             }
@@ -352,13 +362,8 @@ export class DogfightClient {
         const me = this.getMyPlayer();
 
         if (me?.props.controlling) {
-            if (id === me.props.controlling.id && data?.type === me.props.controlling.type) {
-                if (isFollowable(entity)) {
-                    const pos = entity.getCenter();
-                    this.renderClient.debugCoords.text = `${pos.x}, ${pos.y}`;
-                    this.centerCamera(pos.x, pos.y);
-                    this.gameHUD.updateStats(entity.getStats());
-                }
+            if (id === me.props.controlling.data && data?.type === me.props.controlling.type) {
+                this.followEntity(entity);
             }
         }
 
@@ -373,6 +378,15 @@ export class DogfightClient {
             if (this.myPlayerId === id) {
                 this.onMyPlayerUpdate(data.props);
             }
+        }
+    }
+
+    private followEntity(entity: Entity<unknown>) {
+        if (isFollowable(entity)) {
+            const pos = entity.getCenter();
+            this.renderClient.debugCoords.text = `${pos.x}, ${pos.y}`;
+            this.centerCamera(pos.x, pos.y);
+            this.gameHUD.updateStats(entity.getStats());
         }
     }
 

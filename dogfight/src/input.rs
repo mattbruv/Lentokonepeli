@@ -217,38 +217,7 @@ impl World {
                     }
                 }
                 PlayerCommand::PlayerChooseRunway(selection) => {
-                    let maybe_team = self
-                        .get_player_from_guid(&guid)
-                        .and_then(|p| p.1.get_team().clone());
-                    let maybe_pid = self.get_player_from_guid(&guid).and_then(|p| Some(*p.0));
-
-                    if let Some(team) = maybe_team {
-                        if let Some(pid) = maybe_pid {
-                            if let Some(runway) = self.runways.get_mut(selection.runway_id) {
-                                if runway.reserve_for(RunwayReservation::Takeoff) {
-                                    let plane = Plane::new(
-                                        pid,
-                                        team,
-                                        selection.plane_type,
-                                        selection.runway_id,
-                                        runway,
-                                    );
-
-                                    if let Some((plane_id, _)) = self.planes.insert(plane) {
-                                        if let Some((_, player)) =
-                                            self.get_player_from_guid_mut(&guid)
-                                        {
-                                            player.set_keys(PlayerKeyboard::new());
-                                            player.set_state(PlayerState::Playing);
-                                            player.set_controlling(Some(ControllingEntity::Plane(
-                                                plane_id,
-                                            )))
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    self.process_takeoff(&guid, selection);
                 }
                 PlayerCommand::PlayerKeyboard(keys) => {
                     if let Some((_, p)) = self.get_player_from_guid_mut(&guid) {
@@ -269,5 +238,36 @@ impl World {
         }
 
         game_output
+    }
+
+    pub(crate) fn process_takeoff(&mut self, guid: &String, selection: RunwaySelection) {
+        let maybe_team = self
+            .get_player_from_guid(guid)
+            .and_then(|p| p.1.get_team().clone());
+        let maybe_pid = self.get_player_from_guid(guid).and_then(|p| Some(*p.0));
+
+        if let Some(team) = maybe_team {
+            if let Some(pid) = maybe_pid {
+                if let Some(runway) = self.runways.get_mut(selection.runway_id) {
+                    if runway.reserve_for(RunwayReservation::Takeoff) {
+                        let plane = Plane::new(
+                            pid,
+                            team,
+                            selection.plane_type,
+                            selection.runway_id,
+                            runway,
+                        );
+
+                        if let Some((plane_id, _)) = self.planes.insert(plane) {
+                            if let Some((_, player)) = self.get_player_from_guid_mut(guid) {
+                                player.set_keys(PlayerKeyboard::new());
+                                player.set_state(PlayerState::Playing);
+                                player.set_controlling(Some(ControllingEntity::Plane(plane_id)))
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

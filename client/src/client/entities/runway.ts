@@ -1,13 +1,13 @@
-import { Entity, EntityUpdateCallbacks, Followable, Point, RadarEnabled } from "./entity";
-import * as PIXI from "pixi.js";
-import { Textures } from "../textures";
 import { Facing } from "dogfight-types/Facing";
-import { DrawLayer, TeamColor } from "../constants";
 import { RunwayProperties } from "dogfight-types/RunwayProperties";
+import { Team } from "dogfight-types/Team";
+import * as PIXI from "pixi.js";
+import { DrawLayer, TeamColor } from "../constants";
 import { Stats } from "../hud";
 import { RadarObject, RadarObjectType } from "../radar";
-import { Team } from "dogfight-types/Team";
 import { soundManager } from "../soundManager";
+import { Textures } from "../textures";
+import { Entity, EntityUpdateCallbacks, Followable, Point, RadarEnabled } from "./entity";
 
 export class Runway implements Entity<RunwayProperties>, Followable, RadarEnabled {
     public props: Required<RunwayProperties> = {
@@ -146,7 +146,12 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
     }
 
     public getStats(): Stats {
-        return {};
+        return {
+            ammo: 0,
+            bombs: 0,
+            fuel: 0,
+            health: this.props.client_health / 255,
+        };
     }
 
     public getCenter(): Point {
