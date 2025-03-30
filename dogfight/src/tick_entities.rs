@@ -36,14 +36,19 @@ impl World {
     pub fn tick_entities(&mut self) -> Vec<Action> {
         let mut actions = vec![];
 
-        // Tick men
-        // TODO: tick all men, not just men controlled by players
         for (player_id, player) in self.players.get_map_mut() {
             if let Some(controlled) = player.get_controlling() {
                 match controlled {
+                    // Tick men
                     ControllingEntity::Man(man_id) => {
                         if let Some(man) = self.men.get_mut(man_id) {
                             actions.extend(man.tick(*player_id, man_id, player.get_keys()));
+                        }
+                    }
+                    // If the player has landed and is parked, process their takeoff requests
+                    ControllingEntity::Runway(runway_id, plane_type) => {
+                        if player.get_keys().enter {
+                            actions.push(Action::ProcessTakeoff(*player_id, runway_id, plane_type));
                         }
                     }
                     _ => (),

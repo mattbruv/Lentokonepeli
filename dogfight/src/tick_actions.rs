@@ -6,11 +6,12 @@ use crate::{
         container::{BombId, BulletId, ExplosionId, ManId, PlaneId, PlayerId, RunwayId},
         explosion::Explosion,
         man::Man,
+        plane::PlaneType,
         player::{ControllingEntity, PlayerState},
         types::Team,
     },
     game_event::{KillEvent, KillMethod},
-    input::PlayerKeyboard,
+    input::{PlayerKeyboard, RunwaySelection},
     output::ServerOutput,
     world::World,
 };
@@ -44,6 +45,7 @@ pub enum Action {
     RegisterKill(KillEvent),
     ManShootBullet(ManShootData),
     LandPlane(Option<PlayerId>, RunwayId, PlaneId),
+    ProcessTakeoff(PlayerId, RunwayId, PlaneType),
 }
 
 impl World {
@@ -71,6 +73,9 @@ impl World {
             Action::LandPlane(player_id, runway_id, plane_id) => {
                 self.land_plane(player_id, runway_id, plane_id)
             }
+            Action::ProcessTakeoff(player_id, runway_id, plane_type) => {
+                self.process_takeoff_action(player_id, runway_id, plane_type)
+            }
         }
     }
 
@@ -97,6 +102,31 @@ impl World {
         }
 
         output.extend(self.remove_entity(RemoveData::Plane(plane_id)));
+        output
+    }
+    pub fn process_takeoff_action(
+        &mut self,
+        player_id: PlayerId,
+        runway_id: RunwayId,
+        plane_type: PlaneType,
+    ) -> Vec<ServerOutput> {
+        let output = vec![];
+
+        let maybe_guid = self
+            .players
+            .get(player_id)
+            .and_then(|p| Some(p.get_guid().clone()));
+
+        if let Some(guid) = maybe_guid {
+            self.process_takeoff(
+                &guid,
+                RunwaySelection {
+                    runway_id,
+                    plane_type,
+                },
+            );
+        }
+
         output
     }
 
