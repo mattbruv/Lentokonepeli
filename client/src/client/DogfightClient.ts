@@ -194,6 +194,16 @@ export class DogfightClient {
         const myPlayer = this.getMyPlayer();
         if (!myPlayer) return;
 
+        // If we're controlling the runway,
+        // this means we just landed and we want to center on the runway
+        if (props.controlling?.type === "Runway") {
+            const runway = this.entities.Runway.collection.get(props.controlling.data[0]);
+
+            if (runway) {
+                this.followEntity(runway);
+            }
+        }
+
         if (props.team) {
             this.runwaySelector.setTeam(props.team);
 
@@ -353,12 +363,7 @@ export class DogfightClient {
 
         if (me?.props.controlling) {
             if (id === me.props.controlling.data && data?.type === me.props.controlling.type) {
-                if (isFollowable(entity)) {
-                    const pos = entity.getCenter();
-                    this.renderClient.debugCoords.text = `${pos.x}, ${pos.y}`;
-                    this.centerCamera(pos.x, pos.y);
-                    this.gameHUD.updateStats(entity.getStats());
-                }
+                this.followEntity(entity);
             }
         }
 
@@ -373,6 +378,15 @@ export class DogfightClient {
             if (this.myPlayerId === id) {
                 this.onMyPlayerUpdate(data.props);
             }
+        }
+    }
+
+    private followEntity(entity: Entity<unknown>) {
+        if (isFollowable(entity)) {
+            const pos = entity.getCenter();
+            this.renderClient.debugCoords.text = `${pos.x}, ${pos.y}`;
+            this.centerCamera(pos.x, pos.y);
+            this.gameHUD.updateStats(entity.getStats());
         }
     }
 
