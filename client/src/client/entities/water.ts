@@ -102,6 +102,6 @@ export class Water implements Entity<WaterProperties> {
     }
 
     public destroy() {
-        scheduler.unregisterSchedule(this.animate);
+        scheduler.unregister(this.animate);
     }
 }

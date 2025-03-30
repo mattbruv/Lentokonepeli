@@ -84,7 +84,10 @@ class Scheduler {
         this.oneTimeTasksQueue.push([task, ticksUntil]);
     }
 
-    unregisterSchedule(task: TaskFn) {
+    /**
+     * Unregister both recurring or one time tasks from bein run
+     */
+    unregister(task: TaskFn) {
         this.recurringTasks.delete(task);
         this.oneTimeTasks.delete(task);
     }

@@ -102,6 +102,6 @@ export class Bullet implements Entity<BulletProperties> {
 
     public destroy() {
         this.sound.stop();
-        scheduler.unregisterSchedule(this.animate);
+        scheduler.unregister(this.animate);
     }
 }

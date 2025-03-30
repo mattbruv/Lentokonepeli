@@ -119,6 +119,6 @@ export class BackgroundItem implements Entity<BackgroundItemProperties> {
     }
 
     public destroy() {
-        scheduler.unregisterSchedule(this.animate);
+        scheduler.unregister(this.animate);
     }
 }

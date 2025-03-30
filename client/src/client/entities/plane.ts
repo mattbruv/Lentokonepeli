@@ -219,7 +219,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
                 this.first_flip = false;
                 return;
             }
-            scheduler.unregisterSchedule(this.renderFlip);
+            scheduler.unregister(this.renderFlip);
             this.flipFrame = 0;
             this.renderFlip(0);
         },
@@ -244,8 +244,8 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
     };
 
     public destroy() {
-        scheduler.unregisterSchedule(this.animate);
-        scheduler.unregisterSchedule(this.createDarkSmoke);
+        scheduler.unregister(this.animate);
+        scheduler.unregister(this.createDarkSmoke);
         if (this.props.motor_on) soundManager.handlePlayMotorSound(false);
     }
 

@@ -85,7 +85,7 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
     }
 
     public destroy() {
-        scheduler.unregisterSchedule(this.animate);
+        scheduler.unregister(this.animate);
     }
 
     private updateX(): void {
