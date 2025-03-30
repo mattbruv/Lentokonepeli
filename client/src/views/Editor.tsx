@@ -24,7 +24,7 @@ export const Editor = () => {
     const [world, setWorld] = useState(LevelEditor.initialWorldString(settings));
     const [rawInput, setRawInput] = useState(LevelEditor.initialWorldString(settings));
 
-    const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+    const debounceTimeout = useRef<number | null>(null);
 
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newRawInput = event.target.value;
@@ -32,7 +32,7 @@ export const Editor = () => {
 
         if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
 
-        debounceTimeout.current = setTimeout(() => {
+        debounceTimeout.current = window.setTimeout(() => {
             const sanitized = LevelEditor.sanitizeWorldString(newRawInput);
             setWorld(sanitized);
         }, 300);
