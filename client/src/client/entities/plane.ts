@@ -1,14 +1,15 @@
-import { Entity, EntityUpdateCallbacks, Followable, Point, RadarEnabled } from "./entity";
-import * as PIXI from "pixi.js";
 import { PlaneProperties } from "dogfight-types/PlaneProperties";
 import { PlaneType } from "dogfight-types/PlaneType";
-import { Textures } from "../textures";
-import { directionToRadians } from "../helpers";
+import { Team } from "dogfight-types/Team";
+import * as PIXI from "pixi.js";
+import { animationRunner } from "../../gameLoop";
 import { DrawLayer, TeamColor } from "../constants";
+import { directionToRadians } from "../helpers";
 import { Stats } from "../hud";
 import { RadarObject, RadarObjectType } from "../radar";
-import { Team } from "dogfight-types/Team";
 import { soundManager } from "../soundManager";
+import { Textures } from "../textures";
+import { Entity, EntityUpdateCallbacks, Followable, Point, RadarEnabled } from "./entity";
 
 const PLANE_TEXTURE_ID: Record<PlaneType, number> = {
     Albatros: 4,
@@ -19,7 +20,6 @@ const PLANE_TEXTURE_ID: Record<PlaneType, number> = {
     Sopwith: 9,
 };
 
-const GRAY_SMOKE_INTERVAL_MS = 100;
 const GRAY_SMOKE_LIFETIME_MS = 300;
 
 const BLACK_SMOKE_LIFETIME_MS = 300;
@@ -31,7 +31,6 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
     private planeSprite: PIXI.Sprite;
     private first_flip: boolean = true;
     private frame = 0;
-    private animation_gray_smoke: number;
     private dark_smoke_timeout: number;
     private darkSmoke: PIXI.Container;
     private angle: number = 0;
@@ -49,6 +48,30 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         total_bombs: 0,
         client_ammo: 0,
         client_health: 0,
+    };
+
+    private animate = () => {
+        if (!this.props.motor_on || this.props.mode !== "Flying") return;
+
+        const tex = this.getTexture();
+        const w = tex.width;
+        const h = tex.height;
+        const d1 = this.angle;
+
+        const x = this.planeContainer.position.x;
+        const y = this.planeContainer.position.y;
+
+        const k = Math.floor(x - Math.cos(d1) * (w / 2 + 6));
+        const m = Math.floor(y - Math.sin(d1) * (h / 2 + 6));
+
+        const smoke = new PIXI.Sprite(Textures["smoke1.gif"]);
+        smoke.anchor.set(0.5);
+        smoke.position.set(k, m);
+        this.container.addChild(smoke);
+
+        window.setTimeout(() => {
+            this.container.removeChild(smoke);
+        }, GRAY_SMOKE_LIFETIME_MS);
     };
 
     constructor() {
@@ -80,31 +103,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
             this.createDarkSmoke();
         });
 
-        this.animation_gray_smoke = window.setInterval(() => {
-            if (!this.props.motor_on || this.props.mode !== "Flying") return;
-
-            const tex = this.getTexture();
-            const w = tex.width;
-            const h = tex.height;
-            const d1 = this.angle;
-
-            const x = this.planeContainer.position.x;
-            const y = this.planeContainer.position.y;
-            //console.log(this.planeSprite.position)
-
-            const k = Math.floor(x - Math.cos(d1) * (w / 2 + 6));
-            const m = Math.floor(y - Math.sin(d1) * (h / 2 + 6));
-
-            const smoke = new PIXI.Sprite(Textures["smoke1.gif"]);
-            smoke.anchor.set(0.5);
-            smoke.position.set(k, m);
-            //console.log(k, m)
-            this.container.addChild(smoke);
-
-            window.setTimeout(() => {
-                this.container.removeChild(smoke);
-            }, GRAY_SMOKE_LIFETIME_MS);
-        }, GRAY_SMOKE_INTERVAL_MS);
+        animationRunner.registerAnimation(this.animate, 10);
     }
 
     private createDarkSmoke(): void {
@@ -214,9 +213,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         team: () => {},
         client_ammo: () => {},
         client_health: () => {},
-        client_fuel: () => {
-            //console.log("fuel", this.props.client_fuel)
-        },
+        client_fuel: () => {},
 
         total_bombs: () => {
             console.log("Bombs", this.props.total_bombs);
@@ -235,10 +232,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
             if (do_flip) {
                 this.frame = 0;
                 this.renderFrame();
-                //console.log(this.frame)
             }
-
-            //console.log("flipped", this.props.flipped)
         },
 
         mode: () => {
@@ -255,14 +249,13 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         },
 
         direction: () => {
-            // console.log(this.props.direction)
             this.angle = directionToRadians(this.props.direction);
             this.planeSprite.rotation = this.angle;
         },
     };
 
     public destroy() {
-        window.clearInterval(this.animation_gray_smoke);
+        animationRunner.unregisterAnimation(this.animate);
         window.clearTimeout(this.dark_smoke_timeout);
         if (this.props.motor_on) soundManager.handlePlayMotorSound(false);
     }
@@ -277,7 +270,6 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
     }
 
     public setPlayerName(name: string | null, pov_team: Team | null) {
-        // console.log("set player name", name, pov_team)
         if (!name) {
             this.nameText.visible = false;
             return;

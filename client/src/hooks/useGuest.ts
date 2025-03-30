@@ -2,6 +2,7 @@ import { PlayerCommand } from "dogfight-types/PlayerCommand";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import Peer from "peerjs";
 import { useEffect, useRef } from "react";
+import { gameLoop } from "../gameLoop";
 import { useDogfight } from "./useDogfight";
 import { PeerJSPath } from "./useLocalHost";
 
@@ -21,6 +22,7 @@ export function useGuest(myName: string, clan: string) {
 
     function initialize(div: HTMLDivElement) {
         dogfight.initialize(div);
+        gameLoop.start();
     }
 
     function sendChatMessage(message: string, global: boolean) {
@@ -83,6 +85,7 @@ export function useGuest(myName: string, clan: string) {
             console.log("destroy guest");
             peer.current?.removeAllListeners();
             peer.current?.destroy();
+            gameLoop.stop();
         };
     }, []);
 
