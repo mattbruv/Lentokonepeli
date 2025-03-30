@@ -1,8 +1,5 @@
 use crate::{
-    entities::player::ControllingEntity,
-    input::PlayerKeyboard,
-    tick_actions::Action,
-    world::World,
+    entities::player::ControllingEntity, input::PlayerKeyboard, tick_actions::Action, world::World,
 };
 
 /*
@@ -80,17 +77,19 @@ impl World {
                 .players
                 .get_player_controlling(ControllingEntity::Plane(*plane_id));
 
+            let pid = player.as_ref().and_then(|x| Some(*x.0));
+
             let keyboard: Option<&PlayerKeyboard> = match &player {
                 Some((_, p)) => Some(p.get_keys()),
                 None => None,
             };
 
             let runway = match plane.get_runway() {
-                Some(rid) => self.runways.get(rid),
+                Some(rid) => self.runways.get(rid).and_then(|r| Some((rid, r))),
                 None => None,
             };
 
-            actions.extend(plane.tick(plane_id, runway, keyboard));
+            actions.extend(plane.tick(plane_id, pid, runway, keyboard));
         }
 
         actions

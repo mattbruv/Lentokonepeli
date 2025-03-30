@@ -1,10 +1,9 @@
-
 use crate::{
     collision::{BoundingBox, SolidEntity},
     entities::{
         bomb::Bomb,
         bullet::Bullet,
-        container::{BombId, BulletId, ExplosionId, ManId, PlaneId, PlayerId},
+        container::{BombId, BulletId, ExplosionId, ManId, PlaneId, PlayerId, RunwayId},
         explosion::Explosion,
         man::Man,
         player::{ControllingEntity, PlayerState},
@@ -44,6 +43,7 @@ pub enum Action {
     SpawnBullet(Bullet),
     RegisterKill(KillEvent),
     ManShootBullet(ManShootData),
+    LandPlane(Option<PlayerId>, RunwayId, PlaneId),
 }
 
 impl World {
@@ -68,7 +68,36 @@ impl World {
             Action::SpawnBullet(bullet) => self.spawn_bullet(bullet),
             Action::RegisterKill(kill_event) => self.register_kill(kill_event),
             Action::ManShootBullet(man_id) => self.man_shoot_bullet(man_id),
+            Action::LandPlane(player_id, runway_id, plane_id) => {
+                self.land_plane(player_id, runway_id, plane_id)
+            }
         }
+    }
+
+    pub fn land_plane(
+        &mut self,
+        player_id: Option<PlayerId>,
+        runway_id: RunwayId,
+        plane_id: PlaneId,
+    ) -> Vec<ServerOutput> {
+        let mut output = vec![];
+
+        if let Some(player) = player_id.and_then(|pid| self.players.get_mut(pid)) {
+            match self.planes.get(plane_id) {
+                Some(plane) => {
+                    player.set_controlling(Some(ControllingEntity::Runway(
+                        runway_id,
+                        plane.get_plane_type(),
+                    )));
+                }
+                None => {
+                    player.set_controlling(None);
+                }
+            };
+        }
+
+        output.extend(self.remove_entity(RemoveData::Plane(plane_id)));
+        output
     }
 
     fn remove_entity(&mut self, remove_controlling: RemoveData) -> Vec<ServerOutput> {
