@@ -81,7 +81,7 @@ export function deleteEntity<TYPE extends EntityType, ENTRIES extends EntityEntr
     const entity = group.collection.get(id);
     if (!entity) return;
 
-    console.log("del");
+    //console.log("del");
     onRemove?.(entity, id, undefined);
     entity.destroy();
     group.collection.delete(id);
@@ -127,7 +127,7 @@ export function addOrGetEntity<TYPE extends EntityType, ENTRIES extends EntityEn
         return entity;
     }
 
-    console.log("add");
+    //console.log("add");
     const newEnt = group.new_type();
     group.collection.set(id, newEnt);
 
