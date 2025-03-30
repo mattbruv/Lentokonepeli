@@ -46,7 +46,6 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
     };
 
     private createGraySmoke: TaskFn = () => {
-        console.log("gray");
         const tex = this.getTexture();
         const w = tex.width;
         const h = tex.height;
@@ -67,7 +66,6 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
     };
 
     private createDarkSmoke: TaskFn = () => {
-        console.log("dark");
         const percentage = this.props.client_health / 255;
 
         let ticksUntilNext = 30;
