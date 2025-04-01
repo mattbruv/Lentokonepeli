@@ -1,5 +1,6 @@
 import { PlaneType } from "dogfight-types/PlaneType";
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
+import { RunwaySelection } from "dogfight-types/RunwaySelection";
 import { Team } from "dogfight-types/Team";
 import * as PIXI from "pixi.js";
 import { IntlShape } from "react-intl";
@@ -30,7 +31,9 @@ export class RunwaySelector {
     public planeMap: PlaneMap;
     private team: Team = "Centrals";
     private index = 0;
-    private runwayIndex = 0;
+    private selectedRunwayId = 0;
+
+    private selection: RunwaySelection | null = null;
 
     callbacks?: GameClientCallbacks;
 
@@ -126,6 +129,17 @@ export class RunwaySelector {
         this.updatePlaneInfo();
     }
 
+    setSelection(selection: RunwaySelection | null, runways: EntityGroup<Runway>) {
+        if (this.selection !== null) return;
+        this.selection = selection;
+        this.selectedRunwayId = this.getMyRunways(runways).findIndex((r) => r.id === selection?.runway_id);
+        this.index = this.planeMap[this.team].findIndex((p) => p.plane_type === selection?.plane_type);
+
+        // Why does findIndex return -1? What year is this, 1980?
+        if (this.selectedRunwayId < 0) this.selectedRunwayId = 0;
+        if (this.index < 0) this.index = 0;
+    }
+
     private updatePlaneInfo() {
         const map = this.planeMap[this.team];
         this.planeImage.texture = map[this.index].texture;
@@ -135,10 +149,11 @@ export class RunwaySelector {
     }
 
     processKeys(
+        type: "up" | "down",
         keys: PlayerKeyboard,
         runways: EntityGroup<Runway>,
         centerCamera: (runwayPos: Point) => void,
-        selectRunway: (runwayId: number, plane: PlaneType) => void,
+        selectRunway: (runwayId: number, plane: PlaneType, do_takeoff: boolean) => void,
     ) {
         const map = this.planeMap[this.team];
 
@@ -155,35 +170,36 @@ export class RunwaySelector {
         const myRunways = this.getMyRunways(runways);
 
         if (keys.left) {
-            this.runwayIndex = this.runwayIndex - 1 < 0 ? myRunways.length - 1 : this.runwayIndex - 1;
+            this.selectedRunwayId = this.selectedRunwayId - 1 < 0 ? myRunways.length - 1 : this.selectedRunwayId - 1;
         }
 
         if (keys.right) {
-            this.runwayIndex = this.runwayIndex + 1 >= myRunways.length ? 0 : this.runwayIndex + 1;
+            this.selectedRunwayId = this.selectedRunwayId + 1 >= myRunways.length ? 0 : this.selectedRunwayId + 1;
         }
 
         this.selectRunway(runways, centerCamera);
 
-        if (keys.enter) {
-            const planeType = map[this.index].plane_type;
-            const runwayId = myRunways[this.runwayIndex][0];
-            selectRunway(runwayId, planeType);
-        }
+        const planeType = map[this.index].plane_type;
+        const runwayId = myRunways[this.selectedRunwayId].id;
+        const doTakeoff = keys.enter;
+        if (type === "down") selectRunway(runwayId, planeType, doTakeoff);
+        if (doTakeoff) this.selection = null;
     }
 
     public selectRunway(runways: EntityGroup<Runway>, centerCamera: (runwayPos: Point) => void) {
         const myRunways = this.getMyRunways(runways);
-        const pos = myRunways[this.runwayIndex][1].getCenter();
+        const pos = myRunways[this.selectedRunwayId].runway.getCenter();
         pos.y -= 130;
         centerCamera(pos);
     }
 
-    private getMyRunways(runways: EntityGroup<Runway>): [number, Runway][] {
+    private getMyRunways(runways: EntityGroup<Runway>): { id: number; runway: Runway }[] {
         return [...runways.collection.entries()]
             .filter(
                 ([_, runway]) => runway.props.team === this.team,
                 // TODO: health
             )
-            .sort((a, b) => (a[1].props.client_x ?? 0) - (b[1].props.client_x ?? 0));
+            .sort((a, b) => (a[1].props.client_x ?? 0) - (b[1].props.client_x ?? 0))
+            .map((r) => ({ id: r[0], runway: r[1] }));
     }
 }

@@ -50,9 +50,9 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
                     data: { team },
                 });
             },
-            chooseRunway: (runwayId: number, planeType: PlaneType): void => {
+            chooseRunway: (runwayId: number, planeType: PlaneType, doTakeoff): void => {
                 handleClientCommand({
-                    type: "PlayerChooseRunway",
+                    type: doTakeoff ? "PlayerChooseRunway" : "PlayerSelectRunway",
                     data: {
                         plane_type: planeType,
                         runway_id: runwayId,

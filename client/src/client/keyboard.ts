@@ -1,6 +1,6 @@
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 
-type keyboardChangeCallback = (keyboard: PlayerKeyboard) => void;
+type keyboardChangeCallback = (keyboard: PlayerKeyboard, type: "up" | "down") => void;
 export class GameKeyboard {
     private keyboard: PlayerKeyboard = {
         left: false,
@@ -27,6 +27,6 @@ export class GameKeyboard {
 
         this.keyboard[action] = nextPressed;
 
-        this.callback?.(structuredClone(this.keyboard));
+        this.callback?.(structuredClone(this.keyboard), type);
     }
 }

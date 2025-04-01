@@ -22,7 +22,7 @@ import { Textures } from "./textures";
 
 export type GameClientCallbacks = {
     chooseTeam: (team: Team | null) => void;
-    chooseRunway: (runwayId: number, planeType: PlaneType) => void;
+    chooseRunway: (runwayId: number, planeType: PlaneType, doTakeoff: boolean) => void;
     keyChange: (keyboard: PlayerKeyboard) => void;
     onPlayerChange: (playerData: PlayerProperties[]) => void;
     onMessage: (message: ChatMessage) => void;
@@ -87,7 +87,7 @@ export class DogfightClient {
 
     // Handle key events and dispatch the proper callback calls
     // based on our current player's state
-    private onKeyChange(keys: PlayerKeyboard) {
+    private onKeyChange(keys: PlayerKeyboard, type: "up" | "down") {
         const myPlayer = this.getMyPlayer();
         if (!myPlayer) return;
         switch (myPlayer.props.state) {
@@ -98,13 +98,14 @@ export class DogfightClient {
             case "ChoosingRunway": {
                 if (myPlayer.props.team) {
                     this.runwaySelector.processKeys(
+                        type,
                         keys,
                         this.entities.Runway,
                         (runwayPos) => {
                             this.centerCamera(runwayPos.x, runwayPos.y);
                         },
-                        (runwayId, planeType) => {
-                            this.callbacks?.chooseRunway(runwayId, planeType);
+                        (runwayId, planeType, doTakeoff) => {
+                            this.callbacks?.chooseRunway(runwayId, planeType, doTakeoff);
                         },
                     );
                 }
@@ -119,7 +120,7 @@ export class DogfightClient {
         this.callbacks = callbacks;
         this.teamChooser.init(this.callbacks);
         this.runwaySelector.init(this.callbacks, intl);
-        this.keyboard.init((keyboard) => this.onKeyChange(keyboard));
+        this.keyboard.init((keyboard, type) => this.onKeyChange(keyboard, type));
         this.gameHUD.init();
         this.killFeed.init();
 
@@ -202,6 +203,10 @@ export class DogfightClient {
             if (runway) {
                 this.followEntity(runway);
             }
+        }
+
+        if (props.runway_selection !== undefined) {
+            this.runwaySelector.setSelection(props.runway_selection, this.entities.Runway);
         }
 
         if (props.team) {
