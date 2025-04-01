@@ -470,6 +470,11 @@ impl NetworkedBytes for PlayerCommand {
                 bytes.extend(msg.to_bytes());
                 bytes.extend(is_global.to_bytes());
             }
+            PlayerCommand::PlayerSelectRunway(runway_selection) => {
+                bytes.push(6);
+                bytes.extend(runway_selection.runway_id.to_bytes());
+                bytes.extend(runway_selection.plane_type.to_bytes());
+            }
         };
 
         bytes
@@ -491,14 +496,9 @@ impl NetworkedBytes for PlayerCommand {
                 PlayerCommand::PlayerChooseTeam(TeamSelection { team })
             }
             3 => {
-                let (slice, runway_id) = RunwayId::from_bytes(bytes)?;
+                let (slice, runway_selection) = RunwaySelection::from_bytes(bytes)?;
                 bytes = slice;
-                let (slice, plane_type) = PlaneType::from_bytes(bytes)?;
-                bytes = slice;
-                PlayerCommand::PlayerChooseRunway(RunwaySelection {
-                    runway_id,
-                    plane_type,
-                })
+                PlayerCommand::PlayerChooseRunway(runway_selection)
             }
             4 => {
                 let (slice, player_data) = AddPlayerData::from_bytes(bytes)?;
@@ -510,6 +510,11 @@ impl NetworkedBytes for PlayerCommand {
                 let (slice, is_global) = bool::from_bytes(slice)?;
                 bytes = slice;
                 PlayerCommand::SendMessage(msg, is_global)
+            }
+            6 => {
+                let (slice, runway_selection) = RunwaySelection::from_bytes(bytes)?;
+                bytes = slice;
+                PlayerCommand::PlayerSelectRunway(runway_selection)
             }
             _ => panic!("Unknown command type"),
         };

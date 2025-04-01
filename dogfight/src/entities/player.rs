@@ -1,5 +1,5 @@
 use crate::{
-    input::PlayerKeyboard,
+    input::{PlayerKeyboard, RunwaySelection},
     network::{property::*, EntityProperties, NetworkedEntity},
 };
 use dogfight_macros::{EnumBytes, Networked};
@@ -7,6 +7,7 @@ use dogfight_macros::{EnumBytes, Networked};
 use super::{
     container::{ManId, PlaneId, RunwayId},
     plane::PlaneType,
+    runway::Runway,
     types::Team,
 };
 
@@ -92,6 +93,9 @@ pub struct Player {
     kills: Property<i16>,
     deaths: Property<u16>,
     score: Property<i16>,
+
+    #[rustfmt::skip]
+    runway_selection: Property<Option::<RunwaySelection>>,
 }
 
 impl Player {
@@ -110,6 +114,7 @@ impl Player {
             kills: Property::new(0),
             deaths: Property::new(0),
             score: Property::new(0),
+            runway_selection: Property::new(None),
         }
     }
 
@@ -183,5 +188,9 @@ impl Player {
 
     pub(crate) fn set_clan(&mut self, clan: String) -> () {
         self.clan.set(Some(clan));
+    }
+
+    pub fn set_runway_selection(&mut self, selection: Option<RunwaySelection>) -> () {
+        self.runway_selection.set(selection);
     }
 }

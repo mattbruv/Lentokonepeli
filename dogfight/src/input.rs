@@ -2,11 +2,12 @@ use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 use crate::{
+    debug::log,
     entities::{
         container::RunwayId,
         plane::{Plane, PlaneType},
         player::{ControllingEntity, Player, PlayerState},
-        runway::RunwayReservation,
+        runway::{self, RunwayReservation},
         types::Team,
     },
     game_event::ChatMessage,
@@ -32,7 +33,8 @@ pub enum PlayerCommand {
     AddPlayer(AddPlayerData),
     RemovePlayer,
     PlayerChooseTeam(TeamSelection),
-    PlayerChooseRunway(RunwaySelection),
+    PlayerSelectRunway(RunwaySelection), // Received when a player selects a runway or plane
+    PlayerChooseRunway(RunwaySelection), // Received when a player takes off
     PlayerKeyboard(PlayerKeyboard),
     SendMessage(String, bool),
 }
@@ -127,11 +129,37 @@ impl NetworkedBytes for PlayerKeyboard {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, TS, Clone)]
+#[derive(Serialize, Deserialize, Debug, TS, Clone, PartialEq, Eq)]
 #[ts(export)]
 pub struct RunwaySelection {
     pub runway_id: RunwayId,
     pub plane_type: PlaneType,
+}
+
+impl NetworkedBytes for RunwaySelection {
+    fn to_bytes(&self) -> Vec<u8> {
+        let mut bytes = vec![];
+
+        bytes.extend(self.runway_id.to_bytes());
+        bytes.extend(self.plane_type.to_bytes());
+
+        bytes
+    }
+
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)>
+    where
+        Self: Sized,
+    {
+        let (bytes, runway_id) = RunwayId::from_bytes(bytes)?;
+        let (bytes, plane_type) = PlaneType::from_bytes(bytes)?;
+        Some((
+            bytes,
+            RunwaySelection {
+                runway_id,
+                plane_type,
+            },
+        ))
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, TS, Clone)]
@@ -234,6 +262,11 @@ impl World {
                         }));
                     }
                 }
+                PlayerCommand::PlayerSelectRunway(runway_selection) => {
+                    if let Some((_, player)) = self.get_player_from_guid_mut(&guid) {
+                        player.set_runway_selection(Some(runway_selection));
+                    }
+                }
             };
         }
 
@@ -246,13 +279,18 @@ impl World {
             .and_then(|p| p.1.get_team().clone());
         let maybe_pid = self.get_player_from_guid(guid).and_then(|p| Some(*p.0));
 
-        if let Some(team) = maybe_team {
+        if let Some(player_team) = maybe_team {
             if let Some(pid) = maybe_pid {
                 if let Some(runway) = self.runways.get_mut(selection.runway_id) {
+                    // Don't spawn if the player is trying to spawn on a runway that doesn't belong to his team
+                    if *runway.get_team() != player_team {
+                        return;
+                    }
+
                     if runway.reserve_for(RunwayReservation::Takeoff) {
                         let plane = Plane::new(
                             pid,
-                            team,
+                            player_team,
                             selection.plane_type,
                             selection.runway_id,
                             runway,
@@ -260,6 +298,7 @@ impl World {
 
                         if let Some((plane_id, _)) = self.planes.insert(plane) {
                             if let Some((_, player)) = self.get_player_from_guid_mut(guid) {
+                                player.set_runway_selection(Some(selection));
                                 player.set_keys(PlayerKeyboard::new());
                                 player.set_state(PlayerState::Playing);
                                 player.set_controlling(Some(ControllingEntity::Plane(plane_id)))
