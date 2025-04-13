@@ -9,6 +9,8 @@ use crate::{
     world::World,
 };
 
+use super::events::{output_to_event, ReplayEvent};
+
 #[derive(Serialize, Deserialize, Debug, TS)]
 #[ts(export)]
 pub struct ReplayTickCommand {
@@ -112,5 +114,52 @@ impl World {
 
     pub fn get_replay_file_bytes(&self) -> Vec<u8> {
         self.replay_file.to_bytes()
+    }
+
+    pub fn simulate_until(&mut self, replay: &ReplayFile, tick: Option<u32>) -> Vec<ReplayEvent> {
+        let mut events = vec![];
+
+        let start_tick = self.get_tick();
+        let max_tick = match tick {
+            Some(end) => end,
+            None => replay.ticks.iter().map(|t| t.tick_number).max().unwrap(),
+        };
+
+        for current_tick in start_tick..max_tick {
+            let maybe_input = replay.ticks.iter().find(|x| x.tick_number == current_tick);
+            let input: Vec<ServerInput> = match maybe_input {
+                Some(tick_data) => tick_data
+                    .commands
+                    .iter()
+                    .map(|c| {
+                        let player_guid = replay
+                            .player_guids
+                            .iter()
+                            .find(|x| *x.1 == c.player_guid_index)
+                            .unwrap()
+                            .0
+                            .clone();
+
+                        ServerInput {
+                            player_guid,
+                            command: c.command.clone(),
+                        }
+                    })
+                    .collect(),
+                None => vec![],
+            };
+
+            self.tick(input);
+            let output = self.flush_changed_state();
+            let tick_events: Vec<ReplayEvent> = output
+                .iter()
+                .map(|x| output_to_event(current_tick, x.clone()))
+                .filter_map(|x| x)
+                .collect();
+
+            events.extend(tick_events);
+        }
+
+        events
     }
 }
