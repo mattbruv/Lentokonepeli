@@ -1,8 +1,4 @@
-use std::{
-    collections::{BTreeMap, HashMap},
-    env,
-    hash::Hash,
-};
+use std::collections::{BTreeMap, HashMap};
 
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
@@ -15,7 +11,7 @@ use crate::{
 
 use super::events::{output_to_event, ReplayEvent};
 
-#[derive(Serialize, Deserialize, Debug, TS)]
+#[derive(Serialize, Deserialize, Debug, Clone, TS)]
 #[ts(export)]
 pub struct ReplayTickCommand {
     pub player_guid_index: u16,
@@ -31,8 +27,7 @@ impl ReplayTickCommand {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, TS)]
-#[ts(export)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ReplayTick {
     pub tick_number: u32,
     pub commands: Vec<ReplayTickCommand>,
@@ -58,7 +53,7 @@ pub struct ReplayFile {
 
     pub player_guids: BTreeMap<String, u16>,
 
-    pub ticks: Vec<ReplayTick>,
+    pub ticks: HashMap<u32, Vec<ReplayTickCommand>>,
 }
 
 pub fn get_build_version() -> String {
@@ -77,7 +72,7 @@ impl ReplayFile {
             level_data: "".to_string(),
             level_name: "".to_string(),
             player_guids: BTreeMap::new(),
-            ticks: vec![],
+            ticks: HashMap::new(),
         }
     }
 }
@@ -109,9 +104,7 @@ impl World {
             commands.push(ReplayTickCommand::new(index, entry.command.clone()));
         }
 
-        self.replay_file
-            .ticks
-            .push(ReplayTick::new(tick_number, commands));
+        self.replay_file.ticks.insert(tick_number, commands);
 
         // log(format!("entries: {}", self.replay_file.ticks.len()));
     }
@@ -126,20 +119,13 @@ impl World {
         let start_tick = self.get_tick();
         let max_tick = match tick {
             Some(end) => end,
-            None => replay.ticks.iter().map(|t| t.tick_number).max().unwrap(),
+            None => replay.ticks.iter().map(|t| *t.0).max().unwrap(),
         };
-
-        let mut inputs: HashMap<u32, &Vec<ReplayTickCommand>> = HashMap::new();
-
-        // use tick hashmap lookup
-        for entry in replay.ticks.iter() {
-            inputs.insert(entry.tick_number, &entry.commands);
-        }
 
         // ~8-9 seconds to parse 60 minute replay without optimization
 
         for current_tick in start_tick..max_tick {
-            let maybe_input = inputs.get(&current_tick);
+            let maybe_input = replay.ticks.get(&current_tick);
             let input: Vec<ServerInput> = match maybe_input {
                 Some(tick_data) => tick_data
                     .iter()

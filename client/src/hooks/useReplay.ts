@@ -52,11 +52,11 @@ export function useReplay() {
         dogfight.engine.load_level(replayFile.level_data);
 
         const updateFn = (currentTick: number) => {
-            const tickData = replayFile.ticks.find((x) => x.tick_number === currentTick);
+            const tickData = replayFile.ticks[currentTick];
 
             let input: ServerInput[] = [];
             if (tickData) {
-                input = tickData.commands.map(({ command, player_guid_index }) => {
+                input = tickData.map(({ command, player_guid_index }) => {
                     const player_guid = Object.entries(replayFile.player_guids).find(
                         ([_, val]) => val === player_guid_index,
                     )![0];
