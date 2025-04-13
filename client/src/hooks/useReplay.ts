@@ -125,6 +125,7 @@ export function useReplay() {
         loadReplay,
         replayEvents,
         replayTime,
+        replayFile,
         playerData: dogfight.playerData,
         playerGuid: dogfight.playerGuid,
         messages: dogfight.messages,

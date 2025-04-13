@@ -3,6 +3,7 @@ import { IconFileUpload, IconInfoCircle } from "@tabler/icons-react";
 import { useRef, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { Game } from "../components/Game";
+import { ReplayTimer } from "../components/ReplayTimer";
 import { useReplay } from "../hooks/useReplay";
 
 enum ReplayState {
@@ -13,7 +14,8 @@ enum ReplayState {
 
 export function Replay() {
     const intl = useIntl();
-    const { loadReplay, replayEvents, replayTime, initialize, playerData, playerGuid, messages } = useReplay();
+    const { loadReplay, replayFile, replayEvents, replayTime, initialize, playerData, playerGuid, messages } =
+        useReplay();
 
     const [state, setState] = useState<ReplayState>(ReplayState.ProvideFile);
     const gameContainer = useRef<HTMLDivElement>(null);
@@ -54,10 +56,11 @@ export function Replay() {
                 onSendMessage={() => {}}
             />
             {state === ReplayState.Watching && (
-                <div>
+                <Stack>
+                    <ReplayTimer currentTick={replayTime?.tick ?? 0} maxTicks={100 * 20} />
                     <div>Time: {replayTime?.timeString}</div>
                     <div>Events: {JSON.stringify(replayEvents)}</div>
-                </div>
+                </Stack>
             )}
             {state === ReplayState.ProvideFile && (
                 <div>
