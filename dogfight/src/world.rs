@@ -15,14 +15,14 @@ use crate::{
         man::Man,
         plane::Plane,
         player::Player,
-        runway::{self, Runway},
+        runway::Runway,
         types::EntityType,
         water::Water,
         world_info::WorldInfo,
     },
     input::ServerInput,
     output::ServerOutput,
-    replay::ReplayFile,
+    replay::file::ReplayFile,
 };
 
 pub const DIRECTIONS: i32 = 256;

@@ -8,7 +8,7 @@ use dogfight::{
         player_command_json_from_binary, player_command_json_to_binary, replay_file_binary_to_json,
     },
     output::ServerOutput,
-    replay::{get_build_version, get_commit_version},
+    replay::file::{get_build_version, get_commit_version},
     world::World,
 };
 use wasm_bindgen::prelude::*;

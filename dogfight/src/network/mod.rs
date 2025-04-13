@@ -15,7 +15,7 @@ use crate::{
     },
     input::PlayerCommand,
     output::ServerOutput,
-    replay::{ReplayFile, ReplayTick},
+    replay::file::{ReplayFile, ReplayTick},
 };
 
 use self::encoding::NetworkedBytes;
