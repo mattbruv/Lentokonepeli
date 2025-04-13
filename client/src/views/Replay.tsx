@@ -53,7 +53,11 @@ export function Replay() {
                 messages={messages}
                 onSendMessage={() => {}}
             />
-            <div>Events: {JSON.stringify(replayEvents)}</div>
+            {state === ReplayState.Watching && (
+                <div>
+                    <div>Events: {JSON.stringify(replayEvents)}</div>
+                </div>
+            )}
             {state === ReplayState.ProvideFile && (
                 <div>
                     <Group>

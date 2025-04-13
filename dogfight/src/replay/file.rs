@@ -1,4 +1,8 @@
-use std::{collections::BTreeMap, env};
+use std::{
+    collections::{BTreeMap, HashMap},
+    env,
+    hash::Hash,
+};
 
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
@@ -125,11 +129,19 @@ impl World {
             None => replay.ticks.iter().map(|t| t.tick_number).max().unwrap(),
         };
 
+        let mut inputs: HashMap<u32, &Vec<ReplayTickCommand>> = HashMap::new();
+
+        // use tick hashmap lookup
+        for entry in replay.ticks.iter() {
+            inputs.insert(entry.tick_number, &entry.commands);
+        }
+
+        // ~8-9 seconds to parse 60 minute replay without optimization
+
         for current_tick in start_tick..max_tick {
-            let maybe_input = replay.ticks.iter().find(|x| x.tick_number == current_tick);
+            let maybe_input = inputs.get(&current_tick);
             let input: Vec<ServerInput> = match maybe_input {
                 Some(tick_data) => tick_data
-                    .commands
                     .iter()
                     .map(|c| {
                         let player_guid = replay
