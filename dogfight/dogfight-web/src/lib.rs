@@ -8,7 +8,10 @@ use dogfight::{
         player_command_json_from_binary, player_command_json_to_binary, replay_file_binary_to_json,
     },
     output::ServerOutput,
-    replay::file::{get_build_version, get_commit_version},
+    replay::{
+        events::get_replay_file_events,
+        file::{get_build_version, get_commit_version},
+    },
     world::World,
 };
 use wasm_bindgen::prelude::*;
@@ -47,6 +50,10 @@ impl DogfightWeb {
 
     pub fn get_commit(&self) -> String {
         get_commit_version().to_string()
+    }
+
+    pub fn get_replay_file_events(&self, bytes: Vec<u8>) -> String {
+        get_replay_file_events(bytes)
     }
 
     pub fn replay_file_binary_to_json(&self, bytes: Vec<u8>) -> String {

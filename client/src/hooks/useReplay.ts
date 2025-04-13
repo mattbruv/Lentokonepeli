@@ -1,3 +1,4 @@
+import { ReplayEvent } from "dogfight-types/ReplayEvent";
 import { ReplayFile } from "dogfight-types/ReplayFile";
 import { ServerInput } from "dogfight-types/ServerInput";
 import { ServerOutput } from "dogfight-types/ServerOutput";
@@ -14,10 +15,12 @@ export function useReplay() {
     });
 
     const [replayFile, setReplayFile] = useState<ReplayFile | null>(null);
+    const [replayEvents, setReplayEvents] = useState<ReplayEvent[] | null>(null);
     const [spectating, setSpectating] = useState<string | null>(null);
 
     function loadReplay(binary: Uint8Array): boolean {
         const replay_string = dogfight.engine.replay_file_binary_to_json(binary);
+
         if (!replay_string) {
             setReplayFile(null);
             return false;
@@ -25,6 +28,9 @@ export function useReplay() {
 
         const replay_file: ReplayFile = JSON.parse(replay_string);
         setReplayFile(replay_file);
+
+        let events: ReplayEvent[] = JSON.parse(dogfight.engine.get_replay_file_events(binary));
+        setReplayEvents(events);
 
         return true;
     }
@@ -94,6 +100,7 @@ export function useReplay() {
     return {
         initialize,
         loadReplay,
+        replayEvents,
         playerData: dogfight.playerData,
         playerGuid: dogfight.playerGuid,
         messages: dogfight.messages,
