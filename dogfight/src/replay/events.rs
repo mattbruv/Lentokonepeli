@@ -1,9 +1,7 @@
 use serde::Serialize;
 use ts_rs::TS;
-use web_sys::js_sys::Math::max;
 
 use crate::{
-    debug::log,
     entities::{container::PlayerId, types::Team},
     game_event::{ChatMessage, KillEvent},
     network::encoding::NetworkedBytes,

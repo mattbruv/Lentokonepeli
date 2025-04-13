@@ -135,7 +135,7 @@ impl World {
                         let player_guid = replay
                             .player_guids
                             .iter()
-                            .find(|x| *x.1 == c.player_guid_index)
+                            .nth(c.player_guid_index as usize)
                             .unwrap()
                             .0
                             .clone();
