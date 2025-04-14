@@ -23,7 +23,19 @@ export function useReplay() {
     const [replayEvents, setReplayEvents] = useState<ReplayEvent[] | null>(null);
     const [spectating, setSpectating] = useState<string | null>(null);
     const [replayTime, setReplayTime] = useState<ReplayTime | null>(null);
+    const animateRef = useRef<number | null>(null);
     const replayTick = useRef<number>(0);
+
+    const animate = () => {
+        if (!gameLoop.isRunning()) return;
+
+        setReplayTime({
+            tick: replayTick.current,
+            timeString: ticksToHHMMSS(replayTick.current),
+        });
+
+        animateRef.current = requestAnimationFrame(animate);
+    };
 
     function loadReplay(binary: Uint8Array): boolean {
         const replay_string = dogfight.engine.replay_file_binary_to_summary(binary);
@@ -81,24 +93,13 @@ export function useReplay() {
 
             // Advances the game one tick based on replay input
             dogfight.engine.tick_replay();
-
             const changed_state = dogfight.engine.flush_changed_state();
             const events = parseServerOutput(changed_state);
             dogfight.handleGameEvents(events);
         };
 
         gameLoop.setHostEngineUpdateFn(updateFn).start();
-
-        function foo() {
-            setReplayTime({
-                tick: replayTick.current,
-                timeString: ticksToHHMMSS(replayTick.current),
-            });
-
-            if (gameLoop.isRunning()) requestAnimationFrame(foo);
-        }
-
-        requestAnimationFrame(foo);
+        animateRef.current = requestAnimationFrame(animate);
     }, [replaySummary]);
 
     useEffect(() => {
