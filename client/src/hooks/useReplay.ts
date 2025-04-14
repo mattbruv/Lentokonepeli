@@ -2,7 +2,7 @@ import { ReplayEvent } from "dogfight-types/ReplayEvent";
 import { ReplaySummary } from "dogfight-types/ReplaySummary";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import { useEffect, useRef, useState } from "react";
-import { gameLoop } from "../gameLoop";
+import { gameLoop, noop } from "../gameLoop";
 import { ticksToHHMMSS } from "../helpers";
 import { useDogfight } from "./useDogfight";
 
@@ -59,8 +59,10 @@ export function useReplay() {
         if (!replaySummary) return;
 
         const updateFn = (currentTick: number) => {
-            if (!gameLoop.isRunning()) {
-                return;
+            if (currentTick > replaySummary.total_ticks) {
+                console.log("STOPPING GAME LOOP!?");
+                gameLoop.stop();
+                gameLoop.setHostEngineUpdateFn(noop);
             }
 
             replayTick.current = currentTick;
@@ -92,7 +94,8 @@ export function useReplay() {
                 tick: replayTick.current,
                 timeString: ticksToHHMMSS(replayTick.current),
             });
-            requestAnimationFrame(foo);
+
+            if (gameLoop.isRunning()) requestAnimationFrame(foo);
         }
 
         requestAnimationFrame(foo);

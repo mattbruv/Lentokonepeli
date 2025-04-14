@@ -1,5 +1,5 @@
 export type TaskFn = (currentTick: number) => void;
-const noop = () => {};
+export const noop = () => {};
 
 /**
  * When facing a case where useInterval or short setTimeout seems handy, use this GameLoop instead
@@ -85,7 +85,7 @@ class Scheduler {
     }
 
     /**
-     * Unregister both recurring or one time tasks from bein run
+     * Unregister both recurring or one time tasks from being run
      */
     unregister(task: TaskFn) {
         this.recurringTasks.delete(task);
