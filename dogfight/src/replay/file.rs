@@ -9,7 +9,7 @@ use crate::{
     world::World,
 };
 
-use super::events::{output_to_event, ReplayEvent};
+use super::events::{output_to_event, ReplayEvent, ReplayEventType};
 
 #[derive(Serialize, Deserialize, Debug, Clone, TS)]
 #[ts(export)]
@@ -64,20 +64,7 @@ pub struct ReplaySummary {
     pub level_name: String,
     pub total_ticks: u32,
     pub player_guids: BTreeMap<String, u16>,
-}
-
-impl TryInto<ReplaySummary> for ReplayFile {
-    type Error = ();
-
-    fn try_into(self) -> Result<ReplaySummary, Self::Error> {
-        Ok(ReplaySummary {
-            build_version: self.build_version,
-            build_commit: self.build_commit,
-            level_name: self.level_name,
-            total_ticks: self.ticks.iter().map(|x| *x.0).max().unwrap(),
-            player_guids: self.player_guids,
-        })
-    }
+    pub events: Vec<ReplayEvent>,
 }
 
 pub fn get_build_version() -> String {

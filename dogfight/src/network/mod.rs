@@ -58,15 +58,6 @@ pub fn replay_file_json_to_binary(replay_file_json: &str) -> Vec<u8> {
     input.to_bytes()
 }
 
-pub fn replay_file_binary_to_summary(bytes: Vec<u8>) -> String {
-    match ReplayFile::from_bytes(&bytes) {
-        Some((_, replay_file)) => {
-            serde_json::to_string::<ReplaySummary>(&replay_file.try_into().unwrap()).unwrap()
-        }
-        None => "".to_string(),
-    }
-}
-
 pub fn replay_tick_json_to_binary(replay_tick_json: &str) -> Vec<u8> {
     let input = serde_json::from_str::<ReplayTick>(&replay_tick_json).unwrap();
     input.to_bytes()

@@ -9,7 +9,7 @@ use crate::{
     world::World,
 };
 
-use super::file::ReplayFile;
+use super::file::{ReplayFile, ReplaySummary};
 
 #[derive(Debug, Serialize, TS)]
 #[ts(export)]
@@ -51,19 +51,29 @@ pub(crate) fn output_to_event(tick: u32, output: ServerOutput) -> Option<ReplayE
     }
 }
 
-pub fn get_replay_file_events(bytes: Vec<u8>) -> String {
+pub fn get_replay_summary(bytes: Vec<u8>) -> String {
     match ReplayFile::from_bytes(&bytes) {
         Some((_, replay_file)) => {
-            let events = parse_events(replay_file);
-            serde_json::to_string(&events).unwrap()
+            let events = summarize_replay(replay_file);
+            serde_json::to_string::<ReplaySummary>(&events).unwrap()
         }
         None => "".to_string(),
     }
 }
 
-fn parse_events(replay_file: ReplayFile) -> Vec<ReplayEvent> {
+fn summarize_replay(replay_file: ReplayFile) -> ReplaySummary {
     let mut world = World::new();
     world.load_level(&replay_file.level_data);
+
     // simulates the entire game and returns all events
-    world.simulate_until(&replay_file, None, true)
+    let events = world.simulate_until(&replay_file, None, true);
+
+    ReplaySummary {
+        build_version: replay_file.build_version,
+        build_commit: replay_file.build_commit,
+        level_name: replay_file.level_name,
+        total_ticks: replay_file.ticks.iter().map(|x| *x.0).max().unwrap(),
+        player_guids: replay_file.player_guids,
+        events: events,
+    }
 }

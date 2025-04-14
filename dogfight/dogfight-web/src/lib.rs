@@ -6,11 +6,10 @@ use dogfight::{
     network::{
         encoding::NetworkedBytes, game_events_from_bytes, game_events_to_binary,
         game_events_to_json, player_command_json_from_binary, player_command_json_to_binary,
-        replay_file_binary_to_summary,
     },
     output::ServerOutput,
     replay::{
-        events::get_replay_file_events,
+        events::get_replay_summary,
         file::{get_build_version, get_commit_version, ReplayFile},
     },
     world::World,
@@ -63,12 +62,8 @@ impl DogfightWeb {
         get_commit_version().to_string()
     }
 
-    pub fn get_replay_file_events(&self, bytes: Vec<u8>) -> String {
-        get_replay_file_events(bytes)
-    }
-
-    pub fn replay_file_binary_to_summary(&self, bytes: Vec<u8>) -> String {
-        replay_file_binary_to_summary(bytes)
+    pub fn get_replay_summary(&self, bytes: Vec<u8>) -> String {
+        get_replay_summary(bytes)
     }
 
     pub fn parse_level(&self, level_str: &str) -> String {

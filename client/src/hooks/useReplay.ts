@@ -1,4 +1,3 @@
-import { ReplayEvent } from "dogfight-types/ReplayEvent";
 import { ReplaySummary } from "dogfight-types/ReplaySummary";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import { useEffect, useRef, useState } from "react";
@@ -20,7 +19,6 @@ export function useReplay() {
     });
 
     const [replaySummary, setReplaySummary] = useState<ReplaySummary | null>(null);
-    const [replayEvents, setReplayEvents] = useState<ReplayEvent[] | null>(null);
     const [spectating, setSpectating] = useState<string | null>(null);
     const [replayTime, setReplayTime] = useState<ReplayTime | null>(null);
     const animateRef = useRef<number | null>(null);
@@ -38,20 +36,17 @@ export function useReplay() {
     };
 
     function loadReplay(binary: Uint8Array): boolean {
-        const replay_string = dogfight.engine.replay_file_binary_to_summary(binary);
+        const replay_string = dogfight.engine.get_replay_summary(binary);
 
         if (!replay_string) {
             setReplaySummary(null);
             return false;
         }
 
-        const replay_file: ReplaySummary = JSON.parse(replay_string);
-        setReplaySummary(replay_file);
+        const summary: ReplaySummary = JSON.parse(replay_string);
+        setReplaySummary(summary);
 
         dogfight.engine.load_replay(binary);
-
-        let events: ReplayEvent[] = JSON.parse(dogfight.engine.get_replay_file_events(binary));
-        setReplayEvents(events);
 
         return true;
     }
@@ -109,7 +104,6 @@ export function useReplay() {
     return {
         initialize,
         loadReplay,
-        replayEvents,
         replayTime,
         replaySummary,
         playerData: dogfight.playerData,
