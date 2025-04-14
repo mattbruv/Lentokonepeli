@@ -42,7 +42,11 @@ class GameLoop {
         }
 
         this.lastTime = time - delta;
-        this.requestId = requestAnimationFrame(this.gameLoop);
+
+        if (this.requestId)
+            // Only request the next animation frame if we haven't called stop(),
+            // which sets requestId to null
+            this.requestId = requestAnimationFrame(this.gameLoop);
     };
 
     public start() {
