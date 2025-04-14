@@ -72,9 +72,7 @@ export function useReplay() {
 
         const updateFn = (currentTick: number) => {
             if (currentTick > replaySummary.total_ticks) {
-                console.log("STOPPING GAME LOOP!?");
-                gameLoop.stop();
-                gameLoop.setHostEngineUpdateFn(noop);
+                gameLoop.setHostEngineUpdateFn(noop).stop();
             }
 
             replayTick.current = currentTick;
