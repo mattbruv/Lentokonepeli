@@ -24,6 +24,7 @@ export function ReplayTimer({ currentTick, maxTicks, onScrub }: ReplayTimerProps
                 max={maxTicks}
                 step={1}
                 onChange={setScrubTick}
+                label={(e) => ticksToHHMMSS(e)}
                 onChangeEnd={(value) => {
                     setIsScrubbing(false);
                     onScrub?.(value);
