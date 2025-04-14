@@ -15,7 +15,7 @@ use crate::{
     },
     input::PlayerCommand,
     output::ServerOutput,
-    replay::file::{ReplayFile, ReplayTick},
+    replay::file::{ReplayFile, ReplaySummary, ReplayTick},
 };
 
 use self::encoding::NetworkedBytes;
@@ -58,9 +58,11 @@ pub fn replay_file_json_to_binary(replay_file_json: &str) -> Vec<u8> {
     input.to_bytes()
 }
 
-pub fn replay_file_binary_to_json(bytes: Vec<u8>) -> String {
+pub fn replay_file_binary_to_summary(bytes: Vec<u8>) -> String {
     match ReplayFile::from_bytes(&bytes) {
-        Some((_, replay_file)) => serde_json::to_string(&replay_file).unwrap(),
+        Some((_, replay_file)) => {
+            serde_json::to_string::<ReplaySummary>(&replay_file.try_into().unwrap()).unwrap()
+        }
         None => "".to_string(),
     }
 }

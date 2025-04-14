@@ -56,6 +56,30 @@ pub struct ReplayFile {
     pub ticks: HashMap<u32, Vec<ReplayTickCommand>>,
 }
 
+#[derive(Serialize, Debug, TS)]
+#[ts(export)]
+pub struct ReplaySummary {
+    pub build_version: String,
+    pub build_commit: String,
+    pub level_name: String,
+    pub total_ticks: u32,
+    pub player_guids: BTreeMap<String, u16>,
+}
+
+impl TryInto<ReplaySummary> for ReplayFile {
+    type Error = ();
+
+    fn try_into(self) -> Result<ReplaySummary, Self::Error> {
+        Ok(ReplaySummary {
+            build_version: self.build_version,
+            build_commit: self.build_commit,
+            level_name: self.level_name,
+            total_ticks: self.ticks.iter().map(|x| *x.0).max().unwrap(),
+            player_guids: self.player_guids,
+        })
+    }
+}
+
 pub fn get_build_version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
 }
@@ -113,7 +137,12 @@ impl World {
         self.replay_file.to_bytes()
     }
 
-    pub fn simulate_until(&mut self, replay: &ReplayFile, tick: Option<u32>) -> Vec<ReplayEvent> {
+    pub fn simulate_until(
+        &mut self,
+        replay: &ReplayFile,
+        tick: Option<u32>,
+        flush_changed_state: bool,
+    ) -> Vec<ReplayEvent> {
         let mut events = vec![];
 
         let start_tick = self.get_tick();
@@ -148,14 +177,17 @@ impl World {
             };
 
             self.tick(input);
-            let output = self.flush_changed_state();
-            let tick_events: Vec<ReplayEvent> = output
-                .iter()
-                .map(|x| output_to_event(current_tick, x.clone()))
-                .filter_map(|x| x)
-                .collect();
 
-            events.extend(tick_events);
+            if flush_changed_state {
+                let output = self.flush_changed_state();
+                let tick_events: Vec<ReplayEvent> = output
+                    .iter()
+                    .map(|x| output_to_event(current_tick, x.clone()))
+                    .filter_map(|x| x)
+                    .collect();
+
+                events.extend(tick_events);
+            }
         }
 
         events

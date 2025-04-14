@@ -14,7 +14,7 @@ enum ReplayState {
 
 export function Replay() {
     const intl = useIntl();
-    const { loadReplay, replayFile, replayEvents, replayTime, initialize, playerData, playerGuid, messages } =
+    const { loadReplay, replaySummary, replayEvents, replayTime, initialize, playerData, playerGuid, messages } =
         useReplay();
 
     const [state, setState] = useState<ReplayState>(ReplayState.ProvideFile);
@@ -57,7 +57,7 @@ export function Replay() {
             />
             {state === ReplayState.Watching && (
                 <Stack>
-                    <ReplayTimer currentTick={replayTime?.tick ?? 0} maxTicks={100 * 20} />
+                    <ReplayTimer currentTick={replayTime?.tick ?? 0} maxTicks={replaySummary?.total_ticks ?? 1} />
                     <div>Time: {replayTime?.timeString}</div>
                     <div>Events: {JSON.stringify(replayEvents)}</div>
                 </Stack>

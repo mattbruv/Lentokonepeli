@@ -95,7 +95,7 @@ impl World {
     }
     */
 
-    pub(crate) fn get_tick(&self) -> u32 {
+    pub fn get_tick(&self) -> u32 {
         self.game_tick
     }
 

@@ -4,13 +4,14 @@ use dogfight::{
     input::{game_input_from_string, is_valid_command},
     level::parse_level_to_json,
     network::{
-        game_events_from_bytes, game_events_to_binary, game_events_to_json,
-        player_command_json_from_binary, player_command_json_to_binary, replay_file_binary_to_json,
+        encoding::NetworkedBytes, game_events_from_bytes, game_events_to_binary,
+        game_events_to_json, player_command_json_from_binary, player_command_json_to_binary,
+        replay_file_binary_to_summary,
     },
     output::ServerOutput,
     replay::{
         events::get_replay_file_events,
-        file::{get_build_version, get_commit_version},
+        file::{get_build_version, get_commit_version, ReplayFile},
     },
     world::World,
 };
@@ -24,6 +25,7 @@ extern "C" {
 #[wasm_bindgen]
 pub struct DogfightWeb {
     world: World,
+    replay: Option<ReplayFile>,
 }
 
 #[wasm_bindgen]
@@ -33,11 +35,20 @@ impl DogfightWeb {
 
         Self {
             world: World::new(),
+            replay: None,
         }
     }
 
     pub fn load_level(&mut self, world: String) {
         self.world.load_level(&world);
+    }
+
+    pub fn load_replay(&mut self, bytes: Vec<u8>) -> () {
+        if let Some((_, replay)) = ReplayFile::from_bytes(&bytes) {
+            self.world = World::new();
+            self.world.load_level(&replay.level_data);
+            self.replay = Some(replay);
+        }
     }
 
     pub fn init(&mut self) {
@@ -56,8 +67,8 @@ impl DogfightWeb {
         get_replay_file_events(bytes)
     }
 
-    pub fn replay_file_binary_to_json(&self, bytes: Vec<u8>) -> String {
-        replay_file_binary_to_json(bytes)
+    pub fn replay_file_binary_to_summary(&self, bytes: Vec<u8>) -> String {
+        replay_file_binary_to_summary(bytes)
     }
 
     pub fn parse_level(&self, level_str: &str) -> String {
@@ -83,6 +94,13 @@ impl DogfightWeb {
     pub fn tick(&mut self, input_json: String) -> () {
         let input = game_input_from_string(input_json);
         self.world.tick(input);
+    }
+
+    pub fn tick_replay(&mut self) -> () {
+        if let Some(replay) = &self.replay {
+            self.world
+                .simulate_until(replay, Some(self.world.get_tick() + 1), false);
+        }
     }
 
     pub fn flush_changed_state(&mut self) -> Vec<u8> {

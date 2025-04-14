@@ -64,5 +64,6 @@ pub fn get_replay_file_events(bytes: Vec<u8>) -> String {
 fn parse_events(replay_file: ReplayFile) -> Vec<ReplayEvent> {
     let mut world = World::new();
     world.load_level(&replay_file.level_data);
-    world.simulate_until(&replay_file, None)
+    // simulates the entire game and returns all events
+    world.simulate_until(&replay_file, None, true)
 }
