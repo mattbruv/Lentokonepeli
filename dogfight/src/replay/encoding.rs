@@ -1,6 +1,8 @@
 use std::collections::{BTreeMap, HashMap};
 
-use crate::{input::PlayerCommand, network::encoding::NetworkedBytes};
+use crate::{
+    entities::player::PlayerGuid, input::PlayerCommand, network::encoding::NetworkedBytes,
+};
 
 use super::file::{ReplayFile, ReplayTick, ReplayTickCommand};
 
@@ -59,7 +61,7 @@ impl NetworkedBytes for ReplayFile {
     where
         Self: Sized,
     {
-        let (bytes, player_guids) = BTreeMap::<String, u16>::from_bytes(bytes)?;
+        let (bytes, player_guids) = BTreeMap::<PlayerGuid, u16>::from_bytes(bytes)?;
         let (bytes, ticks_vec) = Vec::<ReplayTick>::from_bytes(bytes)?;
         let (bytes, level_name) = String::from_bytes(bytes)?;
         let (bytes, level_data) = String::from_bytes(bytes)?;

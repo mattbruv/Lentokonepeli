@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 use crate::{
+    entities::player::PlayerGuid,
     input::{PlayerCommand, ServerInput},
     network::encoding::NetworkedBytes,
     world::World,
@@ -51,7 +52,7 @@ pub struct ReplayFile {
     pub level_name: String,
     pub level_data: String,
 
-    pub player_guids: BTreeMap<String, u16>,
+    pub player_guids: BTreeMap<PlayerGuid, u16>,
 
     pub ticks: HashMap<u32, Vec<ReplayTickCommand>>,
 }
@@ -63,7 +64,7 @@ pub struct ReplaySummary {
     pub build_commit: String,
     pub level_name: String,
     pub total_ticks: u32,
-    pub player_guids: BTreeMap<String, u16>,
+    pub players: BTreeMap<PlayerGuid, String>,
     pub events: Vec<ReplayEvent>,
 }
 

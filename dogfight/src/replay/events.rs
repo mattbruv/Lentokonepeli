@@ -4,6 +4,7 @@ use ts_rs::TS;
 use crate::{
     entities::{container::PlayerId, types::Team},
     game_event::{ChatMessage, KillEvent},
+    input::PlayerCommand,
     network::encoding::NetworkedBytes,
     output::ServerOutput,
     world::World,
@@ -69,11 +70,32 @@ fn summarize_replay(replay_file: ReplayFile) -> ReplaySummary {
     let events = world.simulate_until(&replay_file, None, true);
 
     ReplaySummary {
-        build_version: replay_file.build_version,
-        build_commit: replay_file.build_commit,
-        level_name: replay_file.level_name,
+        build_version: replay_file.build_version.clone(),
+        build_commit: replay_file.build_commit.clone(),
+        level_name: replay_file.level_name.clone(),
         total_ticks: replay_file.ticks.iter().map(|x| *x.0).max().unwrap(),
-        player_guids: replay_file.player_guids,
+        players: replay_file
+            .player_guids
+            .iter()
+            .by_ref()
+            .map(|(guid, _)| {
+                let name = replay_file
+                    .ticks
+                    .iter()
+                    .flat_map(|x| x.1)
+                    .find_map(|x| {
+                        if let PlayerCommand::AddPlayer(add_player_data) = &x.command {
+                            if add_player_data.guid == *guid {
+                                return Some(add_player_data.name.clone());
+                            }
+                        }
+                        None
+                    })
+                    .unwrap_or_else(|| "?".to_string());
+
+                (guid.clone(), name)
+            })
+            .collect(),
         events: events,
     }
 }

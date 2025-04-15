@@ -14,7 +14,7 @@ use crate::{
         hill::Hill,
         man::Man,
         plane::Plane,
-        player::Player,
+        player::{Player, PlayerGuid},
         runway::Runway,
         types::EntityType,
         water::Water,
@@ -158,7 +158,7 @@ impl World {
             .find(|(_, p)| p.get_name().eq(name))
     }
 
-    pub(crate) fn get_player_from_guid(&self, guid: &String) -> Option<(&PlayerId, &Player)> {
+    pub(crate) fn get_player_from_guid(&self, guid: &PlayerGuid) -> Option<(&PlayerId, &Player)> {
         self.players
             .get_map()
             .iter()
@@ -167,7 +167,7 @@ impl World {
 
     pub(crate) fn get_player_from_guid_mut(
         &mut self,
-        guid: &String,
+        guid: &PlayerGuid,
     ) -> Option<(&PlayerId, &mut Player)> {
         self.players
             .get_map_mut()
