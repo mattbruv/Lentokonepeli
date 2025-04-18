@@ -10,7 +10,7 @@ use crate::{
     world::World,
 };
 
-use super::events::{output_to_event, ReplayEvent, ReplayEventType};
+use super::events::{output_to_event, ReplayEvent};
 
 #[derive(Serialize, Deserialize, Debug, Clone, TS)]
 #[ts(export)]
