@@ -12,6 +12,7 @@ use super::{
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS, PartialOrd, Ord)]
+#[ts(export)]
 pub struct PlayerGuid(String);
 
 impl NetworkedBytes for PlayerGuid {
