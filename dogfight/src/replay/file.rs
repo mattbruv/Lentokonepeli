@@ -10,7 +10,7 @@ use crate::{
     world::World,
 };
 
-use super::events::{output_to_event, ReplayEvent};
+use super::events::{output_to_events, ReplayEvent};
 
 #[derive(Serialize, Deserialize, Debug, Clone, TS)]
 #[ts(export)]
@@ -170,8 +170,7 @@ impl World {
                 let output = self.flush_changed_state();
                 let tick_events: Vec<ReplayEvent> = output
                     .iter()
-                    .map(|x| output_to_event(self, current_tick, x.clone()))
-                    .filter_map(|x| x)
+                    .flat_map(|x| output_to_events(self, current_tick, x.clone()))
                     .collect();
 
                 events.extend(tick_events);

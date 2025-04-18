@@ -16,6 +16,7 @@ use super::file::{ReplayFile, ReplaySummary};
 #[ts(export)]
 pub struct ReplayEvent {
     pub tick: u32,
+    pub player: PlayerGuid,
     pub event: ReplayEventType,
 }
 
@@ -27,8 +28,15 @@ pub enum ReplayEventType {
     PlayerJoin(String),
     PlayerLeave(String),
     PlayerJoinTeam { id: PlayerId, team: Team },
-    KillEvent(ReplayKillEvent),
     ChatMessage(ChatMessage),
+
+    Suicide,
+    Killed(PlayerGuid),
+    KilledBy(PlayerGuid),
+
+    AbandonedPlane,
+    Downed(PlayerGuid),
+    DownedBy(PlayerGuid),
 }
 
 #[derive(Serialize, Debug, Clone, TS)]
@@ -39,17 +47,17 @@ pub struct ReplayKillEvent {
     pub method: KillMethod,
 }
 
-pub(crate) fn output_to_event(
-    world: &World,
-    tick: u32,
-    output: ServerOutput,
-) -> Option<ReplayEvent> {
-    let event = match output {
-        ServerOutput::PlayerJoin(p) => Some(ReplayEventType::PlayerJoin(p)),
-        ServerOutput::PlayerLeave(p) => Some(ReplayEventType::PlayerLeave(p)),
+pub(crate) fn output_to_events(world: &World, tick: u32, event: ServerOutput) -> Vec<ReplayEvent> {
+    let mut output: Vec<ReplayEvent> = vec![];
+
+    match event {
+        //ServerOutput::PlayerJoin(p) => Some(ReplayEventType::PlayerJoin(p)),
+        //ServerOutput::PlayerLeave(p) => Some(ReplayEventType::PlayerLeave(p)),
+        /*
         ServerOutput::PlayerJoinTeam { id, team } => {
             Some(ReplayEventType::PlayerJoinTeam { id, team })
         }
+        */
         ServerOutput::KillEvent(kill_event) => {
             // Mapping this to a different type with guids is easier
             // than refactoring the entire engine to support guids in KillEvent
@@ -64,23 +72,55 @@ pub(crate) fn output_to_event(
                 .victim
                 .and_then(|x| world.players.get(x))
                 .and_then(|x| Some(x.get_guid().clone()));
-            Some(ReplayEventType::KillEvent(ReplayKillEvent {
-                killer,
-                victim,
-                method: kill_event.method,
-            }))
-        }
-        ServerOutput::ChatMessage(chat_message) => Some(ReplayEventType::ChatMessage(chat_message)),
 
-        // We don't care about the following when summarizing a game
-        ServerOutput::YourPlayerGuid(_) => None,
-        ServerOutput::EntityChanges(_) => None,
+            match kill_event.method {
+                KillMethod::Plane => match victim {
+                    Some(v) => {
+                        output.push(ReplayEvent {
+                            tick,
+                            player: killer.clone(),
+                            event: ReplayEventType::Downed(v.clone()),
+                        });
+                        output.push(ReplayEvent {
+                            tick,
+                            player: v,
+                            event: ReplayEventType::DownedBy(killer),
+                        });
+                    }
+                    None => output.push(ReplayEvent {
+                        tick,
+                        player: killer,
+                        event: ReplayEventType::AbandonedPlane,
+                    }),
+                },
+                KillMethod::Man => match victim {
+                    Some(v) => {
+                        output.push(ReplayEvent {
+                            tick,
+                            player: killer.clone(),
+                            event: ReplayEventType::Killed(v.clone()),
+                        });
+                        output.push(ReplayEvent {
+                            tick,
+                            player: v,
+                            event: ReplayEventType::KilledBy(killer),
+                        });
+                    }
+                    None => output.push(ReplayEvent {
+                        tick,
+                        player: killer,
+                        event: ReplayEventType::Suicide,
+                    }),
+                },
+            };
+        }
+        //ServerOutput::ChatMessage(chat_message) => Some(ReplayEventType::ChatMessage(chat_message)),
+        _ => {} // We don't care about the following when summarizing a game
+                //ServerOutput::YourPlayerGuid(_) => None,
+                //ServerOutput::EntityChanges(_) => None,
     };
 
-    match event {
-        Some(e) => Some(ReplayEvent { tick, event: e }),
-        None => None,
-    }
+    output
 }
 
 pub fn get_replay_summary(bytes: Vec<u8>) -> String {
