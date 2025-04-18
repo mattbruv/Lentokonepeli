@@ -6,6 +6,7 @@ use serde::Deserialize;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
+    debug::log,
     game_event::{KillEvent, KillMethod},
     images::{
         get_image, get_rotateable_image, rotate_image, PLANE4, PLANE5, PLANE6, PLANE7, PLANE8,
@@ -237,7 +238,7 @@ impl Plane {
     ) -> Vec<Action> {
         let mut actions = vec![];
 
-        // web_sys::console::log_1(&format!("ticking plane! {:?}", self.mode.get()).into());
+        // log(&format!("ticking plane! {:?}", self.mode.get()).into());
 
         // Add a tick to our counters
         self.last_bomb_ms += 10;
@@ -316,12 +317,12 @@ impl Plane {
     }
 
     fn park(&mut self, runway: &Runway) -> () {
-        web_sys::console::log_1(&format!("start_x {}", runway.get_start_x()).into());
+        log(format!("start_x {}", runway.get_start_x()).into());
         self.set_client_x(runway.get_start_x());
 
-        web_sys::console::log_1(&format!("start_y {}", runway.get_start_y()).into());
+        log(format!("start_y {}", runway.get_start_y()).into());
         self.set_client_y(runway.get_start_y() - self.get_bottom_height());
-        web_sys::console::log_1(&format!("bottom_height {}", self.get_bottom_height()).into());
+        log(format!("bottom_height {}", self.get_bottom_height()).into());
 
         if runway.get_facing() == Facing::Left {
             self.set_angle(PI);
@@ -485,14 +486,14 @@ impl Plane {
         if self.speed != 0.0 {
             // TODO: this should probably be speed per pixel instead, it's distinct
             let res = RESOLUTION as f64;
-            //web_sys::console::log_1(&format!("x before: {}", self.x).into());
-            //web_sys::console::log_1(&format!("y before: {}", self.y).into());
+            //log(&format!("x before: {}", self.x).into());
+            //log(&format!("y before: {}", self.y).into());
 
             self.x += (res * self.angle.cos() * self.speed / res) as i32;
             self.y += (res * self.angle.sin() * self.speed / res) as i32;
 
-            //web_sys::console::log_1(&format!("x after: {}", self.x).into());
-            //web_sys::console::log_1(&format!("y after: {}", self.y).into());
+            //log(&format!("x after: {}", self.x).into());
+            //log(&format!("y after: {}", self.y).into());
             self.client_x.set((self.x / RESOLUTION) as i16);
             self.client_y.set((self.y / RESOLUTION) as i16);
         }
@@ -766,7 +767,7 @@ impl Plane {
         /*
         let image = self.get_image();
         let (width, height) = image.dimensions();
-        web_sys::console::log_1(&format!("img width: {} height: {}", width, height).into());
+        log(&format!("img width: {} height: {}", width, height).into());
 
         for y in (0..height).rev() {
             for x in 0..width {

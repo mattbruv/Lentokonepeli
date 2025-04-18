@@ -178,7 +178,7 @@ where
 
         /*
         if removed.len() > 0 {
-            web_sys::console::log_1(&format!("ids len: {}", self.ids.len()).into());
+            log(&format!("ids len: {}", self.ids.len()).into());
         }
         */
 

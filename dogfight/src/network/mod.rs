@@ -33,7 +33,7 @@ pub(crate) fn entity_changes_to_json(state: Vec<EntityChange>) -> String {
 */
 
 pub(crate) fn entity_changes_to_binary(state: &Vec<EntityChange>) -> Vec<u8> {
-    //web_sys::console::log_1(&format!("{:?}", state).into());
+    //log(&format!("{:?}", state).into());
     state.iter().flat_map(|x| x.to_bytes()).collect()
 }
 
@@ -75,7 +75,7 @@ fn player_command_from_json(command_json: &str) -> PlayerCommand {
 }
 
 pub fn game_events_from_bytes(bytes: &Vec<u8>) -> Vec<ServerOutput> {
-    //web_sys::console::log_1(&format!("data: {:?}", bytes).into());
+    //log(&format!("data: {:?}", bytes).into());
     match Vec::<ServerOutput>::from_bytes(bytes) {
         Some((_, events)) => events,
         None => vec![],
