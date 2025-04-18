@@ -2,8 +2,8 @@ use serde::Serialize;
 use ts_rs::TS;
 
 use crate::{
-    entities::{container::PlayerId, types::Team},
-    game_event::{ChatMessage, KillEvent},
+    entities::{container::PlayerId, player::PlayerGuid, types::Team},
+    game_event::{ChatMessage, KillMethod},
     input::PlayerCommand,
     network::encoding::NetworkedBytes,
     output::ServerOutput,
@@ -27,18 +27,49 @@ pub enum ReplayEventType {
     PlayerJoin(String),
     PlayerLeave(String),
     PlayerJoinTeam { id: PlayerId, team: Team },
-    KillEvent(KillEvent),
+    KillEvent(ReplayKillEvent),
     ChatMessage(ChatMessage),
 }
 
-pub(crate) fn output_to_event(tick: u32, output: ServerOutput) -> Option<ReplayEvent> {
+#[derive(Serialize, Debug, Clone, TS)]
+#[ts(export)]
+pub struct ReplayKillEvent {
+    pub killer: PlayerGuid,
+    pub victim: Option<PlayerGuid>,
+    pub method: KillMethod,
+}
+
+pub(crate) fn output_to_event(
+    world: &World,
+    tick: u32,
+    output: ServerOutput,
+) -> Option<ReplayEvent> {
     let event = match output {
         ServerOutput::PlayerJoin(p) => Some(ReplayEventType::PlayerJoin(p)),
         ServerOutput::PlayerLeave(p) => Some(ReplayEventType::PlayerLeave(p)),
         ServerOutput::PlayerJoinTeam { id, team } => {
             Some(ReplayEventType::PlayerJoinTeam { id, team })
         }
-        ServerOutput::KillEvent(kill_event) => Some(ReplayEventType::KillEvent(kill_event)),
+        ServerOutput::KillEvent(kill_event) => {
+            // Mapping this to a different type with guids is easier
+            // than refactoring the entire engine to support guids in KillEvent
+            // trust me...
+            let killer = world
+                .players
+                .get(kill_event.killer)
+                .unwrap()
+                .get_guid()
+                .clone();
+            let victim = kill_event
+                .victim
+                .and_then(|x| world.players.get(x))
+                .and_then(|x| Some(x.get_guid().clone()));
+            Some(ReplayEventType::KillEvent(ReplayKillEvent {
+                killer,
+                victim,
+                method: kill_event.method,
+            }))
+        }
         ServerOutput::ChatMessage(chat_message) => Some(ReplayEventType::ChatMessage(chat_message)),
 
         // We don't care about the following when summarizing a game

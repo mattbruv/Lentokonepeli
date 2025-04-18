@@ -170,7 +170,7 @@ impl World {
                 let output = self.flush_changed_state();
                 let tick_events: Vec<ReplayEvent> = output
                     .iter()
-                    .map(|x| output_to_event(current_tick, x.clone()))
+                    .map(|x| output_to_event(self, current_tick, x.clone()))
                     .filter_map(|x| x)
                     .collect();
 
