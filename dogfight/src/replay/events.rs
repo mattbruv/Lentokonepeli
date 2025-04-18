@@ -78,14 +78,14 @@ fn summarize_replay(replay_file: ReplayFile) -> ReplaySummary {
             .player_guids
             .iter()
             .by_ref()
-            .map(|(guid, _)| {
+            .map(|(guid, p_idx)| {
                 let name = replay_file
                     .ticks
                     .iter()
                     .flat_map(|x| x.1)
                     .find_map(|x| {
                         if let PlayerCommand::AddPlayer(add_player_data) = &x.command {
-                            if add_player_data.guid == *guid {
+                            if x.player_guid_index == *p_idx {
                                 return Some(add_player_data.name.clone());
                             }
                         }
