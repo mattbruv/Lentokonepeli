@@ -6,6 +6,7 @@ export const noop = () => {};
  */
 class GameLoop {
     private paused: boolean = false;
+    private advanceTick: boolean = false;
     private currentTick: number = 0;
     private lastTime: number = performance.now();
     private requestId: number | null = null;
@@ -33,12 +34,21 @@ class GameLoop {
     }
 
     private gameLoop = (time: number) => {
+        const doTick = () => {
+            this.currentTick++;
+            this.engineUpdateFn(this.currentTick);
+            this.scheduler.runTasks(this.currentTick);
+        };
+
+        if (this.advanceTick) {
+            doTick();
+            this.advanceTick = false;
+        }
+
         if (!this.paused) {
             let delta = time - this.lastTime;
             while (delta >= this.tickInterval) {
-                this.currentTick++;
-                this.engineUpdateFn(this.currentTick);
-                this.scheduler.runTasks(this.currentTick);
+                doTick();
                 delta -= this.tickInterval;
             }
 
@@ -74,6 +84,11 @@ class GameLoop {
 
     public isRunning() {
         return this.requestId !== null;
+    }
+
+    public advanceOneTick() {
+        this.advanceTick = true;
+        this.lastTime = performance.now();
     }
 }
 

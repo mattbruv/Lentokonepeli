@@ -16,6 +16,7 @@ export type ReplayInfo = {
 export type ReplayCallbacks = {
     setPaused: (value: boolean) => void;
     playToTick: (tick: number) => void;
+    advanceOneTick: () => void;
     updateSpectating: (guid: PlayerGuid | null) => void;
     loadReplay: (binary: Uint8Array) => boolean;
 };
@@ -136,11 +137,16 @@ export function useReplay() {
         gameLoop.start(tick);
     }
 
+    function advanceOneTick() {
+        gameLoop.advanceOneTick();
+    }
+
     const replayCallbacks: ReplayCallbacks = {
         setPaused,
         playToTick,
         updateSpectating,
         loadReplay,
+        advanceOneTick,
     };
 
     function setPaused(value: boolean) {

@@ -1,4 +1,5 @@
-import { Button, Group, Slider, Stack, Text } from "@mantine/core";
+import { ActionIcon, Group, Slider, Stack, Text, Tooltip } from "@mantine/core";
+import { IconPlayerPauseFilled, IconPlayerPlayFilled, IconPlayerTrackNext } from "@tabler/icons-react";
 import { ReplaySummary } from "dogfight-types/ReplaySummary";
 import { useEffect, useState } from "react";
 import { ReplayCallbacks, ReplayInfo } from "src/hooks/useReplay";
@@ -45,7 +46,18 @@ export function ReplayTimer({ info, callbacks, summary }: ReplayTimerProps) {
                 </Group>
             </div>
             <div>
-                <Button onClick={(_) => callbacks.setPaused(!info.paused)}>{info.paused ? "play" : "pause"}</Button>
+                <Tooltip label={info.paused ? "Play" : "Pause"}>
+                    <ActionIcon onClick={(_) => callbacks.setPaused(!info.paused)}>
+                        {info.paused ? <IconPlayerPlayFilled /> : <IconPlayerPauseFilled />}
+                    </ActionIcon>
+                </Tooltip>
+                {info.paused && (
+                    <Tooltip label={info.paused ? "Play" : "Pause"}>
+                        <ActionIcon onClick={(_) => callbacks.advanceOneTick()}>
+                            <IconPlayerTrackNext />
+                        </ActionIcon>
+                    </Tooltip>
+                )}
             </div>
         </Stack>
     );
