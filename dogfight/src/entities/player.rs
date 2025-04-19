@@ -3,12 +3,31 @@ use crate::{
     network::{property::*, EntityProperties, NetworkedEntity},
 };
 use dogfight_macros::{EnumBytes, Networked};
+use serde::Deserialize;
 
 use super::{
     container::{ManId, PlaneId, RunwayId},
     plane::PlaneType,
     types::Team,
 };
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS, PartialOrd, Ord)]
+#[ts(export)]
+pub struct PlayerGuid(String);
+
+impl NetworkedBytes for PlayerGuid {
+    fn to_bytes(&self) -> Vec<u8> {
+        self.0.to_bytes()
+    }
+
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)>
+    where
+        Self: Sized,
+    {
+        let (bytes, guid) = String::from_bytes(bytes)?;
+        Some((bytes, Self(guid)))
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS, EnumBytes)]
 #[ts(export)]
@@ -80,7 +99,7 @@ pub struct Player {
 
     keys: PlayerKeyboard,
 
-    guid: Property<String>,
+    guid: Property<PlayerGuid>,
     name: Property<String>,
     #[rustfmt::skip]
     clan: Property<Option::<String>>,
@@ -95,7 +114,7 @@ pub struct Player {
 }
 
 impl Player {
-    pub fn new(guid: String, name: String, clan: Option<String>) -> Self {
+    pub fn new(guid: PlayerGuid, name: String, clan: Option<String>) -> Self {
         Player {
             shots: 0,
             hits: 0,
@@ -168,7 +187,7 @@ impl Player {
         self.name.get().clone()
     }
 
-    pub fn get_guid(&self) -> &String {
+    pub fn get_guid(&self) -> &PlayerGuid {
         self.guid.get()
     }
 

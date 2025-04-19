@@ -2,6 +2,7 @@ use std::f64::consts::PI;
 
 use crate::{
     collision::SolidEntity,
+    debug::log,
     entities::{
         container::PlayerId,
         man::ManState,
@@ -91,7 +92,7 @@ impl World {
                             )));
                         }
                     }
-                    // web_sys::console::log_1(&format!("man collide runway!").into());
+                    // log(&format!("man collide runway!").into());
                     continue 'men;
                 }
             }
@@ -145,7 +146,7 @@ impl World {
                         _ => {}
                     };
 
-                    //web_sys::console::log_1(&format!("man collide ground!").into());
+                    //log(&format!("man collide ground!").into());
                     continue 'men;
                 }
             }
@@ -163,7 +164,7 @@ impl World {
                     }
                     // just kill me
                     actions.push(Action::RemoveEntity(RemoveData::Man(*man_id)));
-                    //web_sys::console::log_1(&format!("man collide coast!").into());
+                    //log(&format!("man collide coast!").into());
                     continue 'men;
                 }
             }
@@ -330,7 +331,7 @@ impl World {
                         bomb.get_x(),
                         bomb.get_y(),
                     );
-                    //web_sys::console::log_1(&format!("bomb collide ground!").into());
+                    //log(&format!("bomb collide ground!").into());
                     continue 'bombs;
                 }
             }
@@ -344,7 +345,7 @@ impl World {
                         bomb.get_x(),
                         bomb.get_y(),
                     );
-                    //web_sys::console::log_1(&format!("bomb collide coast!").into());
+                    //log(&format!("bomb collide coast!").into());
                     continue 'bombs;
                 }
             }
@@ -352,7 +353,7 @@ impl World {
             for (_, water) in self.waters.get_map_mut() {
                 if bomb.check_collision(water) {
                     actions.push(Action::RemoveEntity(RemoveData::Bomb(*bomb_id)));
-                    //web_sys::console::log_1(&format!("bomb collide water!").into());
+                    //log(&format!("bomb collide water!").into());
                     continue 'bombs;
                 }
             }
@@ -679,7 +680,7 @@ impl World {
                             plane.set_angle(0.0);
                         }
 
-                        web_sys::console::log_1(&format!("plane can land on runway").into());
+                        log(format!("plane can land on runway").into());
                         plane.set_client_y(runway.get_landable_y() - plane.get_bottom_height());
 
                         // We want to do the team check before is_facing_runway
@@ -688,9 +689,7 @@ impl World {
                         if plane.get_team() == *runway.get_team()
                             && plane.is_facing_runway_correctly(runway)
                         {
-                            web_sys::console::log_1(
-                                &format!("plane facing runway correctly").into(),
-                            );
+                            log(format!("plane facing runway correctly").into());
                             plane.set_mode(PlaneMode::Landing);
                             plane.set_runway(Some(*runway_id));
                         }

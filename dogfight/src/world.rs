@@ -14,15 +14,15 @@ use crate::{
         hill::Hill,
         man::Man,
         plane::Plane,
-        player::Player,
-        runway::{self, Runway},
+        player::{Player, PlayerGuid},
+        runway::Runway,
         types::EntityType,
         water::Water,
         world_info::WorldInfo,
     },
     input::ServerInput,
     output::ServerOutput,
-    replay::ReplayFile,
+    replay::file::ReplayFile,
 };
 
 pub const DIRECTIONS: i32 = 256;
@@ -95,7 +95,7 @@ impl World {
     }
     */
 
-    pub(crate) fn get_tick(&self) -> u32 {
+    pub fn get_tick(&self) -> u32 {
         self.game_tick
     }
 
@@ -130,7 +130,7 @@ impl World {
         let updated_state = self.get_changed_state();
 
         if updated_state.len() > 0 {
-            // web_sys::console::log_1(&format!("{:?}", updated_state).into());
+            // log(&format!("{:?}", updated_state).into());
             self.game_output
                 .push(ServerOutput::EntityChanges(updated_state));
         }
@@ -158,7 +158,7 @@ impl World {
             .find(|(_, p)| p.get_name().eq(name))
     }
 
-    pub(crate) fn get_player_from_guid(&self, guid: &String) -> Option<(&PlayerId, &Player)> {
+    pub(crate) fn get_player_from_guid(&self, guid: &PlayerGuid) -> Option<(&PlayerId, &Player)> {
         self.players
             .get_map()
             .iter()
@@ -167,7 +167,7 @@ impl World {
 
     pub(crate) fn get_player_from_guid_mut(
         &mut self,
-        guid: &String,
+        guid: &PlayerGuid,
     ) -> Option<(&PlayerId, &mut Player)> {
         self.players
             .get_map_mut()

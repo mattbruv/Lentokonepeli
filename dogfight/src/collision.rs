@@ -96,9 +96,9 @@ pub trait SolidEntity: Entity {
             let img_self = self.get_collision_image();
             let img_other = other.get_collision_image();
 
-            // web_sys::console::log_1(&format!("{:?}", intersection).into());
-            // web_sys::console::log_1(&format!("{:?}", img_self).into());
-            // web_sys::console::log_1(&format!("{:?}", img_other).into());
+            // log(&format!("{:?}", intersection).into());
+            // log(&format!("{:?}", img_self).into());
+            // log(&format!("{:?}", img_other).into());
 
             if img_self.is_none() && img_other.is_none() {
                 return true;
@@ -106,20 +106,20 @@ pub trait SolidEntity: Entity {
 
             if let Some(img) = img_self {
                 if img_other.is_none() && check_pixels(img, &intersection, &bounds_self) {
-                    // web_sys::console::log_1(&format!("img self: {:?}", intersection).into());
+                    // log(&format!("img self: {:?}", intersection).into());
                     return true;
                 }
             }
 
             if let Some(img) = img_other {
                 if img_self.is_none() && check_pixels(img, &intersection, &bounds_other) {
-                    //  web_sys::console::log_1(&format!("img other: {:?}", intersection).into());
+                    //  log(&format!("img other: {:?}", intersection).into());
                     return true;
                 }
             }
 
             if let (Some(img_self), Some(img_other)) = (img_self, img_other) {
-                // web_sys::console::log_1(&format!("double pixels: {:?}", intersection).into());
+                // log(&format!("double pixels: {:?}", intersection).into());
                 return check_pixel_collision(
                     img_self,
                     &intersection,
@@ -163,7 +163,7 @@ fn check_pixels(image: &RgbaImage, intersection: &BoundingBox, bounds: &Bounding
             let pixel_x = intersection.x + x - bounds.x;
             let pixel_y = intersection.y + y - bounds.y;
             if image.get_pixel(pixel_x as u32, pixel_y as u32).0[3] != 0 {
-                // web_sys::console::log_1(&format!("x: {} y: {}", pixel_x, pixel_y).into());
+                // log(&format!("x: {} y: {}", pixel_x, pixel_y).into());
                 return true;
             }
         }

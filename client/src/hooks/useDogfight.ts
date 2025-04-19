@@ -6,7 +6,7 @@ import { PlayerProperties } from "dogfight-types/PlayerProperties";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import { Team } from "dogfight-types/Team";
 import { DogfightWeb } from "dogfight-web";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
 import { DogfightClient, GameClientCallbacks } from "../client/DogfightClient";
 import { ChatMessageTimed } from "../components/Chat";
@@ -31,14 +31,20 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
     useGameKeybinds({ client, engine });
     useDevKeybinds({ client, engine });
 
-    function handleGameEvents(events: ServerOutput[]): void {
-        client.handleGameEvents(events);
-    }
+    const handleGameEvents = useCallback(
+        (events: ServerOutput[]): void => {
+            client.handleGameEvents(events);
+        },
+        [client],
+    );
 
-    function setMyPlayerGuid(guid: string): void {
-        setPlayerGuid(guid);
-        client.setMyPlayerGuid(guid);
-    }
+    const setMyPlayerGuid = useCallback(
+        (guid: string | null, replay: boolean): void => {
+            setPlayerGuid(guid);
+            client.setMyPlayerGuid(guid, replay);
+        },
+        [client],
+    );
 
     function initialize(div: HTMLDivElement) {
         // TODO: clean this up, just expose the onCommand directly in the client
@@ -110,8 +116,13 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
         };
     }, []);
 
+    function clearEntities() {
+        client.clearEntities();
+    }
+
     return {
         initialize,
+        clearEntities,
         handleGameEvents,
         setMyPlayerGuid,
         playerGuid,

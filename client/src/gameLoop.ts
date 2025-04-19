@@ -1,10 +1,12 @@
 export type TaskFn = (currentTick: number) => void;
-const noop = () => {};
+export const noop = () => {};
 
 /**
  * When facing a case where useInterval or short setTimeout seems handy, use this GameLoop instead
  */
 class GameLoop {
+    private paused: boolean = false;
+    private advanceTick: boolean = false;
     private currentTick: number = 0;
     private lastTime: number = performance.now();
     private requestId: number | null = null;
@@ -32,24 +34,45 @@ class GameLoop {
     }
 
     private gameLoop = (time: number) => {
-        let delta = time - this.lastTime;
-
-        while (delta >= this.tickInterval) {
+        const doTick = () => {
             this.currentTick++;
             this.engineUpdateFn(this.currentTick);
             this.scheduler.runTasks(this.currentTick);
-            delta -= this.tickInterval;
+        };
+
+        if (this.advanceTick) {
+            doTick();
+            this.advanceTick = false;
         }
 
-        this.lastTime = time - delta;
-        this.requestId = requestAnimationFrame(this.gameLoop);
+        if (!this.paused) {
+            let delta = time - this.lastTime;
+            while (delta >= this.tickInterval) {
+                doTick();
+                delta -= this.tickInterval;
+            }
+
+            this.lastTime = time - delta;
+        }
+
+        if (this.requestId)
+            // Only request the next animation frame if we haven't called stop(),
+            // which sets requestId to null
+            this.requestId = requestAnimationFrame(this.gameLoop);
     };
 
-    public start() {
+    public start(currentTick: number = 0) {
         if (this.requestId) return;
-        this.currentTick = 0;
+        this.currentTick = currentTick;
         this.lastTime = performance.now();
         this.requestId = requestAnimationFrame(this.gameLoop);
+    }
+
+    public setPaused(paused: boolean) {
+        this.paused = paused;
+        if (!paused) {
+            this.lastTime = performance.now();
+        }
     }
 
     public stop() {
@@ -60,6 +83,11 @@ class GameLoop {
 
     public isRunning() {
         return this.requestId !== null;
+    }
+
+    public advanceOneTick() {
+        this.advanceTick = true;
+        this.lastTime = performance.now();
     }
 }
 
@@ -85,7 +113,7 @@ class Scheduler {
     }
 
     /**
-     * Unregister both recurring or one time tasks from bein run
+     * Unregister both recurring or one time tasks from being run
      */
     unregister(task: TaskFn) {
         this.recurringTasks.delete(task);

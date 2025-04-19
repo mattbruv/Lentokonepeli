@@ -15,7 +15,7 @@ use crate::{
     },
     input::PlayerCommand,
     output::ServerOutput,
-    replay::{ReplayFile, ReplayTick},
+    replay::file::{ReplayFile, ReplaySummary, ReplayTick},
 };
 
 use self::encoding::NetworkedBytes;
@@ -33,7 +33,7 @@ pub(crate) fn entity_changes_to_json(state: Vec<EntityChange>) -> String {
 */
 
 pub(crate) fn entity_changes_to_binary(state: &Vec<EntityChange>) -> Vec<u8> {
-    //web_sys::console::log_1(&format!("{:?}", state).into());
+    //log(&format!("{:?}", state).into());
     state.iter().flat_map(|x| x.to_bytes()).collect()
 }
 
@@ -58,13 +58,6 @@ pub fn replay_file_json_to_binary(replay_file_json: &str) -> Vec<u8> {
     input.to_bytes()
 }
 
-pub fn replay_file_binary_to_json(bytes: Vec<u8>) -> String {
-    match ReplayFile::from_bytes(&bytes) {
-        Some((_, replay_file)) => serde_json::to_string(&replay_file).unwrap(),
-        None => "".to_string(),
-    }
-}
-
 pub fn replay_tick_json_to_binary(replay_tick_json: &str) -> Vec<u8> {
     let input = serde_json::from_str::<ReplayTick>(&replay_tick_json).unwrap();
     input.to_bytes()
@@ -82,7 +75,7 @@ fn player_command_from_json(command_json: &str) -> PlayerCommand {
 }
 
 pub fn game_events_from_bytes(bytes: &Vec<u8>) -> Vec<ServerOutput> {
-    //web_sys::console::log_1(&format!("data: {:?}", bytes).into());
+    //log(&format!("data: {:?}", bytes).into());
     match Vec::<ServerOutput>::from_bytes(bytes) {
         Some((_, events)) => events,
         None => vec![],

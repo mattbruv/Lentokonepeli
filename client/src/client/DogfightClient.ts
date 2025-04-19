@@ -158,6 +158,12 @@ export class DogfightClient {
         this.centerCamera(0, 0);
     }
 
+    public clearEntities() {
+        destroyEntities(this.entities, {
+            onRemove: this.onEntityRemoved.bind(this),
+        });
+    }
+
     public destroy() {
         console.log("destroying client...");
         destroyEntities(this.entities, {
@@ -169,13 +175,17 @@ export class DogfightClient {
         });
     }
 
-    public setMyPlayerGuid(guid: string) {
-        console.log("MY GUID", guid);
+    public setMyPlayerGuid(guid: string | null, replay: boolean) {
+        console.log("My guid:", guid);
         this.myPlayerGuid = guid;
-    }
-
-    public setMyPlayerId(id: number) {
-        this.myPlayerId = id;
+        const myPlayer = this.entities.Player.collection.entries().find((x) => x[1].props.guid === guid);
+        this.myPlayerId = myPlayer?.[0] ?? null;
+        if (replay) {
+            if (myPlayer) {
+                this.onMyPlayerUpdate(myPlayer[1].props);
+            }
+            this.onJoinTeam(myPlayer?.[1].props.team ?? "Allies");
+        }
     }
 
     private onJoinTeam(team: Team) {
@@ -314,11 +324,11 @@ export class DogfightClient {
                 }
                 case "YourPlayerGuid": {
                     this.sendPlayerUpdate = true;
-                    this.setMyPlayerGuid(event.data);
+                    this.setMyPlayerGuid(event.data, false);
                     break;
                 }
                 case "ChatMessage": {
-                    this.callbacks?.onMessage(event.data);
+                    this.callbacks?.onMessage(event.data[1]);
                     break;
                 }
                 default: {

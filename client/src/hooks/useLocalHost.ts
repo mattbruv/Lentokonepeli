@@ -85,7 +85,7 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
             console.log(dogfight.engine.get_build_version());
             console.log(dogfight.engine.get_commit());
 
-            dogfight.setMyPlayerGuid(HOST_GUID);
+            dogfight.setMyPlayerGuid(HOST_GUID, false);
 
             hostInput.current.push({
                 player_guid: HOST_GUID,

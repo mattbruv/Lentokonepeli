@@ -3,6 +3,7 @@ import { IconFileUpload, IconInfoCircle } from "@tabler/icons-react";
 import { useRef, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { Game } from "../components/Game";
+import { ReplayControls } from "../components/ReplayControls";
 import { useReplay } from "../hooks/useReplay";
 
 enum ReplayState {
@@ -13,7 +14,7 @@ enum ReplayState {
 
 export function Replay() {
     const intl = useIntl();
-    const { loadReplay, initialize, playerData, playerGuid, messages } = useReplay();
+    const { replaySummary, replayCallbacks, initialize, playerData, playerGuid, messages, replayInfo } = useReplay();
 
     const [state, setState] = useState<ReplayState>(ReplayState.ProvideFile);
     const gameContainer = useRef<HTMLDivElement>(null);
@@ -31,7 +32,7 @@ export function Replay() {
 
                 if (gameContainer.current) {
                     initialize(gameContainer.current);
-                    const didReadFile = loadReplay(bytes);
+                    const didReadFile = replayCallbacks.loadReplay(bytes);
 
                     if (didReadFile) {
                         setState(ReplayState.Watching);
@@ -53,6 +54,19 @@ export function Replay() {
                 messages={messages}
                 onSendMessage={() => {}}
             />
+            {state === ReplayState.Watching && (
+                <Stack>
+                    {replaySummary && (
+                        <ReplayControls
+                            players={replaySummary?.players ?? {}}
+                            events={replaySummary?.events ?? []}
+                            info={replayInfo}
+                            callbacks={replayCallbacks}
+                            summary={replaySummary}
+                        />
+                    )}
+                </Stack>
+            )}
             {state === ReplayState.ProvideFile && (
                 <div>
                     <Group>

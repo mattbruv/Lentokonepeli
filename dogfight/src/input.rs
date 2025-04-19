@@ -5,7 +5,7 @@ use crate::{
     entities::{
         container::RunwayId,
         plane::{Plane, PlaneType},
-        player::{ControllingEntity, Player, PlayerState},
+        player::{ControllingEntity, Player, PlayerGuid, PlayerState},
         runway::RunwayReservation,
         types::Team,
     },
@@ -21,7 +21,7 @@ use crate::{
 #[derive(Serialize, Deserialize, Debug, TS)]
 #[ts(export)]
 pub struct ServerInput {
-    pub player_guid: String,
+    pub player_guid: PlayerGuid,
     pub command: PlayerCommand,
 }
 
@@ -143,7 +143,7 @@ pub struct TeamSelection {
 #[derive(Serialize, Deserialize, Debug, TS, Clone)]
 #[ts(export)]
 pub struct AddPlayerData {
-    pub guid: String,
+    pub guid: PlayerGuid,
     pub name: String,
     pub clan: Option<String>,
 }
@@ -161,7 +161,7 @@ impl NetworkedBytes for AddPlayerData {
     where
         Self: Sized,
     {
-        let (bytes, guid) = String::from_bytes(bytes)?;
+        let (bytes, guid) = PlayerGuid::from_bytes(bytes)?;
         let (bytes, name) = String::from_bytes(bytes)?;
         let (bytes, clan) = Option::<String>::from_bytes(bytes)?;
 
@@ -226,12 +226,15 @@ impl World {
                 }
                 PlayerCommand::SendMessage(message, is_global) => {
                     if let Some((_, player)) = self.get_player_from_guid(&guid) {
-                        game_output.push(ServerOutput::ChatMessage(ChatMessage {
-                            message,
-                            private: !is_global,
-                            sender_name: Some(player.get_full_name()),
-                            team: *player.get_team(),
-                        }));
+                        game_output.push(ServerOutput::ChatMessage(
+                            player.get_guid().clone(),
+                            ChatMessage {
+                                message,
+                                private: !is_global,
+                                sender_name: Some(player.get_full_name()),
+                                team: *player.get_team(),
+                            },
+                        ));
                     }
                 }
             };
@@ -240,7 +243,7 @@ impl World {
         game_output
     }
 
-    pub(crate) fn process_takeoff(&mut self, guid: &String, selection: RunwaySelection) {
+    pub(crate) fn process_takeoff(&mut self, guid: &PlayerGuid, selection: RunwaySelection) {
         let maybe_team = self
             .get_player_from_guid(guid)
             .and_then(|p| p.1.get_team().clone());
