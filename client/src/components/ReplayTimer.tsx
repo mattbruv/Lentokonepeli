@@ -31,8 +31,6 @@ export function ReplayTimer({ info, callbacks, summary }: ReplayTimerProps) {
                     onChangeEnd={(value) => {
                         setIsScrubbing(false);
                         callbacks.playToTick(value);
-                        //    setIsScrubbing(false);
-                        //   onScrub?.(value);
                     }}
                     onPointerDown={() => setIsScrubbing(true)}
                     styles={{ thumb: { width: 12, height: 12 } }}
@@ -47,7 +45,7 @@ export function ReplayTimer({ info, callbacks, summary }: ReplayTimerProps) {
                 </Group>
             </div>
             <div>
-                <Button>{info.paused ? "play" : "pause"}</Button>
+                <Button onClick={(_) => callbacks.setPaused(!info.paused)}>{info.paused ? "play" : "pause"}</Button>
             </div>
         </Stack>
     );

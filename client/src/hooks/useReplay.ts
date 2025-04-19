@@ -91,15 +91,11 @@ export function useReplay() {
     }
 
     useEffect(() => {
-        //console.log("REPLAY FILE CHANGED");
+        console.log("REPLAY FILE CHANGED");
         if (!replaySummary) return;
 
         const updateFn = (currentTick: number) => {
             if (currentTick > replaySummary.total_ticks) {
-                return;
-            }
-
-            if (replayInfo.paused) {
                 return;
             }
 
@@ -112,9 +108,14 @@ export function useReplay() {
             dogfight.handleGameEvents(events);
         };
 
-        gameLoop.setHostEngineUpdateFn(updateFn).start();
+        gameLoop.setHostEngineUpdateFn(updateFn);
+        if (replayInfo.paused) {
+            gameLoop.stop();
+        } else {
+            gameLoop.start(replayInfo.tick);
+        }
         animateRef.current = requestAnimationFrame(animate);
-    }, [replaySummary, replayInfo]);
+    }, [replaySummary, replayInfo.paused]);
 
     useEffect(() => {
         return () => {

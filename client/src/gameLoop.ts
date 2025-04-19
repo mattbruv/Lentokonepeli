@@ -49,9 +49,9 @@ class GameLoop {
             this.requestId = requestAnimationFrame(this.gameLoop);
     };
 
-    public start() {
+    public start(currentTick: number = 0) {
         if (this.requestId) return;
-        this.currentTick = 0;
+        this.currentTick = currentTick;
         this.lastTime = performance.now();
         this.requestId = requestAnimationFrame(this.gameLoop);
     }
