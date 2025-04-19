@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 use crate::{
+    debug::log,
     entities::player::PlayerGuid,
     input::{PlayerCommand, ServerInput},
     network::encoding::NetworkedBytes,
@@ -150,10 +151,18 @@ impl World {
                         let player_guid = replay
                             .player_guids
                             .iter()
-                            .nth(c.player_guid_index as usize)
+                            .find(|x| *x.1 == c.player_guid_index)
+                            // Since the hashmap saves with ordered keys, we cannot use nth
+                            // but rather have to find the guid where the values are the same
+                            // this took forever to figure out.
+                            //.nth(c.player_guid_index as usize)
                             .unwrap()
                             .0
                             .clone();
+
+                        if let PlayerCommand::AddPlayer(p) = &c.command {
+                            log(format!("guid ADD replay input: {:?}", c));
+                        }
 
                         ServerInput {
                             player_guid,
