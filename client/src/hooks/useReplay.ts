@@ -112,7 +112,7 @@ export function useReplay() {
         if (replayInfo.paused) {
             gameLoop.stop();
         } else {
-            gameLoop.start(replayInfo.tick);
+            gameLoop.start(replayInfo.tick + 1);
         }
         animateRef.current = requestAnimationFrame(animate);
     }, [replaySummary, replayInfo.paused]);
