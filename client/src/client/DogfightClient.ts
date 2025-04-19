@@ -176,6 +176,7 @@ export class DogfightClient {
         if (myPlayer) {
             this.onMyPlayerUpdate(myPlayer[1].props);
         }
+        this.onJoinTeam(myPlayer?.[1].props.team ?? "Allies");
     }
 
     public setMyPlayerId(id: number) {
