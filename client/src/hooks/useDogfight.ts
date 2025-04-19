@@ -33,7 +33,6 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
 
     const handleGameEvents = useCallback(
         (events: ServerOutput[]): void => {
-            console.log("FUCKING SHIT");
             client.handleGameEvents(events);
         },
         [client],

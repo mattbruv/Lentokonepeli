@@ -1,4 +1,4 @@
-import { ComboboxItem, MultiSelect, ScrollArea, Select, Stack, Text } from "@mantine/core";
+import { Button, ComboboxItem, MultiSelect, ScrollArea, Select, Stack, Text } from "@mantine/core";
 import { PlayerGuid } from "dogfight-types/PlayerGuid";
 import { ReplayEvent } from "dogfight-types/ReplayEvent";
 import { ReplayEventType } from "dogfight-types/ReplayEventType";
@@ -98,6 +98,7 @@ export function ReplayControls({
                                 <Text size="xs" c={"dimmed"}>
                                     {ticksToHHMMSS(event.tick)}
                                 </Text>
+                                {onScrub ? <Button onClick={(e) => onScrub(event.tick - 100 * 5)}>👀</Button> : null}
                             </div>
                         ))}
                     </ScrollArea>
