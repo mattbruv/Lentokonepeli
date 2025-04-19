@@ -12,7 +12,7 @@ use dogfight::{
         events::get_replay_summary,
         file::{get_build_version, get_commit_version, ReplayFile},
     },
-    world::World,
+    world::{self, World},
 };
 use wasm_bindgen::prelude::*;
 
@@ -89,6 +89,14 @@ impl DogfightWeb {
     pub fn tick(&mut self, input_json: String) -> () {
         let input = game_input_from_string(input_json);
         self.world.tick(input);
+    }
+
+    pub fn load_replay_until(&mut self, until_tick: u32) -> () {
+        if let Some(replay) = &self.replay {
+            self.world = World::new();
+            self.world.load_level(&replay.level_data);
+            self.world.simulate_until(replay, Some(until_tick), true);
+        }
     }
 
     pub fn tick_replay(&mut self) -> () {
