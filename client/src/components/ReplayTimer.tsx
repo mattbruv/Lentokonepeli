@@ -1,5 +1,13 @@
 import { ActionIcon, Group, Slider, Stack, Text, Tooltip } from "@mantine/core";
-import { IconPlayerPauseFilled, IconPlayerPlayFilled, IconPlayerTrackNext } from "@tabler/icons-react";
+import {
+    IconArrowRightBar,
+    IconPlayerPauseFilled,
+    IconPlayerPlayFilled,
+    IconPlayerSkipBackFilled,
+    IconPlayerSkipForwardFilled,
+    IconPlayerTrackNextFilled,
+    IconPlayerTrackPrevFilled,
+} from "@tabler/icons-react";
 import { ReplaySummary } from "dogfight-types/ReplaySummary";
 import { useEffect, useState } from "react";
 import { ReplayCallbacks, ReplayInfo } from "src/hooks/useReplay";
@@ -45,20 +53,41 @@ export function ReplayTimer({ info, callbacks, summary }: ReplayTimerProps) {
                     </Text>
                 </Group>
             </div>
-            <div>
+            <Group gap={4}>
+                <Tooltip label={"-30 seconds"}>
+                    <ActionIcon color={"grape"} onClick={(_) => callbacks.advanceSeconds(-30)}>
+                        <IconPlayerTrackPrevFilled />
+                    </ActionIcon>
+                </Tooltip>
+                <Tooltip label={"-5 seconds"}>
+                    <ActionIcon color={"grape"} onClick={(_) => callbacks.advanceSeconds(-5)}>
+                        <IconPlayerSkipBackFilled />
+                    </ActionIcon>
+                </Tooltip>
                 <Tooltip label={info.paused ? "Play" : "Pause"}>
                     <ActionIcon onClick={(_) => callbacks.setPaused(!info.paused)}>
                         {info.paused ? <IconPlayerPlayFilled /> : <IconPlayerPauseFilled />}
                     </ActionIcon>
                 </Tooltip>
                 {info.paused && (
-                    <Tooltip label={info.paused ? "Play" : "Pause"}>
-                        <ActionIcon onClick={(_) => callbacks.advanceOneTick()}>
-                            <IconPlayerTrackNext />
+                    <Tooltip label={"Advance one frame"}>
+                        <ActionIcon color={"gray"} onClick={(_) => callbacks.advanceOneTick()}>
+                            <IconArrowRightBar />
                         </ActionIcon>
                     </Tooltip>
                 )}
-            </div>
+                <Tooltip label={"+5 seconds"}>
+                    <ActionIcon color={"grape"} onClick={(_) => callbacks.advanceSeconds(5)}>
+                        <IconPlayerSkipForwardFilled />
+                    </ActionIcon>
+                </Tooltip>
+                <Tooltip label={"+30 seconds"}>
+                    <ActionIcon color={"grape"} onClick={(_) => callbacks.advanceSeconds(30)}>
+                        <IconPlayerTrackNextFilled />
+                    </ActionIcon>
+                </Tooltip>
+            </Group>
+            <Group></Group>
         </Stack>
     );
 }

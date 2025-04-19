@@ -17,6 +17,7 @@ export type ReplayCallbacks = {
     setPaused: (value: boolean) => void;
     playToTick: (tick: number) => void;
     advanceOneTick: () => void;
+    advanceSeconds: (seconds: number) => void;
     updateSpectating: (guid: PlayerGuid | null) => void;
     loadReplay: (binary: Uint8Array) => boolean;
 };
@@ -141,12 +142,21 @@ export function useReplay() {
         gameLoop.advanceOneTick();
     }
 
+    function advanceSeconds(seconds: number) {
+        const ticks = seconds * 100;
+        let target = replayInfo.tick + ticks;
+        if (target < 0) target = 0;
+        if (target > (replaySummary?.total_ticks ?? 1)) target = 1;
+        playToTick(target);
+    }
+
     const replayCallbacks: ReplayCallbacks = {
         setPaused,
         playToTick,
         updateSpectating,
         loadReplay,
         advanceOneTick,
+        advanceSeconds,
     };
 
     function setPaused(value: boolean) {
