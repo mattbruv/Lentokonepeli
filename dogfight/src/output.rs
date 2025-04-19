@@ -2,7 +2,7 @@ use serde::Serialize;
 use ts_rs::TS;
 
 use crate::{
-    entities::{container::PlayerId, types::Team},
+    entities::{container::PlayerId, player::PlayerGuid, types::Team},
     game_event::{ChatMessage, KillEvent},
     network::{encoding::NetworkedBytes, entity_changes_to_binary, EntityChange},
 };
@@ -21,7 +21,7 @@ pub enum ServerOutput {
     PlayerJoinTeam { id: PlayerId, team: Team },
     KillEvent(KillEvent),
     YourPlayerGuid(String),
-    ChatMessage(ChatMessage),
+    ChatMessage(PlayerGuid, ChatMessage),
 }
 
 impl NetworkedBytes for ServerOutput {
@@ -53,8 +53,9 @@ impl NetworkedBytes for ServerOutput {
                 bytes.push(4);
                 bytes.extend(event.to_bytes());
             }
-            ServerOutput::ChatMessage(message) => {
+            ServerOutput::ChatMessage(guid, message) => {
                 bytes.push(5);
+                bytes.extend(guid.to_bytes());
                 bytes.extend(message.to_bytes());
             }
             ServerOutput::YourPlayerGuid(_) => {
@@ -106,9 +107,10 @@ impl NetworkedBytes for ServerOutput {
                 Some((slice, ServerOutput::KillEvent(kill_event)))
             }
             5 => {
-                let (bytes, chat_message) = ChatMessage::from_bytes(slice)?;
+                let (bytes, guid) = PlayerGuid::from_bytes(slice)?;
+                let (bytes, chat_message) = ChatMessage::from_bytes(bytes)?;
                 slice = &bytes;
-                Some((slice, ServerOutput::ChatMessage(chat_message)))
+                Some((slice, ServerOutput::ChatMessage(guid, chat_message)))
             }
             _ => panic!("Unrecognized enum variant in Event: {}", variant),
         }

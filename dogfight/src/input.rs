@@ -226,12 +226,15 @@ impl World {
                 }
                 PlayerCommand::SendMessage(message, is_global) => {
                     if let Some((_, player)) = self.get_player_from_guid(&guid) {
-                        game_output.push(ServerOutput::ChatMessage(ChatMessage {
-                            message,
-                            private: !is_global,
-                            sender_name: Some(player.get_full_name()),
-                            team: *player.get_team(),
-                        }));
+                        game_output.push(ServerOutput::ChatMessage(
+                            player.get_guid().clone(),
+                            ChatMessage {
+                                message,
+                                private: !is_global,
+                                sender_name: Some(player.get_full_name()),
+                                team: *player.get_team(),
+                            },
+                        ));
                     }
                 }
             };

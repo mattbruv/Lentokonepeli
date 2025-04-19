@@ -25,6 +25,7 @@ const EVENT_NAMES: Record<ReplayEventType["type"], string> = {
     AbandonedPlane: "🪂 Abandoned",
     Downed: "💢 Downed",
     DownedBy: "☠️ Downed By",
+    ChatMessage: "💬 Chat",
 };
 
 export function ReplayControls({ summary, callbacks, events, players, info }: ReplayControlsProps) {
@@ -47,10 +48,11 @@ export function ReplayControls({ summary, callbacks, events, players, info }: Re
         return events.filter((x) => x.player === info.spectating).filter((x) => viewEvents.includes(x.event.type));
     }, [info.spectating, events, viewEvents]);
 
-    const lookupName = useCallback(
+    const eventText = useCallback(
         (event: ReplayEvent): string | null => {
             if ("data" in event.event) {
-                return players[event.event.data];
+                if (event.event.type !== "ChatMessage") return " " + players[event.event.data];
+                else return ": " + event.event.data.message;
             }
             return null;
         },
@@ -83,7 +85,8 @@ export function ReplayControls({ summary, callbacks, events, players, info }: Re
                         {playerEvents.map((event, i) => (
                             <div key={i}>
                                 <Text c={event.tick < info.tick ? "dimmed" : ""}>
-                                    {EVENT_NAMES[event.event.type]} {lookupName(event)}
+                                    {EVENT_NAMES[event.event.type]}
+                                    {eventText(event)}
                                 </Text>
                                 <Text size="xs" c={"dimmed"}>
                                     {ticksToHHMMSS(event.tick)}

@@ -328,7 +328,7 @@ export class DogfightClient {
                     break;
                 }
                 case "ChatMessage": {
-                    this.callbacks?.onMessage(event.data);
+                    this.callbacks?.onMessage(event.data[1]);
                     break;
                 }
                 default: {

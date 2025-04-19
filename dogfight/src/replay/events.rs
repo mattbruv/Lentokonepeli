@@ -28,7 +28,7 @@ pub enum ReplayEventType {
     //PlayerJoin(String),
     //PlayerLeave(String),
     //PlayerJoinTeam { id: PlayerId, team: Team },
-    //ChatMessage(ChatMessage),
+    ChatMessage(ChatMessage),
     Suicide,
     Killed(PlayerGuid),
     KilledBy(PlayerGuid),
@@ -50,13 +50,6 @@ pub(crate) fn output_to_events(world: &World, tick: u32, event: ServerOutput) ->
     let mut output: Vec<ReplayEvent> = vec![];
 
     match event {
-        //ServerOutput::PlayerJoin(p) => Some(ReplayEventType::PlayerJoin(p)),
-        //ServerOutput::PlayerLeave(p) => Some(ReplayEventType::PlayerLeave(p)),
-        /*
-        ServerOutput::PlayerJoinTeam { id, team } => {
-            Some(ReplayEventType::PlayerJoinTeam { id, team })
-        }
-        */
         ServerOutput::KillEvent(kill_event) => {
             // Mapping this to a different type with guids is easier
             // than refactoring the entire engine to support guids in KillEvent
@@ -113,10 +106,12 @@ pub(crate) fn output_to_events(world: &World, tick: u32, event: ServerOutput) ->
                 },
             };
         }
-        //ServerOutput::ChatMessage(chat_message) => Some(ReplayEventType::ChatMessage(chat_message)),
-        _ => {} // We don't care about the following when summarizing a game
-                //ServerOutput::YourPlayerGuid(_) => None,
-                //ServerOutput::EntityChanges(_) => None,
+        ServerOutput::ChatMessage(guid, chat_message) => output.push(ReplayEvent {
+            tick,
+            player: guid,
+            event: ReplayEventType::ChatMessage(chat_message),
+        }),
+        _ => {}
     };
 
     output
