@@ -1,7 +1,9 @@
-import { ComboboxItem, Select, Stack } from "@mantine/core";
+import { ComboboxItem, MultiSelect, ScrollArea, Select, Stack, Text } from "@mantine/core";
 import { PlayerGuid } from "dogfight-types/PlayerGuid";
 import { ReplayEvent } from "dogfight-types/ReplayEvent";
-import { useMemo } from "react";
+import { ReplayEventType } from "dogfight-types/ReplayEventType";
+import { useMemo, useState } from "react";
+import { ticksToHHMMSS } from "../helpers";
 import { ReplayTimer } from "./ReplayTimer";
 
 type ReplayControlsProps = {
@@ -16,6 +18,15 @@ type ReplayControlsProps = {
 
     spectating: string | null;
     setSpectating: (guid: string | null) => void;
+};
+
+const EVENT_NAMES: Record<ReplayEventType["type"], string> = {
+    Suicide: "💥 Suicide",
+    Killed: "🔫 Killed",
+    KilledBy: "💀 Killed By",
+    AbandonedPlane: "🪂 Abandoned",
+    Downed: "💢 Downed",
+    DownedBy: "☠️ Downed By",
 };
 
 export function ReplayControls({
@@ -36,14 +47,29 @@ export function ReplayControls({
         });
     }, [players]);
 
-    const playerEvents = useMemo(() => {
-        return 3;
-    }, [events]);
+    const [viewEvents, setViewEvents] = useState<ReplayEventType["type"][]>([]);
+
+    function updateViewEvents(events: string[]) {
+        setViewEvents(events as ReplayEventType["type"][]);
+    }
+
+    const playerEvents: ReplayEvent[] = useMemo(() => {
+        return events.filter((x) => x.player === spectating).filter((x) => viewEvents.includes(x.event.type));
+    }, [spectating, events, viewEvents]);
+
+    const eventOptions: ComboboxItem[] = useMemo(() => {
+        return Object.entries(EVENT_NAMES).map(([event_type, label]): ComboboxItem => {
+            return {
+                label,
+                value: event_type,
+            };
+        });
+    }, [spectating]);
 
     return (
         <Stack>
             <ReplayTimer currentTick={currentTick} maxTicks={maxTicks} onScrub={onScrub} />
-            <div>
+            <Stack>
                 <Select
                     label="Spectating Player"
                     placeholder="Pick a player..."
@@ -51,7 +77,20 @@ export function ReplayControls({
                     onChange={setSpectating}
                     data={watchPlayers}
                 />
-            </div>
+                <div>
+                    <MultiSelect data={eventOptions} value={viewEvents} onChange={updateViewEvents} />
+                    <ScrollArea h={400}>
+                        {playerEvents.map((event, i) => (
+                            <div key={i}>
+                                {event.event.type}
+                                <Text size="xs" c={"dimmed"}>
+                                    {ticksToHHMMSS(event.tick)}
+                                </Text>
+                            </div>
+                        ))}
+                    </ScrollArea>
+                </div>
+            </Stack>
         </Stack>
     );
 }

@@ -25,11 +25,10 @@ pub struct ReplayEvent {
 #[ts(export)]
 #[serde(tag = "type", content = "data")]
 pub enum ReplayEventType {
-    PlayerJoin(String),
-    PlayerLeave(String),
-    PlayerJoinTeam { id: PlayerId, team: Team },
-    ChatMessage(ChatMessage),
-
+    //PlayerJoin(String),
+    //PlayerLeave(String),
+    //PlayerJoinTeam { id: PlayerId, team: Team },
+    //ChatMessage(ChatMessage),
     Suicide,
     Killed(PlayerGuid),
     KilledBy(PlayerGuid),
