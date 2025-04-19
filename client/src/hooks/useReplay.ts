@@ -108,12 +108,8 @@ export function useReplay() {
             dogfight.handleGameEvents(events);
         };
 
-        gameLoop.setHostEngineUpdateFn(updateFn);
-        if (replayInfo.paused) {
-            gameLoop.stop();
-        } else {
-            gameLoop.start(replayInfo.tick + 1);
-        }
+        gameLoop.setHostEngineUpdateFn(updateFn).start();
+        gameLoop.setPaused(replayInfo.paused);
         animateRef.current = requestAnimationFrame(animate);
     }, [replaySummary, replayInfo.paused]);
 
@@ -124,6 +120,7 @@ export function useReplay() {
     }, []);
 
     function playToTick(tick: number) {
+        gameLoop.stop();
         replayTick.current = tick;
         setReplayInfo((prev) => ({
             ...prev,
@@ -136,6 +133,7 @@ export function useReplay() {
         const state = dogfight.engine.get_full_state();
         const events = parseServerOutput(state);
         dogfight.handleGameEvents(events);
+        gameLoop.start(tick);
     }
 
     const replayCallbacks: ReplayCallbacks = {

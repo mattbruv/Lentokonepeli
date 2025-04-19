@@ -5,6 +5,7 @@ export const noop = () => {};
  * When facing a case where useInterval or short setTimeout seems handy, use this GameLoop instead
  */
 class GameLoop {
+    private paused: boolean = false;
     private currentTick: number = 0;
     private lastTime: number = performance.now();
     private requestId: number | null = null;
@@ -32,16 +33,17 @@ class GameLoop {
     }
 
     private gameLoop = (time: number) => {
-        let delta = time - this.lastTime;
+        if (!this.paused) {
+            let delta = time - this.lastTime;
+            while (delta >= this.tickInterval) {
+                this.currentTick++;
+                this.engineUpdateFn(this.currentTick);
+                this.scheduler.runTasks(this.currentTick);
+                delta -= this.tickInterval;
+            }
 
-        while (delta >= this.tickInterval) {
-            this.currentTick++;
-            this.engineUpdateFn(this.currentTick);
-            this.scheduler.runTasks(this.currentTick);
-            delta -= this.tickInterval;
+            this.lastTime = time - delta;
         }
-
-        this.lastTime = time - delta;
 
         if (this.requestId)
             // Only request the next animation frame if we haven't called stop(),
@@ -54,6 +56,14 @@ class GameLoop {
         this.currentTick = currentTick;
         this.lastTime = performance.now();
         this.requestId = requestAnimationFrame(this.gameLoop);
+    }
+
+    public setPaused(paused: boolean) {
+        console.log("AGME LOOP SET PAUSED", paused);
+        this.paused = paused;
+        if (!paused) {
+            this.lastTime = performance.now();
+        }
     }
 
     public stop() {
