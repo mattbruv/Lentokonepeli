@@ -3,7 +3,7 @@ import { IconFileUpload, IconInfoCircle } from "@tabler/icons-react";
 import { useRef, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { Game } from "../components/Game";
-import { ReplayTimer } from "../components/ReplayTimer";
+import { ReplayControls } from "../components/ReplayControls";
 import { useReplay } from "../hooks/useReplay";
 
 enum ReplayState {
@@ -14,7 +14,17 @@ enum ReplayState {
 
 export function Replay() {
     const intl = useIntl();
-    const { loadReplay, replaySummary, replayTime, initialize, playerData, playerGuid, messages } = useReplay();
+    const {
+        loadReplay,
+        replaySummary,
+        spectating,
+        setSpectating,
+        replayTime,
+        initialize,
+        playerData,
+        playerGuid,
+        messages,
+    } = useReplay();
 
     const [state, setState] = useState<ReplayState>(ReplayState.ProvideFile);
     const gameContainer = useRef<HTMLDivElement>(null);
@@ -56,9 +66,14 @@ export function Replay() {
             />
             {state === ReplayState.Watching && (
                 <Stack>
-                    <ReplayTimer currentTick={replayTime?.tick ?? 0} maxTicks={replaySummary?.total_ticks ?? 1} />
-                    <div>Time: {replayTime?.timeString}</div>
-                    <div>Events: {JSON.stringify(replaySummary?.events)}</div>
+                    <ReplayControls
+                        players={replaySummary?.players ?? {}}
+                        events={replaySummary?.events ?? []}
+                        currentTick={replayTime?.tick ?? 0}
+                        maxTicks={replaySummary?.total_ticks ?? 1}
+                        spectating={spectating}
+                        setSpectating={setSpectating}
+                    />
                 </Stack>
             )}
             {state === ReplayState.ProvideFile && (

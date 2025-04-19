@@ -1,3 +1,4 @@
+import { PlayerGuid } from "dogfight-types/PlayerGuid";
 import { ReplaySummary } from "dogfight-types/ReplaySummary";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import { useEffect, useRef, useState } from "react";
@@ -19,7 +20,7 @@ export function useReplay() {
     });
 
     const [replaySummary, setReplaySummary] = useState<ReplaySummary | null>(null);
-    const [spectating, setSpectating] = useState<string | null>(null);
+    const [spectating, setSpectating] = useState<PlayerGuid | null>(null);
     const [replayTime, setReplayTime] = useState<ReplayTime | null>(null);
     const animateRef = useRef<number | null>(null);
     const replayTick = useRef<number>(0);
@@ -61,6 +62,13 @@ export function useReplay() {
         return events;
     }
 
+    function updateSpectating(guid: PlayerGuid | null) {
+        setSpectating(guid);
+        if (guid) {
+            dogfight.setMyPlayerGuid(guid);
+        }
+    }
+
     useEffect(() => {
         console.log("REPLAY FILE CHANGED");
         if (!replaySummary) return;
@@ -71,18 +79,6 @@ export function useReplay() {
             }
 
             replayTick.current = currentTick;
-
-            // Just set to the host for now
-            /*
-            if (!spectating) {
-                const host = input.find((x) => x.command.type === "AddPlayer");
-                if (host && host.command.type === "AddPlayer") {
-                    const { name, guid } = host.command.data;
-                    setSpectating(name);
-                    dogfight.setMyPlayerGuid(guid);
-                }
-            }
-            */
 
             // Advances the game one tick based on replay input
             dogfight.engine.tick_replay();
@@ -106,6 +102,8 @@ export function useReplay() {
         loadReplay,
         replayTime,
         replaySummary,
+        spectating,
+        setSpectating: updateSpectating,
         playerData: dogfight.playerData,
         playerGuid: dogfight.playerGuid,
         messages: dogfight.messages,

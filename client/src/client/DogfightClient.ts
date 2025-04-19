@@ -172,6 +172,10 @@ export class DogfightClient {
     public setMyPlayerGuid(guid: string) {
         console.log("MY GUID", guid);
         this.myPlayerGuid = guid;
+        const myPlayer = this.entities.Player.collection.entries().find((x) => x[1].props.guid === guid);
+        if (myPlayer) {
+            this.myPlayerId = myPlayer[0];
+        }
     }
 
     public setMyPlayerId(id: number) {
