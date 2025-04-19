@@ -35,7 +35,7 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
         client.handleGameEvents(events);
     }
 
-    function setMyPlayerGuid(guid: string): void {
+    function setMyPlayerGuid(guid: string | null): void {
         setPlayerGuid(guid);
         client.setMyPlayerGuid(guid);
     }

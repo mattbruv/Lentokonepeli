@@ -169,12 +169,12 @@ export class DogfightClient {
         });
     }
 
-    public setMyPlayerGuid(guid: string) {
-        console.log("MY GUID", guid);
+    public setMyPlayerGuid(guid: string | null) {
         this.myPlayerGuid = guid;
         const myPlayer = this.entities.Player.collection.entries().find((x) => x[1].props.guid === guid);
+        this.myPlayerId = myPlayer?.[0] ?? null;
         if (myPlayer) {
-            this.myPlayerId = myPlayer[0];
+            this.onMyPlayerUpdate(myPlayer[1].props);
         }
     }
 
