@@ -1,6 +1,6 @@
 import { Button, Group, Slider, Stack, Text } from "@mantine/core";
 import { ReplaySummary } from "dogfight-types/ReplaySummary";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ReplayCallbacks, ReplayInfo } from "src/hooks/useReplay";
 import { ticksToHHMMSS } from "../helpers";
 
@@ -11,19 +11,26 @@ type ReplayTimerProps = {
 };
 
 export function ReplayTimer({ info, callbacks, summary }: ReplayTimerProps) {
+    const [scrubTick, setScrubTick] = useState(info.tick);
     const [isScrubbing, setIsScrubbing] = useState(false);
+
+    useEffect(() => {
+        if (!isScrubbing) setScrubTick(info.tick);
+    }, [info.tick, isScrubbing]);
 
     return (
         <Stack>
             <div>
                 <Slider
-                    value={info.tick}
+                    value={scrubTick}
                     min={0}
                     max={summary.total_ticks}
                     step={1}
-                    onChange={callbacks.playToTick}
+                    onChange={setScrubTick}
                     label={(e) => ticksToHHMMSS(e)}
                     onChangeEnd={(value) => {
+                        setIsScrubbing(false);
+                        callbacks.playToTick(value);
                         //    setIsScrubbing(false);
                         //   onScrub?.(value);
                     }}
