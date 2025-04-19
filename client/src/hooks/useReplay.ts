@@ -12,7 +12,7 @@ export type ReplayTime = {
 };
 
 export function useReplay() {
-    console.log("useReplay called!");
+    //console.log("useReplay called!");
 
     const dogfight = useDogfight({
         // We don't want to do anything with commands sent to the replay client
@@ -28,11 +28,13 @@ export function useReplay() {
     const animate = () => {
         if (!gameLoop.isRunning()) return;
 
-        setReplayTime({
-            tick: replayTick.current,
-            timeString: ticksToHHMMSS(replayTick.current),
-        });
-
+        //        console.log(replayTick.current, replayTick.current % 10);
+        if (replayTick.current % 5 === 0) {
+            setReplayTime({
+                tick: replayTick.current,
+                timeString: ticksToHHMMSS(replayTick.current),
+            });
+        }
         animateRef.current = requestAnimationFrame(animate);
     };
 
