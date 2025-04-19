@@ -24,6 +24,7 @@ export function Replay() {
         playerData,
         playerGuid,
         messages,
+        playToTick,
     } = useReplay();
 
     const [state, setState] = useState<ReplayState>(ReplayState.ProvideFile);
@@ -55,6 +56,14 @@ export function Replay() {
         reader.readAsArrayBuffer(payload);
     }
 
+    function setTick(tick: number): void {
+        console.log("TRY TO JUMP TO", tick);
+        if (gameContainer.current) {
+            playToTick(tick, gameContainer.current);
+        }
+        //
+    }
+
     return (
         <Group justify="center">
             <Game
@@ -67,6 +76,7 @@ export function Replay() {
             {state === ReplayState.Watching && (
                 <Stack>
                     <ReplayControls
+                        onScrub={setTick}
                         players={replaySummary?.players ?? {}}
                         events={replaySummary?.events ?? []}
                         currentTick={replayTime?.tick ?? 0}

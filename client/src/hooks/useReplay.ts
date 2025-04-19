@@ -99,12 +99,18 @@ export function useReplay() {
         };
     }, []);
 
+    function playToTick(tick: number, div: HTMLDivElement) {
+        dogfight.initialize(div);
+        dogfight.engine.load_replay_until(tick);
+    }
+
     return {
         initialize,
         loadReplay,
         replayTime,
         replaySummary,
         spectating,
+        playToTick,
         setSpectating: updateSpectating,
         playerData: dogfight.playerData,
         playerGuid: dogfight.playerGuid,

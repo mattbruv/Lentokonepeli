@@ -6,7 +6,7 @@ import { PlayerProperties } from "dogfight-types/PlayerProperties";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import { Team } from "dogfight-types/Team";
 import { DogfightWeb } from "dogfight-web";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
 import { DogfightClient, GameClientCallbacks } from "../client/DogfightClient";
 import { ChatMessageTimed } from "../components/Chat";
@@ -20,7 +20,7 @@ export type DogfightCallbacks = {
 
 export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
     const intl = useIntl();
-    const client = useMemo(() => new DogfightClient(), []);
+    let client = useMemo(() => new DogfightClient(), []);
     const engine = useMemo(() => DogfightWeb.new(), []);
 
     // Scoreboard related information
@@ -31,16 +31,26 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
     useGameKeybinds({ client, engine });
     useDevKeybinds({ client, engine });
 
-    function handleGameEvents(events: ServerOutput[]): void {
-        client.handleGameEvents(events);
-    }
+    const handleGameEvents = useCallback(
+        (events: ServerOutput[]): void => {
+            console.log("FUCKING SHIT");
+            client.handleGameEvents(events);
+        },
+        [client],
+    );
 
-    function setMyPlayerGuid(guid: string | null, replay: boolean): void {
-        setPlayerGuid(guid);
-        client.setMyPlayerGuid(guid, replay);
-    }
+    const setMyPlayerGuid = useCallback(
+        (guid: string | null, replay: boolean): void => {
+            setPlayerGuid(guid);
+            client.setMyPlayerGuid(guid, replay);
+        },
+        [client],
+    );
 
     function initialize(div: HTMLDivElement) {
+        console.log("FUCk");
+        client = new DogfightClient();
+
         // TODO: clean this up, just expose the onCommand directly in the client
         // and write out the command in the client
         const client_callbacks: GameClientCallbacks = {
