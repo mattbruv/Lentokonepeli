@@ -169,14 +169,16 @@ export class DogfightClient {
         });
     }
 
-    public setMyPlayerGuid(guid: string | null) {
+    public setMyPlayerGuid(guid: string | null, replay: boolean) {
         this.myPlayerGuid = guid;
         const myPlayer = this.entities.Player.collection.entries().find((x) => x[1].props.guid === guid);
         this.myPlayerId = myPlayer?.[0] ?? null;
-        if (myPlayer) {
-            this.onMyPlayerUpdate(myPlayer[1].props);
+        if (replay) {
+            if (myPlayer) {
+                this.onMyPlayerUpdate(myPlayer[1].props);
+            }
+            this.onJoinTeam(myPlayer?.[1].props.team ?? "Allies");
         }
-        this.onJoinTeam(myPlayer?.[1].props.team ?? "Allies");
     }
 
     public setMyPlayerId(id: number) {
@@ -319,7 +321,7 @@ export class DogfightClient {
                 }
                 case "YourPlayerGuid": {
                     this.sendPlayerUpdate = true;
-                    this.setMyPlayerGuid(event.data);
+                    this.setMyPlayerGuid(event.data, false);
                     break;
                 }
                 case "ChatMessage": {

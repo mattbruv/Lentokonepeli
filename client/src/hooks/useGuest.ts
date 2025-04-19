@@ -63,7 +63,7 @@ export function useGuest(myName: string, clan: string) {
                         const output: ServerOutput = JSON.parse(data);
                         dogfight.handleGameEvents([output]);
                         if (output.type === "YourPlayerGuid") {
-                            dogfight.setMyPlayerGuid(output.data);
+                            dogfight.setMyPlayerGuid(output.data, false);
                         }
                     } else {
                         // console.log(data)

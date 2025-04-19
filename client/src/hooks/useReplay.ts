@@ -65,7 +65,7 @@ export function useReplay() {
     function updateSpectating(guid: PlayerGuid | null) {
         setSpectating(guid);
         if (guid) {
-            dogfight.setMyPlayerGuid(guid);
+            dogfight.setMyPlayerGuid(guid, true);
         }
     }
 
