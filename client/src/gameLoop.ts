@@ -69,7 +69,6 @@ class GameLoop {
     }
 
     public setPaused(paused: boolean) {
-        console.log("AGME LOOP SET PAUSED", paused);
         this.paused = paused;
         if (!paused) {
             this.lastTime = performance.now();
