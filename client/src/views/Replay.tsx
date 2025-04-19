@@ -59,9 +59,8 @@ export function Replay() {
     function setTick(tick: number): void {
         console.log("TRY TO JUMP TO", tick);
         if (gameContainer.current) {
-            playToTick(tick, gameContainer.current);
+            playToTick(tick);
         }
-        //
     }
 
     return (

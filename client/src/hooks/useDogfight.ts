@@ -20,7 +20,7 @@ export type DogfightCallbacks = {
 
 export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
     const intl = useIntl();
-    let client = useMemo(() => new DogfightClient(), []);
+    const client = useMemo(() => new DogfightClient(), []);
     const engine = useMemo(() => DogfightWeb.new(), []);
 
     // Scoreboard related information
@@ -48,9 +48,6 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
     );
 
     function initialize(div: HTMLDivElement) {
-        console.log("FUCk");
-        client = new DogfightClient();
-
         // TODO: clean this up, just expose the onCommand directly in the client
         // and write out the command in the client
         const client_callbacks: GameClientCallbacks = {
@@ -120,8 +117,13 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
         };
     }, []);
 
+    function clearEntities() {
+        client.clearEntities();
+    }
+
     return {
         initialize,
+        clearEntities,
         handleGameEvents,
         setMyPlayerGuid,
         playerGuid,

@@ -99,17 +99,17 @@ export function useReplay() {
         };
     }, []);
 
-    function playToTick(tick: number, div: HTMLDivElement) {
-        dogfight.initialize(div);
+    function playToTick(tick: number) {
+        dogfight.clearEntities();
+        dogfight.engine.load_replay_until(tick);
+        const state = dogfight.engine.get_full_state();
+        const events = parseServerOutput(state);
+        dogfight.handleGameEvents(events);
         replayTick.current = tick;
         setReplayTime({
             tick: replayTick.current,
             timeString: ticksToHHMMSS(replayTick.current),
         });
-        dogfight.engine.load_replay_until(tick);
-        const state = dogfight.engine.get_full_state();
-        const events = parseServerOutput(state);
-        dogfight.handleGameEvents(events);
     }
 
     return {

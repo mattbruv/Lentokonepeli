@@ -158,6 +158,12 @@ export class DogfightClient {
         this.centerCamera(0, 0);
     }
 
+    public clearEntities() {
+        destroyEntities(this.entities, {
+            onRemove: this.onEntityRemoved.bind(this),
+        });
+    }
+
     public destroy() {
         console.log("destroying client...");
         destroyEntities(this.entities, {
