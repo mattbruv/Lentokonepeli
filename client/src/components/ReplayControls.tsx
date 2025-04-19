@@ -2,7 +2,7 @@ import { ComboboxItem, MultiSelect, ScrollArea, Select, Stack, Text } from "@man
 import { PlayerGuid } from "dogfight-types/PlayerGuid";
 import { ReplayEvent } from "dogfight-types/ReplayEvent";
 import { ReplayEventType } from "dogfight-types/ReplayEventType";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { ticksToHHMMSS } from "../helpers";
 import { ReplayTimer } from "./ReplayTimer";
 
@@ -57,6 +57,16 @@ export function ReplayControls({
         return events.filter((x) => x.player === spectating).filter((x) => viewEvents.includes(x.event.type));
     }, [spectating, events, viewEvents]);
 
+    const lookupName = useCallback(
+        (event: ReplayEvent): string | null => {
+            if ("data" in event.event) {
+                return players[event.event.data];
+            }
+            return null;
+        },
+        [players],
+    );
+
     const eventOptions: ComboboxItem[] = useMemo(() => {
         return Object.entries(EVENT_NAMES).map(([event_type, label]): ComboboxItem => {
             return {
@@ -82,7 +92,9 @@ export function ReplayControls({
                     <ScrollArea h={400}>
                         {playerEvents.map((event, i) => (
                             <div key={i}>
-                                <Text c={event.tick < currentTick ? "dimmed" : ""}>{event.event.type}</Text>
+                                <Text c={event.tick < currentTick ? "dimmed" : ""}>
+                                    {EVENT_NAMES[event.event.type]} {lookupName(event)}
+                                </Text>
                                 <Text size="xs" c={"dimmed"}>
                                     {ticksToHHMMSS(event.tick)}
                                 </Text>
