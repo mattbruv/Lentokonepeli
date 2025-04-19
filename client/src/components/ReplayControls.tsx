@@ -2,22 +2,20 @@ import { Button, ComboboxItem, MultiSelect, ScrollArea, Select, Stack, Text } fr
 import { PlayerGuid } from "dogfight-types/PlayerGuid";
 import { ReplayEvent } from "dogfight-types/ReplayEvent";
 import { ReplayEventType } from "dogfight-types/ReplayEventType";
+import { ReplaySummary } from "dogfight-types/ReplaySummary";
 import { useCallback, useMemo, useState } from "react";
+import { ReplayCallbacks, ReplayInfo } from "src/hooks/useReplay";
 import { ticksToHHMMSS } from "../helpers";
 import { ReplayTimer } from "./ReplayTimer";
 
 type ReplayControlsProps = {
-    // slider props
-    currentTick: number;
-    maxTicks: number;
-    onScrub?: (tick: number) => void;
+    summary: ReplaySummary;
+    info: ReplayInfo;
+    callbacks: ReplayCallbacks;
 
     // other props
     events: ReplayEvent[];
     players: Record<PlayerGuid, string>;
-
-    spectating: string | null;
-    setSpectating: (guid: string | null) => void;
 };
 
 const EVENT_NAMES: Record<ReplayEventType["type"], string> = {
@@ -29,15 +27,7 @@ const EVENT_NAMES: Record<ReplayEventType["type"], string> = {
     DownedBy: "☠️ Downed By",
 };
 
-export function ReplayControls({
-    currentTick,
-    maxTicks,
-    onScrub,
-    events,
-    players,
-    spectating,
-    setSpectating,
-}: ReplayControlsProps) {
+export function ReplayControls({ summary, callbacks, events, players, info }: ReplayControlsProps) {
     const watchPlayers: ComboboxItem[] = useMemo(() => {
         return Object.entries(players).map(([guid, name]): ComboboxItem => {
             return {
@@ -54,8 +44,8 @@ export function ReplayControls({
     }
 
     const playerEvents: ReplayEvent[] = useMemo(() => {
-        return events.filter((x) => x.player === spectating).filter((x) => viewEvents.includes(x.event.type));
-    }, [spectating, events, viewEvents]);
+        return events.filter((x) => x.player === info.spectating).filter((x) => viewEvents.includes(x.event.type));
+    }, [info.spectating, events, viewEvents]);
 
     const lookupName = useCallback(
         (event: ReplayEvent): string | null => {
@@ -74,17 +64,17 @@ export function ReplayControls({
                 value: event_type,
             };
         });
-    }, [spectating]);
+    }, [info.spectating]);
 
     return (
         <Stack>
-            <ReplayTimer currentTick={currentTick} maxTicks={maxTicks} onScrub={onScrub} />
+            <ReplayTimer info={info} summary={summary} callbacks={callbacks} />
             <Stack>
                 <Select
                     label="Spectating Player"
                     placeholder="Pick a player..."
-                    value={spectating}
-                    onChange={setSpectating}
+                    value={info.spectating}
+                    onChange={callbacks.updateSpectating}
                     data={watchPlayers}
                 />
                 <div>
@@ -92,13 +82,13 @@ export function ReplayControls({
                     <ScrollArea h={400}>
                         {playerEvents.map((event, i) => (
                             <div key={i}>
-                                <Text c={event.tick < currentTick ? "dimmed" : ""}>
+                                <Text c={event.tick < info.tick ? "dimmed" : ""}>
                                     {EVENT_NAMES[event.event.type]} {lookupName(event)}
                                 </Text>
                                 <Text size="xs" c={"dimmed"}>
                                     {ticksToHHMMSS(event.tick)}
                                 </Text>
-                                {onScrub ? <Button onClick={(e) => onScrub(event.tick - 100 * 5)}>👀</Button> : null}
+                                <Button onClick={(_) => callbacks.playToTick(event.tick - 100 * 5)}>👀</Button>
                             </div>
                         ))}
                     </ScrollArea>

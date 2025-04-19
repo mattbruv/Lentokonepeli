@@ -2,26 +2,40 @@ import { PlayerGuid } from "dogfight-types/PlayerGuid";
 import { ReplaySummary } from "dogfight-types/ReplaySummary";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import { useEffect, useRef, useState } from "react";
-import { gameLoop, noop } from "../gameLoop";
+import { gameLoop } from "../gameLoop";
 import { ticksToHHMMSS } from "../helpers";
 import { useDogfight } from "./useDogfight";
 
-export type ReplayTime = {
+export type ReplayInfo = {
+    paused: boolean;
+    spectating: string | null;
     tick: number;
     timeString: string;
 };
 
+export type ReplayCallbacks = {
+    setPaused: (value: boolean) => void;
+    playToTick: (tick: number) => void;
+    updateSpectating: (guid: PlayerGuid | null) => void;
+    loadReplay: (binary: Uint8Array) => boolean;
+};
+
 export function useReplay() {
     //console.log("useReplay called!");
-
     const dogfight = useDogfight({
         // We don't want to do anything with commands sent to the replay client
         handleClientCommand: () => {},
     });
 
     const [replaySummary, setReplaySummary] = useState<ReplaySummary | null>(null);
-    const [spectating, setSpectating] = useState<PlayerGuid | null>(null);
-    const [replayTime, setReplayTime] = useState<ReplayTime | null>(null);
+
+    const [replayInfo, setReplayInfo] = useState<ReplayInfo>({
+        spectating: null,
+        paused: false,
+        tick: 0,
+        timeString: ticksToHHMMSS(0),
+    });
+
     const animateRef = useRef<number | null>(null);
     const replayTick = useRef<number>(0);
 
@@ -30,10 +44,11 @@ export function useReplay() {
 
         //        console.log(replayTick.current, replayTick.current % 10);
         if (replayTick.current % 5 === 0) {
-            setReplayTime({
+            setReplayInfo((prev) => ({
+                ...prev,
                 tick: replayTick.current,
                 timeString: ticksToHHMMSS(replayTick.current),
-            });
+            }));
         }
         animateRef.current = requestAnimationFrame(animate);
     };
@@ -65,19 +80,27 @@ export function useReplay() {
     }
 
     function updateSpectating(guid: PlayerGuid | null) {
-        setSpectating(guid);
+        setReplayInfo((prev) => ({
+            ...prev,
+            spectating: guid,
+        }));
+
         if (guid) {
             dogfight.setMyPlayerGuid(guid, true);
         }
     }
 
     useEffect(() => {
-        console.log("REPLAY FILE CHANGED");
+        //console.log("REPLAY FILE CHANGED");
         if (!replaySummary) return;
 
         const updateFn = (currentTick: number) => {
             if (currentTick > replaySummary.total_ticks) {
-                gameLoop.setHostEngineUpdateFn(noop).stop();
+                return;
+            }
+
+            if (replayInfo.paused) {
+                return;
             }
 
             replayTick.current = currentTick;
@@ -91,7 +114,7 @@ export function useReplay() {
 
         gameLoop.setHostEngineUpdateFn(updateFn).start();
         animateRef.current = requestAnimationFrame(animate);
-    }, [replaySummary]);
+    }, [replaySummary, replayInfo]);
 
     useEffect(() => {
         return () => {
@@ -100,26 +123,39 @@ export function useReplay() {
     }, []);
 
     function playToTick(tick: number) {
+        replayTick.current = tick;
+        setReplayInfo((prev) => ({
+            ...prev,
+            paused: true,
+            tick: replayTick.current,
+            timeString: ticksToHHMMSS(replayTick.current),
+        }));
         dogfight.clearEntities();
         dogfight.engine.load_replay_until(tick);
         const state = dogfight.engine.get_full_state();
         const events = parseServerOutput(state);
         dogfight.handleGameEvents(events);
-        replayTick.current = tick;
-        setReplayTime({
-            tick: replayTick.current,
-            timeString: ticksToHHMMSS(replayTick.current),
-        });
+    }
+
+    const replayCallbacks: ReplayCallbacks = {
+        setPaused,
+        playToTick,
+        updateSpectating,
+        loadReplay,
+    };
+
+    function setPaused(value: boolean) {
+        setReplayInfo((prev) => ({
+            ...prev,
+            paused: value,
+        }));
     }
 
     return {
         initialize,
-        loadReplay,
-        replayTime,
         replaySummary,
-        spectating,
-        playToTick,
-        setSpectating: updateSpectating,
+        replayInfo,
+        replayCallbacks,
         playerData: dogfight.playerData,
         playerGuid: dogfight.playerGuid,
         messages: dogfight.messages,

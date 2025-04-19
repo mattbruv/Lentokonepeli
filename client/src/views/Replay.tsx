@@ -14,18 +14,7 @@ enum ReplayState {
 
 export function Replay() {
     const intl = useIntl();
-    const {
-        loadReplay,
-        replaySummary,
-        spectating,
-        setSpectating,
-        replayTime,
-        initialize,
-        playerData,
-        playerGuid,
-        messages,
-        playToTick,
-    } = useReplay();
+    const { replaySummary, replayCallbacks, initialize, playerData, playerGuid, messages, replayInfo } = useReplay();
 
     const [state, setState] = useState<ReplayState>(ReplayState.ProvideFile);
     const gameContainer = useRef<HTMLDivElement>(null);
@@ -43,7 +32,7 @@ export function Replay() {
 
                 if (gameContainer.current) {
                     initialize(gameContainer.current);
-                    const didReadFile = loadReplay(bytes);
+                    const didReadFile = replayCallbacks.loadReplay(bytes);
 
                     if (didReadFile) {
                         setState(ReplayState.Watching);
@@ -54,13 +43,6 @@ export function Replay() {
             }
         };
         reader.readAsArrayBuffer(payload);
-    }
-
-    function setTick(tick: number): void {
-        console.log("TRY TO JUMP TO", tick);
-        if (gameContainer.current) {
-            playToTick(tick);
-        }
     }
 
     return (
@@ -74,15 +56,15 @@ export function Replay() {
             />
             {state === ReplayState.Watching && (
                 <Stack>
-                    <ReplayControls
-                        onScrub={setTick}
-                        players={replaySummary?.players ?? {}}
-                        events={replaySummary?.events ?? []}
-                        currentTick={replayTime?.tick ?? 0}
-                        maxTicks={replaySummary?.total_ticks ?? 1}
-                        spectating={spectating}
-                        setSpectating={setSpectating}
-                    />
+                    {replaySummary && (
+                        <ReplayControls
+                            players={replaySummary?.players ?? {}}
+                            events={replaySummary?.events ?? []}
+                            info={replayInfo}
+                            callbacks={replayCallbacks}
+                            summary={replaySummary}
+                        />
+                    )}
                 </Stack>
             )}
             {state === ReplayState.ProvideFile && (
