@@ -170,6 +170,7 @@ export class DogfightClient {
     }
 
     public setMyPlayerGuid(guid: string | null, replay: boolean) {
+        console.log("My guid:", guid);
         this.myPlayerGuid = guid;
         const myPlayer = this.entities.Player.collection.entries().find((x) => x[1].props.guid === guid);
         this.myPlayerId = myPlayer?.[0] ?? null;
@@ -179,10 +180,6 @@ export class DogfightClient {
             }
             this.onJoinTeam(myPlayer?.[1].props.team ?? "Allies");
         }
-    }
-
-    public setMyPlayerId(id: number) {
-        this.myPlayerId = id;
     }
 
     private onJoinTeam(team: Team) {
