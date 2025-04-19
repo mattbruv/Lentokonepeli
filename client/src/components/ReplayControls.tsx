@@ -82,7 +82,7 @@ export function ReplayControls({
                     <ScrollArea h={400}>
                         {playerEvents.map((event, i) => (
                             <div key={i}>
-                                {event.event.type}
+                                <Text c={event.tick < currentTick ? "dimmed" : ""}>{event.event.type}</Text>
                                 <Text size="xs" c={"dimmed"}>
                                     {ticksToHHMMSS(event.tick)}
                                 </Text>
