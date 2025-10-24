@@ -24,18 +24,19 @@ export class Clock {
         // update clock text every second.
         window.setInterval(() => {
             this.currentTimeMs += CLOCK_REFRESH_RATE_MS;
-            const totalSeconds = Math.floor(this.currentTimeMs / 1000);
+
+            // Remaining time in milliseconds
+            const remainingMs = Math.max(0, this.totalTimeMs - this.currentTimeMs);
+            const totalSeconds = Math.floor(remainingMs / 1000);
             const minutes = Math.floor(totalSeconds / 60);
             const seconds = totalSeconds % 60;
 
-            let str1 = minutes < 10 ? " " + minutes : minutes.toString();
-            let str2 = seconds < 10 ? "0" + seconds : seconds.toString();
+            // Format strings
+            const str1 = minutes < 10 ? " " + minutes : minutes.toString();
+            const str2 = seconds < 10 ? "0" + seconds : seconds.toString();
 
-            if (minutes === 0 && seconds < 5) {
-                // ctx.fillStyle = this.color2;
-            } else {
-                // ctx.fillStyle = this.color;
-            }
+            // Change color when under 5 seconds remaining
+            // ctx.fillStyle = minutes === 0 && seconds < 5 ? this.color2 : this.color;
 
             this.clockText.text = `${str1}:${str2}`;
         }, CLOCK_REFRESH_RATE_MS);

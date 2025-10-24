@@ -58,9 +58,16 @@ impl WorldInfo {
         self.current_tick += 1;
         // we should never NOT be running at 10 ms per tick, so just multiply by this
         // we don't want to mark this as dirty because it would update over the network every tick..
-        // but we need the information of how far along we are to be sent out to each client
-        // so they can calculate the game clock state
-        self.client_time_ms
-            .set_without_flagging(self.current_tick * 10);
+        // but rather let's broadcast it out every 10 ticks or so
+        let ms = self.current_tick * 10;
+
+        // actually broadcast it every 5 seconds to keep timers from going too out of sync
+        let tps = 100;
+        let broadcast_seconds = 10;
+        if (self.current_tick % (tps * broadcast_seconds)) == 0 {
+            self.client_time_ms.set(ms);
+        } else {
+            self.client_time_ms.set_without_flagging(ms);
+        }
     }
 }
