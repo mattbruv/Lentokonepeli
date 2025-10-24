@@ -463,7 +463,8 @@ impl Plane {
 
                 self.mode.set(PlaneMode::Falling);
 
-                // Kill plane
+                // Kill plane and shut off motor
+                self.motor_on.set(false);
                 self.set_health(0);
                 actions.push(Action::RegisterKill(KillEvent::new(
                     self.player_id,
