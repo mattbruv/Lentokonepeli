@@ -32,6 +32,13 @@ where
     }
 
     #[inline]
+    pub fn set_without_flagging(&mut self, new_value: T) {
+        if self.value != new_value {
+            self.value = new_value;
+        }
+    }
+
+    #[inline]
     pub fn get(&self) -> &T {
         &self.value
     }

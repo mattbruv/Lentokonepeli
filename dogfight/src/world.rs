@@ -101,6 +101,7 @@ impl World {
 
     pub fn tick(&mut self, input: Vec<ServerInput>) -> () {
         self.game_tick += 1;
+        self.world_info.tick();
 
         if self.game_tick == 50 {
             self.init_debug();
