@@ -20,7 +20,7 @@ export class Clock {
             fontSize: 17,
             fill: "#afaf5a",
         });
-        this.clockText.position.set(350, 397);
+        this.clockText.position.set(350, 397 + 93);
         this.container.addChild(this.clockText);
 
         // update clock text every second.
@@ -46,11 +46,11 @@ export class Clock {
 
     public setTotalTime(time: number) {
         this.totalTimeMs = time;
-        console.log("RENDER total TIME", time);
+        // console.log("RENDER total TIME", time);
     }
 
     public setCurrentTime(time: number) {
         this.currentTimeMs = time;
-        console.log("RENDER TIME", time);
+        // console.log("RENDER TIME", time);
     }
 }
