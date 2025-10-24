@@ -17,6 +17,8 @@ export class Clock {
         this.container = new PIXI.Container();
         this.clockText = new PIXI.Text("", {
             fontFamily: "arial",
+            fontSize: 17,
+            fill: "#afaf5a",
         });
         this.clockText.position.set(350, 397);
         this.container.addChild(this.clockText);
@@ -36,7 +38,7 @@ export class Clock {
             const str2 = seconds < 10 ? "0" + seconds : seconds.toString();
 
             // Change color when under 5 seconds remaining
-            // ctx.fillStyle = minutes === 0 && seconds < 5 ? this.color2 : this.color;
+            this.clockText.style.fill = minutes === 0 && seconds < 5 ? "#ff8246" : "#afaf5a";
 
             this.clockText.text = `${str1}:${str2}`;
         }, CLOCK_REFRESH_RATE_MS);
