@@ -8,8 +8,10 @@ import { ServerOutput } from "dogfight-types/ServerOutput";
 import { Team } from "dogfight-types/Team";
 import * as PIXI from "pixi.js";
 import { IntlShape } from "react-intl";
+import { Clock } from "./clock";
 import { Entity, isFollowable } from "./entities/entity";
 import { Player } from "./entities/player";
+import { WorldInfo } from "./entities/worldInfo";
 import { DEFAULT_ENTITIES, deleteEntity, destroyEntities, entityCollection, upsertEntity } from "./EntityManager";
 import { formatName } from "./helpers";
 import { GameHUD } from "./hud";
@@ -27,6 +29,17 @@ export type GameClientCallbacks = {
     onPlayerChange: (playerData: PlayerProperties[]) => void;
     onMessage: (message: ChatMessage) => void;
 };
+
+function createNewWorld(this: DogfightClient) {
+    return new WorldInfo({
+        setCurrentTimeMs: (time) => {
+            this.clock.setCurrentTime(time);
+        },
+        setTotalTimeMs: (time) => {
+            this.clock.setTotalTime(time);
+        },
+    });
+}
 
 function createNewPlayer(this: DogfightClient) {
     return new Player((oldControlling, newControlling, props) => {
@@ -63,11 +76,16 @@ export class DogfightClient {
     private runwaySelector: RunwaySelector = new RunwaySelector();
     private gameHUD: GameHUD = new GameHUD();
     private killFeed: KillFeed = new KillFeed();
+    public clock: Clock = new Clock();
     public keyboard: GameKeyboard = new GameKeyboard();
 
     private callbacks?: GameClientCallbacks;
     private sendPlayerUpdate: boolean = false;
-    public entities = entityCollection([...DEFAULT_ENTITIES, ["Player", createNewPlayer.bind(this)]]);
+    public entities = entityCollection([
+        ...DEFAULT_ENTITIES,
+        ["Player", createNewPlayer.bind(this)],
+        ["WorldInfo", createNewWorld.bind(this)],
+    ]);
     public renderClient: RenderClient;
 
     constructor() {
@@ -80,7 +98,12 @@ export class DogfightClient {
 
         this.sky.position.set(0, -250);
 
-        const containers = [this.killFeed.container, this.runwaySelector.container, this.teamChooser.container];
+        const containers = [
+            this.clock.container,
+            this.killFeed.container,
+            this.runwaySelector.container,
+            this.teamChooser.container,
+        ];
 
         this.renderClient = new RenderClient({ background: this.sky, containers, hud: this.gameHUD.container });
     }

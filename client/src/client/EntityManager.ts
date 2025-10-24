@@ -13,7 +13,6 @@ import { Man } from "./entities/man";
 import { Plane } from "./entities/plane";
 import { Runway } from "./entities/runway";
 import { Water } from "./entities/water";
-import { WorldInfo } from "./entities/worldInfo";
 
 /**
  * Shared way to handle entities in the project
@@ -34,7 +33,6 @@ type EntityCollection<TYPE extends EntityType, ENTRIES extends EntityEntry<TYPE,
 
 /** Default entity types for the game. */
 export const DEFAULT_ENTITIES = [
-    ["WorldInfo", () => new WorldInfo()],
     ["Plane", () => new Plane()],
     ["Man", () => new Man()],
     ["BackgroundItem", () => new BackgroundItem()],
