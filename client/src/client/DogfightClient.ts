@@ -25,6 +25,7 @@ import { TeamChooser } from "./teamChooser";
 import { Textures } from "./textures";
 import { GAME_HEIGHT } from "./constants";
 import { drawQuality } from "./drawQuality";
+import { soundManager } from "./soundManager";
 import { GAME_INTL } from "../intl/messages";
 
 const SPECTATE_STYLE: Partial<PIXI.ITextStyle> = {
@@ -225,6 +226,7 @@ export class DogfightClient {
         }
 
         this.centerCamera(TEAM_CHOOSER_CAMERA.x, TEAM_CHOOSER_CAMERA.y);
+        soundManager.startMotorLoop();
     }
 
     public clearEntities() {
@@ -235,6 +237,7 @@ export class DogfightClient {
 
     public destroy() {
         console.log("destroying client...");
+        soundManager.stopMotorLoop();
         destroyEntities(this.entities, {
             onRemove: this.onEntityRemoved.bind(this),
         });

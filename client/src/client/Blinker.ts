@@ -6,7 +6,6 @@ export class Blinker {
     blinking = false;
     targets: PIXI.Sprite[];
     filter: PIXI.ColorMatrixFilter;
-    hitSound = new Howl({ src: "audio/hit.mp3" });
 
     constructor(targets: PIXI.Sprite[]) {
         this.targets = targets;
@@ -24,7 +23,7 @@ export class Blinker {
     public tryBlink() {
         if (this.blinking) return;
         this.blinking = true;
-        soundManager.playSound(this.hitSound);
+        soundManager.play("hit");
         for (const target of this.targets) {
             target.filters = [this.filter];
         }

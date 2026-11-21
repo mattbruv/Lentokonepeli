@@ -1,5 +1,4 @@
 import { BulletProperties } from "dogfight-types/BulletProperties";
-import { Howl } from "howler";
 import * as PIXI from "pixi.js";
 import { scheduler } from "../../gameLoop";
 import { DrawLayer } from "../constants";
@@ -13,7 +12,6 @@ export class Bullet implements Entity<BulletProperties> {
     private container: PIXI.Container;
     private bulletGraphics: PIXI.Graphics;
 
-    private sound: Howl;
     private age = 1;
 
     public isGameRunning: boolean = true;
@@ -44,12 +42,7 @@ export class Bullet implements Entity<BulletProperties> {
         //this.bulletGraphics.position.set(texture.width / 2, texture.height / 2)
         this.container.addChild(this.bulletGraphics);
 
-        // play bullet sound
-        this.sound = new Howl({
-            src: "audio/m16.mp3",
-        });
-
-        soundManager.playSound(this.sound);
+        soundManager.play("m16");
 
         this.container.zIndex = DrawLayer.Bullet;
 
@@ -101,7 +94,6 @@ export class Bullet implements Entity<BulletProperties> {
     };
 
     public destroy() {
-        this.sound.stop();
         scheduler.unregister(this.animate);
     }
 }

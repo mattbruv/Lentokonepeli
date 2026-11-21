@@ -1,5 +1,4 @@
 import { BombProperties } from "dogfight-types/BombProperties";
-import { Howl } from "howler";
 import * as PIXI from "pixi.js";
 import { DrawLayer } from "../constants";
 import { directionToRadians } from "../helpers";
@@ -13,8 +12,6 @@ export class Bomb implements Entity<BombProperties> {
     private container: PIXI.Container;
     private rotator: PIXI.Container;
     private bombSprite: PIXI.Sprite;
-
-    private sound: Howl;
 
     public props: Required<BombProperties> = {
         client_x: 0,
@@ -35,12 +32,7 @@ export class Bomb implements Entity<BombProperties> {
         this.container.addChild(this.rotator);
         this.container.zIndex = DrawLayer.Bomb;
 
-        // play bomb sound
-        this.sound = new Howl({
-            src: "audio/bombdrop.mp3",
-        });
-
-        soundManager.playSound(this.sound);
+        soundManager.play("bombdrop");
     }
 
     public getContainer(): PIXI.Container {
@@ -63,7 +55,5 @@ export class Bomb implements Entity<BombProperties> {
         },
     };
 
-    public destroy() {
-        this.sound.stop();
-    }
+    public destroy() {}
 }

@@ -59,11 +59,7 @@ export class Explosion implements Entity<ExplosionProperties> {
 
         this.container.zIndex = DrawLayer.Explosion;
 
-        soundManager.playSound(
-            new Howl({
-                src: "audio/explosion.mp3",
-            }),
-        );
+        soundManager.play("explosion");
     }
 
     public getContainer(): PIXI.Container {

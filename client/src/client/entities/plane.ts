@@ -7,7 +7,6 @@ import { DrawLayer, TeamColor } from "../constants";
 import { directionToRadians } from "../helpers";
 import { Stats } from "../hud";
 import { RadarObject, RadarObjectType } from "../radar";
-import { soundManager } from "../soundManager";
 import { Textures } from "../textures";
 import { Entity, EntityUpdateCallbacks, Followable, Point, RadarEnabled } from "./entity";
 
@@ -202,7 +201,6 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         },
 
         motor_on: () => {
-            soundManager.handlePlayMotorSound(this.props.motor_on);
             console.log("motor on", this.props.motor_on);
         },
 
@@ -221,7 +219,6 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         scheduler.unregister(this.animate);
         scheduler.unregister(this.createDarkSmoke);
         scheduler.unregister(this.advanceFlip);
-        if (this.props.motor_on) soundManager.handlePlayMotorSound(false);
     }
 
     public getRadarInfo(): RadarObject {
