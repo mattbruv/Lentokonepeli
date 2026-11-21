@@ -140,9 +140,14 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
         client.clearEntities();
     }
 
+    function setReplayMode() {
+        client.setReplayMode();
+    }
+
     return {
         initialize,
         clearEntities,
+        setReplayMode,
         handleGameEvents,
         setMyPlayerGuid,
         playerGuid,

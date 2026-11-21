@@ -244,6 +244,11 @@ export class DogfightClient {
         });
     }
 
+    public setReplayMode() {
+        this.isReplay = true;
+        this.refreshOverlays();
+    }
+
     public setMyPlayerGuid(guid: string | null, replay: boolean) {
         console.log("My guid:", guid);
         this.myPlayerGuid = guid;

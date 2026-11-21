@@ -38,22 +38,19 @@ export function useReplay() {
         timeString: ticksToHHMMSS(0),
     });
 
-    const animateRef = useRef<number | null>(null);
     const replayTick = useRef<number>(0);
 
-    const animate = () => {
-        if (!gameLoop.isRunning()) return;
-
-        //        console.log(replayTick.current, replayTick.current % 10);
-        if (replayTick.current % 5 === 0) {
-            setReplayInfo((prev) => ({
-                ...prev,
-                tick: replayTick.current,
-                timeString: ticksToHHMMSS(replayTick.current),
-            }));
-        }
-        animateRef.current = requestAnimationFrame(animate);
-    };
+    useEffect(() => {
+        let frameId = requestAnimationFrame(function updateTimer() {
+            setReplayInfo((prev) =>
+                prev.tick === replayTick.current
+                    ? prev
+                    : { ...prev, tick: replayTick.current, timeString: ticksToHHMMSS(replayTick.current) },
+            );
+            frameId = requestAnimationFrame(updateTimer);
+        });
+        return () => cancelAnimationFrame(frameId);
+    }, []);
 
     function loadReplay(binary: Uint8Array): boolean {
         const replay_string = dogfight.engine.get_replay_summary(binary);
@@ -67,6 +64,7 @@ export function useReplay() {
         setReplaySummary(summary);
 
         dogfight.engine.load_replay(binary);
+        dogfight.setReplayMode();
 
         return true;
     }
@@ -112,7 +110,6 @@ export function useReplay() {
 
         gameLoop.setHostEngineUpdateFn(updateFn).start();
         gameLoop.setPaused(replayInfo.paused);
-        animateRef.current = requestAnimationFrame(animate);
     }, [replaySummary, replayInfo.paused]);
 
     useEffect(() => {

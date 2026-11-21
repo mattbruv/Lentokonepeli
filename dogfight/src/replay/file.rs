@@ -148,7 +148,7 @@ impl World {
         // ~8-9 seconds to parse 60 minute replay without optimization
 
         for current_tick in start_tick..max_tick {
-            let maybe_input = replay.ticks.get(&current_tick);
+            let maybe_input = replay.ticks.get(&(current_tick + 1));
             let input: Vec<ServerInput> = match maybe_input {
                 Some(tick_data) => tick_data
                     .iter()
@@ -184,7 +184,7 @@ impl World {
                 let output = self.flush_changed_state();
                 let tick_events: Vec<ReplayEvent> = output
                     .iter()
-                    .flat_map(|x| output_to_events(self, current_tick, x.clone()))
+                    .flat_map(|x| output_to_events(self, current_tick + 1, x.clone()))
                     .collect();
 
                 events.extend(tick_events);
