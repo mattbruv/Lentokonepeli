@@ -27,6 +27,10 @@
     "defaultMessage": "Soltar, abrir paracaídas",
     "description": "Title for the 'Eject, Open Parachute' action shown on the keybind settings section"
   },
+  "7GHFcs": {
+    "defaultMessage": "Reapareciendo en",
+    "description": "Shown on screen with a countdown while waiting to respawn after dying"
+  },
   "7kZMTs": {
     "defaultMessage": "El sistema de repetición es actualmente experimental, carece de funciones y aún está inactivo. Es posible que experimentes problemas hasta que la función de repetición esté en un estado estable.",
     "description": "Informative text about the current state of the replay system"
@@ -90,6 +94,10 @@
   "MGsduE": {
     "defaultMessage": "Equipo",
     "description": "scoreboard: Team"
+  },
+  "MrbN1S": {
+    "defaultMessage": "(Penalización por matar a un aliado)",
+    "description": "Shown below the respawn countdown when the wait is longer because of a teamkill"
   },
   "Nbb2Yc": {
     "defaultMessage": "Mover a la derecha",
@@ -238,6 +246,10 @@
   "r1oUWJ": {
     "defaultMessage": "Ver todos los mensajes",
     "description": "'show all messages' switch text"
+  },
+  "sW9neH": {
+    "defaultMessage": "(Penalización por suicidio)",
+    "description": "Shown below the respawn countdown when the wait is longer because of a suicide"
   },
   "scT0m8": {
     "defaultMessage": "Aviso sobre el sistema de repetición",

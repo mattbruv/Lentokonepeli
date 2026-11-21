@@ -104,4 +104,16 @@ export const GAME_INTL = {
             "Versatile mid-tier aircraft. Equipped with bombs in addition to a machine gun. Fast and powerful engine, though not agile.",
         description: "Description of the Salmson 2 aircraft",
     }),
+    respawning_in: defineMessage({
+        defaultMessage: "Respawning in",
+        description: "Shown on screen with a countdown while waiting to respawn after dying",
+    }),
+    suicide_penalty: defineMessage({
+        defaultMessage: "(Suicide penalty)",
+        description: "Shown below the respawn countdown when the wait is longer because of a suicide",
+    }),
+    teamkill_penalty: defineMessage({
+        defaultMessage: "(Teamkill penalty)",
+        description: "Shown below the respawn countdown when the wait is longer because of a teamkill",
+    }),
 } as const satisfies Record<string, MessageDescriptor>;

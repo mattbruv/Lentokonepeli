@@ -41,6 +41,12 @@
       "value": "Laukaise heittoistuin, Avaa laskuvarjo"
     }
   ],
+  "7GHFcs": [
+    {
+      "type": 0,
+      "value": "Takaisin peliin"
+    }
+  ],
   "7kZMTs": [
     {
       "type": 0,
@@ -135,6 +141,12 @@
     {
       "type": 0,
       "value": "Joukkue"
+    }
+  ],
+  "MrbN1S": [
+    {
+      "type": 0,
+      "value": "(Rangaistus oman tappamisesta)"
     }
   ],
   "Nbb2Yc": [
@@ -357,6 +369,12 @@
     {
       "type": 0,
       "value": "Näytä kaikki viestit"
+    }
+  ],
+  "sW9neH": [
+    {
+      "type": 0,
+      "value": "(Rangaistus itsemurhasta)"
     }
   ],
   "scT0m8": [

@@ -91,7 +91,8 @@ impl NetworkedBytes for ControllingEntity {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS, EnumBytes)]
+#[ts(export)]
 pub enum RespawnType {
     Default,
     Suicide,
@@ -131,6 +132,7 @@ pub struct Player {
     deaths: Property<u16>,
     score: Property<i16>,
     respawn_seconds: Property<u8>,
+    respawn_type: Property<RespawnType>,
 }
 
 impl Player {
@@ -152,6 +154,7 @@ impl Player {
             deaths: Property::new(0),
             score: Property::new(0),
             respawn_seconds: Property::new(0),
+            respawn_type: Property::new(RespawnType::Default),
         }
     }
 
@@ -203,6 +206,7 @@ impl Player {
         let ticks = match self.respawn_ticks {
             None => {
                 let wait = self.next_respawn.wait_ticks();
+                self.respawn_type.set(self.next_respawn);
                 self.next_respawn = RespawnType::Default;
                 wait
             }

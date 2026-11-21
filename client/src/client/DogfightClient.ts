@@ -17,6 +17,7 @@ import { GameKeyboard } from "./keyboard";
 import { KillFeed } from "./killfeed";
 import { RenderClient } from "./RenderClient";
 import { RunwaySelector } from "./runwaySelector";
+import { RespawnInfo } from "./respawnInfo";
 import { TeamChooser } from "./teamChooser";
 import { Textures } from "./textures";
 
@@ -63,6 +64,7 @@ export class DogfightClient {
     private runwaySelector: RunwaySelector = new RunwaySelector();
     private gameHUD: GameHUD = new GameHUD();
     private killFeed: KillFeed = new KillFeed();
+    private respawnInfo: RespawnInfo = new RespawnInfo();
     public keyboard: GameKeyboard = new GameKeyboard();
 
     private callbacks?: GameClientCallbacks;
@@ -80,7 +82,12 @@ export class DogfightClient {
 
         this.sky.position.set(0, -250);
 
-        const containers = [this.killFeed.container, this.runwaySelector.container, this.teamChooser.container];
+        const containers = [
+            this.killFeed.container,
+            this.runwaySelector.container,
+            this.teamChooser.container,
+            this.respawnInfo.container,
+        ];
 
         this.renderClient = new RenderClient({ background: this.sky, containers, hud: this.gameHUD.container });
     }
@@ -122,6 +129,7 @@ export class DogfightClient {
         this.keyboard.init((keyboard) => this.onKeyChange(keyboard));
         this.gameHUD.init();
         this.killFeed.init();
+        this.respawnInfo.init(intl);
 
         const width = this.renderClient.app.screen.width / 2;
         const height = this.renderClient.app.screen.height / 2;
@@ -153,6 +161,11 @@ export class DogfightClient {
             // idk why i have to divide hud height by 2, but thats what works
             const y = height - h / 2 - this.gameHUD.container.height / 2;
             this.runwaySelector.container.position.set(x, y);
+        }
+
+        {
+            const y = height - this.gameHUD.container.height / 2;
+            this.respawnInfo.container.position.set(width, y);
         }
 
         this.centerCamera(0, 0);
@@ -239,6 +252,12 @@ export class DogfightClient {
                         ?.setPlayerName(player.props.name, props.team);
                 }
             }
+        }
+
+        if (myPlayer.props.state === "WaitingRespawn") {
+            this.respawnInfo.show(myPlayer.props.respawn_seconds, myPlayer.props.respawn_type);
+        } else {
+            this.respawnInfo.hide();
         }
 
         switch (props.state) {

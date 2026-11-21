@@ -41,6 +41,12 @@
       "value": "Eject, Open Parachute"
     }
   ],
+  "7GHFcs": [
+    {
+      "type": 0,
+      "value": "Respawning in"
+    }
+  ],
   "7kZMTs": [
     {
       "type": 0,
@@ -135,6 +141,12 @@
     {
       "type": 0,
       "value": "Team"
+    }
+  ],
+  "MrbN1S": [
+    {
+      "type": 0,
+      "value": "(Teamkill penalty)"
     }
   ],
   "Nbb2Yc": [
@@ -357,6 +369,12 @@
     {
       "type": 0,
       "value": "Show All Messages"
+    }
+  ],
+  "sW9neH": [
+    {
+      "type": 0,
+      "value": "(Suicide penalty)"
     }
   ],
   "scT0m8": [

@@ -27,6 +27,10 @@
     "defaultMessage": "Eject, Open Parachute",
     "description": "Title for the 'Eject, Open Parachute' action shown on the keybind settings section"
   },
+  "7GHFcs": {
+    "defaultMessage": "Respawning in",
+    "description": "Shown on screen with a countdown while waiting to respawn after dying"
+  },
   "7kZMTs": {
     "defaultMessage": "The replay system is currently experimental, lacking features, and still inactive development. You may experience problems until the replay feature isin a stable state.",
     "description": "Informative text about the current state of the replay system"
@@ -90,6 +94,10 @@
   "MGsduE": {
     "defaultMessage": "Team",
     "description": "scoreboard: Team"
+  },
+  "MrbN1S": {
+    "defaultMessage": "(Teamkill penalty)",
+    "description": "Shown below the respawn countdown when the wait is longer because of a teamkill"
   },
   "Nbb2Yc": {
     "defaultMessage": "Move Right",
@@ -238,6 +246,10 @@
   "r1oUWJ": {
     "defaultMessage": "Show All Messages",
     "description": "'show all messages' switch text"
+  },
+  "sW9neH": {
+    "defaultMessage": "(Suicide penalty)",
+    "description": "Shown below the respawn countdown when the wait is longer because of a suicide"
   },
   "scT0m8": {
     "defaultMessage": "Replay System Notice",

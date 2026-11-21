@@ -41,6 +41,12 @@
       "value": "Soltar, abrir paracaídas"
     }
   ],
+  "7GHFcs": [
+    {
+      "type": 0,
+      "value": "Reapareciendo en"
+    }
+  ],
   "7kZMTs": [
     {
       "type": 0,
@@ -135,6 +141,12 @@
     {
       "type": 0,
       "value": "Equipo"
+    }
+  ],
+  "MrbN1S": [
+    {
+      "type": 0,
+      "value": "(Penalización por matar a un aliado)"
     }
   ],
   "Nbb2Yc": [
@@ -357,6 +369,12 @@
     {
       "type": 0,
       "value": "Ver todos los mensajes"
+    }
+  ],
+  "sW9neH": [
+    {
+      "type": 0,
+      "value": "(Penalización por suicidio)"
     }
   ],
   "scT0m8": [
