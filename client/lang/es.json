@@ -7,6 +7,10 @@
     "defaultMessage": "¡Empate!",
     "description": "Shown in large text and in chat when a round ends in a tie"
   },
+  "/Dq9eZ": {
+    "defaultMessage": "Gráficos",
+    "description": "Checkbox on the bottom game panel that switches between full and simple graphics"
+  },
   "/KlrcC": {
     "defaultMessage": "Nombre de usuario",
     "description": "Settings section title used to modify the username"
@@ -14,6 +18,10 @@
   "07P703": {
     "defaultMessage": "Un triplano legendario. Extremadamente ágil y también excelente a máxima altitud de vuelo.",
     "description": "Description of the Fokker DR.I aircraft"
+  },
+  "0Dfmt+": {
+    "defaultMessage": "Elige una bandera con las flechas izquierda y derecha",
+    "description": "Team selection info box, line 4"
   },
   "2t1nvh": {
     "defaultMessage": "Cuartel general de {team, select, Centrals {las Potencias Centrales} other {los Aliados}} destruido.",
@@ -75,6 +83,10 @@
     "defaultMessage": "Avión equipado con una ametralladora bastante potente. Una buena elección, especialmente para pilotos novatos.",
     "description": "Description of the Bristol F.2b aircraft"
   },
+  "E6Mscy": {
+    "defaultMessage": "Las Potencias Centrales vuelan Albatros, Junkers y Fokker.",
+    "description": "Team selection info box, line 1"
+  },
   "G7DhrV": {
     "defaultMessage": "Jugar",
     "description": "Sidebar link description for the main game page used to play the game"
@@ -103,10 +115,6 @@
     "defaultMessage": "Extremadamente ágil. No recomendado para pilotos novatos.",
     "description": "Description of the Sopwith Camel aircraft"
   },
-  "MGsduE": {
-    "defaultMessage": "Equipo",
-    "description": "scoreboard: Team"
-  },
   "MrbN1S": {
     "defaultMessage": "(Penalización por matar a un aliado)",
     "description": "Shown below the respawn countdown when the wait is longer because of a teamkill"
@@ -119,6 +127,10 @@
     "defaultMessage": "Ilimitado",
     "description": "Game time option for rounds that only end when a team's base is destroyed"
   },
+  "PEHw6d": {
+    "defaultMessage": "ESPECTADOR",
+    "description": "Shown on screen while watching a replay"
+  },
   "PEq6j5": {
     "defaultMessage": "Cerrar el chat",
     "description": "message indicating 'Esc' closes the chat"
@@ -130,6 +142,10 @@
   "Qt6faF": {
     "defaultMessage": "Organizar un partido",
     "description": "Title for section used for hosting a game"
+  },
+  "RJPf0Z": {
+    "defaultMessage": "Sonidos",
+    "description": "Checkbox on the bottom game panel that turns sound on or off"
   },
   "SDo2PQ": {
     "defaultMessage": "Ver el código fuente en GitHub",
@@ -166,6 +182,14 @@
   "Wo8cms": {
     "defaultMessage": "Puntos",
     "description": "scoreboard: Score"
+  },
+  "XG5CvM": {
+    "defaultMessage": "Destruye la base enemiga para ganar la ronda.",
+    "description": "Team selection info box, line 6"
+  },
+  "XS5GTW": {
+    "defaultMessage": "Salir",
+    "description": "Button on the bottom game panel that leaves the game"
   },
   "Y5ZG9P": {
     "defaultMessage": "Puedes cambiar esto en cualquier momento en el menú de ajustes",
@@ -235,6 +259,10 @@
     "defaultMessage": "Añadir enlace de teclas",
     "description": "Title for modal where keybinds are added"
   },
+  "hKUzZN": {
+    "defaultMessage": "La bandera central te une al equipo más pequeño.",
+    "description": "Team selection info box, line 3"
+  },
   "iu4I/w": {
     "defaultMessage": "Precisión",
     "description": "scoreboard: Accuracy"
@@ -263,6 +291,10 @@
     "defaultMessage": "Ver una Repetición ",
     "description": "Sidebar link description for the Replay System page"
   },
+  "nUMJk3": {
+    "defaultMessage": "Siguiendo: {name}",
+    "description": "Shown on screen while watching a replay, with the name of the player being followed"
+  },
   "ohIqzI": {
     "defaultMessage": "Activar el motor",
     "description": "Title for the 'Toggle Motor' action shown on the keybind settings section"
@@ -283,6 +315,10 @@
     "defaultMessage": "Mapa",
     "description": "Title for selection used to choose the game level"
   },
+  "qxZ7v3": {
+    "defaultMessage": "y pulsa Intro, o haz clic en una bandera.",
+    "description": "Team selection info box, line 5"
+  },
   "r1oUWJ": {
     "defaultMessage": "Ver todos los mensajes",
     "description": "'show all messages' switch text"
@@ -294,6 +330,10 @@
   "scT0m8": {
     "defaultMessage": "Aviso sobre el sistema de repetición",
     "description": "title for a notice section for the Replay System"
+  },
+  "szCmDm": {
+    "defaultMessage": "E",
+    "description": "scoreboard: Team column, one letter"
   },
   "tN8/0L": {
     "defaultMessage": "Chatear con el equipo",
@@ -327,6 +367,10 @@
     "defaultMessage": "¡Únete a nosotros en Discord!",
     "description": "Navbar hover for discord button"
   },
+  "xHTHCO": {
+    "defaultMessage": "Los Aliados vuelan Bristol, Salmson y Sopwith.",
+    "description": "Team selection info box, line 2"
+  },
   "xPJ6oZ": {
     "defaultMessage": "Voltear el avión",
     "description": "Title for the 'Flip Plane' action shown on the keybind settings section"
@@ -355,8 +399,16 @@
     "defaultMessage": "Equipado con bombas además de una ametralladora, extremadamente duradero, pero un avión torpe.",
     "description": "Description of the Junkers J.1 aircraft"
   },
+  "zhqTAn": {
+    "defaultMessage": "Elige tu bando",
+    "description": "Title of the team selection info box"
+  },
   "zvKn4f": {
     "defaultMessage": "Código del juego",
     "description": "Title shown above the shareable room code"
+  },
+  "MGsduE": {
+    "defaultMessage": "Equipo",
+    "description": "scoreboard: Team"
   }
 }

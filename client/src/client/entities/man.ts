@@ -18,6 +18,7 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
 
     private container: PIXI.Container;
     private manContainer: PIXI.Container;
+    private nameContainer: PIXI.Container;
 
     private manSprite: PIXI.Sprite;
 
@@ -38,8 +39,9 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
             fontFamily: "arial",
             fontSize: 10,
         });
-        //this.nameText.anchor.set(0.5, 0)
-        this.nameText.position.set(0, -15);
+        this.nameContainer = new PIXI.Container();
+        this.nameContainer.addChild(this.nameText);
+        this.nameContainer.zIndex = DrawLayer.Name;
 
         this.manSprite.texture = texture;
 
@@ -49,7 +51,6 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
 
         this.container.addChild(this.manContainer);
         this.manContainer.addChild(this.manSprite);
-        this.manContainer.addChild(this.nameText);
 
         this.container.zIndex = DrawLayer.Man;
 
@@ -65,15 +66,16 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
         state: () => this.updateState(),
     };
 
-    public getContainer(): PIXI.Container {
-        return this.container;
+    public getContainer(): PIXI.Container[] {
+        return [this.container, this.nameContainer];
     }
 
     public getStats(): Stats {
         return {
             health: 255,
+            fuel: 0,
             ammo: 255,
-            bombs: 1,
+            bombs: 0,
         };
     }
 
@@ -90,24 +92,34 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
 
     private updateX(): void {
         this.container.position.x = this.props.client_x;
+        this.positionName();
     }
 
     private updateY(): void {
         this.container.position.y = this.props.client_y;
+        this.positionName();
+    }
+
+    private positionName(): void {
+        const ascent = PIXI.TextMetrics.measureFont(this.nameText.style.toFontString()).ascent;
+        this.nameText.position.set(this.props.client_x, this.props.client_y - ascent);
     }
 
     private updateState(): void {
         switch (this.props.state) {
             case "Falling": {
                 this.manSprite.texture = Textures["parachuter0.gif"];
+                this.manSprite.scale.x = 1;
                 break;
             }
             case "Parachuting": {
                 this.manSprite.texture = Textures["parachuter1.gif"];
+                this.manSprite.scale.x = 1;
                 break;
             }
             case "Standing": {
                 this.manSprite.texture = Textures["parachuter0.gif"];
+                this.manSprite.scale.x = 1;
                 break;
             }
             case "WalkingLeft": {
@@ -127,8 +139,8 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
     public getRadarInfo(): RadarObject {
         return {
             type: RadarObjectType.Man,
-            x: this.props.client_x,
-            y: this.props.client_y + this.manSprite.texture.height,
+            x: this.props.client_x + Math.trunc(this.manSprite.texture.width / 2),
+            y: this.props.client_y + Math.trunc(this.manSprite.texture.height / 2),
             team: this.props.team,
         };
     }

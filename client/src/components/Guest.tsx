@@ -35,6 +35,7 @@ export function Guest({ gameCode }: GuestProps) {
                 myPlayerGuid={playerGuid}
                 playerData={playerData}
                 intermission={intermission}
+                roomName={gameCode}
                 messages={messages}
                 onSendMessage={sendChatMessage}
             />

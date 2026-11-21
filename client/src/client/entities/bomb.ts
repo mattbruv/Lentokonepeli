@@ -7,8 +7,11 @@ import { Textures } from "../textures";
 import { Entity, EntityUpdateCallbacks } from "./entity";
 import { soundManager } from "../soundManager";
 
+const BOMB_IMAGE_DIRECTIONS = 64;
+
 export class Bomb implements Entity<BombProperties> {
     private container: PIXI.Container;
+    private rotator: PIXI.Container;
     private bombSprite: PIXI.Sprite;
 
     private sound: Howl;
@@ -22,10 +25,14 @@ export class Bomb implements Entity<BombProperties> {
     constructor() {
         this.container = new PIXI.Container();
         const texture = Textures["bomb.gif"];
+        const size = Math.ceil(Math.sqrt(texture.width * texture.width + texture.height * texture.height));
         this.bombSprite = new PIXI.Sprite(texture);
-        this.bombSprite.anchor.set(0.5, 0.5);
-        this.bombSprite.position.set(texture.width / 2, texture.height / 2);
-        this.container.addChild(this.bombSprite);
+        this.bombSprite.position.set(Math.floor((size - texture.width) / 2), Math.floor((size - texture.height) / 2));
+        this.rotator = new PIXI.Container();
+        this.rotator.pivot.set(size / 2, size / 2);
+        this.rotator.position.set(size / 2, size / 2);
+        this.rotator.addChild(this.bombSprite);
+        this.container.addChild(this.rotator);
         this.container.zIndex = DrawLayer.Bomb;
 
         // play bomb sound
@@ -51,7 +58,8 @@ export class Bomb implements Entity<BombProperties> {
         },
         direction: () => {
             // console.log(this.props.direction)
-            this.bombSprite.rotation = directionToRadians(this.props.direction);
+            const step = Math.floor((this.props.direction * BOMB_IMAGE_DIRECTIONS) / 256);
+            this.rotator.rotation = directionToRadians((step * 256) / BOMB_IMAGE_DIRECTIONS);
         },
     };
 

@@ -11,6 +11,12 @@
       "value": "Tasapeli!"
     }
   ],
+  "/Dq9eZ": [
+    {
+      "type": 0,
+      "value": "Grafiikka"
+    }
+  ],
   "/KlrcC": [
     {
       "type": 0,
@@ -21,6 +27,12 @@
     {
       "type": 0,
       "value": "Legendaarinen kolmitaso. Erittäin kettärä ja myös mainio maksimilentokorkeus."
+    }
+  ],
+  "0Dfmt+": [
+    {
+      "type": 0,
+      "value": "Valitse lippu vasemmalla ja oikealla nuolinäppäimellä"
     }
   ],
   "2t1nvh": [
@@ -157,6 +169,12 @@
       "value": "Sangen tulivoimaisella konekiväärillä varustettu kone. Hyvä valinta etenkin aloitteleville lentäjille."
     }
   ],
+  "E6Mscy": [
+    {
+      "type": 0,
+      "value": "Keskusvallat lentävät Albatrosia, Junkersia ja Fokkeria."
+    }
+  ],
   "G7DhrV": [
     {
       "type": 0,
@@ -223,6 +241,12 @@
       "value": "Rajoittamaton"
     }
   ],
+  "PEHw6d": [
+    {
+      "type": 0,
+      "value": "KATSOJA"
+    }
+  ],
   "PEq6j5": [
     {
       "type": 0,
@@ -239,6 +263,12 @@
     {
       "type": 0,
       "value": "Isännöi peli"
+    }
+  ],
+  "RJPf0Z": [
+    {
+      "type": 0,
+      "value": "Äänet"
     }
   ],
   "SDo2PQ": [
@@ -293,6 +323,18 @@
     {
       "type": 0,
       "value": "Pisteet"
+    }
+  ],
+  "XG5CvM": [
+    {
+      "type": 0,
+      "value": "Tuhoa vihollisen tukikohta voittaaksesi erän."
+    }
+  ],
+  "XS5GTW": [
+    {
+      "type": 0,
+      "value": "Poistu"
     }
   ],
   "Y5ZG9P": [
@@ -423,6 +465,12 @@
       "value": "Lisää pikanäppäin"
     }
   ],
+  "hKUzZN": [
+    {
+      "type": 0,
+      "value": "Keskimmäinen lippu valitsee pienemmän joukkueen."
+    }
+  ],
   "iu4I/w": [
     {
       "type": 0,
@@ -465,6 +513,16 @@
       "value": "Uusinnat"
     }
   ],
+  "nUMJk3": [
+    {
+      "type": 0,
+      "value": "Seurataan: "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    }
+  ],
   "ohIqzI": [
     {
       "type": 0,
@@ -495,6 +553,12 @@
       "value": "Kenttä"
     }
   ],
+  "qxZ7v3": [
+    {
+      "type": 0,
+      "value": "ja paina Enteriä, tai napsauta lippua."
+    }
+  ],
   "r1oUWJ": [
     {
       "type": 0,
@@ -511,6 +575,12 @@
     {
       "type": 0,
       "value": "Uusintojen huomautus"
+    }
+  ],
+  "szCmDm": [
+    {
+      "type": 0,
+      "value": "J"
     }
   ],
   "tN8/0L": [
@@ -561,6 +631,12 @@
       "value": "Liity discord palvelimelle!"
     }
   ],
+  "xHTHCO": [
+    {
+      "type": 0,
+      "value": "Liittoutuneet lentävät Bristolia, Salmsonia ja Sopwithia."
+    }
+  ],
   "xPJ6oZ": [
     {
       "type": 0,
@@ -601,6 +677,12 @@
     {
       "type": 0,
       "value": "Konekiväärin lisäksi pommeilla varustettu, erittäin kestävä, mutta kömpelö kone."
+    }
+  ],
+  "zhqTAn": [
+    {
+      "type": 0,
+      "value": "Valitse puolesi"
     }
   ],
   "zvKn4f": [

@@ -7,7 +7,7 @@ import { directionToRadians } from "../helpers";
 import { soundManager } from "../soundManager";
 import { Entity, EntityUpdateCallbacks } from "./entity";
 
-const COLORS: string[] = ["#000000", "#171717", "#515151", "#606060", "#999999"];
+const COLORS: string[] = ["#000000", "#111111", "#333333", "#606060", "#999999"];
 
 export class Bullet implements Entity<BulletProperties> {
     private container: PIXI.Container;
@@ -37,7 +37,7 @@ export class Bullet implements Entity<BulletProperties> {
 
         this.bulletGraphics.clear();
         this.bulletGraphics.beginFill(COLORS[0]);
-        this.bulletGraphics.drawRect(0, 0, 4, 4);
+        this.bulletGraphics.drawRect(0, 0, 2, 2);
         this.bulletGraphics.endFill();
 
         //this.bulletGraphics.anchor.set(0.5, 0.5)

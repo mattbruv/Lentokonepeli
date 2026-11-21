@@ -11,6 +11,12 @@
       "value": "¡Empate!"
     }
   ],
+  "/Dq9eZ": [
+    {
+      "type": 0,
+      "value": "Gráficos"
+    }
+  ],
   "/KlrcC": [
     {
       "type": 0,
@@ -21,6 +27,12 @@
     {
       "type": 0,
       "value": "Un triplano legendario. Extremadamente ágil y también excelente a máxima altitud de vuelo."
+    }
+  ],
+  "0Dfmt+": [
+    {
+      "type": 0,
+      "value": "Elige una bandera con las flechas izquierda y derecha"
     }
   ],
   "2t1nvh": [
@@ -165,6 +177,12 @@
       "value": "Avión equipado con una ametralladora bastante potente. Una buena elección, especialmente para pilotos novatos."
     }
   ],
+  "E6Mscy": [
+    {
+      "type": 0,
+      "value": "Las Potencias Centrales vuelan Albatros, Junkers y Fokker."
+    }
+  ],
   "G7DhrV": [
     {
       "type": 0,
@@ -231,6 +249,12 @@
       "value": "Ilimitado"
     }
   ],
+  "PEHw6d": [
+    {
+      "type": 0,
+      "value": "ESPECTADOR"
+    }
+  ],
   "PEq6j5": [
     {
       "type": 0,
@@ -247,6 +271,12 @@
     {
       "type": 0,
       "value": "Organizar un partido"
+    }
+  ],
+  "RJPf0Z": [
+    {
+      "type": 0,
+      "value": "Sonidos"
     }
   ],
   "SDo2PQ": [
@@ -301,6 +331,18 @@
     {
       "type": 0,
       "value": "Puntos"
+    }
+  ],
+  "XG5CvM": [
+    {
+      "type": 0,
+      "value": "Destruye la base enemiga para ganar la ronda."
+    }
+  ],
+  "XS5GTW": [
+    {
+      "type": 0,
+      "value": "Salir"
     }
   ],
   "Y5ZG9P": [
@@ -435,6 +477,12 @@
       "value": "Añadir enlace de teclas"
     }
   ],
+  "hKUzZN": [
+    {
+      "type": 0,
+      "value": "La bandera central te une al equipo más pequeño."
+    }
+  ],
   "iu4I/w": [
     {
       "type": 0,
@@ -477,6 +525,16 @@
       "value": "Ver una Repetición "
     }
   ],
+  "nUMJk3": [
+    {
+      "type": 0,
+      "value": "Siguiendo: "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    }
+  ],
   "ohIqzI": [
     {
       "type": 0,
@@ -507,6 +565,12 @@
       "value": "Mapa"
     }
   ],
+  "qxZ7v3": [
+    {
+      "type": 0,
+      "value": "y pulsa Intro, o haz clic en una bandera."
+    }
+  ],
   "r1oUWJ": [
     {
       "type": 0,
@@ -523,6 +587,12 @@
     {
       "type": 0,
       "value": "Aviso sobre el sistema de repetición"
+    }
+  ],
+  "szCmDm": [
+    {
+      "type": 0,
+      "value": "E"
     }
   ],
   "tN8/0L": [
@@ -573,6 +643,12 @@
       "value": "¡Únete a nosotros en Discord!"
     }
   ],
+  "xHTHCO": [
+    {
+      "type": 0,
+      "value": "Los Aliados vuelan Bristol, Salmson y Sopwith."
+    }
+  ],
   "xPJ6oZ": [
     {
       "type": 0,
@@ -613,6 +689,12 @@
     {
       "type": 0,
       "value": "Equipado con bombas además de una ametralladora, extremadamente duradero, pero un avión torpe."
+    }
+  ],
+  "zhqTAn": [
+    {
+      "type": 0,
+      "value": "Elige tu bando"
     }
   ],
   "zvKn4f": [

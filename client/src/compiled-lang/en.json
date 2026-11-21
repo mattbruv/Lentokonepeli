@@ -11,6 +11,12 @@
       "value": "Tie!"
     }
   ],
+  "/Dq9eZ": [
+    {
+      "type": 0,
+      "value": "Gfx"
+    }
+  ],
   "/KlrcC": [
     {
       "type": 0,
@@ -21,6 +27,12 @@
     {
       "type": 0,
       "value": "A legendary triplane. Extremely agile and also excellent at maximum flight altitude."
+    }
+  ],
+  "0Dfmt+": [
+    {
+      "type": 0,
+      "value": "Pick a flag with the left and right arrow keys"
     }
   ],
   "2t1nvh": [
@@ -157,6 +169,12 @@
       "value": "An aircraft equipped with a fairly powerful machine gun. A good choice, especially for beginner pilots."
     }
   ],
+  "E6Mscy": [
+    {
+      "type": 0,
+      "value": "Centrals fly the Albatros, Junkers and Fokker."
+    }
+  ],
   "G7DhrV": [
     {
       "type": 0,
@@ -199,12 +217,6 @@
       "value": "Extremely agile. Not recommended for beginner pilots."
     }
   ],
-  "MGsduE": [
-    {
-      "type": 0,
-      "value": "Team"
-    }
-  ],
   "MrbN1S": [
     {
       "type": 0,
@@ -223,6 +235,12 @@
       "value": "Unlimited"
     }
   ],
+  "PEHw6d": [
+    {
+      "type": 0,
+      "value": "SPECTATING"
+    }
+  ],
   "PEq6j5": [
     {
       "type": 0,
@@ -239,6 +257,12 @@
     {
       "type": 0,
       "value": "Host a Game"
+    }
+  ],
+  "RJPf0Z": [
+    {
+      "type": 0,
+      "value": "Sounds"
     }
   ],
   "SDo2PQ": [
@@ -293,6 +317,18 @@
     {
       "type": 0,
       "value": "Score"
+    }
+  ],
+  "XG5CvM": [
+    {
+      "type": 0,
+      "value": "Destroy the enemy base to win the round."
+    }
+  ],
+  "XS5GTW": [
+    {
+      "type": 0,
+      "value": "Exit"
     }
   ],
   "Y5ZG9P": [
@@ -423,6 +459,12 @@
       "value": "Add Key Binding"
     }
   ],
+  "hKUzZN": [
+    {
+      "type": 0,
+      "value": "The middle flag puts you on the smaller team."
+    }
+  ],
   "iu4I/w": [
     {
       "type": 0,
@@ -465,6 +507,16 @@
       "value": "Watch Replay"
     }
   ],
+  "nUMJk3": [
+    {
+      "type": 0,
+      "value": "Following: "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    }
+  ],
   "ohIqzI": [
     {
       "type": 0,
@@ -495,6 +547,12 @@
       "value": "Level"
     }
   ],
+  "qxZ7v3": [
+    {
+      "type": 0,
+      "value": "and press Enter, or click a flag."
+    }
+  ],
   "r1oUWJ": [
     {
       "type": 0,
@@ -511,6 +569,12 @@
     {
       "type": 0,
       "value": "Replay System Notice"
+    }
+  ],
+  "szCmDm": [
+    {
+      "type": 0,
+      "value": "T"
     }
   ],
   "tN8/0L": [
@@ -561,6 +625,12 @@
       "value": "Join us on Discord!"
     }
   ],
+  "xHTHCO": [
+    {
+      "type": 0,
+      "value": "Allies fly the Bristol, Salmson and Sopwith."
+    }
+  ],
   "xPJ6oZ": [
     {
       "type": 0,
@@ -601,6 +671,12 @@
     {
       "type": 0,
       "value": "Equipped with bombs in addition to a machine gun, extremely durable, but a clumsy aircraft."
+    }
+  ],
+  "zhqTAn": [
+    {
+      "type": 0,
+      "value": "Choose your side"
     }
   ],
   "zvKn4f": [

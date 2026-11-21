@@ -37,6 +37,7 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
         },
         client_health: () => {
             this.updateTexture();
+            this.updateBack();
             this.drawHealthBar();
 
             if (this.props.client_health < this.lastHealth) {
@@ -55,7 +56,7 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
             const { facing } = this.props;
             if (facing === undefined) return;
             this.updateTexture();
-            this.runwayBack.visible = facing === "Left" ? true : false;
+            this.updateBack();
         },
         team: () => {},
     };
@@ -104,6 +105,11 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
 
     private updateTexture(): void {
         this.runwaySprite.texture = this.getTexture();
+        this.frontContainer.zIndex = this.props.client_health > 0 ? DrawLayer.Runway : DrawLayer.DestroyedBuilding;
+    }
+
+    private updateBack(): void {
+        this.runwayBack.visible = this.props.facing === "Left" && this.props.client_health > 0;
     }
 
     public getStats(): Stats {
@@ -111,7 +117,7 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
             ammo: 0,
             bombs: 0,
             fuel: 0,
-            health: this.props.client_health / 255,
+            health: this.props.client_health,
         };
     }
 
@@ -136,12 +142,12 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
 
         this.healthBar.visible = true;
 
-        const tex = this.getTexture();
+        const tex = Textures["runway.gif"];
         this.healthBar.position.y = client_y + tex.height - 3 - 1;
         this.healthBar.position.x = client_x + 10;
 
         const color = team === this.userTeam ? TeamColor.OwnBackground : TeamColor.OpponentBackground;
-        const amount = Math.round((tex.width - 20) * (client_health / 255));
+        const amount = Math.floor(((tex.width - 20) * client_health) / 255);
 
         this.healthBar.clear();
         this.healthBar.beginFill(color);
@@ -156,17 +162,14 @@ export class Runway implements Entity<RunwayProperties>, Followable, RadarEnable
     public destroy() {}
 
     public getRadarInfo(): RadarObject {
-        // The original game shows the runway dot in the middle
-        const halfWidth = Math.round(this.runwaySprite.width / 2);
-        const x = this.props.team === "Centrals" ? this.props.client_x : this.props.client_x + this.runwaySprite.width;
-        const offset = this.props.team === "Centrals" ? halfWidth : -halfWidth;
+        const tex = this.runwaySprite.texture;
         return {
             type: RadarObjectType.Runway,
-            x: x + offset,
-            y: this.props.client_y + this.runwaySprite.height,
+            x: this.props.client_x + Math.trunc(tex.width / 2),
+            y: this.props.client_y + Math.trunc(tex.height / 2),
             health: this.props.client_health,
             team: this.props.team,
-            width: this.runwaySprite.width,
+            width: tex.width,
         };
     }
 }

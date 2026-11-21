@@ -18,6 +18,7 @@ export const Game = forwardRef<HTMLDivElement, GameProps>((props, ref) => {
                     playerData={props.playerData}
                     myPlayerGuid={props.myPlayerGuid}
                     intermission={props.intermission}
+                    roomName={props.roomName}
                 />
             )}
             {<Chat messages={props.messages} onSendMessage={props.onSendMessage} myTeam={myTeam} />}

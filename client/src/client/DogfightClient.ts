@@ -10,10 +10,11 @@ import { WorldState } from "dogfight-types/WorldState";
 import * as PIXI from "pixi.js";
 import { IntlShape } from "react-intl";
 import { Entity, isFollowable } from "./entities/entity";
+import { Hill } from "./entities/hill";
 import { Player } from "./entities/player";
 import { DEFAULT_ENTITIES, deleteEntity, destroyEntities, entityCollection, upsertEntity } from "./EntityManager";
 import { formatName } from "./helpers";
-import { GameHUD } from "./hud";
+import { GameHUD, Stats } from "./hud";
 import { GameKeyboard } from "./keyboard";
 import { KillFeed } from "./killfeed";
 import { RenderClient } from "./RenderClient";
@@ -22,7 +23,31 @@ import { RespawnInfo } from "./respawnInfo";
 import { RoundInfo } from "./roundInfo";
 import { TeamChooser } from "./teamChooser";
 import { Textures } from "./textures";
+import { GAME_HEIGHT } from "./constants";
+import { drawQuality } from "./drawQuality";
 import { GAME_INTL } from "../intl/messages";
+
+const SPECTATE_STYLE: Partial<PIXI.ITextStyle> = {
+    fontFamily: "Arial",
+    fontSize: 15,
+    fontWeight: "bold",
+    fill: 0xffff00,
+};
+
+const TEAM_CHOOSER_CAMERA = { x: 0, y: -150 };
+
+const MAX_BOMBS: Record<PlaneType, number> = {
+    Albatros: 0,
+    Junkers: 5,
+    Fokker: 0,
+    Bristol: 0,
+    Salmson: 5,
+    Sopwith: 0,
+};
+
+function fullPlaneStats(planeType: PlaneType): Stats {
+    return { health: 255, fuel: 255, ammo: 255, bombs: MAX_BOMBS[planeType] };
+}
 
 export type GameClientCallbacks = {
     chooseTeam: (team: Team | null) => void;
@@ -31,6 +56,8 @@ export type GameClientCallbacks = {
     onPlayerChange: (playerData: PlayerProperties[]) => void;
     onMessage: (message: ChatMessage) => void;
     onWorldStateChange: (state: WorldState | null) => void;
+    onExit: () => void;
+    onToggleSounds: (enabled: boolean) => void;
 };
 
 function createNewPlayer(this: DogfightClient) {
@@ -72,6 +99,9 @@ export class DogfightClient {
     private roundInfo: RoundInfo = new RoundInfo();
     private worldState: WorldState | null = null;
     private isReplay = false;
+    private spectateContainer = new PIXI.Container();
+    private spectatingText = new PIXI.Text("", SPECTATE_STYLE);
+    private followingText = new PIXI.Text("", SPECTATE_STYLE);
     public keyboard: GameKeyboard = new GameKeyboard();
 
     private callbacks?: GameClientCallbacks;
@@ -88,15 +118,14 @@ export class DogfightClient {
         this.sky.width = skyTexture.width;
         this.sky.height = skyTexture.height;
 
-        this.sky.position.set(0, -250);
-
         const containers = [
-            this.killFeed.container,
+            this.roundInfo.container,
             this.runwaySelector.container,
-            this.roundInfo.clockContainer,
             this.teamChooser.container,
             this.respawnInfo.container,
-            this.roundInfo.container,
+            this.roundInfo.clockContainer,
+            this.spectateContainer,
+            this.killFeed.container,
         ];
 
         this.renderClient = new RenderClient({ background: this.sky, containers, hud: this.gameHUD.container });
@@ -116,6 +145,12 @@ export class DogfightClient {
                 this.callbacks?.keyChange(keys);
                 break;
             }
+            case "ChoosingTeam": {
+                if (!this.isReplay) {
+                    this.teamChooser.processKeys(keys);
+                }
+                break;
+            }
             case "ChoosingRunway": {
                 if (myPlayer.props.team) {
                     this.runwaySelector.processKeys(
@@ -128,6 +163,7 @@ export class DogfightClient {
                             this.callbacks?.chooseRunway(runwayId, planeType);
                         },
                     );
+                    this.gameHUD.updateStats(fullPlaneStats(this.runwaySelector.getSelectedPlaneType()));
                 }
                 break;
             }
@@ -139,56 +175,56 @@ export class DogfightClient {
 
         this.callbacks = callbacks;
         this.intl = intl;
-        this.teamChooser.init(this.callbacks);
         this.runwaySelector.init(this.callbacks, intl);
         this.keyboard.init((keyboard) => this.onKeyChange(keyboard));
-        this.gameHUD.init();
+        this.gameHUD.init(
+            {
+                onExit: () => this.callbacks?.onExit(),
+                onToggleSounds: (enabled) => this.callbacks?.onToggleSounds(enabled),
+                onToggleGfx: (enabled) => this.setHighQuality(enabled),
+            },
+            {
+                exit: intl.formatMessage(GAME_INTL.hud_exit),
+                sounds: intl.formatMessage(GAME_INTL.hud_sounds),
+                gfx: intl.formatMessage(GAME_INTL.hud_gfx),
+            },
+        );
         this.killFeed.init();
         this.respawnInfo.init(intl);
 
-        const width = this.renderClient.app.screen.width / 2;
-        const height = this.renderClient.app.screen.height / 2;
-        // center the team chooser on the screen
-        {
-            const chooserWidth = this.teamChooser.container.width;
-            const chooserHeight = this.teamChooser.container.height;
-            const x = width - chooserWidth / 2;
-            const y = height - chooserHeight / 2;
-            this.teamChooser.container.position.set(x, y);
-        }
+        const screen = this.renderClient.app.screen;
+        const centerX = Math.trunc(screen.width / 2);
+        const centerY = Math.trunc(GAME_HEIGHT / 2);
 
-        // set HUD on screen properly
-        {
-            const y = this.renderClient.app.screen.height - this.gameHUD.container.height;
-            this.gameHUD.container.position.set(0, y);
-        }
+        this.teamChooser.init(this.callbacks, intl, screen.width, GAME_HEIGHT);
 
-        // Set KillFeed area
-        {
-            this.killFeed.container.position.set(510, 0);
-        }
+        this.gameHUD.container.position.set(0, GAME_HEIGHT);
 
-        // set runway selector
-        {
-            const w = this.runwaySelector.container.width;
-            const h = this.runwaySelector.container.height;
-            const x = width - w / 2;
-            // idk why i have to divide hud height by 2, but thats what works
-            const y = height - h / 2 - this.gameHUD.container.height / 2;
-            this.runwaySelector.container.position.set(x, y);
-        }
+        this.killFeed.container.position.set(510, 0);
 
         {
-            const y = height - this.gameHUD.container.height / 2;
-            this.respawnInfo.container.position.set(width, y);
+            const panel = Textures["selectionScreen.gif"];
+            this.runwaySelector.container.position.set(
+                centerX - Math.trunc(panel.width / 2),
+                centerY - Math.trunc(panel.height / 2),
+            );
         }
+
+        this.respawnInfo.container.position.set(centerX, centerY);
+
+        this.roundInfo.init(intl, screen.width, GAME_HEIGHT);
 
         {
-            const screen = this.renderClient.app.screen;
-            this.roundInfo.init(intl, screen.width, screen.height - this.gameHUD.container.height);
+            const ascent = PIXI.TextMetrics.measureFont(this.spectatingText.style.toFontString()).ascent;
+            this.spectatingText.text = intl.formatMessage(GAME_INTL.spectating);
+            this.spectatingText.position.set(540, 370 - ascent);
+            this.followingText.position.set(540, 390 - ascent);
+            this.spectateContainer.addChild(this.spectatingText);
+            this.spectateContainer.addChild(this.followingText);
+            this.spectateContainer.visible = false;
         }
 
-        this.centerCamera(0, 0);
+        this.centerCamera(TEAM_CHOOSER_CAMERA.x, TEAM_CHOOSER_CAMERA.y);
     }
 
     public clearEntities() {
@@ -214,6 +250,7 @@ export class DogfightClient {
         const myPlayer = this.entities.Player.collection.entries().find((x) => x[1].props.guid === guid);
         this.myPlayerId = myPlayer?.[0] ?? null;
         this.isReplay = replay;
+        this.refreshSpectating();
         if (replay) {
             if (myPlayer) {
                 this.onMyPlayerUpdate(myPlayer[1].props);
@@ -252,6 +289,14 @@ export class DogfightClient {
         this.refreshOverlays();
     }
 
+    private refreshSpectating() {
+        const me = this.getMyPlayer();
+        this.spectateContainer.visible = this.isReplay;
+        this.followingText.text = me
+            ? (this.intl?.formatMessage(GAME_INTL.following, { name: formatName(me.props.name, me.props.clan) }) ?? "")
+            : "";
+    }
+
     private refreshOverlays() {
         const me = this.getMyPlayer();
         const intermission = this.worldState === "Intermission";
@@ -261,6 +306,7 @@ export class DogfightClient {
         }
 
         this.roundInfo.update(this.worldState, winner, me?.props.ready ?? true);
+        this.refreshSpectating();
         this.teamChooser.container.visible =
             !intermission && !this.isReplay && (!me || me.props.state === "ChoosingTeam");
         this.runwaySelector.container.visible = !intermission && me?.props.state === "ChoosingRunway";
@@ -289,11 +335,19 @@ export class DogfightClient {
         // If we're controlling the runway,
         // this means we just landed and we want to center on the runway
         if (props.controlling?.type === "Runway") {
-            const runway = this.entities.Runway.collection.get(props.controlling.data[0]);
+            const [runwayId, planeType] = props.controlling.data;
+            const runway = this.entities.Runway.collection.get(runwayId);
 
             if (runway) {
-                this.followEntity(runway);
+                const target = this.runwaySelector.getCameraTarget(runway, true);
+                this.centerCamera(target.x, target.y);
             }
+            this.gameHUD.updateStats(fullPlaneStats(planeType));
+        }
+
+        if (props.state === "ChoosingTeam") {
+            this.teamChooser.reset();
+            this.centerCamera(TEAM_CHOOSER_CAMERA.x, TEAM_CHOOSER_CAMERA.y);
         }
 
         if (props.team) {
@@ -327,6 +381,7 @@ export class DogfightClient {
             this.runwaySelector.selectRunway(this.entities.Runway, (runwayPos) => {
                 this.centerCamera(runwayPos.x, runwayPos.y);
             });
+            this.gameHUD.updateStats(fullPlaneStats(this.runwaySelector.getSelectedPlaneType()));
         }
 
         this.refreshOverlays();
@@ -339,6 +394,7 @@ export class DogfightClient {
     private centerCamera(x: number, y: number): void {
         this.renderClient.centerCamera(x, y);
         this.gameHUD.radar.centerCamera(-x, -y);
+        this.applyParallax();
     }
 
     private updateRadar() {
@@ -347,7 +403,6 @@ export class DogfightClient {
             this.entities.Man,
             this.entities.Plane,
             this.entities.Runway,
-            this.entities.Bunker,
         ]);
     }
 
@@ -492,6 +547,29 @@ export class DogfightClient {
 
     private onEntityAdded(entity: Entity<unknown>) {
         this.renderClient.addEntity(entity);
+        if (entity instanceof Hill) {
+            entity.setCameraOffset(this.renderClient.cameraOffsetX, this.renderClient.cameraOffsetY);
+            entity.setVisible(drawQuality.high);
+        }
+    }
+
+    public setSoundsChecked(checked: boolean) {
+        this.gameHUD.setSoundsChecked(checked);
+    }
+
+    private setHighQuality(high: boolean) {
+        drawQuality.high = high;
+        this.sky.visible = high;
+        this.runwaySelector.setHighQuality(high);
+        for (const [_, hill] of this.entities.Hill.collection) {
+            hill.setVisible(high);
+        }
+    }
+
+    private applyParallax() {
+        for (const [_, hill] of this.entities.Hill.collection) {
+            hill.setCameraOffset(this.renderClient.cameraOffsetX, this.renderClient.cameraOffsetY);
+        }
     }
 
     private onEntityRemoved(entity: Entity<unknown>) {

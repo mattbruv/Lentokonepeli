@@ -1,35 +1,30 @@
 import { Terrain } from "dogfight-types/Terrain";
 
 export const VIEW_WIDTH = 740;
-export const VIEW_HEIGHT = 660;
-// 510 hardcoded bg, plus 150 UI height, 660 total height?
-/**
- * Entities defined last are drawn in front of entities defined before them
- */
-const ENTITY_Z_INDEX_ORDER = [
-    "Sky",
-    "Hill",
-    "Flag",
-    "ControlTower",
-    "Ground",
-    "RunwayBack",
-    "LightSmoke",
-    "Plane",
-    "Water",
-    "DarkSmoke",
-    "Bunker",
-    "Runway",
-    "Man",
-    "Explosion",
-    "Bomb",
-    "Bullet",
-    "Player",
-] as const;
+export const VIEW_HEIGHT = 550;
+export const HUD_HEIGHT = 150;
+export const GAME_HEIGHT = VIEW_HEIGHT - HUD_HEIGHT;
 
-export const DrawLayer = Object.fromEntries(ENTITY_Z_INDEX_ORDER.map((entity, i) => [entity, i])) as Record<
-    (typeof ENTITY_Z_INDEX_ORDER)[number],
-    number
->;
+export const DrawLayer = {
+    Sky: 0,
+    Hill: 1,
+    Flag: 2,
+    ControlTower: 2,
+    Ground: 3,
+    RunwayBack: 4,
+    DestroyedBuilding: 4,
+    Plane: 5,
+    Man: 5,
+    Water: 6,
+    Smoke: 6,
+    Bullet: 6,
+    Bomb: 6,
+    Explosion: 6,
+    Runway: 6,
+    Coast: 7,
+    Name: 7,
+    Bunker: 8,
+} as const;
 
 export const enum WaterColor {
     NORMAL = 3051728,

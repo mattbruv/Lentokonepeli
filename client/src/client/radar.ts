@@ -34,7 +34,8 @@ export type RadarObject = {
 
 const ENEMY_COLOR = 0xff0000;
 const TEAM_COLOR = 0x0000ff;
-const NEUTRAL_COLOR = 0xffffff;
+const RUNWAY_COLOR = 0xffffff;
+const GROUND_COLOR = 0x000000;
 
 export class Radar {
     public container: PIXI.Container;
@@ -106,32 +107,17 @@ export class Radar {
     private renderObject(obj: RadarObject): void {
         const startX = Math.round((obj.x * RADAR_HEIGHT) / 1000) - 1;
         const startY = Math.round((obj.y * RADAR_HEIGHT) / 1000) - 1;
-        let color;
-
-        // console.log(this.myTeam, obj.team)
-
-        if (this.myTeam === undefined || obj.team == undefined) {
-            color = NEUTRAL_COLOR;
-        } else {
-            if (obj.team == this.myTeam) {
-                color = TEAM_COLOR;
-            } else {
-                color = ENEMY_COLOR;
-            }
-        }
+        const color = this.myTeam !== undefined && obj.team === this.myTeam ? TEAM_COLOR : ENEMY_COLOR;
         this.radarGraphics.beginFill(color);
-        this.radarGraphics.drawRect(startX, startY - 1, 3, 3);
+        this.radarGraphics.drawRect(startX, startY, 3, 3);
         this.radarGraphics.endFill();
     }
 
     private renderRunway(runway: RadarObject): void {
-        if (!runway.health) {
-            return;
-        }
         const startX = Math.round((runway.x * RADAR_HEIGHT) / 1000) - 1;
         const startY = Math.round((runway.y * RADAR_HEIGHT) / 1000) - 1;
-        this.radarGraphics.beginFill(0xffffff);
-        this.radarGraphics.drawRect(startX, startY + 1, 3, 3);
+        this.radarGraphics.beginFill(RUNWAY_COLOR);
+        this.radarGraphics.drawRect(startX, startY, 3, 3);
         this.radarGraphics.endFill();
     }
 
@@ -140,8 +126,8 @@ export class Radar {
         const startX = Math.round((ground.x * RADAR_HEIGHT) / 1000);
         const startY = Math.round((ground.y * RADAR_HEIGHT) / 1000);
         const rGroundWidth = Math.round((ground.width * RADAR_HEIGHT) / 1000);
-        this.radarGraphics.beginFill(0x111111);
-        this.radarGraphics.drawRect(startX, startY + 1, rGroundWidth, 2);
+        this.radarGraphics.beginFill(GROUND_COLOR);
+        this.radarGraphics.drawRect(startX, startY, rGroundWidth, 1);
         this.radarGraphics.endFill();
     }
 }

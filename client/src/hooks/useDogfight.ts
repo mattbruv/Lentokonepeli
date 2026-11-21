@@ -14,6 +14,7 @@ import { ChatMessageTimed } from "../components/Chat";
 import { randomGuid } from "../helpers";
 import { useDevKeybinds } from "./keybinds/useDevKeybinds";
 import { useGameKeybinds } from "./keybinds/useGameKeybinds";
+import { useSettingsContext } from "../contexts/settingsContext";
 
 export type DogfightCallbacks = {
     handleClientCommand: (command: PlayerCommand) => void;
@@ -31,6 +32,11 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
     const [worldState, setWorldState] = useState<WorldState | null>(null);
 
     useGameKeybinds({ client, engine });
+    const { settings, setSettings } = useSettingsContext();
+
+    useEffect(() => {
+        client.setSoundsChecked(!settings.audioSettings.muted);
+    }, [client, settings.audioSettings.muted]);
     useDevKeybinds({ client, engine });
 
     const handleGameEvents = useCallback(
@@ -80,6 +86,15 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
             },
             onWorldStateChange: (state: WorldState | null): void => {
                 setWorldState(state);
+            },
+            onExit: (): void => {
+                window.location.href = import.meta.env.BASE_URL;
+            },
+            onToggleSounds: (enabled: boolean): void => {
+                setSettings((current) => ({
+                    ...current,
+                    audioSettings: { ...current.audioSettings, muted: !enabled },
+                }));
             },
             onMessage: (message: ChatMessage): void => {
                 const timedMessage: ChatMessageTimed = {

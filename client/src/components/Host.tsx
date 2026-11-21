@@ -60,6 +60,7 @@ export function Host({ level, recordGame, gameTime }: HostProps) {
                 myPlayerGuid={playerGuid}
                 playerData={playerData}
                 intermission={intermission}
+                roomName={roomCode}
                 messages={messages}
                 onSendMessage={sendChatMessage}
             />

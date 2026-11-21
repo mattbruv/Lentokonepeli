@@ -136,4 +136,52 @@ export const GAME_INTL = {
         defaultMessage: "(Press enter when ready)",
         description: "Shown on the intermission screen between rounds until the player presses enter",
     }),
+    hud_exit: defineMessage({
+        defaultMessage: "Exit",
+        description: "Button on the bottom game panel that leaves the game",
+    }),
+    hud_sounds: defineMessage({
+        defaultMessage: "Sounds",
+        description: "Checkbox on the bottom game panel that turns sound on or off",
+    }),
+    hud_gfx: defineMessage({
+        defaultMessage: "Gfx",
+        description: "Checkbox on the bottom game panel that switches between full and simple graphics",
+    }),
+    team_chooser_title: defineMessage({
+        defaultMessage: "Choose your side",
+        description: "Title of the team selection info box",
+    }),
+    team_chooser_line_1: defineMessage({
+        defaultMessage: "Centrals fly the Albatros, Junkers and Fokker.",
+        description: "Team selection info box, line 1",
+    }),
+    team_chooser_line_2: defineMessage({
+        defaultMessage: "Allies fly the Bristol, Salmson and Sopwith.",
+        description: "Team selection info box, line 2",
+    }),
+    team_chooser_line_3: defineMessage({
+        defaultMessage: "The middle flag puts you on the smaller team.",
+        description: "Team selection info box, line 3",
+    }),
+    team_chooser_line_4: defineMessage({
+        defaultMessage: "Pick a flag with the left and right arrow keys",
+        description: "Team selection info box, line 4",
+    }),
+    team_chooser_line_5: defineMessage({
+        defaultMessage: "and press Enter, or click a flag.",
+        description: "Team selection info box, line 5",
+    }),
+    team_chooser_line_6: defineMessage({
+        defaultMessage: "Destroy the enemy base to win the round.",
+        description: "Team selection info box, line 6",
+    }),
+    spectating: defineMessage({
+        defaultMessage: "SPECTATING",
+        description: "Shown on screen while watching a replay",
+    }),
+    following: defineMessage({
+        defaultMessage: "Following: {name}",
+        description: "Shown on screen while watching a replay, with the name of the player being followed",
+    }),
 } as const satisfies Record<string, MessageDescriptor>;
