@@ -49,7 +49,7 @@ impl Bomb {
     }
 
     pub fn kill(&mut self) -> () {
-        self.is_alive = true;
+        self.is_alive = false;
     }
 
     pub fn player_id(&self) -> PlayerId {

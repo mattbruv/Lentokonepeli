@@ -636,7 +636,7 @@ impl Plane {
     pub fn set_health(&mut self, health_amount: i32) -> () {
         self.total_health = health_amount;
 
-        if self.total_health < 0 {
+        if self.total_health <= 0 {
             self.total_health = 0;
             self.mode.set(PlaneMode::Falling);
         }

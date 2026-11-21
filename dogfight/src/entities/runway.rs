@@ -163,7 +163,7 @@ impl Runway {
                 }
             }
             RunwayReservation::Takeoff => {
-                if let Some(RunwayReservation::Takeoff) = self.last_reserve {
+                if let Some(RunwayReservation::Landing) = self.last_reserve {
                     RESERVE_LANDING_TAKEOFF_DELAY
                 } else {
                     RESERVE_LANDING_LANDING_DELAY
