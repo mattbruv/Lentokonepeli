@@ -1,10 +1,10 @@
-import { Button, ComboboxItem, MultiSelect, ScrollArea, Select, Stack, Text } from "@mantine/core";
+import { Button, ComboboxItem, MultiSelect, ScrollArea, SegmentedControl, Select, Stack, Text } from "@mantine/core";
 import { PlayerGuid } from "dogfight-types/PlayerGuid";
 import { ReplayEvent } from "dogfight-types/ReplayEvent";
 import { ReplayEventType } from "dogfight-types/ReplayEventType";
 import { ReplaySummary } from "dogfight-types/ReplaySummary";
 import { useCallback, useMemo, useState } from "react";
-import { ReplayCallbacks, ReplayInfo } from "src/hooks/useReplay";
+import { REPLAY_SPEEDS, ReplayCallbacks, ReplayInfo, ReplaySpeed } from "../hooks/useReplay";
 import { ticksToHHMMSS } from "../helpers";
 import { ReplayTimer } from "./ReplayTimer";
 
@@ -71,6 +71,11 @@ export function ReplayControls({ summary, callbacks, events, players, info }: Re
     return (
         <Stack>
             <ReplayTimer info={info} summary={summary} callbacks={callbacks} />
+            <SegmentedControl
+                value={`${info.speed}`}
+                onChange={(value) => callbacks.setSpeed(Number(value) as ReplaySpeed)}
+                data={REPLAY_SPEEDS.map((speed) => ({ value: `${speed}`, label: `${speed}×` }))}
+            />
             <Stack>
                 <Select
                     label="Spectating Player"

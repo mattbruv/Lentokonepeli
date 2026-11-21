@@ -144,10 +144,15 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
         client.setReplayMode();
     }
 
+    function refreshView() {
+        client.refreshMyView();
+    }
+
     return {
         initialize,
         clearEntities,
         setReplayMode,
+        refreshView,
         handleGameEvents,
         setMyPlayerGuid,
         playerGuid,

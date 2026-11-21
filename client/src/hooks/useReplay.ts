@@ -2,12 +2,16 @@ import { PlayerGuid } from "dogfight-types/PlayerGuid";
 import { ReplaySummary } from "dogfight-types/ReplaySummary";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import { useEffect, useRef, useState } from "react";
-import { gameLoop } from "../gameLoop";
+import { DEFAULT_TICK_INTERVAL, gameLoop } from "../gameLoop";
 import { ticksToHHMMSS } from "../helpers";
 import { useDogfight } from "./useDogfight";
 
+export const REPLAY_SPEEDS = [0.25, 0.5, 1, 2, 4, 8] as const;
+export type ReplaySpeed = (typeof REPLAY_SPEEDS)[number];
+
 export type ReplayInfo = {
     paused: boolean;
+    speed: ReplaySpeed;
     spectating: string | null;
     tick: number;
     timeString: string;
@@ -19,6 +23,7 @@ export type ReplayCallbacks = {
     advanceOneTick: () => void;
     advanceSeconds: (seconds: number) => void;
     updateSpectating: (guid: PlayerGuid | null) => void;
+    setSpeed: (speed: ReplaySpeed) => void;
     loadReplay: (binary: Uint8Array) => boolean;
 };
 
@@ -34,6 +39,7 @@ export function useReplay() {
     const [replayInfo, setReplayInfo] = useState<ReplayInfo>({
         spectating: null,
         paused: false,
+        speed: 1,
         tick: 0,
         timeString: ticksToHHMMSS(0),
     });
@@ -115,6 +121,7 @@ export function useReplay() {
     useEffect(() => {
         return () => {
             gameLoop.stop();
+            gameLoop.setTickInterval(DEFAULT_TICK_INTERVAL);
         };
     }, []);
 
@@ -132,6 +139,7 @@ export function useReplay() {
         const state = dogfight.engine.get_full_state();
         const events = parseServerOutput(state);
         dogfight.handleGameEvents(events);
+        dogfight.refreshView();
         gameLoop.start(tick);
     }
 
@@ -147,7 +155,16 @@ export function useReplay() {
         playToTick(target);
     }
 
+    function setSpeed(speed: ReplaySpeed) {
+        gameLoop.setTickInterval(DEFAULT_TICK_INTERVAL / speed);
+        setReplayInfo((prev) => ({
+            ...prev,
+            speed,
+        }));
+    }
+
     const replayCallbacks: ReplayCallbacks = {
+        setSpeed,
         setPaused,
         playToTick,
         updateSpectating,

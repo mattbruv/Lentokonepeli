@@ -257,16 +257,35 @@ export class DogfightClient {
         this.isReplay = replay;
         this.refreshSpectating();
         if (replay) {
-            if (myPlayer) {
-                this.onMyPlayerUpdate(myPlayer[1].props);
-            }
-            this.onJoinTeam(myPlayer?.[1].props.team ?? "Allies");
+            this.applyMyTeam(myPlayer?.[1].props.team ?? null);
+            this.refreshMyView();
+        }
+    }
+
+    public refreshMyView() {
+        const me = this.getMyPlayer();
+        if (!me) return;
+
+        this.onMyPlayerUpdate(me.props);
+
+        const controlling = me.props.controlling;
+        if (controlling?.type === "Plane") {
+            const plane = this.entities.Plane.collection.get(controlling.data);
+            if (plane) this.followEntity(plane);
+        }
+        if (controlling?.type === "Man") {
+            const man = this.entities.Man.collection.get(controlling.data);
+            if (man) this.followEntity(man);
         }
     }
 
     private onJoinTeam(team: Team) {
         this.teamChooser.container.visible = false;
-        this.gameHUD.setTeam(team);
+        this.applyMyTeam(team);
+    }
+
+    private applyMyTeam(team: Team | null) {
+        this.gameHUD.setTeam(team ?? undefined);
         this.killFeed.setTeam(team);
         this.refreshTeamScores();
     }
@@ -353,6 +372,10 @@ export class DogfightClient {
         if (props.state === "ChoosingTeam") {
             this.teamChooser.reset();
             this.centerCamera(TEAM_CHOOSER_CAMERA.x, TEAM_CHOOSER_CAMERA.y);
+        }
+
+        if ("team" in props) {
+            this.applyMyTeam(myPlayer.props.team);
         }
 
         if (props.team) {

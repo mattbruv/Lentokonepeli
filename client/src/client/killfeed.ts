@@ -97,7 +97,7 @@ export class KillFeed {
         }, 8_000);
     }
 
-    setTeam(team: Team) {
+    setTeam(team: Team | null) {
         this.pov_team = team;
     }
 }
