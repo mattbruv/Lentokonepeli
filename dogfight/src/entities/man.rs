@@ -66,8 +66,8 @@ impl Man {
             client_x: Property::new(0),
             client_y: Property::new(0),
             state: Property::new(ManState::Falling),
-            x_speed: 1,
-            y_speed: 1,
+            x_speed: 0,
+            y_speed: 0,
             image_standing: get_image(PARACHUTER0),
             image_parachuting: get_image(PARACHUTER1),
             age_ms: 0,
@@ -206,7 +206,7 @@ impl Man {
             self.state.set(ManState::WalkingLeft);
 
             if self.get_client_x() < -20_000 {
-                self.blow_me_up(my_owner, actions, man_id);
+                self.walk_out_of_bounds(my_owner, actions, man_id);
             }
         }
 
@@ -215,7 +215,7 @@ impl Man {
             self.state.set(ManState::WalkingRight);
 
             if self.get_client_x() > 20_000 {
-                self.blow_me_up(my_owner, actions, man_id);
+                self.walk_out_of_bounds(my_owner, actions, man_id);
             }
         }
 
@@ -232,6 +232,15 @@ impl Man {
                 player_id: my_owner,
             }));
         }
+    }
+
+    fn walk_out_of_bounds(&mut self, my_owner: PlayerId, actions: &mut Vec<Action>, man_id: ManId) {
+        actions.push(Action::RemoveEntity(RemoveData::Man(man_id)));
+        actions.push(Action::RegisterKill(KillEvent::new(
+            my_owner,
+            None,
+            KillMethod::Man,
+        )));
     }
 
     fn blow_me_up(&mut self, my_owner: PlayerId, actions: &mut Vec<Action>, man_id: ManId) {

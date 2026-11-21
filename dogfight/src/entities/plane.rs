@@ -457,7 +457,8 @@ impl Plane {
             }
 
             // PLANE_MOTOR = 40 = down
-            if keys.down && self.last_motor_on_ms >= self.motor_on_delay_ms && self.total_fuel > 0 {
+            if keys.down && self.last_motor_on_ms >= self.motor_on_delay_ms && self.fuel_counter > 0
+            {
                 self.motor_on.set(!self.motor_on.get());
                 self.last_motor_on_ms = 0;
             }
@@ -660,8 +661,9 @@ impl Plane {
 
     fn spawn_man_action(&mut self, team: Team, my_id: &PlaneId, actions: &mut Vec<Action>) {
         let mut man = Man::new(team);
-        man.set_x(self.x);
-        man.set_y(self.y);
+        let bounds = self.get_collision_bounds();
+        man.set_x(bounds.x as i32 * RESOLUTION);
+        man.set_y(bounds.y as i32 * RESOLUTION);
         actions.push(Action::SpawnMan(
             man,
             Some(ControllingEntity::Plane(*my_id)),

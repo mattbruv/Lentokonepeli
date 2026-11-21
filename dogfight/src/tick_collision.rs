@@ -77,11 +77,18 @@ impl World {
             for (_runway_id, runway) in self.runways.get_map_mut() {
                 if man.check_collision(runway) {
                     // If we're landing on the correct runway, choose a plane
-                    if *runway.get_team() == man.get_team() {
+                    let walking = matches!(
+                        man.get_state(),
+                        ManState::Standing | ManState::WalkingLeft | ManState::WalkingRight
+                    );
+                    let own_runway = *runway.get_team() == man.get_team();
+
+                    if walking && own_runway {
                         actions.push(Action::ManEnteredRunway(*man_id));
-                    }
-                    // Otherwise, kill the man
-                    else {
+                        continue 'men;
+                    } else if walking {
+                        man.set_to_previous_x();
+                    } else if !own_runway {
                         actions.push(Action::RemoveEntity(RemoveData::Man(*man_id)));
 
                         if let Some((pid, _)) = controlling {
@@ -91,9 +98,8 @@ impl World {
                                 KillMethod::Man,
                             )));
                         }
+                        continue 'men;
                     }
-                    // log(&format!("man collide runway!").into());
-                    continue 'men;
                 }
             }
 
@@ -255,13 +261,19 @@ impl World {
                         )));
                     }
                     actions.push(Action::RemoveEntity(RemoveData::Plane(*plane_id)));
+                    actions.push(Action::Explosion(ExplosionData {
+                        explosion_owner: Some(plane.player_id()),
+                        team: None,
+                        client_x: plane.get_client_x(),
+                        client_y: plane.get_client_y(),
+                    }));
 
                     blow_up(
                         &mut actions,
                         Some(bomb.player_id()),
                         RemoveData::Bomb(*bomb_id),
-                        plane.get_client_x(),
-                        plane.get_client_y(),
+                        bomb.get_x(),
+                        bomb.get_y(),
                     );
                     continue 'bombs;
                 }
@@ -447,7 +459,10 @@ impl World {
 
             for (plane_id, plane) in self.planes.get_map_mut() {
                 // Don't collide our own bullet with our own plane
-                if bullet.player_id() != plane.player_id() && bullet.check_collision(plane) {
+                if bullet.player_id() != plane.player_id()
+                    && plane.get_mode() != PlaneMode::Falling
+                    && bullet.check_collision(plane)
+                {
                     if shooter_team != Some(plane.get_team()) {
                         bullet.mark_hit_enemy();
                     }
@@ -555,21 +570,24 @@ impl World {
 
             for (plane_id, plane) in self.planes.get_map_mut() {
                 if explosion.check_collision(plane) {
-                    // Do 50 damage, and if this kills the plane, blow it up
-                    plane.subtract_health(50);
-                    if plane.health() <= 0 {
+                    let falling = plane.get_mode() == PlaneMode::Falling;
+                    if !falling {
+                        plane.subtract_health(50);
+                    }
+                    if falling || plane.health() <= 0 {
                         if let Some((owner_id, _)) = self
                             .players
                             .get_player_controlling(ControllingEntity::Plane(*plane_id))
                         {
                             if let Some(killer) = explosion_owner {
-                                plane.set_downed_by(Some(killer));
-                                // Draw kill plane icon and kill man icon
-                                actions.push(Action::RegisterKill(KillEvent::new(
-                                    killer,
-                                    Some(*owner_id),
-                                    KillMethod::Plane,
-                                )));
+                                if !falling {
+                                    plane.set_downed_by(Some(killer));
+                                    actions.push(Action::RegisterKill(KillEvent::new(
+                                        killer,
+                                        Some(*owner_id),
+                                        KillMethod::Plane,
+                                    )));
+                                }
                                 actions.push(Action::RegisterKill(KillEvent::new(
                                     killer,
                                     Some(*owner_id),
@@ -579,12 +597,32 @@ impl World {
                         }
                         blow_up(
                             &mut actions,
-                            explosion.player_id(),
+                            Some(plane.player_id()),
                             RemoveData::Plane(*plane_id),
                             plane.get_client_x(),
                             plane.get_client_y(),
                         );
                     }
+                }
+            }
+
+            for (bomb_id, bomb) in self.bombs.get_map_mut() {
+                if bomb.is_alive() && explosion.check_collision(bomb) {
+                    bomb.kill();
+                    blow_up(
+                        &mut actions,
+                        Some(bomb.player_id()),
+                        RemoveData::Bomb(*bomb_id),
+                        bomb.get_x(),
+                        bomb.get_y(),
+                    );
+                }
+            }
+
+            for (bullet_id, bullet) in self.bullets.get_map_mut() {
+                if bullet.is_alive() && explosion.check_collision(bullet) {
+                    bullet.kill();
+                    actions.push(Action::RemoveEntity(RemoveData::Bullet(*bullet_id)));
                 }
             }
 

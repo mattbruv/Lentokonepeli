@@ -4,7 +4,7 @@ use image::RgbaImage;
 use crate::{
     collision::{BoundingBox, SolidEntity},
     images::{get_rotateable_image, rotate_image, BOMB},
-    math::radians_to_direction,
+    math::{direction_to_radians, radians_to_direction},
     network::{property::Property, EntityProperties, NetworkedEntity},
     world::RESOLUTION,
 };
@@ -30,7 +30,7 @@ pub struct Bomb {
 impl Bomb {
     pub fn new(player_id: PlayerId, x: i16, y: i16, angle: f64, speed: f64) -> Bomb {
         let dir = radians_to_direction(angle);
-        // log(format!("angle: {} dir: {}", angle, dir));
+        let angle = direction_to_radians(dir);
         Bomb {
             player_id,
             x: (x as i32) * RESOLUTION,
@@ -61,6 +61,10 @@ impl Bomb {
         self.y = y as i32 * RESOLUTION;
         self.client_x.set(x);
         self.client_y.set(y);
+    }
+
+    pub fn is_out_of_bounds(&self) -> bool {
+        self.y > 80_000
     }
 
     pub fn tick(&mut self) {

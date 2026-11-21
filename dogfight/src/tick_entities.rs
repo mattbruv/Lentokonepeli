@@ -1,5 +1,8 @@
 use crate::{
-    entities::player::ControllingEntity, input::PlayerKeyboard, tick_actions::Action, world::World,
+    entities::player::ControllingEntity,
+    input::PlayerKeyboard,
+    tick_actions::{Action, RemoveData},
+    world::World,
 };
 
 /*
@@ -59,8 +62,11 @@ impl World {
         }
 
         // Tick bombs
-        for (_, bomb) in self.bombs.get_map_mut() {
+        for (bomb_id, bomb) in self.bombs.get_map_mut() {
             bomb.tick();
+            if bomb.is_out_of_bounds() {
+                actions.push(Action::RemoveEntity(RemoveData::Bomb(*bomb_id)));
+            }
         }
 
         // Tick bullets

@@ -3,7 +3,7 @@ use image::RgbaImage;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
-    math::radians_to_direction,
+    math::{direction_to_radians, radians_to_direction},
     network::{property::Property, EntityProperties, NetworkedEntity},
     tick_actions::{Action, RemoveData},
     world::RESOLUTION,
@@ -33,6 +33,7 @@ pub struct Bullet {
 impl Bullet {
     pub fn new(owner: PlayerId, x: i16, y: i16, angle: f64, speed: f64) -> Bullet {
         let dir = radians_to_direction(angle);
+        let angle = direction_to_radians(dir);
         let mut bullet = Bullet {
             player_id: owner,
             x: x as i32 * RESOLUTION,
