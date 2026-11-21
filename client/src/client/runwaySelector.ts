@@ -193,6 +193,13 @@ export class RunwaySelector {
         centerCamera(this.getCameraTarget(myRunways[this.runwayIndex][1], false));
     }
 
+    public preferRunway(runways: EntityGroup<Runway>, runwayId: number) {
+        const index = this.getMyRunways(runways).findIndex(([id]) => id === runwayId);
+        if (index !== -1) {
+            this.runwayIndex = index;
+        }
+    }
+
     public getCameraTarget(runway: Runway, landed: boolean): Point {
         const panel = Textures["selectionScreen.gif"];
         const offsets: Record<Team, [number, number]> = landed

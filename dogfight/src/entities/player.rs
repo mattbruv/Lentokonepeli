@@ -136,6 +136,8 @@ pub struct Player {
     ready: Property<bool>,
     accuracy: Property<u16>,
     ping: Property<u16>,
+    #[rustfmt::skip]
+    last_runway: Property<Option::<RunwayId>>,
 }
 
 impl Player {
@@ -161,6 +163,7 @@ impl Player {
             ready: Property::new(false),
             accuracy: Property::new(0),
             ping: Property::new(0),
+            last_runway: Property::new(None),
         }
     }
 
@@ -213,7 +216,12 @@ impl Player {
         self.ready.set(ready);
     }
 
+    pub fn set_last_runway(&mut self, runway_id: RunwayId) {
+        self.last_runway.set(Some(runway_id));
+    }
+
     pub fn reset_for_round(&mut self) {
+        self.last_runway.set(None);
         self.shots = 0;
         self.hits = 0;
         self.next_respawn = RespawnType::Default;

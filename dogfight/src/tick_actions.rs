@@ -47,7 +47,7 @@ pub enum Action {
     LandPlane(Option<PlayerId>, RunwayId, PlaneId),
     ProcessTakeoff(PlayerId, RunwayId, PlaneType),
     BombHitStructure(PlayerId, Team),
-    ManEnteredRunway(ManId),
+    ManEnteredRunway(ManId, RunwayId),
     RunwayDestroyed(RunwayId),
     BunkerDestroyed(BunkerId),
 }
@@ -83,7 +83,9 @@ impl World {
             Action::BombHitStructure(player_id, structure_team) => {
                 self.bomb_hit_structure(player_id, structure_team)
             }
-            Action::ManEnteredRunway(man_id) => self.man_entered_runway(man_id),
+            Action::ManEnteredRunway(man_id, runway_id) => {
+                self.man_entered_runway(man_id, runway_id)
+            }
             Action::RunwayDestroyed(runway_id) => self.runway_destroyed(runway_id),
             Action::BunkerDestroyed(bunker_id) => self.bunker_destroyed(bunker_id),
         }
@@ -151,11 +153,12 @@ impl World {
         vec![ServerOutput::HeadquartersDestroyed(team)]
     }
 
-    fn man_entered_runway(&mut self, man_id: ManId) -> Vec<ServerOutput> {
+    fn man_entered_runway(&mut self, man_id: ManId, runway_id: RunwayId) -> Vec<ServerOutput> {
         if let Some((_, player)) = self
             .players
             .get_player_controlling(ControllingEntity::Man(man_id))
         {
+            player.set_last_runway(runway_id);
             player.set_controlling(None);
             player.set_state(PlayerState::ChoosingRunway);
         }
@@ -199,6 +202,7 @@ impl World {
         }
 
         if let Some(player) = player_id.and_then(|pid| self.players.get_mut(pid)) {
+            player.set_last_runway(runway_id);
             match self.planes.get(plane_id) {
                 Some(plane) => {
                     player.set_controlling(Some(ControllingEntity::Runway(

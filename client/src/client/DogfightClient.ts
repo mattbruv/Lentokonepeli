@@ -409,6 +409,9 @@ export class DogfightClient {
         }
 
         if (props.state === "ChoosingRunway") {
+            if (myPlayer.props.last_runway !== null) {
+                this.runwaySelector.preferRunway(this.entities.Runway, myPlayer.props.last_runway);
+            }
             this.runwaySelector.selectRunway(this.entities.Runway, (runwayPos) => {
                 this.centerCamera(runwayPos.x, runwayPos.y);
             });

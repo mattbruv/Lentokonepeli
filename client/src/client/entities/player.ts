@@ -25,6 +25,7 @@ export class Player implements Entity<PlayerProperties> {
         ready: false,
         accuracy: 0,
         ping: 0,
+        last_runway: null,
     };
 
     private onChange: OnChangeControl;
@@ -51,6 +52,7 @@ export class Player implements Entity<PlayerProperties> {
         ready: () => {},
         accuracy: () => {},
         ping: () => {},
+        last_runway: () => {},
         controlling: (oldProps) => {
             if (oldProps.controlling !== undefined)
                 this.onChange(oldProps.controlling, this.props.controlling, this.props);

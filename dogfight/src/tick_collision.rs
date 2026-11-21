@@ -74,7 +74,7 @@ impl World {
                 .players
                 .get_player_controlling(ControllingEntity::Man(*man_id));
 
-            for (_runway_id, runway) in self.runways.get_map_mut() {
+            for (runway_id, runway) in self.runways.get_map_mut() {
                 if man.check_collision(runway) {
                     // If we're landing on the correct runway, choose a plane
                     let walking = matches!(
@@ -84,7 +84,7 @@ impl World {
                     let own_runway = *runway.get_team() == man.get_team();
 
                     if walking && own_runway {
-                        actions.push(Action::ManEnteredRunway(*man_id));
+                        actions.push(Action::ManEnteredRunway(*man_id, *runway_id));
                         continue 'men;
                     } else if walking {
                         man.set_to_previous_x();

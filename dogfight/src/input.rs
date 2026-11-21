@@ -336,6 +336,7 @@ impl World {
                         if let Some((plane_id, _)) = self.planes.insert(plane) {
                             if let Some((_, player)) = self.get_player_from_guid_mut(guid) {
                                 player.set_keys(PlayerKeyboard::new());
+                                player.set_last_runway(selection.runway_id);
                                 player.set_state(PlayerState::Playing);
                                 player.set_controlling(Some(ControllingEntity::Plane(plane_id)))
                             }
