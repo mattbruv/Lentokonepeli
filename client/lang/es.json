@@ -3,6 +3,10 @@
     "defaultMessage": "Lentokonepeli (En desarrollo)",
     "description": "Main title of site shown on nav"
   },
+  "+hJmve": {
+    "defaultMessage": "¡Empate!",
+    "description": "Shown in large text and in chat when a round ends in a tie"
+  },
   "/KlrcC": {
     "defaultMessage": "Nombre de usuario",
     "description": "Settings section title used to modify the username"
@@ -111,6 +115,10 @@
     "defaultMessage": "Mover a la derecha",
     "description": "Title for the 'Move Right' action shown on the keybind settings section"
   },
+  "OVTgWq": {
+    "defaultMessage": "Ilimitado",
+    "description": "Game time option for rounds that only end when a team's base is destroyed"
+  },
   "PEq6j5": {
     "defaultMessage": "Cerrar el chat",
     "description": "message indicating 'Esc' closes the chat"
@@ -139,6 +147,10 @@
     "defaultMessage": "Configuración del Usuario",
     "description": "Title for a settings section used to modify user info used in-game"
   },
+  "UwCHgC": {
+    "defaultMessage": "(Pulsa Intro cuando estés listo)",
+    "description": "Shown on the intermission screen between rounds until the player presses enter"
+  },
   "WWTrIb": {
     "defaultMessage": "Avión versátil de nivel medio. Equipado con bombas además de una ametralladora. Motor rápido y potente, aunque no ágil.",
     "description": "Description of the Salmson 2 aircraft"
@@ -159,6 +171,10 @@
     "defaultMessage": "Puedes cambiar esto en cualquier momento en el menú de ajustes",
     "description": "Tooltip for the username setting section"
   },
+  "Z0iZnK": {
+    "defaultMessage": "{minutes} minutos",
+    "description": "Game time option showing round length"
+  },
   "aLjUL6": {
     "defaultMessage": "Editor de Mapas",
     "description": "Sidebar link description for the Level Editor"
@@ -170,6 +186,10 @@
   "buqDOb": {
     "defaultMessage": "Elegir nombre de usuario",
     "description": "Title for modal used to choose username"
+  },
+  "byMHD6": {
+    "defaultMessage": "¡{team, select, Centrals {Las Potencias Centrales han} other {Los Aliados han}} ganado!",
+    "description": "Shown in large text and in chat when a team wins the round"
   },
   "cFDrGv": {
     "defaultMessage": "Un clan opcional para anteponer a su nombre",
@@ -238,6 +258,10 @@
   "ohIqzI": {
     "defaultMessage": "Activar el motor",
     "description": "Title for the 'Toggle Motor' action shown on the keybind settings section"
+  },
+  "ov7Lo+": {
+    "defaultMessage": "Tiempo de juego",
+    "description": "Title for selection used to choose the length of each round"
   },
   "p1ezxU": {
     "defaultMessage": "Organizar un partido",

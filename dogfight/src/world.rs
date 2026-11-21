@@ -16,7 +16,7 @@ use crate::{
         plane::Plane,
         player::{Player, PlayerGuid},
         runway::Runway,
-        types::EntityType,
+        types::{EntityType, Team},
         water::Water,
         world_info::WorldInfo,
     },
@@ -49,6 +49,11 @@ pub struct World {
 
     pub replay_file: ReplayFile,
     pub team_balance: bool,
+    pub(crate) game_time_ticks: u32,
+    pub(crate) intermission_ticks: u32,
+    pub(crate) time_winner: Option<Team>,
+    pub(crate) round_ticks: u32,
+    pub(crate) round_over_ticks: u32,
 }
 
 impl World {
@@ -73,6 +78,11 @@ impl World {
 
             replay_file: ReplayFile::new(),
             team_balance: true,
+            game_time_ticks: 0,
+            intermission_ticks: 2_000,
+            time_winner: None,
+            round_ticks: 0,
+            round_over_ticks: 0,
         };
 
         world
@@ -125,6 +135,16 @@ impl World {
         // 3. Process collision and get output
         let tick_coll = self.tick_collision_entities();
         self.game_output.extend(tick_coll);
+
+        self.tick_round();
+    }
+
+    pub fn set_round_settings(&mut self, game_time_minutes: u16, intermission_seconds: u16) {
+        let intermission_seconds = intermission_seconds.clamp(3, 600);
+        self.game_time_ticks = game_time_minutes.min(999) as u32 * 60 * 100;
+        self.intermission_ticks = intermission_seconds as u32 * 100;
+        self.replay_file.game_time_minutes = game_time_minutes.min(999);
+        self.replay_file.intermission_seconds = intermission_seconds;
     }
 
     pub fn flush_changed_state(&mut self) -> Vec<ServerOutput> {

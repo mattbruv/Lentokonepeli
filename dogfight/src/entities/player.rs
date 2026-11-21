@@ -133,6 +133,7 @@ pub struct Player {
     score: Property<i16>,
     respawn_seconds: Property<u8>,
     respawn_type: Property<RespawnType>,
+    ready: Property<bool>,
 }
 
 impl Player {
@@ -155,6 +156,7 @@ impl Player {
             score: Property::new(0),
             respawn_seconds: Property::new(0),
             respawn_type: Property::new(RespawnType::Default),
+            ready: Property::new(false),
         }
     }
 
@@ -185,6 +187,30 @@ impl Player {
 
     pub fn get_state(&self) -> PlayerState {
         *self.state.get()
+    }
+
+    pub fn is_ready(&self) -> bool {
+        *self.ready.get()
+    }
+
+    pub fn set_ready(&mut self, ready: bool) {
+        self.ready.set(ready);
+    }
+
+    pub fn reset_for_round(&mut self) {
+        self.shots = 0;
+        self.hits = 0;
+        self.next_respawn = RespawnType::Default;
+        self.respawn_ticks = None;
+        self.keys = PlayerKeyboard::new();
+        self.team.set(None);
+        self.state.set(PlayerState::ChoosingTeam);
+        self.controlling.set(None);
+        self.kills.set(0);
+        self.deaths.set(0);
+        self.score.set(0);
+        self.respawn_seconds.set(0);
+        self.ready.set(false);
     }
 
     pub fn mark_suicide(&mut self) {

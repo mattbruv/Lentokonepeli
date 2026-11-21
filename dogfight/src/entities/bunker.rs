@@ -53,6 +53,11 @@ impl Bunker {
         self.team.get()
     }
 
+    pub fn reset(&mut self) {
+        self.health_timer = 0;
+        self.set_health(self.get_max_health());
+    }
+
     pub fn tick(&mut self) {
         if self.total_health > 0 && self.total_health < self.get_max_health() {
             self.health_timer = (self.health_timer + 1) % 50;

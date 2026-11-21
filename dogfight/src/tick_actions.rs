@@ -90,6 +90,9 @@ impl World {
     }
 
     fn adjust_player_score(&mut self, player_id: PlayerId, amount: i16) {
+        if self.is_round_over() {
+            return;
+        }
         if let Some(player) = self.players.get_mut(player_id) {
             player.adjust_score(amount);
             if let Some(team) = *player.get_team() {

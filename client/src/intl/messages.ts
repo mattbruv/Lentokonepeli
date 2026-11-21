@@ -124,4 +124,16 @@ export const GAME_INTL = {
         defaultMessage: "{team, select, Centrals {Centrals} other {Allies}} headquarters destroyed.",
         description: "Chat notice when a team's headquarters is destroyed",
     }),
+    round_won: defineMessage({
+        defaultMessage: "{team, select, Centrals {Centrals} other {Allies}} have won!",
+        description: "Shown in large text and in chat when a team wins the round",
+    }),
+    round_tie: defineMessage({
+        defaultMessage: "Tie!",
+        description: "Shown in large text and in chat when a round ends in a tie",
+    }),
+    press_enter_when_ready: defineMessage({
+        defaultMessage: "(Press enter when ready)",
+        description: "Shown on the intermission screen between rounds until the player presses enter",
+    }),
 } as const satisfies Record<string, MessageDescriptor>;

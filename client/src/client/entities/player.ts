@@ -22,6 +22,7 @@ export class Player implements Entity<PlayerProperties> {
         score: 0,
         respawn_seconds: 0,
         respawn_type: "Default",
+        ready: false,
     };
 
     private onChange: OnChangeControl;
@@ -45,6 +46,7 @@ export class Player implements Entity<PlayerProperties> {
         score: () => {},
         respawn_seconds: () => {},
         respawn_type: () => {},
+        ready: () => {},
         controlling: (oldProps) => {
             if (oldProps.controlling !== undefined)
                 this.onChange(oldProps.controlling, this.props.controlling, this.props);

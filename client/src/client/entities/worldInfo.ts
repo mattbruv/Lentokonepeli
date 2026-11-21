@@ -8,6 +8,7 @@ export class WorldInfo implements Entity<WorldInfoProperties> {
         winner: "Allies",
         centrals_score: 0,
         allies_score: 0,
+        time_left: null,
     };
 
     constructor() {}
@@ -21,6 +22,7 @@ export class WorldInfo implements Entity<WorldInfoProperties> {
         winner: () => {},
         centrals_score: () => {},
         allies_score: () => {},
+        time_left: () => {},
     };
 
     public destroy() {}

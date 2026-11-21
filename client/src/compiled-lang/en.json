@@ -5,6 +5,12 @@
       "value": "Lentokonepeli (In Development)"
     }
   ],
+  "+hJmve": [
+    {
+      "type": 0,
+      "value": "Tie!"
+    }
+  ],
   "/KlrcC": [
     {
       "type": 0,
@@ -211,6 +217,12 @@
       "value": "Move Right"
     }
   ],
+  "OVTgWq": [
+    {
+      "type": 0,
+      "value": "Unlimited"
+    }
+  ],
   "PEq6j5": [
     {
       "type": 0,
@@ -253,6 +265,12 @@
       "value": "User Settings"
     }
   ],
+  "UwCHgC": [
+    {
+      "type": 0,
+      "value": "(Press enter when ready)"
+    }
+  ],
   "WWTrIb": [
     {
       "type": 0,
@@ -283,6 +301,16 @@
       "value": "You can change this any time in the settings menu"
     }
   ],
+  "Z0iZnK": [
+    {
+      "type": 1,
+      "value": "minutes"
+    },
+    {
+      "type": 0,
+      "value": " minutes"
+    }
+  ],
   "aLjUL6": [
     {
       "type": 0,
@@ -299,6 +327,34 @@
     {
       "type": 0,
       "value": "Choose Username"
+    }
+  ],
+  "byMHD6": [
+    {
+      "options": {
+        "Centrals": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Centrals"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Allies"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "team"
+    },
+    {
+      "type": 0,
+      "value": " have won!"
     }
   ],
   "cFDrGv": [
@@ -401,6 +457,12 @@
     {
       "type": 0,
       "value": "Toggle Motor"
+    }
+  ],
+  "ov7Lo+": [
+    {
+      "type": 0,
+      "value": "Game time"
     }
   ],
   "p1ezxU": [

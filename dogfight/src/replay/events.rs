@@ -130,6 +130,10 @@ pub fn get_replay_summary(bytes: Vec<u8>) -> String {
 fn summarize_replay(replay_file: ReplayFile) -> ReplaySummary {
     let mut world = World::new();
     world.load_level(&replay_file.level_data);
+    world.set_round_settings(
+        replay_file.game_time_minutes,
+        replay_file.intermission_seconds,
+    );
 
     // simulates the entire game and returns all events
     let events = world.simulate_until(&replay_file, None, true);

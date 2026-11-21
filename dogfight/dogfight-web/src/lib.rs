@@ -46,8 +46,15 @@ impl DogfightWeb {
         if let Some((_, replay)) = ReplayFile::from_bytes(&bytes) {
             self.world = World::new();
             self.world.load_level(&replay.level_data);
+            self.world
+                .set_round_settings(replay.game_time_minutes, replay.intermission_seconds);
             self.replay = Some(replay);
         }
+    }
+
+    pub fn set_round_settings(&mut self, game_time_minutes: u16, intermission_seconds: u16) {
+        self.world
+            .set_round_settings(game_time_minutes, intermission_seconds);
     }
 
     pub fn init(&mut self) {
@@ -95,6 +102,8 @@ impl DogfightWeb {
         if let Some(replay) = &self.replay {
             self.world = World::new();
             self.world.load_level(&replay.level_data);
+            self.world
+                .set_round_settings(replay.game_time_minutes, replay.intermission_seconds);
             self.world.simulate_until(replay, Some(until_tick), true);
         }
     }

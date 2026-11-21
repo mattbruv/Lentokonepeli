@@ -5,6 +5,12 @@
       "value": "Lentokonepeli (En desarrollo)"
     }
   ],
+  "+hJmve": [
+    {
+      "type": 0,
+      "value": "¡Empate!"
+    }
+  ],
   "/KlrcC": [
     {
       "type": 0,
@@ -219,6 +225,12 @@
       "value": "Mover a la derecha"
     }
   ],
+  "OVTgWq": [
+    {
+      "type": 0,
+      "value": "Ilimitado"
+    }
+  ],
   "PEq6j5": [
     {
       "type": 0,
@@ -261,6 +273,12 @@
       "value": "Configuración del Usuario"
     }
   ],
+  "UwCHgC": [
+    {
+      "type": 0,
+      "value": "(Pulsa Intro cuando estés listo)"
+    }
+  ],
   "WWTrIb": [
     {
       "type": 0,
@@ -291,6 +309,16 @@
       "value": "Puedes cambiar esto en cualquier momento en el menú de ajustes"
     }
   ],
+  "Z0iZnK": [
+    {
+      "type": 1,
+      "value": "minutes"
+    },
+    {
+      "type": 0,
+      "value": " minutos"
+    }
+  ],
   "aLjUL6": [
     {
       "type": 0,
@@ -307,6 +335,38 @@
     {
       "type": 0,
       "value": "Elegir nombre de usuario"
+    }
+  ],
+  "byMHD6": [
+    {
+      "type": 0,
+      "value": "¡"
+    },
+    {
+      "options": {
+        "Centrals": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Las Potencias Centrales han"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Los Aliados han"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "team"
+    },
+    {
+      "type": 0,
+      "value": " ganado!"
     }
   ],
   "cFDrGv": [
@@ -409,6 +469,12 @@
     {
       "type": 0,
       "value": "Activar el motor"
+    }
+  ],
+  "ov7Lo+": [
+    {
+      "type": 0,
+      "value": "Tiempo de juego"
     }
   ],
   "p1ezxU": [

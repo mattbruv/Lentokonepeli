@@ -6,6 +6,7 @@ import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 import { PlayerProperties } from "dogfight-types/PlayerProperties";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import { Team } from "dogfight-types/Team";
+import { WorldState } from "dogfight-types/WorldState";
 import * as PIXI from "pixi.js";
 import { IntlShape } from "react-intl";
 import { Entity, isFollowable } from "./entities/entity";
@@ -18,6 +19,7 @@ import { KillFeed } from "./killfeed";
 import { RenderClient } from "./RenderClient";
 import { RunwaySelector } from "./runwaySelector";
 import { RespawnInfo } from "./respawnInfo";
+import { RoundInfo } from "./roundInfo";
 import { TeamChooser } from "./teamChooser";
 import { Textures } from "./textures";
 import { GAME_INTL } from "../intl/messages";
@@ -66,6 +68,9 @@ export class DogfightClient {
     private gameHUD: GameHUD = new GameHUD();
     private killFeed: KillFeed = new KillFeed();
     private respawnInfo: RespawnInfo = new RespawnInfo();
+    private roundInfo: RoundInfo = new RoundInfo();
+    private worldState: WorldState | null = null;
+    private isReplay = false;
     public keyboard: GameKeyboard = new GameKeyboard();
 
     private callbacks?: GameClientCallbacks;
@@ -87,8 +92,10 @@ export class DogfightClient {
         const containers = [
             this.killFeed.container,
             this.runwaySelector.container,
+            this.roundInfo.clockContainer,
             this.teamChooser.container,
             this.respawnInfo.container,
+            this.roundInfo.container,
         ];
 
         this.renderClient = new RenderClient({ background: this.sky, containers, hud: this.gameHUD.container });
@@ -99,6 +106,10 @@ export class DogfightClient {
     private onKeyChange(keys: PlayerKeyboard) {
         const myPlayer = this.getMyPlayer();
         if (!myPlayer) return;
+        if (this.worldState === "Intermission") {
+            this.callbacks?.keyChange(keys);
+            return;
+        }
         switch (myPlayer.props.state) {
             case "Playing": {
                 this.callbacks?.keyChange(keys);
@@ -171,6 +182,11 @@ export class DogfightClient {
             this.respawnInfo.container.position.set(width, y);
         }
 
+        {
+            const screen = this.renderClient.app.screen;
+            this.roundInfo.init(intl, screen.width, screen.height - this.gameHUD.container.height);
+        }
+
         this.centerCamera(0, 0);
     }
 
@@ -196,6 +212,7 @@ export class DogfightClient {
         this.myPlayerGuid = guid;
         const myPlayer = this.entities.Player.collection.entries().find((x) => x[1].props.guid === guid);
         this.myPlayerId = myPlayer?.[0] ?? null;
+        this.isReplay = replay;
         if (replay) {
             if (myPlayer) {
                 this.onMyPlayerUpdate(myPlayer[1].props);
@@ -218,7 +235,42 @@ export class DogfightClient {
         }
     }
 
-    private pushNotice(message: string, team: Team) {
+    private onWorldInfoUpdate() {
+        for (const [_, worldInfo] of this.entities.WorldInfo.collection) {
+            const { state, winner, time_left } = worldInfo.props;
+            if (state !== this.worldState) {
+                this.worldState = state;
+                if (state === "PostGame") {
+                    this.pushNotice(this.roundInfo.getWinnerMessage(winner), winner);
+                }
+            }
+            this.roundInfo.setTimeLeft(time_left);
+        }
+        this.refreshTeamScores();
+        this.refreshOverlays();
+    }
+
+    private refreshOverlays() {
+        const me = this.getMyPlayer();
+        const intermission = this.worldState === "Intermission";
+        let winner: Team | null = null;
+        for (const [_, worldInfo] of this.entities.WorldInfo.collection) {
+            winner = worldInfo.props.winner;
+        }
+
+        this.roundInfo.update(this.worldState, winner, me?.props.ready ?? true);
+        this.teamChooser.container.visible =
+            !intermission && !this.isReplay && (!me || me.props.state === "ChoosingTeam");
+        this.runwaySelector.container.visible = !intermission && me?.props.state === "ChoosingRunway";
+
+        if (!intermission && me?.props.state === "WaitingRespawn") {
+            this.respawnInfo.show(me.props.respawn_seconds, me.props.respawn_type);
+        } else {
+            this.respawnInfo.hide();
+        }
+    }
+
+    private pushNotice(message: string, team: Team | null) {
         this.callbacks?.onMessage({ sender_name: null, team, private: false, message });
     }
 
@@ -269,26 +321,13 @@ export class DogfightClient {
             }
         }
 
-        if (myPlayer.props.state === "WaitingRespawn") {
-            this.respawnInfo.show(myPlayer.props.respawn_seconds, myPlayer.props.respawn_type);
-        } else {
-            this.respawnInfo.hide();
+        if (props.state === "ChoosingRunway") {
+            this.runwaySelector.selectRunway(this.entities.Runway, (runwayPos) => {
+                this.centerCamera(runwayPos.x, runwayPos.y);
+            });
         }
 
-        switch (props.state) {
-            case "ChoosingRunway": {
-                this.runwaySelector.container.visible = true;
-                this.runwaySelector.selectRunway(this.entities.Runway, (runwayPos) => {
-                    this.centerCamera(runwayPos.x, runwayPos.y);
-                });
-                break;
-            }
-            case "WaitingRespawn":
-            case "Playing": {
-                this.runwaySelector.container.visible = false;
-                break;
-            }
-        }
+        this.refreshOverlays();
     }
 
     /**
@@ -423,7 +462,7 @@ export class DogfightClient {
         }
 
         if (data?.type === "WorldInfo") {
-            this.refreshTeamScores();
+            this.onWorldInfoUpdate();
         }
 
         if (data?.type === "Player") {

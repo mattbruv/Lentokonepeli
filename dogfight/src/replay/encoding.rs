@@ -53,6 +53,8 @@ impl NetworkedBytes for ReplayFile {
         bytes.extend(self.level_data.to_bytes());
         bytes.extend(self.build_version.to_bytes());
         bytes.extend(self.build_commit.to_bytes());
+        bytes.extend(self.game_time_minutes.to_bytes());
+        bytes.extend(self.intermission_seconds.to_bytes());
 
         bytes
     }
@@ -67,6 +69,13 @@ impl NetworkedBytes for ReplayFile {
         let (bytes, level_data) = String::from_bytes(bytes)?;
         let (bytes, build_version) = String::from_bytes(bytes)?;
         let (bytes, build_commit) = String::from_bytes(bytes)?;
+        let (bytes, game_time_minutes, intermission_seconds) = match u16::from_bytes(bytes)
+            .and_then(|(rest, game_time)| {
+                u16::from_bytes(rest).map(|(rest, intermission)| (rest, game_time, intermission))
+            }) {
+            Some(settings) => settings,
+            None => (bytes, 0, 20),
+        };
 
         // See note in to_bytes to understand why we're converting this
         let mut ticks: HashMap<u32, Vec<ReplayTickCommand>> = HashMap::new();
@@ -81,6 +90,8 @@ impl NetworkedBytes for ReplayFile {
                 build_commit,
                 level_name,
                 level_data,
+                game_time_minutes,
+                intermission_seconds,
                 player_guids,
                 ticks,
             },

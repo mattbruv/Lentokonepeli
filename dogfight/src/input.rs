@@ -8,6 +8,7 @@ use crate::{
         player::{ControllingEntity, Player, PlayerGuid, PlayerState},
         runway::RunwayReservation,
         types::Team,
+        world_info::WorldState,
     },
     game_event::ChatMessage,
     network::encoding::NetworkedBytes,
@@ -179,10 +180,17 @@ impl World {
                 PlayerCommand::AddPlayer(data) => {
                     // Add the player if not already exists
                     if let None = self.get_player_from_guid(&guid) {
-                        if let Some((_, p)) =
+                        let in_intermission =
+                            self.world_info.get_state() == WorldState::Intermission;
+                        if let Some((id, p)) =
                             self.players.insert(Player::new(guid, data.name, data.clan))
                         {
                             game_output.push(ServerOutput::PlayerJoin(p.get_name()));
+                            if in_intermission {
+                                if let Some(player) = self.players.get_mut(id) {
+                                    player.set_ready(true);
+                                }
+                            }
                         }
                     }
                 }
@@ -229,6 +237,10 @@ impl World {
     }
 
     fn choose_team(&mut self, guid: &PlayerGuid, choice: Option<Team>) -> Option<(PlayerId, Team)> {
+        if self.world_info.get_state() == WorldState::Intermission {
+            return None;
+        }
+
         let mut centrals = 0;
         let mut allies = 0;
         for (_, player) in self.players.get_map() {
@@ -265,6 +277,10 @@ impl World {
     }
 
     fn can_take_off(&self, guid: &PlayerGuid, selection: &RunwaySelection) -> bool {
+        if self.world_info.get_state() == WorldState::Intermission {
+            return false;
+        }
+
         let Some((_, player)) = self.get_player_from_guid(guid) else {
             return false;
         };

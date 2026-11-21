@@ -3,6 +3,10 @@
     "defaultMessage": "Lentokonepeli (In Development)",
     "description": "Main title of site shown on nav"
   },
+  "+hJmve": {
+    "defaultMessage": "Tie!",
+    "description": "Shown in large text and in chat when a round ends in a tie"
+  },
   "/KlrcC": {
     "defaultMessage": "Username",
     "description": "Settings section title used to modify the username"
@@ -111,6 +115,10 @@
     "defaultMessage": "Move Right",
     "description": "Title for the 'Move Right' action shown on the keybind settings section"
   },
+  "OVTgWq": {
+    "defaultMessage": "Unlimited",
+    "description": "Game time option for rounds that only end when a team's base is destroyed"
+  },
   "PEq6j5": {
     "defaultMessage": "to close chat",
     "description": "message indicating 'Esc' closes the chat"
@@ -139,6 +147,10 @@
     "defaultMessage": "User Settings",
     "description": "Title for a settings section used to modify user info used in-game"
   },
+  "UwCHgC": {
+    "defaultMessage": "(Press enter when ready)",
+    "description": "Shown on the intermission screen between rounds until the player presses enter"
+  },
   "WWTrIb": {
     "defaultMessage": "Versatile mid-tier aircraft. Equipped with bombs in addition to a machine gun. Fast and powerful engine, though not agile.",
     "description": "Description of the Salmson 2 aircraft"
@@ -159,6 +171,10 @@
     "defaultMessage": "You can change this any time in the settings menu",
     "description": "Tooltip for the username setting section"
   },
+  "Z0iZnK": {
+    "defaultMessage": "{minutes} minutes",
+    "description": "Game time option showing round length"
+  },
   "aLjUL6": {
     "defaultMessage": "Level Editor",
     "description": "Sidebar link description for the Level Editor"
@@ -170,6 +186,10 @@
   "buqDOb": {
     "defaultMessage": "Choose Username",
     "description": "Title for modal used to choose username"
+  },
+  "byMHD6": {
+    "defaultMessage": "{team, select, Centrals {Centrals} other {Allies}} have won!",
+    "description": "Shown in large text and in chat when a team wins the round"
   },
   "cFDrGv": {
     "defaultMessage": "An optional clan to prefix to your name",
@@ -238,6 +258,10 @@
   "ohIqzI": {
     "defaultMessage": "Toggle Motor",
     "description": "Title for the 'Toggle Motor' action shown on the keybind settings section"
+  },
+  "ov7Lo+": {
+    "defaultMessage": "Game time",
+    "description": "Title for selection used to choose the length of each round"
   },
   "p1ezxU": {
     "defaultMessage": "Host Game",

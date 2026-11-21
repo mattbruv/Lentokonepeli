@@ -21,7 +21,13 @@ export function PeerJSPath(code: string): string {
 
 const HOST_GUID = randomGuid();
 
-export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: string, clan: string) {
+export function useLocalHost(
+    gameMap: LevelName,
+    recordGame: boolean,
+    username: string,
+    clan: string,
+    gameTime: number,
+) {
     const dogfight = useDogfight({
         handleClientCommand: (clientCommand) => {
             hostInput.current.push({ player_guid: HOST_GUID, command: clientCommand });
@@ -81,6 +87,7 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
             // TODO: extend this for custom maps in the future
             const level = Levels[gameMap];
             dogfight.engine.load_level(level);
+            dogfight.engine.set_round_settings(gameTime, 20);
             dogfight.engine.init();
             console.log(dogfight.engine.get_build_version());
             console.log(dogfight.engine.get_commit());

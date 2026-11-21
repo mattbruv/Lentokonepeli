@@ -53,6 +53,9 @@ pub struct ReplayFile {
     pub level_name: String,
     pub level_data: String,
 
+    pub game_time_minutes: u16,
+    pub intermission_seconds: u16,
+
     pub player_guids: BTreeMap<PlayerGuid, u16>,
 
     pub ticks: HashMap<u32, Vec<ReplayTickCommand>>,
@@ -84,6 +87,8 @@ impl ReplayFile {
             build_commit: get_commit_version().to_string(),
             level_data: "".to_string(),
             level_name: "".to_string(),
+            game_time_minutes: 0,
+            intermission_seconds: 20,
             player_guids: BTreeMap::new(),
             ticks: HashMap::new(),
         }

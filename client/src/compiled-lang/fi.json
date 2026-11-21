@@ -5,6 +5,12 @@
       "value": "Lentokonepeli (Kehityksessä)"
     }
   ],
+  "+hJmve": [
+    {
+      "type": 0,
+      "value": "Tasapeli!"
+    }
+  ],
   "/KlrcC": [
     {
       "type": 0,
@@ -211,6 +217,12 @@
       "value": "Liiku oikealle"
     }
   ],
+  "OVTgWq": [
+    {
+      "type": 0,
+      "value": "Rajoittamaton"
+    }
+  ],
   "PEq6j5": [
     {
       "type": 0,
@@ -253,6 +265,12 @@
       "value": "Käyttäjäasetukset"
     }
   ],
+  "UwCHgC": [
+    {
+      "type": 0,
+      "value": "(Paina enteriä kun olet valmis)"
+    }
+  ],
   "WWTrIb": [
     {
       "type": 0,
@@ -283,6 +301,16 @@
       "value": "Tämän voi vaihtaa jälkeenpäin asetuksista"
     }
   ],
+  "Z0iZnK": [
+    {
+      "type": 1,
+      "value": "minutes"
+    },
+    {
+      "type": 0,
+      "value": " minuuttia"
+    }
+  ],
   "aLjUL6": [
     {
       "type": 0,
@@ -299,6 +327,34 @@
     {
       "type": 0,
       "value": "Valitse Käyttäjänimi"
+    }
+  ],
+  "byMHD6": [
+    {
+      "options": {
+        "Centrals": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Keskusvallat"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Liittoutuneet"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "team"
+    },
+    {
+      "type": 0,
+      "value": " voittivat!"
     }
   ],
   "cFDrGv": [
@@ -401,6 +457,12 @@
     {
       "type": 0,
       "value": "Vaihda moottorin tila"
+    }
+  ],
+  "ov7Lo+": [
+    {
+      "type": 0,
+      "value": "Peliaika"
     }
   ],
   "p1ezxU": [

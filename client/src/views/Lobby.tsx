@@ -17,12 +17,15 @@ enum LobbyState {
     Joining,
 }
 
+const GAME_TIME_OPTIONS = [0, 5, 10, 15, 20, 30, 60];
+
 export function Lobby() {
     const intl = useIntl();
     const [lobbyState, setLobbyState] = useState<LobbyState>(LobbyState.Choosing);
 
     // Hosting state
     const [gameMap, setGameMap] = useState<LevelName>("classic");
+    const [gameTime, setGameTime] = useState<number>(0);
 
     // Joining state
     const [joinId, setJoinId] = useState<string>("");
@@ -88,6 +91,41 @@ export function Lobby() {
                                             description:
                                                 "Infotext for input which is used to insert 4 digit game code to join games",
                                         })}
+                                    />
+                                </Group>
+                                <Group>
+                                    <Text>
+                                        <FormattedMessage
+                                            defaultMessage={"Game time"}
+                                            description={"Title for selection used to choose the length of each round"}
+                                        />
+                                        :
+                                    </Text>
+                                    <Select
+                                        data={GAME_TIME_OPTIONS.map((minutes) => ({
+                                            value: `${minutes}`,
+                                            label:
+                                                minutes === 0
+                                                    ? intl.formatMessage({
+                                                          defaultMessage: "Unlimited",
+                                                          description:
+                                                              "Game time option for rounds that only end when a team's base is destroyed",
+                                                      })
+                                                    : intl.formatMessage(
+                                                          {
+                                                              defaultMessage: "{minutes} minutes",
+                                                              description: "Game time option showing round length",
+                                                          },
+                                                          { minutes },
+                                                      ),
+                                        }))}
+                                        value={`${gameTime}`}
+                                        allowDeselect={false}
+                                        onChange={(v) => {
+                                            if (v) {
+                                                setGameTime(Number(v));
+                                            }
+                                        }}
                                     />
                                 </Group>
                                 <Button
@@ -172,7 +210,7 @@ export function Lobby() {
                     </Grid.Col>
                 </Grid>
             )}
-            {lobbyState === LobbyState.Hosting && <Host level={gameMap} recordGame={false} />}
+            {lobbyState === LobbyState.Hosting && <Host level={gameMap} recordGame={false} gameTime={gameTime} />}
             {lobbyState === LobbyState.Joining && <Guest gameCode={joinId} />}
         </div>
     );

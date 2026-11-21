@@ -3,6 +3,10 @@
     "defaultMessage": "Lentokonepeli (Kehityksessä)",
     "description": "Main title of site shown on nav"
   },
+  "+hJmve": {
+    "defaultMessage": "Tasapeli!",
+    "description": "Shown in large text and in chat when a round ends in a tie"
+  },
   "/KlrcC": {
     "defaultMessage": "Käyttäjänimi",
     "description": "Settings section title used to modify the username"
@@ -111,6 +115,10 @@
     "defaultMessage": "Liiku oikealle",
     "description": "Title for the 'Move Right' action shown on the keybind settings section"
   },
+  "OVTgWq": {
+    "defaultMessage": "Rajoittamaton",
+    "description": "Game time option for rounds that only end when a team's base is destroyed"
+  },
   "PEq6j5": {
     "defaultMessage": "sulkea chat",
     "description": "message indicating 'Esc' closes the chat"
@@ -139,6 +147,10 @@
     "defaultMessage": "Käyttäjäasetukset",
     "description": "Title for a settings section used to modify user info used in-game"
   },
+  "UwCHgC": {
+    "defaultMessage": "(Paina enteriä kun olet valmis)",
+    "description": "Shown on the intermission screen between rounds until the player presses enter"
+  },
   "WWTrIb": {
     "defaultMessage": "Monipuolinen keskitaso. Konekiväärin lisäksi pommit. Nopea ja vahvamoottorinen kone, joskaan ei ketterä.",
     "description": "Description of the Salmson 2 aircraft"
@@ -159,6 +171,10 @@
     "defaultMessage": "Tämän voi vaihtaa jälkeenpäin asetuksista",
     "description": "Tooltip for the käyttäjänimi setting section"
   },
+  "Z0iZnK": {
+    "defaultMessage": "{minutes} minuuttia",
+    "description": "Game time option showing round length"
+  },
   "aLjUL6": {
     "defaultMessage": "Kenttäeditori",
     "description": "Sidebar link description for the Level Editor"
@@ -170,6 +186,10 @@
   "buqDOb": {
     "defaultMessage": "Valitse Käyttäjänimi",
     "description": "Title for modal used to choose username"
+  },
+  "byMHD6": {
+    "defaultMessage": "{team, select, Centrals {Keskusvallat} other {Liittoutuneet}} voittivat!",
+    "description": "Shown in large text and in chat when a team wins the round"
   },
   "cFDrGv": {
     "defaultMessage": "Valinnainen etuliite käyttääjänimen eteen",
@@ -238,6 +258,10 @@
   "ohIqzI": {
     "defaultMessage": "Vaihda moottorin tila",
     "description": "Title for the 'Toggle Motor' action shown on the keybind settings section"
+  },
+  "ov7Lo+": {
+    "defaultMessage": "Peliaika",
+    "description": "Title for selection used to choose the length of each round"
   },
   "p1ezxU": {
     "defaultMessage": "Isännöi",

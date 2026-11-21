@@ -64,6 +64,13 @@ impl Runway {
         runway
     }
 
+    pub fn reset(&mut self) {
+        self.health_timer = 0;
+        self.last_reserve = None;
+        self.reserve_timer = 10_000;
+        self.set_health(self.get_max_health());
+    }
+
     pub fn tick(&mut self) -> () {
         self.reserve_timer += 10;
 

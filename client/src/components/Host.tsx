@@ -11,14 +11,15 @@ import { Game } from "./Game";
 type HostProps = {
     level: LevelName;
     recordGame: boolean;
+    gameTime: number;
 };
 
-export function Host({ level, recordGame }: HostProps) {
+export function Host({ level, recordGame, gameTime }: HostProps) {
     const gameContainer = useRef<HTMLDivElement>(null);
     const { getUsername, getClan } = useSettingsContext();
 
     const { getReplayBinary, initialize, roomCode, hostGame, playerData, playerGuid, messages, sendChatMessage } =
-        useLocalHost(level, recordGame, getUsername(), getClan());
+        useLocalHost(level, recordGame, getUsername(), getClan(), gameTime);
 
     // const [joinId, setJoinId] = useState("")
     // const [tickRate, setTickRate] = useState(100)
