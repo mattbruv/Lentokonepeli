@@ -172,6 +172,7 @@ export function useReplay() {
         replayInfo,
         replayCallbacks,
         playerData: dogfight.playerData,
+        intermission: dogfight.intermission,
         playerGuid: dogfight.playerGuid,
         messages: dogfight.messages,
     };

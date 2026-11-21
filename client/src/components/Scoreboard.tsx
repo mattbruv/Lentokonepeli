@@ -8,7 +8,13 @@ import "./Scoreboard.css";
 export type ScoreboardProps = {
     myPlayerGuid: string | null;
     playerData: PlayerProperties[];
+    intermission: boolean;
 };
+
+function formatAccuracy(perMille: number): string {
+    if (perMille < 100) return `${Math.floor(perMille / 10)}.${perMille % 10}`;
+    return `${Math.floor(perMille / 10)}`;
+}
 
 const FLAG_IMAGE_SRC: Record<Team, string> = {
     Centrals: "germanflag_small.gif",
@@ -27,7 +33,7 @@ function getTeamClass(myTeam: Team, theirs: Team | null | undefined): "noteam" |
     return "enemy";
 }
 
-export function Scoreboard({ playerData, myPlayerGuid }: ScoreboardProps) {
+export function Scoreboard({ playerData, myPlayerGuid, intermission }: ScoreboardProps) {
     const intl = useIntl();
     const me = playerData.find((x) => x.guid === myPlayerGuid);
     const myTeam = me?.team ?? "Centrals";
@@ -90,10 +96,17 @@ export function Scoreboard({ playerData, myPlayerGuid }: ScoreboardProps) {
                             </Center>
                         </Table.Th>
                         <Table.Th>
-                            {intl.formatMessage({
-                                defaultMessage: "Ping",
-                                description: "scoreboard: Ping",
-                            })}
+                            <Center>
+                                {intermission
+                                    ? intl.formatMessage({
+                                          defaultMessage: "Ready",
+                                          description: "scoreboard: Ready, shown between rounds",
+                                      })
+                                    : intl.formatMessage({
+                                          defaultMessage: "Ping",
+                                          description: "scoreboard: Ping",
+                                      })}
+                            </Center>
                         </Table.Th>
                     </Table.Tr>
                 </Table.Thead>
@@ -115,8 +128,28 @@ export function Scoreboard({ playerData, myPlayerGuid }: ScoreboardProps) {
                             <Table.Td>
                                 <Center>{player.deaths ?? 0}</Center>
                             </Table.Td>
-                            <Table.Td></Table.Td>
-                            <Table.Td></Table.Td>
+                            <Table.Td>
+                                <Center>{formatAccuracy(player.accuracy ?? 0)}</Center>
+                            </Table.Td>
+                            {intermission ? (
+                                <Table.Td className={player.ready ? "ready" : "not-ready"}>
+                                    <Center>
+                                        {player.ready
+                                            ? intl.formatMessage({
+                                                  defaultMessage: "yes",
+                                                  description: "scoreboard: player is ready for the next round",
+                                              })
+                                            : intl.formatMessage({
+                                                  defaultMessage: "no",
+                                                  description: "scoreboard: player is not ready for the next round",
+                                              })}
+                                    </Center>
+                                </Table.Td>
+                            ) : (
+                                <Table.Td>
+                                    <Center>{player.ping ?? 0}</Center>
+                                </Table.Td>
+                            )}
                         </Table.Tr>
                     ))}
                 </Table.Tbody>

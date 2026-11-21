@@ -134,6 +134,8 @@ pub struct Player {
     respawn_seconds: Property<u8>,
     respawn_type: Property<RespawnType>,
     ready: Property<bool>,
+    accuracy: Property<u16>,
+    ping: Property<u16>,
 }
 
 impl Player {
@@ -157,6 +159,8 @@ impl Player {
             respawn_seconds: Property::new(0),
             respawn_type: Property::new(RespawnType::Default),
             ready: Property::new(false),
+            accuracy: Property::new(0),
+            ping: Property::new(0),
         }
     }
 
@@ -189,6 +193,18 @@ impl Player {
         *self.state.get()
     }
 
+    pub fn record_bullet(&mut self, hit: bool) {
+        self.shots += 1;
+        if hit {
+            self.hits += 1;
+        }
+        self.accuracy.set((1000 * self.hits / self.shots) as u16);
+    }
+
+    pub fn set_ping(&mut self, ping: u16) {
+        self.ping.set(ping);
+    }
+
     pub fn is_ready(&self) -> bool {
         *self.ready.get()
     }
@@ -211,6 +227,7 @@ impl Player {
         self.score.set(0);
         self.respawn_seconds.set(0);
         self.ready.set(false);
+        self.accuracy.set(0);
     }
 
     pub fn mark_suicide(&mut self) {

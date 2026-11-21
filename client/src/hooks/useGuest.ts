@@ -4,7 +4,7 @@ import Peer from "peerjs";
 import { useEffect, useRef } from "react";
 import { gameLoop } from "../gameLoop";
 import { useDogfight } from "./useDogfight";
-import { PeerJSPath } from "./useLocalHost";
+import { isPingMessage, PeerJSPath, PingMessage } from "./useLocalHost";
 
 export function useGuest(myName: string, clan: string) {
     const peer = useRef<Peer | null>(null);
@@ -60,7 +60,15 @@ export function useGuest(myName: string, clan: string) {
 
                 conn.on("data", (data) => {
                     if (typeof data === "string") {
-                        const output: ServerOutput = JSON.parse(data);
+                        const parsed: unknown = JSON.parse(data);
+                        if (isPingMessage(parsed)) {
+                            if (parsed.type === "Ping") {
+                                const pong: PingMessage = { type: "Pong", data: parsed.data };
+                                conn.send(JSON.stringify(pong));
+                            }
+                            return;
+                        }
+                        const output = parsed as ServerOutput;
                         dogfight.handleGameEvents([output]);
                         if (output.type === "YourPlayerGuid") {
                             dogfight.setMyPlayerGuid(output.data, false);
@@ -94,6 +102,7 @@ export function useGuest(myName: string, clan: string) {
         initialize,
         sendChatMessage,
         playerData: dogfight.playerData,
+        intermission: dogfight.intermission,
         playerGuid: dogfight.playerGuid,
         messages: dogfight.messages,
     };

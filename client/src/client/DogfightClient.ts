@@ -30,6 +30,7 @@ export type GameClientCallbacks = {
     keyChange: (keyboard: PlayerKeyboard) => void;
     onPlayerChange: (playerData: PlayerProperties[]) => void;
     onMessage: (message: ChatMessage) => void;
+    onWorldStateChange: (state: WorldState | null) => void;
 };
 
 function createNewPlayer(this: DogfightClient) {
@@ -240,6 +241,7 @@ export class DogfightClient {
             const { state, winner, time_left } = worldInfo.props;
             if (state !== this.worldState) {
                 this.worldState = state;
+                this.callbacks?.onWorldStateChange(state);
                 if (state === "PostGame") {
                     this.pushNotice(this.roundInfo.getWinnerMessage(winner), winner);
                 }

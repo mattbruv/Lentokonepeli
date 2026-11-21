@@ -470,6 +470,10 @@ impl NetworkedBytes for PlayerCommand {
                 bytes.extend(msg.to_bytes());
                 bytes.extend(is_global.to_bytes());
             }
+            PlayerCommand::SetPing(ping) => {
+                bytes.push(6);
+                bytes.extend(ping.to_bytes());
+            }
         };
 
         bytes
@@ -510,6 +514,11 @@ impl NetworkedBytes for PlayerCommand {
                 let (slice, is_global) = bool::from_bytes(slice)?;
                 bytes = slice;
                 PlayerCommand::SendMessage(msg, is_global)
+            }
+            6 => {
+                let (slice, ping) = u16::from_bytes(bytes)?;
+                bytes = slice;
+                PlayerCommand::SetPing(ping)
             }
             _ => panic!("Unknown command type"),
         };

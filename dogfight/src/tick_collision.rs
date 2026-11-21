@@ -395,6 +395,19 @@ impl World {
                     bullet.kill();
                     other.kill();
 
+                    let bullet_team = self
+                        .players
+                        .get(bullet.player_id())
+                        .and_then(|p| *p.get_team());
+                    let other_team = self
+                        .players
+                        .get(other.player_id())
+                        .and_then(|p| *p.get_team());
+                    if bullet_team != other_team {
+                        bullet.mark_hit_enemy();
+                        other.mark_hit_enemy();
+                    }
+
                     actions.push(Action::RemoveEntity(RemoveData::Bullet(**bullet_id)));
                     actions.push(Action::RemoveEntity(RemoveData::Bullet(**other_id)));
                 }
@@ -402,8 +415,16 @@ impl World {
         }
 
         'bullets: for (bullet_id, bullet) in self.bullets.get_map_mut() {
+            let shooter_team = self
+                .players
+                .get(bullet.player_id())
+                .and_then(|p| *p.get_team());
+
             for (man_id, man) in self.men.get_map_mut() {
                 if bullet.check_collision(man) {
+                    if shooter_team != Some(man.get_team()) {
+                        bullet.mark_hit_enemy();
+                    }
                     if let Some((owner_id, _)) = self
                         .players
                         .get_player_controlling(ControllingEntity::Man(*man_id))
@@ -427,6 +448,9 @@ impl World {
             for (plane_id, plane) in self.planes.get_map_mut() {
                 // Don't collide our own bullet with our own plane
                 if bullet.player_id() != plane.player_id() && bullet.check_collision(plane) {
+                    if shooter_team != Some(plane.get_team()) {
+                        bullet.mark_hit_enemy();
+                    }
                     let amount = (30.0 * bullet.get_damage_factor()) as i32;
                     plane.subtract_health(amount);
 
@@ -451,6 +475,13 @@ impl World {
             for (bomb_id, bomb) in self.bombs.get_map_mut() {
                 // Don't collide our own bullet with our own plane
                 if bullet.check_collision(bomb) {
+                    let bomb_team = self
+                        .players
+                        .get(bomb.player_id())
+                        .and_then(|p| *p.get_team());
+                    if shooter_team != bomb_team {
+                        bullet.mark_hit_enemy();
+                    }
                     actions.push(Action::RemoveEntity(RemoveData::Bullet(*bullet_id)));
 
                     blow_up(
@@ -467,6 +498,9 @@ impl World {
 
             for (runway_id, runway) in self.runways.get_map_mut() {
                 if bullet.check_collision(runway) {
+                    if shooter_team != Some(*runway.get_team()) {
+                        bullet.mark_hit_enemy();
+                    }
                     let amount = (4.0 * bullet.get_damage_factor()) as i32;
                     if runway.subtract_health(amount) {
                         actions.push(Action::RunwayDestroyed(*runway_id));

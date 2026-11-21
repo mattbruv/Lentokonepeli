@@ -13,8 +13,12 @@ export const Game = forwardRef<HTMLDivElement, GameProps>((props, ref) => {
 
     return (
         <div ref={ref} style={{ position: "relative" }}>
-            {globalState.viewingScoreboard && (
-                <Scoreboard playerData={props.playerData} myPlayerGuid={props.myPlayerGuid} />
+            {(globalState.viewingScoreboard || props.intermission) && (
+                <Scoreboard
+                    playerData={props.playerData}
+                    myPlayerGuid={props.myPlayerGuid}
+                    intermission={props.intermission}
+                />
             )}
             {<Chat messages={props.messages} onSendMessage={props.onSendMessage} myTeam={myTeam} />}
         </div>

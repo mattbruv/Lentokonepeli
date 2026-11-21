@@ -258,7 +258,11 @@ impl World {
                 self.explosions.remove(explosion_id);
             }
             RemoveData::Bullet(bullet_id) => {
-                self.bullets.remove(bullet_id);
+                if let Some(bullet) = self.bullets.remove(bullet_id) {
+                    if let Some(player) = self.players.get_mut(bullet.player_id()) {
+                        player.record_bullet(bullet.hit_enemy());
+                    }
+                }
             }
         };
 

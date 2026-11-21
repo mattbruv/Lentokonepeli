@@ -183,6 +183,10 @@
     "defaultMessage": "Albatros D.II",
     "description": "Name of the Albatros D.II aircraft"
   },
+  "azXaJ7": {
+    "defaultMessage": "yes",
+    "description": "scoreboard: player is ready for the next round"
+  },
   "buqDOb": {
     "defaultMessage": "Choose Username",
     "description": "Title for modal used to choose username"
@@ -206,6 +210,10 @@
   "dPTAzZ": {
     "defaultMessage": "Move Left",
     "description": "Title for the 'Move Left' action shown on the keybind settings section"
+  },
+  "e5OODe": {
+    "defaultMessage": "Ready",
+    "description": "scoreboard: Ready, shown between rounds"
   },
   "ezKLsY": {
     "defaultMessage": "Fokker DR.I",
@@ -290,6 +298,10 @@
   "tN8/0L": {
     "defaultMessage": "Chat Team",
     "description": "Title for the 'Chat Team' action shown on the keybind settings section"
+  },
+  "tNvYDv": {
+    "defaultMessage": "no",
+    "description": "scoreboard: player is not ready for the next round"
   },
   "tOuqsq": {
     "defaultMessage": "Level Editor Notice",

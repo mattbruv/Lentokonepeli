@@ -183,6 +183,10 @@
     "defaultMessage": "Albatros D.II",
     "description": "Name of the Albatros D.II aircraft"
   },
+  "azXaJ7": {
+    "defaultMessage": "kyllä",
+    "description": "scoreboard: player is ready for the next round"
+  },
   "buqDOb": {
     "defaultMessage": "Valitse Käyttäjänimi",
     "description": "Title for modal used to choose username"
@@ -206,6 +210,10 @@
   "dPTAzZ": {
     "defaultMessage": "Liiku vasemmalle",
     "description": "Title for the 'Move Left' action shown on the keybind settings section"
+  },
+  "e5OODe": {
+    "defaultMessage": "Valmis",
+    "description": "scoreboard: Ready, shown between rounds"
   },
   "ezKLsY": {
     "defaultMessage": "Fokker DR.I",
@@ -290,6 +298,10 @@
   "tN8/0L": {
     "defaultMessage": "Viestitä tiimille",
     "description": "Title for the 'Chat Team' action shown on the keybind settings section"
+  },
+  "tNvYDv": {
+    "defaultMessage": "ei",
+    "description": "scoreboard: player is not ready for the next round"
   },
   "tOuqsq": {
     "defaultMessage": "Kenttäeditorin huomautus",

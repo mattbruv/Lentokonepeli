@@ -25,3 +25,12 @@
     background-color: #FFB574;
     color: black;
 }
+.scoreboard .ready {
+    background-color: #00FF00;
+    color: white;
+}
+
+.scoreboard .not-ready {
+    background-color: #FF0000;
+    color: white;
+}

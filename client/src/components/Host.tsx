@@ -18,8 +18,17 @@ export function Host({ level, recordGame, gameTime }: HostProps) {
     const gameContainer = useRef<HTMLDivElement>(null);
     const { getUsername, getClan } = useSettingsContext();
 
-    const { getReplayBinary, initialize, roomCode, hostGame, playerData, playerGuid, messages, sendChatMessage } =
-        useLocalHost(level, recordGame, getUsername(), getClan(), gameTime);
+    const {
+        getReplayBinary,
+        initialize,
+        roomCode,
+        hostGame,
+        playerData,
+        intermission,
+        playerGuid,
+        messages,
+        sendChatMessage,
+    } = useLocalHost(level, recordGame, getUsername(), getClan(), gameTime);
 
     // const [joinId, setJoinId] = useState("")
     // const [tickRate, setTickRate] = useState(100)
@@ -50,6 +59,7 @@ export function Host({ level, recordGame, gameTime }: HostProps) {
                 ref={gameContainer}
                 myPlayerGuid={playerGuid}
                 playerData={playerData}
+                intermission={intermission}
                 messages={messages}
                 onSendMessage={sendChatMessage}
             />

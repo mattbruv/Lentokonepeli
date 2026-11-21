@@ -36,6 +36,7 @@ pub enum PlayerCommand {
     PlayerChooseRunway(RunwaySelection),
     PlayerKeyboard(PlayerKeyboard),
     SendMessage(String, bool),
+    SetPing(u16),
 }
 
 pub fn game_input_from_string(input: String) -> Vec<ServerInput> {
@@ -215,6 +216,11 @@ impl World {
                 PlayerCommand::PlayerKeyboard(keys) => {
                     if let Some((_, p)) = self.get_player_from_guid_mut(&guid) {
                         p.set_keys(keys);
+                    }
+                }
+                PlayerCommand::SetPing(ping) => {
+                    if let Some((_, player)) = self.get_player_from_guid_mut(&guid) {
+                        player.set_ping(ping);
                     }
                 }
                 PlayerCommand::SendMessage(message, is_global) => {

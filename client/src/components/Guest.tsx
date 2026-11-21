@@ -13,7 +13,7 @@ export function Guest({ gameCode }: GuestProps) {
 
     const { getClan, getUsername } = useSettingsContext();
 
-    const { initialize, joinGame, playerData, playerGuid, messages, sendChatMessage } = useGuest(
+    const { initialize, joinGame, playerData, intermission, playerGuid, messages, sendChatMessage } = useGuest(
         getUsername(),
         getClan(),
     );
@@ -34,6 +34,7 @@ export function Guest({ gameCode }: GuestProps) {
                 ref={gameContainer}
                 myPlayerGuid={playerGuid}
                 playerData={playerData}
+                intermission={intermission}
                 messages={messages}
                 onSendMessage={sendChatMessage}
             />

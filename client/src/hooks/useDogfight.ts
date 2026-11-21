@@ -5,6 +5,7 @@ import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 import { PlayerProperties } from "dogfight-types/PlayerProperties";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import { Team } from "dogfight-types/Team";
+import { WorldState } from "dogfight-types/WorldState";
 import { DogfightWeb } from "dogfight-web";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
@@ -27,6 +28,7 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
     const [playerData, setPlayerData] = useState<PlayerProperties[]>([]);
     const [playerGuid, setPlayerGuid] = useState<string | null>(null);
     const [messages, setMessages] = useState<ChatMessageTimed[]>([]);
+    const [worldState, setWorldState] = useState<WorldState | null>(null);
 
     useGameKeybinds({ client, engine });
     useDevKeybinds({ client, engine });
@@ -75,6 +77,9 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
             },
             onPlayerChange: (playerInfo: PlayerProperties[]): void => {
                 setPlayerData(playerInfo);
+            },
+            onWorldStateChange: (state: WorldState | null): void => {
+                setWorldState(state);
             },
             onMessage: (message: ChatMessage): void => {
                 const timedMessage: ChatMessageTimed = {
@@ -128,6 +133,7 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
         playerGuid,
         messages,
         playerData,
+        intermission: worldState === "Intermission",
         engine,
     };
 }
