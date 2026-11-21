@@ -775,25 +775,19 @@ impl Plane {
     }
 
     pub(crate) fn get_bottom_height(&self) -> i16 {
-        (self.get_image().height() / 2) as i16
-        // Convert the image to RGBA8 for easy pixel manipulation
-        /*
         let image = self.get_image();
         let (width, height) = image.dimensions();
-        log(&format!("img width: {} height: {}", width, height).into());
 
-        for y in (0..height).rev() {
-            for x in 0..width {
-                let pixel = image.get_pixel(x, y);
-                if pixel[3] > 0 {
-                    // Check if alpha channel is non-zero (or change condition to fit your needs)
-                    return (y + 1).try_into();
-                }
-            }
-        }
+        let lowest_opaque_row = (0..height)
+            .rev()
+            .find(|&y| (0..width).any(|x| image.get_pixel(x, y)[3] >= 128))
+            .map(|y| y + 1)
+            .unwrap_or(0);
 
-        0 // Return 0 if no non-transparent pixels are found
-        */
+        let canvas = self.get_rotateable_image().height();
+        let image_top_from_center = (canvas / 2) as i32 - ((canvas - height) / 2) as i32;
+
+        (lowest_opaque_row as i32 - image_top_from_center) as i16
     }
 
     pub fn set_downed_by(&mut self, player_id: Option<PlayerId>) -> () {
@@ -983,6 +977,17 @@ impl Plane {
         self.y
     }
 
+    fn get_rotateable_image(&self) -> &RgbaImage {
+        match self.plane_type.get() {
+            PlaneType::Albatros => &self.image_albatros_rotateable,
+            PlaneType::Junkers => &self.image_junkers_rotateable,
+            PlaneType::Fokker => &self.image_fokker_rotateable,
+            PlaneType::Bristol => &self.image_bristol_rotateable,
+            PlaneType::Salmson => &self.image_salmson_rotateable,
+            PlaneType::Sopwith => &self.image_sopwith_rotateable,
+        }
+    }
+
     fn get_image(&self) -> &RgbaImage {
         match self.plane_type.get() {
             PlaneType::Albatros => &self.image_albatros,
@@ -1019,16 +1024,7 @@ impl SolidEntity for Plane {
     fn do_rotate_collision_image(&mut self) -> () {
         let flip = self.flipped();
 
-        let original_image = match self.plane_type.get() {
-            PlaneType::Albatros => &self.image_albatros_rotateable,
-            PlaneType::Junkers => &self.image_junkers_rotateable,
-            PlaneType::Fokker => &self.image_fokker_rotateable,
-            PlaneType::Bristol => &self.image_bristol_rotateable,
-            PlaneType::Salmson => &self.image_salmson_rotateable,
-            PlaneType::Sopwith => &self.image_sopwith_rotateable,
-        };
-
-        self.rotated_image = rotate_image(original_image, self.angle, flip);
+        self.rotated_image = rotate_image(self.get_rotateable_image(), self.angle, flip);
     }
 
     fn is_alive(&self) -> bool {

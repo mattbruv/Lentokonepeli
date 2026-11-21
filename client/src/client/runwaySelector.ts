@@ -153,6 +153,8 @@ export class RunwaySelector {
         this.updatePlaneInfo(); // Update name and description when plane changes
 
         const myRunways = this.getMyRunways(runways);
+        if (myRunways.length === 0) return;
+        this.runwayIndex = Math.min(this.runwayIndex, myRunways.length - 1);
 
         if (keys.left) {
             this.runwayIndex = this.runwayIndex - 1 < 0 ? myRunways.length - 1 : this.runwayIndex - 1;
@@ -173,6 +175,8 @@ export class RunwaySelector {
 
     public selectRunway(runways: EntityGroup<Runway>, centerCamera: (runwayPos: Point) => void) {
         const myRunways = this.getMyRunways(runways);
+        if (myRunways.length === 0) return;
+        this.runwayIndex = Math.min(this.runwayIndex, myRunways.length - 1);
         const pos = myRunways[this.runwayIndex][1].getCenter();
         pos.y -= 130;
         centerCamera(pos);
@@ -180,10 +184,7 @@ export class RunwaySelector {
 
     private getMyRunways(runways: EntityGroup<Runway>): [number, Runway][] {
         return [...runways.collection.entries()]
-            .filter(
-                ([_, runway]) => runway.props.team === this.team,
-                // TODO: health
-            )
+            .filter(([_, runway]) => runway.props.team === this.team && runway.props.client_health > 0)
             .sort((a, b) => (a[1].props.client_x ?? 0) - (b[1].props.client_x ?? 0));
     }
 }
