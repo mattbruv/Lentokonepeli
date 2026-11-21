@@ -11,6 +11,10 @@
     "defaultMessage": "Un triplano legendario. Extremadamente ágil y también excelente a máxima altitud de vuelo.",
     "description": "Description of the Fokker DR.I aircraft"
   },
+  "2t1nvh": {
+    "defaultMessage": "Cuartel general de {team, select, Centrals {las Potencias Centrales} other {los Aliados}} destruido.",
+    "description": "Chat notice when a team's headquarters is destroyed"
+  },
   "2w7ZSO": {
     "defaultMessage": "Muertes",
     "description": "scoreboard: Deaths"
@@ -46,6 +50,10 @@
   "8iVdSN": {
     "defaultMessage": "Ajustes de control",
     "description": "Title for a settings section used to modify the keybinds used in-game"
+  },
+  "9l2moM": {
+    "defaultMessage": "Pista de {team, select, Centrals {las Potencias Centrales} other {los Aliados}} destruida.",
+    "description": "Chat notice when a team's runway is destroyed"
   },
   "B1CMe5": {
     "defaultMessage": "Se puede descargar un archivo de repetición en cualquier momento cuando se aloja un partido.",

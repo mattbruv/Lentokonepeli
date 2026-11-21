@@ -20,6 +20,7 @@ import { RunwaySelector } from "./runwaySelector";
 import { RespawnInfo } from "./respawnInfo";
 import { TeamChooser } from "./teamChooser";
 import { Textures } from "./textures";
+import { GAME_INTL } from "../intl/messages";
 
 export type GameClientCallbacks = {
     chooseTeam: (team: Team | null) => void;
@@ -68,6 +69,7 @@ export class DogfightClient {
     public keyboard: GameKeyboard = new GameKeyboard();
 
     private callbacks?: GameClientCallbacks;
+    private intl?: IntlShape;
     private sendPlayerUpdate: boolean = false;
     public entities = entityCollection([...DEFAULT_ENTITIES, ["Player", createNewPlayer.bind(this)]]);
     public renderClient: RenderClient;
@@ -124,6 +126,7 @@ export class DogfightClient {
         element?.appendChild(this.renderClient.app.view);
 
         this.callbacks = callbacks;
+        this.intl = intl;
         this.teamChooser.init(this.callbacks);
         this.runwaySelector.init(this.callbacks, intl);
         this.keyboard.init((keyboard) => this.onKeyChange(keyboard));
@@ -205,6 +208,18 @@ export class DogfightClient {
         this.teamChooser.container.visible = false;
         this.gameHUD.setTeam(team);
         this.killFeed.setTeam(team);
+        this.refreshTeamScores();
+    }
+
+    private refreshTeamScores() {
+        for (const [_, worldInfo] of this.entities.WorldInfo.collection) {
+            const myTeam = this.getMyPlayer()?.props.team ?? null;
+            this.gameHUD.updateTeamScores(worldInfo.props.centrals_score, worldInfo.props.allies_score, myTeam);
+        }
+    }
+
+    private pushNotice(message: string, team: Team) {
+        this.callbacks?.onMessage({ sender_name: null, team, private: false, message });
     }
 
     public getMyPlayer(): Player | undefined {
@@ -351,6 +366,16 @@ export class DogfightClient {
                     this.callbacks?.onMessage(event.data[1]);
                     break;
                 }
+                case "RunwayDestroyed": {
+                    const message = this.intl?.formatMessage(GAME_INTL.runway_destroyed, { team: event.data });
+                    if (message) this.pushNotice(message, event.data);
+                    break;
+                }
+                case "HeadquartersDestroyed": {
+                    const message = this.intl?.formatMessage(GAME_INTL.headquarters_destroyed, { team: event.data });
+                    if (message) this.pushNotice(message, event.data);
+                    break;
+                }
                 default: {
                     // Exhaustive check
                     const _: never = event;
@@ -395,6 +420,10 @@ export class DogfightClient {
             if (id === me.props.controlling.data && data?.type === me.props.controlling.type) {
                 this.followEntity(entity);
             }
+        }
+
+        if (data?.type === "WorldInfo") {
+            this.refreshTeamScores();
         }
 
         if (data?.type === "Player") {

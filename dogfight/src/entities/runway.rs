@@ -76,9 +76,13 @@ impl Runway {
         }
     }
 
-    pub fn subtract_health(&mut self, amount: i32) -> () {
+    pub fn subtract_health(&mut self, amount: i32) -> bool {
+        if self.total_health <= 0 {
+            return false;
+        }
         let new_health = self.total_health - amount;
         self.set_health(new_health);
+        self.total_health == 0
     }
 
     pub fn set_health(&mut self, health_amount: i32) -> () {

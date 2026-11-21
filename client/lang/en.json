@@ -11,6 +11,10 @@
     "defaultMessage": "A legendary triplane. Extremely agile and also excellent at maximum flight altitude.",
     "description": "Description of the Fokker DR.I aircraft"
   },
+  "2t1nvh": {
+    "defaultMessage": "{team, select, Centrals {Centrals} other {Allies}} headquarters destroyed.",
+    "description": "Chat notice when a team's headquarters is destroyed"
+  },
   "2w7ZSO": {
     "defaultMessage": "Deaths",
     "description": "scoreboard: Deaths"
@@ -46,6 +50,10 @@
   "8iVdSN": {
     "defaultMessage": "Control Settings",
     "description": "Title for a settings section used to modify the keybinds used in-game"
+  },
+  "9l2moM": {
+    "defaultMessage": "{team, select, Centrals {Centrals} other {Allies}} runway destroyed.",
+    "description": "Chat notice when a team's runway is destroyed"
   },
   "B1CMe5": {
     "defaultMessage": "A replay file can be downloaded at any time when hosting a game.",

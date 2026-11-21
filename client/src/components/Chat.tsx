@@ -106,7 +106,7 @@ export function Chat({ messages, onSendMessage, myTeam }: ChatLocalProps) {
                 <Box mt={"auto"} className="all-messages">
                     {renderMessages.map((msg) => {
                         const msgClass = (!msg.private ? "global" : "private") + " message";
-                        const output = msg.sender_name + ": " + msg.message;
+                        const output = msg.sender_name ? msg.sender_name + ": " + msg.message : msg.message;
                         return (
                             <div className={msgClass} key={msg.guid}>
                                 {output.trim()}

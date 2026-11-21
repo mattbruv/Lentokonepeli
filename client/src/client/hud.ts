@@ -16,6 +16,9 @@ export class GameHUD {
     private panel: PIXI.Sprite;
     private stats: PIXI.Graphics;
     private bombs: PIXI.Container;
+    private teamScores: PIXI.Graphics;
+    private centralsScoreText: PIXI.Text;
+    private alliesScoreText: PIXI.Text;
     public radar: Radar;
     private previousStats: Stats;
 
@@ -26,6 +29,13 @@ export class GameHUD {
         this.stats = new PIXI.Graphics();
         this.bombs = new PIXI.Container();
         this.radar = new Radar();
+        this.teamScores = new PIXI.Graphics();
+        this.centralsScoreText = new PIXI.Text("0", { fontFamily: "Arial", fontSize: 15, fill: "white" });
+        this.alliesScoreText = new PIXI.Text("0", { fontFamily: "Arial", fontSize: 15, fill: "white" });
+        this.centralsScoreText.anchor.set(0, 1);
+        this.alliesScoreText.anchor.set(0, 1);
+        this.centralsScoreText.position.set(65, 69);
+        this.alliesScoreText.position.set(65, 126);
 
         this.bombs.position.set(296, 108);
 
@@ -34,6 +44,9 @@ export class GameHUD {
         this.container.addChild(this.panel);
         this.container.addChild(this.stats);
         this.container.addChild(this.bombs);
+        this.container.addChild(this.teamScores);
+        this.container.addChild(this.centralsScoreText);
+        this.container.addChild(this.alliesScoreText);
         this.container.addChild(this.radar.container);
     }
 
@@ -79,6 +92,27 @@ export class GameHUD {
         //this.stats.drawRect(0, 0, 50, 100)
 
         this.stats.endFill();
+    }
+
+    public updateTeamScores(centrals: number, allies: number, myTeam: Team | null) {
+        const own = 0x0000ff;
+        const opponent = 0xff0000;
+        const c = Math.max(centrals, 0);
+        const a = Math.max(allies, 0);
+        const total = c + a;
+
+        this.teamScores.clear();
+
+        this.teamScores.beginFill(myTeam === "Centrals" ? own : opponent);
+        this.teamScores.drawRect(64, 29, total === 0 ? 0 : Math.floor((129 * c) / total), 14);
+        this.teamScores.endFill();
+
+        this.teamScores.beginFill(myTeam === "Allies" ? own : opponent);
+        this.teamScores.drawRect(64, 86, total === 0 ? 0 : Math.floor((129 * a) / total), 14);
+        this.teamScores.endFill();
+
+        this.centralsScoreText.text = `${centrals}`;
+        this.alliesScoreText.text = `${allies}`;
     }
 
     public setTeam(team?: Team) {

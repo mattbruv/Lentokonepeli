@@ -45,6 +45,15 @@ pub enum PlaneType {
     Sopwith = 9,
 }
 
+impl PlaneType {
+    pub fn team(&self) -> Team {
+        match self {
+            PlaneType::Albatros | PlaneType::Junkers | PlaneType::Fokker => Team::Centrals,
+            PlaneType::Bristol | PlaneType::Salmson | PlaneType::Sopwith => Team::Allies,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS, EnumBytes)]
 #[ts(export)]
 pub enum PlaneMode {

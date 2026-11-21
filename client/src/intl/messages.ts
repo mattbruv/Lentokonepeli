@@ -116,4 +116,12 @@ export const GAME_INTL = {
         defaultMessage: "(Teamkill penalty)",
         description: "Shown below the respawn countdown when the wait is longer because of a teamkill",
     }),
+    runway_destroyed: defineMessage({
+        defaultMessage: "{team, select, Centrals {Centrals} other {Allies}} runway destroyed.",
+        description: "Chat notice when a team's runway is destroyed",
+    }),
+    headquarters_destroyed: defineMessage({
+        defaultMessage: "{team, select, Centrals {Centrals} other {Allies}} headquarters destroyed.",
+        description: "Chat notice when a team's headquarters is destroyed",
+    }),
 } as const satisfies Record<string, MessageDescriptor>;

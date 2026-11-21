@@ -78,6 +78,10 @@ impl World {
             runway.tick();
         }
 
+        for (_, bunker) in self.bunkers.get_map_mut() {
+            bunker.tick();
+        }
+
         // Tick Planes
         for (plane_id, plane) in self.planes.get_map_mut() {
             let player = self

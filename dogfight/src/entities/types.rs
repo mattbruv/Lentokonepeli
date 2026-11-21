@@ -46,6 +46,15 @@ pub enum Team {
     Allies,
 }
 
+impl Team {
+    pub fn opponent(&self) -> Team {
+        match self {
+            Team::Centrals => Team::Allies,
+            Team::Allies => Team::Centrals,
+        }
+    }
+}
+
 #[derive(Serialize, Clone, Copy, PartialEq, Eq, Debug, TS, EnumBytes)]
 #[ts(export)]
 pub enum Facing {

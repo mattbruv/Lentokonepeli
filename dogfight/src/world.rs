@@ -48,6 +48,7 @@ pub struct World {
     pub bullets: EntityContainer<Bullet, BulletId>,
 
     pub replay_file: ReplayFile,
+    pub team_balance: bool,
 }
 
 impl World {
@@ -71,6 +72,7 @@ impl World {
             game_output: vec![],
 
             replay_file: ReplayFile::new(),
+            team_balance: true,
         };
 
         world

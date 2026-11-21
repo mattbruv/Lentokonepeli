@@ -11,6 +11,10 @@
     "defaultMessage": "Legendaarinen kolmitaso. Erittäin kettärä ja myös mainio maksimilentokorkeus.",
     "description": "Description of the Fokker DR.I aircraft"
   },
+  "2t1nvh": {
+    "defaultMessage": "{team, select, Centrals {Keskusvaltojen} other {Liittoutuneiden}} päämaja tuhottu.",
+    "description": "Chat notice when a team's headquarters is destroyed"
+  },
   "2w7ZSO": {
     "defaultMessage": "Kuolleet",
     "description": "scoreboard: Deaths"
@@ -46,6 +50,10 @@
   "8iVdSN": {
     "defaultMessage": "Pikanäppäinasetukset",
     "description": "Title for a settings section used to modify the keybinds used in-game"
+  },
+  "9l2moM": {
+    "defaultMessage": "{team, select, Centrals {Keskusvaltojen} other {Liittoutuneiden}} kiitorata tuhottu.",
+    "description": "Chat notice when a team's runway is destroyed"
   },
   "B1CMe5": {
     "defaultMessage": "Pelin uusintoja voi ladata isännöidessä pelejä",

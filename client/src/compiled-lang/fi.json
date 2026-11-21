@@ -17,6 +17,34 @@
       "value": "Legendaarinen kolmitaso. Erittäin kettärä ja myös mainio maksimilentokorkeus."
     }
   ],
+  "2t1nvh": [
+    {
+      "options": {
+        "Centrals": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Keskusvaltojen"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Liittoutuneiden"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "team"
+    },
+    {
+      "type": 0,
+      "value": " päämaja tuhottu."
+    }
+  ],
   "2w7ZSO": [
     {
       "type": 0,
@@ -69,6 +97,34 @@
     {
       "type": 0,
       "value": "Pikanäppäinasetukset"
+    }
+  ],
+  "9l2moM": [
+    {
+      "options": {
+        "Centrals": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Keskusvaltojen"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Liittoutuneiden"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "team"
+    },
+    {
+      "type": 0,
+      "value": " kiitorata tuhottu."
     }
   ],
   "B1CMe5": [

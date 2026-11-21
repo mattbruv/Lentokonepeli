@@ -183,6 +183,10 @@ impl Player {
         self.state.set(state);
     }
 
+    pub fn get_state(&self) -> PlayerState {
+        *self.state.get()
+    }
+
     pub fn mark_suicide(&mut self) {
         if self.next_respawn == RespawnType::Default {
             self.next_respawn = RespawnType::Suicide;

@@ -20,6 +20,8 @@ pub struct WorldInfo {
     state: Property<Option::<WorldState>>,
     #[rustfmt::skip]
     winner: Property<Option::<Team>>,
+    centrals_score: Property<i32>,
+    allies_score: Property<i32>,
 }
 
 impl WorldInfo {
@@ -27,7 +29,18 @@ impl WorldInfo {
         Self {
             state: Property::new(Some(WorldState::Intermission)),
             winner: Property::new(None),
+            centrals_score: Property::new(0),
+            allies_score: Property::new(0),
         }
+    }
+
+    pub fn adjust_team_score(&mut self, team: Team, amount: i32) {
+        let score = match team {
+            Team::Centrals => &mut self.centrals_score,
+            Team::Allies => &mut self.allies_score,
+        };
+        let new = score.get() + amount;
+        score.set(new);
     }
 
     pub fn get_all_full_state(&self) -> EntityChange {

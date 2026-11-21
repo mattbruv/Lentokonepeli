@@ -3,7 +3,7 @@ use ts_rs::TS;
 
 use crate::{
     entities::{
-        container::RunwayId,
+        container::{PlayerId, RunwayId},
         plane::{Plane, PlaneType},
         player::{ControllingEntity, Player, PlayerGuid, PlayerState},
         runway::RunwayReservation,
@@ -194,26 +194,11 @@ impl World {
                     }
                 }
                 PlayerCommand::PlayerChooseTeam(selection) => {
-                    let tick = self.get_tick();
-
-                    if let Some((player_id, player)) = self.get_player_from_guid_mut(&guid) {
-                        let the_team = selection.team.unwrap_or_else(|| {
-                            // "Randomly" pick a team
-                            if tick % 2 == 0 {
-                                Team::Centrals
-                            } else {
-                                Team::Allies
-                            }
-                        });
-
-                        // only join the team if the player already isn't on the team
-                        if let None = player.get_team() {
-                            player.set_team(Some(the_team));
-                            game_output.push(ServerOutput::PlayerJoinTeam {
-                                id: *player_id,
-                                team: the_team,
-                            })
-                        }
+                    if let Some((player_id, team)) = self.choose_team(&guid, selection.team) {
+                        game_output.push(ServerOutput::PlayerJoinTeam {
+                            id: player_id,
+                            team,
+                        })
                     }
                 }
                 PlayerCommand::PlayerChooseRunway(selection) => {
@@ -243,7 +228,72 @@ impl World {
         game_output
     }
 
+    fn choose_team(&mut self, guid: &PlayerGuid, choice: Option<Team>) -> Option<(PlayerId, Team)> {
+        let mut centrals = 0;
+        let mut allies = 0;
+        for (_, player) in self.players.get_map() {
+            match player.get_team() {
+                Some(Team::Centrals) => centrals += 1,
+                Some(Team::Allies) => allies += 1,
+                None => {}
+            }
+        }
+
+        let team = match choice {
+            None => {
+                if centrals < allies {
+                    Team::Centrals
+                } else if allies < centrals {
+                    Team::Allies
+                } else if self.get_tick() % 2 == 0 {
+                    Team::Centrals
+                } else {
+                    Team::Allies
+                }
+            }
+            Some(Team::Centrals) if !self.team_balance || centrals <= allies => Team::Centrals,
+            Some(Team::Allies) if !self.team_balance || allies <= centrals => Team::Allies,
+            Some(_) => return None,
+        };
+
+        let (player_id, player) = self.get_player_from_guid_mut(guid)?;
+        if player.get_team().is_some() {
+            return None;
+        }
+        player.set_team(Some(team));
+        Some((*player_id, team))
+    }
+
+    fn can_take_off(&self, guid: &PlayerGuid, selection: &RunwaySelection) -> bool {
+        let Some((_, player)) = self.get_player_from_guid(guid) else {
+            return false;
+        };
+        let Some(team) = *player.get_team() else {
+            return false;
+        };
+
+        let state_allows = match player.get_controlling() {
+            Some(ControllingEntity::Runway(runway_id, plane_type)) => {
+                runway_id == selection.runway_id && plane_type == selection.plane_type
+            }
+            Some(_) => false,
+            None => player.get_state() == PlayerState::ChoosingRunway,
+        };
+
+        let runway_ok = self
+            .runways
+            .get(selection.runway_id)
+            .map(|r| *r.get_team() == team)
+            .unwrap_or(false);
+
+        state_allows && runway_ok && selection.plane_type.team() == team
+    }
+
     pub(crate) fn process_takeoff(&mut self, guid: &PlayerGuid, selection: RunwaySelection) {
+        if !self.can_take_off(guid, &selection) {
+            return;
+        }
+
         let maybe_team = self
             .get_player_from_guid(guid)
             .and_then(|p| p.1.get_team().clone());

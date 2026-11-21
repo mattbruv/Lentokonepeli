@@ -17,6 +17,38 @@
       "value": "Un triplano legendario. Extremadamente ágil y también excelente a máxima altitud de vuelo."
     }
   ],
+  "2t1nvh": [
+    {
+      "type": 0,
+      "value": "Cuartel general de "
+    },
+    {
+      "options": {
+        "Centrals": {
+          "value": [
+            {
+              "type": 0,
+              "value": "las Potencias Centrales"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "los Aliados"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "team"
+    },
+    {
+      "type": 0,
+      "value": " destruido."
+    }
+  ],
   "2w7ZSO": [
     {
       "type": 0,
@@ -69,6 +101,38 @@
     {
       "type": 0,
       "value": "Ajustes de control"
+    }
+  ],
+  "9l2moM": [
+    {
+      "type": 0,
+      "value": "Pista de "
+    },
+    {
+      "options": {
+        "Centrals": {
+          "value": [
+            {
+              "type": 0,
+              "value": "las Potencias Centrales"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "los Aliados"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "team"
+    },
+    {
+      "type": 0,
+      "value": " destruida."
     }
   ],
   "B1CMe5": [

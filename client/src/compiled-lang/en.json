@@ -17,6 +17,34 @@
       "value": "A legendary triplane. Extremely agile and also excellent at maximum flight altitude."
     }
   ],
+  "2t1nvh": [
+    {
+      "options": {
+        "Centrals": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Centrals"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Allies"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "team"
+    },
+    {
+      "type": 0,
+      "value": " headquarters destroyed."
+    }
+  ],
   "2w7ZSO": [
     {
       "type": 0,
@@ -69,6 +97,34 @@
     {
       "type": 0,
       "value": "Control Settings"
+    }
+  ],
+  "9l2moM": [
+    {
+      "options": {
+        "Centrals": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Centrals"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Allies"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "team"
+    },
+    {
+      "type": 0,
+      "value": " runway destroyed."
     }
   ],
   "B1CMe5": [

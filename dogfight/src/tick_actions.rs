@@ -3,14 +3,14 @@ use crate::{
     entities::{
         bomb::Bomb,
         bullet::Bullet,
-        container::{BombId, BulletId, ExplosionId, ManId, PlaneId, PlayerId, RunwayId},
+        container::{BombId, BulletId, BunkerId, ExplosionId, ManId, PlaneId, PlayerId, RunwayId},
         explosion::Explosion,
         man::Man,
         plane::PlaneType,
         player::{ControllingEntity, PlayerState},
         types::Team,
     },
-    game_event::KillEvent,
+    game_event::{KillEvent, KillMethod},
     input::{PlayerKeyboard, RunwaySelection},
     output::ServerOutput,
     world::World,
@@ -48,6 +48,8 @@ pub enum Action {
     ProcessTakeoff(PlayerId, RunwayId, PlaneType),
     BombHitStructure(PlayerId, Team),
     ManEnteredRunway(ManId),
+    RunwayDestroyed(RunwayId),
+    BunkerDestroyed(BunkerId),
 }
 
 impl World {
@@ -82,7 +84,68 @@ impl World {
                 self.bomb_hit_structure(player_id, structure_team)
             }
             Action::ManEnteredRunway(man_id) => self.man_entered_runway(man_id),
+            Action::RunwayDestroyed(runway_id) => self.runway_destroyed(runway_id),
+            Action::BunkerDestroyed(bunker_id) => self.bunker_destroyed(bunker_id),
         }
+    }
+
+    fn adjust_player_score(&mut self, player_id: PlayerId, amount: i16) {
+        if let Some(player) = self.players.get_mut(player_id) {
+            player.adjust_score(amount);
+            if let Some(team) = *player.get_team() {
+                self.world_info.adjust_team_score(team, amount as i32);
+            }
+        }
+    }
+
+    fn kill_without_avatar(&mut self, player_id: PlayerId) -> Vec<ServerOutput> {
+        self.adjust_player_score(player_id, -5);
+        if let Some(player) = self.players.get_mut(player_id) {
+            player.mark_suicide();
+            player.set_controlling(None);
+            player.begin_respawn();
+        }
+        vec![ServerOutput::KillEvent(KillEvent::new(
+            player_id,
+            None,
+            KillMethod::Man,
+        ))]
+    }
+
+    fn runway_destroyed(&mut self, runway_id: RunwayId) -> Vec<ServerOutput> {
+        let mut output = vec![];
+
+        let Some(team) = self.runways.get(runway_id).map(|r| *r.get_team()) else {
+            return output;
+        };
+
+        self.world_info.adjust_team_score(team.opponent(), 100);
+        output.push(ServerOutput::RunwayDestroyed(team));
+
+        let parked: Vec<PlayerId> = self
+            .players
+            .get_map()
+            .iter()
+            .filter(|(_, p)| {
+                matches!(p.get_controlling(), Some(ControllingEntity::Runway(rid, _)) if rid == runway_id)
+            })
+            .map(|(pid, _)| *pid)
+            .collect();
+
+        for player_id in parked {
+            output.extend(self.kill_without_avatar(player_id));
+        }
+
+        output
+    }
+
+    fn bunker_destroyed(&mut self, bunker_id: BunkerId) -> Vec<ServerOutput> {
+        let Some(team) = self.bunkers.get(bunker_id).map(|b| *b.get_team()) else {
+            return vec![];
+        };
+
+        self.world_info.adjust_team_score(team.opponent(), 250);
+        vec![ServerOutput::HeadquartersDestroyed(team)]
     }
 
     fn man_entered_runway(&mut self, man_id: ManId) -> Vec<ServerOutput> {
@@ -101,13 +164,12 @@ impl World {
         player_id: PlayerId,
         structure_team: Team,
     ) -> Vec<ServerOutput> {
-        if let Some(player) = self.players.get_mut(player_id) {
-            match *player.get_team() {
-                Some(team) if team == structure_team => player.adjust_score(-1),
-                Some(_) => player.adjust_score(2),
-                None => {}
-            }
-        }
+        let amount = match self.players.get(player_id).and_then(|p| *p.get_team()) {
+            Some(team) if team == structure_team => -1,
+            Some(_) => 2,
+            None => return vec![],
+        };
+        self.adjust_player_score(player_id, amount);
         vec![]
     }
 
@@ -118,6 +180,20 @@ impl World {
         plane_id: PlaneId,
     ) -> Vec<ServerOutput> {
         let mut output = vec![];
+
+        let runway_alive = self
+            .runways
+            .get(runway_id)
+            .map(|r| r.is_alive())
+            .unwrap_or(false);
+
+        if !runway_alive {
+            if let Some(pid) = player_id {
+                output.extend(self.kill_without_avatar(pid));
+            }
+            output.extend(self.remove_entity(RemoveData::Plane(plane_id)));
+            return output;
+        }
 
         if let Some(player) = player_id.and_then(|pid| self.players.get_mut(pid)) {
             match self.planes.get(plane_id) {
@@ -248,33 +324,37 @@ impl World {
     }
 
     fn register_kill(&mut self, kill_event: KillEvent) -> Vec<ServerOutput> {
+        let killer_id = kill_event.killer;
         match kill_event.victim {
-            Some(victim) if victim != kill_event.killer => {
+            Some(victim) if victim != killer_id => {
                 if let Some(vict) = self.players.get_mut(victim) {
                     vict.set_deaths(vict.get_deaths() + 1);
                 }
                 let victim_team = self.players.get(victim).and_then(|p| *p.get_team());
-                if let Some(killer) = self.players.get_mut(kill_event.killer) {
-                    match (*killer.get_team(), victim_team) {
-                        (Some(team), Some(vict_team)) if team == vict_team => {
+                let killer_team = self.players.get(killer_id).and_then(|p| *p.get_team());
+                match (killer_team, victim_team) {
+                    (Some(team), Some(vict_team)) if team == vict_team => {
+                        if let Some(killer) = self.players.get_mut(killer_id) {
                             killer.adjust_kills(-1);
-                            killer.adjust_score(-8);
                             killer.mark_team_kill();
                         }
-                        (Some(_), Some(_)) => {
-                            killer.adjust_kills(1);
-                            killer.adjust_score(10);
-                        }
-                        _ => {}
+                        self.adjust_player_score(killer_id, -8);
                     }
+                    (Some(_), Some(_)) => {
+                        if let Some(killer) = self.players.get_mut(killer_id) {
+                            killer.adjust_kills(1);
+                        }
+                        self.adjust_player_score(killer_id, 10);
+                    }
+                    _ => {}
                 }
             }
             _ => {
-                if let Some(killer) = self.players.get_mut(kill_event.killer) {
+                if let Some(killer) = self.players.get_mut(killer_id) {
                     killer.set_deaths(killer.get_deaths() + 1);
-                    killer.adjust_score(-5);
                     killer.mark_suicide();
                 }
+                self.adjust_player_score(killer_id, -5);
             }
         }
 
