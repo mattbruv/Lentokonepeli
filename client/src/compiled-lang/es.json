@@ -29,44 +29,6 @@
       "value": "Un triplano legendario. Extremadamente ágil y también excelente a máxima altitud de vuelo."
     }
   ],
-  "0Dfmt+": [
-    {
-      "type": 0,
-      "value": "Elige una bandera con las flechas izquierda y derecha"
-    }
-  ],
-  "2t1nvh": [
-    {
-      "type": 0,
-      "value": "Cuartel general de "
-    },
-    {
-      "options": {
-        "Centrals": {
-          "value": [
-            {
-              "type": 0,
-              "value": "las Potencias Centrales"
-            }
-          ]
-        },
-        "other": {
-          "value": [
-            {
-              "type": 0,
-              "value": "los Aliados"
-            }
-          ]
-        }
-      },
-      "type": 5,
-      "value": "team"
-    },
-    {
-      "type": 0,
-      "value": " destruido."
-    }
-  ],
   "2w7ZSO": [
     {
       "type": 0,
@@ -177,12 +139,6 @@
       "value": "Avión equipado con una ametralladora bastante potente. Una buena elección, especialmente para pilotos novatos."
     }
   ],
-  "E6Mscy": [
-    {
-      "type": 0,
-      "value": "Las Potencias Centrales vuelan Albatros, Junkers y Fokker."
-    }
-  ],
   "G7DhrV": [
     {
       "type": 0,
@@ -223,12 +179,6 @@
     {
       "type": 0,
       "value": "Extremadamente ágil. No recomendado para pilotos novatos."
-    }
-  ],
-  "MGsduE": [
-    {
-      "type": 0,
-      "value": "Equipo"
     }
   ],
   "MrbN1S": [
@@ -331,12 +281,6 @@
     {
       "type": 0,
       "value": "Puntos"
-    }
-  ],
-  "XG5CvM": [
-    {
-      "type": 0,
-      "value": "Destruye la base enemiga para ganar la ronda."
     }
   ],
   "XS5GTW": [
@@ -477,10 +421,32 @@
       "value": "Añadir enlace de teclas"
     }
   ],
-  "hKUzZN": [
+  "hAeFx5": [
+    {
+      "options": {
+        "Centrals": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Centrals"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Allies"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "team"
+    },
     {
       "type": 0,
-      "value": "La bandera central te une al equipo más pequeño."
+      "value": " important building destroyed."
     }
   ],
   "iu4I/w": [
@@ -565,12 +531,6 @@
       "value": "Mapa"
     }
   ],
-  "qxZ7v3": [
-    {
-      "type": 0,
-      "value": "y pulsa Intro, o haz clic en una bandera."
-    }
-  ],
   "r1oUWJ": [
     {
       "type": 0,
@@ -643,12 +603,6 @@
       "value": "¡Únete a nosotros en Discord!"
     }
   ],
-  "xHTHCO": [
-    {
-      "type": 0,
-      "value": "Los Aliados vuelan Bristol, Salmson y Sopwith."
-    }
-  ],
   "xPJ6oZ": [
     {
       "type": 0,
@@ -689,12 +643,6 @@
     {
       "type": 0,
       "value": "Equipado con bombas además de una ametralladora, extremadamente duradero, pero un avión torpe."
-    }
-  ],
-  "zhqTAn": [
-    {
-      "type": 0,
-      "value": "Elige tu bando"
     }
   ],
   "zvKn4f": [

@@ -196,7 +196,7 @@ export class DogfightClient {
         const centerX = Math.trunc(screen.width / 2);
         const centerY = Math.trunc(GAME_HEIGHT / 2);
 
-        this.teamChooser.init(this.callbacks, intl, screen.width, GAME_HEIGHT);
+        this.teamChooser.init(this.callbacks, screen.width, GAME_HEIGHT);
 
         this.gameHUD.container.position.set(0, GAME_HEIGHT);
 

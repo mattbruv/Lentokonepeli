@@ -19,14 +19,6 @@
     "defaultMessage": "A legendary triplane. Extremely agile and also excellent at maximum flight altitude.",
     "description": "Description of the Fokker DR.I aircraft"
   },
-  "0Dfmt+": {
-    "defaultMessage": "Pick a flag with the left and right arrow keys",
-    "description": "Team selection info box, line 4"
-  },
-  "2t1nvh": {
-    "defaultMessage": "{team, select, Centrals {Centrals} other {Allies}} headquarters destroyed.",
-    "description": "Chat notice when a team's headquarters is destroyed"
-  },
   "2w7ZSO": {
     "defaultMessage": "Deaths",
     "description": "scoreboard: Deaths"
@@ -82,10 +74,6 @@
   "E/uHyU": {
     "defaultMessage": "An aircraft equipped with a fairly powerful machine gun. A good choice, especially for beginner pilots.",
     "description": "Description of the Bristol F.2b aircraft"
-  },
-  "E6Mscy": {
-    "defaultMessage": "Centrals fly the Albatros, Junkers and Fokker.",
-    "description": "Team selection info box, line 1"
   },
   "G7DhrV": {
     "defaultMessage": "Play",
@@ -183,10 +171,6 @@
     "defaultMessage": "Score",
     "description": "scoreboard: Score"
   },
-  "XG5CvM": {
-    "defaultMessage": "Destroy the enemy base to win the round.",
-    "description": "Team selection info box, line 6"
-  },
   "XS5GTW": {
     "defaultMessage": "Exit",
     "description": "Button on the bottom game panel that leaves the game"
@@ -259,9 +243,9 @@
     "defaultMessage": "Add Key Binding",
     "description": "Title for modal where keybinds are added"
   },
-  "hKUzZN": {
-    "defaultMessage": "The middle flag puts you on the smaller team.",
-    "description": "Team selection info box, line 3"
+  "hAeFx5": {
+    "defaultMessage": "{team, select, Centrals {Centrals} other {Allies}} important building destroyed.",
+    "description": "Chat notice when a team's headquarters is destroyed"
   },
   "iu4I/w": {
     "defaultMessage": "Accuracy",
@@ -315,10 +299,6 @@
     "defaultMessage": "Level",
     "description": "Title for selection used to choose the game level"
   },
-  "qxZ7v3": {
-    "defaultMessage": "and press Enter, or click a flag.",
-    "description": "Team selection info box, line 5"
-  },
   "r1oUWJ": {
     "defaultMessage": "Show All Messages",
     "description": "'show all messages' switch text"
@@ -367,10 +347,6 @@
     "defaultMessage": "Join us on Discord!",
     "description": "Navbar hover for discord button"
   },
-  "xHTHCO": {
-    "defaultMessage": "Allies fly the Bristol, Salmson and Sopwith.",
-    "description": "Team selection info box, line 2"
-  },
   "xPJ6oZ": {
     "defaultMessage": "Flip Plane",
     "description": "Title for the 'Flip Plane' action shown on the keybind settings section"
@@ -398,10 +374,6 @@
   "zV7RzE": {
     "defaultMessage": "Equipped with bombs in addition to a machine gun, extremely durable, but a clumsy aircraft.",
     "description": "Description of the Junkers J.1 aircraft"
-  },
-  "zhqTAn": {
-    "defaultMessage": "Choose your side",
-    "description": "Title of the team selection info box"
   },
   "zvKn4f": {
     "defaultMessage": "Game Code",

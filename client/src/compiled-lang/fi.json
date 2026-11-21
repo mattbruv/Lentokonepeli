@@ -29,40 +29,6 @@
       "value": "Legendaarinen kolmitaso. Erittäin kettärä ja myös mainio maksimilentokorkeus."
     }
   ],
-  "0Dfmt+": [
-    {
-      "type": 0,
-      "value": "Valitse lippu vasemmalla ja oikealla nuolinäppäimellä"
-    }
-  ],
-  "2t1nvh": [
-    {
-      "options": {
-        "Centrals": {
-          "value": [
-            {
-              "type": 0,
-              "value": "Keskusvaltojen"
-            }
-          ]
-        },
-        "other": {
-          "value": [
-            {
-              "type": 0,
-              "value": "Liittoutuneiden"
-            }
-          ]
-        }
-      },
-      "type": 5,
-      "value": "team"
-    },
-    {
-      "type": 0,
-      "value": " päämaja tuhottu."
-    }
-  ],
   "2w7ZSO": [
     {
       "type": 0,
@@ -169,12 +135,6 @@
       "value": "Sangen tulivoimaisella konekiväärillä varustettu kone. Hyvä valinta etenkin aloitteleville lentäjille."
     }
   ],
-  "E6Mscy": [
-    {
-      "type": 0,
-      "value": "Keskusvallat lentävät Albatrosia, Junkersia ja Fokkeria."
-    }
-  ],
   "G7DhrV": [
     {
       "type": 0,
@@ -215,12 +175,6 @@
     {
       "type": 0,
       "value": "Erittäin ketterä. ei suositella aloitteleville lentäjille."
-    }
-  ],
-  "MGsduE": [
-    {
-      "type": 0,
-      "value": "Joukkue"
     }
   ],
   "MrbN1S": [
@@ -323,12 +277,6 @@
     {
       "type": 0,
       "value": "Pisteet"
-    }
-  ],
-  "XG5CvM": [
-    {
-      "type": 0,
-      "value": "Tuhoa vihollisen tukikohta voittaaksesi erän."
     }
   ],
   "XS5GTW": [
@@ -465,10 +413,32 @@
       "value": "Lisää pikanäppäin"
     }
   ],
-  "hKUzZN": [
+  "hAeFx5": [
+    {
+      "options": {
+        "Centrals": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Centrals"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Allies"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "team"
+    },
     {
       "type": 0,
-      "value": "Keskimmäinen lippu valitsee pienemmän joukkueen."
+      "value": " important building destroyed."
     }
   ],
   "iu4I/w": [
@@ -553,12 +523,6 @@
       "value": "Kenttä"
     }
   ],
-  "qxZ7v3": [
-    {
-      "type": 0,
-      "value": "ja paina Enteriä, tai napsauta lippua."
-    }
-  ],
   "r1oUWJ": [
     {
       "type": 0,
@@ -631,12 +595,6 @@
       "value": "Liity discord palvelimelle!"
     }
   ],
-  "xHTHCO": [
-    {
-      "type": 0,
-      "value": "Liittoutuneet lentävät Bristolia, Salmsonia ja Sopwithia."
-    }
-  ],
   "xPJ6oZ": [
     {
       "type": 0,
@@ -677,12 +635,6 @@
     {
       "type": 0,
       "value": "Konekiväärin lisäksi pommeilla varustettu, erittäin kestävä, mutta kömpelö kone."
-    }
-  ],
-  "zhqTAn": [
-    {
-      "type": 0,
-      "value": "Valitse puolesi"
     }
   ],
   "zvKn4f": [

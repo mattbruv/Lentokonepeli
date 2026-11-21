@@ -29,40 +29,6 @@
       "value": "A legendary triplane. Extremely agile and also excellent at maximum flight altitude."
     }
   ],
-  "0Dfmt+": [
-    {
-      "type": 0,
-      "value": "Pick a flag with the left and right arrow keys"
-    }
-  ],
-  "2t1nvh": [
-    {
-      "options": {
-        "Centrals": {
-          "value": [
-            {
-              "type": 0,
-              "value": "Centrals"
-            }
-          ]
-        },
-        "other": {
-          "value": [
-            {
-              "type": 0,
-              "value": "Allies"
-            }
-          ]
-        }
-      },
-      "type": 5,
-      "value": "team"
-    },
-    {
-      "type": 0,
-      "value": " headquarters destroyed."
-    }
-  ],
   "2w7ZSO": [
     {
       "type": 0,
@@ -167,12 +133,6 @@
     {
       "type": 0,
       "value": "An aircraft equipped with a fairly powerful machine gun. A good choice, especially for beginner pilots."
-    }
-  ],
-  "E6Mscy": [
-    {
-      "type": 0,
-      "value": "Centrals fly the Albatros, Junkers and Fokker."
     }
   ],
   "G7DhrV": [
@@ -319,12 +279,6 @@
       "value": "Score"
     }
   ],
-  "XG5CvM": [
-    {
-      "type": 0,
-      "value": "Destroy the enemy base to win the round."
-    }
-  ],
   "XS5GTW": [
     {
       "type": 0,
@@ -459,10 +413,32 @@
       "value": "Add Key Binding"
     }
   ],
-  "hKUzZN": [
+  "hAeFx5": [
+    {
+      "options": {
+        "Centrals": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Centrals"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Allies"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "team"
+    },
     {
       "type": 0,
-      "value": "The middle flag puts you on the smaller team."
+      "value": " important building destroyed."
     }
   ],
   "iu4I/w": [
@@ -547,12 +523,6 @@
       "value": "Level"
     }
   ],
-  "qxZ7v3": [
-    {
-      "type": 0,
-      "value": "and press Enter, or click a flag."
-    }
-  ],
   "r1oUWJ": [
     {
       "type": 0,
@@ -625,12 +595,6 @@
       "value": "Join us on Discord!"
     }
   ],
-  "xHTHCO": [
-    {
-      "type": 0,
-      "value": "Allies fly the Bristol, Salmson and Sopwith."
-    }
-  ],
   "xPJ6oZ": [
     {
       "type": 0,
@@ -671,12 +635,6 @@
     {
       "type": 0,
       "value": "Equipped with bombs in addition to a machine gun, extremely durable, but a clumsy aircraft."
-    }
-  ],
-  "zhqTAn": [
-    {
-      "type": 0,
-      "value": "Choose your side"
     }
   ],
   "zvKn4f": [

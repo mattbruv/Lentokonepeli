@@ -121,7 +121,7 @@ export const GAME_INTL = {
         description: "Chat notice when a team's runway is destroyed",
     }),
     headquarters_destroyed: defineMessage({
-        defaultMessage: "{team, select, Centrals {Centrals} other {Allies}} headquarters destroyed.",
+        defaultMessage: "{team, select, Centrals {Centrals} other {Allies}} important building destroyed.",
         description: "Chat notice when a team's headquarters is destroyed",
     }),
     round_won: defineMessage({
@@ -147,34 +147,6 @@ export const GAME_INTL = {
     hud_gfx: defineMessage({
         defaultMessage: "Gfx",
         description: "Checkbox on the bottom game panel that switches between full and simple graphics",
-    }),
-    team_chooser_title: defineMessage({
-        defaultMessage: "Choose your side",
-        description: "Title of the team selection info box",
-    }),
-    team_chooser_line_1: defineMessage({
-        defaultMessage: "Centrals fly the Albatros, Junkers and Fokker.",
-        description: "Team selection info box, line 1",
-    }),
-    team_chooser_line_2: defineMessage({
-        defaultMessage: "Allies fly the Bristol, Salmson and Sopwith.",
-        description: "Team selection info box, line 2",
-    }),
-    team_chooser_line_3: defineMessage({
-        defaultMessage: "The middle flag puts you on the smaller team.",
-        description: "Team selection info box, line 3",
-    }),
-    team_chooser_line_4: defineMessage({
-        defaultMessage: "Pick a flag with the left and right arrow keys",
-        description: "Team selection info box, line 4",
-    }),
-    team_chooser_line_5: defineMessage({
-        defaultMessage: "and press Enter, or click a flag.",
-        description: "Team selection info box, line 5",
-    }),
-    team_chooser_line_6: defineMessage({
-        defaultMessage: "Destroy the enemy base to win the round.",
-        description: "Team selection info box, line 6",
     }),
     spectating: defineMessage({
         defaultMessage: "SPECTATING",
