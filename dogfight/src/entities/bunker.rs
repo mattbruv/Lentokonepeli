@@ -47,6 +47,10 @@ impl Bunker {
         350
     }
 
+    pub fn get_team(&self) -> &Team {
+        self.team.get()
+    }
+
     pub fn set_health(&mut self, health_amount: i32) -> () {
         self.total_health = health_amount;
 

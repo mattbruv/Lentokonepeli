@@ -10,7 +10,7 @@ use crate::{
         player::{ControllingEntity, PlayerState},
         types::Team,
     },
-    game_event::{KillEvent, KillMethod},
+    game_event::KillEvent,
     input::{PlayerKeyboard, RunwaySelection},
     output::ServerOutput,
     world::World,
@@ -46,6 +46,7 @@ pub enum Action {
     ManShootBullet(ManShootData),
     LandPlane(Option<PlayerId>, RunwayId, PlaneId),
     ProcessTakeoff(PlayerId, RunwayId, PlaneType),
+    BombHitStructure(PlayerId, Team),
 }
 
 impl World {
@@ -76,7 +77,25 @@ impl World {
             Action::ProcessTakeoff(player_id, runway_id, plane_type) => {
                 self.process_takeoff_action(player_id, runway_id, plane_type)
             }
+            Action::BombHitStructure(player_id, structure_team) => {
+                self.bomb_hit_structure(player_id, structure_team)
+            }
         }
+    }
+
+    fn bomb_hit_structure(
+        &mut self,
+        player_id: PlayerId,
+        structure_team: Team,
+    ) -> Vec<ServerOutput> {
+        if let Some(player) = self.players.get_mut(player_id) {
+            match *player.get_team() {
+                Some(team) if team == structure_team => player.adjust_score(-1),
+                Some(_) => player.adjust_score(2),
+                None => {}
+            }
+        }
+        vec![]
     }
 
     pub fn land_plane(
@@ -217,41 +236,30 @@ impl World {
     }
 
     fn register_kill(&mut self, kill_event: KillEvent) -> Vec<ServerOutput> {
-        // If the man was killed,
-        // Adjust kills, deaths, and points
-        if kill_event.method == KillMethod::Man {
-            match kill_event.victim {
-                // We killed someone else
-                Some(victim) => {
-                    if let Some(vict) = self.players.get_mut(victim) {
-                        vict.set_deaths(vict.get_deaths() + 1);
-                    }
-                    match self.players.get(victim).and_then(|p| *p.get_team()) {
-                        Some(vict_team) => {
-                            if let Some(killer) = self.players.get_mut(kill_event.killer) {
-                                match *killer.get_team() {
-                                    Some(team) => {
-                                        if team == vict_team {
-                                            // If the victim was on our team, we teamkilled :(
-                                            killer.adjust_score(-8);
-                                        } else {
-                                            killer.adjust_kills(1);
-                                            killer.adjust_score(10);
-                                        }
-                                    }
-                                    None => {}
-                                }
-                            }
+        match kill_event.victim {
+            Some(victim) if victim != kill_event.killer => {
+                if let Some(vict) = self.players.get_mut(victim) {
+                    vict.set_deaths(vict.get_deaths() + 1);
+                }
+                let victim_team = self.players.get(victim).and_then(|p| *p.get_team());
+                if let Some(killer) = self.players.get_mut(kill_event.killer) {
+                    match (*killer.get_team(), victim_team) {
+                        (Some(team), Some(vict_team)) if team == vict_team => {
+                            killer.adjust_kills(-1);
+                            killer.adjust_score(-8);
                         }
-                        None => {}
+                        (Some(_), Some(_)) => {
+                            killer.adjust_kills(1);
+                            killer.adjust_score(10);
+                        }
+                        _ => {}
                     }
                 }
-                // If we killed ourselves
-                None => {
-                    if let Some(killer) = self.players.get_mut(kill_event.killer) {
-                        killer.set_deaths(killer.get_deaths() + 1);
-                        killer.adjust_score(-5);
-                    }
+            }
+            _ => {
+                if let Some(killer) = self.players.get_mut(kill_event.killer) {
+                    killer.set_deaths(killer.get_deaths() + 1);
+                    killer.adjust_score(-5);
                 }
             }
         }

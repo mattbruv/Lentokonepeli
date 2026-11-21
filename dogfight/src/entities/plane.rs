@@ -607,7 +607,7 @@ impl Plane {
         normalized / 2.0
     }
 
-    pub fn do_plane_collision(&mut self) -> () {
+    pub fn do_plane_collision(&mut self) -> bool {
         // only do this if we're in flying mode
         if let PlaneMode::Flying = self.mode.get() {
             self.set_mode(PlaneMode::Dodging);
@@ -625,7 +625,9 @@ impl Plane {
             self.flipped.set(!self.flipped.get());
             self.set_health(self.health() - 25);
             // TODO: add message for the player who took out this plane if health < 0
+            return true;
         }
+        false
     }
 
     pub fn subtract_health(&mut self, amount: i32) -> () {

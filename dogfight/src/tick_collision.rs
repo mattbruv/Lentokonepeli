@@ -296,6 +296,10 @@ impl World {
             for (_, runway) in self.runways.get_map_mut() {
                 if bomb.check_collision(runway) {
                     runway.subtract_health(30);
+                    actions.push(Action::BombHitStructure(
+                        bomb.player_id(),
+                        *runway.get_team(),
+                    ));
                     blow_up(
                         &mut actions,
                         Some(bomb.player_id()),
@@ -310,6 +314,10 @@ impl World {
             for (_, bunker) in self.bunkers.get_map_mut() {
                 if bomb.check_collision(bunker) {
                     bunker.subtract_health(30);
+                    actions.push(Action::BombHitStructure(
+                        bomb.player_id(),
+                        *bunker.get_team(),
+                    ));
                     blow_up(
                         &mut actions,
                         Some(bomb.player_id()),
@@ -595,10 +603,10 @@ impl World {
 
             for (_, other) in right.iter_mut() {
                 if plane.check_collision(*other) {
-                    plane.do_plane_collision();
-                    other.do_plane_collision();
+                    let plane_hit = plane.do_plane_collision();
+                    let other_hit = other.do_plane_collision();
 
-                    if plane.health() <= 0 && plane.get_downed_by().is_none() {
+                    if plane_hit && plane.health() <= 0 && plane.get_downed_by().is_none() {
                         plane.set_downed_by(Some(other.player_id()));
                         actions.push(Action::RegisterKill(KillEvent::new(
                             other.player_id(),
@@ -606,7 +614,7 @@ impl World {
                             KillMethod::Plane,
                         )));
                     }
-                    if other.health() <= 0 && other.get_downed_by().is_none() {
+                    if other_hit && other.health() <= 0 && other.get_downed_by().is_none() {
                         other.set_downed_by(Some(plane.player_id()));
                         actions.push(Action::RegisterKill(KillEvent::new(
                             plane.player_id(),
