@@ -78,7 +78,7 @@ impl World {
                 if man.check_collision(runway) {
                     // If we're landing on the correct runway, choose a plane
                     if *runway.get_team() == man.get_team() {
-                        actions.push(Action::RemoveEntity(RemoveData::Man(*man_id)));
+                        actions.push(Action::ManEnteredRunway(*man_id));
                     }
                     // Otherwise, kill the man
                     else {

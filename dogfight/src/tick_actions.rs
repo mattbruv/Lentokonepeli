@@ -47,6 +47,7 @@ pub enum Action {
     LandPlane(Option<PlayerId>, RunwayId, PlaneId),
     ProcessTakeoff(PlayerId, RunwayId, PlaneType),
     BombHitStructure(PlayerId, Team),
+    ManEnteredRunway(ManId),
 }
 
 impl World {
@@ -80,7 +81,19 @@ impl World {
             Action::BombHitStructure(player_id, structure_team) => {
                 self.bomb_hit_structure(player_id, structure_team)
             }
+            Action::ManEnteredRunway(man_id) => self.man_entered_runway(man_id),
         }
+    }
+
+    fn man_entered_runway(&mut self, man_id: ManId) -> Vec<ServerOutput> {
+        if let Some((_, player)) = self
+            .players
+            .get_player_controlling(ControllingEntity::Man(man_id))
+        {
+            player.set_controlling(None);
+            player.set_state(PlayerState::ChoosingRunway);
+        }
+        self.remove_entity(RemoveData::Man(man_id))
     }
 
     fn bomb_hit_structure(
@@ -184,8 +197,7 @@ impl World {
         if let Some(controlled) = control_test {
             if let Some((_, player)) = self.players.get_player_controlling(controlled) {
                 player.set_controlling(None);
-                // TODO: show temporary death screen or something
-                player.set_state(PlayerState::ChoosingRunway);
+                player.begin_respawn();
             }
         }
 
@@ -247,6 +259,7 @@ impl World {
                         (Some(team), Some(vict_team)) if team == vict_team => {
                             killer.adjust_kills(-1);
                             killer.adjust_score(-8);
+                            killer.mark_team_kill();
                         }
                         (Some(_), Some(_)) => {
                             killer.adjust_kills(1);
@@ -260,6 +273,7 @@ impl World {
                 if let Some(killer) = self.players.get_mut(kill_event.killer) {
                     killer.set_deaths(killer.get_deaths() + 1);
                     killer.adjust_score(-5);
+                    killer.mark_suicide();
                 }
             }
         }

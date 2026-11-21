@@ -91,11 +91,30 @@ impl NetworkedBytes for ControllingEntity {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RespawnType {
+    Default,
+    Suicide,
+    TeamKill,
+}
+
+impl RespawnType {
+    fn wait_ticks(&self) -> u32 {
+        match self {
+            RespawnType::Default => 400,
+            RespawnType::Suicide => 800,
+            RespawnType::TeamKill => 1000,
+        }
+    }
+}
+
 #[derive(Networked)]
 pub struct Player {
     shots: i32,
     hits: i32,
     team_kills: i32,
+    next_respawn: RespawnType,
+    respawn_ticks: Option<u32>,
 
     keys: PlayerKeyboard,
 
@@ -111,6 +130,7 @@ pub struct Player {
     kills: Property<i16>,
     deaths: Property<u16>,
     score: Property<i16>,
+    respawn_seconds: Property<u8>,
 }
 
 impl Player {
@@ -119,6 +139,8 @@ impl Player {
             shots: 0,
             hits: 0,
             team_kills: 0,
+            next_respawn: RespawnType::Default,
+            respawn_ticks: None,
             keys: PlayerKeyboard::new(),
             guid: Property::new(guid),
             name: Property::new(name),
@@ -129,6 +151,7 @@ impl Player {
             kills: Property::new(0),
             deaths: Property::new(0),
             score: Property::new(0),
+            respawn_seconds: Property::new(0),
         }
     }
 
@@ -155,6 +178,45 @@ impl Player {
 
     pub fn set_state(&mut self, state: PlayerState) {
         self.state.set(state);
+    }
+
+    pub fn mark_suicide(&mut self) {
+        if self.next_respawn == RespawnType::Default {
+            self.next_respawn = RespawnType::Suicide;
+        }
+    }
+
+    pub fn mark_team_kill(&mut self) {
+        self.next_respawn = RespawnType::TeamKill;
+    }
+
+    pub fn begin_respawn(&mut self) {
+        self.respawn_ticks = None;
+        self.state.set(PlayerState::WaitingRespawn);
+    }
+
+    pub fn tick_respawn(&mut self) {
+        if *self.state.get() != PlayerState::WaitingRespawn {
+            return;
+        }
+
+        let ticks = match self.respawn_ticks {
+            None => {
+                let wait = self.next_respawn.wait_ticks();
+                self.next_respawn = RespawnType::Default;
+                wait
+            }
+            Some(ticks) => ticks.saturating_sub(1),
+        };
+
+        if ticks == 0 {
+            self.respawn_ticks = None;
+            self.respawn_seconds.set(0);
+            self.state.set(PlayerState::ChoosingRunway);
+        } else {
+            self.respawn_ticks = Some(ticks);
+            self.respawn_seconds.set(ticks.div_ceil(100) as u8);
+        }
     }
 
     pub fn set_controlling(&mut self, controlling: Option<ControllingEntity>) {

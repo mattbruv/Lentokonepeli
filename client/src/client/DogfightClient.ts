@@ -249,6 +249,7 @@ export class DogfightClient {
                 });
                 break;
             }
+            case "WaitingRespawn":
             case "Playing": {
                 this.runwaySelector.container.visible = false;
                 break;
