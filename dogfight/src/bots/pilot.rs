@@ -8,7 +8,7 @@ use crate::{
         plane::{Plane, PlaneMode, PlaneType},
         player::{ControllingEntity, Player, PlayerGuid, PlayerState},
         types::{Facing, Team},
-        world_info::WorldState,
+        world_info::{GameMode, WorldState},
     },
     input::{
         AddPlayerData, PlayerCommand, PlayerKeyboard, RunwaySelection, ServerInput, TeamSelection,
@@ -21,6 +21,12 @@ use super::{rng::Rng, skill::BotSkill, terrain::Terrain, AddBotRequest, BotInfo}
 const CEILING_Y: f64 = -460.0;
 const CRUISE_Y: f64 = -280.0;
 const BOMB_Y: f64 = -230.0;
+const ROUNDS_BOMBER_FACTOR: f64 = 0.2;
+const ROUNDS_VISION_FACTOR: f64 = 1.5;
+
+fn is_rounds(world: &World) -> bool {
+    world.get_game_mode() == GameMode::Rounds
+}
 
 #[derive(Clone, Copy, PartialEq)]
 enum Phase {
@@ -278,7 +284,7 @@ impl Bot {
         commands
     }
 
-    fn choose_takeoff(
+    pub(super) fn choose_takeoff(
         &mut self,
         world: &World,
         player: &Player,
@@ -310,9 +316,16 @@ impl Bot {
             .values()
             .any(|r| *r.get_team() != team && r.is_alive());
 
-        let index = if self.skill.bomber_chance <= 0.0 {
+        let rounds = is_rounds(world);
+        let bomber_chance = if rounds {
+            self.skill.bomber_chance * ROUNDS_BOMBER_FACTOR
+        } else {
+            self.skill.bomber_chance
+        };
+
+        let index = if self.skill.bomber_chance <= 0.0 && !rounds {
             (self.rng.next_u64() % 3) as u8
-        } else if enemy_structures && self.rng.chance(self.skill.bomber_chance) {
+        } else if enemy_structures && self.rng.chance(bomber_chance) {
             1
         } else if self.rng.chance(0.5) {
             0
@@ -420,57 +433,117 @@ impl Bot {
             }
         }
 
+        let rounds = is_rounds(world);
+        if rounds {
+            if let Some(goal) = self.combat_goal(
+                world,
+                team,
+                x,
+                y,
+                plane,
+                self.skill.vision * ROUNDS_VISION_FACTOR,
+            ) {
+                return goal;
+            }
+        }
+
         if plane.get_bombs() > 0 {
             if let Some((tx, ty, half)) = self.enemy_structure(world, team, x) {
                 return Goal::Bomb(tx, ty, half);
             }
         }
 
-        if plane.get_ammo() > 0 {
-            let enemy_plane = world
-                .planes
-                .get_map()
-                .iter()
-                .filter(|(_, p)| p.get_team() != team && p.get_mode() != PlaneMode::Falling)
-                .map(|(id, p)| {
-                    let (px, py) = plane_pos(p);
-                    (*id, ((px - x).powi(2) + (py - y).powi(2)).sqrt())
-                })
-                .filter(|(_, d)| *d < self.skill.vision)
-                .min_by(|a, b| a.1.total_cmp(&b.1));
-            if let Some((id, _)) = enemy_plane {
-                return Goal::Attack(Target::Plane(id));
-            }
-
-            if self.skill.hunt_men {
-                let enemy_man = world
-                    .men
-                    .get_map()
-                    .iter()
-                    .filter(|(_, m)| m.get_team() != team)
-                    .map(|(id, m)| {
-                        let (mx, my) = man_pos(m);
-                        (*id, ((mx - x).powi(2) + (my - y).powi(2)).sqrt())
-                    })
-                    .filter(|(_, d)| *d < self.skill.vision * 0.6)
-                    .min_by(|a, b| a.1.total_cmp(&b.1));
-                if let Some((id, _)) = enemy_man {
-                    return Goal::Attack(Target::Man(id));
-                }
+        if !rounds {
+            if let Some(goal) = self.combat_goal(world, team, x, y, plane, self.skill.vision) {
+                return goal;
             }
         }
 
         let patrol_x = match self.goal {
             Goal::Patrol(px, _) if (px - x).abs() > 150.0 => px,
             _ => {
-                let base = self
-                    .enemy_structure(world, team, x)
-                    .map(|s| s.0)
-                    .unwrap_or(0.0);
-                base + self.rng.range(-600.0, 600.0)
+                let enemy_plane_x = if rounds {
+                    self.nearest_enemy_plane(world, team, x, y, f64::INFINITY)
+                        .and_then(|(id, _)| world.planes.get(id))
+                        .map(|p| plane_pos(p).0)
+                } else {
+                    None
+                };
+                match enemy_plane_x {
+                    Some(px) => px + self.rng.range(-200.0, 200.0),
+                    None => {
+                        let base = self
+                            .enemy_structure(world, team, x)
+                            .map(|s| s.0)
+                            .unwrap_or(0.0);
+                        base + self.rng.range(-600.0, 600.0)
+                    }
+                }
             }
         };
         Goal::Patrol(patrol_x, CRUISE_Y + self.rng.range(-80.0, 80.0))
+    }
+
+    fn hunts_men(&self, world: &World) -> bool {
+        self.skill.hunt_men || is_rounds(world)
+    }
+
+    fn nearest_enemy_plane(
+        &self,
+        world: &World,
+        team: Team,
+        x: f64,
+        y: f64,
+        range: f64,
+    ) -> Option<(PlaneId, f64)> {
+        world
+            .planes
+            .get_map()
+            .iter()
+            .filter(|(_, p)| p.get_team() != team && p.get_mode() != PlaneMode::Falling)
+            .map(|(id, p)| {
+                let (px, py) = plane_pos(p);
+                (*id, ((px - x).powi(2) + (py - y).powi(2)).sqrt())
+            })
+            .filter(|(_, d)| *d < range)
+            .min_by(|a, b| a.1.total_cmp(&b.1))
+    }
+
+    fn combat_goal(
+        &self,
+        world: &World,
+        team: Team,
+        x: f64,
+        y: f64,
+        plane: &Plane,
+        vision: f64,
+    ) -> Option<Goal> {
+        if plane.get_ammo() <= 0 {
+            return None;
+        }
+
+        if let Some((id, _)) = self.nearest_enemy_plane(world, team, x, y, vision) {
+            return Some(Goal::Attack(Target::Plane(id)));
+        }
+
+        if self.hunts_men(world) {
+            let enemy_man = world
+                .men
+                .get_map()
+                .iter()
+                .filter(|(_, m)| m.get_team() != team)
+                .map(|(id, m)| {
+                    let (mx, my) = man_pos(m);
+                    (*id, ((mx - x).powi(2) + (my - y).powi(2)).sqrt())
+                })
+                .filter(|(_, d)| *d < vision * 0.6)
+                .min_by(|a, b| a.1.total_cmp(&b.1));
+            if let Some((id, _)) = enemy_man {
+                return Some(Goal::Attack(Target::Man(id)));
+            }
+        }
+
+        None
     }
 
     fn target_state(&self, world: &World, target: Target) -> Option<(f64, f64, f64, f64)> {
@@ -531,7 +604,7 @@ impl Bot {
                 (x, y, vx, vy)
             })
             .collect();
-        if self.skill.hunt_men {
+        if self.hunts_men(world) {
             targets.extend(
                 world
                     .men

@@ -2,8 +2,10 @@ use std::collections::HashMap;
 
 use crate::{
     entities::{
+        plane::PlaneType,
         player::{ControllingEntity, PlayerGuid},
         types::Team,
+        world_info::GameMode,
     },
     network::encoding::NetworkedBytes,
     replay::file::ReplayFile,
@@ -36,9 +38,20 @@ fn simulate(
     ticks: u32,
     force_land: bool,
 ) -> (World, HashMap<String, Stats>) {
+    simulate_mode(level_name, bots, ticks, force_land, GameMode::Normal)
+}
+
+fn simulate_mode(
+    level_name: &str,
+    bots: &[(Option<Team>, BotDifficulty)],
+    ticks: u32,
+    force_land: bool,
+    game_mode: GameMode,
+) -> (World, HashMap<String, Stats>) {
     let mut world = World::new();
     world.load_level(&level(level_name));
     world.set_round_settings(0, 20);
+    world.set_game_mode(game_mode);
     let mut manager = BotManager::new();
     for (i, (team, difficulty)) in bots.iter().enumerate() {
         manager.add_bot(AddBotRequest {
@@ -254,4 +267,51 @@ fn harder_bots_win_duels() {
         }
     }
     assert!(stronger > weaker * 3 / 2, "{stronger} vs {weaker}");
+}
+
+fn bomber_picks(game_mode: GameMode) -> u32 {
+    let mut world = World::new();
+    world.load_level(&level("classic"));
+    world.set_game_mode(game_mode);
+    let mut manager = BotManager::new();
+    manager.add_bot(AddBotRequest {
+        guid: guid("bot"),
+        name: "Bot".into(),
+        team: Some(Team::Centrals),
+        difficulty: BotDifficulty::Hard,
+    });
+    for _ in 0..10 {
+        let input = manager.tick(&world);
+        world.tick(input);
+    }
+    let (_, player) = world.get_player_from_guid(&guid("bot")).unwrap();
+    let bot = &mut manager.bots[0];
+    (0..2000)
+        .filter_map(|_| bot.choose_takeoff(&world, player, Team::Centrals))
+        .filter(|s| s.plane_type == PlaneType::Junkers)
+        .count() as u32
+}
+
+#[test]
+fn rounds_bots_rarely_pick_bombers() {
+    let normal = bomber_picks(GameMode::Normal);
+    let rounds = bomber_picks(GameMode::Rounds);
+    println!("bomber picks: normal {normal}, rounds {rounds}");
+    assert!(normal > 300);
+    assert!(rounds * 3 < normal);
+}
+
+#[test]
+fn rounds_bots_win_rounds_by_elimination() {
+    let bots = [
+        (Some(Team::Centrals), BotDifficulty::Hard),
+        (Some(Team::Centrals), BotDifficulty::Hard),
+        (Some(Team::Allies), BotDifficulty::Hard),
+        (Some(Team::Allies), BotDifficulty::Hard),
+    ];
+    let (world, _) = simulate_mode("classic", &bots, 30_000, false, GameMode::Rounds);
+    let wins = world.world_info.get_team_wins(Team::Centrals)
+        + world.world_info.get_team_wins(Team::Allies);
+    println!("round wins: {wins}");
+    assert!(wins >= 1);
 }
