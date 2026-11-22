@@ -8,3 +8,9 @@
     max-width: 100%;
     max-height: calc(100dvh - var(--lk-header-h) - 72px);
 }
+
+.lk-game-scaled canvas {
+    width: var(--lk-game-width);
+    height: auto;
+    max-height: none;
+}

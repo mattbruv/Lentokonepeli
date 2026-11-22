@@ -1,0 +1,23 @@
+.control {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.readout {
+    font-family: Fredoka, Nunito, sans-serif;
+    font-weight: 600;
+    font-size: 1.6rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.slider {
+    flex: 1;
+}

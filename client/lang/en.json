@@ -75,6 +75,10 @@
     "defaultMessage": "An aircraft equipped with a fairly powerful machine gun. A good choice, especially for beginner pilots.",
     "description": "Description of the Bristol F.2b aircraft"
   },
+  "El6eCJ": {
+    "defaultMessage": "Smaller",
+    "description": "Tooltip for the button that makes the game view smaller"
+  },
   "G7DhrV": {
     "defaultMessage": "Play",
     "description": "Sidebar link description for the main game page used to play the game"
@@ -122,6 +126,14 @@
   "PEq6j5": {
     "defaultMessage": "to close chat",
     "description": "message indicating 'Esc' closes the chat"
+  },
+  "PSkosK": {
+    "defaultMessage": "Game size",
+    "description": "Title of the panel used to resize the game view"
+  },
+  "Q9UCoB": {
+    "defaultMessage": "Bigger",
+    "description": "Tooltip for the button that makes the game view bigger"
   },
   "Qj15PN": {
     "defaultMessage": "Toggle Light Mode",
@@ -254,6 +266,10 @@
   "izomYD": {
     "defaultMessage": "Watch a Game Replay",
     "description": "Title for the Replay System page"
+  },
+  "jwBIfl": {
+    "defaultMessage": "Fit to window",
+    "description": "Button that resets the game view size so it fits the browser window"
   },
   "kfnjH9": {
     "defaultMessage": "Settings",

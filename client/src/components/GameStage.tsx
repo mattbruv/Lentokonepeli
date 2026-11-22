@@ -1,4 +1,5 @@
-import { ReactNode } from "react";
+import { ReactNode, useRef } from "react";
+import { GameSizeControl } from "./GameSizeControl";
 import classes from "./GameStage.module.css";
 
 type GameStageProps = {
@@ -8,10 +9,19 @@ type GameStageProps = {
 };
 
 export function GameStage({ game, side, framed = true }: GameStageProps) {
+    const bezel = useRef<HTMLDivElement>(null);
+
     return (
         <div className={classes.stage}>
-            <div className={framed ? classes.bezel : classes.unframed}>{game}</div>
-            {side && <aside className={classes.side}>{side}</aside>}
+            <div ref={bezel} className={framed ? classes.bezel : classes.unframed}>
+                {game}
+            </div>
+            {(side || framed) && (
+                <aside className={classes.side}>
+                    {side}
+                    {framed && <GameSizeControl stage={bezel} />}
+                </aside>
+            )}
         </div>
     );
 }

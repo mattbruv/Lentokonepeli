@@ -16,6 +16,7 @@ export type DogfightSettings = {
         muted: boolean;
     };
     locale?: KnownLocale;
+    gameScale: number | null;
 };
 
 export type ActiveView = "game" | "replay" | null;
@@ -78,6 +79,7 @@ export const DEFAULT_GAME_KEYBINDS: DogfightControls = [
 
 export const DEFAULT_SETTINGS: DogfightSettings = {
     controls: DEFAULT_GAME_KEYBINDS,
+    gameScale: null,
     audioSettings: {
         muted: false,
     },

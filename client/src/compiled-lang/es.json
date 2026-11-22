@@ -139,6 +139,12 @@
       "value": "Avión equipado con una ametralladora bastante potente. Una buena elección, especialmente para pilotos novatos."
     }
   ],
+  "El6eCJ": [
+    {
+      "type": 0,
+      "value": "Smaller"
+    }
+  ],
   "G7DhrV": [
     {
       "type": 0,
@@ -209,6 +215,18 @@
     {
       "type": 0,
       "value": "Cerrar el chat"
+    }
+  ],
+  "PSkosK": [
+    {
+      "type": 0,
+      "value": "Game size"
+    }
+  ],
+  "Q9UCoB": [
+    {
+      "type": 0,
+      "value": "Bigger"
     }
   ],
   "Qj15PN": [
@@ -459,6 +477,12 @@
     {
       "type": 0,
       "value": "Ver la repetición de un partido"
+    }
+  ],
+  "jwBIfl": [
+    {
+      "type": 0,
+      "value": "Fit to window"
     }
   ],
   "kfnjH9": [
