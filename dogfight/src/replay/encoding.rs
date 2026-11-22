@@ -1,10 +1,12 @@
 use std::collections::{BTreeMap, HashMap};
 
 use crate::{
-    entities::player::PlayerGuid, input::PlayerCommand, network::encoding::NetworkedBytes,
+    entities::{player::PlayerGuid, world_info::GameMode},
+    input::PlayerCommand,
+    network::encoding::NetworkedBytes,
 };
 
-use super::file::{ReplayFile, ReplayTick, ReplayTickCommand};
+use super::file::{get_build_version, ReplayFile, ReplayTick, ReplayTickCommand};
 
 impl NetworkedBytes for ReplayTick {
     fn to_bytes(&self) -> Vec<u8> {
@@ -53,6 +55,9 @@ impl NetworkedBytes for ReplayFile {
         bytes.extend(self.level_data.to_bytes());
         bytes.extend(self.build_version.to_bytes());
         bytes.extend(self.build_commit.to_bytes());
+        bytes.extend(self.game_time_minutes.to_bytes());
+        bytes.extend(self.intermission_seconds.to_bytes());
+        bytes.extend(self.game_mode.to_bytes());
 
         bytes
     }
@@ -66,7 +71,22 @@ impl NetworkedBytes for ReplayFile {
         let (bytes, level_name) = String::from_bytes(bytes)?;
         let (bytes, level_data) = String::from_bytes(bytes)?;
         let (bytes, build_version) = String::from_bytes(bytes)?;
+        if build_version != get_build_version() {
+            return None;
+        }
         let (bytes, build_commit) = String::from_bytes(bytes)?;
+        let (bytes, game_time_minutes, intermission_seconds) = match u16::from_bytes(bytes)
+            .and_then(|(rest, game_time)| {
+                u16::from_bytes(rest).map(|(rest, intermission)| (rest, game_time, intermission))
+            }) {
+            Some(settings) => settings,
+            None => (bytes, 0, 20),
+        };
+        let (bytes, game_mode) = match bytes.first() {
+            Some(&value) if value == GameMode::Rounds as u8 => (&bytes[1..], GameMode::Rounds),
+            Some(_) => (&bytes[1..], GameMode::Normal),
+            None => (bytes, GameMode::Normal),
+        };
 
         // See note in to_bytes to understand why we're converting this
         let mut ticks: HashMap<u32, Vec<ReplayTickCommand>> = HashMap::new();
@@ -81,6 +101,9 @@ impl NetworkedBytes for ReplayFile {
                 build_commit,
                 level_name,
                 level_data,
+                game_time_minutes,
+                intermission_seconds,
+                game_mode,
                 player_guids,
                 ticks,
             },

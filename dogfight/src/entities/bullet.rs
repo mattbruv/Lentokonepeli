@@ -3,7 +3,7 @@ use image::RgbaImage;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
-    math::radians_to_direction,
+    math::{direction_to_radians, radians_to_direction},
     network::{property::Property, EntityProperties, NetworkedEntity},
     tick_actions::{Action, RemoveData},
     world::RESOLUTION,
@@ -27,11 +27,13 @@ pub struct Bullet {
     angle: f64,
     age: i32,
     is_alive: bool,
+    hit_enemy: bool,
 }
 
 impl Bullet {
     pub fn new(owner: PlayerId, x: i16, y: i16, angle: f64, speed: f64) -> Bullet {
         let dir = radians_to_direction(angle);
+        let angle = direction_to_radians(dir);
         let mut bullet = Bullet {
             player_id: owner,
             x: x as i32 * RESOLUTION,
@@ -43,6 +45,7 @@ impl Bullet {
             angle: angle,
             age: 0,
             is_alive: true,
+            hit_enemy: false,
         };
 
         if *bullet.speed.get() > 200 {
@@ -79,6 +82,14 @@ impl Bullet {
         self.y += (100.0 * (*self.speed.get() as f64) / 25.0 * self.angle.sin()) as i32;
         //self.client_x.set((self.x / RESOLUTION) as i16);
         //self.client_y.set((self.y / RESOLUTION) as i16);
+    }
+
+    pub fn mark_hit_enemy(&mut self) {
+        self.hit_enemy = true;
+    }
+
+    pub fn hit_enemy(&self) -> bool {
+        self.hit_enemy
     }
 
     pub fn player_id(&self) -> PlayerId {

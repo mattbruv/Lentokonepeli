@@ -17,7 +17,7 @@ export class Water implements Entity<WaterProperties> {
     private waterGraphics: PIXI.Graphics;
     private waves: PIXI.TilingSprite;
 
-    private waveIndex = 0;
+    private waveIndex = 1;
 
     private animate = () => {
         this.waveStep();
@@ -93,7 +93,7 @@ export class Water implements Entity<WaterProperties> {
 
         this.waveIndex += 1;
         if (this.waveIndex == 8) {
-            this.waveIndex = 0;
+            this.waveIndex = 1;
         }
     }
 

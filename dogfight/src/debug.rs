@@ -163,5 +163,8 @@ impl World {
 }
 
 pub fn log(message: String) -> () {
+    #[cfg(target_arch = "wasm32")]
     web_sys::console::log_1(&format!("{}", message).into());
+    #[cfg(not(target_arch = "wasm32"))]
+    let _ = message;
 }

@@ -1,27 +1,44 @@
-import { Button, Card, Group, Stack, Text } from "@mantine/core";
-import { IconFileDownloadFilled } from "@tabler/icons-react";
+import { Button, Stack } from "@mantine/core";
+import { GameMode } from "dogfight-types/GameMode";
+import { IconFileDownload } from "@tabler/icons-react";
 import saveAs from "file-saver";
 import { useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSettingsContext } from "../contexts/settingsContext";
+import { useActiveView } from "../hooks/useActiveView";
 import { useLocalHost } from "../hooks/useLocalHost";
 import { LevelName } from "../views/Lobby";
+import { BotPanel } from "./BotPanel";
 import { Game } from "./Game";
+import { GameStage } from "./GameStage";
+import { RoomCode } from "./RoomCode";
+import { Panel } from "./ui/Panel";
 
 type HostProps = {
     level: LevelName;
     recordGame: boolean;
+    gameTime: number;
+    gameMode: GameMode;
 };
 
-export function Host({ level, recordGame }: HostProps) {
+export function Host({ level, recordGame, gameTime, gameMode }: HostProps) {
     const gameContainer = useRef<HTMLDivElement>(null);
     const { getUsername, getClan } = useSettingsContext();
 
-    const { getReplayBinary, initialize, roomCode, hostGame, playerData, playerGuid, messages, sendChatMessage } =
-        useLocalHost(level, recordGame, getUsername(), getClan());
-
-    // const [joinId, setJoinId] = useState("")
-    // const [tickRate, setTickRate] = useState(100)
+    const {
+        getReplayBinary,
+        initialize,
+        roomCode,
+        hostGame,
+        playerData,
+        intermission,
+        playerGuid,
+        messages,
+        sendChatMessage,
+        bots,
+        addBot,
+        removeBot,
+    } = useLocalHost(level, recordGame, getUsername(), getClan(), gameTime, gameMode);
 
     function host() {
         if (!gameContainer.current) return;
@@ -39,47 +56,53 @@ export function Host({ level, recordGame }: HostProps) {
         saveAs(new Blob([replayBytes]), filename);
     }
 
+    useActiveView("game");
+
     useEffect(() => {
         host();
     }, []);
 
     return (
-        <Group justify="center">
-            <Game
-                ref={gameContainer}
-                myPlayerGuid={playerGuid}
-                playerData={playerData}
-                messages={messages}
-                onSendMessage={sendChatMessage}
-            />
-            <Card withBorder style={{ height: "100%" }}>
-                <Stack>
-                    <Stack>
-                        <Text>
+        <GameStage
+            game={
+                <Game
+                    ref={gameContainer}
+                    myPlayerGuid={playerGuid}
+                    playerData={playerData}
+                    intermission={intermission}
+                    roomName={roomCode}
+                    messages={messages}
+                    onSendMessage={sendChatMessage}
+                />
+            }
+            side={
+                <>
+                    <Panel
+                        title={
                             <FormattedMessage
                                 defaultMessage={"Game Code"}
                                 description={"Title shown above the shareable room code"}
                             />
-                            :
-                        </Text>
-                        <Text
-                            style={{ color: "gray", fontSize: "1.5rem", fontFamily: "monospace" }}
-                            size={"xl"}
-                            fw={"bold"}
-                        >
-                            {roomCode}
-                        </Text>
-                    </Stack>
-                    <Stack>
-                        <Button onClick={saveReplay} rightSection={<IconFileDownloadFilled />}>
-                            <FormattedMessage
-                                defaultMessage={"Save Replay File"}
-                                description={"Button text for button which saves replay file"}
-                            />
-                        </Button>
-                    </Stack>
-                </Stack>
-            </Card>
-        </Group>
+                        }
+                    >
+                        <Stack gap="lg">
+                            <RoomCode code={roomCode} />
+                            <Button
+                                onClick={saveReplay}
+                                color="copper"
+                                fullWidth
+                                rightSection={<IconFileDownload stroke={2.4} />}
+                            >
+                                <FormattedMessage
+                                    defaultMessage={"Save Replay File"}
+                                    description={"Button text for button which saves replay file"}
+                                />
+                            </Button>
+                        </Stack>
+                    </Panel>
+                    <BotPanel bots={bots} playerData={playerData} onAddBot={addBot} onRemoveBot={removeBot} />
+                </>
+            }
+        />
     );
 }

@@ -1,5 +1,4 @@
 import { BulletProperties } from "dogfight-types/BulletProperties";
-import { Howl } from "howler";
 import * as PIXI from "pixi.js";
 import { scheduler } from "../../gameLoop";
 import { DrawLayer } from "../constants";
@@ -7,13 +6,12 @@ import { directionToRadians } from "../helpers";
 import { soundManager } from "../soundManager";
 import { Entity, EntityUpdateCallbacks } from "./entity";
 
-const COLORS: string[] = ["#000000", "#171717", "#515151", "#606060", "#999999"];
+const COLORS: string[] = ["#000000", "#111111", "#333333", "#606060", "#999999"];
 
 export class Bullet implements Entity<BulletProperties> {
     private container: PIXI.Container;
     private bulletGraphics: PIXI.Graphics;
 
-    private sound: Howl;
     private age = 1;
 
     public isGameRunning: boolean = true;
@@ -37,19 +35,14 @@ export class Bullet implements Entity<BulletProperties> {
 
         this.bulletGraphics.clear();
         this.bulletGraphics.beginFill(COLORS[0]);
-        this.bulletGraphics.drawRect(0, 0, 4, 4);
+        this.bulletGraphics.drawRect(0, 0, 2, 2);
         this.bulletGraphics.endFill();
 
         //this.bulletGraphics.anchor.set(0.5, 0.5)
         //this.bulletGraphics.position.set(texture.width / 2, texture.height / 2)
         this.container.addChild(this.bulletGraphics);
 
-        // play bullet sound
-        this.sound = new Howl({
-            src: "audio/m16.mp3",
-        });
-
-        soundManager.playSound(this.sound);
+        soundManager.play("m16");
 
         this.container.zIndex = DrawLayer.Bullet;
 
@@ -101,7 +94,6 @@ export class Bullet implements Entity<BulletProperties> {
     };
 
     public destroy() {
-        this.sound.stop();
         scheduler.unregister(this.animate);
     }
 }

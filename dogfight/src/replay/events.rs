@@ -130,6 +130,11 @@ pub fn get_replay_summary(bytes: Vec<u8>) -> String {
 fn summarize_replay(replay_file: ReplayFile) -> ReplaySummary {
     let mut world = World::new();
     world.load_level(&replay_file.level_data);
+    world.set_round_settings(
+        replay_file.game_time_minutes,
+        replay_file.intermission_seconds,
+    );
+    world.set_game_mode(replay_file.game_mode);
 
     // simulates the entire game and returns all events
     let events = world.simulate_until(&replay_file, None, true);
@@ -148,13 +153,13 @@ fn summarize_replay(replay_file: ReplayFile) -> ReplaySummary {
                     .ticks
                     .iter()
                     .flat_map(|x| x.1)
-                    .find_map(|x| {
-                        if let PlayerCommand::AddPlayer(add_player_data) = &x.command {
-                            if x.player_guid_index == *hashmap_number {
-                                return Some(add_player_data.name.clone());
-                            }
+                    .find_map(|x| match &x.command {
+                        PlayerCommand::AddPlayer(data) | PlayerCommand::AddBot(data)
+                            if x.player_guid_index == *hashmap_number =>
+                        {
+                            Some(data.name.clone())
                         }
-                        None
+                        _ => None,
                     })
                     .unwrap_or_else(|| "?".to_string());
 

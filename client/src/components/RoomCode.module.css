@@ -1,0 +1,46 @@
+.wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    min-height: 64px;
+}
+
+.tiles {
+    display: flex;
+    gap: 6px;
+}
+
+.tile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 54px;
+    font-family: Fredoka, Nunito, sans-serif;
+    font-weight: 600;
+    font-size: 1.9rem;
+    color: #2a2a2a;
+    background: linear-gradient(180deg, #ffffff, #ececec);
+    border: 2.5px solid var(--lk-ink);
+    border-bottom-width: 6px;
+    border-radius: 10px;
+    animation: flip 420ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes flip {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) rotateX(80deg);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tile {
+        animation: none;
+    }
+}

@@ -1,7 +1,19 @@
 {
-  "+NFaSb": {
-    "defaultMessage": "Lentokonepeli (En desarrollo)",
-    "description": "Main title of site shown on nav"
+  "+VHHqo": {
+    "defaultMessage": "Leave game",
+    "description": "Button in the leave game dialog that confirms leaving the active game"
+  },
+  "+hJmve": {
+    "defaultMessage": "¡Empate!",
+    "description": "Shown in large text and in chat when a round ends in a tie"
+  },
+  "+ptLoi": {
+    "defaultMessage": "You'll be disconnected from the current match. If you're the host, the game will end for everyone.",
+    "description": "Body of the dialog shown when navigating away from an active game"
+  },
+  "/Dq9eZ": {
+    "defaultMessage": "Gráficos",
+    "description": "Checkbox on the bottom game panel that switches between full and simple graphics"
   },
   "/KlrcC": {
     "defaultMessage": "Nombre de usuario",
@@ -27,9 +39,13 @@
     "defaultMessage": "Soltar, abrir paracaídas",
     "description": "Title for the 'Eject, Open Parachute' action shown on the keybind settings section"
   },
-  "7kZMTs": {
-    "defaultMessage": "El sistema de repetición es actualmente experimental, carece de funciones y aún está inactivo. Es posible que experimentes problemas hasta que la función de repetición esté en un estado estable.",
-    "description": "Informative text about the current state of the replay system"
+  "6h1L5u": {
+    "defaultMessage": "Easy",
+    "description": "Bot panel: easiest bot difficulty"
+  },
+  "7GHFcs": {
+    "defaultMessage": "Reapareciendo en",
+    "description": "Shown on screen with a countdown while waiting to respawn after dying"
   },
   "8Am/Pl": {
     "defaultMessage": "Avión básico equipado con una ametralladora, sin cualidades particularmente buenas o malas. Una buena elección para un novato.",
@@ -42,6 +58,14 @@
   "8iVdSN": {
     "defaultMessage": "Ajustes de control",
     "description": "Title for a settings section used to modify the keybinds used in-game"
+  },
+  "9l2moM": {
+    "defaultMessage": "Pista de {team, select, Centrals {las Potencias Centrales} other {los Aliados}} destruida.",
+    "description": "Chat notice when a team's runway is destroyed"
+  },
+  "AY7tVh": {
+    "defaultMessage": "Bot",
+    "description": "scoreboard: accessible label for the icon marking a bot"
   },
   "B1CMe5": {
     "defaultMessage": "Se puede descargar un archivo de repetición en cualquier momento cuando se aloja un partido.",
@@ -58,6 +82,10 @@
   "E/uHyU": {
     "defaultMessage": "Avión equipado con una ametralladora bastante potente. Una buena elección, especialmente para pilotos novatos.",
     "description": "Description of the Bristol F.2b aircraft"
+  },
+  "El6eCJ": {
+    "defaultMessage": "Smaller",
+    "description": "Tooltip for the button that makes the game view smaller"
   },
   "G7DhrV": {
     "defaultMessage": "Jugar",
@@ -79,6 +107,14 @@
     "defaultMessage": "Introduce el código de juego de 4 dígitos...",
     "description": "Infotext for input which is used to insert 4 digit game code to join games"
   },
+  "Jyv5JT": {
+    "defaultMessage": "Normal",
+    "description": "Game mode where players respawn after dying and the round ends when a base is destroyed"
+  },
+  "Lo5tsu": {
+    "defaultMessage": "Keep playing",
+    "description": "Button in the leave game dialog that closes the dialog and returns to the game"
+  },
   "M2xffJ": {
     "defaultMessage": "Guardar archivo de repetición",
     "description": "Button text for button which saves replay file"
@@ -87,17 +123,37 @@
     "defaultMessage": "Extremadamente ágil. No recomendado para pilotos novatos.",
     "description": "Description of the Sopwith Camel aircraft"
   },
-  "MGsduE": {
-    "defaultMessage": "Equipo",
-    "description": "scoreboard: Team"
+  "M9uG/P": {
+    "defaultMessage": "Bots",
+    "description": "Title of the host panel for managing bots"
+  },
+  "MrbN1S": {
+    "defaultMessage": "(Penalización por matar a un aliado)",
+    "description": "Shown below the respawn countdown when the wait is longer because of a teamkill"
   },
   "Nbb2Yc": {
     "defaultMessage": "Mover a la derecha",
     "description": "Title for the 'Move Right' action shown on the keybind settings section"
   },
+  "OVTgWq": {
+    "defaultMessage": "Ilimitado",
+    "description": "Game time option for rounds that only end when a team's base is destroyed"
+  },
   "PEq6j5": {
     "defaultMessage": "Cerrar el chat",
     "description": "message indicating 'Esc' closes the chat"
+  },
+  "PSkosK": {
+    "defaultMessage": "Game size",
+    "description": "Title of the panel used to resize the game view"
+  },
+  "PUiIc0": {
+    "defaultMessage": "Random",
+    "description": "Bot panel: option to add a bot to whichever team needs players"
+  },
+  "Q9UCoB": {
+    "defaultMessage": "Bigger",
+    "description": "Tooltip for the button that makes the game view bigger"
   },
   "Qj15PN": {
     "defaultMessage": "Alternar tema luminoso",
@@ -107,6 +163,10 @@
     "defaultMessage": "Organizar un partido",
     "description": "Title for section used for hosting a game"
   },
+  "RJPf0Z": {
+    "defaultMessage": "Sonidos",
+    "description": "Checkbox on the bottom game panel that turns sound on or off"
+  },
   "SDo2PQ": {
     "defaultMessage": "Ver el código fuente en GitHub",
     "description": "Navbar hover for viewing the source code"
@@ -115,6 +175,14 @@
     "defaultMessage": "Código",
     "description": "Title for selection used to insert the game code"
   },
+  "T+NmK1": {
+    "defaultMessage": "Remove bot",
+    "description": "Bot panel: tooltip for the button that removes a bot"
+  },
+  "TcT+Lx": {
+    "defaultMessage": "Allies",
+    "description": "Bot panel: option to add a bot to the Allies team"
+  },
   "U/mSA3": {
     "defaultMessage": "Restablecer controles",
     "description": "Button used to reset user defined keybinds on the settings page"
@@ -122,6 +190,14 @@
   "URI5Vx": {
     "defaultMessage": "Configuración del Usuario",
     "description": "Title for a settings section used to modify user info used in-game"
+  },
+  "UwCHgC": {
+    "defaultMessage": "(Pulsa Intro cuando estés listo)",
+    "description": "Shown on the intermission screen between rounds until the player presses enter"
+  },
+  "V27mjT": {
+    "defaultMessage": "Medium",
+    "description": "Bot panel: medium bot difficulty"
   },
   "WWTrIb": {
     "defaultMessage": "Avión versátil de nivel medio. Equipado con bombas además de una ametralladora. Motor rápido y potente, aunque no ágil.",
@@ -139,9 +215,21 @@
     "defaultMessage": "Puntos",
     "description": "scoreboard: Score"
   },
+  "XS5GTW": {
+    "defaultMessage": "Salir",
+    "description": "Button on the bottom game panel that leaves the game"
+  },
   "Y5ZG9P": {
     "defaultMessage": "Puedes cambiar esto en cualquier momento en el menú de ajustes",
     "description": "Tooltip for the username setting section"
+  },
+  "Z0iZnK": {
+    "defaultMessage": "{minutes} minutos",
+    "description": "Game time option showing round length"
+  },
+  "ZNwZqy": {
+    "defaultMessage": "(Espera a que termine la ronda)",
+    "description": "Shown on screen in rounds mode while a dead or newly joined player waits for the next round"
   },
   "aLjUL6": {
     "defaultMessage": "Editor de Mapas",
@@ -151,9 +239,25 @@
     "defaultMessage": "Albatros D.II",
     "description": "Name of the Albatros D.II aircraft"
   },
+  "azXaJ7": {
+    "defaultMessage": "sí",
+    "description": "scoreboard: player is ready for the next round"
+  },
+  "b0BOYV": {
+    "defaultMessage": "Hard",
+    "description": "Bot panel: hard bot difficulty"
+  },
+  "b8pU+2": {
+    "defaultMessage": "Add Bot",
+    "description": "Bot panel: button that adds a bot"
+  },
   "buqDOb": {
     "defaultMessage": "Elegir nombre de usuario",
     "description": "Title for modal used to choose username"
+  },
+  "byMHD6": {
+    "defaultMessage": "¡{team, select, Centrals {Las Potencias Centrales han} other {Los Aliados han}} ganado!",
+    "description": "Shown in large text and in chat when a team wins the round"
   },
   "cFDrGv": {
     "defaultMessage": "Un clan opcional para anteponer a su nombre",
@@ -171,6 +275,10 @@
     "defaultMessage": "Mover a la izquierda",
     "description": "Title for the 'Move Left' action shown on the keybind settings section"
   },
+  "e5OODe": {
+    "defaultMessage": "Listo",
+    "description": "scoreboard: Ready, shown between rounds"
+  },
   "ezKLsY": {
     "defaultMessage": "Fokker DR.I",
     "description": "Name of the Fokker DR.I aircraft"
@@ -179,17 +287,21 @@
     "defaultMessage": "Bomba",
     "description": "Title for the 'Bomb' action shown on the keybind settings section"
   },
-  "fhbvwH": {
-    "defaultMessage": "El sistema del editor de niveles es actualmente altamente experimental, carece de muchas funciones relevantes y aún está en desarrollo activo. Puede experimentar problemas hasta que la función de reproducción esté en un estado estable.",
-    "description": "Informative text about the current state of the replay system"
-  },
   "gAAkRv": {
     "defaultMessage": "El nombre debe tener entre 3 y 20 caracteres",
     "description": "Label explaining username constraints"
   },
+  "gVhE9z": {
+    "defaultMessage": "Modo de juego",
+    "description": "Title for selection used to choose the game mode"
+  },
   "gg+aZq": {
     "defaultMessage": "Añadir enlace de teclas",
     "description": "Title for modal where keybinds are added"
+  },
+  "hAeFx5": {
+    "defaultMessage": "{team, select, Centrals {Centrals} other {Allies}} important building destroyed.",
+    "description": "Chat notice when a team's headquarters is destroyed"
   },
   "iu4I/w": {
     "defaultMessage": "Precisión",
@@ -202,6 +314,10 @@
   "izomYD": {
     "defaultMessage": "Ver la repetición de un partido",
     "description": "Title for the Replay System page"
+  },
+  "jwBIfl": {
+    "defaultMessage": "Fit to window",
+    "description": "Button that resets the game view size so it fits the browser window"
   },
   "kfnjH9": {
     "defaultMessage": "Ajustes",
@@ -219,9 +335,17 @@
     "defaultMessage": "Ver una Repetición ",
     "description": "Sidebar link description for the Replay System page"
   },
+  "obtz7Y": {
+    "defaultMessage": "Rondas",
+    "description": "Game mode with no respawning, where a team wins a round by eliminating every enemy player or destroying their base"
+  },
   "ohIqzI": {
     "defaultMessage": "Activar el motor",
     "description": "Title for the 'Toggle Motor' action shown on the keybind settings section"
+  },
+  "ov7Lo+": {
+    "defaultMessage": "Tiempo de juego",
+    "description": "Title for selection used to choose the length of each round"
   },
   "p1ezxU": {
     "defaultMessage": "Organizar un partido",
@@ -235,21 +359,29 @@
     "defaultMessage": "Mapa",
     "description": "Title for selection used to choose the game level"
   },
+  "q9p7Ga": {
+    "defaultMessage": "Difficulty",
+    "description": "Bot panel: label for the bot difficulty dropdown"
+  },
   "r1oUWJ": {
     "defaultMessage": "Ver todos los mensajes",
     "description": "'show all messages' switch text"
   },
-  "scT0m8": {
-    "defaultMessage": "Aviso sobre el sistema de repetición",
-    "description": "title for a notice section for the Replay System"
+  "sW9neH": {
+    "defaultMessage": "(Penalización por suicidio)",
+    "description": "Shown below the respawn countdown when the wait is longer because of a suicide"
+  },
+  "szCmDm": {
+    "defaultMessage": "E",
+    "description": "scoreboard: Team column, one letter"
   },
   "tN8/0L": {
     "defaultMessage": "Chatear con el equipo",
     "description": "Title for the 'Chat Team' action shown on the keybind settings section"
   },
-  "tOuqsq": {
-    "defaultMessage": "Aviso del Editor de Niveles",
-    "description": "title for a notice section for the Level Editor System"
+  "tNvYDv": {
+    "defaultMessage": "no",
+    "description": "scoreboard: player is not ready for the next round"
   },
   "twmPPM": {
     "defaultMessage": "Activar tema oscuro",
@@ -294,6 +426,18 @@
   "yRjHTu": {
     "defaultMessage": "Junkers J.1",
     "description": "Name of the Junkers J.1 aircraft"
+  },
+  "yi/9eD": {
+    "defaultMessage": "Centrals",
+    "description": "Bot panel: option to add a bot to the Centrals team"
+  },
+  "yjtXtd": {
+    "defaultMessage": "Ace",
+    "description": "Bot panel: hardest bot difficulty"
+  },
+  "zE1YNo": {
+    "defaultMessage": "Leave this game?",
+    "description": "Title of the dialog shown when navigating away from an active game"
   },
   "zV7RzE": {
     "defaultMessage": "Equipado con bombas además de una ametralladora, extremadamente duradero, pero un avión torpe.",

@@ -81,6 +81,7 @@ impl World {
         let level_data = parse_level(level_str);
 
         self.replay_file.level_name = level_data.name;
+        self.time_winner = level_data.time_winner;
         self.replay_file.level_data = level_str.to_string();
 
         for object in level_data.objects {

@@ -1,6 +1,11 @@
+import { AddBotRequest } from "dogfight-types/AddBotRequest";
+import { BotDifficulty } from "dogfight-types/BotDifficulty";
+import { BotInfo } from "dogfight-types/BotInfo";
+import { GameMode } from "dogfight-types/GameMode";
 import { PlayerCommand } from "dogfight-types/PlayerCommand";
 import { ServerInput } from "dogfight-types/ServerInput";
 import { ServerOutput } from "dogfight-types/ServerOutput";
+import { Team } from "dogfight-types/Team";
 import Peer, { DataConnection } from "peerjs";
 import { useEffect, useRef, useState } from "react";
 import { useDogfight } from "./useDogfight";
@@ -13,7 +18,22 @@ import { randomGuid } from "../helpers";
 type ConnectedPlayer = {
     player_guid: string;
     connection: DataConnection;
+    lastPing: number | null;
 };
+
+export type PingMessage = {
+    type: "Ping" | "Pong";
+    data: number;
+};
+
+export function isPingMessage(message: unknown): message is PingMessage {
+    if (typeof message !== "object" || message === null) return false;
+    const type = (message as { type?: unknown }).type;
+    return type === "Ping" || type === "Pong";
+}
+
+const PING_INTERVAL_MS = 2000;
+const PING_CHANGE_THRESHOLD_MS = 5;
 
 export function PeerJSPath(code: string): string {
     return "lentokonepeli-" + code;
@@ -21,7 +41,14 @@ export function PeerJSPath(code: string): string {
 
 const HOST_GUID = randomGuid();
 
-export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: string, clan: string) {
+export function useLocalHost(
+    gameMap: LevelName,
+    recordGame: boolean,
+    username: string,
+    clan: string,
+    gameTime: number,
+    gameMode: GameMode,
+) {
     const dogfight = useDogfight({
         handleClientCommand: (clientCommand) => {
             hostInput.current.push({ player_guid: HOST_GUID, command: clientCommand });
@@ -34,9 +61,11 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
 
     // Lobby state
     const [roomCode, setRoomCode] = useState<string | null>(null);
+    const [bots, setBots] = useState<BotInfo[]>([]);
 
     // A collection of the connected users
     const dataConnections = useRef<Map<string, ConnectedPlayer>>(new Map());
+    const pingInterval = useRef<ReturnType<typeof setInterval> | null>(null);
 
     function initialize(div: HTMLDivElement) {
         dogfight.initialize(div);
@@ -81,6 +110,8 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
             // TODO: extend this for custom maps in the future
             const level = Levels[gameMap];
             dogfight.engine.load_level(level);
+            dogfight.engine.set_round_settings(gameTime, 20);
+            dogfight.engine.set_game_mode(gameMode);
             dogfight.engine.init();
             console.log(dogfight.engine.get_build_version());
             console.log(dogfight.engine.get_commit());
@@ -94,6 +125,14 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
 
             // Set up function to begin ticking the game
             gameLoop.setHostEngineUpdateFn(tickGame).start();
+
+            pingInterval.current = setInterval(() => {
+                const ping: PingMessage = { type: "Ping", data: performance.now() };
+                const message = JSON.stringify(ping);
+                for (const [_, connected] of dataConnections.current) {
+                    connected.connection.send(message);
+                }
+            }, PING_INTERVAL_MS);
         });
 
         peer.current.on("connection", (conn) => {
@@ -122,6 +161,7 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
                 dataConnections.current.set(conn.connectionId, {
                     player_guid: PLAYER_GUID,
                     connection: conn,
+                    lastPing: null,
                 });
 
                 const all_state = dogfight.engine.get_full_state();
@@ -138,11 +178,30 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
                     // console.log(data)
                     const user = dataConnections.current.get(conn.connectionId);
 
+                    if (user && typeof data === "string") {
+                        const message: unknown = JSON.parse(data);
+                        if (isPingMessage(message) && message.type === "Pong") {
+                            const rtt = Math.min(Math.round(performance.now() - message.data), 65535);
+                            if (user.lastPing === null || Math.abs(rtt - user.lastPing) >= PING_CHANGE_THRESHOLD_MS) {
+                                user.lastPing = rtt;
+                                hostInput.current.push({
+                                    player_guid: user.player_guid,
+                                    command: { type: "SetPing", data: rtt },
+                                });
+                            }
+                        }
+                        return;
+                    }
+
                     if (user) {
                         const buffer = new Uint8Array(data as ArrayBuffer);
                         //const test = "testjaiasdjfoaijseiofjoieji39393393939393" as unknown as Uint8Array
                         const command_json = dogfight.engine.player_command_from_binary(buffer);
                         const command: PlayerCommand = JSON.parse(command_json);
+
+                        if (command.type === "SetPing" || command.type === "AddBot") {
+                            return;
+                        }
 
                         if (command.type == "AddPlayer") {
                             user.player_guid = PLAYER_GUID;
@@ -168,6 +227,25 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
         return serverInput;
     }
 
+    function refreshBots() {
+        setBots(JSON.parse(dogfight.engine.get_bots()) as BotInfo[]);
+    }
+
+    function addBot(team: Team | null, difficulty: BotDifficulty) {
+        const taken = new Set([...bots.map((b) => b.name), ...dogfight.playerData.map((p) => p.name)]);
+        let number = 1;
+        while (taken.has(`Bot ${number}`)) number++;
+
+        const request: AddBotRequest = { guid: randomGuid(), name: `Bot ${number}`, team, difficulty };
+        dogfight.engine.add_bot(JSON.stringify(request));
+        refreshBots();
+    }
+
+    function removeBot(guid: string) {
+        dogfight.engine.remove_bot(guid);
+        refreshBots();
+    }
+
     function getReplayBinary(): Uint8Array {
         return dogfight.engine.get_replay_file();
     }
@@ -176,6 +254,9 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
         return () => {
             console.log("destroy host");
             gameLoop.stop();
+            if (pingInterval.current) {
+                clearInterval(pingInterval.current);
+            }
             peer.current?.removeAllListeners();
             peer.current?.destroy();
         };
@@ -197,7 +278,11 @@ export function useLocalHost(gameMap: LevelName, recordGame: boolean, username: 
         roomCode,
         getReplayBinary,
         sendChatMessage,
+        bots,
+        addBot,
+        removeBot,
         playerData: dogfight.playerData,
+        intermission: dogfight.intermission,
         playerGuid: dogfight.playerGuid,
         messages: dogfight.messages,
     };

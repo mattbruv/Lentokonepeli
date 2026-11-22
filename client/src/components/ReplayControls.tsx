@@ -1,19 +1,19 @@
-import { Button, ComboboxItem, MultiSelect, ScrollArea, Select, Stack, Text } from "@mantine/core";
+import { ActionIcon, ComboboxItem, MultiSelect, ScrollArea, SegmentedControl, Select } from "@mantine/core";
+import { IconEye } from "@tabler/icons-react";
 import { PlayerGuid } from "dogfight-types/PlayerGuid";
 import { ReplayEvent } from "dogfight-types/ReplayEvent";
 import { ReplayEventType } from "dogfight-types/ReplayEventType";
 import { ReplaySummary } from "dogfight-types/ReplaySummary";
 import { useCallback, useMemo, useState } from "react";
-import { ReplayCallbacks, ReplayInfo } from "src/hooks/useReplay";
 import { ticksToHHMMSS } from "../helpers";
+import { REPLAY_SPEEDS, ReplayCallbacks, ReplayInfo, ReplaySpeed } from "../hooks/useReplay";
+import classes from "./ReplayControls.module.css";
 import { ReplayTimer } from "./ReplayTimer";
 
 type ReplayControlsProps = {
     summary: ReplaySummary;
     info: ReplayInfo;
     callbacks: ReplayCallbacks;
-
-    // other props
     events: ReplayEvent[];
     players: Record<PlayerGuid, string>;
 };
@@ -69,34 +69,49 @@ export function ReplayControls({ summary, callbacks, events, players, info }: Re
     }, [info.spectating]);
 
     return (
-        <Stack>
+        <div className={classes.controls}>
             <ReplayTimer info={info} summary={summary} callbacks={callbacks} />
-            <Stack>
-                <Select
-                    label="Spectating Player"
-                    placeholder="Pick a player..."
-                    value={info.spectating}
-                    onChange={callbacks.updateSpectating}
-                    data={watchPlayers}
-                />
-                <div>
-                    <MultiSelect data={eventOptions} value={viewEvents} onChange={updateViewEvents} />
-                    <ScrollArea h={400}>
+            <SegmentedControl
+                fullWidth
+                value={`${info.speed}`}
+                onChange={(value) => callbacks.setSpeed(Number(value) as ReplaySpeed)}
+                data={REPLAY_SPEEDS.map((speed) => ({ value: `${speed}`, label: `${speed}×` }))}
+            />
+            <hr className={classes.divider} />
+            <Select
+                label="Spectating Player"
+                placeholder="Pick a player..."
+                value={info.spectating}
+                onChange={callbacks.updateSpectating}
+                data={watchPlayers}
+            />
+            <MultiSelect data={eventOptions} value={viewEvents} onChange={updateViewEvents} />
+            {playerEvents.length > 0 && (
+                <ScrollArea.Autosize mah={320} type="auto" offsetScrollbars>
+                    <ul className={classes.events}>
                         {playerEvents.map((event, i) => (
-                            <div key={i}>
-                                <Text c={event.tick < info.tick ? "dimmed" : ""}>
-                                    {EVENT_NAMES[event.event.type]}
-                                    {eventText(event)}
-                                </Text>
-                                <Text size="xs" c={"dimmed"}>
-                                    {ticksToHHMMSS(event.tick)}
-                                </Text>
-                                <Button onClick={(_) => callbacks.playToTick(event.tick - 100 * 5)}>👀</Button>
-                            </div>
+                            <li key={i} className={classes.event} data-past={event.tick < info.tick || undefined}>
+                                <div className={classes.eventBody}>
+                                    <div className={classes.eventText}>
+                                        {EVENT_NAMES[event.event.type]}
+                                        {eventText(event)}
+                                    </div>
+                                    <div className={classes.eventTime}>{ticksToHHMMSS(event.tick)}</div>
+                                </div>
+                                <ActionIcon
+                                    variant="light"
+                                    color="sky"
+                                    size="md"
+                                    onClick={(_) => callbacks.playToTick(event.tick - 100 * 5)}
+                                    aria-label={ticksToHHMMSS(event.tick)}
+                                >
+                                    <IconEye size={16} stroke={2.4} />
+                                </ActionIcon>
+                            </li>
                         ))}
-                    </ScrollArea>
-                </div>
-            </Stack>
-        </Stack>
+                    </ul>
+                </ScrollArea.Autosize>
+            )}
+        </div>
     );
 }

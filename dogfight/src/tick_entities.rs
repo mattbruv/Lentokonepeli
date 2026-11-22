@@ -1,5 +1,8 @@
 use crate::{
-    entities::player::ControllingEntity, input::PlayerKeyboard, tick_actions::Action, world::World,
+    entities::player::ControllingEntity,
+    input::PlayerKeyboard,
+    tick_actions::{Action, RemoveData},
+    world::World,
 };
 
 /*
@@ -37,6 +40,8 @@ impl World {
         let mut actions = vec![];
 
         for (player_id, player) in self.players.get_map_mut() {
+            player.tick_respawn();
+
             if let Some(controlled) = player.get_controlling() {
                 match controlled {
                     // Tick men
@@ -57,8 +62,11 @@ impl World {
         }
 
         // Tick bombs
-        for (_, bomb) in self.bombs.get_map_mut() {
+        for (bomb_id, bomb) in self.bombs.get_map_mut() {
             bomb.tick();
+            if bomb.is_out_of_bounds() {
+                actions.push(Action::RemoveEntity(RemoveData::Bomb(*bomb_id)));
+            }
         }
 
         // Tick bullets
@@ -74,6 +82,10 @@ impl World {
         // Tick Runways
         for (_, runway) in self.runways.get_map_mut() {
             runway.tick();
+        }
+
+        for (_, bunker) in self.bunkers.get_map_mut() {
+            bunker.tick();
         }
 
         // Tick Planes

@@ -1,8 +1,26 @@
 {
-  "+NFaSb": [
+  "+VHHqo": [
     {
       "type": 0,
-      "value": "Lentokonepeli (Kehityksessä)"
+      "value": "Leave game"
+    }
+  ],
+  "+hJmve": [
+    {
+      "type": 0,
+      "value": "Tasapeli!"
+    }
+  ],
+  "+ptLoi": [
+    {
+      "type": 0,
+      "value": "You'll be disconnected from the current match. If you're the host, the game will end for everyone."
+    }
+  ],
+  "/Dq9eZ": [
+    {
+      "type": 0,
+      "value": "Grafiikka"
     }
   ],
   "/KlrcC": [
@@ -41,10 +59,16 @@
       "value": "Laukaise heittoistuin, Avaa laskuvarjo"
     }
   ],
-  "7kZMTs": [
+  "6h1L5u": [
     {
       "type": 0,
-      "value": "Pelien uusinta on tällä hetkellä kokeellinen, eikä siinä ole kaikkia ominaisuuksia, ja se on edelleen kehityksessä. Saatat kohdata ongelmia, kunnes toistotoiminto on vakaa."
+      "value": "Easy"
+    }
+  ],
+  "7GHFcs": [
+    {
+      "type": 0,
+      "value": "Takaisin peliin"
     }
   ],
   "8Am/Pl": [
@@ -63,6 +87,40 @@
     {
       "type": 0,
       "value": "Pikanäppäinasetukset"
+    }
+  ],
+  "9l2moM": [
+    {
+      "options": {
+        "Centrals": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Keskusvaltojen"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Liittoutuneiden"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "team"
+    },
+    {
+      "type": 0,
+      "value": " kiitorata tuhottu."
+    }
+  ],
+  "AY7tVh": [
+    {
+      "type": 0,
+      "value": "Bot"
     }
   ],
   "B1CMe5": [
@@ -87,6 +145,12 @@
     {
       "type": 0,
       "value": "Sangen tulivoimaisella konekiväärillä varustettu kone. Hyvä valinta etenkin aloitteleville lentäjille."
+    }
+  ],
+  "El6eCJ": [
+    {
+      "type": 0,
+      "value": "Smaller"
     }
   ],
   "G7DhrV": [
@@ -119,6 +183,18 @@
       "value": "Syötä 4 merkkiä sisältävä pelikoodi..."
     }
   ],
+  "Jyv5JT": [
+    {
+      "type": 0,
+      "value": "Normaali"
+    }
+  ],
+  "Lo5tsu": [
+    {
+      "type": 0,
+      "value": "Keep playing"
+    }
+  ],
   "M2xffJ": [
     {
       "type": 0,
@@ -131,10 +207,16 @@
       "value": "Erittäin ketterä. ei suositella aloitteleville lentäjille."
     }
   ],
-  "MGsduE": [
+  "M9uG/P": [
     {
       "type": 0,
-      "value": "Joukkue"
+      "value": "Bots"
+    }
+  ],
+  "MrbN1S": [
+    {
+      "type": 0,
+      "value": "(Rangaistus oman tappamisesta)"
     }
   ],
   "Nbb2Yc": [
@@ -143,10 +225,34 @@
       "value": "Liiku oikealle"
     }
   ],
+  "OVTgWq": [
+    {
+      "type": 0,
+      "value": "Rajoittamaton"
+    }
+  ],
   "PEq6j5": [
     {
       "type": 0,
       "value": "sulkea chat"
+    }
+  ],
+  "PSkosK": [
+    {
+      "type": 0,
+      "value": "Game size"
+    }
+  ],
+  "PUiIc0": [
+    {
+      "type": 0,
+      "value": "Random"
+    }
+  ],
+  "Q9UCoB": [
+    {
+      "type": 0,
+      "value": "Bigger"
     }
   ],
   "Qj15PN": [
@@ -161,6 +267,12 @@
       "value": "Isännöi peli"
     }
   ],
+  "RJPf0Z": [
+    {
+      "type": 0,
+      "value": "Äänet"
+    }
+  ],
   "SDo2PQ": [
     {
       "type": 0,
@@ -173,6 +285,18 @@
       "value": "Pelikoodi"
     }
   ],
+  "T+NmK1": [
+    {
+      "type": 0,
+      "value": "Remove bot"
+    }
+  ],
+  "TcT+Lx": [
+    {
+      "type": 0,
+      "value": "Allies"
+    }
+  ],
   "U/mSA3": [
     {
       "type": 0,
@@ -183,6 +307,18 @@
     {
       "type": 0,
       "value": "Käyttäjäasetukset"
+    }
+  ],
+  "UwCHgC": [
+    {
+      "type": 0,
+      "value": "(Paina enteriä kun olet valmis)"
+    }
+  ],
+  "V27mjT": [
+    {
+      "type": 0,
+      "value": "Medium"
     }
   ],
   "WWTrIb": [
@@ -209,10 +345,32 @@
       "value": "Pisteet"
     }
   ],
+  "XS5GTW": [
+    {
+      "type": 0,
+      "value": "Poistu"
+    }
+  ],
   "Y5ZG9P": [
     {
       "type": 0,
       "value": "Tämän voi vaihtaa jälkeenpäin asetuksista"
+    }
+  ],
+  "Z0iZnK": [
+    {
+      "type": 1,
+      "value": "minutes"
+    },
+    {
+      "type": 0,
+      "value": " minuuttia"
+    }
+  ],
+  "ZNwZqy": [
+    {
+      "type": 0,
+      "value": "(Odota erän päättymistä)"
     }
   ],
   "aLjUL6": [
@@ -227,10 +385,56 @@
       "value": "Albatros D.II"
     }
   ],
+  "azXaJ7": [
+    {
+      "type": 0,
+      "value": "kyllä"
+    }
+  ],
+  "b0BOYV": [
+    {
+      "type": 0,
+      "value": "Hard"
+    }
+  ],
+  "b8pU+2": [
+    {
+      "type": 0,
+      "value": "Add Bot"
+    }
+  ],
   "buqDOb": [
     {
       "type": 0,
       "value": "Valitse Käyttäjänimi"
+    }
+  ],
+  "byMHD6": [
+    {
+      "options": {
+        "Centrals": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Keskusvallat"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Liittoutuneet"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "team"
+    },
+    {
+      "type": 0,
+      "value": " voittivat!"
     }
   ],
   "cFDrGv": [
@@ -257,6 +461,12 @@
       "value": "Liiku vasemmalle"
     }
   ],
+  "e5OODe": [
+    {
+      "type": 0,
+      "value": "Valmis"
+    }
+  ],
   "ezKLsY": [
     {
       "type": 0,
@@ -269,22 +479,50 @@
       "value": "Pommita"
     }
   ],
-  "fhbvwH": [
-    {
-      "type": 0,
-      "value": "Kenttäeditori on toistaiseksi erittäin kokeellinen, ja siitä puuttuu monia oleellisia ominaisuuksia. Kenttäeditorin käyttäminen voi nykyisessä tilassaan olla työlästä sekä hankalaa."
-    }
-  ],
   "gAAkRv": [
     {
       "type": 0,
       "value": "Nimen tulee olla vähintään 3 ja enintään 20 merkkiä"
     }
   ],
+  "gVhE9z": [
+    {
+      "type": 0,
+      "value": "Pelitila"
+    }
+  ],
   "gg+aZq": [
     {
       "type": 0,
       "value": "Lisää pikanäppäin"
+    }
+  ],
+  "hAeFx5": [
+    {
+      "options": {
+        "Centrals": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Centrals"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Allies"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "team"
+    },
+    {
+      "type": 0,
+      "value": " important building destroyed."
     }
   ],
   "iu4I/w": [
@@ -303,6 +541,12 @@
     {
       "type": 0,
       "value": "Katso pelin uusinta"
+    }
+  ],
+  "jwBIfl": [
+    {
+      "type": 0,
+      "value": "Fit to window"
     }
   ],
   "kfnjH9": [
@@ -329,10 +573,22 @@
       "value": "Uusinnat"
     }
   ],
+  "obtz7Y": [
+    {
+      "type": 0,
+      "value": "Erät"
+    }
+  ],
   "ohIqzI": [
     {
       "type": 0,
       "value": "Vaihda moottorin tila"
+    }
+  ],
+  "ov7Lo+": [
+    {
+      "type": 0,
+      "value": "Peliaika"
     }
   ],
   "p1ezxU": [
@@ -353,16 +609,28 @@
       "value": "Kenttä"
     }
   ],
+  "q9p7Ga": [
+    {
+      "type": 0,
+      "value": "Difficulty"
+    }
+  ],
   "r1oUWJ": [
     {
       "type": 0,
       "value": "Näytä kaikki viestit"
     }
   ],
-  "scT0m8": [
+  "sW9neH": [
     {
       "type": 0,
-      "value": "Uusintojen huomautus"
+      "value": "(Rangaistus itsemurhasta)"
+    }
+  ],
+  "szCmDm": [
+    {
+      "type": 0,
+      "value": "J"
     }
   ],
   "tN8/0L": [
@@ -371,10 +639,10 @@
       "value": "Viestitä tiimille"
     }
   ],
-  "tOuqsq": [
+  "tNvYDv": [
     {
       "type": 0,
-      "value": "Kenttäeditorin huomautus"
+      "value": "ei"
     }
   ],
   "twmPPM": [
@@ -441,6 +709,24 @@
     {
       "type": 0,
       "value": "Junkers J.1"
+    }
+  ],
+  "yi/9eD": [
+    {
+      "type": 0,
+      "value": "Centrals"
+    }
+  ],
+  "yjtXtd": [
+    {
+      "type": 0,
+      "value": "Ace"
+    }
+  ],
+  "zE1YNo": [
+    {
+      "type": 0,
+      "value": "Leave this game?"
     }
   ],
   "zV7RzE": [

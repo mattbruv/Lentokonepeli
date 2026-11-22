@@ -22,6 +22,8 @@ pub enum ServerOutput {
     KillEvent(KillEvent),
     YourPlayerGuid(String),
     ChatMessage(PlayerGuid, ChatMessage),
+    RunwayDestroyed(Team),
+    HeadquartersDestroyed(Team),
 }
 
 impl NetworkedBytes for ServerOutput {
@@ -57,6 +59,14 @@ impl NetworkedBytes for ServerOutput {
                 bytes.push(5);
                 bytes.extend(guid.to_bytes());
                 bytes.extend(message.to_bytes());
+            }
+            ServerOutput::RunwayDestroyed(team) => {
+                bytes.push(6);
+                bytes.extend(Team::to_bytes(team));
+            }
+            ServerOutput::HeadquartersDestroyed(team) => {
+                bytes.push(7);
+                bytes.extend(Team::to_bytes(team));
             }
             ServerOutput::YourPlayerGuid(_) => {
                 panic!("This should be done client side...")
@@ -111,6 +121,14 @@ impl NetworkedBytes for ServerOutput {
                 let (bytes, chat_message) = ChatMessage::from_bytes(bytes)?;
                 slice = &bytes;
                 Some((slice, ServerOutput::ChatMessage(guid, chat_message)))
+            }
+            6 => {
+                let (bytes, team) = Team::from_bytes(slice)?;
+                Some((bytes, ServerOutput::RunwayDestroyed(team)))
+            }
+            7 => {
+                let (bytes, team) = Team::from_bytes(slice)?;
+                Some((bytes, ServerOutput::HeadquartersDestroyed(team)))
             }
             _ => panic!("Unrecognized enum variant in Event: {}", variant),
         }

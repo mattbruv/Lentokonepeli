@@ -64,6 +64,13 @@ impl Runway {
         runway
     }
 
+    pub fn reset(&mut self) {
+        self.health_timer = 0;
+        self.last_reserve = None;
+        self.reserve_timer = 10_000;
+        self.set_health(self.get_max_health());
+    }
+
     pub fn tick(&mut self) -> () {
         self.reserve_timer += 10;
 
@@ -76,9 +83,13 @@ impl Runway {
         }
     }
 
-    pub fn subtract_health(&mut self, amount: i32) -> () {
+    pub fn subtract_health(&mut self, amount: i32) -> bool {
+        if self.total_health <= 0 {
+            return false;
+        }
         let new_health = self.total_health - amount;
         self.set_health(new_health);
+        self.total_health == 0
     }
 
     pub fn set_health(&mut self, health_amount: i32) -> () {
@@ -163,7 +174,7 @@ impl Runway {
                 }
             }
             RunwayReservation::Takeoff => {
-                if let Some(RunwayReservation::Takeoff) = self.last_reserve {
+                if let Some(RunwayReservation::Landing) = self.last_reserve {
                     RESERVE_LANDING_TAKEOFF_DELAY
                 } else {
                     RESERVE_LANDING_LANDING_DELAY

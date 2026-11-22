@@ -20,6 +20,7 @@ pub struct Bunker {
     client_y: Property<i16>,
     client_health: Property<u8>,
     total_health: i32,
+    health_timer: i32,
 
     image_raf: RgbaImage,
     image_germans: RgbaImage,
@@ -34,6 +35,7 @@ impl Bunker {
             client_y: Property::new(y),
             client_health: Property::new(0),
             total_health: 0,
+            health_timer: 0,
             image_germans: get_image(HEADQUARTER_GERMANS),
             image_raf: get_image(HEADQUARTER_RAF),
             image_destroyed: get_image(HEADQUARTER_BROKE),
@@ -45,6 +47,25 @@ impl Bunker {
 
     fn get_max_health(&self) -> i32 {
         350
+    }
+
+    pub fn get_team(&self) -> &Team {
+        self.team.get()
+    }
+
+    pub fn reset(&mut self) {
+        self.health_timer = 0;
+        self.set_health(self.get_max_health());
+    }
+
+    pub fn tick(&mut self) {
+        if self.total_health > 0 && self.total_health < self.get_max_health() {
+            self.health_timer = (self.health_timer + 1) % 50;
+
+            if self.health_timer == 0 {
+                self.set_health(self.total_health + 1);
+            }
+        }
     }
 
     pub fn set_health(&mut self, health_amount: i32) -> () {
@@ -60,9 +81,13 @@ impl Bunker {
         ));
     }
 
-    pub fn subtract_health(&mut self, amount: i32) -> () {
+    pub fn subtract_health(&mut self, amount: i32) -> bool {
+        if self.total_health <= 0 {
+            return false;
+        }
         let new_health = self.total_health - amount;
         self.set_health(new_health);
+        self.total_health == 0
     }
 
     fn get_image(&self) -> &RgbaImage {

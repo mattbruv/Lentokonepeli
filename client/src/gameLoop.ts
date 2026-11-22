@@ -143,4 +143,5 @@ class Scheduler {
 }
 
 export const scheduler = new Scheduler();
-export const gameLoop = new GameLoop(scheduler).setTickInterval(10);
+export const DEFAULT_TICK_INTERVAL = 10;
+export const gameLoop = new GameLoop(scheduler).setTickInterval(DEFAULT_TICK_INTERVAL);

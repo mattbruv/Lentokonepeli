@@ -10,14 +10,78 @@ export type Stats = {
     bombs?: number;
 };
 
+export type HUDCallbacks = {
+    onExit: () => void;
+    onToggleSounds: (enabled: boolean) => void;
+    onToggleGfx: (enabled: boolean) => void;
+};
+
+export type HUDLabels = {
+    exit: string;
+    sounds: string;
+    gfx: string;
+};
+
+class PanelCheckbox {
+    public container: PIXI.Container;
+    private box: PIXI.Graphics;
+    private checked = true;
+
+    constructor(label: string, x: number, y: number, onChange: (checked: boolean) => void) {
+        this.container = new PIXI.Container();
+        this.container.position.set(x, y);
+        this.box = new PIXI.Graphics();
+        const text = new PIXI.Text(label, {
+            fontFamily: "Dialog, Arial, sans-serif",
+            fontSize: 14,
+            fontWeight: "bold",
+            fill: 0xffffff,
+        });
+        text.position.set(20, 1);
+        this.container.addChild(this.box);
+        this.container.addChild(text);
+        this.container.eventMode = "static";
+        this.container.cursor = "pointer";
+        this.container.on("pointertap", () => {
+            this.setChecked(!this.checked);
+            onChange(this.checked);
+        });
+        this.draw();
+    }
+
+    public setChecked(checked: boolean) {
+        this.checked = checked;
+        this.draw();
+    }
+
+    private draw() {
+        this.box.clear();
+        this.box.lineStyle(1, 0x000000, 1, 0);
+        this.box.beginFill(0xffffff);
+        this.box.drawRect(4, 3, 13, 13);
+        this.box.endFill();
+        if (this.checked) {
+            this.box.lineStyle(2, 0x000000);
+            this.box.moveTo(7, 9);
+            this.box.lineTo(10, 12);
+            this.box.lineTo(15, 6);
+        }
+    }
+}
+
 export class GameHUD {
     public container: PIXI.Container;
 
     private panel: PIXI.Sprite;
     private stats: PIXI.Graphics;
     private bombs: PIXI.Container;
+    private teamScores: PIXI.Graphics;
+    private centralsScoreText: PIXI.Text;
+    private alliesScoreText: PIXI.Text;
     public radar: Radar;
     private previousStats: Stats;
+    private soundsCheckbox?: PanelCheckbox;
+    private gfxCheckbox?: PanelCheckbox;
 
     constructor() {
         this.container = new PIXI.Container();
@@ -26,6 +90,13 @@ export class GameHUD {
         this.stats = new PIXI.Graphics();
         this.bombs = new PIXI.Container();
         this.radar = new Radar();
+        this.teamScores = new PIXI.Graphics();
+        this.centralsScoreText = new PIXI.Text("0", { fontFamily: "Arial", fontSize: 15, fill: "white" });
+        this.alliesScoreText = new PIXI.Text("0", { fontFamily: "Arial", fontSize: 15, fill: "white" });
+        this.centralsScoreText.anchor.set(0, 1);
+        this.alliesScoreText.anchor.set(0, 1);
+        this.centralsScoreText.position.set(65, 69);
+        this.alliesScoreText.position.set(65, 126);
 
         this.bombs.position.set(296, 108);
 
@@ -34,11 +105,43 @@ export class GameHUD {
         this.container.addChild(this.panel);
         this.container.addChild(this.stats);
         this.container.addChild(this.bombs);
+        this.container.addChild(this.teamScores);
+        this.container.addChild(this.centralsScoreText);
+        this.container.addChild(this.alliesScoreText);
         this.container.addChild(this.radar.container);
     }
 
-    public init() {
+    public init(callbacks?: HUDCallbacks, labels?: HUDLabels) {
         this.panel.texture = Textures["metalpanel.jpg"];
+
+        if (callbacks && labels) {
+            const exitButton = new PIXI.Container();
+            exitButton.position.set(653, 120);
+            const exitBackground = new PIXI.Graphics();
+            exitBackground.lineStyle(2, 0x990033, 1, 0);
+            exitBackground.beginFill(0xff9999);
+            exitBackground.drawRoundedRect(0, 0, 70, 27, 4);
+            exitBackground.endFill();
+            const exitText = new PIXI.Text(labels.exit, {
+                fontFamily: "Dialog, Arial, sans-serif",
+                fontSize: 14,
+                fontWeight: "bold",
+                fill: 0x000000,
+            });
+            exitText.anchor.set(0.5);
+            exitText.position.set(35, 13.5);
+            exitButton.addChild(exitBackground);
+            exitButton.addChild(exitText);
+            exitButton.eventMode = "static";
+            exitButton.cursor = "pointer";
+            exitButton.on("pointertap", () => callbacks.onExit());
+            this.container.addChild(exitButton);
+
+            this.soundsCheckbox = new PanelCheckbox(labels.sounds, 650, 80, callbacks.onToggleSounds);
+            this.gfxCheckbox = new PanelCheckbox(labels.gfx, 650, 40, callbacks.onToggleGfx);
+            this.container.addChild(this.soundsCheckbox.container);
+            this.container.addChild(this.gfxCheckbox.container);
+        }
 
         for (let i = 0; i < 5; i++) {
             const sprite = new PIXI.Sprite(Textures["droppedbomb.gif"]);
@@ -79,6 +182,31 @@ export class GameHUD {
         //this.stats.drawRect(0, 0, 50, 100)
 
         this.stats.endFill();
+    }
+
+    public updateTeamScores(centrals: number, allies: number, myTeam: Team | null) {
+        const own = 0x0000ff;
+        const opponent = 0xff0000;
+        const c = Math.max(centrals, 0);
+        const a = Math.max(allies, 0);
+        const total = c + a;
+
+        this.teamScores.clear();
+
+        this.teamScores.beginFill(myTeam === "Centrals" ? own : opponent);
+        this.teamScores.drawRect(64, 29, total === 0 ? 0 : Math.floor((129 * c) / total), 14);
+        this.teamScores.endFill();
+
+        this.teamScores.beginFill(myTeam === "Allies" ? own : opponent);
+        this.teamScores.drawRect(64, 86, total === 0 ? 0 : Math.floor((129 * a) / total), 14);
+        this.teamScores.endFill();
+
+        this.centralsScoreText.text = `${centrals}`;
+        this.alliesScoreText.text = `${allies}`;
+    }
+
+    public setSoundsChecked(checked: boolean) {
+        this.soundsCheckbox?.setChecked(checked);
     }
 
     public setTeam(team?: Team) {

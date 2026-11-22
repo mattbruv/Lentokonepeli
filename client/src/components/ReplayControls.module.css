@@ -1,0 +1,94 @@
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.timer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.clock {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 8px;
+    font-family: Fredoka, Nunito, sans-serif;
+    font-variant-numeric: tabular-nums;
+}
+
+.now {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--lk-text);
+}
+
+.total {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--lk-text-dim);
+}
+
+.transport {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.frameStep {
+    display: flex;
+    justify-content: center;
+    margin-top: -4px;
+}
+
+.divider {
+    width: 100%;
+    margin: 2px 0;
+    border: none;
+    border-top: 2.5px dashed var(--lk-paper-line);
+}
+
+.events {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.event {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border: 2px solid var(--lk-paper-line);
+    border-radius: 12px;
+    background: var(--lk-field);
+    transition: opacity 150ms ease;
+
+    &[data-past] {
+        opacity: 0.55;
+    }
+}
+
+.eventBody {
+    flex: 1;
+    min-width: 0;
+}
+
+.eventText {
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.eventTime {
+    font-size: var(--mantine-font-size-xs);
+    font-weight: 700;
+    color: var(--lk-text-dim);
+    font-variant-numeric: tabular-nums;
+}

@@ -45,6 +45,26 @@ pub enum PlaneType {
     Sopwith = 9,
 }
 
+impl PlaneType {
+    pub fn for_team(team: Team, index: u8) -> PlaneType {
+        match (team, index % 3) {
+            (Team::Centrals, 0) => PlaneType::Albatros,
+            (Team::Centrals, 1) => PlaneType::Junkers,
+            (Team::Centrals, _) => PlaneType::Fokker,
+            (Team::Allies, 0) => PlaneType::Bristol,
+            (Team::Allies, 1) => PlaneType::Salmson,
+            (Team::Allies, _) => PlaneType::Sopwith,
+        }
+    }
+
+    pub fn team(&self) -> Team {
+        match self {
+            PlaneType::Albatros | PlaneType::Junkers | PlaneType::Fokker => Team::Centrals,
+            PlaneType::Bristol | PlaneType::Salmson | PlaneType::Sopwith => Team::Allies,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS, EnumBytes)]
 #[ts(export)]
 pub enum PlaneMode {
@@ -448,7 +468,8 @@ impl Plane {
             }
 
             // PLANE_MOTOR = 40 = down
-            if keys.down && self.last_motor_on_ms >= self.motor_on_delay_ms && self.total_fuel > 0 {
+            if keys.down && self.last_motor_on_ms >= self.motor_on_delay_ms && self.fuel_counter > 0
+            {
                 self.motor_on.set(!self.motor_on.get());
                 self.last_motor_on_ms = 0;
             }
@@ -607,7 +628,7 @@ impl Plane {
         normalized / 2.0
     }
 
-    pub fn do_plane_collision(&mut self) -> () {
+    pub fn do_plane_collision(&mut self) -> bool {
         // only do this if we're in flying mode
         if let PlaneMode::Flying = self.mode.get() {
             self.set_mode(PlaneMode::Dodging);
@@ -625,7 +646,9 @@ impl Plane {
             self.flipped.set(!self.flipped.get());
             self.set_health(self.health() - 25);
             // TODO: add message for the player who took out this plane if health < 0
+            return true;
         }
+        false
     }
 
     pub fn subtract_health(&mut self, amount: i32) -> () {
@@ -636,7 +659,7 @@ impl Plane {
     pub fn set_health(&mut self, health_amount: i32) -> () {
         self.total_health = health_amount;
 
-        if self.total_health < 0 {
+        if self.total_health <= 0 {
             self.total_health = 0;
             self.mode.set(PlaneMode::Falling);
         }
@@ -649,8 +672,9 @@ impl Plane {
 
     fn spawn_man_action(&mut self, team: Team, my_id: &PlaneId, actions: &mut Vec<Action>) {
         let mut man = Man::new(team);
-        man.set_x(self.x);
-        man.set_y(self.y);
+        let bounds = self.get_collision_bounds();
+        man.set_x(bounds.x as i32 * RESOLUTION);
+        man.set_y(bounds.y as i32 * RESOLUTION);
         actions.push(Action::SpawnMan(
             man,
             Some(ControllingEntity::Plane(*my_id)),
@@ -762,25 +786,19 @@ impl Plane {
     }
 
     pub(crate) fn get_bottom_height(&self) -> i16 {
-        (self.get_image().height() / 2) as i16
-        // Convert the image to RGBA8 for easy pixel manipulation
-        /*
         let image = self.get_image();
         let (width, height) = image.dimensions();
-        log(&format!("img width: {} height: {}", width, height).into());
 
-        for y in (0..height).rev() {
-            for x in 0..width {
-                let pixel = image.get_pixel(x, y);
-                if pixel[3] > 0 {
-                    // Check if alpha channel is non-zero (or change condition to fit your needs)
-                    return (y + 1).try_into();
-                }
-            }
-        }
+        let lowest_opaque_row = (0..height)
+            .rev()
+            .find(|&y| (0..width).any(|x| image.get_pixel(x, y)[3] >= 128))
+            .map(|y| y + 1)
+            .unwrap_or(0);
 
-        0 // Return 0 if no non-transparent pixels are found
-        */
+        let canvas = self.get_rotateable_image().height();
+        let image_top_from_center = (canvas / 2) as i32 - ((canvas - height) / 2) as i32;
+
+        (lowest_opaque_row as i32 - image_top_from_center) as i16
     }
 
     pub fn set_downed_by(&mut self, player_id: Option<PlayerId>) -> () {
@@ -793,6 +811,34 @@ impl Plane {
 
     pub fn get_plane_type(&self) -> PlaneType {
         *self.plane_type.get()
+    }
+
+    pub(crate) fn get_speed(&self) -> f64 {
+        self.speed
+    }
+
+    pub(crate) fn get_angle(&self) -> f64 {
+        self.angle
+    }
+
+    pub(crate) fn get_ammo(&self) -> i32 {
+        self.total_ammo
+    }
+
+    pub(crate) fn get_bombs(&self) -> u8 {
+        *self.total_bombs.get()
+    }
+
+    pub(crate) fn get_fuel_ratio(&self) -> f64 {
+        self.total_fuel as f64 / self.get_max_fuel() as f64
+    }
+
+    pub(crate) fn get_health_ratio(&self) -> f64 {
+        self.total_health as f64 / self.get_max_health() as f64
+    }
+
+    pub(crate) fn get_landing_speed_limit(&self) -> f64 {
+        250.0 + self.get_speed_modifier()
     }
 }
 
@@ -970,6 +1016,17 @@ impl Plane {
         self.y
     }
 
+    fn get_rotateable_image(&self) -> &RgbaImage {
+        match self.plane_type.get() {
+            PlaneType::Albatros => &self.image_albatros_rotateable,
+            PlaneType::Junkers => &self.image_junkers_rotateable,
+            PlaneType::Fokker => &self.image_fokker_rotateable,
+            PlaneType::Bristol => &self.image_bristol_rotateable,
+            PlaneType::Salmson => &self.image_salmson_rotateable,
+            PlaneType::Sopwith => &self.image_sopwith_rotateable,
+        }
+    }
+
     fn get_image(&self) -> &RgbaImage {
         match self.plane_type.get() {
             PlaneType::Albatros => &self.image_albatros,
@@ -1006,16 +1063,7 @@ impl SolidEntity for Plane {
     fn do_rotate_collision_image(&mut self) -> () {
         let flip = self.flipped();
 
-        let original_image = match self.plane_type.get() {
-            PlaneType::Albatros => &self.image_albatros_rotateable,
-            PlaneType::Junkers => &self.image_junkers_rotateable,
-            PlaneType::Fokker => &self.image_fokker_rotateable,
-            PlaneType::Bristol => &self.image_bristol_rotateable,
-            PlaneType::Salmson => &self.image_salmson_rotateable,
-            PlaneType::Sopwith => &self.image_sopwith_rotateable,
-        };
-
-        self.rotated_image = rotate_image(original_image, self.angle, flip);
+        self.rotated_image = rotate_image(self.get_rotateable_image(), self.angle, flip);
     }
 
     fn is_alive(&self) -> bool {

@@ -20,6 +20,17 @@ export class Player implements Entity<PlayerProperties> {
         kills: 0,
         deaths: 0,
         score: 0,
+        respawn_seconds: 0,
+        respawn_type: "Default",
+        ready: false,
+        accuracy: 0,
+        ping: 0,
+        last_runway: null,
+        team_option: 1,
+        selected_runway: null,
+        selected_plane: 0,
+        bot: false,
+        spectating: null,
     };
 
     private onChange: OnChangeControl;
@@ -41,6 +52,17 @@ export class Player implements Entity<PlayerProperties> {
         kills: () => {},
         deaths: () => {},
         score: () => {},
+        respawn_seconds: () => {},
+        respawn_type: () => {},
+        ready: () => {},
+        accuracy: () => {},
+        ping: () => {},
+        last_runway: () => {},
+        team_option: () => {},
+        selected_runway: () => {},
+        selected_plane: () => {},
+        bot: () => {},
+        spectating: () => {},
         controlling: (oldProps) => {
             if (oldProps.controlling !== undefined)
                 this.onChange(oldProps.controlling, this.props.controlling, this.props);

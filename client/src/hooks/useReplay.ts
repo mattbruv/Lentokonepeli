@@ -2,12 +2,16 @@ import { PlayerGuid } from "dogfight-types/PlayerGuid";
 import { ReplaySummary } from "dogfight-types/ReplaySummary";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import { useEffect, useRef, useState } from "react";
-import { gameLoop } from "../gameLoop";
+import { DEFAULT_TICK_INTERVAL, gameLoop } from "../gameLoop";
 import { ticksToHHMMSS } from "../helpers";
 import { useDogfight } from "./useDogfight";
 
+export const REPLAY_SPEEDS = [0.25, 0.5, 1, 2, 4, 8] as const;
+export type ReplaySpeed = (typeof REPLAY_SPEEDS)[number];
+
 export type ReplayInfo = {
     paused: boolean;
+    speed: ReplaySpeed;
     spectating: string | null;
     tick: number;
     timeString: string;
@@ -19,6 +23,7 @@ export type ReplayCallbacks = {
     advanceOneTick: () => void;
     advanceSeconds: (seconds: number) => void;
     updateSpectating: (guid: PlayerGuid | null) => void;
+    setSpeed: (speed: ReplaySpeed) => void;
     loadReplay: (binary: Uint8Array) => boolean;
 };
 
@@ -34,26 +39,24 @@ export function useReplay() {
     const [replayInfo, setReplayInfo] = useState<ReplayInfo>({
         spectating: null,
         paused: false,
+        speed: 1,
         tick: 0,
         timeString: ticksToHHMMSS(0),
     });
 
-    const animateRef = useRef<number | null>(null);
     const replayTick = useRef<number>(0);
 
-    const animate = () => {
-        if (!gameLoop.isRunning()) return;
-
-        //        console.log(replayTick.current, replayTick.current % 10);
-        if (replayTick.current % 5 === 0) {
-            setReplayInfo((prev) => ({
-                ...prev,
-                tick: replayTick.current,
-                timeString: ticksToHHMMSS(replayTick.current),
-            }));
-        }
-        animateRef.current = requestAnimationFrame(animate);
-    };
+    useEffect(() => {
+        let frameId = requestAnimationFrame(function updateTimer() {
+            setReplayInfo((prev) =>
+                prev.tick === replayTick.current
+                    ? prev
+                    : { ...prev, tick: replayTick.current, timeString: ticksToHHMMSS(replayTick.current) },
+            );
+            frameId = requestAnimationFrame(updateTimer);
+        });
+        return () => cancelAnimationFrame(frameId);
+    }, []);
 
     function loadReplay(binary: Uint8Array): boolean {
         const replay_string = dogfight.engine.get_replay_summary(binary);
@@ -67,6 +70,8 @@ export function useReplay() {
         setReplaySummary(summary);
 
         dogfight.engine.load_replay(binary);
+        dogfight.setReplayMode();
+        updateSpectating(Object.keys(summary.players)[0] ?? null);
 
         return true;
     }
@@ -112,12 +117,12 @@ export function useReplay() {
 
         gameLoop.setHostEngineUpdateFn(updateFn).start();
         gameLoop.setPaused(replayInfo.paused);
-        animateRef.current = requestAnimationFrame(animate);
     }, [replaySummary, replayInfo.paused]);
 
     useEffect(() => {
         return () => {
             gameLoop.stop();
+            gameLoop.setTickInterval(DEFAULT_TICK_INTERVAL);
         };
     }, []);
 
@@ -135,6 +140,7 @@ export function useReplay() {
         const state = dogfight.engine.get_full_state();
         const events = parseServerOutput(state);
         dogfight.handleGameEvents(events);
+        dogfight.refreshView();
         gameLoop.start(tick);
     }
 
@@ -150,7 +156,16 @@ export function useReplay() {
         playToTick(target);
     }
 
+    function setSpeed(speed: ReplaySpeed) {
+        gameLoop.setTickInterval(DEFAULT_TICK_INTERVAL / speed);
+        setReplayInfo((prev) => ({
+            ...prev,
+            speed,
+        }));
+    }
+
     const replayCallbacks: ReplayCallbacks = {
+        setSpeed,
         setPaused,
         playToTick,
         updateSpectating,
@@ -172,6 +187,7 @@ export function useReplay() {
         replayInfo,
         replayCallbacks,
         playerData: dogfight.playerData,
+        intermission: dogfight.intermission,
         playerGuid: dogfight.playerGuid,
         messages: dogfight.messages,
     };

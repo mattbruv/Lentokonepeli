@@ -16,6 +16,8 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@fontsource/fredoka": "^5.2.8",
+    "@fontsource/nunito": "^5.2.7",
     "@mantine/core": "^7.8.0",
     "@mantine/hooks": "^7.8.0",
     "@tabler/icons-react": "^3.30.0",

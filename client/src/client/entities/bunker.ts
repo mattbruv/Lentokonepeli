@@ -80,7 +80,7 @@ export class Bunker implements Entity<BunkerProperties>, RadarEnabled {
         client_y: () => {
             const { client_y } = this.props;
             if (client_y === undefined) return;
-            this.container.position.y = client_y - 3;
+            this.container.position.y = client_y;
         },
     };
 
@@ -106,11 +106,11 @@ export class Bunker implements Entity<BunkerProperties>, RadarEnabled {
         this.healthBar.visible = true;
 
         const tex = this.getTexture();
-        this.healthBar.position.y = tex.height;
+        this.healthBar.position.y = tex.height - 3 - 1;
         this.healthBar.position.x = 10;
 
         const color = team === this.userTeam ? TeamColor.OwnBackground : TeamColor.OpponentBackground;
-        const amount = Math.round(tex.width * (client_health / 350));
+        const amount = Math.floor(((tex.width - 20) * client_health) / 255);
 
         this.healthBar.clear();
         this.healthBar.beginFill(color);
@@ -125,5 +125,6 @@ export class Bunker implements Entity<BunkerProperties>, RadarEnabled {
 
     private updateTexture() {
         this.bunkerSprite.texture = this.getTexture();
+        this.container.zIndex = this.props.client_health > 0 ? DrawLayer.Bunker : DrawLayer.DestroyedBuilding;
     }
 }

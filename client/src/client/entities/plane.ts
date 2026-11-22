@@ -7,7 +7,6 @@ import { DrawLayer, TeamColor } from "../constants";
 import { directionToRadians } from "../helpers";
 import { Stats } from "../hud";
 import { RadarObject, RadarObjectType } from "../radar";
-import { soundManager } from "../soundManager";
 import { Textures } from "../textures";
 import { Entity, EntityUpdateCallbacks, Followable, Point, RadarEnabled } from "./entity";
 
@@ -26,7 +25,8 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
     private nameText: PIXI.Text;
     private planeSprite: PIXI.Sprite;
     private first_flip: boolean = true;
-    private darkSmoke: PIXI.Container;
+    private smokeContainer: PIXI.Container;
+    private nameContainer: PIXI.Container;
     private angle: number = 0;
     private flipFrame: 0 | 1 | 2 | 3 = 0;
 
@@ -45,113 +45,84 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         client_health: 0,
     };
 
-    private createGraySmoke: TaskFn = () => {
+    private getPaddedSize(): number {
         const tex = this.getTexture();
-        const w = tex.width;
-        const h = tex.height;
-        const d1 = this.angle;
+        return Math.ceil(Math.sqrt(tex.width * tex.width + tex.height * tex.height));
+    }
 
-        const x = this.planeContainer.position.x;
-        const y = this.planeContainer.position.y;
-
-        const k = Math.floor(x - Math.cos(d1) * (w / 2 + 6));
-        const m = Math.floor(y - Math.sin(d1) * (h / 2 + 6));
-
-        const smoke = new PIXI.Sprite(Textures["smoke1.gif"]);
+    private spawnSmoke(texture: PIXI.Texture, x: number, y: number) {
+        const smoke = new PIXI.Sprite(texture);
         smoke.anchor.set(0.5);
-        smoke.position.set(k, m);
-        this.container.addChild(smoke);
+        smoke.position.set(x, y);
+        this.smokeContainer.addChild(smoke);
+        scheduler.scheduleTask(() => this.smokeContainer.removeChild(smoke), 30);
+    }
 
-        scheduler.scheduleTask(() => this.container.removeChild(smoke), 30);
+    private isFlying(): boolean {
+        return this.props.mode === "Flying" || this.props.mode === "Dodging";
+    }
+
+    private createGraySmoke: TaskFn = () => {
+        const offset = Math.floor(this.getPaddedSize() / 2) + 2;
+        const x = Math.floor(this.props.client_x - Math.cos(this.angle) * offset);
+        const y = Math.floor(this.props.client_y - Math.sin(this.angle) * offset);
+        this.spawnSmoke(Textures["smoke1.gif"], x, y);
     };
 
     private createDarkSmoke: TaskFn = () => {
-        const percentage = this.props.client_health / 255;
+        const falling = this.props.mode === "Falling";
+        const damaged = this.isFlying() && this.props.client_health < 255;
 
-        let ticksUntilNext = 30;
-
-        if (percentage > 0.9) {
-            scheduler.scheduleTask(this.createDarkSmoke, ticksUntilNext);
-            return;
+        let delayMs = 100;
+        if (!falling) {
+            delayMs = Math.max(100, Math.floor((600 * this.props.client_health) / 255));
         }
 
-        const smokeTex = Textures["smoke2.gif"];
-        const smoke = new PIXI.Sprite(smokeTex);
-        const smokePos = this.getSmokePosition(true);
-
-        smoke.anchor.set(0.5);
-        smoke.position.set(smokePos.x, smokePos.y);
-
-        this.darkSmoke.addChild(smoke);
-
-        if (percentage <= 0.66) {
-            ticksUntilNext = 20;
-        }
-        if (percentage <= 0.33) {
-            ticksUntilNext = 10;
+        if (falling || damaged) {
+            this.spawnSmoke(Textures["smoke2.gif"], this.props.client_x, this.props.client_y);
         }
 
-        scheduler.scheduleTask(() => this.darkSmoke.removeChild(smoke), 30);
-        scheduler.scheduleTask(this.createDarkSmoke, ticksUntilNext);
+        scheduler.scheduleTask(this.createDarkSmoke, Math.max(1, Math.round(delayMs / 10)));
     };
 
-    private animate: TaskFn = (currentTick: number) => {
-        if (!this.props.motor_on || this.props.mode !== "Flying") return;
-        return this.createGraySmoke(currentTick);
+    private animate: TaskFn = () => {
+        if (!this.props.motor_on || !this.isFlying()) return;
+        this.createGraySmoke(0);
     };
 
     constructor() {
         this.container = new PIXI.Container();
         this.planeSprite = new PIXI.Sprite();
         this.planeSprite.anchor.set(0.5);
-        this.darkSmoke = new PIXI.Container();
+        this.smokeContainer = new PIXI.Container();
+        this.nameContainer = new PIXI.Container();
 
         this.nameText = new PIXI.Text("", {
             fontFamily: "arial",
             fontSize: 10,
         });
-
-        this.nameText.anchor.set(0.5, 0);
-        this.nameText.position.set(0, 25);
+        this.nameContainer.addChild(this.nameText);
 
         this.planeContainer = new PIXI.Container();
-
+        this.planeContainer.addChild(this.planeSprite);
         this.container.addChild(this.planeContainer);
 
-        this.planeContainer.addChild(this.planeSprite);
-        this.planeContainer.addChild(this.nameText);
-
-        this.container.addChild(this.darkSmoke);
-
         this.container.zIndex = DrawLayer.Plane;
+        this.smokeContainer.zIndex = DrawLayer.Smoke;
+        this.nameContainer.zIndex = DrawLayer.Name;
 
         scheduler.scheduleRecurring(this.animate, 10);
-        scheduler.scheduleTask(this.createDarkSmoke, 30);
+        scheduler.scheduleTask(this.createDarkSmoke, 10);
     }
 
-    private getSmokePosition(center: boolean): { x: number; y: number } {
-        // direction = 0 -> 256   2^8
-        const radians = directionToRadians(this.props.direction);
-        const halfWidth = Math.round(this.planeSprite.width / 2);
-        const offset = Math.round(halfWidth / 6);
-
-        const r = halfWidth + offset;
-        const theta = radians * -1;
-        const deltaX = r * Math.cos(theta);
-        const deltaY = r * Math.sin(theta);
-        let newX: number, newY: number;
-        if (center) {
-            newX = this.props.client_x;
-            newY = this.props.client_y;
-        } else {
-            newX = this.props.client_x - deltaX;
-            newY = this.props.client_y - deltaY;
-        }
-        return { x: newX, y: newY };
+    private positionName() {
+        const half = Math.floor(this.getPaddedSize() / 2);
+        const ascent = PIXI.TextMetrics.measureFont(this.nameText.style.toFontString()).ascent;
+        this.nameText.position.set(this.props.client_x - half, this.props.client_y - half + 45 - ascent);
     }
 
-    public getContainer(): PIXI.Container {
-        return this.container;
+    public getContainer(): PIXI.Container[] {
+        return [this.container, this.smokeContainer, this.nameContainer];
     }
 
     public getStats(): Stats {
@@ -175,32 +146,34 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         return Textures[`plane${id}.gif`];
     }
 
-    private getFlipTexture(flipFrame: typeof this.flipFrame) {
-        if (flipFrame === 0 || flipFrame === 3) return this.getTexture();
+    private renderFlipFrame() {
+        const frame = this.flipFrame;
+        const imageIndex = frame === 3 ? 1 : frame;
         const id = PLANE_TEXTURE_ID[this.props.plane_type];
-        const key = `plane${id}_flip${flipFrame}.gif` as const;
-        return Textures[key];
+        this.planeSprite.texture =
+            imageIndex === 0 ? this.getTexture() : Textures[`plane${id}_flip${imageIndex as 1 | 2}.gif`];
+
+        const flipped = this.props.flipped;
+        const mirrored = (flipped && (frame === 0 || frame === 3)) || (!flipped && frame !== 0);
+        this.planeSprite.scale.y = mirrored ? -1 : 1;
     }
 
-    private renderFlip: TaskFn = () => {
-        const flipFrame = this.flipFrame;
-        this.planeSprite.texture = this.getFlipTexture(flipFrame);
-
-        if (flipFrame === 3) {
-            this.flipFrame = 0;
-            return;
+    private advanceFlip: TaskFn = () => {
+        this.flipFrame = this.flipFrame >= 3 ? 0 : ((this.flipFrame + 1) as 1 | 2 | 3);
+        this.renderFlipFrame();
+        if (this.flipFrame !== 0) {
+            scheduler.scheduleTask(this.advanceFlip, 8);
         }
-
-        this.flipFrame++;
-        scheduler.scheduleTask(this.renderFlip, 7);
     };
 
     public updateCallbacks: EntityUpdateCallbacks<PlaneProperties> = {
         client_x: () => {
             this.planeContainer.position.x = this.props.client_x;
+            this.positionName();
         },
         client_y: () => {
             this.planeContainer.position.y = this.props.client_y;
+            this.positionName();
         },
         team: () => {},
         client_ammo: () => {},
@@ -212,14 +185,15 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         },
 
         flipped: () => {
-            this.planeSprite.scale.y = this.props.flipped ? -1 : 1;
+            scheduler.unregister(this.advanceFlip);
             if (this.first_flip) {
                 this.first_flip = false;
-                return;
+                this.flipFrame = 0;
+            } else {
+                this.flipFrame = 1;
+                scheduler.scheduleTask(this.advanceFlip, 8);
             }
-            scheduler.unregister(this.renderFlip);
-            this.flipFrame = 0;
-            this.renderFlip(0);
+            this.renderFlipFrame();
         },
 
         mode: () => {
@@ -227,12 +201,12 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         },
 
         motor_on: () => {
-            soundManager.handlePlayMotorSound(this.props.motor_on);
             console.log("motor on", this.props.motor_on);
         },
 
         plane_type: () => {
-            this.planeSprite.texture = this.getTexture();
+            this.renderFlipFrame();
+            this.positionName();
         },
 
         direction: () => {
@@ -244,7 +218,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
     public destroy() {
         scheduler.unregister(this.animate);
         scheduler.unregister(this.createDarkSmoke);
-        if (this.props.motor_on) soundManager.handlePlayMotorSound(false);
+        scheduler.unregister(this.advanceFlip);
     }
 
     public getRadarInfo(): RadarObject {

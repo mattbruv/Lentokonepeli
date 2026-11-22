@@ -16,9 +16,9 @@ use crate::{
         plane::Plane,
         player::{Player, PlayerGuid},
         runway::Runway,
-        types::EntityType,
+        types::{EntityType, Team},
         water::Water,
-        world_info::WorldInfo,
+        world_info::{GameMode, WorldInfo},
     },
     input::ServerInput,
     output::ServerOutput,
@@ -48,6 +48,13 @@ pub struct World {
     pub bullets: EntityContainer<Bullet, BulletId>,
 
     pub replay_file: ReplayFile,
+    pub team_balance: bool,
+    pub(crate) game_time_ticks: u32,
+    pub(crate) intermission_ticks: u32,
+    pub(crate) time_winner: Option<Team>,
+    pub(crate) round_ticks: u32,
+    pub(crate) round_over_ticks: u32,
+    pub(crate) game_mode: GameMode,
 }
 
 impl World {
@@ -71,6 +78,13 @@ impl World {
             game_output: vec![],
 
             replay_file: ReplayFile::new(),
+            team_balance: true,
+            game_time_ticks: 0,
+            intermission_ticks: 2_000,
+            time_winner: None,
+            round_ticks: 0,
+            round_over_ticks: 0,
+            game_mode: GameMode::Normal,
         };
 
         world
@@ -113,6 +127,9 @@ impl World {
         let input_events = self.handle_input(input);
         self.game_output.extend(input_events);
 
+        let chooser_events = self.tick_choosers();
+        self.game_output.extend(chooser_events);
+
         // 1. Tick runnable entities and capture output actions
         let runnable_actions = self.tick_entities();
 
@@ -123,6 +140,26 @@ impl World {
         // 3. Process collision and get output
         let tick_coll = self.tick_collision_entities();
         self.game_output.extend(tick_coll);
+
+        self.tick_round();
+    }
+
+    pub fn set_round_settings(&mut self, game_time_minutes: u16, intermission_seconds: u16) {
+        let intermission_seconds = intermission_seconds.clamp(3, 600);
+        self.game_time_ticks = game_time_minutes.min(999) as u32 * 60 * 100;
+        self.intermission_ticks = intermission_seconds as u32 * 100;
+        self.replay_file.game_time_minutes = game_time_minutes.min(999);
+        self.replay_file.intermission_seconds = intermission_seconds;
+    }
+
+    pub fn set_game_mode(&mut self, mode: GameMode) {
+        self.game_mode = mode;
+        self.world_info.set_game_mode(mode);
+        self.replay_file.game_mode = mode;
+    }
+
+    pub fn get_game_mode(&self) -> GameMode {
+        self.game_mode
     }
 
     pub fn flush_changed_state(&mut self) -> Vec<ServerOutput> {

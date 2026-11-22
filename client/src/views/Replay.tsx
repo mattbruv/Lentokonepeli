@@ -1,10 +1,15 @@
-import { Alert, Button, Card, FileButton, Group, LoadingOverlay, Stack, Title, Tooltip } from "@mantine/core";
-import { IconFileUpload, IconInfoCircle } from "@tabler/icons-react";
+import { Button, FileButton, LoadingOverlay, Stack, Tooltip } from "@mantine/core";
+import { IconFileUpload, IconMovie } from "@tabler/icons-react";
+import { useActiveView } from "../hooks/useActiveView";
 import { useRef, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
+import replayArt from "../assets/ui/pic_plane7.gif";
 import { Game } from "../components/Game";
+import { GameStage } from "../components/GameStage";
 import { ReplayControls } from "../components/ReplayControls";
+import { Panel } from "../components/ui/Panel";
 import { useReplay } from "../hooks/useReplay";
+import classes from "./Replay.module.css";
 
 enum ReplayState {
     ProvideFile,
@@ -14,7 +19,8 @@ enum ReplayState {
 
 export function Replay() {
     const intl = useIntl();
-    const { replaySummary, replayCallbacks, initialize, playerData, playerGuid, messages, replayInfo } = useReplay();
+    const { replaySummary, replayCallbacks, initialize, playerData, intermission, playerGuid, messages, replayInfo } =
+        useReplay();
 
     const [state, setState] = useState<ReplayState>(ReplayState.ProvideFile);
     const gameContainer = useRef<HTMLDivElement>(null);
@@ -45,107 +51,99 @@ export function Replay() {
         reader.readAsArrayBuffer(payload);
     }
 
+    const watching = state === ReplayState.Watching;
+
+    useActiveView("replay", watching);
+
     return (
-        <Group justify="center">
-            <Game
-                ref={gameContainer}
-                myPlayerGuid={playerGuid}
-                playerData={playerData}
-                messages={messages}
-                onSendMessage={() => {}}
-            />
-            {state === ReplayState.Watching && (
-                <Stack>
-                    {replaySummary && (
-                        <ReplayControls
-                            players={replaySummary?.players ?? {}}
-                            events={replaySummary?.events ?? []}
-                            info={replayInfo}
-                            callbacks={replayCallbacks}
-                            summary={replaySummary}
-                        />
-                    )}
-                </Stack>
-            )}
-            {state === ReplayState.ProvideFile && (
-                <div>
-                    <Group>
-                        <Card
-                            shadow="xl"
-                            padding="xl"
-                            radius="md"
-                            withBorder
-                            style={{ maxWidth: 500, textAlign: "center" }}
-                        >
-                            <Stack>
-                                <Title order={2}>
-                                    <FormattedMessage
-                                        defaultMessage={"Watch a Game Replay"}
-                                        description={"Title for the Replay System page"}
-                                    />
-                                </Title>
-                                <Stack>
-                                    <FileButton onChange={onUploadFile} accept=".lento">
-                                        {(props) => (
-                                            <Tooltip
-                                                openDelay={500}
-                                                position={"bottom"}
-                                                label={intl.formatMessage({
-                                                    defaultMessage:
-                                                        "A replay file can be downloaded at any time when hosting a game.",
-                                                    description:
-                                                        "Tooltip for a button explaining that replay files can be downloaded during gameplay, this button will be used to find a replay file from the user's computer",
-                                                })}
-                                            >
-                                                <Button
-                                                    {...props}
-                                                    variant="gradient"
-                                                    gradient={{ from: "yellow", to: "red", deg: 90 }}
-                                                    disabled={false}
-                                                    color={"blue"}
-                                                    size={"lg"}
-                                                    rightSection={<IconFileUpload />}
-                                                >
-                                                    <FormattedMessage
-                                                        defaultMessage={"Select Replay"}
-                                                        description={
-                                                            "Button text for a button which opens system file system to select a lentokonepeli replay file from"
-                                                        }
-                                                    />
-                                                </Button>
-                                            </Tooltip>
-                                        )}
-                                    </FileButton>
-                                    <Alert
-                                        style={{ maxWidth: 400 }}
-                                        variant="light"
-                                        color="yellow"
-                                        title={intl.formatMessage({
-                                            defaultMessage: "Replay System Notice",
-                                            description: "title for a notice section for the Replay System",
+        <>
+            {state !== ReplayState.Watching && (
+                <div className={classes.center}>
+                    <Panel
+                        pop
+                        className={classes.uploadPanel}
+                        icon={<IconMovie size={26} stroke={2.4} />}
+                        title={
+                            <FormattedMessage
+                                defaultMessage={"Watch a Game Replay"}
+                                description={"Title for the Replay System page"}
+                            />
+                        }
+                    >
+                        <Stack gap="lg">
+                            <div className={classes.art}>
+                                <img src={replayArt} alt="" />
+                            </div>
+                            <FileButton onChange={onUploadFile} accept=".lento">
+                                {(props) => (
+                                    <Tooltip
+                                        openDelay={500}
+                                        position={"bottom"}
+                                        multiline
+                                        w={260}
+                                        label={intl.formatMessage({
+                                            defaultMessage:
+                                                "A replay file can be downloaded at any time when hosting a game.",
+                                            description:
+                                                "Tooltip for a button explaining that replay files can be downloaded during gameplay, this button will be used to find a replay file from the user's computer",
                                         })}
-                                        icon={<IconInfoCircle />}
                                     >
-                                        <div>
+                                        <Button
+                                            {...props}
+                                            color={"copper"}
+                                            size={"lg"}
+                                            fullWidth
+                                            rightSection={<IconFileUpload stroke={2.4} />}
+                                        >
                                             <FormattedMessage
-                                                defaultMessage={
-                                                    "The replay system is currently experimental, lacking features, and still inactive development. You may experience problems until the replay feature isin a stable state."
-                                                }
+                                                defaultMessage={"Select Replay"}
                                                 description={
-                                                    "Informative text about the current state of the replay system"
+                                                    "Button text for a button which opens system file system to select a lentokonepeli replay file from"
                                                 }
                                             />
-                                        </div>
-                                    </Alert>
-                                </Stack>
-                            </Stack>
-                        </Card>
-                    </Group>
+                                        </Button>
+                                    </Tooltip>
+                                )}
+                            </FileButton>
+                        </Stack>
+                    </Panel>
                 </div>
             )}
+            <GameStage
+                framed={watching}
+                game={
+                    <Game
+                        ref={gameContainer}
+                        myPlayerGuid={playerGuid}
+                        playerData={playerData}
+                        intermission={intermission}
+                        messages={messages}
+                        onSendMessage={() => {}}
+                    />
+                }
+                side={
+                    watching &&
+                    replaySummary && (
+                        <Panel className={classes.controlsPanel}>
+                            <ReplayControls
+                                players={replaySummary?.players ?? {}}
+                                events={replaySummary?.events ?? []}
+                                info={replayInfo}
+                                callbacks={replayCallbacks}
+                                summary={replaySummary}
+                            />
+                        </Panel>
+                    )
+                }
+            />
             {state === ReplayState.ReadingFile && (
-                <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+                <LoadingOverlay
+                    visible={true}
+                    zIndex={1000}
+                    loaderProps={{ color: "copper", type: "dots", size: "xl" }}
+                    overlayProps={{ blur: 3, backgroundOpacity: 0.25 }}
+                />
             )}
-        </Group>
+        </>
     );
 }

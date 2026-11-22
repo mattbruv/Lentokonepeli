@@ -1,4 +1,4 @@
-import { ActionIcon, Group, Slider, Stack, Text, Tooltip } from "@mantine/core";
+import { ActionIcon, Slider, Tooltip } from "@mantine/core";
 import {
     IconArrowRightBar,
     IconPlayerPauseFilled,
@@ -12,6 +12,7 @@ import { ReplaySummary } from "dogfight-types/ReplaySummary";
 import { useEffect, useState } from "react";
 import { ReplayCallbacks, ReplayInfo } from "src/hooks/useReplay";
 import { ticksToHHMMSS } from "../helpers";
+import classes from "./ReplayControls.module.css";
 
 type ReplayTimerProps = {
     info: ReplayInfo;
@@ -28,66 +29,70 @@ export function ReplayTimer({ info, callbacks, summary }: ReplayTimerProps) {
     }, [info.tick, isScrubbing]);
 
     return (
-        <Stack>
-            <div>
-                <Slider
-                    value={scrubTick}
-                    min={0}
-                    max={summary.total_ticks}
-                    step={1}
-                    onChange={setScrubTick}
-                    label={(e) => ticksToHHMMSS(e)}
-                    onChangeEnd={(value) => {
-                        setIsScrubbing(false);
-                        callbacks.playToTick(value);
-                    }}
-                    onPointerDown={() => setIsScrubbing(true)}
-                    styles={{ thumb: { width: 12, height: 12 } }}
-                />
-                <Group justify="space-between" mt={4}>
-                    <Text size="xs" c="dimmed">
-                        {ticksToHHMMSS(info.tick)}
-                    </Text>
-                    <Text size="xs" c="dimmed">
-                        {ticksToHHMMSS(summary.total_ticks)}
-                    </Text>
-                </Group>
+        <div className={classes.timer}>
+            <div className={classes.clock}>
+                <span className={classes.now}>{ticksToHHMMSS(info.tick)}</span>
+                <span className={classes.total}>/ {ticksToHHMMSS(summary.total_ticks)}</span>
             </div>
-            <Group gap={4}>
+            <Slider
+                value={scrubTick}
+                min={0}
+                max={summary.total_ticks}
+                step={1}
+                onChange={setScrubTick}
+                label={(e) => ticksToHHMMSS(e)}
+                onChangeEnd={(value) => {
+                    setIsScrubbing(false);
+                    callbacks.playToTick(value);
+                }}
+                onPointerDown={() => setIsScrubbing(true)}
+                color="sky"
+                size="lg"
+            />
+            <div className={classes.transport}>
                 <Tooltip label={"-30 seconds"}>
-                    <ActionIcon color={"grape"} onClick={(_) => callbacks.advanceSeconds(-30)}>
-                        <IconPlayerTrackPrevFilled />
+                    <ActionIcon variant="light" color={"copper"} onClick={(_) => callbacks.advanceSeconds(-30)}>
+                        <IconPlayerTrackPrevFilled size={18} />
                     </ActionIcon>
                 </Tooltip>
                 <Tooltip label={"-5 seconds"}>
-                    <ActionIcon color={"grape"} onClick={(_) => callbacks.advanceSeconds(-5)}>
-                        <IconPlayerSkipBackFilled />
+                    <ActionIcon variant="light" color={"copper"} onClick={(_) => callbacks.advanceSeconds(-5)}>
+                        <IconPlayerSkipBackFilled size={18} />
                     </ActionIcon>
                 </Tooltip>
                 <Tooltip label={info.paused ? "Play" : "Pause"}>
-                    <ActionIcon onClick={(_) => callbacks.setPaused(!info.paused)}>
-                        {info.paused ? <IconPlayerPlayFilled /> : <IconPlayerPauseFilled />}
+                    <ActionIcon
+                        size={52}
+                        variant="filled"
+                        color={info.paused ? "grass" : "sky"}
+                        onClick={(_) => callbacks.setPaused(!info.paused)}
+                    >
+                        {info.paused ? <IconPlayerPlayFilled size={26} /> : <IconPlayerPauseFilled size={26} />}
                     </ActionIcon>
                 </Tooltip>
-                {info.paused && (
-                    <Tooltip label={"Advance one frame"}>
-                        <ActionIcon color={"gray"} onClick={(_) => callbacks.advanceOneTick()}>
-                            <IconArrowRightBar />
-                        </ActionIcon>
-                    </Tooltip>
-                )}
                 <Tooltip label={"+5 seconds"}>
-                    <ActionIcon color={"grape"} onClick={(_) => callbacks.advanceSeconds(5)}>
-                        <IconPlayerSkipForwardFilled />
+                    <ActionIcon variant="light" color={"copper"} onClick={(_) => callbacks.advanceSeconds(5)}>
+                        <IconPlayerSkipForwardFilled size={18} />
                     </ActionIcon>
                 </Tooltip>
                 <Tooltip label={"+30 seconds"}>
-                    <ActionIcon color={"grape"} onClick={(_) => callbacks.advanceSeconds(30)}>
-                        <IconPlayerTrackNextFilled />
+                    <ActionIcon variant="light" color={"copper"} onClick={(_) => callbacks.advanceSeconds(30)}>
+                        <IconPlayerTrackNextFilled size={18} />
                     </ActionIcon>
                 </Tooltip>
-            </Group>
-            <Group></Group>
-        </Stack>
+            </div>
+            <div className={classes.frameStep}>
+                <Tooltip label={"Advance one frame"}>
+                    <ActionIcon
+                        variant="light"
+                        color={"gray"}
+                        disabled={!info.paused}
+                        onClick={(_) => callbacks.advanceOneTick()}
+                    >
+                        <IconArrowRightBar size={18} />
+                    </ActionIcon>
+                </Tooltip>
+            </div>
+        </div>
     );
 }

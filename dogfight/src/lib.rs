@@ -1,3 +1,5 @@
+pub mod bots;
+pub mod choosers;
 pub mod collision;
 pub mod debug;
 pub mod entities;
@@ -9,6 +11,7 @@ pub mod math;
 pub mod network;
 pub mod output;
 pub mod replay;
+pub mod round;
 pub mod tick_actions;
 pub mod tick_collision;
 pub mod tick_entities;

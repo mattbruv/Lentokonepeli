@@ -5,6 +5,7 @@ import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 import { PlayerProperties } from "dogfight-types/PlayerProperties";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import { Team } from "dogfight-types/Team";
+import { WorldState } from "dogfight-types/WorldState";
 import { DogfightWeb } from "dogfight-web";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
@@ -13,6 +14,8 @@ import { ChatMessageTimed } from "../components/Chat";
 import { randomGuid } from "../helpers";
 import { useDevKeybinds } from "./keybinds/useDevKeybinds";
 import { useGameKeybinds } from "./keybinds/useGameKeybinds";
+import { useSettingsContext } from "../contexts/settingsContext";
+import { leaveActiveGame } from "./useActiveView";
 
 export type DogfightCallbacks = {
     handleClientCommand: (command: PlayerCommand) => void;
@@ -27,8 +30,14 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
     const [playerData, setPlayerData] = useState<PlayerProperties[]>([]);
     const [playerGuid, setPlayerGuid] = useState<string | null>(null);
     const [messages, setMessages] = useState<ChatMessageTimed[]>([]);
+    const [worldState, setWorldState] = useState<WorldState | null>(null);
 
     useGameKeybinds({ client, engine });
+    const { settings, setSettings } = useSettingsContext();
+
+    useEffect(() => {
+        client.setSoundsChecked(!settings.audioSettings.muted);
+    }, [client, settings.audioSettings.muted]);
     useDevKeybinds({ client, engine });
 
     const handleGameEvents = useCallback(
@@ -76,6 +85,19 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
             onPlayerChange: (playerInfo: PlayerProperties[]): void => {
                 setPlayerData(playerInfo);
             },
+            onWorldStateChange: (state: WorldState | null): void => {
+                setWorldState(state);
+            },
+            onExit: (): void => {
+                leaveActiveGame();
+                window.location.href = import.meta.env.BASE_URL;
+            },
+            onToggleSounds: (enabled: boolean): void => {
+                setSettings((current) => ({
+                    ...current,
+                    audioSettings: { ...current.audioSettings, muted: !enabled },
+                }));
+            },
             onMessage: (message: ChatMessage): void => {
                 const timedMessage: ChatMessageTimed = {
                     ...message,
@@ -120,14 +142,25 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
         client.clearEntities();
     }
 
+    function setReplayMode() {
+        client.setReplayMode();
+    }
+
+    function refreshView() {
+        client.refreshMyView();
+    }
+
     return {
         initialize,
         clearEntities,
+        setReplayMode,
+        refreshView,
         handleGameEvents,
         setMyPlayerGuid,
         playerGuid,
         messages,
         playerData,
+        intermission: worldState === "Intermission",
         engine,
     };
 }

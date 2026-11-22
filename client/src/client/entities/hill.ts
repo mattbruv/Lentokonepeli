@@ -13,13 +13,14 @@ export class Hill implements Entity<HillProperties> {
 
     private container: PIXI.Container;
     private hillSprite: PIXI.Sprite;
+    private cameraOffsetX = 0;
+    private cameraOffsetY = 0;
 
     constructor() {
         this.container = new PIXI.Container();
         this.hillSprite = new PIXI.Sprite(Textures["hill1.gif"]);
 
         this.container.addChild(this.hillSprite);
-        this.hillSprite.anchor.set(0.5, 0);
 
         this.container.zIndex = DrawLayer.Hill;
     }
@@ -32,44 +33,31 @@ export class Hill implements Entity<HillProperties> {
         return this.props.terrain === "Desert" ? Textures["sandhill.gif"] : Textures["hill1.gif"];
     }
 
-    public setPosition(paramInt1: number, paramInt2: number) {
-        return;
+    public setVisible(visible: boolean) {
+        this.container.visible = visible;
+    }
 
-        paramInt1 = this.props.client_x - paramInt1;
-        paramInt2 = this.props.client_y - paramInt2;
+    public setCameraOffset(offsetX: number, offsetY: number) {
+        this.cameraOffsetX = offsetX;
+        this.cameraOffsetY = offsetY;
+        this.updatePosition();
+    }
 
-        paramInt1 = (paramInt1 * 8) / 10;
-        paramInt2 = (paramInt2 * 9) / 10;
-        this.hillSprite.position.set(-paramInt1 + paramInt1 - this.getTexture().width / 2, -paramInt2);
-
-        /*
-    const tex = this.hillSprite.texture;
-    const { width } = tex
-    const { client_x, client_y } = this.props
-
-    console.log(width)
-
-    const p1 = paramInt1 * 8 / 10;
-    const p2 = paramInt2 * 9 / 10;
-
-    const x1 = client_x + p1 - width / 2
-    const y1 = client_y + p2
-
-    this.hillSprite.position.set(x1, y1)
-    */
+    private updatePosition() {
+        const parallaxX = Math.trunc((this.cameraOffsetX * 8) / 10);
+        const parallaxY = Math.trunc((this.cameraOffsetY * 9) / 10);
+        const x = this.props.client_x + parallaxX - Math.floor(this.getTexture().width / 2) - this.cameraOffsetX;
+        const y = this.props.client_y + parallaxY - this.cameraOffsetY;
+        this.hillSprite.position.set(x, y);
     }
 
     public updateCallbacks: EntityUpdateCallbacks<HillProperties> = {
         terrain: () => {
-            this.hillSprite.texture =
-                this.props.terrain === "Normal" ? Textures["hill1.gif"] : Textures["sandhill.gif"];
+            this.hillSprite.texture = this.getTexture();
+            this.updatePosition();
         },
-        client_x: () => {
-            this.hillSprite.position.x = this.props.client_x;
-        },
-        client_y: () => {
-            this.hillSprite.position.y = this.props.client_y;
-        },
+        client_x: () => this.updatePosition(),
+        client_y: () => this.updatePosition(),
     };
 
     public destroy() {}

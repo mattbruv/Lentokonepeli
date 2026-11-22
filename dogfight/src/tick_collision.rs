@@ -74,14 +74,21 @@ impl World {
                 .players
                 .get_player_controlling(ControllingEntity::Man(*man_id));
 
-            for (_runway_id, runway) in self.runways.get_map_mut() {
+            for (runway_id, runway) in self.runways.get_map_mut() {
                 if man.check_collision(runway) {
                     // If we're landing on the correct runway, choose a plane
-                    if *runway.get_team() == man.get_team() {
-                        actions.push(Action::RemoveEntity(RemoveData::Man(*man_id)));
-                    }
-                    // Otherwise, kill the man
-                    else {
+                    let walking = matches!(
+                        man.get_state(),
+                        ManState::Standing | ManState::WalkingLeft | ManState::WalkingRight
+                    );
+                    let own_runway = *runway.get_team() == man.get_team();
+
+                    if walking && own_runway {
+                        actions.push(Action::ManEnteredRunway(*man_id, *runway_id));
+                        continue 'men;
+                    } else if walking {
+                        man.set_to_previous_x();
+                    } else if !own_runway {
                         actions.push(Action::RemoveEntity(RemoveData::Man(*man_id)));
 
                         if let Some((pid, _)) = controlling {
@@ -91,9 +98,8 @@ impl World {
                                 KillMethod::Man,
                             )));
                         }
+                        continue 'men;
                     }
-                    // log(&format!("man collide runway!").into());
-                    continue 'men;
                 }
             }
 
@@ -255,13 +261,19 @@ impl World {
                         )));
                     }
                     actions.push(Action::RemoveEntity(RemoveData::Plane(*plane_id)));
+                    actions.push(Action::Explosion(ExplosionData {
+                        explosion_owner: Some(plane.player_id()),
+                        team: None,
+                        client_x: plane.get_client_x(),
+                        client_y: plane.get_client_y(),
+                    }));
 
                     blow_up(
                         &mut actions,
                         Some(bomb.player_id()),
                         RemoveData::Bomb(*bomb_id),
-                        plane.get_client_x(),
-                        plane.get_client_y(),
+                        bomb.get_x(),
+                        bomb.get_y(),
                     );
                     continue 'bombs;
                 }
@@ -293,9 +305,15 @@ impl World {
                 }
             }
 
-            for (_, runway) in self.runways.get_map_mut() {
+            for (runway_id, runway) in self.runways.get_map_mut() {
                 if bomb.check_collision(runway) {
-                    runway.subtract_health(30);
+                    if runway.subtract_health(30) {
+                        actions.push(Action::RunwayDestroyed(*runway_id));
+                    }
+                    actions.push(Action::BombHitStructure(
+                        bomb.player_id(),
+                        *runway.get_team(),
+                    ));
                     blow_up(
                         &mut actions,
                         Some(bomb.player_id()),
@@ -307,9 +325,15 @@ impl World {
                 }
             }
 
-            for (_, bunker) in self.bunkers.get_map_mut() {
+            for (bunker_id, bunker) in self.bunkers.get_map_mut() {
                 if bomb.check_collision(bunker) {
-                    bunker.subtract_health(30);
+                    if bunker.subtract_health(30) {
+                        actions.push(Action::BunkerDestroyed(*bunker_id));
+                    }
+                    actions.push(Action::BombHitStructure(
+                        bomb.player_id(),
+                        *bunker.get_team(),
+                    ));
                     blow_up(
                         &mut actions,
                         Some(bomb.player_id()),
@@ -383,6 +407,19 @@ impl World {
                     bullet.kill();
                     other.kill();
 
+                    let bullet_team = self
+                        .players
+                        .get(bullet.player_id())
+                        .and_then(|p| *p.get_team());
+                    let other_team = self
+                        .players
+                        .get(other.player_id())
+                        .and_then(|p| *p.get_team());
+                    if bullet_team != other_team {
+                        bullet.mark_hit_enemy();
+                        other.mark_hit_enemy();
+                    }
+
                     actions.push(Action::RemoveEntity(RemoveData::Bullet(**bullet_id)));
                     actions.push(Action::RemoveEntity(RemoveData::Bullet(**other_id)));
                 }
@@ -390,8 +427,16 @@ impl World {
         }
 
         'bullets: for (bullet_id, bullet) in self.bullets.get_map_mut() {
+            let shooter_team = self
+                .players
+                .get(bullet.player_id())
+                .and_then(|p| *p.get_team());
+
             for (man_id, man) in self.men.get_map_mut() {
                 if bullet.check_collision(man) {
+                    if shooter_team != Some(man.get_team()) {
+                        bullet.mark_hit_enemy();
+                    }
                     if let Some((owner_id, _)) = self
                         .players
                         .get_player_controlling(ControllingEntity::Man(*man_id))
@@ -414,7 +459,13 @@ impl World {
 
             for (plane_id, plane) in self.planes.get_map_mut() {
                 // Don't collide our own bullet with our own plane
-                if bullet.player_id() != plane.player_id() && bullet.check_collision(plane) {
+                if bullet.player_id() != plane.player_id()
+                    && plane.get_mode() != PlaneMode::Falling
+                    && bullet.check_collision(plane)
+                {
+                    if shooter_team != Some(plane.get_team()) {
+                        bullet.mark_hit_enemy();
+                    }
                     let amount = (30.0 * bullet.get_damage_factor()) as i32;
                     plane.subtract_health(amount);
 
@@ -439,6 +490,13 @@ impl World {
             for (bomb_id, bomb) in self.bombs.get_map_mut() {
                 // Don't collide our own bullet with our own plane
                 if bullet.check_collision(bomb) {
+                    let bomb_team = self
+                        .players
+                        .get(bomb.player_id())
+                        .and_then(|p| *p.get_team());
+                    if shooter_team != bomb_team {
+                        bullet.mark_hit_enemy();
+                    }
                     actions.push(Action::RemoveEntity(RemoveData::Bullet(*bullet_id)));
 
                     blow_up(
@@ -453,19 +511,26 @@ impl World {
                 }
             }
 
-            for (_, runway) in self.runways.get_map_mut() {
+            for (runway_id, runway) in self.runways.get_map_mut() {
                 if bullet.check_collision(runway) {
+                    if shooter_team != Some(*runway.get_team()) {
+                        bullet.mark_hit_enemy();
+                    }
                     let amount = (4.0 * bullet.get_damage_factor()) as i32;
-                    runway.subtract_health(amount);
+                    if runway.subtract_health(amount) {
+                        actions.push(Action::RunwayDestroyed(*runway_id));
+                    }
                     actions.push(Action::RemoveEntity(RemoveData::Bullet(*bullet_id)));
                     continue 'bullets;
                 }
             }
 
-            for (_, bunker) in self.bunkers.get_map_mut() {
+            for (bunker_id, bunker) in self.bunkers.get_map_mut() {
                 if bullet.check_collision(bunker) {
-                    let amount = (4.0 * bullet.get_damage_factor()) as i32;
-                    bunker.subtract_health(amount);
+                    let amount = (3.0 * bullet.get_damage_factor()) as i32;
+                    if bunker.subtract_health(amount) {
+                        actions.push(Action::BunkerDestroyed(*bunker_id));
+                    }
                     actions.push(Action::RemoveEntity(RemoveData::Bullet(*bullet_id)));
                     continue 'bullets;
                 }
@@ -505,21 +570,24 @@ impl World {
 
             for (plane_id, plane) in self.planes.get_map_mut() {
                 if explosion.check_collision(plane) {
-                    // Do 50 damage, and if this kills the plane, blow it up
-                    plane.subtract_health(50);
-                    if plane.health() <= 0 {
+                    let falling = plane.get_mode() == PlaneMode::Falling;
+                    if !falling {
+                        plane.subtract_health(50);
+                    }
+                    if falling || plane.health() <= 0 {
                         if let Some((owner_id, _)) = self
                             .players
                             .get_player_controlling(ControllingEntity::Plane(*plane_id))
                         {
                             if let Some(killer) = explosion_owner {
-                                plane.set_downed_by(Some(killer));
-                                // Draw kill plane icon and kill man icon
-                                actions.push(Action::RegisterKill(KillEvent::new(
-                                    killer,
-                                    Some(*owner_id),
-                                    KillMethod::Plane,
-                                )));
+                                if !falling {
+                                    plane.set_downed_by(Some(killer));
+                                    actions.push(Action::RegisterKill(KillEvent::new(
+                                        killer,
+                                        Some(*owner_id),
+                                        KillMethod::Plane,
+                                    )));
+                                }
                                 actions.push(Action::RegisterKill(KillEvent::new(
                                     killer,
                                     Some(*owner_id),
@@ -529,12 +597,32 @@ impl World {
                         }
                         blow_up(
                             &mut actions,
-                            explosion.player_id(),
+                            Some(plane.player_id()),
                             RemoveData::Plane(*plane_id),
                             plane.get_client_x(),
                             plane.get_client_y(),
                         );
                     }
+                }
+            }
+
+            for (bomb_id, bomb) in self.bombs.get_map_mut() {
+                if bomb.is_alive() && explosion.check_collision(bomb) {
+                    bomb.kill();
+                    blow_up(
+                        &mut actions,
+                        Some(bomb.player_id()),
+                        RemoveData::Bomb(*bomb_id),
+                        bomb.get_x(),
+                        bomb.get_y(),
+                    );
+                }
+            }
+
+            for (bullet_id, bullet) in self.bullets.get_map_mut() {
+                if bullet.is_alive() && explosion.check_collision(bullet) {
+                    bullet.kill();
+                    actions.push(Action::RemoveEntity(RemoveData::Bullet(*bullet_id)));
                 }
             }
 
@@ -558,21 +646,25 @@ impl World {
                 }
             }
 
-            for (_, runway) in self.runways.get_map_mut() {
+            for (runway_id, runway) in self.runways.get_map_mut() {
                 if explosion.check_collision(runway) {
                     // TODO: check for team
                     // // NOTE: based on original code the damage taken was always 17 on explosion. above todo maybe irrelevant
                     // damage runway
-                    runway.subtract_health(17);
+                    if runway.subtract_health(17) {
+                        actions.push(Action::RunwayDestroyed(*runway_id));
+                    }
                 }
             }
 
-            for (_, bunker) in self.bunkers.get_map_mut() {
+            for (bunker_id, bunker) in self.bunkers.get_map_mut() {
                 if explosion.check_collision(bunker) {
                     // TODO: check for team
                     // NOTE: based on original code the damage taken was always 17 on explosion. above todo maybe irrelevant
                     // damage bunker
-                    bunker.subtract_health(17);
+                    if bunker.subtract_health(17) {
+                        actions.push(Action::BunkerDestroyed(*bunker_id));
+                    }
                 }
             }
         }
@@ -595,10 +687,10 @@ impl World {
 
             for (_, other) in right.iter_mut() {
                 if plane.check_collision(*other) {
-                    plane.do_plane_collision();
-                    other.do_plane_collision();
+                    let plane_hit = plane.do_plane_collision();
+                    let other_hit = other.do_plane_collision();
 
-                    if plane.health() <= 0 && plane.get_downed_by().is_none() {
+                    if plane_hit && plane.health() <= 0 && plane.get_downed_by().is_none() {
                         plane.set_downed_by(Some(other.player_id()));
                         actions.push(Action::RegisterKill(KillEvent::new(
                             other.player_id(),
@@ -606,7 +698,7 @@ impl World {
                             KillMethod::Plane,
                         )));
                     }
-                    if other.health() <= 0 && other.get_downed_by().is_none() {
+                    if other_hit && other.health() <= 0 && other.get_downed_by().is_none() {
                         other.set_downed_by(Some(plane.player_id()));
                         actions.push(Action::RegisterKill(KillEvent::new(
                             plane.player_id(),
@@ -694,6 +786,9 @@ impl World {
                             plane.set_runway(Some(*runway_id));
                         }
                     } else {
+                        if runway.subtract_health(17) {
+                            actions.push(Action::RunwayDestroyed(*runway_id));
+                        }
                         kill_plane_and_give_credit(&mut actions, plane, &controlling);
                         blow_up(
                             &mut actions,

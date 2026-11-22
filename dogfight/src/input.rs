@@ -3,11 +3,12 @@ use ts_rs::TS;
 
 use crate::{
     entities::{
-        container::RunwayId,
+        container::{PlayerId, RunwayId},
         plane::{Plane, PlaneType},
         player::{ControllingEntity, Player, PlayerGuid, PlayerState},
         runway::RunwayReservation,
         types::Team,
+        world_info::{GameMode, WorldState},
     },
     game_event::ChatMessage,
     network::encoding::NetworkedBytes,
@@ -35,6 +36,8 @@ pub enum PlayerCommand {
     PlayerChooseRunway(RunwaySelection),
     PlayerKeyboard(PlayerKeyboard),
     SendMessage(String, bool),
+    SetPing(u16),
+    AddBot(AddPlayerData),
 }
 
 pub fn game_input_from_string(input: String) -> Vec<ServerInput> {
@@ -45,7 +48,7 @@ pub fn is_valid_command(command: &str) -> bool {
     serde_json::from_str::<PlayerCommand>(&command).is_ok()
 }
 
-#[derive(Serialize, Deserialize, Debug, TS, Clone, Copy)]
+#[derive(Serialize, Deserialize, Debug, TS, Clone, Copy, PartialEq, Eq)]
 #[ts(export)]
 pub struct PlayerKeyboard {
     pub left: bool,
@@ -169,6 +172,8 @@ impl NetworkedBytes for AddPlayerData {
     }
 }
 
+const ROUNDS_LATE_JOIN_PLAYERS: usize = 3;
+
 impl World {
     pub(crate) fn handle_input(&mut self, input_events: Vec<ServerInput>) -> Vec<ServerOutput> {
         let mut game_output = vec![];
@@ -177,14 +182,10 @@ impl World {
             let guid = input.player_guid;
             match input.command {
                 PlayerCommand::AddPlayer(data) => {
-                    // Add the player if not already exists
-                    if let None = self.get_player_from_guid(&guid) {
-                        if let Some((_, p)) =
-                            self.players.insert(Player::new(guid, data.name, data.clan))
-                        {
-                            game_output.push(ServerOutput::PlayerJoin(p.get_name()));
-                        }
-                    }
+                    game_output.extend(self.add_player(guid, data, false));
+                }
+                PlayerCommand::AddBot(data) => {
+                    game_output.extend(self.add_player(guid, data, true));
                 }
                 PlayerCommand::RemovePlayer => {
                     if let Some((id, _)) = self.get_player_from_guid(&guid) {
@@ -194,26 +195,11 @@ impl World {
                     }
                 }
                 PlayerCommand::PlayerChooseTeam(selection) => {
-                    let tick = self.get_tick();
-
-                    if let Some((player_id, player)) = self.get_player_from_guid_mut(&guid) {
-                        let the_team = selection.team.unwrap_or_else(|| {
-                            // "Randomly" pick a team
-                            if tick % 2 == 0 {
-                                Team::Centrals
-                            } else {
-                                Team::Allies
-                            }
-                        });
-
-                        // only join the team if the player already isn't on the team
-                        if let None = player.get_team() {
-                            player.set_team(Some(the_team));
-                            game_output.push(ServerOutput::PlayerJoinTeam {
-                                id: *player_id,
-                                team: the_team,
-                            })
-                        }
+                    if let Some((player_id, team)) = self.choose_team(&guid, selection.team) {
+                        game_output.push(ServerOutput::PlayerJoinTeam {
+                            id: player_id,
+                            team,
+                        })
                     }
                 }
                 PlayerCommand::PlayerChooseRunway(selection) => {
@@ -222,6 +208,11 @@ impl World {
                 PlayerCommand::PlayerKeyboard(keys) => {
                     if let Some((_, p)) = self.get_player_from_guid_mut(&guid) {
                         p.set_keys(keys);
+                    }
+                }
+                PlayerCommand::SetPing(ping) => {
+                    if let Some((_, player)) = self.get_player_from_guid_mut(&guid) {
+                        player.set_ping(ping);
                     }
                 }
                 PlayerCommand::SendMessage(message, is_global) => {
@@ -243,7 +234,120 @@ impl World {
         game_output
     }
 
+    fn add_player(
+        &mut self,
+        guid: PlayerGuid,
+        data: AddPlayerData,
+        is_bot: bool,
+    ) -> Vec<ServerOutput> {
+        let mut output = vec![];
+        if self.get_player_from_guid(&guid).is_some() {
+            return output;
+        }
+        let in_intermission = self.world_info.get_state() == WorldState::Intermission;
+        let wait_for_next_round = self.game_mode == GameMode::Rounds
+            && !in_intermission
+            && self.players.get_map().len() + 1 >= ROUNDS_LATE_JOIN_PLAYERS;
+        let mut player = Player::new(guid, data.name, data.clan);
+        player.set_bot(is_bot);
+        if let Some((id, p)) = self.players.insert(player) {
+            output.push(ServerOutput::PlayerJoin(p.get_name()));
+            if let Some(player) = self.players.get_mut(id) {
+                if in_intermission {
+                    player.set_ready(true);
+                }
+                if wait_for_next_round {
+                    player.begin_spectating();
+                }
+            }
+        }
+        output
+    }
+
+    pub(crate) fn choose_team(
+        &mut self,
+        guid: &PlayerGuid,
+        choice: Option<Team>,
+    ) -> Option<(PlayerId, Team)> {
+        if self.world_info.get_state() == WorldState::Intermission {
+            return None;
+        }
+
+        let mut centrals = 0;
+        let mut allies = 0;
+        for (_, player) in self.players.get_map() {
+            match player.get_team() {
+                Some(Team::Centrals) => centrals += 1,
+                Some(Team::Allies) => allies += 1,
+                None => {}
+            }
+        }
+
+        let is_bot = self
+            .get_player_from_guid(guid)
+            .map(|(_, p)| p.is_bot())
+            .unwrap_or(false);
+        let unbalanced_ok = is_bot || !self.team_balance;
+
+        let team = match choice {
+            None => {
+                if centrals < allies {
+                    Team::Centrals
+                } else if allies < centrals {
+                    Team::Allies
+                } else if self.get_tick() % 2 == 0 {
+                    Team::Centrals
+                } else {
+                    Team::Allies
+                }
+            }
+            Some(Team::Centrals) if unbalanced_ok || centrals <= allies => Team::Centrals,
+            Some(Team::Allies) if unbalanced_ok || allies <= centrals => Team::Allies,
+            Some(_) => return None,
+        };
+
+        let (player_id, player) = self.get_player_from_guid_mut(guid)?;
+        if player.get_team().is_some() || player.get_state() == PlayerState::Spectating {
+            return None;
+        }
+        player.set_team(Some(team));
+        Some((*player_id, team))
+    }
+
+    fn can_take_off(&self, guid: &PlayerGuid, selection: &RunwaySelection) -> bool {
+        if self.world_info.get_state() == WorldState::Intermission {
+            return false;
+        }
+
+        let Some((_, player)) = self.get_player_from_guid(guid) else {
+            return false;
+        };
+        let Some(team) = *player.get_team() else {
+            return false;
+        };
+
+        let state_allows = match player.get_controlling() {
+            Some(ControllingEntity::Runway(runway_id, plane_type)) => {
+                runway_id == selection.runway_id && plane_type == selection.plane_type
+            }
+            Some(_) => false,
+            None => player.get_state() == PlayerState::ChoosingRunway,
+        };
+
+        let runway_ok = self
+            .runways
+            .get(selection.runway_id)
+            .map(|r| *r.get_team() == team)
+            .unwrap_or(false);
+
+        state_allows && runway_ok && selection.plane_type.team() == team
+    }
+
     pub(crate) fn process_takeoff(&mut self, guid: &PlayerGuid, selection: RunwaySelection) {
+        if !self.can_take_off(guid, &selection) {
+            return;
+        }
+
         let maybe_team = self
             .get_player_from_guid(guid)
             .and_then(|p| p.1.get_team().clone());
@@ -264,6 +368,7 @@ impl World {
                         if let Some((plane_id, _)) = self.planes.insert(plane) {
                             if let Some((_, player)) = self.get_player_from_guid_mut(guid) {
                                 player.set_keys(PlayerKeyboard::new());
+                                player.set_last_runway(selection.runway_id);
                                 player.set_state(PlayerState::Playing);
                                 player.set_controlling(Some(ControllingEntity::Plane(plane_id)))
                             }

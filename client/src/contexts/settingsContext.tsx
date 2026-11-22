@@ -16,11 +16,15 @@ export type DogfightSettings = {
         muted: boolean;
     };
     locale?: KnownLocale;
+    gameScale: number | null;
 };
+
+export type ActiveView = "game" | "replay" | null;
 
 export type GlobalState = {
     viewingScoreboard: boolean;
     chatState: ChatMode;
+    activeView: ActiveView;
 };
 
 export function isValidName(name: string): boolean {
@@ -75,6 +79,7 @@ export const DEFAULT_GAME_KEYBINDS: DogfightControls = [
 
 export const DEFAULT_SETTINGS: DogfightSettings = {
     controls: DEFAULT_GAME_KEYBINDS,
+    gameScale: null,
     audioSettings: {
         muted: false,
     },
@@ -121,6 +126,7 @@ const getInitialSettings = (): DogfightSettings => {
 const getInitialGlobalState = (): GlobalState => ({
     viewingScoreboard: false,
     chatState: ChatMode.Passive,
+    activeView: null,
 });
 
 // Provider component

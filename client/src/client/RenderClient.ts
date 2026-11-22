@@ -2,8 +2,10 @@ import { DebugEntity } from "dogfight-types/DebugEntity";
 import { EntityType } from "dogfight-types/EntityType";
 import { Viewport } from "pixi-viewport";
 import * as PIXI from "pixi.js";
-import { SKY_COLOR, VIEW_HEIGHT, VIEW_WIDTH } from "./constants";
+import { HUD_HEIGHT, SKY_COLOR, VIEW_HEIGHT, VIEW_WIDTH } from "./constants";
 import { Entity } from "./entities/entity";
+
+const SKY_Y = -500;
 
 export class RenderClient {
     // https://pixijs.download/v7.x/docs/index.html
@@ -96,14 +98,18 @@ export class RenderClient {
         this.viewport.removeChild(...containers);
     }
 
+    public cameraOffsetX = 0;
+    public cameraOffsetY = 0;
+
     private positionRelativeGameObjects(x: number, y: number) {
-        const x1 = x / 6;
-        const y1 = y / 3 + 125;
+        const gameHeight = this.app.screen.height - (this.hud ? HUD_HEIGHT : 0);
+        this.cameraOffsetX = Math.trunc(this.app.screen.width / 2) - Math.round(x);
+        this.cameraOffsetY = Math.trunc(gameHeight / 2) - Math.round(y);
 
-        // reposition sky
-        this.background.tilePosition.set(-x1, -y1);
-
-        // TODO handle parallax for hills and stuff
+        this.background.width = this.app.screen.width;
+        this.background.height = this.background.texture.height;
+        this.background.tilePosition.set(Math.trunc(this.cameraOffsetX / 6), 0);
+        this.background.position.set(0, SKY_Y + Math.trunc(this.cameraOffsetY / 3));
     }
 
     /**
@@ -112,7 +118,7 @@ export class RenderClient {
      */
     public centerCamera(x: number, y: number): void {
         const x1 = x - this.app.screen.width / 2;
-        const y1 = y - (this.app.screen.height - (this.hud?.height ?? 0)) / 2;
+        const y1 = y - (this.app.screen.height - (this.hud ? HUD_HEIGHT : 0)) / 2;
 
         this.viewport.moveCorner(x1, y1);
         this.positionRelativeGameObjects(x, y);

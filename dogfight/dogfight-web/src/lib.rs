@@ -1,6 +1,8 @@
 mod utils;
 
 use dogfight::{
+    bots::{add_bot_request_from_string, BotManager},
+    entities::world_info::GameMode,
     input::{game_input_from_string, is_valid_command},
     level::parse_level_to_json,
     network::{
@@ -25,6 +27,7 @@ extern "C" {
 pub struct DogfightWeb {
     world: World,
     replay: Option<ReplayFile>,
+    bots: BotManager,
 }
 
 #[wasm_bindgen]
@@ -35,6 +38,7 @@ impl DogfightWeb {
         Self {
             world: World::new(),
             replay: None,
+            bots: BotManager::new(),
         }
     }
 
@@ -45,9 +49,26 @@ impl DogfightWeb {
     pub fn load_replay(&mut self, bytes: Vec<u8>) -> () {
         if let Some((_, replay)) = ReplayFile::from_bytes(&bytes) {
             self.world = World::new();
+            self.bots = BotManager::new();
             self.world.load_level(&replay.level_data);
+            self.world
+                .set_round_settings(replay.game_time_minutes, replay.intermission_seconds);
+            self.world.set_game_mode(replay.game_mode);
             self.replay = Some(replay);
         }
+    }
+
+    pub fn set_round_settings(&mut self, game_time_minutes: u16, intermission_seconds: u16) {
+        self.world
+            .set_round_settings(game_time_minutes, intermission_seconds);
+    }
+
+    pub fn set_game_mode(&mut self, mode: &str) {
+        let mode = match mode {
+            "Rounds" => GameMode::Rounds,
+            _ => GameMode::Normal,
+        };
+        self.world.set_game_mode(mode);
     }
 
     pub fn init(&mut self) {
@@ -87,14 +108,33 @@ impl DogfightWeb {
     }
 
     pub fn tick(&mut self, input_json: String) -> () {
-        let input = game_input_from_string(input_json);
+        let mut input = game_input_from_string(input_json);
+        input.extend(self.bots.tick(&self.world));
         self.world.tick(input);
+    }
+
+    pub fn add_bot(&mut self, request_json: &str) -> bool {
+        match add_bot_request_from_string(request_json) {
+            Some(request) => self.bots.add_bot(request),
+            None => false,
+        }
+    }
+
+    pub fn remove_bot(&mut self, guid: &str) -> bool {
+        self.bots.remove_bot(&guid.into())
+    }
+
+    pub fn get_bots(&self) -> String {
+        self.bots.bots_json()
     }
 
     pub fn load_replay_until(&mut self, until_tick: u32) -> () {
         if let Some(replay) = &self.replay {
             self.world = World::new();
             self.world.load_level(&replay.level_data);
+            self.world
+                .set_round_settings(replay.game_time_minutes, replay.intermission_seconds);
+            self.world.set_game_mode(replay.game_mode);
             self.world.simulate_until(replay, Some(until_tick), true);
         }
     }

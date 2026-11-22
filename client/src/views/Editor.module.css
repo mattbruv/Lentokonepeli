@@ -1,28 +1,98 @@
-.editor pre {
-    white-space: pre-wrap;
-    margin: 0;
+.layout {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    max-width: 1240px;
+    margin: 0 auto;
+}
+
+.workspace {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+    gap: 28px;
+}
+
+.preview {
+    flex: 0 1 auto;
+    max-width: 100%;
+    padding: 6px;
+    border: 3px solid var(--lk-ink);
+    border-radius: 18px;
+    background: linear-gradient(180deg, var(--lk-wood-hi), var(--lk-wood-lo));
+    box-shadow:
+        0 10px 0 var(--lk-shadow),
+        inset 0 2px 0 rgba(255, 255, 255, 0.28);
+}
+
+.canvas {
+    overflow: hidden;
+    border: 2.5px solid var(--lk-ink);
+    border-radius: 11px;
+    background: #000;
+
+    & canvas {
+        display: block;
+        max-width: 100%;
+        max-height: calc(100dvh - var(--lk-header-h) - 140px);
+    }
+}
+
+.codePanel {
+    flex: 1 1 380px;
+    max-width: 640px;
+}
+
+.codeBody {
+    gap: 14px;
 }
 
 .code {
-    font-size: 0.75rem;
-    background: var(--mantine-color-dark-text);
-    color: var(--mantine-color-body);
+    flex: 1;
+    min-height: 220px;
+    width: 100%;
+    padding: 12px 14px;
+    resize: vertical;
+    border: 2.5px solid var(--lk-ink);
+    border-radius: 12px;
+    background: #1f2427;
+    color: #d9f2c4;
+    font-family: var(--mantine-font-family-monospace);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    white-space: pre;
+    overflow: auto;
+    box-shadow: inset 0 3px 0 rgba(0, 0, 0, 0.35);
 
-    font-family: monospace;
-    max-width: 100%;
-    min-width: 25rem;
-    white-space: nowrap;
-    padding: 0.25rem 0.5rem;
+    &:focus {
+        outline: none;
+        box-shadow:
+            inset 0 3px 0 rgba(0, 0, 0, 0.35),
+            0 0 0 4px var(--lk-focus);
+    }
 }
 
-pre.piece {
-    font-size: 0.75rem;
+.pieces {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+}
+
+.piece {
     display: flex;
-    width: 11rem;
-    gap: 0.5rem;
-    border: 1px solid var(--app-shell-border-color);
-    padding: 0.1rem 0.25rem;
-    border-radius: 0.25rem;
     align-items: center;
-    flex-wrap: wrap;
+    gap: 10px;
+    padding: 6px 8px;
+    border: 2px solid var(--lk-paper-line);
+    border-radius: 12px;
+    background: var(--lk-field);
+    font-size: 0.85rem;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+    transition: transform 120ms ease;
+
+    @mixin hover {
+        transform: translateY(-2px) rotate(-1deg);
+    }
 }

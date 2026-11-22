@@ -1,0 +1,219 @@
+.sky {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    background: linear-gradient(
+        180deg,
+        var(--lk-sky-1) 0%,
+        var(--lk-sky-2) 35%,
+        var(--lk-sky-3) 72%,
+        var(--lk-sky-4) 100%
+    );
+}
+
+.stars {
+    position: absolute;
+    inset: 0 0 40% 0;
+    opacity: var(--lk-stars-opacity);
+    background-image:
+        radial-gradient(1.5px 1.5px at 12% 18%, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 27% 8%, #fff 50%, transparent 51%),
+        radial-gradient(2px 2px at 41% 26%, #fff8d0 50%, transparent 51%),
+        radial-gradient(1px 1px at 55% 12%, #fff 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 68% 32%, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 79% 6%, #fff 50%, transparent 51%),
+        radial-gradient(2px 2px at 88% 22%, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 6% 40%, #fff 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 34% 46%, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 62% 52%, #fff 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 94% 44%, #fff 50%, transparent 51%);
+    animation: twinkle 4s ease-in-out infinite alternate;
+}
+
+.cloud {
+    position: absolute;
+    left: 0;
+    animation-name: drift;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    will-change: transform;
+}
+
+.cloudSvg {
+    display: block;
+    height: auto;
+    opacity: 0.95;
+}
+
+.flyer {
+    position: absolute;
+    left: 0;
+    animation-name: fly;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    will-change: transform;
+}
+
+.reverse {
+    animation-name: flyBack;
+}
+
+.reverse .plane {
+    scale: -1 1;
+}
+
+.plane {
+    display: block;
+    height: 40px;
+    width: auto;
+    image-rendering: pixelated;
+    animation: bob ease-in-out infinite alternate;
+    filter: drop-shadow(0 3px 0 rgba(0, 0, 0, 0.15));
+}
+
+.chute {
+    position: absolute;
+    left: 84%;
+    top: 0;
+    animation: fall 34s linear infinite;
+    animation-delay: -12s;
+}
+
+.chute img {
+    display: block;
+    height: 60px;
+    image-rendering: pixelated;
+    transform-origin: 50% 0;
+    animation: sway 3s ease-in-out infinite alternate;
+}
+
+.land {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 170px;
+    filter: var(--lk-hills-filter);
+}
+
+.hill {
+    position: absolute;
+    bottom: 30px;
+    width: 349px;
+    image-rendering: pixelated;
+    transform-origin: 50% 100%;
+}
+
+.palm {
+    position: absolute;
+    bottom: 32px;
+    left: 58%;
+    height: 116px;
+    image-rendering: pixelated;
+}
+
+.ground {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 37px;
+    background-repeat: repeat-x;
+    background-position: 0 0;
+    image-rendering: pixelated;
+}
+
+.flyer,
+.chute {
+    transition: opacity 600ms ease;
+}
+
+.calm .flyer,
+.calm .chute {
+    opacity: 0;
+}
+
+.calm .cloud,
+.calm .flyer,
+.calm .plane,
+.calm .chute,
+.calm .chute img,
+.calm .stars {
+    animation-play-state: paused;
+}
+
+@keyframes drift {
+    from {
+        transform: translateX(-420px);
+    }
+    to {
+        transform: translateX(calc(100vw + 40px));
+    }
+}
+
+@keyframes fly {
+    from {
+        transform: translateX(-120px);
+    }
+    to {
+        transform: translateX(calc(100vw + 40px));
+    }
+}
+
+@keyframes flyBack {
+    from {
+        transform: translateX(calc(100vw + 40px));
+    }
+    to {
+        transform: translateX(-120px);
+    }
+}
+
+@keyframes bob {
+    from {
+        transform: translateY(-10px) rotate(-3deg);
+    }
+    to {
+        transform: translateY(10px) rotate(3deg);
+    }
+}
+
+@keyframes fall {
+    from {
+        transform: translateY(-80px);
+    }
+    to {
+        transform: translateY(105vh);
+    }
+}
+
+@keyframes sway {
+    from {
+        transform: rotate(-12deg);
+    }
+    to {
+        transform: rotate(12deg);
+    }
+}
+
+@keyframes twinkle {
+    from {
+        opacity: calc(var(--lk-stars-opacity) * 0.55);
+    }
+    to {
+        opacity: var(--lk-stars-opacity);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cloud,
+    .flyer,
+    .plane,
+    .chute,
+    .chute img,
+    .stars {
+        animation-play-state: paused;
+    }
+}

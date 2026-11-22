@@ -1,8 +1,26 @@
 {
-  "+NFaSb": [
+  "+VHHqo": [
     {
       "type": 0,
-      "value": "Lentokonepeli (En desarrollo)"
+      "value": "Leave game"
+    }
+  ],
+  "+hJmve": [
+    {
+      "type": 0,
+      "value": "¡Empate!"
+    }
+  ],
+  "+ptLoi": [
+    {
+      "type": 0,
+      "value": "You'll be disconnected from the current match. If you're the host, the game will end for everyone."
+    }
+  ],
+  "/Dq9eZ": [
+    {
+      "type": 0,
+      "value": "Gráficos"
     }
   ],
   "/KlrcC": [
@@ -41,10 +59,16 @@
       "value": "Soltar, abrir paracaídas"
     }
   ],
-  "7kZMTs": [
+  "6h1L5u": [
     {
       "type": 0,
-      "value": "El sistema de repetición es actualmente experimental, carece de funciones y aún está inactivo. Es posible que experimentes problemas hasta que la función de repetición esté en un estado estable."
+      "value": "Easy"
+    }
+  ],
+  "7GHFcs": [
+    {
+      "type": 0,
+      "value": "Reapareciendo en"
     }
   ],
   "8Am/Pl": [
@@ -63,6 +87,44 @@
     {
       "type": 0,
       "value": "Ajustes de control"
+    }
+  ],
+  "9l2moM": [
+    {
+      "type": 0,
+      "value": "Pista de "
+    },
+    {
+      "options": {
+        "Centrals": {
+          "value": [
+            {
+              "type": 0,
+              "value": "las Potencias Centrales"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "los Aliados"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "team"
+    },
+    {
+      "type": 0,
+      "value": " destruida."
+    }
+  ],
+  "AY7tVh": [
+    {
+      "type": 0,
+      "value": "Bot"
     }
   ],
   "B1CMe5": [
@@ -87,6 +149,12 @@
     {
       "type": 0,
       "value": "Avión equipado con una ametralladora bastante potente. Una buena elección, especialmente para pilotos novatos."
+    }
+  ],
+  "El6eCJ": [
+    {
+      "type": 0,
+      "value": "Smaller"
     }
   ],
   "G7DhrV": [
@@ -119,6 +187,18 @@
       "value": "Introduce el código de juego de 4 dígitos..."
     }
   ],
+  "Jyv5JT": [
+    {
+      "type": 0,
+      "value": "Normal"
+    }
+  ],
+  "Lo5tsu": [
+    {
+      "type": 0,
+      "value": "Keep playing"
+    }
+  ],
   "M2xffJ": [
     {
       "type": 0,
@@ -131,10 +211,16 @@
       "value": "Extremadamente ágil. No recomendado para pilotos novatos."
     }
   ],
-  "MGsduE": [
+  "M9uG/P": [
     {
       "type": 0,
-      "value": "Equipo"
+      "value": "Bots"
+    }
+  ],
+  "MrbN1S": [
+    {
+      "type": 0,
+      "value": "(Penalización por matar a un aliado)"
     }
   ],
   "Nbb2Yc": [
@@ -143,10 +229,34 @@
       "value": "Mover a la derecha"
     }
   ],
+  "OVTgWq": [
+    {
+      "type": 0,
+      "value": "Ilimitado"
+    }
+  ],
   "PEq6j5": [
     {
       "type": 0,
       "value": "Cerrar el chat"
+    }
+  ],
+  "PSkosK": [
+    {
+      "type": 0,
+      "value": "Game size"
+    }
+  ],
+  "PUiIc0": [
+    {
+      "type": 0,
+      "value": "Random"
+    }
+  ],
+  "Q9UCoB": [
+    {
+      "type": 0,
+      "value": "Bigger"
     }
   ],
   "Qj15PN": [
@@ -161,6 +271,12 @@
       "value": "Organizar un partido"
     }
   ],
+  "RJPf0Z": [
+    {
+      "type": 0,
+      "value": "Sonidos"
+    }
+  ],
   "SDo2PQ": [
     {
       "type": 0,
@@ -173,6 +289,18 @@
       "value": "Código"
     }
   ],
+  "T+NmK1": [
+    {
+      "type": 0,
+      "value": "Remove bot"
+    }
+  ],
+  "TcT+Lx": [
+    {
+      "type": 0,
+      "value": "Allies"
+    }
+  ],
   "U/mSA3": [
     {
       "type": 0,
@@ -183,6 +311,18 @@
     {
       "type": 0,
       "value": "Configuración del Usuario"
+    }
+  ],
+  "UwCHgC": [
+    {
+      "type": 0,
+      "value": "(Pulsa Intro cuando estés listo)"
+    }
+  ],
+  "V27mjT": [
+    {
+      "type": 0,
+      "value": "Medium"
     }
   ],
   "WWTrIb": [
@@ -209,10 +349,32 @@
       "value": "Puntos"
     }
   ],
+  "XS5GTW": [
+    {
+      "type": 0,
+      "value": "Salir"
+    }
+  ],
   "Y5ZG9P": [
     {
       "type": 0,
       "value": "Puedes cambiar esto en cualquier momento en el menú de ajustes"
+    }
+  ],
+  "Z0iZnK": [
+    {
+      "type": 1,
+      "value": "minutes"
+    },
+    {
+      "type": 0,
+      "value": " minutos"
+    }
+  ],
+  "ZNwZqy": [
+    {
+      "type": 0,
+      "value": "(Espera a que termine la ronda)"
     }
   ],
   "aLjUL6": [
@@ -227,10 +389,60 @@
       "value": "Albatros D.II"
     }
   ],
+  "azXaJ7": [
+    {
+      "type": 0,
+      "value": "sí"
+    }
+  ],
+  "b0BOYV": [
+    {
+      "type": 0,
+      "value": "Hard"
+    }
+  ],
+  "b8pU+2": [
+    {
+      "type": 0,
+      "value": "Add Bot"
+    }
+  ],
   "buqDOb": [
     {
       "type": 0,
       "value": "Elegir nombre de usuario"
+    }
+  ],
+  "byMHD6": [
+    {
+      "type": 0,
+      "value": "¡"
+    },
+    {
+      "options": {
+        "Centrals": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Las Potencias Centrales han"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Los Aliados han"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "team"
+    },
+    {
+      "type": 0,
+      "value": " ganado!"
     }
   ],
   "cFDrGv": [
@@ -257,6 +469,12 @@
       "value": "Mover a la izquierda"
     }
   ],
+  "e5OODe": [
+    {
+      "type": 0,
+      "value": "Listo"
+    }
+  ],
   "ezKLsY": [
     {
       "type": 0,
@@ -269,22 +487,50 @@
       "value": "Bomba"
     }
   ],
-  "fhbvwH": [
-    {
-      "type": 0,
-      "value": "El sistema del editor de niveles es actualmente altamente experimental, carece de muchas funciones relevantes y aún está en desarrollo activo. Puede experimentar problemas hasta que la función de reproducción esté en un estado estable."
-    }
-  ],
   "gAAkRv": [
     {
       "type": 0,
       "value": "El nombre debe tener entre 3 y 20 caracteres"
     }
   ],
+  "gVhE9z": [
+    {
+      "type": 0,
+      "value": "Modo de juego"
+    }
+  ],
   "gg+aZq": [
     {
       "type": 0,
       "value": "Añadir enlace de teclas"
+    }
+  ],
+  "hAeFx5": [
+    {
+      "options": {
+        "Centrals": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Centrals"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Allies"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "team"
+    },
+    {
+      "type": 0,
+      "value": " important building destroyed."
     }
   ],
   "iu4I/w": [
@@ -303,6 +549,12 @@
     {
       "type": 0,
       "value": "Ver la repetición de un partido"
+    }
+  ],
+  "jwBIfl": [
+    {
+      "type": 0,
+      "value": "Fit to window"
     }
   ],
   "kfnjH9": [
@@ -329,10 +581,22 @@
       "value": "Ver una Repetición "
     }
   ],
+  "obtz7Y": [
+    {
+      "type": 0,
+      "value": "Rondas"
+    }
+  ],
   "ohIqzI": [
     {
       "type": 0,
       "value": "Activar el motor"
+    }
+  ],
+  "ov7Lo+": [
+    {
+      "type": 0,
+      "value": "Tiempo de juego"
     }
   ],
   "p1ezxU": [
@@ -353,16 +617,28 @@
       "value": "Mapa"
     }
   ],
+  "q9p7Ga": [
+    {
+      "type": 0,
+      "value": "Difficulty"
+    }
+  ],
   "r1oUWJ": [
     {
       "type": 0,
       "value": "Ver todos los mensajes"
     }
   ],
-  "scT0m8": [
+  "sW9neH": [
     {
       "type": 0,
-      "value": "Aviso sobre el sistema de repetición"
+      "value": "(Penalización por suicidio)"
+    }
+  ],
+  "szCmDm": [
+    {
+      "type": 0,
+      "value": "E"
     }
   ],
   "tN8/0L": [
@@ -371,10 +647,10 @@
       "value": "Chatear con el equipo"
     }
   ],
-  "tOuqsq": [
+  "tNvYDv": [
     {
       "type": 0,
-      "value": "Aviso del Editor de Niveles"
+      "value": "no"
     }
   ],
   "twmPPM": [
@@ -441,6 +717,24 @@
     {
       "type": 0,
       "value": "Junkers J.1"
+    }
+  ],
+  "yi/9eD": [
+    {
+      "type": 0,
+      "value": "Centrals"
+    }
+  ],
+  "yjtXtd": [
+    {
+      "type": 0,
+      "value": "Ace"
+    }
+  ],
+  "zE1YNo": [
+    {
+      "type": 0,
+      "value": "Leave this game?"
     }
   ],
   "zV7RzE": [

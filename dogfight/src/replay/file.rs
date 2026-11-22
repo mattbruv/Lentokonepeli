@@ -5,7 +5,7 @@ use ts_rs::TS;
 
 use crate::{
     debug::log,
-    entities::player::PlayerGuid,
+    entities::{player::PlayerGuid, world_info::GameMode},
     input::{PlayerCommand, ServerInput},
     network::encoding::NetworkedBytes,
     world::World,
@@ -53,6 +53,10 @@ pub struct ReplayFile {
     pub level_name: String,
     pub level_data: String,
 
+    pub game_time_minutes: u16,
+    pub intermission_seconds: u16,
+    pub game_mode: GameMode,
+
     pub player_guids: BTreeMap<PlayerGuid, u16>,
 
     pub ticks: HashMap<u32, Vec<ReplayTickCommand>>,
@@ -84,6 +88,9 @@ impl ReplayFile {
             build_commit: get_commit_version().to_string(),
             level_data: "".to_string(),
             level_name: "".to_string(),
+            game_time_minutes: 0,
+            intermission_seconds: 20,
+            game_mode: GameMode::Normal,
             player_guids: BTreeMap::new(),
             ticks: HashMap::new(),
         }
@@ -143,7 +150,7 @@ impl World {
         // ~8-9 seconds to parse 60 minute replay without optimization
 
         for current_tick in start_tick..max_tick {
-            let maybe_input = replay.ticks.get(&current_tick);
+            let maybe_input = replay.ticks.get(&(current_tick + 1));
             let input: Vec<ServerInput> = match maybe_input {
                 Some(tick_data) => tick_data
                     .iter()
@@ -179,7 +186,7 @@ impl World {
                 let output = self.flush_changed_state();
                 let tick_events: Vec<ReplayEvent> = output
                     .iter()
-                    .flat_map(|x| output_to_events(self, current_tick, x.clone()))
+                    .flat_map(|x| output_to_events(self, current_tick + 1, x.clone()))
                     .collect();
 
                 events.extend(tick_events);

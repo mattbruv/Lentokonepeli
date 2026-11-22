@@ -104,4 +104,52 @@ export const GAME_INTL = {
             "Versatile mid-tier aircraft. Equipped with bombs in addition to a machine gun. Fast and powerful engine, though not agile.",
         description: "Description of the Salmson 2 aircraft",
     }),
+    respawning_in: defineMessage({
+        defaultMessage: "Respawning in",
+        description: "Shown on screen with a countdown while waiting to respawn after dying",
+    }),
+    suicide_penalty: defineMessage({
+        defaultMessage: "(Suicide penalty)",
+        description: "Shown below the respawn countdown when the wait is longer because of a suicide",
+    }),
+    wait_for_round: defineMessage({
+        defaultMessage: "(Wait for round to finish)",
+        description: "Shown on screen in rounds mode while a dead or newly joined player waits for the next round",
+    }),
+    teamkill_penalty: defineMessage({
+        defaultMessage: "(Teamkill penalty)",
+        description: "Shown below the respawn countdown when the wait is longer because of a teamkill",
+    }),
+    runway_destroyed: defineMessage({
+        defaultMessage: "{team, select, Centrals {Centrals} other {Allies}} runway destroyed.",
+        description: "Chat notice when a team's runway is destroyed",
+    }),
+    headquarters_destroyed: defineMessage({
+        defaultMessage: "{team, select, Centrals {Centrals} other {Allies}} important building destroyed.",
+        description: "Chat notice when a team's headquarters is destroyed",
+    }),
+    round_won: defineMessage({
+        defaultMessage: "{team, select, Centrals {Centrals} other {Allies}} have won!",
+        description: "Shown in large text and in chat when a team wins the round",
+    }),
+    round_tie: defineMessage({
+        defaultMessage: "Tie!",
+        description: "Shown in large text and in chat when a round ends in a tie",
+    }),
+    press_enter_when_ready: defineMessage({
+        defaultMessage: "(Press enter when ready)",
+        description: "Shown on the intermission screen between rounds until the player presses enter",
+    }),
+    hud_exit: defineMessage({
+        defaultMessage: "Exit",
+        description: "Button on the bottom game panel that leaves the game",
+    }),
+    hud_sounds: defineMessage({
+        defaultMessage: "Sounds",
+        description: "Checkbox on the bottom game panel that turns sound on or off",
+    }),
+    hud_gfx: defineMessage({
+        defaultMessage: "Gfx",
+        description: "Checkbox on the bottom game panel that switches between full and simple graphics",
+    }),
 } as const satisfies Record<string, MessageDescriptor>;
