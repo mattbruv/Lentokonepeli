@@ -315,3 +315,133 @@ fn rounds_bots_win_rounds_by_elimination() {
     println!("round wins: {wins}");
     assert!(wins >= 1);
 }
+
+fn bomb_trial(difficulty: BotDifficulty, target_x: i32, walk_right: bool) -> Option<(u8, u32)> {
+    use crate::entities::man::Man;
+    use crate::entities::player::PlayerState;
+    use crate::input::{PlayerKeyboard, RunwaySelection};
+
+    let mut world = World::new();
+    world.load_level(&level("classic"));
+    world.set_game_mode(GameMode::Rounds);
+    let mut manager = BotManager::new();
+    manager.add_bot(AddBotRequest {
+        guid: guid("bomber"),
+        name: "Bomber".into(),
+        team: Some(Team::Centrals),
+        difficulty,
+    });
+
+    let add = r#"[{"player_guid":"t","command":{"type":"AddPlayer","data":{"guid":"t","name":"T","clan":null}}}]"#;
+    world.tick(crate::input::game_input_from_string(add.to_string()));
+    world.choose_team(&guid("t"), Some(Team::Allies));
+
+    let mut man = Man::new(Team::Allies);
+    man.set_x(target_x * 100);
+    man.set_y(-40 * 100);
+    let (man_id, _) = world.men.insert(man).unwrap();
+    {
+        let (_, target) = world.get_player_from_guid_mut(&guid("t")).unwrap();
+        target.set_state(PlayerState::Playing);
+        target.set_controlling(Some(ControllingEntity::Man(man_id)));
+    }
+
+    let mut took_off = false;
+    let mut bombs_left = 5;
+    for tick in 0..8000 {
+        let joined = world
+            .get_player_from_guid(&guid("bomber"))
+            .map(|(_, p)| p.get_team().is_some())
+            .unwrap_or(false);
+        if !took_off && joined {
+            let runway_id = *world
+                .runways
+                .get_map()
+                .iter()
+                .find(|(_, r)| *r.get_team() == Team::Centrals)
+                .unwrap()
+                .0;
+            world.process_takeoff(
+                &guid("bomber"),
+                RunwaySelection {
+                    runway_id,
+                    plane_type: PlaneType::Junkers,
+                },
+            );
+            took_off = true;
+        }
+        if let Some((_, target)) = world.get_player_from_guid_mut(&guid("t")) {
+            let mut keys = PlayerKeyboard::new();
+            if tick > 300 {
+                let right = walk_right == ((tick / 500) % 2 == 0);
+                keys.right = right;
+                keys.left = !right;
+            }
+            target.set_keys(keys);
+        }
+        let plane_id = world
+            .get_player_from_guid(&guid("bomber"))
+            .and_then(|(_, p)| match p.get_controlling() {
+                Some(ControllingEntity::Plane(id)) => Some(id),
+                _ => None,
+            });
+        if let Some(plane) = plane_id.and_then(|id| world.planes.get_mut(id)) {
+            plane.set_ammo(0);
+            bombs_left = plane.get_bombs();
+        }
+        if took_off && bombs_left == 0 && world.bombs.get_map().is_empty() {
+            return None;
+        }
+        let input = manager.tick(&world);
+        world.tick(input);
+        world.flush_changed_state();
+        let died = world
+            .get_player_from_guid(&guid("t"))
+            .map(|(_, p)| p.get_deaths() > 0)
+            .unwrap_or(false);
+        if died {
+            return Some((5 - bombs_left, tick));
+        }
+        if world.men.get(man_id).is_none() {
+            return None;
+        }
+    }
+    None
+}
+
+#[test]
+fn higher_skill_bots_bomb_players_more_accurately() {
+    let trials = [
+        (-900, true),
+        (-300, false),
+        (300, true),
+        (900, false),
+        (600, false),
+        (0, false),
+    ];
+    let mut results = vec![];
+    for difficulty in [
+        BotDifficulty::Easy,
+        BotDifficulty::Medium,
+        BotDifficulty::Hard,
+        BotDifficulty::Ace,
+    ] {
+        let outcomes: Vec<Option<(u8, u32)>> = trials
+            .iter()
+            .map(|(x, right)| bomb_trial(difficulty, *x, *right))
+            .collect();
+        let kills = outcomes.iter().filter(|o| o.is_some()).count();
+        let bombs_used: u32 = outcomes.iter().flatten().map(|(b, _)| *b as u32).sum();
+        println!(
+            "{difficulty:?}: kills {kills}/{} bombs used {bombs_used} {outcomes:?}",
+            trials.len()
+        );
+        results.push((kills, bombs_used));
+    }
+    let (ace_kills, ace_bombs) = results[3];
+    let (easy_kills, _) = results[0];
+    let (medium_kills, medium_bombs) = results[1];
+    assert!(ace_kills >= trials.len() - 1);
+    assert!(ace_kills >= medium_kills && medium_kills > easy_kills);
+    assert!(ace_bombs <= medium_bombs);
+}

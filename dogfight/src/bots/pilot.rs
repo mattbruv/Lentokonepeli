@@ -20,7 +20,6 @@ use super::{rng::Rng, skill::BotSkill, terrain::Terrain, AddBotRequest, BotInfo}
 
 const CEILING_Y: f64 = -460.0;
 const CRUISE_Y: f64 = -280.0;
-const BOMB_Y: f64 = -230.0;
 const ROUNDS_BOMBER_FACTOR: f64 = 0.2;
 const ROUNDS_VISION_FACTOR: f64 = 1.5;
 
@@ -51,6 +50,7 @@ enum Goal {
     Patrol(f64, f64),
     Attack(Target),
     Bomb(f64, f64, f64),
+    BombTarget(Target),
     Land(RunwayId),
 }
 
@@ -65,6 +65,7 @@ pub struct Bot {
     think_timer: u32,
     control_timer: u32,
     aim_offset: f64,
+    bomb_offset: f64,
     held_keys: PlayerKeyboard,
     evade_ticks: u32,
     evade_dir: f64,
@@ -137,6 +138,7 @@ impl Bot {
             think_timer: 0,
             control_timer: 0,
             aim_offset: 0.0,
+            bomb_offset: 0.0,
             held_keys: PlayerKeyboard::new(),
             evade_ticks: 0,
             evade_dir: 1.0,
@@ -434,26 +436,45 @@ impl Bot {
         }
 
         let rounds = is_rounds(world);
+        let has_bombs = plane.get_bombs() > 0;
+        let bomb_player = if has_bombs {
+            self.ground_bomb_target(world, team, x)
+                .map(Goal::BombTarget)
+        } else {
+            None
+        };
+        let bomb_structure = if has_bombs {
+            self.enemy_structure(world, team, x)
+                .map(|(tx, ty, half)| Goal::Bomb(tx, ty, half))
+        } else {
+            None
+        };
+
         if rounds {
-            if let Some(goal) = self.combat_goal(
-                world,
-                team,
-                x,
-                y,
-                plane,
-                self.skill.vision * ROUNDS_VISION_FACTOR,
-            ) {
+            let vision = self.skill.vision * ROUNDS_VISION_FACTOR;
+            if plane.get_ammo() > 0 {
+                if let Some((id, _)) = self.nearest_enemy_plane(world, team, x, y, vision) {
+                    return Goal::Attack(Target::Plane(id));
+                }
+            }
+            if let Some(goal) = bomb_player {
                 return goal;
             }
-        }
-
-        if plane.get_bombs() > 0 {
-            if let Some((tx, ty, half)) = self.enemy_structure(world, team, x) {
-                return Goal::Bomb(tx, ty, half);
+            if let Some(goal) = self.combat_goal(world, team, x, y, plane, vision) {
+                return goal;
             }
-        }
-
-        if !rounds {
+            if let Some(goal) = bomb_structure {
+                return goal;
+            }
+        } else {
+            let bomb_goals = if self.skill.prefer_player_bombs {
+                [bomb_player, bomb_structure]
+            } else {
+                [bomb_structure, bomb_player]
+            };
+            if let Some(goal) = bomb_goals.into_iter().flatten().next() {
+                return goal;
+            }
             if let Some(goal) = self.combat_goal(world, team, x, y, plane, self.skill.vision) {
                 return goal;
             }
@@ -482,6 +503,86 @@ impl Bot {
             }
         };
         Goal::Patrol(patrol_x, CRUISE_Y + self.rng.range(-80.0, 80.0))
+    }
+
+    fn ground_bomb_target(&self, world: &World, team: Team, x: f64) -> Option<Target> {
+        let on_ground = |target: Target| match target {
+            Target::Man(id) => world.men.get(id).is_some_and(|m| {
+                matches!(
+                    m.get_state(),
+                    ManState::Standing | ManState::WalkingLeft | ManState::WalkingRight
+                )
+            }),
+            Target::Plane(id) => world.planes.get(id).is_some_and(|p| {
+                matches!(
+                    p.get_mode(),
+                    PlaneMode::Landing | PlaneMode::Landed | PlaneMode::TakingOff
+                )
+            }),
+        };
+        if let Goal::BombTarget(current) = self.goal {
+            if on_ground(current) {
+                return Some(current);
+            }
+        }
+
+        let range = if is_rounds(world) {
+            self.skill.bomb_player_range * ROUNDS_VISION_FACTOR
+        } else {
+            self.skill.bomb_player_range
+        };
+        let men = world
+            .men
+            .get_map()
+            .iter()
+            .filter(|(_, m)| {
+                m.get_team() != team
+                    && matches!(
+                        m.get_state(),
+                        ManState::Standing | ManState::WalkingLeft | ManState::WalkingRight
+                    )
+            })
+            .map(|(id, m)| (Target::Man(*id), man_pos(m).0));
+        let planes = world
+            .planes
+            .get_map()
+            .iter()
+            .filter(|(_, p)| {
+                p.get_team() != team
+                    && matches!(
+                        p.get_mode(),
+                        PlaneMode::Landing | PlaneMode::Landed | PlaneMode::TakingOff
+                    )
+            })
+            .map(|(id, p)| (Target::Plane(*id), plane_pos(p).0));
+        men.chain(planes)
+            .map(|(target, tx)| (target, (tx - x).abs()))
+            .filter(|(_, d)| *d < range)
+            .min_by(|a, b| a.1.total_cmp(&b.1))
+            .map(|(target, _)| target)
+    }
+
+    fn bomb_run(
+        &self,
+        plane: &Plane,
+        keys: &mut PlayerKeyboard,
+        h: f64,
+        aim_x: f64,
+        ty: f64,
+        half: f64,
+    ) -> f64 {
+        let (x, y) = plane_pos(plane);
+        let (impact, _) = self.predict_bomb(plane, ty);
+        if (impact - aim_x).abs() < half && plane.get_bombs() > 0 {
+            keys.shift = true;
+        }
+        let dx = aim_x - x;
+        let toward = if dx.abs() < 40.0 { h } else { dx.signum() };
+        positive(
+            (self.skill.bomb_y - y)
+                .clamp(-120.0, 120.0)
+                .atan2(toward * 300.0),
+        )
     }
 
     fn hunts_men(&self, world: &World) -> bool {
@@ -563,12 +664,14 @@ impl Bot {
             }),
             Target::Man(id) => world.men.get(id).map(|m| {
                 let (x, y) = man_pos(m);
-                let vy = match m.get_state() {
-                    ManState::Parachuting => 1.0,
-                    ManState::Falling => 2.0,
-                    _ => 0.0,
+                let (vx, vy) = match m.get_state() {
+                    ManState::Parachuting => (0.0, 1.0),
+                    ManState::Falling => (0.0, 2.0),
+                    ManState::WalkingLeft => (-1.0, 0.0),
+                    ManState::WalkingRight => (1.0, 0.0),
+                    ManState::Standing => (0.0, 0.0),
                 };
-                (x, y, 0.0, vy)
+                (x, y, vx, vy)
             }),
         }
     }
@@ -646,11 +749,12 @@ impl Bot {
         })
     }
 
-    fn predict_bomb_x(&self, plane: &Plane, target_y: f64) -> f64 {
+    fn predict_bomb(&self, plane: &Plane, target_y: f64) -> (f64, f64) {
         let (mut x, mut y) = plane_pos(plane);
         let angle = plane.get_angle();
         let mut vx = angle.cos() * plane.get_speed() / 100.0;
         let mut vy = angle.sin() * plane.get_speed() / 100.0;
+        let mut ticks = 0.0;
         for _ in 0..600 {
             if y >= target_y {
                 break;
@@ -659,8 +763,9 @@ impl Bot {
             y += vy;
             vx -= vx * 0.01;
             vy += 0.0333;
+            ticks += 1.0;
         }
-        x
+        (x, ticks)
     }
 
     fn pilot(&mut self, world: &World, team: Team, plane: &Plane) -> PlayerKeyboard {
@@ -675,6 +780,9 @@ impl Bot {
             self.think_timer = self.skill.think_interval;
             self.goal = self.choose_goal(world, team, plane);
             self.aim_offset = self.rng.range(-self.skill.aim_noise, self.skill.aim_noise);
+            self.bomb_offset = self
+                .rng
+                .range(-self.skill.bomb_noise, self.skill.bomb_noise);
         } else {
             self.think_timer = self.think_timer.saturating_sub(self.skill.control_interval);
         }
@@ -718,15 +826,18 @@ impl Bot {
                     heading(h, 0.0)
                 }
             },
-            Goal::Bomb(tx, ty, half) => {
-                let impact = self.predict_bomb_x(plane, ty);
-                if (impact - tx).abs() < half && plane.get_bombs() > 0 {
-                    keys.shift = true;
+            Goal::Bomb(tx, ty, half) => self.bomb_run(plane, &mut keys, h, tx, ty, half),
+            Goal::BombTarget(target) => match self.target_state(world, target) {
+                Some((tx, ty, tvx, _)) => {
+                    let (_, fall_ticks) = self.predict_bomb(plane, ty);
+                    let aim_x = tx + tvx * fall_ticks * self.skill.bomb_lead + self.bomb_offset;
+                    self.bomb_run(plane, &mut keys, h, aim_x, ty, self.skill.bomb_window)
                 }
-                let dx = tx - x;
-                let toward = if dx.abs() < 40.0 { h } else { dx.signum() };
-                positive((BOMB_Y - y).clamp(-120.0, 120.0).atan2(toward * 300.0))
-            }
+                None => {
+                    self.think_timer = 0;
+                    heading(h, 0.0)
+                }
+            },
             Goal::Land(runway_id) => match self.landing_heading(world, plane, runway_id) {
                 Some((d, m, flip, on_approach)) => {
                     motor = m;
