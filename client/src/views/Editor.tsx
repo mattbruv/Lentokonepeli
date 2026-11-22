@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { FormattedMessage } from "react-intl";
 import { LevelEditor, MapPiece } from "../client/LevelEditor";
-import { EditorNotice } from "../components/EditorNotice";
 import { Panel } from "../components/ui/Panel";
 import { useSettingsContext } from "../contexts/settingsContext";
 import style from "./Editor.module.css";
@@ -62,7 +61,6 @@ export const Editor = () => {
 
     return (
         <div className={style.layout}>
-            <EditorNotice />
             <div className={style.workspace}>
                 <div className={style.preview}>
                     <div ref={ref} className={style.canvas}></div>

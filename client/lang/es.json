@@ -3,9 +3,17 @@
     "defaultMessage": "Lentokonepeli (En desarrollo)",
     "description": "Main title of site shown on nav"
   },
+  "+VHHqo": {
+    "defaultMessage": "Leave game",
+    "description": "Button in the leave game dialog that confirms leaving the active game"
+  },
   "+hJmve": {
     "defaultMessage": "¡Empate!",
     "description": "Shown in large text and in chat when a round ends in a tie"
+  },
+  "+ptLoi": {
+    "defaultMessage": "You'll be disconnected from the current match. If you're the host, the game will end for everyone.",
+    "description": "Body of the dialog shown when navigating away from an active game"
   },
   "/Dq9eZ": {
     "defaultMessage": "Gráficos",
@@ -38,10 +46,6 @@
   "7GHFcs": {
     "defaultMessage": "Reapareciendo en",
     "description": "Shown on screen with a countdown while waiting to respawn after dying"
-  },
-  "7kZMTs": {
-    "defaultMessage": "El sistema de repetición es actualmente experimental, carece de funciones y aún está inactivo. Es posible que experimentes problemas hasta que la función de repetición esté en un estado estable.",
-    "description": "Informative text about the current state of the replay system"
   },
   "8Am/Pl": {
     "defaultMessage": "Avión básico equipado con una ametralladora, sin cualidades particularmente buenas o malas. Una buena elección para un novato.",
@@ -94,6 +98,10 @@
   "INGml3": {
     "defaultMessage": "Introduce el código de juego de 4 dígitos...",
     "description": "Infotext for input which is used to insert 4 digit game code to join games"
+  },
+  "Lo5tsu": {
+    "defaultMessage": "Keep playing",
+    "description": "Button in the leave game dialog that closes the dialog and returns to the game"
   },
   "M2xffJ": {
     "defaultMessage": "Guardar archivo de repetición",
@@ -227,10 +235,6 @@
     "defaultMessage": "Bomba",
     "description": "Title for the 'Bomb' action shown on the keybind settings section"
   },
-  "fhbvwH": {
-    "defaultMessage": "El sistema del editor de niveles es actualmente altamente experimental, carece de muchas funciones relevantes y aún está en desarrollo activo. Puede experimentar problemas hasta que la función de reproducción esté en un estado estable.",
-    "description": "Informative text about the current state of the replay system"
-  },
   "gAAkRv": {
     "defaultMessage": "El nombre debe tener entre 3 y 20 caracteres",
     "description": "Label explaining username constraints"
@@ -299,10 +303,6 @@
     "defaultMessage": "(Penalización por suicidio)",
     "description": "Shown below the respawn countdown when the wait is longer because of a suicide"
   },
-  "scT0m8": {
-    "defaultMessage": "Aviso sobre el sistema de repetición",
-    "description": "title for a notice section for the Replay System"
-  },
   "szCmDm": {
     "defaultMessage": "E",
     "description": "scoreboard: Team column, one letter"
@@ -314,10 +314,6 @@
   "tNvYDv": {
     "defaultMessage": "no",
     "description": "scoreboard: player is not ready for the next round"
-  },
-  "tOuqsq": {
-    "defaultMessage": "Aviso del Editor de Niveles",
-    "description": "title for a notice section for the Level Editor System"
   },
   "twmPPM": {
     "defaultMessage": "Activar tema oscuro",
@@ -362,6 +358,10 @@
   "yRjHTu": {
     "defaultMessage": "Junkers J.1",
     "description": "Name of the Junkers J.1 aircraft"
+  },
+  "zE1YNo": {
+    "defaultMessage": "Leave this game?",
+    "description": "Title of the dialog shown when navigating away from an active game"
   },
   "zV7RzE": {
     "defaultMessage": "Equipado con bombas además de una ametralladora, extremadamente duradero, pero un avión torpe.",

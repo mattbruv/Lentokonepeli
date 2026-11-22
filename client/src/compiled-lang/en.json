@@ -5,10 +5,22 @@
       "value": "Lentokonepeli (In Development)"
     }
   ],
+  "+VHHqo": [
+    {
+      "type": 0,
+      "value": "Leave game"
+    }
+  ],
   "+hJmve": [
     {
       "type": 0,
       "value": "Tie!"
+    }
+  ],
+  "+ptLoi": [
+    {
+      "type": 0,
+      "value": "You'll be disconnected from the current match. If you're the host, the game will end for everyone."
     }
   ],
   "/Dq9eZ": [
@@ -57,12 +69,6 @@
     {
       "type": 0,
       "value": "Respawning in"
-    }
-  ],
-  "7kZMTs": [
-    {
-      "type": 0,
-      "value": "The replay system is currently experimental, lacking features, and still inactive development. You may experience problems until the replay feature isin a stable state."
     }
   ],
   "8Am/Pl": [
@@ -163,6 +169,12 @@
     {
       "type": 0,
       "value": "Enter the 4 digit game code..."
+    }
+  ],
+  "Lo5tsu": [
+    {
+      "type": 0,
+      "value": "Keep playing"
     }
   ],
   "M2xffJ": [
@@ -389,12 +401,6 @@
       "value": "Bomb"
     }
   ],
-  "fhbvwH": [
-    {
-      "type": 0,
-      "value": "The level editor system is currently highly experimental, lacking many relevant features, and still in active development. You may experience problems until the replay feature is in a stable state."
-    }
-  ],
   "gAAkRv": [
     {
       "type": 0,
@@ -519,12 +525,6 @@
       "value": "(Suicide penalty)"
     }
   ],
-  "scT0m8": [
-    {
-      "type": 0,
-      "value": "Replay System Notice"
-    }
-  ],
   "szCmDm": [
     {
       "type": 0,
@@ -541,12 +541,6 @@
     {
       "type": 0,
       "value": "no"
-    }
-  ],
-  "tOuqsq": [
-    {
-      "type": 0,
-      "value": "Level Editor Notice"
     }
   ],
   "twmPPM": [
@@ -613,6 +607,12 @@
     {
       "type": 0,
       "value": "Junkers J.1"
+    }
+  ],
+  "zE1YNo": [
+    {
+      "type": 0,
+      "value": "Leave this game?"
     }
   ],
   "zV7RzE": [

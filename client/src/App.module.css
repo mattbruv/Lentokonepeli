@@ -173,6 +173,25 @@
     padding-bottom: 6px;
 }
 
+.leaveText {
+    margin: 0;
+    text-align: center;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.leaveButtons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+
+    & > * {
+        flex: 1 1 140px;
+    }
+}
+
 .leaveArt {
     height: 96px;
     image-rendering: pixelated;
@@ -200,6 +219,25 @@
 
 @media (prefers-reduced-motion: reduce) {
     .brandPlane,
+    .leaveText {
+        margin: 0;
+        text-align: center;
+        font-weight: 700;
+        line-height: 1.5;
+    }
+
+    .leaveButtons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+        width: 100%;
+
+        & > * {
+            flex: 1 1 140px;
+        }
+    }
+
     .leaveArt {
         animation: none;
     }

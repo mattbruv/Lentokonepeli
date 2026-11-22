@@ -3,9 +3,17 @@
     "defaultMessage": "Lentokonepeli (Kehityksessä)",
     "description": "Main title of site shown on nav"
   },
+  "+VHHqo": {
+    "defaultMessage": "Leave game",
+    "description": "Button in the leave game dialog that confirms leaving the active game"
+  },
   "+hJmve": {
     "defaultMessage": "Tasapeli!",
     "description": "Shown in large text and in chat when a round ends in a tie"
+  },
+  "+ptLoi": {
+    "defaultMessage": "You'll be disconnected from the current match. If you're the host, the game will end for everyone.",
+    "description": "Body of the dialog shown when navigating away from an active game"
   },
   "/Dq9eZ": {
     "defaultMessage": "Grafiikka",
@@ -38,10 +46,6 @@
   "7GHFcs": {
     "defaultMessage": "Takaisin peliin",
     "description": "Shown on screen with a countdown while waiting to respawn after dying"
-  },
-  "7kZMTs": {
-    "defaultMessage": "Pelien uusinta on tällä hetkellä kokeellinen, eikä siinä ole kaikkia ominaisuuksia, ja se on edelleen kehityksessä. Saatat kohdata ongelmia, kunnes toistotoiminto on vakaa.",
-    "description": "Informative text about the current state of the replay system"
   },
   "8Am/Pl": {
     "defaultMessage": "Konekiväärillä varustettu peruskone ilman erityisen hyviä tai huonoja puolia. Hyvä valinta aloittelijalle.",
@@ -94,6 +98,10 @@
   "INGml3": {
     "defaultMessage": "Syötä 4 merkkiä sisältävä pelikoodi...",
     "description": "Infotext for input which is used to insert 4 digit game code to join games"
+  },
+  "Lo5tsu": {
+    "defaultMessage": "Keep playing",
+    "description": "Button in the leave game dialog that closes the dialog and returns to the game"
   },
   "M2xffJ": {
     "defaultMessage": "Tallenna uusinta",
@@ -227,10 +235,6 @@
     "defaultMessage": "Pommita",
     "description": "Title for the 'Bomb' action shown on the keybind settings section"
   },
-  "fhbvwH": {
-    "defaultMessage": "Kenttäeditori on toistaiseksi erittäin kokeellinen, ja siitä puuttuu monia oleellisia ominaisuuksia. Kenttäeditorin käyttäminen voi nykyisessä tilassaan olla työlästä sekä hankalaa.",
-    "description": "Informative text about the current state of the replay system"
-  },
   "gAAkRv": {
     "defaultMessage": "Nimen tulee olla vähintään 3 ja enintään 20 merkkiä",
     "description": "Label explaining username constraints"
@@ -299,10 +303,6 @@
     "defaultMessage": "(Rangaistus itsemurhasta)",
     "description": "Shown below the respawn countdown when the wait is longer because of a suicide"
   },
-  "scT0m8": {
-    "defaultMessage": "Uusintojen huomautus",
-    "description": "title for a notice section for the Replay System"
-  },
   "szCmDm": {
     "defaultMessage": "J",
     "description": "scoreboard: Team column, one letter"
@@ -314,10 +314,6 @@
   "tNvYDv": {
     "defaultMessage": "ei",
     "description": "scoreboard: player is not ready for the next round"
-  },
-  "tOuqsq": {
-    "defaultMessage": "Kenttäeditorin huomautus",
-    "description": "title for a notice section for the Level Editor System"
   },
   "twmPPM": {
     "defaultMessage": "Vaihda tumma teema",
@@ -362,6 +358,10 @@
   "yRjHTu": {
     "defaultMessage": "Junkers J.1",
     "description": "Name of the Junkers J.1 aircraft"
+  },
+  "zE1YNo": {
+    "defaultMessage": "Leave this game?",
+    "description": "Title of the dialog shown when navigating away from an active game"
   },
   "zV7RzE": {
     "defaultMessage": "Konekiväärin lisäksi pommeilla varustettu, erittäin kestävä, mutta kömpelö kone.",

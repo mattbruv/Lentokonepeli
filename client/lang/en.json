@@ -3,9 +3,17 @@
     "defaultMessage": "Lentokonepeli (In Development)",
     "description": "Main title of site shown on nav"
   },
+  "+VHHqo": {
+    "defaultMessage": "Leave game",
+    "description": "Button in the leave game dialog that confirms leaving the active game"
+  },
   "+hJmve": {
     "defaultMessage": "Tie!",
     "description": "Shown in large text and in chat when a round ends in a tie"
+  },
+  "+ptLoi": {
+    "defaultMessage": "You'll be disconnected from the current match. If you're the host, the game will end for everyone.",
+    "description": "Body of the dialog shown when navigating away from an active game"
   },
   "/Dq9eZ": {
     "defaultMessage": "Gfx",
@@ -38,10 +46,6 @@
   "7GHFcs": {
     "defaultMessage": "Respawning in",
     "description": "Shown on screen with a countdown while waiting to respawn after dying"
-  },
-  "7kZMTs": {
-    "defaultMessage": "The replay system is currently experimental, lacking features, and still inactive development. You may experience problems until the replay feature isin a stable state.",
-    "description": "Informative text about the current state of the replay system"
   },
   "8Am/Pl": {
     "defaultMessage": "Basic aircraft equipped with a machine gun, without particularly good or bad qualities. A good choice for a beginner.",
@@ -94,6 +98,10 @@
   "INGml3": {
     "defaultMessage": "Enter the 4 digit game code...",
     "description": "Infotext for input which is used to insert 4 digit game code to join games"
+  },
+  "Lo5tsu": {
+    "defaultMessage": "Keep playing",
+    "description": "Button in the leave game dialog that closes the dialog and returns to the game"
   },
   "M2xffJ": {
     "defaultMessage": "Save Replay File",
@@ -227,10 +235,6 @@
     "defaultMessage": "Bomb",
     "description": "Title for the 'Bomb' action shown on the keybind settings section"
   },
-  "fhbvwH": {
-    "defaultMessage": "The level editor system is currently highly experimental, lacking many relevant features, and still in active development. You may experience problems until the replay feature is in a stable state.",
-    "description": "Informative text about the current state of the replay system"
-  },
   "gAAkRv": {
     "defaultMessage": "Name should be between 3 and 20 characters",
     "description": "Label explaining username constraints"
@@ -299,10 +303,6 @@
     "defaultMessage": "(Suicide penalty)",
     "description": "Shown below the respawn countdown when the wait is longer because of a suicide"
   },
-  "scT0m8": {
-    "defaultMessage": "Replay System Notice",
-    "description": "title for a notice section for the Replay System"
-  },
   "szCmDm": {
     "defaultMessage": "T",
     "description": "scoreboard: Team column, one letter"
@@ -314,10 +314,6 @@
   "tNvYDv": {
     "defaultMessage": "no",
     "description": "scoreboard: player is not ready for the next round"
-  },
-  "tOuqsq": {
-    "defaultMessage": "Level Editor Notice",
-    "description": "title for a notice section for the Level Editor System"
   },
   "twmPPM": {
     "defaultMessage": "Toggle Dark Mode",
@@ -362,6 +358,10 @@
   "yRjHTu": {
     "defaultMessage": "Junkers J.1",
     "description": "Name of the Junkers J.1 aircraft"
+  },
+  "zE1YNo": {
+    "defaultMessage": "Leave this game?",
+    "description": "Title of the dialog shown when navigating away from an active game"
   },
   "zV7RzE": {
     "defaultMessage": "Equipped with bombs in addition to a machine gun, extremely durable, but a clumsy aircraft.",

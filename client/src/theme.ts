@@ -1,6 +1,5 @@
 import {
     ActionIcon,
-    Alert,
     Button,
     createTheme,
     CSSVariablesResolver,
@@ -122,10 +121,6 @@ export const theme = createTheme({
         }),
         Slider: Slider.extend({ classNames: { track: classes.sliderTrack, thumb: classes.sliderThumb } }),
         Switch: Switch.extend({ classNames: { track: classes.switchTrack } }),
-        Alert: Alert.extend({
-            defaultProps: { radius: "lg" },
-            classNames: { root: classes.alert, title: classes.alertTitle },
-        }),
     },
 });
 

@@ -1,5 +1,5 @@
-import { Alert, Button, FileButton, LoadingOverlay, Stack, Tooltip } from "@mantine/core";
-import { IconFileUpload, IconInfoCircle, IconMovie } from "@tabler/icons-react";
+import { Button, FileButton, LoadingOverlay, Stack, Tooltip } from "@mantine/core";
+import { IconFileUpload, IconMovie } from "@tabler/icons-react";
 import { useActiveView } from "../hooks/useActiveView";
 import { useRef, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -105,22 +105,6 @@ export function Replay() {
                                     </Tooltip>
                                 )}
                             </FileButton>
-                            <Alert
-                                variant="light"
-                                color="copper"
-                                title={intl.formatMessage({
-                                    defaultMessage: "Replay System Notice",
-                                    description: "title for a notice section for the Replay System",
-                                })}
-                                icon={<IconInfoCircle />}
-                            >
-                                <FormattedMessage
-                                    defaultMessage={
-                                        "The replay system is currently experimental, lacking features, and still inactive development. You may experience problems until the replay feature isin a stable state."
-                                    }
-                                    description={"Informative text about the current state of the replay system"}
-                                />
-                            </Alert>
                         </Stack>
                     </Panel>
                 </div>

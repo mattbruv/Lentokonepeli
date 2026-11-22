@@ -7,7 +7,6 @@ import brandPlane from "./assets/ui/plane6.gif";
 import parachuter from "./assets/ui/parachuter1.gif";
 import { SkyBackdrop } from "./components/ui/SkyBackdrop";
 import { useSettingsContext } from "./contexts/settingsContext";
-import { GAME_INTL } from "./intl/messages";
 import { Editor } from "./views/Editor";
 import { Lobby } from "./views/Lobby";
 import { Replay } from "./views/Replay";
@@ -43,19 +42,38 @@ function App() {
             <Modal
                 opened={blocker.state === "blocked"}
                 onClose={() => blocker.reset?.()}
-                title={intl.formatMessage(GAME_INTL.hud_exit)}
-                size="xs"
+                title={intl.formatMessage({
+                    defaultMessage: "Leave this game?",
+                    description: "Title of the dialog shown when navigating away from an active game",
+                })}
+                size="sm"
             >
                 <div className={classes.leave}>
                     <img src={parachuter} className={classes.leaveArt} alt="" />
-                    <Button
-                        color="cherry"
-                        fullWidth
-                        rightSection={<IconDoorExit size={18} stroke={2.4} />}
-                        onClick={() => blocker.proceed?.()}
-                    >
-                        {intl.formatMessage(GAME_INTL.hud_exit)}
-                    </Button>
+                    <p className={classes.leaveText}>
+                        <FormattedMessage
+                            defaultMessage="You'll be disconnected from the current match. If you're the host, the game will end for everyone."
+                            description="Body of the dialog shown when navigating away from an active game"
+                        />
+                    </p>
+                    <div className={classes.leaveButtons}>
+                        <Button color="grass" onClick={() => blocker.reset?.()} data-autofocus>
+                            <FormattedMessage
+                                defaultMessage="Keep playing"
+                                description="Button in the leave game dialog that closes the dialog and returns to the game"
+                            />
+                        </Button>
+                        <Button
+                            color="cherry"
+                            rightSection={<IconDoorExit size={18} stroke={2.4} />}
+                            onClick={() => blocker.proceed?.()}
+                        >
+                            <FormattedMessage
+                                defaultMessage="Leave game"
+                                description="Button in the leave game dialog that confirms leaving the active game"
+                            />
+                        </Button>
+                    </div>
                 </div>
             </Modal>
             <header className={classes.header}>

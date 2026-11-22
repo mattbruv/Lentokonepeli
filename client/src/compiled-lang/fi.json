@@ -5,10 +5,22 @@
       "value": "Lentokonepeli (Kehityksessä)"
     }
   ],
+  "+VHHqo": [
+    {
+      "type": 0,
+      "value": "Leave game"
+    }
+  ],
   "+hJmve": [
     {
       "type": 0,
       "value": "Tasapeli!"
+    }
+  ],
+  "+ptLoi": [
+    {
+      "type": 0,
+      "value": "You'll be disconnected from the current match. If you're the host, the game will end for everyone."
     }
   ],
   "/Dq9eZ": [
@@ -57,12 +69,6 @@
     {
       "type": 0,
       "value": "Takaisin peliin"
-    }
-  ],
-  "7kZMTs": [
-    {
-      "type": 0,
-      "value": "Pelien uusinta on tällä hetkellä kokeellinen, eikä siinä ole kaikkia ominaisuuksia, ja se on edelleen kehityksessä. Saatat kohdata ongelmia, kunnes toistotoiminto on vakaa."
     }
   ],
   "8Am/Pl": [
@@ -163,6 +169,12 @@
     {
       "type": 0,
       "value": "Syötä 4 merkkiä sisältävä pelikoodi..."
+    }
+  ],
+  "Lo5tsu": [
+    {
+      "type": 0,
+      "value": "Keep playing"
     }
   ],
   "M2xffJ": [
@@ -389,12 +401,6 @@
       "value": "Pommita"
     }
   ],
-  "fhbvwH": [
-    {
-      "type": 0,
-      "value": "Kenttäeditori on toistaiseksi erittäin kokeellinen, ja siitä puuttuu monia oleellisia ominaisuuksia. Kenttäeditorin käyttäminen voi nykyisessä tilassaan olla työlästä sekä hankalaa."
-    }
-  ],
   "gAAkRv": [
     {
       "type": 0,
@@ -519,12 +525,6 @@
       "value": "(Rangaistus itsemurhasta)"
     }
   ],
-  "scT0m8": [
-    {
-      "type": 0,
-      "value": "Uusintojen huomautus"
-    }
-  ],
   "szCmDm": [
     {
       "type": 0,
@@ -541,12 +541,6 @@
     {
       "type": 0,
       "value": "ei"
-    }
-  ],
-  "tOuqsq": [
-    {
-      "type": 0,
-      "value": "Kenttäeditorin huomautus"
     }
   ],
   "twmPPM": [
@@ -613,6 +607,12 @@
     {
       "type": 0,
       "value": "Junkers J.1"
+    }
+  ],
+  "zE1YNo": [
+    {
+      "type": 0,
+      "value": "Leave this game?"
     }
   ],
   "zV7RzE": [

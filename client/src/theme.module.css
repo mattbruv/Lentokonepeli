@@ -266,17 +266,3 @@
 .switchTrack {
     border: 2px solid var(--lk-ink-soft);
 }
-
-.alert {
-    border: 2.5px solid var(--lk-ink);
-    box-shadow: 0 4px 0 var(--lk-shadow);
-    background-color: var(--lk-paper);
-    background-image: linear-gradient(var(--alert-bg), var(--alert-bg));
-    color: var(--lk-text);
-}
-
-.alertTitle {
-    font-family: Fredoka, Nunito, sans-serif;
-    font-weight: 600;
-    font-size: var(--mantine-font-size-md);
-}

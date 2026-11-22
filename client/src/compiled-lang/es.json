@@ -5,10 +5,22 @@
       "value": "Lentokonepeli (En desarrollo)"
     }
   ],
+  "+VHHqo": [
+    {
+      "type": 0,
+      "value": "Leave game"
+    }
+  ],
   "+hJmve": [
     {
       "type": 0,
       "value": "¡Empate!"
+    }
+  ],
+  "+ptLoi": [
+    {
+      "type": 0,
+      "value": "You'll be disconnected from the current match. If you're the host, the game will end for everyone."
     }
   ],
   "/Dq9eZ": [
@@ -57,12 +69,6 @@
     {
       "type": 0,
       "value": "Reapareciendo en"
-    }
-  ],
-  "7kZMTs": [
-    {
-      "type": 0,
-      "value": "El sistema de repetición es actualmente experimental, carece de funciones y aún está inactivo. Es posible que experimentes problemas hasta que la función de repetición esté en un estado estable."
     }
   ],
   "8Am/Pl": [
@@ -167,6 +173,12 @@
     {
       "type": 0,
       "value": "Introduce el código de juego de 4 dígitos..."
+    }
+  ],
+  "Lo5tsu": [
+    {
+      "type": 0,
+      "value": "Keep playing"
     }
   ],
   "M2xffJ": [
@@ -397,12 +409,6 @@
       "value": "Bomba"
     }
   ],
-  "fhbvwH": [
-    {
-      "type": 0,
-      "value": "El sistema del editor de niveles es actualmente altamente experimental, carece de muchas funciones relevantes y aún está en desarrollo activo. Puede experimentar problemas hasta que la función de reproducción esté en un estado estable."
-    }
-  ],
   "gAAkRv": [
     {
       "type": 0,
@@ -527,12 +533,6 @@
       "value": "(Penalización por suicidio)"
     }
   ],
-  "scT0m8": [
-    {
-      "type": 0,
-      "value": "Aviso sobre el sistema de repetición"
-    }
-  ],
   "szCmDm": [
     {
       "type": 0,
@@ -549,12 +549,6 @@
     {
       "type": 0,
       "value": "no"
-    }
-  ],
-  "tOuqsq": [
-    {
-      "type": 0,
-      "value": "Aviso del Editor de Niveles"
     }
   ],
   "twmPPM": [
@@ -621,6 +615,12 @@
     {
       "type": 0,
       "value": "Junkers J.1"
+    }
+  ],
+  "zE1YNo": [
+    {
+      "type": 0,
+      "value": "Leave this game?"
     }
   ],
   "zV7RzE": [
