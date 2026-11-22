@@ -1,5 +1,5 @@
-import { Button, Card, Group, Stack, Text } from "@mantine/core";
-import { IconFileDownloadFilled } from "@tabler/icons-react";
+import { Button, Stack } from "@mantine/core";
+import { IconFileDownload } from "@tabler/icons-react";
 import saveAs from "file-saver";
 import { useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
@@ -7,6 +7,9 @@ import { useSettingsContext } from "../contexts/settingsContext";
 import { useLocalHost } from "../hooks/useLocalHost";
 import { LevelName } from "../views/Lobby";
 import { Game } from "./Game";
+import { GameStage } from "./GameStage";
+import { RoomCode } from "./RoomCode";
+import { Panel } from "./ui/Panel";
 
 type HostProps = {
     level: LevelName;
@@ -30,9 +33,6 @@ export function Host({ level, recordGame, gameTime }: HostProps) {
         sendChatMessage,
     } = useLocalHost(level, recordGame, getUsername(), getClan(), gameTime);
 
-    // const [joinId, setJoinId] = useState("")
-    // const [tickRate, setTickRate] = useState(100)
-
     function host() {
         if (!gameContainer.current) return;
         initialize(gameContainer.current);
@@ -54,44 +54,43 @@ export function Host({ level, recordGame, gameTime }: HostProps) {
     }, []);
 
     return (
-        <Group justify="center">
-            <Game
-                ref={gameContainer}
-                myPlayerGuid={playerGuid}
-                playerData={playerData}
-                intermission={intermission}
-                roomName={roomCode}
-                messages={messages}
-                onSendMessage={sendChatMessage}
-            />
-            <Card withBorder style={{ height: "100%" }}>
-                <Stack>
-                    <Stack>
-                        <Text>
-                            <FormattedMessage
-                                defaultMessage={"Game Code"}
-                                description={"Title shown above the shareable room code"}
-                            />
-                            :
-                        </Text>
-                        <Text
-                            style={{ color: "gray", fontSize: "1.5rem", fontFamily: "monospace" }}
-                            size={"xl"}
-                            fw={"bold"}
+        <GameStage
+            game={
+                <Game
+                    ref={gameContainer}
+                    myPlayerGuid={playerGuid}
+                    playerData={playerData}
+                    intermission={intermission}
+                    roomName={roomCode}
+                    messages={messages}
+                    onSendMessage={sendChatMessage}
+                />
+            }
+            side={
+                <Panel
+                    title={
+                        <FormattedMessage
+                            defaultMessage={"Game Code"}
+                            description={"Title shown above the shareable room code"}
+                        />
+                    }
+                >
+                    <Stack gap="lg">
+                        <RoomCode code={roomCode} />
+                        <Button
+                            onClick={saveReplay}
+                            color="copper"
+                            fullWidth
+                            rightSection={<IconFileDownload stroke={2.4} />}
                         >
-                            {roomCode}
-                        </Text>
-                    </Stack>
-                    <Stack>
-                        <Button onClick={saveReplay} rightSection={<IconFileDownloadFilled />}>
                             <FormattedMessage
                                 defaultMessage={"Save Replay File"}
                                 description={"Button text for button which saves replay file"}
                             />
                         </Button>
                     </Stack>
-                </Stack>
-            </Card>
-        </Group>
+                </Panel>
+            }
+        />
     );
 }

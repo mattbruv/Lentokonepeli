@@ -1,10 +1,10 @@
-import { AppShell, Burger, Button, Group, Text, Tooltip, UnstyledButton, useMantineColorScheme } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { ActionIcon, Tooltip, useComputedColorScheme, useMantineColorScheme } from "@mantine/core";
 import { IconBrandDiscord, IconBrandGithub, IconMoon, IconSun } from "@tabler/icons-react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { NavLink, Route, Routes } from "react-router-dom";
-import "./App.css";
 import classes from "./App.module.css";
+import brandPlane from "./assets/ui/plane6.gif";
+import { SkyBackdrop } from "./components/ui/SkyBackdrop";
 import { Editor } from "./views/Editor";
 import { Lobby } from "./views/Lobby";
 import { Replay } from "./views/Replay";
@@ -12,10 +12,8 @@ import { Settings } from "./views/Settings";
 
 function App() {
     const intl = useIntl();
-    const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
-    const [mobileOpened, { toggle: toggleMobile, close: closeMobile }] = useDisclosure(false);
-
-    const { toggleColorScheme, colorScheme } = useMantineColorScheme();
+    const { setColorScheme } = useMantineColorScheme();
+    const colorScheme = useComputedColorScheme("light");
 
     const toggleLight = intl.formatMessage({
         defaultMessage: "Toggle Light Mode",
@@ -27,112 +25,106 @@ function App() {
     });
     const toggleText = colorScheme === "dark" ? toggleLight : toggleDark;
 
+    const navClass = ({ isActive }: { isActive: boolean }) =>
+        isActive ? `${classes.navLink} ${classes.active}` : classes.navLink;
+
     return (
-        <AppShell
-            header={{ height: 60 }}
-            navbar={{
-                width: 200,
-                breakpoint: "xs",
-                collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
-            }}
-            padding="md"
-        >
-            <AppShell.Header>
-                <Group h="100%" px="md">
-                    <Burger opened={mobileOpened} onClick={toggleMobile} hiddenFrom="xs" size="sm" />
-                    <Burger opened={desktopOpened} onClick={toggleDesktop} visibleFrom="xs" size="sm" />
-                    <Group justify="space-between" style={{ flex: 1 }}>
-                        <Text size={"lg"}>
+        <div className={classes.app}>
+            <SkyBackdrop />
+            <header className={classes.header}>
+                <div className={classes.headerInner}>
+                    <NavLink to={"/"} className={classes.brand}>
+                        <img src={brandPlane} className={classes.brandPlane} alt="" />
+                        <span className={classes.brandText}>
                             <FormattedMessage
                                 defaultMessage={"Lentokonepeli (In Development)"}
                                 description={"Main title of site shown on nav"}
                             />
-                        </Text>
-                        <Group ml="xl" gap={0} visibleFrom="sm">
-                            <Button.Group>
-                                <Tooltip
-                                    label={intl.formatMessage({
-                                        defaultMessage: "Join us on Discord!",
-                                        description: "Navbar hover for discord button",
-                                    })}
-                                >
-                                    <Button
-                                        component="a"
-                                        target={"_blank"}
-                                        href="https://discord.gg/QjtXPmx"
-                                        variant={"subtle"}
-                                    >
-                                        <IconBrandDiscord />
-                                    </Button>
-                                </Tooltip>
-                                <Tooltip
-                                    label={intl.formatMessage({
-                                        defaultMessage: "View the Source Code on GitHub",
-                                        description: "Navbar hover for viewing the source code",
-                                    })}
-                                >
-                                    <Button
-                                        component="a"
-                                        target={"_blank"}
-                                        href="https://github.com/mattbruv/Lentokonepeli"
-                                        variant={"subtle"}
-                                    >
-                                        <IconBrandGithub />
-                                    </Button>
-                                </Tooltip>
-                                <Tooltip label={toggleText}>
-                                    <Button onClick={toggleColorScheme} variant={"subtle"}>
-                                        {colorScheme === "dark" ? <IconSun /> : <IconMoon />}
-                                    </Button>
-                                </Tooltip>
-                            </Button.Group>
-                        </Group>
-                    </Group>
-                </Group>
-            </AppShell.Header>
-            <AppShell.Navbar py="md" px={4}>
-                <NavLink to={"/"} onClick={closeMobile}>
-                    <UnstyledButton className={classes.control}>
-                        <FormattedMessage
-                            defaultMessage={"Play"}
-                            description={"Sidebar link description for the main game page used to play the game"}
-                        />
-                    </UnstyledButton>
-                </NavLink>
-                <NavLink to={"/replay"} onClick={closeMobile}>
-                    <UnstyledButton className={classes.control}>
-                        <FormattedMessage
-                            defaultMessage={"Watch Replay"}
-                            description={"Sidebar link description for the Replay System page"}
-                        />
-                    </UnstyledButton>
-                </NavLink>
-                <NavLink to={"/editor"} onClick={closeMobile}>
-                    <UnstyledButton className={classes.control} onClick={closeMobile}>
-                        <FormattedMessage
-                            defaultMessage={"Level Editor"}
-                            description={"Sidebar link description for the Level Editor"}
-                        />
-                    </UnstyledButton>
-                </NavLink>
-                <NavLink to={"/settings"} onClick={closeMobile}>
-                    <UnstyledButton className={classes.control}>
-                        <FormattedMessage
-                            defaultMessage={"Settings"}
-                            description={"Sidebar link description for the Settings page"}
-                        />
-                    </UnstyledButton>
-                </NavLink>
-            </AppShell.Navbar>
-            <AppShell.Main>
+                        </span>
+                    </NavLink>
+                    <nav className={classes.nav}>
+                        <NavLink to={"/"} end className={navClass}>
+                            <FormattedMessage
+                                defaultMessage={"Play"}
+                                description={"Sidebar link description for the main game page used to play the game"}
+                            />
+                        </NavLink>
+                        <NavLink to={"/replay"} className={navClass}>
+                            <FormattedMessage
+                                defaultMessage={"Watch Replay"}
+                                description={"Sidebar link description for the Replay System page"}
+                            />
+                        </NavLink>
+                        <NavLink to={"/editor"} className={navClass}>
+                            <FormattedMessage
+                                defaultMessage={"Level Editor"}
+                                description={"Sidebar link description for the Level Editor"}
+                            />
+                        </NavLink>
+                        <NavLink to={"/settings"} className={navClass}>
+                            <FormattedMessage
+                                defaultMessage={"Settings"}
+                                description={"Sidebar link description for the Settings page"}
+                            />
+                        </NavLink>
+                    </nav>
+                    <div className={classes.actions}>
+                        <Tooltip
+                            label={intl.formatMessage({
+                                defaultMessage: "Join us on Discord!",
+                                description: "Navbar hover for discord button",
+                            })}
+                        >
+                            <ActionIcon
+                                component="a"
+                                target={"_blank"}
+                                href="https://discord.gg/QjtXPmx"
+                                variant={"subtle"}
+                                className={classes.headerIcon}
+                                aria-label="Discord"
+                            >
+                                <IconBrandDiscord />
+                            </ActionIcon>
+                        </Tooltip>
+                        <Tooltip
+                            label={intl.formatMessage({
+                                defaultMessage: "View the Source Code on GitHub",
+                                description: "Navbar hover for viewing the source code",
+                            })}
+                        >
+                            <ActionIcon
+                                component="a"
+                                target={"_blank"}
+                                href="https://github.com/mattbruv/Lentokonepeli"
+                                variant={"subtle"}
+                                className={classes.headerIcon}
+                                aria-label="GitHub"
+                            >
+                                <IconBrandGithub />
+                            </ActionIcon>
+                        </Tooltip>
+                        <Tooltip label={toggleText}>
+                            <ActionIcon
+                                onClick={() => setColorScheme(colorScheme === "dark" ? "light" : "dark")}
+                                variant={"subtle"}
+                                className={classes.headerIcon}
+                                aria-label={toggleText}
+                            >
+                                {colorScheme === "dark" ? <IconSun /> : <IconMoon />}
+                            </ActionIcon>
+                        </Tooltip>
+                    </div>
+                </div>
+            </header>
+            <main className={classes.main}>
                 <Routes>
                     <Route path="/" element={<Lobby />} />
                     <Route path="/replay" element={<Replay />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/editor" element={<Editor />} />
                 </Routes>
-            </AppShell.Main>
-        </AppShell>
+            </main>
+        </div>
     );
 }
 

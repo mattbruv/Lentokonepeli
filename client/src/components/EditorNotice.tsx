@@ -7,7 +7,7 @@ export const EditorNotice = () => {
     return (
         <Alert
             variant="light"
-            color="yellow"
+            color="copper"
             title={intl.formatMessage({
                 defaultMessage: "Level Editor Notice",
                 description: "title for a notice section for the Level Editor System",

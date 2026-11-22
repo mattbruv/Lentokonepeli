@@ -1,9 +1,11 @@
-import { Button, Flex, Kbd, Stack, Title } from "@mantine/core";
+import { Button, Kbd } from "@mantine/core";
+import { IconDownload, IconPuzzle } from "@tabler/icons-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { FormattedMessage } from "react-intl";
 import { LevelEditor, MapPiece } from "../client/LevelEditor";
 import { EditorNotice } from "../components/EditorNotice";
+import { Panel } from "../components/ui/Panel";
 import { useSettingsContext } from "../contexts/settingsContext";
 import style from "./Editor.module.css";
 
@@ -59,33 +61,48 @@ export const Editor = () => {
     );
 
     return (
-        <Stack align={"center"}>
+        <div className={style.layout}>
             <EditorNotice />
-            <Flex className={style.editor} direction={"column"} wrap="wrap" gap="md" align={"center"}>
-                <Flex wrap="wrap" gap={"lg"} justify={"center"}>
-                    <Stack gap="sm">
-                        <textarea value={rawInput} onChange={handleChange} className={style.code} rows={10} cols={70} />
-                        <Button onClick={() => saveAsFile(world)}>Save as file</Button>
-                    </Stack>
-                    <div ref={ref}></div>
-                </Flex>
-
-                <Stack align="start">
-                    <Title order={3}>
-                        <FormattedMessage
-                            defaultMessage={"Supported pieces"}
-                            description={"supported pieces to be used in level editor"}
-                        />
-                    </Title>
-                    <Flex gap={"xs"} wrap={"wrap"} justify={"start"}>
-                        {Object.entries(MapPiece).map(([name, char]) => (
-                            <pre key={char} className={style.piece}>
-                                <Kbd>{char}</Kbd> {name}
-                            </pre>
-                        ))}
-                    </Flex>
-                </Stack>
-            </Flex>
-        </Stack>
+            <div className={style.workspace}>
+                <div className={style.preview}>
+                    <div ref={ref} className={style.canvas}></div>
+                </div>
+                <Panel className={style.codePanel} bodyClassName={style.codeBody}>
+                    <textarea
+                        value={rawInput}
+                        onChange={handleChange}
+                        className={style.code}
+                        rows={10}
+                        spellCheck={false}
+                    />
+                    <Button
+                        color="grass"
+                        fullWidth
+                        onClick={() => saveAsFile(world)}
+                        rightSection={<IconDownload size={18} stroke={2.4} />}
+                    >
+                        Save as file
+                    </Button>
+                </Panel>
+            </div>
+            <Panel
+                icon={<IconPuzzle size={24} stroke={2.4} />}
+                title={
+                    <FormattedMessage
+                        defaultMessage={"Supported pieces"}
+                        description={"supported pieces to be used in level editor"}
+                    />
+                }
+            >
+                <div className={style.pieces}>
+                    {Object.entries(MapPiece).map(([name, char]) => (
+                        <div key={char} className={style.piece}>
+                            <Kbd>{char}</Kbd>
+                            <span>{name}</span>
+                        </div>
+                    ))}
+                </div>
+            </Panel>
+        </div>
     );
 };

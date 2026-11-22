@@ -1,0 +1,84 @@
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 440px));
+    justify-content: center;
+    align-items: stretch;
+    gap: 40px;
+    margin-top: 3vh;
+}
+
+.second {
+    animation-delay: 90ms;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+}
+
+.art {
+    position: relative;
+    overflow: hidden;
+    border: 2.5px solid var(--lk-ink);
+    border-radius: 14px;
+    background: linear-gradient(180deg, #4fb3f6 0%, #a9dbfb 72%, #3a9b14 72%);
+    aspect-ratio: 292 / 126;
+
+    & img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+}
+
+.card:hover .art img,
+.card:focus-within .art img {
+    transform: translateX(10px) translateY(-6px) rotate(-3deg);
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.fieldLabel {
+    font-family: Fredoka, Nunito, sans-serif;
+    font-weight: 500;
+    font-size: var(--mantine-font-size-md);
+}
+
+.pin {
+    gap: 12px;
+}
+
+.row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.grow {
+    flex: 1 1 160px;
+}
+
+.levelInput,
+.levelOption {
+    text-transform: capitalize;
+}
+
+.cta {
+    margin-top: auto;
+}
+
+@media (max-width: 62em) {
+    .grid {
+        grid-template-columns: minmax(0, 460px);
+        gap: 32px;
+    }
+}

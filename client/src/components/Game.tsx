@@ -12,7 +12,7 @@ export const Game = forwardRef<HTMLDivElement, GameProps>((props, ref) => {
     const myTeam = props.playerData.find((x) => x.guid === props.myPlayerGuid)?.team ?? null;
 
     return (
-        <div ref={ref} style={{ position: "relative" }}>
+        <div ref={ref} className="lk-game">
             {(globalState.viewingScoreboard || props.intermission) && (
                 <Scoreboard
                     playerData={props.playerData}

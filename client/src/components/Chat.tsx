@@ -82,7 +82,7 @@ export function Chat({ messages, onSendMessage, myTeam }: ChatLocalProps) {
                                 description: "chat: new message input placeholder",
                             })}
                         />
-                        <Group>
+                        <Group className="chat-hint" mt={8} justify="space-between">
                             <div>
                                 <span>
                                     <Kbd>Esc</Kbd>{" "}
@@ -93,6 +93,8 @@ export function Chat({ messages, onSendMessage, myTeam }: ChatLocalProps) {
                                 </span>
                             </div>
                             <Switch
+                                color="grass"
+                                styles={{ label: { color: "inherit", fontWeight: 700 } }}
                                 label={intl.formatMessage({
                                     defaultMessage: "Show All Messages",
                                     description: "'show all messages' switch text",

@@ -1,0 +1,55 @@
+.stage {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 28px;
+}
+
+.bezel {
+    position: relative;
+    max-width: 100%;
+    padding: 6px;
+    border: 3px solid var(--lk-ink);
+    border-radius: 18px;
+    background: linear-gradient(180deg, var(--lk-wood-hi), var(--lk-wood-lo));
+    box-shadow:
+        0 10px 0 var(--lk-shadow),
+        inset 0 2px 0 rgba(255, 255, 255, 0.28);
+    animation: rise 480ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+
+    & > div {
+        overflow: hidden;
+        border: 2.5px solid var(--lk-ink);
+        border-radius: 11px;
+        background: #000;
+    }
+}
+
+.unframed {
+    max-width: 100%;
+}
+
+.side {
+    flex: 0 1 320px;
+    min-width: 260px;
+    animation: rise 480ms 120ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bezel,
+    .side {
+        animation: none;
+    }
+}

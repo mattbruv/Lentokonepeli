@@ -1,10 +1,181 @@
-.control {
-    display: block;
-    padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
-    border-radius: var(--mantine-radius-md);
-    font-weight: 500;
+.app {
+    position: relative;
+    min-height: 100dvh;
+}
+
+.header {
+    --rivet: radial-gradient(
+        circle at 40% 38%,
+        var(--lk-rivet-hi) 0 1px,
+        var(--lk-rivet-mid) 2px,
+        var(--lk-rivet-lo) 3.2px,
+        transparent 3.8px
+    );
+
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 3px solid var(--lk-ink);
+    background:
+        var(--rivet) 14px 6px / 64px 9px repeat-x,
+        var(--rivet) 46px calc(100% - 5px) / 64px 9px repeat-x,
+        linear-gradient(180deg, var(--lk-wood-hi) 0%, var(--lk-wood) 50%, var(--lk-wood-lo) 100%);
+    box-shadow:
+        0 5px 0 rgba(0, 0, 0, 0.18),
+        inset 0 2px 0 rgba(255, 255, 255, 0.25);
+}
+
+.headerInner {
+    display: flex;
+    align-items: center;
+    gap: 12px 24px;
+    max-width: 1320px;
+    min-height: calc(var(--lk-header-h) - 3px);
+    margin: 0 auto;
+    padding: 8px 20px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--lk-wood-text);
+    text-decoration: none;
+    flex-shrink: 0;
 
     @mixin hover {
-        background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+        & .brandPlane {
+            animation-duration: 0.5s;
+        }
+    }
+}
+
+.brandPlane {
+    height: 32px;
+    image-rendering: pixelated;
+    animation: wobble 2.4s ease-in-out infinite alternate;
+    filter: drop-shadow(0 2px 0 var(--lk-ink));
+}
+
+.brandText {
+    font-family: Fredoka, Nunito, sans-serif;
+    font-weight: 600;
+    font-size: 1.35rem;
+    line-height: 1.1;
+    white-space: nowrap;
+    text-shadow:
+        0 2px 0 var(--lk-ink),
+        2px 0 0 var(--lk-ink),
+        -2px 0 0 var(--lk-ink),
+        0 -1px 0 var(--lk-ink);
+}
+
+.nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    flex: 1;
+}
+
+.navLink {
+    padding: 6px 16px;
+    border: 2.5px solid transparent;
+    border-radius: 999px;
+    font-family: Fredoka, Nunito, sans-serif;
+    font-weight: 500;
+    font-size: 1.05rem;
+    color: var(--lk-wood-text);
+    text-decoration: none;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+    transition:
+        background-color 120ms ease,
+        transform 120ms ease;
+
+    @mixin hover {
+        background: rgba(255, 255, 255, 0.14);
+        transform: translateY(-1px);
+    }
+}
+
+.active {
+    background: var(--lk-paper);
+    color: var(--lk-text);
+    border-color: var(--lk-ink);
+    text-shadow: none;
+    box-shadow: 0 3px 0 var(--lk-ink);
+
+    @mixin hover {
+        background: var(--lk-paper);
+    }
+}
+
+.actions {
+    display: flex;
+    gap: 4px;
+}
+
+.headerIcon {
+    color: var(--lk-wood-text);
+    filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.45));
+
+    @mixin hover {
+        background: rgba(255, 255, 255, 0.14);
+    }
+}
+
+.main {
+    position: relative;
+    z-index: 1;
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 24px 16px 64px;
+}
+
+@media (max-width: 48em) {
+    .headerInner {
+        flex-wrap: wrap;
+        padding: 8px 14px;
+    }
+
+    .brand {
+        flex: 1;
+    }
+
+    .brandText {
+        font-size: 1.1rem;
+        white-space: normal;
+    }
+
+    .nav {
+        order: 3;
+        flex-basis: 100%;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .nav {
+        gap: 2px;
+    }
+
+    .navLink {
+        white-space: nowrap;
+        padding: 3px 9px;
+        font-size: 0.92rem;
+    }
+}
+
+@keyframes wobble {
+    from {
+        transform: translateY(-2px) rotate(-5deg);
+    }
+    to {
+        transform: translateY(2px) rotate(4deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .brandPlane {
+        animation: none;
     }
 }

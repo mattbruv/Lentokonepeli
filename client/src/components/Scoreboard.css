@@ -1,24 +1,38 @@
 .scoreboard {
     position: absolute;
     top: 10px;
-    left: 20px;
-    width: 700px;
-    font-family: Arial, Helvetica, sans-serif;
+    left: 50%;
+    z-index: 2;
+    width: calc(100% - 40px);
+    max-width: 700px;
+    transform: translateX(-50%);
+    overflow: hidden;
+    border: 2.5px solid #1c1f21;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 5px 0 rgba(0, 0, 0, 0.45);
+    font-family: Nunito, Arial, Helvetica, sans-serif;
+    animation: lk-scoreboard-in 180ms ease-out both;
 }
 
 .scoreboard .room-panel {
-    background-color: #555555;
+    padding: 5px 0;
+    background: linear-gradient(180deg, #646d72, #3c4245);
+    border-bottom: 2px solid #1c1f21;
     text-align: center;
 }
 
 .scoreboard .room-name {
     display: inline-block;
-    background-color: white;
-    color: black;
-    border: 2px solid black;
+    padding: 0 10px;
+    background: #fff;
+    color: #1c1f21;
+    border: 2px solid #1c1f21;
+    border-radius: 6px;
+    font-family: Fredoka, Nunito, sans-serif;
     font-size: 15px;
-    font-weight: bold;
-    padding: 0 4px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
 }
 
 .scoreboard table {
@@ -27,22 +41,26 @@
 }
 
 .scoreboard th {
-    background-color: black;
-    color: white;
-    font-size: 15px;
-    font-weight: bold;
+    padding: 3px 6px;
+    background-color: #1c1f21;
+    color: #fff;
+    font-family: Fredoka, Nunito, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
     text-align: center;
 }
 
 .scoreboard th.ready-header {
-    background-color: white;
-    color: black;
+    background-color: #fff;
+    color: #1c1f21;
 }
 
 .scoreboard td {
-    font-size: 16px;
-    font-weight: normal;
+    padding: 2px 6px;
+    font-size: 15px;
+    font-weight: 700;
     text-align: center;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .scoreboard td.name {
@@ -52,29 +70,51 @@
 .scoreboard td.flag {
     text-align: left;
     width: 1%;
+    padding-right: 0;
+}
+
+.scoreboard td.flag img {
+    display: block;
 }
 
 .scoreboard .noteam {
-    background-color: white;
-    color: black;
+    background-color: #fff;
+    color: #000;
 }
 
 .scoreboard .friendly {
-    background-color: #8ECBFF;
-    color: black;
+    background-color: #8ecbff;
+    color: #000;
 }
 
 .scoreboard .enemy {
-    background-color: #FFB574;
-    color: black;
+    background-color: #ffb574;
+    color: #000;
 }
 
-.scoreboard .ready {
-    background-color: #00FF00;
-    color: white;
+.scoreboard td.ready,
+.scoreboard td.not-ready {
+    color: #fff;
+    font-family: Fredoka, Nunito, sans-serif;
+    font-weight: 600;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
 }
 
-.scoreboard .not-ready {
-    background-color: #FF0000;
-    color: white;
+.scoreboard td.ready {
+    background-color: #3fbf2a;
+}
+
+.scoreboard td.not-ready {
+    background-color: #e0173d;
+}
+
+@keyframes lk-scoreboard-in {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -8px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
 }

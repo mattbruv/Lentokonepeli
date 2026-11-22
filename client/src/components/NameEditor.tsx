@@ -41,7 +41,9 @@ export function NameEditor({ showTip, onSuccess }: NameEditorProps) {
         <Stack>
             {showTip && (
                 <div>
-                    <Text size={"lg"}>What name do you want to go by?</Text>
+                    <Text size={"lg"} fw={700}>
+                        What name do you want to go by?
+                    </Text>
                 </div>
             )}
             <TextInput
@@ -80,13 +82,7 @@ export function NameEditor({ showTip, onSuccess }: NameEditorProps) {
                 })}
                 position={"bottom"}
             >
-                <Button
-                    variant="gradient"
-                    gradient={{ from: "green", to: "lime", deg: 90 }}
-                    disabled={canSubmitModal() == false}
-                    size={"lg"}
-                    onClick={confirmName}
-                >
+                <Button color="grass" disabled={canSubmitModal() == false} size={"md"} mt="xs" onClick={confirmName}>
                     <FormattedMessage
                         defaultMessage={"Set name"}
                         description={"Call to action on setting section button which sets the name user has input"}

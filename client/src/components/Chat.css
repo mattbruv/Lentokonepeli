@@ -1,27 +1,39 @@
-/* Adds a transparent div rendering the chat overlaid on top of the game */
 .chat {
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 1;
     width: 100%;
     height: 400px;
+    max-height: 72%;
 
-    /* Font styles */
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
 }
 
-/* This is needed to allow the user to click game items through the empty chat overlay */
 .chat.active {
     pointer-events: auto;
 }
-/* This is needed to allow the user to click game items through the empty chat overlay */
+
 .chat.passive {
     pointer-events: none;
 }
 
 .new-message {
     margin: 10px;
+    padding: 10px 12px;
+    border: 2.5px solid #1c1f21;
+    border-radius: 14px;
+    background: rgba(40, 45, 48, 0.88);
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.4);
+    color: #f1f5f7;
+    font-family: Nunito, Arial, sans-serif;
+    animation: lk-chat-in 160ms ease-out both;
+}
+
+.new-message .chat-hint {
+    font-size: 13px;
+    font-weight: 700;
 }
 
 .all-messages {
@@ -56,4 +68,15 @@
 
 .chat .enemy {
     color: #ffb574;
+}
+
+@keyframes lk-chat-in {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
 }

@@ -1,8 +1,11 @@
-import { Card, Group, Stack, Text } from "@mantine/core";
 import { useEffect, useRef } from "react";
+import { FormattedMessage } from "react-intl";
 import { useSettingsContext } from "../contexts/settingsContext";
 import { useGuest } from "../hooks/useGuest";
 import { Game } from "./Game";
+import { GameStage } from "./GameStage";
+import { RoomCode } from "./RoomCode";
+import { Panel } from "./ui/Panel";
 
 type GuestProps = {
     gameCode: string;
@@ -29,28 +32,30 @@ export function Guest({ gameCode }: GuestProps) {
     }, []);
 
     return (
-        <Group justify="center">
-            <Game
-                ref={gameContainer}
-                myPlayerGuid={playerGuid}
-                playerData={playerData}
-                intermission={intermission}
-                roomName={gameCode}
-                messages={messages}
-                onSendMessage={sendChatMessage}
-            />
-            <Card withBorder style={{ height: "100%" }}>
-                <Stack>
-                    <Text>Joined Game:</Text>
-                    <Text
-                        style={{ color: "gray", fontSize: "1.5rem", fontFamily: "monospace" }}
-                        size={"xl"}
-                        fw={"bold"}
-                    >
-                        {gameCode}
-                    </Text>
-                </Stack>
-            </Card>
-        </Group>
+        <GameStage
+            game={
+                <Game
+                    ref={gameContainer}
+                    myPlayerGuid={playerGuid}
+                    playerData={playerData}
+                    intermission={intermission}
+                    roomName={gameCode}
+                    messages={messages}
+                    onSendMessage={sendChatMessage}
+                />
+            }
+            side={
+                <Panel
+                    title={
+                        <FormattedMessage
+                            defaultMessage={"Game Code"}
+                            description={"Title shown above the shareable room code"}
+                        />
+                    }
+                >
+                    <RoomCode code={gameCode} />
+                </Panel>
+            }
+        />
     );
 }
