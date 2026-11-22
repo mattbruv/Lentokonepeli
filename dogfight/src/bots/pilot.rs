@@ -1,3 +1,5 @@
+mod tactics;
+
 use std::f64::consts::{PI, TAU};
 
 use crate::{
@@ -74,6 +76,7 @@ pub struct Bot {
     turn_commit: Option<f64>,
     terrain: Option<Terrain>,
     pub(crate) force_land: bool,
+    tracks: Vec<tactics::Track>,
 }
 
 fn wrap(angle: f64) -> f64 {
@@ -147,6 +150,7 @@ impl Bot {
             turn_commit: None,
             terrain: None,
             force_land: false,
+            tracks: vec![],
         }
     }
 
@@ -329,6 +333,11 @@ impl Bot {
             (self.rng.next_u64() % 3) as u8
         } else if enemy_structures && self.rng.chance(bomber_chance) {
             1
+        } else if let Some((centrals, allies)) = self.skill.fighter {
+            match team {
+                Team::Centrals => centrals,
+                Team::Allies => allies,
+            }
         } else if self.rng.chance(0.5) {
             0
         } else {
@@ -453,7 +462,7 @@ impl Bot {
         if rounds {
             let vision = self.skill.vision * ROUNDS_VISION_FACTOR;
             if plane.get_ammo() > 0 {
-                if let Some((id, _)) = self.nearest_enemy_plane(world, team, x, y, vision) {
+                if let Some(id) = self.choose_enemy_plane(world, team, plane, vision) {
                     return Goal::Attack(Target::Plane(id));
                 }
             }
@@ -610,6 +619,21 @@ impl Bot {
             .min_by(|a, b| a.1.total_cmp(&b.1))
     }
 
+    fn choose_enemy_plane(
+        &self,
+        world: &World,
+        team: Team,
+        plane: &Plane,
+        range: f64,
+    ) -> Option<PlaneId> {
+        if self.skill.tactics {
+            return self.pick_enemy_plane(world, team, plane, range);
+        }
+        let (x, y) = plane_pos(plane);
+        self.nearest_enemy_plane(world, team, x, y, range)
+            .map(|(id, _)| id)
+    }
+
     fn combat_goal(
         &self,
         world: &World,
@@ -623,7 +647,7 @@ impl Bot {
             return None;
         }
 
-        if let Some((id, _)) = self.nearest_enemy_plane(world, team, x, y, vision) {
+        if let Some(id) = self.choose_enemy_plane(world, team, plane, vision) {
             return Some(Goal::Attack(Target::Plane(id)));
         }
 
@@ -695,12 +719,17 @@ impl Bot {
         if plane.get_ammo() <= 0 {
             return false;
         }
+        if self.skill.tactics && self.tactical_fire(world, team, plane) {
+            return true;
+        }
         let angle = plane.get_angle();
         let mut targets: Vec<(f64, f64, f64, f64)> = world
             .planes
             .get_map()
             .values()
-            .filter(|p| p.get_team() != team && p.get_mode() != PlaneMode::Falling)
+            .filter(|p| {
+                !self.skill.tactics && p.get_team() != team && p.get_mode() != PlaneMode::Falling
+            })
             .map(|p| {
                 let (x, y) = plane_pos(p);
                 let (vx, vy) = velocity(p.get_angle(), p.get_speed());
@@ -776,6 +805,10 @@ impl Bot {
         let (vx, vy) = velocity(angle, speed);
         let h = if angle.cos() >= 0.0 { 1.0 } else { -1.0 };
 
+        if self.skill.tactics {
+            self.update_tracks(world, team);
+        }
+
         if self.think_timer == 0 {
             self.think_timer = self.skill.think_interval;
             self.goal = self.choose_goal(world, team, plane);
@@ -791,6 +824,7 @@ impl Bot {
             .evade_cooldown
             .saturating_sub(self.skill.control_interval);
         if self.skill.evade
+            && !self.skill.tactics
             && self.evade_ticks == 0
             && self.evade_cooldown == 0
             && !matches!(self.goal, Goal::Land(_))
@@ -813,7 +847,14 @@ impl Bot {
             Goal::Patrol(px, py) => positive((py - y).clamp(-200.0, 200.0).atan2(px - x)),
             Goal::Attack(target) => match self.target_state(world, target) {
                 Some((tx, ty, tvx, tvy)) => {
-                    let (aim, distance) = self.aim_at(plane, tx, ty, tvx, tvy);
+                    let (aim, distance) = match target {
+                        Target::Plane(id) if self.skill.tactics => world
+                            .planes
+                            .get(id)
+                            .map(|p| self.tracked_aim(plane, id, p))
+                            .unwrap_or_else(|| self.aim_at(plane, tx, ty, tvx, tvy)),
+                        _ => self.aim_at(plane, tx, ty, tvx, tvy),
+                    };
                     let swerve = if self.skill.evade && distance < 80.0 {
                         0.6
                     } else {

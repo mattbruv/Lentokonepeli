@@ -445,3 +445,18 @@ fn higher_skill_bots_bomb_players_more_accurately() {
     assert!(ace_kills >= medium_kills && medium_kills > easy_kills);
     assert!(ace_bombs <= medium_bombs);
 }
+
+#[test]
+fn ace_beats_hard_in_duels() {
+    let mut ace = 0;
+    let mut hard = 0;
+    for level_name in ["classic", "london", "desert", "base"] {
+        let (a, h) = duel(BotDifficulty::Ace, BotDifficulty::Hard, level_name);
+        let (h2, a2) = duel(BotDifficulty::Hard, BotDifficulty::Ace, level_name);
+        println!("{level_name}: Ace {a} - {h} Hard, Hard {h2} - {a2} Ace");
+        ace += a + a2;
+        hard += h + h2;
+    }
+    println!("Ace {ace} - {hard} Hard");
+    assert!(ace * 10 > hard * 14, "{ace} vs {hard}");
+}

@@ -837,6 +837,14 @@ impl Plane {
         self.total_health as f64 / self.get_max_health() as f64
     }
 
+    pub(crate) fn get_turn_rate(&self) -> f64 {
+        self.speed / 100.0 / 4.0 * self.get_turn_step()
+    }
+
+    pub(crate) fn get_bullet_speed(&self) -> f64 {
+        ((self.speed / 100.0 + 4.0) * 25.0).min(200.0).floor() / 25.0
+    }
+
     pub(crate) fn get_landing_speed_limit(&self) -> f64 {
         250.0 + self.get_speed_modifier()
     }
