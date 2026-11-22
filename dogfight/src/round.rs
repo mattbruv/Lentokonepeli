@@ -410,4 +410,12 @@ designer=polofel"#;
         assert_eq!(old.game_mode, GameMode::Normal);
         assert_eq!(old.game_time_minutes, 5);
     }
+
+    #[test]
+    fn replays_from_other_versions_are_rejected() {
+        let mut world = world_with_level(5, 20);
+        world.replay_file.build_version = "0.7.0".to_string();
+        let bytes = world.get_replay_file_bytes();
+        assert!(ReplayFile::from_bytes(&bytes).is_none());
+    }
 }
