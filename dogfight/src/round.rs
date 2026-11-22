@@ -62,6 +62,25 @@ impl World {
         self.world_info.set_time_left(seconds);
     }
 
+    pub(crate) fn team_has_players(&self, team: Team) -> bool {
+        self.players
+            .get_map()
+            .values()
+            .any(|p| *p.get_team() == Some(team))
+    }
+
+    fn players_waiting_with_empty_team(&self) -> bool {
+        if self.game_mode != GameMode::Rounds {
+            return false;
+        }
+        let waiting = self
+            .players
+            .get_map()
+            .values()
+            .any(|p| p.get_team().is_none() && p.get_state() == PlayerState::Spectating);
+        waiting && !(self.team_has_players(Team::Centrals) && self.team_has_players(Team::Allies))
+    }
+
     fn team_eliminated(&self, team: Team) -> bool {
         if self.game_mode != GameMode::Rounds || self.time_winner == Some(team) {
             return false;
@@ -110,6 +129,9 @@ impl World {
     }
 
     fn check_round_winner(&self) -> Option<Option<Team>> {
+        if self.players_waiting_with_empty_team() {
+            return Some(None);
+        }
         if !self.team_alive(Team::Centrals) {
             return Some(Some(Team::Allies));
         }
@@ -417,5 +439,41 @@ designer=polofel"#;
         world.replay_file.build_version = "0.7.0".to_string();
         let bytes = world.get_replay_file_bytes();
         assert!(ReplayFile::from_bytes(&bytes).is_none());
+    }
+
+    #[test]
+    fn rounds_mode_simultaneous_joiners_can_pick_teams() {
+        let mut world = world_with_level(0, 5);
+        world.set_game_mode(GameMode::Rounds);
+        for guid in ["a", "b", "c", "d"] {
+            add_player(&mut world, guid);
+        }
+        for guid in ["a", "b", "c", "d"] {
+            let p = world.players.get(player_id(&world, guid)).unwrap();
+            assert_eq!(p.get_state(), PlayerState::ChoosingTeam);
+        }
+    }
+
+    #[test]
+    fn rounds_mode_waiting_players_end_a_one_sided_round() {
+        let mut world = rounds_world_with_two_teams();
+        add_player(&mut world, "c");
+        assert_eq!(
+            world
+                .players
+                .get(player_id(&world, "c"))
+                .unwrap()
+                .get_state(),
+            PlayerState::Spectating
+        );
+
+        let b = world
+            .get_player_from_guid(&PlayerGuid::from("b"))
+            .unwrap()
+            .0;
+        world.players.remove(*b);
+        world.tick(vec![]);
+        assert_eq!(world.world_info.get_state(), WorldState::PostGame);
+        assert_eq!(world.world_info.get_team_wins(Team::Centrals), 0);
     }
 }

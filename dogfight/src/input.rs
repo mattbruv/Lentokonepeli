@@ -247,7 +247,9 @@ impl World {
         let in_intermission = self.world_info.get_state() == WorldState::Intermission;
         let wait_for_next_round = self.game_mode == GameMode::Rounds
             && !in_intermission
-            && self.players.get_map().len() + 1 >= ROUNDS_LATE_JOIN_PLAYERS;
+            && self.players.get_map().len() + 1 >= ROUNDS_LATE_JOIN_PLAYERS
+            && self.team_has_players(Team::Centrals)
+            && self.team_has_players(Team::Allies);
         let mut player = Player::new(guid, data.name, data.clan);
         player.set_bot(is_bot);
         if let Some((id, p)) = self.players.insert(player) {
