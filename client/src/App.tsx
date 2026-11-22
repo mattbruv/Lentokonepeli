@@ -80,12 +80,7 @@ function App() {
                 <div className={classes.headerInner}>
                     <NavLink to={"/"} className={classes.brand}>
                         <img src={brandPlane} className={classes.brandPlane} alt="" />
-                        <span className={classes.brandText}>
-                            <FormattedMessage
-                                defaultMessage={"Lentokonepeli (In Development)"}
-                                description={"Main title of site shown on nav"}
-                            />
-                        </span>
+                        <span className={classes.brandText}>Lentokonepeli</span>
                     </NavLink>
                     <nav className={classes.nav}>
                         <NavLink to={"/"} end className={navClass}>

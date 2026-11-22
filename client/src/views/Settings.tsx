@@ -4,6 +4,7 @@ import { IconDeviceGamepad2, IconPlus, IconRestore, IconSitemap, IconTrash, Icon
 import React, { useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { NameEditor } from "../components/NameEditor";
+import { LocaleFlag } from "../components/ui/LocaleFlag";
 import { Panel } from "../components/ui/Panel";
 import { DEFAULT_GAME_KEYBINDS, useSettingsContext } from "../contexts/settingsContext";
 import { GameAction } from "../hooks/keybinds/models";
@@ -112,6 +113,14 @@ export function Settings() {
                         }}
                         data={KNOWN_LOCALE_DROPDOWN_VALUES}
                         placeholder="Choose locale"
+                        leftSection={<LocaleFlag locale={settings.locale} />}
+                        leftSectionWidth={46}
+                        renderOption={({ option }) => (
+                            <span className={classes.localeOption}>
+                                <LocaleFlag locale={option.value} />
+                                {option.label}
+                            </span>
+                        )}
                     />
                 </Panel>
             </div>

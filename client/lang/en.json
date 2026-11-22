@@ -1,8 +1,4 @@
 {
-  "+NFaSb": {
-    "defaultMessage": "Lentokonepeli (In Development)",
-    "description": "Main title of site shown on nav"
-  },
   "+VHHqo": {
     "defaultMessage": "Leave game",
     "description": "Button in the leave game dialog that confirms leaving the active game"

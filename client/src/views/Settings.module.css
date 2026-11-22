@@ -67,6 +67,12 @@
     align-self: center;
 }
 
+.localeOption {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 .listen {
     display: flex;
     flex-direction: column;
