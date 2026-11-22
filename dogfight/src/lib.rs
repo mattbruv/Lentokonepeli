@@ -1,3 +1,4 @@
+pub mod choosers;
 pub mod collision;
 pub mod debug;
 pub mod entities;

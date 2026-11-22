@@ -91,6 +91,8 @@ impl NetworkedBytes for ControllingEntity {
     }
 }
 
+pub const CHOOSER_KEY_DELAY_TICKS: u32 = 18;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS, EnumBytes)]
 #[ts(export)]
 pub enum RespawnType {
@@ -118,6 +120,8 @@ pub struct Player {
     respawn_ticks: Option<u32>,
 
     keys: PlayerKeyboard,
+    previous_keys: PlayerKeyboard,
+    chooser_timer: u32,
 
     guid: Property<PlayerGuid>,
     name: Property<String>,
@@ -138,6 +142,10 @@ pub struct Player {
     ping: Property<u16>,
     #[rustfmt::skip]
     last_runway: Property<Option::<RunwayId>>,
+    team_option: Property<u8>,
+    #[rustfmt::skip]
+    selected_runway: Property<Option::<RunwayId>>,
+    selected_plane: Property<u8>,
 }
 
 impl Player {
@@ -149,6 +157,8 @@ impl Player {
             next_respawn: RespawnType::Default,
             respawn_ticks: None,
             keys: PlayerKeyboard::new(),
+            previous_keys: PlayerKeyboard::new(),
+            chooser_timer: CHOOSER_KEY_DELAY_TICKS,
             guid: Property::new(guid),
             name: Property::new(name),
             clan: Property::new(clan),
@@ -164,6 +174,9 @@ impl Player {
             accuracy: Property::new(0),
             ping: Property::new(0),
             last_runway: Property::new(None),
+            team_option: Property::new(1),
+            selected_runway: Property::new(None),
+            selected_plane: Property::new(0),
         }
     }
 
@@ -216,12 +229,62 @@ impl Player {
         self.ready.set(ready);
     }
 
+    pub fn get_last_runway(&self) -> Option<RunwayId> {
+        *self.last_runway.get()
+    }
+
+    pub fn get_previous_keys(&self) -> &PlayerKeyboard {
+        &self.previous_keys
+    }
+
+    pub fn remember_keys(&mut self) {
+        self.previous_keys = self.keys;
+    }
+
+    pub fn advance_chooser_timer(&mut self) -> bool {
+        self.chooser_timer = self.chooser_timer.saturating_add(1);
+        self.chooser_timer > CHOOSER_KEY_DELAY_TICKS
+    }
+
+    pub fn reset_chooser_timer(&mut self) {
+        self.chooser_timer = 0;
+    }
+
+    pub fn get_team_option(&self) -> u8 {
+        *self.team_option.get()
+    }
+
+    pub fn set_team_option(&mut self, option: u8) {
+        self.team_option.set(option.min(2));
+    }
+
+    pub fn get_selected_runway(&self) -> Option<RunwayId> {
+        *self.selected_runway.get()
+    }
+
+    pub fn set_selected_runway(&mut self, runway_id: Option<RunwayId>) {
+        self.selected_runway.set(runway_id);
+    }
+
+    pub fn get_selected_plane(&self) -> u8 {
+        *self.selected_plane.get()
+    }
+
+    pub fn set_selected_plane(&mut self, index: u8) {
+        self.selected_plane.set(index % 3);
+    }
+
     pub fn set_last_runway(&mut self, runway_id: RunwayId) {
         self.last_runway.set(Some(runway_id));
     }
 
     pub fn reset_for_round(&mut self) {
         self.last_runway.set(None);
+        self.team_option.set(1);
+        self.selected_runway.set(None);
+        self.selected_plane.set(0);
+        self.previous_keys = PlayerKeyboard::new();
+        self.chooser_timer = CHOOSER_KEY_DELAY_TICKS;
         self.shots = 0;
         self.hits = 0;
         self.next_respawn = RespawnType::Default;

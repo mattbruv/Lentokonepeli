@@ -1,4 +1,3 @@
-import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 import { Team } from "dogfight-types/Team";
 import * as PIXI from "pixi.js";
 import { GameClientCallbacks } from "./DogfightClient";
@@ -6,7 +5,6 @@ import { Textures } from "./textures";
 
 const GAP = 10;
 const FLAG_Y_OFFSET = 80;
-const KEY_REPEAT_MS = 180;
 const CHOICES: (Team | null)[] = ["Centrals", null, "Allies"];
 
 export class TeamChooser {
@@ -15,7 +13,6 @@ export class TeamChooser {
     private flags: PIXI.Sprite[];
     private highlight: PIXI.Graphics;
     private chosen = 1;
-    private lastMove = 0;
     private flagCenterY = 0;
     private screenCenterX = 0;
     private callbacks?: GameClientCallbacks;
@@ -26,7 +23,7 @@ export class TeamChooser {
         this.highlight = new PIXI.Graphics();
 
         for (const flag of this.flags) {
-            flag.interactive = true;
+            flag.eventMode = "static";
             this.container.addChild(flag);
         }
         this.container.addChild(this.highlight);
@@ -58,28 +55,15 @@ export class TeamChooser {
         this.drawHighlight();
     }
 
-    public reset() {
-        this.chosen = 1;
-        this.drawHighlight();
+    public setClickable(clickable: boolean) {
+        for (const flag of this.flags) {
+            flag.eventMode = clickable ? "static" : "none";
+        }
     }
 
-    public processKeys(keys: PlayerKeyboard) {
-        const now = performance.now();
-        if (now - this.lastMove >= KEY_REPEAT_MS) {
-            if (keys.left && this.chosen > 0) {
-                this.chosen -= 1;
-                this.lastMove = now;
-                this.drawHighlight();
-            } else if (keys.right && this.chosen < 2) {
-                this.chosen += 1;
-                this.lastMove = now;
-                this.drawHighlight();
-            }
-        }
-
-        if (keys.enter) {
-            this.choose();
-        }
+    public setChosen(option: number) {
+        this.chosen = Math.min(2, Math.max(0, option));
+        this.drawHighlight();
     }
 
     private choose() {

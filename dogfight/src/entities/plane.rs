@@ -46,6 +46,17 @@ pub enum PlaneType {
 }
 
 impl PlaneType {
+    pub fn for_team(team: Team, index: u8) -> PlaneType {
+        match (team, index % 3) {
+            (Team::Centrals, 0) => PlaneType::Albatros,
+            (Team::Centrals, 1) => PlaneType::Junkers,
+            (Team::Centrals, _) => PlaneType::Fokker,
+            (Team::Allies, 0) => PlaneType::Bristol,
+            (Team::Allies, 1) => PlaneType::Salmson,
+            (Team::Allies, _) => PlaneType::Sopwith,
+        }
+    }
+
     pub fn team(&self) -> Team {
         match self {
             PlaneType::Albatros | PlaneType::Junkers | PlaneType::Fokker => Team::Centrals,

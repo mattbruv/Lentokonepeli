@@ -125,6 +125,9 @@ impl World {
         let input_events = self.handle_input(input);
         self.game_output.extend(input_events);
 
+        let chooser_events = self.tick_choosers();
+        self.game_output.extend(chooser_events);
+
         // 1. Tick runnable entities and capture output actions
         let runnable_actions = self.tick_entities();
 

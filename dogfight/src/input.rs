@@ -242,7 +242,11 @@ impl World {
         game_output
     }
 
-    fn choose_team(&mut self, guid: &PlayerGuid, choice: Option<Team>) -> Option<(PlayerId, Team)> {
+    pub(crate) fn choose_team(
+        &mut self,
+        guid: &PlayerGuid,
+        choice: Option<Team>,
+    ) -> Option<(PlayerId, Team)> {
         if self.world_info.get_state() == WorldState::Intermission {
             return None;
         }

@@ -135,40 +135,8 @@ export class DogfightClient {
     // Handle key events and dispatch the proper callback calls
     // based on our current player's state
     private onKeyChange(keys: PlayerKeyboard) {
-        const myPlayer = this.getMyPlayer();
-        if (!myPlayer) return;
-        if (this.worldState === "Intermission") {
-            this.callbacks?.keyChange(keys);
-            return;
-        }
-        switch (myPlayer.props.state) {
-            case "Playing": {
-                this.callbacks?.keyChange(keys);
-                break;
-            }
-            case "ChoosingTeam": {
-                if (!this.isReplay) {
-                    this.teamChooser.processKeys(keys);
-                }
-                break;
-            }
-            case "ChoosingRunway": {
-                if (myPlayer.props.team) {
-                    this.runwaySelector.processKeys(
-                        keys,
-                        this.entities.Runway,
-                        (runwayPos) => {
-                            this.centerCamera(runwayPos.x, runwayPos.y);
-                        },
-                        (runwayId, planeType) => {
-                            this.callbacks?.chooseRunway(runwayId, planeType);
-                        },
-                    );
-                    this.gameHUD.updateStats(fullPlaneStats(this.runwaySelector.getSelectedPlaneType()));
-                }
-                break;
-            }
-        }
+        if (!this.getMyPlayer() || this.isReplay) return;
+        this.callbacks?.keyChange(keys);
     }
 
     public init(callbacks: GameClientCallbacks, element: HTMLDivElement, intl: IntlShape) {
@@ -334,8 +302,9 @@ export class DogfightClient {
 
         this.roundInfo.update(this.worldState, winner, me?.props.ready ?? true);
         this.refreshSpectating();
-        this.teamChooser.container.visible =
-            !intermission && !this.isReplay && (!me || me.props.state === "ChoosingTeam");
+        const choosingTeam = me?.props.state === "ChoosingTeam";
+        this.teamChooser.container.visible = !intermission && (this.isReplay ? choosingTeam : !me || choosingTeam);
+        this.teamChooser.setClickable(!this.isReplay);
         this.runwaySelector.container.visible = !intermission && me?.props.state === "ChoosingRunway";
 
         if (!intermission && me?.props.state === "WaitingRespawn") {
@@ -373,17 +342,16 @@ export class DogfightClient {
         }
 
         if (props.state === "ChoosingTeam") {
-            this.teamChooser.reset();
             this.centerCamera(TEAM_CHOOSER_CAMERA.x, TEAM_CHOOSER_CAMERA.y);
         }
+
+        this.teamChooser.setChosen(myPlayer.props.team_option);
 
         if ("team" in props) {
             this.applyMyTeam(myPlayer.props.team);
         }
 
         if (props.team) {
-            this.runwaySelector.setTeam(props.team);
-
             // update runway team colors
             for (const [_, runway] of this.entities.Runway.collection) {
                 runway.setUserTeam(props.team);
@@ -408,14 +376,15 @@ export class DogfightClient {
             }
         }
 
-        if (props.state === "ChoosingRunway") {
-            if (myPlayer.props.last_runway !== null) {
-                this.runwaySelector.preferRunway(this.entities.Runway, myPlayer.props.last_runway);
+        const { state, team, selected_runway, selected_plane } = myPlayer.props;
+        if (state === "ChoosingRunway" && team) {
+            this.runwaySelector.show(team, selected_plane);
+            const runway = selected_runway !== null ? this.entities.Runway.collection.get(selected_runway) : undefined;
+            if (runway) {
+                const target = this.runwaySelector.getCameraTarget(runway, false);
+                this.centerCamera(target.x, target.y);
             }
-            this.runwaySelector.selectRunway(this.entities.Runway, (runwayPos) => {
-                this.centerCamera(runwayPos.x, runwayPos.y);
-            });
-            this.gameHUD.updateStats(fullPlaneStats(this.runwaySelector.getSelectedPlaneType()));
+            this.gameHUD.updateStats(fullPlaneStats(this.runwaySelector.getPlaneType(team, selected_plane)));
         }
 
         this.refreshOverlays();

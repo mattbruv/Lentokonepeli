@@ -1,5 +1,4 @@
 import { PlaneType } from "dogfight-types/PlaneType";
-import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
 import { Team } from "dogfight-types/Team";
 import * as PIXI from "pixi.js";
 import { IntlShape } from "react-intl";
@@ -7,7 +6,6 @@ import { GAME_INTL } from "../intl/messages";
 import { GameClientCallbacks } from "./DogfightClient";
 import { Point } from "./entities/entity";
 import { Runway } from "./entities/runway";
-import { EntityGroup } from "./EntityManager";
 import { Textures } from "./textures";
 
 type PlaneData = {
@@ -33,7 +31,6 @@ export class RunwaySelector {
     public planeMap: PlaneMap;
     private team: Team = "Centrals";
     private index = 0;
-    private runwayIndex = 0;
 
     callbacks?: GameClientCallbacks;
 
@@ -133,9 +130,9 @@ export class RunwaySelector {
         this.updatePlaneInfo();
     }
 
-    setTeam(team: Team) {
+    public show(team: Team, planeIndex: number) {
         this.team = team;
-        this.planeImage.texture = this.planeMap[this.team][this.index].texture;
+        this.index = ((planeIndex % 3) + 3) % 3;
         this.updatePlaneInfo();
     }
 
@@ -145,59 +142,6 @@ export class RunwaySelector {
         const planeData = map[this.index];
         this.planeNameText.text = planeData.plane_name;
         this.planeDescriptionText.text = planeData.plane_description;
-    }
-
-    processKeys(
-        keys: PlayerKeyboard,
-        runways: EntityGroup<Runway>,
-        centerCamera: (runwayPos: Point) => void,
-        selectRunway: (runwayId: number, plane: PlaneType) => void,
-    ) {
-        const map = this.planeMap[this.team];
-
-        if (keys.down) {
-            this.index = this.index - 1 < 0 ? map.length - 1 : this.index - 1;
-        }
-
-        if (keys.up) {
-            this.index = this.index + 1 >= map.length ? 0 : this.index + 1;
-        }
-
-        this.updatePlaneInfo(); // Update name and description when plane changes
-
-        const myRunways = this.getMyRunways(runways);
-        if (myRunways.length === 0) return;
-        this.runwayIndex = Math.min(this.runwayIndex, myRunways.length - 1);
-
-        if (keys.left) {
-            this.runwayIndex = this.runwayIndex - 1 < 0 ? myRunways.length - 1 : this.runwayIndex - 1;
-        }
-
-        if (keys.right) {
-            this.runwayIndex = this.runwayIndex + 1 >= myRunways.length ? 0 : this.runwayIndex + 1;
-        }
-
-        this.selectRunway(runways, centerCamera);
-
-        if (keys.enter) {
-            const planeType = map[this.index].plane_type;
-            const runwayId = myRunways[this.runwayIndex][0];
-            selectRunway(runwayId, planeType);
-        }
-    }
-
-    public selectRunway(runways: EntityGroup<Runway>, centerCamera: (runwayPos: Point) => void) {
-        const myRunways = this.getMyRunways(runways);
-        if (myRunways.length === 0) return;
-        this.runwayIndex = Math.min(this.runwayIndex, myRunways.length - 1);
-        centerCamera(this.getCameraTarget(myRunways[this.runwayIndex][1], false));
-    }
-
-    public preferRunway(runways: EntityGroup<Runway>, runwayId: number) {
-        const index = this.getMyRunways(runways).findIndex(([id]) => id === runwayId);
-        if (index !== -1) {
-            this.runwayIndex = index;
-        }
     }
 
     public getCameraTarget(runway: Runway, landed: boolean): Point {
@@ -218,13 +162,7 @@ export class RunwaySelector {
         this.lowQualityBox.visible = !high;
     }
 
-    public getSelectedPlaneType(): PlaneType {
-        return this.planeMap[this.team][this.index].plane_type;
-    }
-
-    private getMyRunways(runways: EntityGroup<Runway>): [number, Runway][] {
-        return [...runways.collection.entries()]
-            .filter(([_, runway]) => runway.props.team === this.team && runway.props.client_health > 0)
-            .sort((a, b) => (a[1].props.client_x ?? 0) - (b[1].props.client_x ?? 0));
+    public getPlaneType(team: Team, planeIndex: number): PlaneType {
+        return this.planeMap[team][((planeIndex % 3) + 3) % 3].plane_type;
     }
 }
