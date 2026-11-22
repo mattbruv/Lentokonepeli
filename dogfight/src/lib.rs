@@ -1,3 +1,4 @@
+pub mod bots;
 pub mod choosers;
 pub mod collision;
 pub mod debug;

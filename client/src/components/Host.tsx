@@ -7,6 +7,7 @@ import { useSettingsContext } from "../contexts/settingsContext";
 import { useActiveView } from "../hooks/useActiveView";
 import { useLocalHost } from "../hooks/useLocalHost";
 import { LevelName } from "../views/Lobby";
+import { BotPanel } from "./BotPanel";
 import { Game } from "./Game";
 import { GameStage } from "./GameStage";
 import { RoomCode } from "./RoomCode";
@@ -32,6 +33,9 @@ export function Host({ level, recordGame, gameTime }: HostProps) {
         playerGuid,
         messages,
         sendChatMessage,
+        bots,
+        addBot,
+        removeBot,
     } = useLocalHost(level, recordGame, getUsername(), getClan(), gameTime);
 
     function host() {
@@ -70,29 +74,32 @@ export function Host({ level, recordGame, gameTime }: HostProps) {
                 />
             }
             side={
-                <Panel
-                    title={
-                        <FormattedMessage
-                            defaultMessage={"Game Code"}
-                            description={"Title shown above the shareable room code"}
-                        />
-                    }
-                >
-                    <Stack gap="lg">
-                        <RoomCode code={roomCode} />
-                        <Button
-                            onClick={saveReplay}
-                            color="copper"
-                            fullWidth
-                            rightSection={<IconFileDownload stroke={2.4} />}
-                        >
+                <>
+                    <Panel
+                        title={
                             <FormattedMessage
-                                defaultMessage={"Save Replay File"}
-                                description={"Button text for button which saves replay file"}
+                                defaultMessage={"Game Code"}
+                                description={"Title shown above the shareable room code"}
                             />
-                        </Button>
-                    </Stack>
-                </Panel>
+                        }
+                    >
+                        <Stack gap="lg">
+                            <RoomCode code={roomCode} />
+                            <Button
+                                onClick={saveReplay}
+                                color="copper"
+                                fullWidth
+                                rightSection={<IconFileDownload stroke={2.4} />}
+                            >
+                                <FormattedMessage
+                                    defaultMessage={"Save Replay File"}
+                                    description={"Button text for button which saves replay file"}
+                                />
+                            </Button>
+                        </Stack>
+                    </Panel>
+                    <BotPanel bots={bots} playerData={playerData} onAddBot={addBot} onRemoveBot={removeBot} />
+                </>
             }
         />
     );

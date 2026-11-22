@@ -66,6 +66,12 @@
     text-align: left;
 }
 
+.scoreboard .bot-icon {
+    margin-left: 4px;
+    vertical-align: -2px;
+    opacity: 0.8;
+}
+
 .scoreboard td.flag {
     text-align: left;
     width: 1%;

@@ -39,6 +39,10 @@
     "defaultMessage": "Laukaise heittoistuin, Avaa laskuvarjo",
     "description": "Title for the 'Eject, Open Parachute' action shown on the keybind settings section"
   },
+  "6h1L5u": {
+    "defaultMessage": "Easy",
+    "description": "Bot panel: easiest bot difficulty"
+  },
   "7GHFcs": {
     "defaultMessage": "Takaisin peliin",
     "description": "Shown on screen with a countdown while waiting to respawn after dying"
@@ -58,6 +62,10 @@
   "9l2moM": {
     "defaultMessage": "{team, select, Centrals {Keskusvaltojen} other {Liittoutuneiden}} kiitorata tuhottu.",
     "description": "Chat notice when a team's runway is destroyed"
+  },
+  "AY7tVh": {
+    "defaultMessage": "Bot",
+    "description": "scoreboard: accessible label for the icon marking a bot"
   },
   "B1CMe5": {
     "defaultMessage": "Pelin uusintoja voi ladata isännöidessä pelejä",
@@ -111,6 +119,10 @@
     "defaultMessage": "Erittäin ketterä. ei suositella aloitteleville lentäjille.",
     "description": "Description of the Sopwith Camel aircraft"
   },
+  "M9uG/P": {
+    "defaultMessage": "Bots",
+    "description": "Title of the host panel for managing bots"
+  },
   "MrbN1S": {
     "defaultMessage": "(Rangaistus oman tappamisesta)",
     "description": "Shown below the respawn countdown when the wait is longer because of a teamkill"
@@ -130,6 +142,10 @@
   "PSkosK": {
     "defaultMessage": "Game size",
     "description": "Title of the panel used to resize the game view"
+  },
+  "PUiIc0": {
+    "defaultMessage": "Random",
+    "description": "Bot panel: option to add a bot to whichever team needs players"
   },
   "Q9UCoB": {
     "defaultMessage": "Bigger",
@@ -155,6 +171,14 @@
     "defaultMessage": "Pelikoodi",
     "description": "Title for selection used to insert the game code"
   },
+  "T+NmK1": {
+    "defaultMessage": "Remove bot",
+    "description": "Bot panel: tooltip for the button that removes a bot"
+  },
+  "TcT+Lx": {
+    "defaultMessage": "Allies",
+    "description": "Bot panel: option to add a bot to the Allies team"
+  },
   "U/mSA3": {
     "defaultMessage": "Nollaa asetukset",
     "description": "Button used to reset user defined keybinds on the settings page"
@@ -166,6 +190,10 @@
   "UwCHgC": {
     "defaultMessage": "(Paina enteriä kun olet valmis)",
     "description": "Shown on the intermission screen between rounds until the player presses enter"
+  },
+  "V27mjT": {
+    "defaultMessage": "Medium",
+    "description": "Bot panel: medium bot difficulty"
   },
   "WWTrIb": {
     "defaultMessage": "Monipuolinen keskitaso. Konekiväärin lisäksi pommit. Nopea ja vahvamoottorinen kone, joskaan ei ketterä.",
@@ -206,6 +234,14 @@
   "azXaJ7": {
     "defaultMessage": "kyllä",
     "description": "scoreboard: player is ready for the next round"
+  },
+  "b0BOYV": {
+    "defaultMessage": "Hard",
+    "description": "Bot panel: hard bot difficulty"
+  },
+  "b8pU+2": {
+    "defaultMessage": "Add Bot",
+    "description": "Bot panel: button that adds a bot"
   },
   "buqDOb": {
     "defaultMessage": "Valitse Käyttäjänimi",
@@ -307,6 +343,10 @@
     "defaultMessage": "Kenttä",
     "description": "Title for selection used to choose the game level"
   },
+  "q9p7Ga": {
+    "defaultMessage": "Difficulty",
+    "description": "Bot panel: label for the bot difficulty dropdown"
+  },
   "r1oUWJ": {
     "defaultMessage": "Näytä kaikki viestit",
     "description": "'show all messages' switch text"
@@ -370,6 +410,14 @@
   "yRjHTu": {
     "defaultMessage": "Junkers J.1",
     "description": "Name of the Junkers J.1 aircraft"
+  },
+  "yi/9eD": {
+    "defaultMessage": "Centrals",
+    "description": "Bot panel: option to add a bot to the Centrals team"
+  },
+  "yjtXtd": {
+    "defaultMessage": "Ace",
+    "description": "Bot panel: hardest bot difficulty"
   },
   "zE1YNo": {
     "defaultMessage": "Leave this game?",

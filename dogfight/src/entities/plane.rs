@@ -812,6 +812,34 @@ impl Plane {
     pub fn get_plane_type(&self) -> PlaneType {
         *self.plane_type.get()
     }
+
+    pub(crate) fn get_speed(&self) -> f64 {
+        self.speed
+    }
+
+    pub(crate) fn get_angle(&self) -> f64 {
+        self.angle
+    }
+
+    pub(crate) fn get_ammo(&self) -> i32 {
+        self.total_ammo
+    }
+
+    pub(crate) fn get_bombs(&self) -> u8 {
+        *self.total_bombs.get()
+    }
+
+    pub(crate) fn get_fuel_ratio(&self) -> f64 {
+        self.total_fuel as f64 / self.get_max_fuel() as f64
+    }
+
+    pub(crate) fn get_health_ratio(&self) -> f64 {
+        self.total_health as f64 / self.get_max_health() as f64
+    }
+
+    pub(crate) fn get_landing_speed_limit(&self) -> f64 {
+        250.0 + self.get_speed_modifier()
+    }
 }
 
 // Impl Physical Model

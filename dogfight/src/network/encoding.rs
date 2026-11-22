@@ -474,6 +474,10 @@ impl NetworkedBytes for PlayerCommand {
                 bytes.push(6);
                 bytes.extend(ping.to_bytes());
             }
+            PlayerCommand::AddBot(data) => {
+                bytes.push(7);
+                bytes.extend(data.to_bytes());
+            }
         };
 
         bytes
@@ -519,6 +523,11 @@ impl NetworkedBytes for PlayerCommand {
                 let (slice, ping) = u16::from_bytes(bytes)?;
                 bytes = slice;
                 PlayerCommand::SetPing(ping)
+            }
+            7 => {
+                let (slice, player_data) = AddPlayerData::from_bytes(bytes)?;
+                bytes = slice;
+                PlayerCommand::AddBot(player_data)
             }
             _ => panic!("Unknown command type"),
         };

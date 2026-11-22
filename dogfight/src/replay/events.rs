@@ -152,13 +152,13 @@ fn summarize_replay(replay_file: ReplayFile) -> ReplaySummary {
                     .ticks
                     .iter()
                     .flat_map(|x| x.1)
-                    .find_map(|x| {
-                        if let PlayerCommand::AddPlayer(add_player_data) = &x.command {
-                            if x.player_guid_index == *hashmap_number {
-                                return Some(add_player_data.name.clone());
-                            }
+                    .find_map(|x| match &x.command {
+                        PlayerCommand::AddPlayer(data) | PlayerCommand::AddBot(data)
+                            if x.player_guid_index == *hashmap_number =>
+                        {
+                            Some(data.name.clone())
                         }
-                        None
+                        _ => None,
                     })
                     .unwrap_or_else(|| "?".to_string());
 

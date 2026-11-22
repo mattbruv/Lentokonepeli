@@ -37,6 +37,7 @@ pub enum PlayerCommand {
     PlayerKeyboard(PlayerKeyboard),
     SendMessage(String, bool),
     SetPing(u16),
+    AddBot(AddPlayerData),
 }
 
 pub fn game_input_from_string(input: String) -> Vec<ServerInput> {
@@ -47,7 +48,7 @@ pub fn is_valid_command(command: &str) -> bool {
     serde_json::from_str::<PlayerCommand>(&command).is_ok()
 }
 
-#[derive(Serialize, Deserialize, Debug, TS, Clone, Copy)]
+#[derive(Serialize, Deserialize, Debug, TS, Clone, Copy, PartialEq, Eq)]
 #[ts(export)]
 pub struct PlayerKeyboard {
     pub left: bool,
@@ -179,21 +180,10 @@ impl World {
             let guid = input.player_guid;
             match input.command {
                 PlayerCommand::AddPlayer(data) => {
-                    // Add the player if not already exists
-                    if let None = self.get_player_from_guid(&guid) {
-                        let in_intermission =
-                            self.world_info.get_state() == WorldState::Intermission;
-                        if let Some((id, p)) =
-                            self.players.insert(Player::new(guid, data.name, data.clan))
-                        {
-                            game_output.push(ServerOutput::PlayerJoin(p.get_name()));
-                            if in_intermission {
-                                if let Some(player) = self.players.get_mut(id) {
-                                    player.set_ready(true);
-                                }
-                            }
-                        }
-                    }
+                    game_output.extend(self.add_player(guid, data, false));
+                }
+                PlayerCommand::AddBot(data) => {
+                    game_output.extend(self.add_player(guid, data, true));
                 }
                 PlayerCommand::RemovePlayer => {
                     if let Some((id, _)) = self.get_player_from_guid(&guid) {
@@ -242,6 +232,30 @@ impl World {
         game_output
     }
 
+    fn add_player(
+        &mut self,
+        guid: PlayerGuid,
+        data: AddPlayerData,
+        is_bot: bool,
+    ) -> Vec<ServerOutput> {
+        let mut output = vec![];
+        if self.get_player_from_guid(&guid).is_some() {
+            return output;
+        }
+        let in_intermission = self.world_info.get_state() == WorldState::Intermission;
+        let mut player = Player::new(guid, data.name, data.clan);
+        player.set_bot(is_bot);
+        if let Some((id, p)) = self.players.insert(player) {
+            output.push(ServerOutput::PlayerJoin(p.get_name()));
+            if in_intermission {
+                if let Some(player) = self.players.get_mut(id) {
+                    player.set_ready(true);
+                }
+            }
+        }
+        output
+    }
+
     pub(crate) fn choose_team(
         &mut self,
         guid: &PlayerGuid,
@@ -261,6 +275,12 @@ impl World {
             }
         }
 
+        let is_bot = self
+            .get_player_from_guid(guid)
+            .map(|(_, p)| p.is_bot())
+            .unwrap_or(false);
+        let unbalanced_ok = is_bot || !self.team_balance;
+
         let team = match choice {
             None => {
                 if centrals < allies {
@@ -273,8 +293,8 @@ impl World {
                     Team::Allies
                 }
             }
-            Some(Team::Centrals) if !self.team_balance || centrals <= allies => Team::Centrals,
-            Some(Team::Allies) if !self.team_balance || allies <= centrals => Team::Allies,
+            Some(Team::Centrals) if unbalanced_ok || centrals <= allies => Team::Centrals,
+            Some(Team::Allies) if unbalanced_ok || allies <= centrals => Team::Allies,
             Some(_) => return None,
         };
 

@@ -1,6 +1,10 @@
+import { AddBotRequest } from "dogfight-types/AddBotRequest";
+import { BotDifficulty } from "dogfight-types/BotDifficulty";
+import { BotInfo } from "dogfight-types/BotInfo";
 import { PlayerCommand } from "dogfight-types/PlayerCommand";
 import { ServerInput } from "dogfight-types/ServerInput";
 import { ServerOutput } from "dogfight-types/ServerOutput";
+import { Team } from "dogfight-types/Team";
 import Peer, { DataConnection } from "peerjs";
 import { useEffect, useRef, useState } from "react";
 import { useDogfight } from "./useDogfight";
@@ -55,6 +59,7 @@ export function useLocalHost(
 
     // Lobby state
     const [roomCode, setRoomCode] = useState<string | null>(null);
+    const [bots, setBots] = useState<BotInfo[]>([]);
 
     // A collection of the connected users
     const dataConnections = useRef<Map<string, ConnectedPlayer>>(new Map());
@@ -191,7 +196,7 @@ export function useLocalHost(
                         const command_json = dogfight.engine.player_command_from_binary(buffer);
                         const command: PlayerCommand = JSON.parse(command_json);
 
-                        if (command.type === "SetPing") {
+                        if (command.type === "SetPing" || command.type === "AddBot") {
                             return;
                         }
 
@@ -217,6 +222,25 @@ export function useLocalHost(
         guestInput.current = [];
 
         return serverInput;
+    }
+
+    function refreshBots() {
+        setBots(JSON.parse(dogfight.engine.get_bots()) as BotInfo[]);
+    }
+
+    function addBot(team: Team | null, difficulty: BotDifficulty) {
+        const taken = new Set([...bots.map((b) => b.name), ...dogfight.playerData.map((p) => p.name)]);
+        let number = 1;
+        while (taken.has(`Bot ${number}`)) number++;
+
+        const request: AddBotRequest = { guid: randomGuid(), name: `Bot ${number}`, team, difficulty };
+        dogfight.engine.add_bot(JSON.stringify(request));
+        refreshBots();
+    }
+
+    function removeBot(guid: string) {
+        dogfight.engine.remove_bot(guid);
+        refreshBots();
     }
 
     function getReplayBinary(): Uint8Array {
@@ -251,6 +275,9 @@ export function useLocalHost(
         roomCode,
         getReplayBinary,
         sendChatMessage,
+        bots,
+        addBot,
+        removeBot,
         playerData: dogfight.playerData,
         intermission: dogfight.intermission,
         playerGuid: dogfight.playerGuid,

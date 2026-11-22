@@ -15,6 +15,12 @@ use super::{
 #[ts(export)]
 pub struct PlayerGuid(String);
 
+impl From<&str> for PlayerGuid {
+    fn from(value: &str) -> Self {
+        Self(value.to_string())
+    }
+}
+
 impl NetworkedBytes for PlayerGuid {
     fn to_bytes(&self) -> Vec<u8> {
         self.0.to_bytes()
@@ -146,6 +152,7 @@ pub struct Player {
     #[rustfmt::skip]
     selected_runway: Property<Option::<RunwayId>>,
     selected_plane: Property<u8>,
+    bot: Property<bool>,
 }
 
 impl Player {
@@ -177,6 +184,7 @@ impl Player {
             team_option: Property::new(1),
             selected_runway: Property::new(None),
             selected_plane: Property::new(0),
+            bot: Property::new(false),
         }
     }
 
@@ -355,6 +363,14 @@ impl Player {
 
     pub fn get_keys(&self) -> &PlayerKeyboard {
         &self.keys
+    }
+
+    pub fn is_bot(&self) -> bool {
+        *self.bot.get()
+    }
+
+    pub fn set_bot(&mut self, bot: bool) {
+        self.bot.set(bot);
     }
 
     pub fn get_full_name(&self) -> String {

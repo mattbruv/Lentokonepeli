@@ -29,6 +29,7 @@ export class Player implements Entity<PlayerProperties> {
         team_option: 1,
         selected_runway: null,
         selected_plane: 0,
+        bot: false,
     };
 
     private onChange: OnChangeControl;
@@ -59,6 +60,7 @@ export class Player implements Entity<PlayerProperties> {
         team_option: () => {},
         selected_runway: () => {},
         selected_plane: () => {},
+        bot: () => {},
         controlling: (oldProps) => {
             if (oldProps.controlling !== undefined)
                 this.onChange(oldProps.controlling, this.props.controlling, this.props);

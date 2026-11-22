@@ -1,3 +1,4 @@
+import { IconRobot } from "@tabler/icons-react";
 import { PlayerProperties } from "dogfight-types/PlayerProperties";
 import { Team } from "dogfight-types/Team";
 import { useIntl } from "react-intl";
@@ -89,7 +90,20 @@ export function Scoreboard({ playerData, myPlayerGuid, intermission, roomName }:
                             <td className="flag">
                                 <img src={getFlag(player.team)} />
                             </td>
-                            <td className="name">{formatName(player.name ?? "?", player.clan ?? null)}</td>
+                            <td className="name">
+                                {formatName(player.name ?? "?", player.clan ?? null)}
+                                {player.bot && (
+                                    <IconRobot
+                                        className="bot-icon"
+                                        size={14}
+                                        stroke={2.4}
+                                        aria-label={intl.formatMessage({
+                                            defaultMessage: "Bot",
+                                            description: "scoreboard: accessible label for the icon marking a bot",
+                                        })}
+                                    />
+                                )}
+                            </td>
                             <td>{player.score ?? 0}</td>
                             <td>{player.kills ?? 0}</td>
                             <td>{player.deaths ?? 0}</td>

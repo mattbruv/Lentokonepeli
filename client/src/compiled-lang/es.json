@@ -59,6 +59,12 @@
       "value": "Soltar, abrir paracaídas"
     }
   ],
+  "6h1L5u": [
+    {
+      "type": 0,
+      "value": "Easy"
+    }
+  ],
   "7GHFcs": [
     {
       "type": 0,
@@ -113,6 +119,12 @@
     {
       "type": 0,
       "value": " destruida."
+    }
+  ],
+  "AY7tVh": [
+    {
+      "type": 0,
+      "value": "Bot"
     }
   ],
   "B1CMe5": [
@@ -193,6 +205,12 @@
       "value": "Extremadamente ágil. No recomendado para pilotos novatos."
     }
   ],
+  "M9uG/P": [
+    {
+      "type": 0,
+      "value": "Bots"
+    }
+  ],
   "MrbN1S": [
     {
       "type": 0,
@@ -221,6 +239,12 @@
     {
       "type": 0,
       "value": "Game size"
+    }
+  ],
+  "PUiIc0": [
+    {
+      "type": 0,
+      "value": "Random"
     }
   ],
   "Q9UCoB": [
@@ -259,6 +283,18 @@
       "value": "Código"
     }
   ],
+  "T+NmK1": [
+    {
+      "type": 0,
+      "value": "Remove bot"
+    }
+  ],
+  "TcT+Lx": [
+    {
+      "type": 0,
+      "value": "Allies"
+    }
+  ],
   "U/mSA3": [
     {
       "type": 0,
@@ -275,6 +311,12 @@
     {
       "type": 0,
       "value": "(Pulsa Intro cuando estés listo)"
+    }
+  ],
+  "V27mjT": [
+    {
+      "type": 0,
+      "value": "Medium"
     }
   ],
   "WWTrIb": [
@@ -339,6 +381,18 @@
     {
       "type": 0,
       "value": "sí"
+    }
+  ],
+  "b0BOYV": [
+    {
+      "type": 0,
+      "value": "Hard"
+    }
+  ],
+  "b8pU+2": [
+    {
+      "type": 0,
+      "value": "Add Bot"
     }
   ],
   "buqDOb": [
@@ -539,6 +593,12 @@
       "value": "Mapa"
     }
   ],
+  "q9p7Ga": [
+    {
+      "type": 0,
+      "value": "Difficulty"
+    }
+  ],
   "r1oUWJ": [
     {
       "type": 0,
@@ -633,6 +693,18 @@
     {
       "type": 0,
       "value": "Junkers J.1"
+    }
+  ],
+  "yi/9eD": [
+    {
+      "type": 0,
+      "value": "Centrals"
+    }
+  ],
+  "yjtXtd": [
+    {
+      "type": 0,
+      "value": "Ace"
     }
   ],
   "zE1YNo": [
