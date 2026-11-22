@@ -178,6 +178,7 @@ fn bot_games_replay_identically() {
     let mut replayed = World::new();
     replayed.load_level(&replay.level_data);
     replayed.set_round_settings(replay.game_time_minutes, replay.intermission_seconds);
+    replayed.set_game_mode(replay.game_mode);
     replayed.simulate_until(&replay, Some(world.get_tick()), true);
 
     let summary = |w: &World| {

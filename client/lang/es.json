@@ -107,6 +107,10 @@
     "defaultMessage": "Introduce el código de juego de 4 dígitos...",
     "description": "Infotext for input which is used to insert 4 digit game code to join games"
   },
+  "Jyv5JT": {
+    "defaultMessage": "Normal",
+    "description": "Game mode where players respawn after dying and the round ends when a base is destroyed"
+  },
   "Lo5tsu": {
     "defaultMessage": "Keep playing",
     "description": "Button in the leave game dialog that closes the dialog and returns to the game"
@@ -223,6 +227,10 @@
     "defaultMessage": "{minutes} minutos",
     "description": "Game time option showing round length"
   },
+  "ZNwZqy": {
+    "defaultMessage": "(Espera a que termine la ronda)",
+    "description": "Shown on screen in rounds mode while a dead or newly joined player waits for the next round"
+  },
   "aLjUL6": {
     "defaultMessage": "Editor de Mapas",
     "description": "Sidebar link description for the Level Editor"
@@ -283,6 +291,10 @@
     "defaultMessage": "El nombre debe tener entre 3 y 20 caracteres",
     "description": "Label explaining username constraints"
   },
+  "gVhE9z": {
+    "defaultMessage": "Modo de juego",
+    "description": "Title for selection used to choose the game mode"
+  },
   "gg+aZq": {
     "defaultMessage": "Añadir enlace de teclas",
     "description": "Title for modal where keybinds are added"
@@ -322,6 +334,10 @@
   "mq7h++": {
     "defaultMessage": "Ver una Repetición ",
     "description": "Sidebar link description for the Replay System page"
+  },
+  "obtz7Y": {
+    "defaultMessage": "Rondas",
+    "description": "Game mode with no respawning, where a team wins a round by eliminating every enemy player or destroying their base"
   },
   "ohIqzI": {
     "defaultMessage": "Activar el motor",

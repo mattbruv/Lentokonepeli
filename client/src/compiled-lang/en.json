@@ -183,6 +183,12 @@
       "value": "Enter the 4 digit game code..."
     }
   ],
+  "Jyv5JT": [
+    {
+      "type": 0,
+      "value": "Normal"
+    }
+  ],
   "Lo5tsu": [
     {
       "type": 0,
@@ -361,6 +367,12 @@
       "value": " minutes"
     }
   ],
+  "ZNwZqy": [
+    {
+      "type": 0,
+      "value": "(Wait for round to finish)"
+    }
+  ],
   "aLjUL6": [
     {
       "type": 0,
@@ -473,6 +485,12 @@
       "value": "Name should be between 3 and 20 characters"
     }
   ],
+  "gVhE9z": [
+    {
+      "type": 0,
+      "value": "Game mode"
+    }
+  ],
   "gg+aZq": [
     {
       "type": 0,
@@ -553,6 +571,12 @@
     {
       "type": 0,
       "value": "Watch Replay"
+    }
+  ],
+  "obtz7Y": [
+    {
+      "type": 0,
+      "value": "Rounds"
     }
   ],
   "ohIqzI": [

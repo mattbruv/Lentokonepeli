@@ -8,7 +8,7 @@ use crate::{
         player::{ControllingEntity, Player, PlayerGuid, PlayerState},
         runway::RunwayReservation,
         types::Team,
-        world_info::WorldState,
+        world_info::{GameMode, WorldState},
     },
     game_event::ChatMessage,
     network::encoding::NetworkedBytes,
@@ -172,6 +172,8 @@ impl NetworkedBytes for AddPlayerData {
     }
 }
 
+const ROUNDS_LATE_JOIN_PLAYERS: usize = 3;
+
 impl World {
     pub(crate) fn handle_input(&mut self, input_events: Vec<ServerInput>) -> Vec<ServerOutput> {
         let mut game_output = vec![];
@@ -243,13 +245,19 @@ impl World {
             return output;
         }
         let in_intermission = self.world_info.get_state() == WorldState::Intermission;
+        let wait_for_next_round = self.game_mode == GameMode::Rounds
+            && !in_intermission
+            && self.players.get_map().len() + 1 >= ROUNDS_LATE_JOIN_PLAYERS;
         let mut player = Player::new(guid, data.name, data.clan);
         player.set_bot(is_bot);
         if let Some((id, p)) = self.players.insert(player) {
             output.push(ServerOutput::PlayerJoin(p.get_name()));
-            if in_intermission {
-                if let Some(player) = self.players.get_mut(id) {
+            if let Some(player) = self.players.get_mut(id) {
+                if in_intermission {
                     player.set_ready(true);
+                }
+                if wait_for_next_round {
+                    player.begin_spectating();
                 }
             }
         }
@@ -299,7 +307,7 @@ impl World {
         };
 
         let (player_id, player) = self.get_player_from_guid_mut(guid)?;
-        if player.get_team().is_some() {
+        if player.get_team().is_some() || player.get_state() == PlayerState::Spectating {
             return None;
         }
         player.set_team(Some(team));

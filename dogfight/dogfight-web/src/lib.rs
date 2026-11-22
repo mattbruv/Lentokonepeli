@@ -2,6 +2,7 @@ mod utils;
 
 use dogfight::{
     bots::{add_bot_request_from_string, BotManager},
+    entities::world_info::GameMode,
     input::{game_input_from_string, is_valid_command},
     level::parse_level_to_json,
     network::{
@@ -52,6 +53,7 @@ impl DogfightWeb {
             self.world.load_level(&replay.level_data);
             self.world
                 .set_round_settings(replay.game_time_minutes, replay.intermission_seconds);
+            self.world.set_game_mode(replay.game_mode);
             self.replay = Some(replay);
         }
     }
@@ -59,6 +61,14 @@ impl DogfightWeb {
     pub fn set_round_settings(&mut self, game_time_minutes: u16, intermission_seconds: u16) {
         self.world
             .set_round_settings(game_time_minutes, intermission_seconds);
+    }
+
+    pub fn set_game_mode(&mut self, mode: &str) {
+        let mode = match mode {
+            "Rounds" => GameMode::Rounds,
+            _ => GameMode::Normal,
+        };
+        self.world.set_game_mode(mode);
     }
 
     pub fn init(&mut self) {
@@ -124,6 +134,7 @@ impl DogfightWeb {
             self.world.load_level(&replay.level_data);
             self.world
                 .set_round_settings(replay.game_time_minutes, replay.intermission_seconds);
+            self.world.set_game_mode(replay.game_mode);
             self.world.simulate_until(replay, Some(until_tick), true);
         }
     }

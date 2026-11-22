@@ -1,4 +1,5 @@
 import { Button, Modal, PinInput, Select } from "@mantine/core";
+import { GameMode } from "dogfight-types/GameMode";
 import { useDisclosure } from "@mantine/hooks";
 import { IconPlaneDeparture, IconUsers } from "@tabler/icons-react";
 import { FormEvent, useState } from "react";
@@ -30,6 +31,7 @@ export function Lobby() {
 
     const [gameMap, setGameMap] = useState<LevelName>("classic");
     const [gameTime, setGameTime] = useState<number>(0);
+    const [gameMode, setGameMode] = useState<GameMode>("Normal");
 
     const [joinId, setJoinId] = useState<string>("");
 
@@ -47,7 +49,8 @@ export function Lobby() {
         if (joinId.length === 4) setLobbyState(LobbyState.Joining);
     }
 
-    if (lobbyState === LobbyState.Hosting) return <Host level={gameMap} recordGame={false} gameTime={gameTime} />;
+    if (lobbyState === LobbyState.Hosting)
+        return <Host level={gameMap} recordGame={false} gameTime={gameTime} gameMode={gameMode} />;
     if (lobbyState === LobbyState.Joining) return <Guest gameCode={joinId} />;
 
     return (
@@ -186,6 +189,38 @@ export function Lobby() {
                                 onChange={(v) => {
                                     if (v) {
                                         setGameTime(Number(v));
+                                    }
+                                }}
+                            />
+                            <Select
+                                className={classes.grow}
+                                label={intl.formatMessage({
+                                    defaultMessage: "Game mode",
+                                    description: "Title for selection used to choose the game mode",
+                                })}
+                                data={[
+                                    {
+                                        value: "Normal",
+                                        label: intl.formatMessage({
+                                            defaultMessage: "Normal",
+                                            description:
+                                                "Game mode where players respawn after dying and the round ends when a base is destroyed",
+                                        }),
+                                    },
+                                    {
+                                        value: "Rounds",
+                                        label: intl.formatMessage({
+                                            defaultMessage: "Rounds",
+                                            description:
+                                                "Game mode with no respawning, where a team wins a round by eliminating every enemy player or destroying their base",
+                                        }),
+                                    },
+                                ]}
+                                value={gameMode}
+                                allowDeselect={false}
+                                onChange={(v) => {
+                                    if (v) {
+                                        setGameMode(v as GameMode);
                                     }
                                 }}
                             />

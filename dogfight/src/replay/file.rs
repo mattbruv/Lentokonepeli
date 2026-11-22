@@ -5,7 +5,7 @@ use ts_rs::TS;
 
 use crate::{
     debug::log,
-    entities::player::PlayerGuid,
+    entities::{player::PlayerGuid, world_info::GameMode},
     input::{PlayerCommand, ServerInput},
     network::encoding::NetworkedBytes,
     world::World,
@@ -55,6 +55,7 @@ pub struct ReplayFile {
 
     pub game_time_minutes: u16,
     pub intermission_seconds: u16,
+    pub game_mode: GameMode,
 
     pub player_guids: BTreeMap<PlayerGuid, u16>,
 
@@ -89,6 +90,7 @@ impl ReplayFile {
             level_name: "".to_string(),
             game_time_minutes: 0,
             intermission_seconds: 20,
+            game_mode: GameMode::Normal,
             player_guids: BTreeMap::new(),
             ticks: HashMap::new(),
         }

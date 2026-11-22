@@ -9,6 +9,7 @@ use crate::{
         plane::PlaneType,
         player::{ControllingEntity, PlayerState},
         types::Team,
+        world_info::GameMode,
     },
     game_event::{KillEvent, KillMethod},
     input::{PlayerKeyboard, RunwaySelection},
@@ -105,10 +106,15 @@ impl World {
 
     fn kill_without_avatar(&mut self, player_id: PlayerId) -> Vec<ServerOutput> {
         self.adjust_player_score(player_id, -5);
+        let rounds = self.game_mode == GameMode::Rounds;
         if let Some(player) = self.players.get_mut(player_id) {
             player.mark_suicide();
             player.set_controlling(None);
-            player.begin_respawn();
+            if rounds {
+                player.begin_spectating();
+            } else {
+                player.begin_respawn();
+            }
         }
         vec![ServerOutput::KillEvent(KillEvent::new(
             player_id,
@@ -192,6 +198,18 @@ impl World {
             .get(runway_id)
             .map(|r| r.is_alive())
             .unwrap_or(false);
+
+        if self.game_mode == GameMode::Rounds {
+            if let Some(player) = player_id.and_then(|pid| self.players.get_mut(pid)) {
+                if runway_alive {
+                    player.set_last_runway(runway_id);
+                }
+                player.set_controlling(None);
+                player.set_state(PlayerState::ChoosingRunway);
+            }
+            output.extend(self.remove_entity(RemoveData::Plane(plane_id)));
+            return output;
+        }
 
         if !runway_alive {
             if let Some(pid) = player_id {
@@ -282,9 +300,14 @@ impl World {
         };
 
         if let Some(controlled) = control_test {
+            let rounds = self.game_mode == GameMode::Rounds;
             if let Some((_, player)) = self.players.get_player_controlling(controlled) {
                 player.set_controlling(None);
-                player.begin_respawn();
+                if rounds {
+                    player.begin_spectating();
+                } else {
+                    player.begin_respawn();
+                }
             }
         }
 

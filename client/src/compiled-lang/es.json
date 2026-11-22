@@ -187,6 +187,12 @@
       "value": "Introduce el código de juego de 4 dígitos..."
     }
   ],
+  "Jyv5JT": [
+    {
+      "type": 0,
+      "value": "Normal"
+    }
+  ],
   "Lo5tsu": [
     {
       "type": 0,
@@ -365,6 +371,12 @@
       "value": " minutos"
     }
   ],
+  "ZNwZqy": [
+    {
+      "type": 0,
+      "value": "(Espera a que termine la ronda)"
+    }
+  ],
   "aLjUL6": [
     {
       "type": 0,
@@ -481,6 +493,12 @@
       "value": "El nombre debe tener entre 3 y 20 caracteres"
     }
   ],
+  "gVhE9z": [
+    {
+      "type": 0,
+      "value": "Modo de juego"
+    }
+  ],
   "gg+aZq": [
     {
       "type": 0,
@@ -561,6 +579,12 @@
     {
       "type": 0,
       "value": "Ver una Repetición "
+    }
+  ],
+  "obtz7Y": [
+    {
+      "type": 0,
+      "value": "Rondas"
     }
   ],
   "ohIqzI": [

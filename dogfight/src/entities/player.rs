@@ -6,7 +6,7 @@ use dogfight_macros::{EnumBytes, Networked};
 use serde::Deserialize;
 
 use super::{
-    container::{ManId, PlaneId, RunwayId},
+    container::{ManId, PlaneId, PlayerId, RunwayId},
     plane::PlaneType,
     types::Team,
 };
@@ -43,6 +43,7 @@ pub enum PlayerState {
     WaitingRespawn,
     Playing,
     Refueling,
+    Spectating,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS)]
@@ -98,6 +99,7 @@ impl NetworkedBytes for ControllingEntity {
 }
 
 pub const CHOOSER_KEY_DELAY_TICKS: u32 = 18;
+pub const SPECTATE_DEATH_VIEW_TICKS: u32 = 300;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, TS, EnumBytes)]
 #[ts(export)]
@@ -124,6 +126,7 @@ pub struct Player {
     team_kills: i32,
     next_respawn: RespawnType,
     respawn_ticks: Option<u32>,
+    spectate_ticks: u32,
 
     keys: PlayerKeyboard,
     previous_keys: PlayerKeyboard,
@@ -153,6 +156,8 @@ pub struct Player {
     selected_runway: Property<Option::<RunwayId>>,
     selected_plane: Property<u8>,
     bot: Property<bool>,
+    #[rustfmt::skip]
+    spectating: Property<Option::<PlayerId>>,
 }
 
 impl Player {
@@ -163,6 +168,7 @@ impl Player {
             team_kills: 0,
             next_respawn: RespawnType::Default,
             respawn_ticks: None,
+            spectate_ticks: 0,
             keys: PlayerKeyboard::new(),
             previous_keys: PlayerKeyboard::new(),
             chooser_timer: CHOOSER_KEY_DELAY_TICKS,
@@ -185,6 +191,7 @@ impl Player {
             selected_runway: Property::new(None),
             selected_plane: Property::new(0),
             bot: Property::new(false),
+            spectating: Property::new(None),
         }
     }
 
@@ -286,27 +293,57 @@ impl Player {
         self.last_runway.set(Some(runway_id));
     }
 
-    pub fn reset_for_round(&mut self) {
+    pub fn reset_for_round(&mut self, keep_team: bool) {
         self.last_runway.set(None);
         self.team_option.set(1);
         self.selected_runway.set(None);
         self.selected_plane.set(0);
         self.previous_keys = PlayerKeyboard::new();
         self.chooser_timer = CHOOSER_KEY_DELAY_TICKS;
-        self.shots = 0;
-        self.hits = 0;
         self.next_respawn = RespawnType::Default;
         self.respawn_ticks = None;
+        self.spectate_ticks = 0;
         self.keys = PlayerKeyboard::new();
+        self.controlling.set(None);
+        self.spectating.set(None);
+        self.respawn_seconds.set(0);
+        self.ready.set(false);
+
+        if keep_team && self.team.get().is_some() {
+            self.state.set(PlayerState::ChoosingRunway);
+            return;
+        }
+
+        self.shots = 0;
+        self.hits = 0;
         self.team.set(None);
         self.state.set(PlayerState::ChoosingTeam);
-        self.controlling.set(None);
         self.kills.set(0);
         self.deaths.set(0);
         self.score.set(0);
-        self.respawn_seconds.set(0);
-        self.ready.set(false);
         self.accuracy.set(0);
+    }
+
+    pub fn begin_spectating(&mut self) {
+        self.respawn_ticks = None;
+        self.respawn_seconds.set(0);
+        self.spectate_ticks = 0;
+        self.spectating.set(None);
+        self.controlling.set(None);
+        self.state.set(PlayerState::Spectating);
+    }
+
+    pub fn advance_spectate_timer(&mut self) -> bool {
+        self.spectate_ticks = self.spectate_ticks.saturating_add(1);
+        self.spectate_ticks > SPECTATE_DEATH_VIEW_TICKS
+    }
+
+    pub fn get_spectating(&self) -> Option<PlayerId> {
+        *self.spectating.get()
+    }
+
+    pub fn set_spectating(&mut self, target: Option<PlayerId>) {
+        self.spectating.set(target);
     }
 
     pub fn mark_suicide(&mut self) {

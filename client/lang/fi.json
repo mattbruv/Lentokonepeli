@@ -107,6 +107,10 @@
     "defaultMessage": "Syötä 4 merkkiä sisältävä pelikoodi...",
     "description": "Infotext for input which is used to insert 4 digit game code to join games"
   },
+  "Jyv5JT": {
+    "defaultMessage": "Normaali",
+    "description": "Game mode where players respawn after dying and the round ends when a base is destroyed"
+  },
   "Lo5tsu": {
     "defaultMessage": "Keep playing",
     "description": "Button in the leave game dialog that closes the dialog and returns to the game"
@@ -223,6 +227,10 @@
     "defaultMessage": "{minutes} minuuttia",
     "description": "Game time option showing round length"
   },
+  "ZNwZqy": {
+    "defaultMessage": "(Odota erän päättymistä)",
+    "description": "Shown on screen in rounds mode while a dead or newly joined player waits for the next round"
+  },
   "aLjUL6": {
     "defaultMessage": "Kenttäeditori",
     "description": "Sidebar link description for the Level Editor"
@@ -283,6 +291,10 @@
     "defaultMessage": "Nimen tulee olla vähintään 3 ja enintään 20 merkkiä",
     "description": "Label explaining username constraints"
   },
+  "gVhE9z": {
+    "defaultMessage": "Pelitila",
+    "description": "Title for selection used to choose the game mode"
+  },
   "gg+aZq": {
     "defaultMessage": "Lisää pikanäppäin",
     "description": "Title for modal where keybinds are added"
@@ -322,6 +334,10 @@
   "mq7h++": {
     "defaultMessage": "Uusinnat",
     "description": "Sidebar link description for the Replay System page"
+  },
+  "obtz7Y": {
+    "defaultMessage": "Erät",
+    "description": "Game mode with no respawning, where a team wins a round by eliminating every enemy player or destroying their base"
   },
   "ohIqzI": {
     "defaultMessage": "Vaihda moottorin tila",

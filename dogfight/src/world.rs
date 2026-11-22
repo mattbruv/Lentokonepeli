@@ -18,7 +18,7 @@ use crate::{
         runway::Runway,
         types::{EntityType, Team},
         water::Water,
-        world_info::WorldInfo,
+        world_info::{GameMode, WorldInfo},
     },
     input::ServerInput,
     output::ServerOutput,
@@ -54,6 +54,7 @@ pub struct World {
     pub(crate) time_winner: Option<Team>,
     pub(crate) round_ticks: u32,
     pub(crate) round_over_ticks: u32,
+    pub(crate) game_mode: GameMode,
 }
 
 impl World {
@@ -83,6 +84,7 @@ impl World {
             time_winner: None,
             round_ticks: 0,
             round_over_ticks: 0,
+            game_mode: GameMode::Normal,
         };
 
         world
@@ -148,6 +150,16 @@ impl World {
         self.intermission_ticks = intermission_seconds as u32 * 100;
         self.replay_file.game_time_minutes = game_time_minutes.min(999);
         self.replay_file.intermission_seconds = intermission_seconds;
+    }
+
+    pub fn set_game_mode(&mut self, mode: GameMode) {
+        self.game_mode = mode;
+        self.world_info.set_game_mode(mode);
+        self.replay_file.game_mode = mode;
+    }
+
+    pub fn get_game_mode(&self) -> GameMode {
+        self.game_mode
     }
 
     pub fn flush_changed_state(&mut self) -> Vec<ServerOutput> {

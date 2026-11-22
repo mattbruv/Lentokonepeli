@@ -1,4 +1,5 @@
 import { Button, Stack } from "@mantine/core";
+import { GameMode } from "dogfight-types/GameMode";
 import { IconFileDownload } from "@tabler/icons-react";
 import saveAs from "file-saver";
 import { useEffect, useRef } from "react";
@@ -17,9 +18,10 @@ type HostProps = {
     level: LevelName;
     recordGame: boolean;
     gameTime: number;
+    gameMode: GameMode;
 };
 
-export function Host({ level, recordGame, gameTime }: HostProps) {
+export function Host({ level, recordGame, gameTime, gameMode }: HostProps) {
     const gameContainer = useRef<HTMLDivElement>(null);
     const { getUsername, getClan } = useSettingsContext();
 
@@ -36,7 +38,7 @@ export function Host({ level, recordGame, gameTime }: HostProps) {
         bots,
         addBot,
         removeBot,
-    } = useLocalHost(level, recordGame, getUsername(), getClan(), gameTime);
+    } = useLocalHost(level, recordGame, getUsername(), getClan(), gameTime, gameMode);
 
     function host() {
         if (!gameContainer.current) return;

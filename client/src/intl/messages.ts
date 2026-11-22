@@ -112,6 +112,10 @@ export const GAME_INTL = {
         defaultMessage: "(Suicide penalty)",
         description: "Shown below the respawn countdown when the wait is longer because of a suicide",
     }),
+    wait_for_round: defineMessage({
+        defaultMessage: "(Wait for round to finish)",
+        description: "Shown on screen in rounds mode while a dead or newly joined player waits for the next round",
+    }),
     teamkill_penalty: defineMessage({
         defaultMessage: "(Teamkill penalty)",
         description: "Shown below the respawn countdown when the wait is longer because of a teamkill",

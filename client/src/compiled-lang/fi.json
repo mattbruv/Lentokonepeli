@@ -183,6 +183,12 @@
       "value": "Syötä 4 merkkiä sisältävä pelikoodi..."
     }
   ],
+  "Jyv5JT": [
+    {
+      "type": 0,
+      "value": "Normaali"
+    }
+  ],
   "Lo5tsu": [
     {
       "type": 0,
@@ -361,6 +367,12 @@
       "value": " minuuttia"
     }
   ],
+  "ZNwZqy": [
+    {
+      "type": 0,
+      "value": "(Odota erän päättymistä)"
+    }
+  ],
   "aLjUL6": [
     {
       "type": 0,
@@ -473,6 +485,12 @@
       "value": "Nimen tulee olla vähintään 3 ja enintään 20 merkkiä"
     }
   ],
+  "gVhE9z": [
+    {
+      "type": 0,
+      "value": "Pelitila"
+    }
+  ],
   "gg+aZq": [
     {
       "type": 0,
@@ -553,6 +571,12 @@
     {
       "type": 0,
       "value": "Uusinnat"
+    }
+  ],
+  "obtz7Y": [
+    {
+      "type": 0,
+      "value": "Erät"
     }
   ],
   "ohIqzI": [

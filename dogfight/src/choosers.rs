@@ -1,7 +1,7 @@
 use crate::{
     collision::SolidEntity,
     entities::{
-        container::RunwayId,
+        container::{EntityId, PlayerId, RunwayId},
         plane::PlaneType,
         player::{PlayerGuid, PlayerState},
         types::Team,
@@ -38,7 +38,16 @@ impl World {
         let allies_runways = self.team_runways(Team::Allies);
         let mut requests = vec![];
 
-        for (_, player) in self.players.get_map_mut() {
+        let mut active: Vec<(PlayerId, Option<Team>)> = self
+            .players
+            .get_map()
+            .iter()
+            .filter(|(_, p)| p.get_state() != PlayerState::Spectating)
+            .map(|(id, p)| (*id, *p.get_team()))
+            .collect();
+        active.sort_by_key(|(id, _)| id.raw_value());
+
+        for (id, player) in self.players.get_map_mut() {
             let keys = *player.get_keys();
             let enter_pressed = keys.enter && !player.get_previous_keys().enter;
             let can_move = player.advance_chooser_timer();
@@ -115,6 +124,38 @@ impl World {
                                     },
                                 ));
                             }
+                        }
+                    }
+                    (PlayerState::Spectating, team, _) => {
+                        if player.advance_spectate_timer() {
+                            let candidates: Vec<PlayerId> = active
+                                .iter()
+                                .filter(|(pid, t)| pid != id && (team.is_none() || *t == team))
+                                .map(|(pid, _)| *pid)
+                                .collect();
+                            let current = player
+                                .get_spectating()
+                                .and_then(|c| candidates.iter().position(|x| *x == c));
+                            let step = if can_move && keys.left {
+                                Some(-1)
+                            } else if can_move && keys.right {
+                                Some(1)
+                            } else {
+                                None
+                            };
+                            if step.is_some() {
+                                player.reset_chooser_timer();
+                            }
+                            let next = match (current, step) {
+                                _ if candidates.is_empty() => None,
+                                (Some(i), Some(d)) => {
+                                    Some((i as isize + d).rem_euclid(candidates.len() as isize)
+                                        as usize)
+                                }
+                                (Some(i), None) => Some(i),
+                                (None, _) => Some(0),
+                            };
+                            player.set_spectating(next.map(|i| candidates[i]));
                         }
                     }
                     _ => {}

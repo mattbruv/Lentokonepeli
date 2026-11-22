@@ -134,6 +134,7 @@ fn summarize_replay(replay_file: ReplayFile) -> ReplaySummary {
         replay_file.game_time_minutes,
         replay_file.intermission_seconds,
     );
+    world.set_game_mode(replay_file.game_mode);
 
     // simulates the entire game and returns all events
     let events = world.simulate_until(&replay_file, None, true);

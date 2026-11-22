@@ -1,4 +1,5 @@
 import { ChatMessage } from "dogfight-types/ChatMessage";
+import { ControllingEntity } from "dogfight-types/ControllingEntity";
 import { EntityChange } from "dogfight-types/EntityChange";
 import { EntityProperties } from "dogfight-types/EntityProperties";
 import { PlaneType } from "dogfight-types/PlaneType";
@@ -216,8 +217,11 @@ export class DogfightClient {
         if (!me) return;
 
         this.onMyPlayerUpdate(me.props);
+        this.followCurrentTarget();
+    }
 
-        const controlling = me.props.controlling;
+    private followCurrentTarget() {
+        const controlling = this.getFollowTarget();
         if (controlling?.type === "Plane") {
             const plane = this.entities.Plane.collection.get(controlling.data);
             if (plane) this.followEntity(plane);
@@ -242,7 +246,12 @@ export class DogfightClient {
     private refreshTeamScores() {
         for (const [_, worldInfo] of this.entities.WorldInfo.collection) {
             const myTeam = this.getMyPlayer()?.props.team ?? null;
-            this.gameHUD.updateTeamScores(worldInfo.props.centrals_score, worldInfo.props.allies_score, myTeam);
+            const { game_mode, centrals_wins, allies_wins, centrals_score, allies_score } = worldInfo.props;
+            if (game_mode === "Rounds") {
+                this.gameHUD.updateTeamScores(centrals_wins, allies_wins, myTeam);
+            } else {
+                this.gameHUD.updateTeamScores(centrals_score, allies_score, myTeam);
+            }
         }
     }
 
@@ -278,6 +287,8 @@ export class DogfightClient {
 
         if (!intermission && me?.props.state === "WaitingRespawn") {
             this.respawnInfo.show(me.props.respawn_seconds, me.props.respawn_type);
+        } else if (!intermission && me?.props.state === "Spectating") {
+            this.respawnInfo.showSpectating();
         } else {
             this.respawnInfo.hide();
         }
@@ -285,6 +296,16 @@ export class DogfightClient {
 
     private pushNotice(message: string, team: Team | null) {
         this.callbacks?.onMessage({ sender_name: null, team, private: false, message });
+    }
+
+    private getFollowTarget(): ControllingEntity | null {
+        const me = this.getMyPlayer();
+        if (!me) return null;
+        if (me.props.state === "Spectating") {
+            if (me.props.spectating === null) return null;
+            return this.entities.Player.collection.get(me.props.spectating)?.props.controlling ?? null;
+        }
+        return me.props.controlling;
     }
 
     public getMyPlayer(): Player | undefined {
@@ -312,6 +333,10 @@ export class DogfightClient {
 
         if (props.state === "ChoosingTeam") {
             this.centerCamera(TEAM_CHOOSER_CAMERA.x, TEAM_CHOOSER_CAMERA.y);
+        }
+
+        if ("spectating" in props && myPlayer.props.state === "Spectating") {
+            this.followCurrentTarget();
         }
 
         this.teamChooser.setChosen(myPlayer.props.team_option);
@@ -482,10 +507,10 @@ export class DogfightClient {
     }
 
     private onEntityUpdated(entity: Entity<unknown>, id: number, data?: EntityProperties) {
-        const me = this.getMyPlayer();
+        const target = this.getFollowTarget();
 
-        if (me?.props.controlling) {
-            if (id === me.props.controlling.data && data?.type === me.props.controlling.type) {
+        if (target) {
+            if (id === target.data && data?.type === target.type) {
                 this.followEntity(entity);
             }
         }

@@ -1,6 +1,7 @@
 import { AddBotRequest } from "dogfight-types/AddBotRequest";
 import { BotDifficulty } from "dogfight-types/BotDifficulty";
 import { BotInfo } from "dogfight-types/BotInfo";
+import { GameMode } from "dogfight-types/GameMode";
 import { PlayerCommand } from "dogfight-types/PlayerCommand";
 import { ServerInput } from "dogfight-types/ServerInput";
 import { ServerOutput } from "dogfight-types/ServerOutput";
@@ -46,6 +47,7 @@ export function useLocalHost(
     username: string,
     clan: string,
     gameTime: number,
+    gameMode: GameMode,
 ) {
     const dogfight = useDogfight({
         handleClientCommand: (clientCommand) => {
@@ -109,6 +111,7 @@ export function useLocalHost(
             const level = Levels[gameMap];
             dogfight.engine.load_level(level);
             dogfight.engine.set_round_settings(gameTime, 20);
+            dogfight.engine.set_game_mode(gameMode);
             dogfight.engine.init();
             console.log(dogfight.engine.get_build_version());
             console.log(dogfight.engine.get_commit());

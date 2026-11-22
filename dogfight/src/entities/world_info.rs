@@ -1,4 +1,5 @@
 use dogfight_macros::{EnumBytes, Networked};
+use serde::Deserialize;
 
 use crate::network::{
     property::*, EntityChange, EntityChangeType, EntityProperties, NetworkedEntity,
@@ -14,6 +15,13 @@ pub enum WorldState {
     PostGame,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS, EnumBytes)]
+#[ts(export)]
+pub enum GameMode {
+    Normal,
+    Rounds,
+}
+
 #[derive(Networked)]
 pub struct WorldInfo {
     #[rustfmt::skip]
@@ -24,6 +32,9 @@ pub struct WorldInfo {
     time_left: Property<Option::<u16>>,
     centrals_score: Property<i32>,
     allies_score: Property<i32>,
+    game_mode: Property<GameMode>,
+    centrals_wins: Property<u16>,
+    allies_wins: Property<u16>,
 }
 
 impl WorldInfo {
@@ -34,6 +45,9 @@ impl WorldInfo {
             time_left: Property::new(None),
             centrals_score: Property::new(0),
             allies_score: Property::new(0),
+            game_mode: Property::new(GameMode::Normal),
+            centrals_wins: Property::new(0),
+            allies_wins: Property::new(0),
         }
     }
 
@@ -72,6 +86,28 @@ impl WorldInfo {
         };
         let new = score.get() + amount;
         score.set(new);
+    }
+
+    pub fn set_game_mode(&mut self, mode: GameMode) {
+        self.game_mode.set(mode);
+        self.centrals_wins.set(0);
+        self.allies_wins.set(0);
+    }
+
+    pub fn get_team_wins(&self, team: Team) -> u16 {
+        match team {
+            Team::Centrals => *self.centrals_wins.get(),
+            Team::Allies => *self.allies_wins.get(),
+        }
+    }
+
+    pub fn add_team_win(&mut self, team: Team) {
+        let wins = match team {
+            Team::Centrals => &mut self.centrals_wins,
+            Team::Allies => &mut self.allies_wins,
+        };
+        let new = wins.get().saturating_add(1);
+        wins.set(new);
     }
 
     pub fn get_all_full_state(&self) -> EntityChange {
