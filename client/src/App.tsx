@@ -1,10 +1,13 @@
-import { ActionIcon, Tooltip, useComputedColorScheme, useMantineColorScheme } from "@mantine/core";
-import { IconBrandDiscord, IconBrandGithub, IconMoon, IconSun } from "@tabler/icons-react";
+import { ActionIcon, Button, Modal, Tooltip, useComputedColorScheme, useMantineColorScheme } from "@mantine/core";
+import { IconBrandDiscord, IconBrandGithub, IconDoorExit, IconMoon, IconSun } from "@tabler/icons-react";
 import { FormattedMessage, useIntl } from "react-intl";
-import { NavLink, Route, Routes } from "react-router-dom";
+import { NavLink, Route, Routes, useBlocker } from "react-router-dom";
 import classes from "./App.module.css";
 import brandPlane from "./assets/ui/plane6.gif";
+import parachuter from "./assets/ui/parachuter1.gif";
 import { SkyBackdrop } from "./components/ui/SkyBackdrop";
+import { useSettingsContext } from "./contexts/settingsContext";
+import { GAME_INTL } from "./intl/messages";
 import { Editor } from "./views/Editor";
 import { Lobby } from "./views/Lobby";
 import { Replay } from "./views/Replay";
@@ -14,6 +17,12 @@ function App() {
     const intl = useIntl();
     const { setColorScheme } = useMantineColorScheme();
     const colorScheme = useComputedColorScheme("light");
+    const { globalState } = useSettingsContext();
+    const inGame = globalState.activeView === "game";
+
+    const blocker = useBlocker(
+        ({ currentLocation, nextLocation }) => inGame && currentLocation.pathname !== nextLocation.pathname,
+    );
 
     const toggleLight = intl.formatMessage({
         defaultMessage: "Toggle Light Mode",
@@ -30,7 +39,25 @@ function App() {
 
     return (
         <div className={classes.app}>
-            <SkyBackdrop />
+            <SkyBackdrop calm={globalState.activeView !== null} />
+            <Modal
+                opened={blocker.state === "blocked"}
+                onClose={() => blocker.reset?.()}
+                title={intl.formatMessage(GAME_INTL.hud_exit)}
+                size="xs"
+            >
+                <div className={classes.leave}>
+                    <img src={parachuter} className={classes.leaveArt} alt="" />
+                    <Button
+                        color="cherry"
+                        fullWidth
+                        rightSection={<IconDoorExit size={18} stroke={2.4} />}
+                        onClick={() => blocker.proceed?.()}
+                    >
+                        {intl.formatMessage(GAME_INTL.hud_exit)}
+                    </Button>
+                </div>
+            </Modal>
             <header className={classes.header}>
                 <div className={classes.headerInner}>
                     <NavLink to={"/"} className={classes.brand}>

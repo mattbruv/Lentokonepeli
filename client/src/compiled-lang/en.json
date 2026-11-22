@@ -195,12 +195,6 @@
       "value": "Unlimited"
     }
   ],
-  "PEHw6d": [
-    {
-      "type": 0,
-      "value": "SPECTATING"
-    }
-  ],
   "PEq6j5": [
     {
       "type": 0,
@@ -481,16 +475,6 @@
     {
       "type": 0,
       "value": "Watch Replay"
-    }
-  ],
-  "nUMJk3": [
-    {
-      "type": 0,
-      "value": "Following: "
-    },
-    {
-      "type": 1,
-      "value": "name"
     }
   ],
   "ohIqzI": [

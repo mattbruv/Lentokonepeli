@@ -1,5 +1,6 @@
 import { Alert, Button, FileButton, LoadingOverlay, Stack, Tooltip } from "@mantine/core";
 import { IconFileUpload, IconInfoCircle, IconMovie } from "@tabler/icons-react";
+import { useActiveView } from "../hooks/useActiveView";
 import { useRef, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import replayArt from "../assets/ui/pic_plane7.gif";
@@ -51,6 +52,8 @@ export function Replay() {
     }
 
     const watching = state === ReplayState.Watching;
+
+    useActiveView("replay", watching);
 
     return (
         <>

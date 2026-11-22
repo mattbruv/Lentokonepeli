@@ -125,6 +125,25 @@
     image-rendering: pixelated;
 }
 
+.flyer,
+.chute {
+    transition: opacity 600ms ease;
+}
+
+.calm .flyer,
+.calm .chute {
+    opacity: 0;
+}
+
+.calm .cloud,
+.calm .flyer,
+.calm .plane,
+.calm .chute,
+.calm .chute img,
+.calm .stars {
+    animation-play-state: paused;
+}
+
 @keyframes drift {
     from {
         transform: translateX(-420px);

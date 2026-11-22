@@ -18,9 +18,12 @@ export type DogfightSettings = {
     locale?: KnownLocale;
 };
 
+export type ActiveView = "game" | "replay" | null;
+
 export type GlobalState = {
     viewingScoreboard: boolean;
     chatState: ChatMode;
+    activeView: ActiveView;
 };
 
 export function isValidName(name: string): boolean {
@@ -121,6 +124,7 @@ const getInitialSettings = (): DogfightSettings => {
 const getInitialGlobalState = (): GlobalState => ({
     viewingScoreboard: false,
     chatState: ChatMode.Passive,
+    activeView: null,
 });
 
 // Provider component

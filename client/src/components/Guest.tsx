@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSettingsContext } from "../contexts/settingsContext";
+import { useActiveView } from "../hooks/useActiveView";
 import { useGuest } from "../hooks/useGuest";
 import { Game } from "./Game";
 import { GameStage } from "./GameStage";
@@ -26,6 +27,8 @@ export function Guest({ gameCode }: GuestProps) {
         initialize(gameContainer.current);
         joinGame(gameCode);
     }
+
+    useActiveView("game");
 
     useEffect(() => {
         join();

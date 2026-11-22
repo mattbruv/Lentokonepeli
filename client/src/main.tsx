@@ -12,20 +12,20 @@ import "@mantine/core/styles.css";
 import "./index.css";
 
 import { MantineProvider } from "@mantine/core";
-import { HashRouter } from "react-router-dom";
+import { createHashRouter, RouterProvider } from "react-router-dom";
 import { SettingsProvider } from "./contexts/settingsContext.tsx";
 import { TextureProvider } from "./contexts/textureContext.tsx";
 import { IntlProvider } from "./intl/IntlProvider.tsx";
 import { cssVariablesResolver, theme } from "./theme.ts";
+
+const router = createHashRouter([{ path: "*", element: <App /> }]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <SettingsProvider>
         <IntlProvider>
             <TextureProvider>
                 <MantineProvider theme={theme} cssVariablesResolver={cssVariablesResolver} defaultColorScheme="auto">
-                    <HashRouter>
-                        <App />
-                    </HashRouter>
+                    <RouterProvider router={router} />
                 </MantineProvider>
             </TextureProvider>
         </IntlProvider>

@@ -195,12 +195,6 @@
       "value": "Rajoittamaton"
     }
   ],
-  "PEHw6d": [
-    {
-      "type": 0,
-      "value": "KATSOJA"
-    }
-  ],
   "PEq6j5": [
     {
       "type": 0,
@@ -481,16 +475,6 @@
     {
       "type": 0,
       "value": "Uusinnat"
-    }
-  ],
-  "nUMJk3": [
-    {
-      "type": 0,
-      "value": "Seurataan: "
-    },
-    {
-      "type": 1,
-      "value": "name"
     }
   ],
   "ohIqzI": [

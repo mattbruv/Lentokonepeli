@@ -15,6 +15,7 @@ import { randomGuid } from "../helpers";
 import { useDevKeybinds } from "./keybinds/useDevKeybinds";
 import { useGameKeybinds } from "./keybinds/useGameKeybinds";
 import { useSettingsContext } from "../contexts/settingsContext";
+import { leaveActiveGame } from "./useActiveView";
 
 export type DogfightCallbacks = {
     handleClientCommand: (command: PlayerCommand) => void;
@@ -88,6 +89,7 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
                 setWorldState(state);
             },
             onExit: (): void => {
+                leaveActiveGame();
                 window.location.href = import.meta.env.BASE_URL;
             },
             onToggleSounds: (enabled: boolean): void => {

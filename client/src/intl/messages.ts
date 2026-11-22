@@ -148,12 +148,4 @@ export const GAME_INTL = {
         defaultMessage: "Gfx",
         description: "Checkbox on the bottom game panel that switches between full and simple graphics",
     }),
-    spectating: defineMessage({
-        defaultMessage: "SPECTATING",
-        description: "Shown on screen while watching a replay",
-    }),
-    following: defineMessage({
-        defaultMessage: "Following: {name}",
-        description: "Shown on screen while watching a replay, with the name of the player being followed",
-    }),
 } as const satisfies Record<string, MessageDescriptor>;

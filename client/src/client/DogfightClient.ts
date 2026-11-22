@@ -28,13 +28,6 @@ import { drawQuality } from "./drawQuality";
 import { soundManager } from "./soundManager";
 import { GAME_INTL } from "../intl/messages";
 
-const SPECTATE_STYLE: Partial<PIXI.ITextStyle> = {
-    fontFamily: "Arial",
-    fontSize: 15,
-    fontWeight: "bold",
-    fill: 0xffff00,
-};
-
 const TEAM_CHOOSER_CAMERA = { x: 0, y: -150 };
 
 const MAX_BOMBS: Record<PlaneType, number> = {
@@ -100,9 +93,6 @@ export class DogfightClient {
     private roundInfo: RoundInfo = new RoundInfo();
     private worldState: WorldState | null = null;
     private isReplay = false;
-    private spectateContainer = new PIXI.Container();
-    private spectatingText = new PIXI.Text("", SPECTATE_STYLE);
-    private followingText = new PIXI.Text("", SPECTATE_STYLE);
     public keyboard: GameKeyboard = new GameKeyboard();
 
     private callbacks?: GameClientCallbacks;
@@ -125,7 +115,6 @@ export class DogfightClient {
             this.teamChooser.container,
             this.respawnInfo.container,
             this.roundInfo.clockContainer,
-            this.spectateContainer,
             this.killFeed.container,
         ];
 
@@ -183,16 +172,6 @@ export class DogfightClient {
 
         this.roundInfo.init(intl, screen.width, GAME_HEIGHT);
 
-        {
-            const ascent = PIXI.TextMetrics.measureFont(this.spectatingText.style.toFontString()).ascent;
-            this.spectatingText.text = intl.formatMessage(GAME_INTL.spectating);
-            this.spectatingText.position.set(540, 370 - ascent);
-            this.followingText.position.set(540, 390 - ascent);
-            this.spectateContainer.addChild(this.spectatingText);
-            this.spectateContainer.addChild(this.followingText);
-            this.spectateContainer.visible = false;
-        }
-
         this.centerCamera(TEAM_CHOOSER_CAMERA.x, TEAM_CHOOSER_CAMERA.y);
         soundManager.startMotorLoop();
     }
@@ -226,7 +205,6 @@ export class DogfightClient {
         const myPlayer = this.entities.Player.collection.entries().find((x) => x[1].props.guid === guid);
         this.myPlayerId = myPlayer?.[0] ?? null;
         this.isReplay = replay;
-        this.refreshSpectating();
         if (replay) {
             this.applyMyTeam(myPlayer?.[1].props.team ?? null);
             this.refreshMyView();
@@ -284,14 +262,6 @@ export class DogfightClient {
         this.refreshOverlays();
     }
 
-    private refreshSpectating() {
-        const me = this.getMyPlayer();
-        this.spectateContainer.visible = this.isReplay;
-        this.followingText.text = me
-            ? (this.intl?.formatMessage(GAME_INTL.following, { name: formatName(me.props.name, me.props.clan) }) ?? "")
-            : "";
-    }
-
     private refreshOverlays() {
         const me = this.getMyPlayer();
         const intermission = this.worldState === "Intermission";
@@ -301,7 +271,6 @@ export class DogfightClient {
         }
 
         this.roundInfo.update(this.worldState, winner, me?.props.ready ?? true);
-        this.refreshSpectating();
         const choosingTeam = me?.props.state === "ChoosingTeam";
         this.teamChooser.container.visible = !intermission && (this.isReplay ? choosingTeam : !me || choosingTeam);
         this.teamChooser.setClickable(!this.isReplay);

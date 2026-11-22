@@ -2,7 +2,7 @@ import { CSSProperties, memo } from "react";
 import ground from "../../assets/ui/ground1.gif";
 import hill from "../../assets/ui/hill1.gif";
 import palm from "../../assets/ui/palmtree.gif";
-import parachuter from "../../assets/ui/parachuter0.gif";
+import parachuter from "../../assets/ui/parachuter1.gif";
 import plane5 from "../../assets/ui/plane5.gif";
 import plane6 from "../../assets/ui/plane6.gif";
 import plane8 from "../../assets/ui/plane8.gif";
@@ -53,9 +53,9 @@ function Cloud({ width }: { width: number }) {
     );
 }
 
-export const SkyBackdrop = memo(function SkyBackdrop() {
+export const SkyBackdrop = memo(function SkyBackdrop({ calm }: { calm: boolean }) {
     return (
-        <div className={classes.sky} aria-hidden>
+        <div className={[classes.sky, calm ? classes.calm : ""].join(" ")} aria-hidden>
             <div className={classes.stars} />
             {CLOUDS.map((c, i) => (
                 <div

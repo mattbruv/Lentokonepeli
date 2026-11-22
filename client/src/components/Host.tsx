@@ -4,6 +4,7 @@ import saveAs from "file-saver";
 import { useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSettingsContext } from "../contexts/settingsContext";
+import { useActiveView } from "../hooks/useActiveView";
 import { useLocalHost } from "../hooks/useLocalHost";
 import { LevelName } from "../views/Lobby";
 import { Game } from "./Game";
@@ -48,6 +49,8 @@ export function Host({ level, recordGame, gameTime }: HostProps) {
         const filename = level + "_" + roomCode + "_" + formattedDate + ".lento";
         saveAs(new Blob([replayBytes]), filename);
     }
+
+    useActiveView("game");
 
     useEffect(() => {
         host();

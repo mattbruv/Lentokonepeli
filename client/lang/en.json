@@ -115,10 +115,6 @@
     "defaultMessage": "Unlimited",
     "description": "Game time option for rounds that only end when a team's base is destroyed"
   },
-  "PEHw6d": {
-    "defaultMessage": "SPECTATING",
-    "description": "Shown on screen while watching a replay"
-  },
   "PEq6j5": {
     "defaultMessage": "to close chat",
     "description": "message indicating 'Esc' closes the chat"
@@ -274,10 +270,6 @@
   "mq7h++": {
     "defaultMessage": "Watch Replay",
     "description": "Sidebar link description for the Replay System page"
-  },
-  "nUMJk3": {
-    "defaultMessage": "Following: {name}",
-    "description": "Shown on screen while watching a replay, with the name of the player being followed"
   },
   "ohIqzI": {
     "defaultMessage": "Toggle Motor",

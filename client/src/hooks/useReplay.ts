@@ -71,6 +71,7 @@ export function useReplay() {
 
         dogfight.engine.load_replay(binary);
         dogfight.setReplayMode();
+        updateSpectating(Object.keys(summary.players)[0] ?? null);
 
         return true;
     }
