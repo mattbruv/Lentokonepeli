@@ -1,5 +1,7 @@
+use crate::inspect::BombInspect;
 use dogfight_macros::Networked;
 use image::RgbaImage;
+use std::borrow::Cow;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
@@ -50,6 +52,13 @@ impl Bomb {
 
     pub fn kill(&mut self) -> () {
         self.is_alive = false;
+    }
+
+    pub fn inspect(&self) -> BombInspect {
+        BombInspect {
+            speed: (self.x_speed * self.x_speed + self.y_speed * self.y_speed).sqrt(),
+            direction: *self.direction.get(),
+        }
     }
 
     pub fn player_id(&self) -> PlayerId {
@@ -119,6 +128,13 @@ impl SolidEntity for Bomb {
 
     fn do_rotate_collision_image(&mut self) -> () {
         self.rotated_image = rotate_image(&self.image, self.angle, false);
+    }
+
+    fn debug_shape(&self) -> (BoundingBox, Option<Cow<'_, RgbaImage>>) {
+        (
+            self.get_collision_bounds(),
+            Some(Cow::Owned(rotate_image(&self.image, self.angle, false))),
+        )
     }
 
     fn is_alive(&self) -> bool {

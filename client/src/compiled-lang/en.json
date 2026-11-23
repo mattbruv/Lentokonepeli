@@ -1,4 +1,10 @@
 {
+  "++E6GV": [
+    {
+      "type": 0,
+      "value": "Motor"
+    }
+  ],
   "+VHHqo": [
     {
       "type": 0,
@@ -29,10 +35,34 @@
       "value": "Username"
     }
   ],
+  "/U2XaA": [
+    {
+      "type": 0,
+      "value": "Explosion"
+    }
+  ],
   "07P703": [
     {
       "type": 0,
       "value": "A legendary triplane. Extremely agile and also excellent at maximum flight altitude."
+    }
+  ],
+  "1ICbwz": [
+    {
+      "type": 0,
+      "value": "Remove"
+    }
+  ],
+  "1UE6bt": [
+    {
+      "type": 0,
+      "value": "Plane"
+    }
+  ],
+  "1ms0hN": [
+    {
+      "type": 0,
+      "value": "Players"
     }
   ],
   "2w7ZSO": [
@@ -41,10 +71,28 @@
       "value": "Deaths"
     }
   ],
+  "309viz": [
+    {
+      "type": 0,
+      "value": "Snap to player"
+    }
+  ],
   "3R2xaB": [
     {
       "type": 0,
       "value": "Shoot"
+    }
+  ],
+  "45aPwk": [
+    {
+      "type": 0,
+      "value": "Ammo"
+    }
+  ],
+  "4EiQX8": [
+    {
+      "type": 0,
+      "value": "Unnamed lobby"
     }
   ],
   "4GxiBe": [
@@ -59,10 +107,40 @@
       "value": "Eject, Open Parachute"
     }
   ],
+  "5jSC1l": [
+    {
+      "type": 0,
+      "value": "The host didn't respond in time. They may have left, or a firewall is blocking the connection."
+    }
+  ],
+  "6AtUzs": [
+    {
+      "type": 0,
+      "value": "Small"
+    }
+  ],
+  "6OnDBs": [
+    {
+      "type": 0,
+      "value": "Fuel"
+    }
+  ],
   "6h1L5u": [
     {
       "type": 0,
       "value": "Easy"
+    }
+  ],
+  "6zMC33": [
+    {
+      "type": 0,
+      "value": "The host removed you from the game."
+    }
+  ],
+  "79SXbl": [
+    {
+      "type": 0,
+      "value": "My levels"
     }
   ],
   "7GHFcs": [
@@ -71,10 +149,34 @@
       "value": "Respawning in"
     }
   ],
+  "7sejUS": [
+    {
+      "type": 0,
+      "value": "Direction"
+    }
+  ],
+  "7uvnUw": [
+    {
+      "type": 0,
+      "value": "None"
+    }
+  ],
+  "80jhcO": [
+    {
+      "type": 0,
+      "value": "Flipped"
+    }
+  ],
   "8Am/Pl": [
     {
       "type": 0,
       "value": "Basic aircraft equipped with a machine gun, without particularly good or bad qualities. A good choice for a beginner."
+    }
+  ],
+  "8B1K0N": [
+    {
+      "type": 0,
+      "value": "Saved!"
     }
   ],
   "8WM3G7": [
@@ -87,6 +189,24 @@
     {
       "type": 0,
       "value": "Control Settings"
+    }
+  ],
+  "9+0fXW": [
+    {
+      "type": 0,
+      "value": "Terrain"
+    }
+  ],
+  "93dkEY": [
+    {
+      "type": 0,
+      "value": "Last use"
+    }
+  ],
+  "9bQEK7": [
+    {
+      "type": 0,
+      "value": "Headquarters"
     }
   ],
   "9l2moM": [
@@ -123,10 +243,34 @@
       "value": "Bot"
     }
   ],
+  "AZRVPH": [
+    {
+      "type": 0,
+      "value": "Host menu"
+    }
+  ],
+  "AeYTDy": [
+    {
+      "type": 0,
+      "value": "Watch anyway"
+    }
+  ],
+  "B/tYl9": [
+    {
+      "type": 0,
+      "value": "Coast"
+    }
+  ],
   "B1CMe5": [
     {
       "type": 0,
       "value": "A replay file can be downloaded at any time when hosting a game."
+    }
+  ],
+  "BDEGh4": [
+    {
+      "type": 0,
+      "value": "Headquarters"
     }
   ],
   "BLykMd": [
@@ -135,10 +279,58 @@
       "value": "Clan"
     }
   ],
+  "BXJgxS": [
+    {
+      "type": 0,
+      "value": "Something went wrong while connecting to the host."
+    }
+  ],
+  "BkSsse": [
+    {
+      "type": 0,
+      "value": "This file couldn't be read. It may not be a replay, or it was recorded with a version of the game that is too old to open."
+    }
+  ],
+  "C06Dta": [
+    {
+      "type": 0,
+      "value": "Reaching the host"
+    }
+  ],
+  "CpTJ9C": [
+    {
+      "type": 0,
+      "value": "End round"
+    }
+  ],
+  "D/agNw": [
+    {
+      "type": 0,
+      "value": "Water"
+    }
+  ],
+  "DMjXm5": [
+    {
+      "type": 0,
+      "value": "Zoom in"
+    }
+  ],
   "DWNyUG": [
     {
       "type": 0,
       "value": "Select Replay"
+    }
+  ],
+  "DcRgtq": [
+    {
+      "type": 0,
+      "value": "Allies"
+    }
+  ],
+  "Dyoy6E": [
+    {
+      "type": 0,
+      "value": "Remove player"
     }
   ],
   "E/uHyU": [
@@ -147,10 +339,46 @@
       "value": "An aircraft equipped with a fairly powerful machine gun. A good choice, especially for beginner pilots."
     }
   ],
+  "EB+s18": [
+    {
+      "type": 0,
+      "value": "Skips the results and intermission and starts a new round now."
+    }
+  ],
+  "EJxKHB": [
+    {
+      "type": 0,
+      "value": "Wins on time"
+    }
+  ],
   "El6eCJ": [
     {
       "type": 0,
       "value": "Smaller"
+    }
+  ],
+  "F/owlo": [
+    {
+      "type": 0,
+      "value": "The connection to the host was lost. The host may have left the game."
+    }
+  ],
+  "F3eL+0": [
+    {
+      "type": 0,
+      "value": "Connecting to server"
+    }
+  ],
+  "FVxFnN": [
+    {
+      "type": 0,
+      "value": "Replay stopped"
+    }
+  ],
+  "FeaIOV": [
+    {
+      "type": 0,
+      "value": "Bomb"
     }
   ],
   "G7DhrV": [
@@ -163,6 +391,26 @@
     {
       "type": 0,
       "value": "Sopwith Camel"
+    }
+  ],
+  "GJuTty": [
+    {
+      "type": 0,
+      "value": "Current version"
+    }
+  ],
+  "H0TxYO": [
+    {
+      "type": 0,
+      "value": "No game was found with code "
+    },
+    {
+      "type": 1,
+      "value": "code"
+    },
+    {
+      "type": 0,
+      "value": ". Check the code and try again."
     }
   ],
   "H6qNPr": [
@@ -183,10 +431,54 @@
       "value": "Enter the 4 digit game code..."
     }
   ],
+  "JSLtOI": [
+    {
+      "type": 0,
+      "value": "Downed by"
+    }
+  ],
+  "JqPC9Z": [
+    {
+      "type": 0,
+      "value": "Following player"
+    }
+  ],
+  "JtkM9d": [
+    {
+      "type": 0,
+      "value": "None"
+    }
+  ],
+  "JwnLHL": [
+    {
+      "type": 0,
+      "value": "Downloading Replay "
+    },
+    {
+      "type": 1,
+      "value": "percent"
+    },
+    {
+      "type": 0,
+      "value": "%"
+    }
+  ],
   "Jyv5JT": [
     {
       "type": 0,
       "value": "Normal"
+    }
+  ],
+  "Kdsx9u": [
+    {
+      "type": 0,
+      "value": "Map & mode"
+    }
+  ],
+  "L9AKyJ": [
+    {
+      "type": 0,
+      "value": "Cancel"
     }
   ],
   "Lo5tsu": [
@@ -213,10 +505,46 @@
       "value": "Bots"
     }
   ],
+  "MMvi2N": [
+    {
+      "type": 0,
+      "value": "Bullet"
+    }
+  ],
+  "MYX7pK": [
+    {
+      "type": 0,
+      "value": "Age"
+    }
+  ],
+  "Ma6JVf": [
+    {
+      "type": 0,
+      "value": "Abandoned plane"
+    }
+  ],
+  "Mn1HEl": [
+    {
+      "type": 0,
+      "value": "Centrals"
+    }
+  ],
   "MrbN1S": [
     {
       "type": 0,
       "value": "(Teamkill penalty)"
+    }
+  ],
+  "NGiyEX": [
+    {
+      "type": 0,
+      "value": "Higher score"
+    }
+  ],
+  "NRgcth": [
+    {
+      "type": 0,
+      "value": "Load another replay"
     }
   ],
   "Nbb2Yc": [
@@ -225,10 +553,44 @@
       "value": "Move Right"
     }
   ],
+  "NyL4Zc": [
+    {
+      "type": 0,
+      "value": "Recorded with "
+    },
+    {
+      "type": 1,
+      "value": "replayVersion"
+    },
+    {
+      "type": 0,
+      "value": ", you're running "
+    },
+    {
+      "type": 1,
+      "value": "currentVersion"
+    },
+    {
+      "type": 0,
+      "value": ". Playback may desync."
+    }
+  ],
   "OVTgWq": [
     {
       "type": 0,
       "value": "Unlimited"
+    }
+  ],
+  "P2G+0B": [
+    {
+      "type": 0,
+      "value": "Pilot"
+    }
+  ],
+  "PEq+cf": [
+    {
+      "type": 0,
+      "value": "Plane"
     }
   ],
   "PEq6j5": [
@@ -249,10 +611,38 @@
       "value": "Random"
     }
   ],
+  "PzZfKW": [
+    {
+      "type": 0,
+      "value": "Original levels"
+    }
+  ],
+  "Q1mV6L": [
+    {
+      "type": 0,
+      "value": "Disconnected"
+    }
+  ],
   "Q9UCoB": [
     {
       "type": 0,
       "value": "Bigger"
+    }
+  ],
+  "QYueam": [
+    {
+      "type": 0,
+      "value": "Joining game "
+    },
+    {
+      "type": 1,
+      "value": "code"
+    }
+  ],
+  "QdN+gh": [
+    {
+      "type": 0,
+      "value": "Desert"
     }
   ],
   "Qj15PN": [
@@ -261,10 +651,28 @@
       "value": "Toggle Light Mode"
     }
   ],
+  "QnT7VI": [
+    {
+      "type": 0,
+      "value": "Bots"
+    }
+  ],
   "Qt6faF": [
     {
       "type": 0,
       "value": "Host a Game"
+    }
+  ],
+  "QwMaWJ": [
+    {
+      "type": 0,
+      "value": "Save"
+    }
+  ],
+  "R7Fptk": [
+    {
+      "type": 0,
+      "value": "Back to lobby"
     }
   ],
   "RJPf0Z": [
@@ -273,10 +681,34 @@
       "value": "Sounds"
     }
   ],
+  "RyQOi8": [
+    {
+      "type": 0,
+      "value": "Headquarters"
+    }
+  ],
   "SDo2PQ": [
     {
       "type": 0,
       "value": "View the Source Code on GitHub"
+    }
+  ],
+  "SDyaJI": [
+    {
+      "type": 0,
+      "value": "Bomb"
+    }
+  ],
+  "SP08Wt": [
+    {
+      "type": 0,
+      "value": "Damage"
+    }
+  ],
+  "SdyT+q": [
+    {
+      "type": 0,
+      "value": "Bombs"
     }
   ],
   "Sxp4im": [
@@ -285,16 +717,58 @@
       "value": "Code"
     }
   ],
+  "T+D+U2": [
+    {
+      "type": 0,
+      "value": "Runway"
+    }
+  ],
   "T+NmK1": [
     {
       "type": 0,
       "value": "Remove bot"
     }
   ],
+  "T2A0lT": [
+    {
+      "type": 0,
+      "value": "Huge"
+    }
+  ],
+  "T631Pr": [
+    {
+      "type": 0,
+      "value": "Open a saved level..."
+    }
+  ],
+  "TF2HVX": [
+    {
+      "type": 0,
+      "value": "None"
+    }
+  ],
   "TcT+Lx": [
     {
       "type": 0,
       "value": "Allies"
+    }
+  ],
+  "Telnt5": [
+    {
+      "type": 0,
+      "value": "State"
+    }
+  ],
+  "TktZUh": [
+    {
+      "type": 0,
+      "value": "Host"
+    }
+  ],
+  "Tsq+GT": [
+    {
+      "type": 0,
+      "value": "Lobby name"
     }
   ],
   "U/mSA3": [
@@ -309,10 +783,34 @@
       "value": "User Settings"
     }
   ],
+  "URl7v/": [
+    {
+      "type": 0,
+      "value": "Requesting Replay..."
+    }
+  ],
+  "UdvUli": [
+    {
+      "type": 0,
+      "value": "Grass"
+    }
+  ],
   "UwCHgC": [
     {
       "type": 0,
       "value": "(Press enter when ready)"
+    }
+  ],
+  "V/EQaQ": [
+    {
+      "type": 0,
+      "value": "Repairing"
+    }
+  ],
+  "V07IkD": [
+    {
+      "type": 0,
+      "value": "Drag the game to move the camera freely, scroll to zoom."
     }
   ],
   "V27mjT": [
@@ -321,10 +819,58 @@
       "value": "Medium"
     }
   ],
+  "VJkmRe": [
+    {
+      "type": 0,
+      "value": "Removed from game"
+    }
+  ],
+  "VKJO6U": [
+    {
+      "type": 0,
+      "value": "Game"
+    }
+  ],
+  "VVxUC9": [
+    {
+      "type": 0,
+      "value": "On"
+    }
+  ],
+  "WBeTqK": [
+    {
+      "type": 0,
+      "value": "Host menu"
+    }
+  ],
+  "WLqWDd": [
+    {
+      "type": 0,
+      "value": "Size"
+    }
+  ],
+  "WRYYYZ": [
+    {
+      "type": 0,
+      "value": "Speed"
+    }
+  ],
+  "WW6Pjz": [
+    {
+      "type": 0,
+      "value": "Pilot"
+    }
+  ],
   "WWTrIb": [
     {
       "type": 0,
       "value": "Versatile mid-tier aircraft. Equipped with bombs in addition to a machine gun. Fast and powerful engine, though not agile."
+    }
+  ],
+  "WXjYmQ": [
+    {
+      "type": 0,
+      "value": "No players have joined yet."
     }
   ],
   "WYS1bQ": [
@@ -345,16 +891,52 @@
       "value": "Score"
     }
   ],
+  "XH4Nct": [
+    {
+      "type": 0,
+      "value": "Download Replay File"
+    }
+  ],
   "XS5GTW": [
     {
       "type": 0,
       "value": "Exit"
     }
   ],
+  "XUWCAc": [
+    {
+      "type": 0,
+      "value": "Bullet"
+    }
+  ],
+  "XiQxa8": [
+    {
+      "type": 0,
+      "value": "Runway"
+    }
+  ],
+  "Xx0fru": [
+    {
+      "type": 0,
+      "value": "Off"
+    }
+  ],
   "Y5ZG9P": [
     {
       "type": 0,
       "value": "You can change this any time in the settings menu"
+    }
+  ],
+  "Yc8TsJ": [
+    {
+      "type": 0,
+      "value": "This replay couldn't be loaded. If it was recorded with a different version of the game, it may not be compatible."
+    }
+  ],
+  "YzB1NF": [
+    {
+      "type": 0,
+      "value": "Ends the round as a tie. Press again to skip straight to the next round."
     }
   ],
   "Z0iZnK": [
@@ -367,10 +949,28 @@
       "value": " minutes"
     }
   ],
+  "Z6qKwZ": [
+    {
+      "type": 0,
+      "value": "Cancel"
+    }
+  ],
   "ZNwZqy": [
     {
       "type": 0,
       "value": "(Wait for round to finish)"
+    }
+  ],
+  "ZX0/sf": [
+    {
+      "type": 0,
+      "value": "Random bots join whichever team has fewer players, keeping teams balanced."
+    }
+  ],
+  "ZaKgdz": [
+    {
+      "type": 0,
+      "value": "Medium"
     }
   ],
   "aLjUL6": [
@@ -379,10 +979,22 @@
       "value": "Level Editor"
     }
   ],
+  "aQA+eU": [
+    {
+      "type": 0,
+      "value": "This replay was recorded with a different version of the game. It may desync or fail to play properly."
+    }
+  ],
   "aSDY0F": [
     {
       "type": 0,
       "value": "Albatros D.II"
+    }
+  ],
+  "awpOU6": [
+    {
+      "type": 0,
+      "value": "Owner"
     }
   ],
   "azXaJ7": [
@@ -397,10 +1009,18 @@
       "value": "Hard"
     }
   ],
-  "b8pU+2": [
+  "bLlX70": [
     {
       "type": 0,
-      "value": "Add Bot"
+      "value": "Download Replay ("
+    },
+    {
+      "type": 1,
+      "value": "seconds"
+    },
+    {
+      "type": 0,
+      "value": "s)"
     }
   ],
   "buqDOb": [
@@ -449,6 +1069,12 @@
       "value": "Salmson 2"
     }
   ],
+  "czwMiI": [
+    {
+      "type": 0,
+      "value": "Hit enemy"
+    }
+  ],
   "d2cMrt": [
     {
       "type": 0,
@@ -461,10 +1087,28 @@
       "value": "Move Left"
     }
   ],
+  "daomJy": [
+    {
+      "type": 0,
+      "value": "Couldn't join game"
+    }
+  ],
+  "ddsayU": [
+    {
+      "type": 0,
+      "value": "Starts a fresh game on the chosen map for everyone. Players and bots stay, but teams, scores and the replay start over."
+    }
+  ],
   "e5OODe": [
     {
       "type": 0,
       "value": "Ready"
+    }
+  ],
+  "e9AUQd": [
+    {
+      "type": 0,
+      "value": "Start next round"
     }
   ],
   "ezKLsY": [
@@ -477,6 +1121,12 @@
     {
       "type": 0,
       "value": "Bomb"
+    }
+  ],
+  "g26t4O": [
+    {
+      "type": 0,
+      "value": "Remove selected"
     }
   ],
   "gAAkRv": [
@@ -525,6 +1175,24 @@
       "value": " important building destroyed."
     }
   ],
+  "hfzZFF": [
+    {
+      "type": 0,
+      "value": "Replay from a different version"
+    }
+  ],
+  "iMTNwO": [
+    {
+      "type": 0,
+      "value": "Mixed"
+    }
+  ],
+  "ioK/G6": [
+    {
+      "type": 0,
+      "value": "Count"
+    }
+  ],
   "iu4I/w": [
     {
       "type": 0,
@@ -543,6 +1211,24 @@
       "value": "Watch a Game Replay"
     }
   ],
+  "jGs85w": [
+    {
+      "type": 0,
+      "value": "Explosion"
+    }
+  ],
+  "jLMFLF": [
+    {
+      "type": 0,
+      "value": "Try again"
+    }
+  ],
+  "jlutC2": [
+    {
+      "type": 0,
+      "value": "No"
+    }
+  ],
   "jwBIfl": [
     {
       "type": 0,
@@ -553,6 +1239,18 @@
     {
       "type": 0,
       "value": "Settings"
+    }
+  ],
+  "kp9XuR": [
+    {
+      "type": 0,
+      "value": "Pilot"
+    }
+  ],
+  "ksNvP/": [
+    {
+      "type": 0,
+      "value": "Facing"
     }
   ],
   "l2d2GO": [
@@ -567,10 +1265,91 @@
       "value": "Add new key"
     }
   ],
+  "lQ6PJs": [
+    {
+      "type": 0,
+      "value": "Ground"
+    }
+  ],
+  "lRuNA7": [
+    {
+      "type": 0,
+      "value": "Yes"
+    }
+  ],
+  "lyNeuJ": [
+    {
+      "type": 0,
+      "value": "Cancel"
+    }
+  ],
   "mq7h++": [
     {
       "type": 0,
       "value": "Watch Replay"
+    }
+  ],
+  "mt8kyi": [
+    {
+      "type": 0,
+      "value": "Loading the battlefield"
+    }
+  ],
+  "mv9zeu": [
+    {
+      "type": 0,
+      "value": "Health"
+    }
+  ],
+  "mwsPKY": [
+    {
+      "type": 0,
+      "value": "bot"
+    }
+  ],
+  "nJj5BE": [
+    {
+      "type": 0,
+      "value": "Restart with these settings"
+    }
+  ],
+  "nTiiQa": [
+    {
+      "type": 0,
+      "value": "Abandoned"
+    }
+  ],
+  "naawT1": [
+    {
+      "type": 0,
+      "value": "Add "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Bot"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 7
+            },
+            {
+              "type": 0,
+              "value": " Bots"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
     }
   ],
   "obtz7Y": [
@@ -603,6 +1382,18 @@
       "value": "Join Game"
     }
   ],
+  "ph+zWI": [
+    {
+      "type": 0,
+      "value": "Phase"
+    }
+  ],
+  "q/Nn6p": [
+    {
+      "type": 0,
+      "value": "Zoom out"
+    }
+  ],
   "q/xC9j": [
     {
       "type": 0,
@@ -615,10 +1406,46 @@
       "value": "Difficulty"
     }
   ],
+  "qtiDl6": [
+    {
+      "type": 0,
+      "value": "Position"
+    }
+  ],
+  "r/dEWT": [
+    {
+      "type": 0,
+      "value": "Your browser doesn't support the connection this game needs."
+    }
+  ],
   "r1oUWJ": [
     {
       "type": 0,
       "value": "Show All Messages"
+    }
+  ],
+  "r4/ar4": [
+    {
+      "type": 0,
+      "value": "Water"
+    }
+  ],
+  "rSfZu5": [
+    {
+      "type": 0,
+      "value": "Restart now"
+    }
+  ],
+  "rntL0I": [
+    {
+      "type": 0,
+      "value": "Large"
+    }
+  ],
+  "sH9h71": [
+    {
+      "type": 0,
+      "value": "Reset zoom"
     }
   ],
   "sW9neH": [
@@ -645,16 +1472,60 @@
       "value": "no"
     }
   ],
+  "tWStS8": [
+    {
+      "type": 0,
+      "value": "Delete saved level"
+    }
+  ],
+  "thIICO": [
+    {
+      "type": 0,
+      "value": "Since last use"
+    }
+  ],
   "twmPPM": [
     {
       "type": 0,
       "value": "Toggle Dark Mode"
     }
   ],
+  "u0u7ge": [
+    {
+      "type": 0,
+      "value": "Playback hit an error at "
+    },
+    {
+      "type": 1,
+      "value": "time"
+    },
+    {
+      "type": 0,
+      "value": ". This usually happens when a replay was recorded with a different version of the game."
+    }
+  ],
   "urz5xm": [
     {
       "type": 0,
       "value": "Unbind Last Key"
+    }
+  ],
+  "vFvAJ1": [
+    {
+      "type": 1,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " / "
+    },
+    {
+      "type": 1,
+      "value": "max"
+    },
+    {
+      "type": 0,
+      "value": " bots"
     }
   ],
   "vL5iqo": [
@@ -675,6 +1546,24 @@
       "value": "Join us on Discord!"
     }
   ],
+  "wqE9Oy": [
+    {
+      "type": 0,
+      "value": "Destroyed"
+    }
+  ],
+  "wsJr7x": [
+    {
+      "type": 0,
+      "value": "Couldn't reach the server. Check your internet connection and try again."
+    }
+  ],
+  "x6pbo9": [
+    {
+      "type": 0,
+      "value": "Runways"
+    }
+  ],
   "xPJ6oZ": [
     {
       "type": 0,
@@ -693,16 +1582,40 @@
       "value": "Send a message..."
     }
   ],
+  "xUQ3kM": [
+    {
+      "type": 0,
+      "value": "Remove all"
+    }
+  ],
   "xVnyJE": [
     {
       "type": 0,
       "value": "Frags"
     }
   ],
+  "xgjp90": [
+    {
+      "type": 0,
+      "value": "Show collision"
+    }
+  ],
   "y49T/p": [
     {
       "type": 0,
       "value": "Chat All"
+    }
+  ],
+  "yG7bvi": [
+    {
+      "type": 0,
+      "value": "Replay version"
+    }
+  ],
+  "yHmsMU": [
+    {
+      "type": 0,
+      "value": "My levels"
     }
   ],
   "yRjHTu": [
@@ -729,16 +1642,40 @@
       "value": "Leave this game?"
     }
   ],
+  "zJii4v": [
+    {
+      "type": 0,
+      "value": "Rejoin"
+    }
+  ],
+  "zKK/Af": [
+    {
+      "type": 0,
+      "value": "Damaging"
+    }
+  ],
   "zV7RzE": [
     {
       "type": 0,
       "value": "Equipped with bombs in addition to a machine gun, extremely durable, but a clumsy aircraft."
     }
   ],
+  "ztDpWK": [
+    {
+      "type": 0,
+      "value": "Landing zone"
+    }
+  ],
   "zvKn4f": [
     {
       "type": 0,
       "value": "Game Code"
+    }
+  ],
+  "zy+Ad+": [
+    {
+      "type": 0,
+      "value": "Save to my levels"
     }
   ]
 }

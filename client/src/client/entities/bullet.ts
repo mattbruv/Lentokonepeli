@@ -8,6 +8,10 @@ import { Entity, EntityUpdateCallbacks } from "./entity";
 
 const COLORS: string[] = ["#000000", "#111111", "#333333", "#606060", "#999999"];
 
+export const bulletMotion = {
+    extrapolate: true,
+};
+
 export class Bullet implements Entity<BulletProperties> {
     private container: PIXI.Container;
     private bulletGraphics: PIXI.Graphics;
@@ -52,10 +56,11 @@ export class Bullet implements Entity<BulletProperties> {
     private move_bullet() {
         this.age++;
 
-        const angle = directionToRadians(this.props.direction);
-
-        this.props.client_x += (this.props.speed / 25.0) * Math.cos(angle);
-        this.props.client_y += (this.props.speed / 25.0) * Math.sin(angle);
+        if (bulletMotion.extrapolate) {
+            const angle = directionToRadians(this.props.direction);
+            this.props.client_x += (this.props.speed / 25.0) * Math.cos(angle);
+            this.props.client_y += (this.props.speed / 25.0) * Math.sin(angle);
+        }
 
         let i = Math.floor((COLORS.length * this.age) / 175);
         i = i >= COLORS.length ? COLORS.length - 1 : i;
@@ -67,8 +72,10 @@ export class Bullet implements Entity<BulletProperties> {
         this.bulletGraphics.drawRect(0, 0, 2, 2);
         this.bulletGraphics.endFill();
 
-        this.updateCallbacks.client_x({ ...this.props });
-        this.updateCallbacks.client_y({ ...this.props });
+        if (bulletMotion.extrapolate) {
+            this.updateCallbacks.client_x({ ...this.props });
+            this.updateCallbacks.client_y({ ...this.props });
+        }
     }
 
     public getContainer(): PIXI.Container {

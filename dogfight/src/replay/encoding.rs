@@ -1,4 +1,4 @@
-use std::collections::{BTreeMap, HashMap};
+use std::collections::BTreeMap;
 
 use crate::{
     entities::{player::PlayerGuid, world_info::GameMode},
@@ -6,7 +6,7 @@ use crate::{
     network::encoding::NetworkedBytes,
 };
 
-use super::file::{get_build_version, ReplayFile, ReplayTick, ReplayTickCommand};
+use super::file::{ReplayFile, ReplayTick, ReplayTickCommand};
 
 impl NetworkedBytes for ReplayTick {
     fn to_bytes(&self) -> Vec<u8> {
@@ -71,9 +71,6 @@ impl NetworkedBytes for ReplayFile {
         let (bytes, level_name) = String::from_bytes(bytes)?;
         let (bytes, level_data) = String::from_bytes(bytes)?;
         let (bytes, build_version) = String::from_bytes(bytes)?;
-        if build_version != get_build_version() {
-            return None;
-        }
         let (bytes, build_commit) = String::from_bytes(bytes)?;
         let (bytes, game_time_minutes, intermission_seconds) = match u16::from_bytes(bytes)
             .and_then(|(rest, game_time)| {
@@ -89,7 +86,7 @@ impl NetworkedBytes for ReplayFile {
         };
 
         // See note in to_bytes to understand why we're converting this
-        let mut ticks: HashMap<u32, Vec<ReplayTickCommand>> = HashMap::new();
+        let mut ticks: BTreeMap<u32, Vec<ReplayTickCommand>> = BTreeMap::new();
         for tick in ticks_vec {
             ticks.insert(tick.tick_number, tick.commands);
         }

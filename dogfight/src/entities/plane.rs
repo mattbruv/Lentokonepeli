@@ -1,4 +1,5 @@
-use std::f64::consts::PI;
+use crate::inspect::{InspectOwner, PlaneInspect};
+use std::{borrow::Cow, f64::consts::PI};
 
 use dogfight_macros::{EnumBytes, Networked};
 use image::RgbaImage;
@@ -769,6 +770,15 @@ impl Plane {
         self.mode.set(mode);
     }
 
+    fn bounds_for_image(&self, img: &RgbaImage) -> BoundingBox {
+        BoundingBox {
+            x: (self.x / RESOLUTION) as i16 - (img.width() / 2) as i16,
+            y: (self.y / RESOLUTION) as i16 - (img.height() / 2) as i16,
+            width: img.width() as i16,
+            height: img.height() as i16,
+        }
+    }
+
     pub(crate) fn get_width(&self) -> i16 {
         self.rotated_image.width() as i16
     }
@@ -803,6 +813,25 @@ impl Plane {
 
     pub fn set_downed_by(&mut self, player_id: Option<PlayerId>) -> () {
         self.downed_by = player_id
+    }
+
+    pub fn inspect(&self, abandoned: bool, downed_by: Option<InspectOwner>) -> PlaneInspect {
+        PlaneInspect {
+            plane_type: *self.plane_type.get(),
+            mode: *self.mode.get(),
+            health: self.total_health,
+            health_percent: (*self.client_health.get() as u32 * 100 / 255) as u8,
+            ammo: self.total_ammo,
+            ammo_percent: (*self.client_ammo.get() as u32 * 100 / 255) as u8,
+            fuel_percent: (*self.client_fuel.get() as u32 * 100 / 255) as u8,
+            bombs: *self.total_bombs.get(),
+            motor_on: *self.motor_on.get(),
+            flipped: *self.flipped.get(),
+            speed: self.speed,
+            direction: *self.direction.get(),
+            abandoned,
+            downed_by,
+        }
     }
 
     pub fn get_downed_by(&self) -> Option<PlayerId> {
@@ -1055,13 +1084,12 @@ impl Entity for Plane {
 
 impl SolidEntity for Plane {
     fn get_collision_bounds(&self) -> BoundingBox {
-        let img = self.get_collision_image().unwrap();
-        BoundingBox {
-            x: (self.x / RESOLUTION) as i16 - (img.width() / 2) as i16,
-            y: (self.y / RESOLUTION) as i16 - (img.height() / 2) as i16,
-            width: img.width() as i16,
-            height: img.height() as i16,
-        }
+        self.bounds_for_image(self.get_collision_image().unwrap())
+    }
+
+    fn debug_shape(&self) -> (BoundingBox, Option<Cow<'_, RgbaImage>>) {
+        let img = rotate_image(self.get_rotateable_image(), self.angle, self.flipped());
+        (self.bounds_for_image(&img), Some(Cow::Owned(img)))
     }
 
     fn get_collision_image(&self) -> Option<&RgbaImage> {

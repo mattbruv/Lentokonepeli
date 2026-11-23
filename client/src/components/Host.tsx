@@ -1,82 +1,112 @@
 import { Button, Stack } from "@mantine/core";
-import { GameMode } from "dogfight-types/GameMode";
-import { IconFileDownload } from "@tabler/icons-react";
+import { useDisclosure } from "@mantine/hooks";
+import { IconSettings } from "@tabler/icons-react";
 import saveAs from "file-saver";
 import { useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { useSettingsContext } from "../contexts/settingsContext";
+import { getCustomLevels, resolveLevel } from "../customLevels";
 import { useActiveView } from "../hooks/useActiveView";
-import { useLocalHost } from "../hooks/useLocalHost";
-import { LevelName } from "../views/Lobby";
-import { BotPanel } from "./BotPanel";
+import { InitialBots, useLocalHost } from "../hooks/useLocalHost";
 import { Game } from "./Game";
+import { GameSettings } from "./GameSettingsFields";
 import { GameStage } from "./GameStage";
+import { HostMenu } from "./HostMenu";
+import classes from "./HostMenu.module.css";
 import { RoomCode } from "./RoomCode";
 import { Panel } from "./ui/Panel";
 
 type HostProps = {
-    level: LevelName;
+    settings: GameSettings;
     recordGame: boolean;
-    gameTime: number;
-    gameMode: GameMode;
+    lobbyName: string;
+    initialBots: InitialBots;
 };
 
-export function Host({ level, recordGame, gameTime, gameMode }: HostProps) {
+export function Host({ settings, recordGame, lobbyName, initialBots }: HostProps) {
     const gameContainer = useRef<HTMLDivElement>(null);
     const { getUsername, getClan } = useSettingsContext();
+    const [menuOpened, menu] = useDisclosure();
 
-    const {
-        getReplayBinary,
-        initialize,
-        roomCode,
-        hostGame,
-        playerData,
-        intermission,
-        playerGuid,
-        messages,
-        sendChatMessage,
-        bots,
-        addBot,
-        removeBot,
-    } = useLocalHost(level, recordGame, getUsername(), getClan(), gameTime, gameMode);
+    const host = useLocalHost(
+        {
+            level: resolveLevel(settings.levelKey, getCustomLevels()),
+            gameTime: settings.gameTime,
+            gameMode: settings.gameMode,
+        },
+        recordGame,
+        getUsername(),
+        getClan(),
+        lobbyName,
+        initialBots,
+    );
 
-    function host() {
+    function changeGame(next: GameSettings) {
+        host.changeGame({
+            level: resolveLevel(next.levelKey, getCustomLevels()),
+            gameTime: next.gameTime,
+            gameMode: next.gameMode,
+        });
+    }
+
+    function start() {
         if (!gameContainer.current) return;
-        initialize(gameContainer.current);
-        hostGame();
+        host.initialize(gameContainer.current);
+        host.hostGame();
     }
 
     function saveReplay(): void {
-        const replayBytes = getReplayBinary();
+        const replayBytes = host.getReplayBinary();
         if (!replayBytes) return;
 
         const today = new Date();
         const formattedDate = today.toISOString().split("T")[0];
-        const filename = level + "_" + roomCode + "_" + formattedDate + ".lento";
+        const filename = host.gameSettings.level.name + "_" + host.roomCode + "_" + formattedDate + ".lento";
         saveAs(new Blob([replayBytes]), filename);
     }
 
     useActiveView("game");
 
     useEffect(() => {
-        host();
+        start();
     }, []);
 
     return (
-        <GameStage
-            game={
-                <Game
-                    ref={gameContainer}
-                    myPlayerGuid={playerGuid}
-                    playerData={playerData}
-                    intermission={intermission}
-                    roomName={roomCode}
-                    messages={messages}
-                    onSendMessage={sendChatMessage}
-                />
-            }
-            side={
-                <>
+        <>
+            <HostMenu
+                opened={menuOpened}
+                onClose={menu.close}
+                lobbyName={host.lobbyName}
+                onLobbyNameChange={host.setLobbyName}
+                worldState={host.worldState}
+                onEndRound={host.endRound}
+                gameSettings={{
+                    levelKey: host.gameSettings.level.key,
+                    gameTime: host.gameSettings.gameTime,
+                    gameMode: host.gameSettings.gameMode,
+                }}
+                onChangeGame={changeGame}
+                onSaveReplay={saveReplay}
+                hostGuid={host.hostGuid}
+                playerData={host.playerData}
+                onKickPlayer={host.kickPlayer}
+                bots={host.bots}
+                onAddBots={host.addBots}
+                onRemoveBots={host.removeBots}
+            />
+            <GameStage
+                game={
+                    <Game
+                        ref={gameContainer}
+                        myPlayerGuid={host.playerGuid}
+                        playerData={host.playerData}
+                        intermission={host.intermission}
+                        roomName={host.lobbyName || host.roomCode}
+                        messages={host.messages}
+                        onSendMessage={host.sendChatMessage}
+                    />
+                }
+                side={
                     <Panel
                         title={
                             <FormattedMessage
@@ -86,23 +116,23 @@ export function Host({ level, recordGame, gameTime, gameMode }: HostProps) {
                         }
                     >
                         <Stack gap="lg">
-                            <RoomCode code={roomCode} />
+                            {host.lobbyName && <div className={classes.lobbyName}>{host.lobbyName}</div>}
+                            <RoomCode code={host.roomCode} />
                             <Button
-                                onClick={saveReplay}
+                                onClick={menu.open}
                                 color="copper"
                                 fullWidth
-                                rightSection={<IconFileDownload stroke={2.4} />}
+                                rightSection={<IconSettings stroke={2.4} />}
                             >
                                 <FormattedMessage
-                                    defaultMessage={"Save Replay File"}
-                                    description={"Button text for button which saves replay file"}
+                                    defaultMessage="Host menu"
+                                    description="Button that opens the host game management dialog"
                                 />
                             </Button>
                         </Stack>
                     </Panel>
-                    <BotPanel bots={bots} playerData={playerData} onAddBot={addBot} onRemoveBot={removeBot} />
-                </>
-            }
-        />
+                }
+            />
+        </>
     );
 }

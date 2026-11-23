@@ -42,6 +42,7 @@
 .frameStep {
     display: flex;
     justify-content: center;
+    gap: 8px;
     margin-top: -4px;
 }
 
@@ -91,4 +92,93 @@
     font-weight: 700;
     color: var(--lk-text-dim);
     font-variant-numeric: tabular-nums;
+}
+
+.legend {
+    display: grid;
+    min-width: 210px;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 6px 14px;
+    padding: 10px 12px;
+    border: 2px solid var(--lk-paper-line);
+    border-radius: 12px;
+    background: #5f9fe0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+}
+
+.legendHead {
+    font-size: 0.75rem;
+    text-align: center;
+}
+
+.swatch {
+    justify-self: center;
+    width: 22px;
+    height: 12px;
+    border: 2px solid;
+}
+
+.swatchWide {
+    grid-column: span 2;
+    width: 100%;
+}
+
+.camera {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.follow {
+    flex: 1 1 150px;
+}
+
+.zoom {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.zoomLevel {
+    min-width: 56px;
+    padding: 4px 6px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--lk-text);
+    font: inherit;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    cursor: pointer;
+
+    &:hover {
+        background: var(--lk-paper-line);
+    }
+}
+
+.cameraHint {
+    margin-top: -6px;
+    font-size: 0.8rem;
+    color: var(--lk-text-dim);
+}
+
+.collisionToggle {
+    width: fit-content;
+}
+
+.legendTooltip {
+    padding: 0;
+    background: transparent;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+.legendArrow {
+    background: #5f9fe0;
 }

@@ -61,7 +61,7 @@ pub fn parse_property_header_bytes(header_bytes: &[u8], num_bytes: usize) -> (Ve
         for i in 0..8 {
             properties.push(byte & (1 << i) != 0);
         }
-        remaining_bytes = &remaining_bytes[1..];
+        remaining_bytes = remaining_bytes.get(1..).unwrap_or(&[]);
     }
 
     (properties, remaining_bytes)
@@ -221,7 +221,7 @@ impl NetworkedBytes for EntityChange {
                     EntityChangeType::Properties(EntityProperties::Bullet(props))
                 }
             },
-            _ => panic!("Unknown entity change type {}", update_type),
+            _ => return None,
         };
 
         let change: EntityChange = EntityChange {
@@ -408,7 +408,7 @@ impl NetworkedBytes for bool {
     }
 
     fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
-        let value = bytes[0] != 0;
+        let value = *bytes.first()? != 0;
         Some((&bytes[1..], value))
     }
 }
@@ -478,6 +478,9 @@ impl NetworkedBytes for PlayerCommand {
                 bytes.push(7);
                 bytes.extend(data.to_bytes());
             }
+            PlayerCommand::EndRound => {
+                bytes.push(8);
+            }
         };
 
         bytes
@@ -529,7 +532,8 @@ impl NetworkedBytes for PlayerCommand {
                 bytes = slice;
                 PlayerCommand::AddBot(player_data)
             }
-            _ => panic!("Unknown command type"),
+            8 => PlayerCommand::EndRound,
+            _ => return None,
         };
 
         Some((bytes, command))

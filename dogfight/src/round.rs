@@ -155,6 +155,17 @@ impl World {
         None
     }
 
+    pub(crate) fn force_end_round(&mut self) {
+        match self.world_info.get_state() {
+            WorldState::Playing => self.round_over(None),
+            WorldState::PostGame => {
+                self.finish_round();
+                self.start_round();
+            }
+            WorldState::Intermission => self.start_round(),
+        }
+    }
+
     fn round_over(&mut self, winner: Option<Team>) {
         if self.game_mode == GameMode::Rounds {
             if let Some(team) = winner {
@@ -236,7 +247,7 @@ mod tests {
             types::Team,
             world_info::{GameMode, WorldState},
         },
-        input::{game_input_from_string, RunwaySelection},
+        input::{game_input_from_string, PlayerCommand, RunwaySelection},
         network::encoding::NetworkedBytes,
         replay::file::ReplayFile,
         tick_actions::{Action, RemoveData},
@@ -295,6 +306,77 @@ designer=polofel"#;
         world.tick(vec![]);
         assert_eq!(world.world_info.get_state(), WorldState::PostGame);
         assert!(world.is_round_over());
+    }
+
+    #[test]
+    fn end_round_command_ends_then_starts_next_round() {
+        let mut world = rounds_world_with_two_teams();
+        let end_round = || {
+            game_input_from_string(
+                r#"[{"player_guid":"a","command":{"type":"EndRound"}}]"#.to_string(),
+            )
+        };
+
+        world.tick(end_round());
+        assert_eq!(world.world_info.get_state(), WorldState::PostGame);
+        assert_eq!(world.world_info.get_team_wins(Team::Centrals), 0);
+        assert_eq!(world.world_info.get_team_wins(Team::Allies), 0);
+
+        world.tick(end_round());
+        assert_eq!(world.world_info.get_state(), WorldState::Playing);
+        assert!(world.planes.get_map().is_empty());
+
+        world.tick(end_round());
+        world.tick(vec![]);
+        for _ in 0..500 {
+            world.tick(vec![]);
+        }
+        assert_eq!(world.world_info.get_state(), WorldState::Intermission);
+        world.tick(end_round());
+        assert_eq!(world.world_info.get_state(), WorldState::Playing);
+    }
+
+    #[test]
+    fn restarting_keeps_humans_and_switches_level_and_mode() {
+        let mut world = rounds_world_with_two_teams();
+        world.tick(game_input_from_string(
+            r#"[{"player_guid":"bot","command":{"type":"AddBot","data":{"guid":"bot","name":"Bot 1","clan":null}}}]"#
+                .to_string(),
+        ));
+        assert_eq!(world.players.get_map().len(), 3);
+
+        const ISLANDS: &str = "islands\nlayer1=..FH...........H...........fH.\nlayer2=...R......................l...\nlayer3=....T....................t....\nlayer4=\\<###>//////////////////<###>/\ndesigner=polofel";
+        let (mut next, rejoin) = world.restarted(ISLANDS, GameMode::Normal, 5, 20);
+        assert_eq!(rejoin.len(), 2);
+        assert_eq!(next.get_game_mode(), GameMode::Normal);
+        assert_eq!(next.get_tick(), 0);
+
+        next.tick(rejoin);
+        assert_eq!(next.players.get_map().len(), 2);
+        for guid in ["a", "b"] {
+            let p = next.players.get(player_id(&next, guid)).unwrap();
+            assert!(p.get_team().is_none());
+            assert_eq!(p.get_name(), guid);
+        }
+        assert!(next
+            .get_player_from_guid(&PlayerGuid::from("bot"))
+            .is_none());
+        assert!(next.planes.get_map().is_empty());
+        assert_eq!(next.runways.get_map().len(), 2);
+
+        let replay = ReplayFile::from_bytes(&next.get_replay_file_bytes())
+            .unwrap()
+            .1;
+        assert_eq!(replay.level_data, ISLANDS);
+        assert_eq!(replay.game_time_minutes, 5);
+    }
+
+    #[test]
+    fn end_round_command_round_trips_through_binary() {
+        let bytes = PlayerCommand::EndRound.to_bytes();
+        let (rest, command) = PlayerCommand::from_bytes(&bytes).unwrap();
+        assert!(rest.is_empty());
+        assert!(matches!(command, PlayerCommand::EndRound));
     }
 
     fn add_player(world: &mut World, guid: &str) {
@@ -434,11 +516,12 @@ designer=polofel"#;
     }
 
     #[test]
-    fn replays_from_other_versions_are_rejected() {
+    fn replays_from_other_versions_still_decode() {
         let mut world = world_with_level(5, 20);
         world.replay_file.build_version = "0.7.0".to_string();
         let bytes = world.get_replay_file_bytes();
-        assert!(ReplayFile::from_bytes(&bytes).is_none());
+        let (_, replay) = ReplayFile::from_bytes(&bytes).unwrap();
+        assert_eq!(replay.build_version, "0.7.0");
     }
 
     #[test]

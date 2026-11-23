@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use crate::network::{EntityChange, EntityChangeType, NetworkedEntity};
 
@@ -15,7 +15,7 @@ pub type EntityIdWrappedType = u16;
 macro_rules! impl_from_u16 {
     ($($id_type:ident),*) => {
         $(
-            #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, TS, Deserialize)]
+            #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, TS, Deserialize)]
             #[ts(export)]
             pub struct $id_type(EntityIdWrappedType);
 
@@ -72,25 +72,27 @@ impl_from_u16!(
 pub struct EntityContainer<T, EntId>
 where
     T: NetworkedEntity,
-    EntId: From<u16> + Copy + Eq + std::hash::Hash,
+    EntId: From<u16> + Copy + Ord,
 {
     ent_type: EntityType,
     ids: Vec<EntId>,
+    freed_ids: Vec<EntId>,
     removed_ids: Vec<EntId>,
-    map: HashMap<EntId, T>,
+    map: BTreeMap<EntId, T>,
 }
 
 impl<T, EntId> EntityContainer<T, EntId>
 where
     T: NetworkedEntity,
-    EntId: From<u16> + Copy + Eq + std::hash::Hash + EntityId,
+    EntId: From<u16> + Copy + Ord + EntityId,
 {
     pub fn new(ent_type: EntityType) -> EntityContainer<T, EntId> {
         let container: EntityContainer<T, EntId> = EntityContainer {
             ent_type: ent_type,
             ids: (0..2_u16.pow(9)).rev().map(EntId::from).collect(), // generate list of 0 to 2^9 = 512 Ids
+            freed_ids: vec![],
             removed_ids: vec![],
-            map: HashMap::new(),
+            map: BTreeMap::new(),
         };
 
         assert!(container.ids.len() <= 512);
@@ -125,10 +127,15 @@ where
         let ent = self.map.remove(&id);
 
         if let Some(_) = ent {
+            self.freed_ids.push(id);
             self.removed_ids.push(id);
         }
 
         ent
+    }
+
+    pub fn recycle_freed_ids(&mut self) {
+        self.ids.append(&mut self.freed_ids);
     }
 
     pub fn get_mut(&mut self, id: EntId) -> Option<&mut T> {
@@ -139,11 +146,11 @@ where
         self.map.get(&id)
     }
 
-    pub fn get_map_mut(&mut self) -> &mut HashMap<EntId, T> {
+    pub fn get_map_mut(&mut self) -> &mut BTreeMap<EntId, T> {
         &mut self.map
     }
 
-    pub fn get_map(&self) -> &HashMap<EntId, T> {
+    pub fn get_map(&self) -> &BTreeMap<EntId, T> {
         &self.map
     }
 
@@ -159,36 +166,28 @@ where
     }
 
     pub fn get_all_changed_state(&mut self) -> Vec<EntityChange> {
-        let mut updated: Vec<EntityChange> = self
-            .map
-            .iter_mut()
-            .filter(|(_, ent)| ent.has_changes())
-            .map(|(id, ent)| EntityChange {
+        let mut changes: Vec<EntityChange> = self
+            .removed_ids
+            .drain(..)
+            .map(|id| EntityChange {
                 ent_type: self.ent_type,
                 id: id.raw_value(),
-                update: EntityChangeType::Properties(ent.get_changed_properties_and_reset()),
+                update: EntityChangeType::Deleted,
             })
             .collect();
 
-        let removed = self.removed_ids.iter().map(|id| EntityChange {
-            ent_type: self.ent_type,
-            id: id.raw_value(),
-            update: EntityChangeType::Deleted,
-        });
+        changes.extend(
+            self.map
+                .iter_mut()
+                .filter(|(_, ent)| ent.has_changes())
+                .map(|(id, ent)| EntityChange {
+                    ent_type: self.ent_type,
+                    id: id.raw_value(),
+                    update: EntityChangeType::Properties(ent.get_changed_properties_and_reset()),
+                }),
+        );
 
-        /*
-        if removed.len() > 0 {
-            log(&format!("ids len: {}", self.ids.len()).into());
-        }
-        */
-
-        updated.extend(removed);
-
-        // Move all removed_ids into ids to recycle them and make them available again.
-        // This will clear removed_ids
-        self.ids.append(&mut self.removed_ids);
-
-        updated
+        changes
     }
 }
 

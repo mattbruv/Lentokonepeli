@@ -38,6 +38,7 @@ pub enum PlayerCommand {
     SendMessage(String, bool),
     SetPing(u16),
     AddBot(AddPlayerData),
+    EndRound,
 }
 
 pub fn game_input_from_string(input: String) -> Vec<ServerInput> {
@@ -173,6 +174,21 @@ impl NetworkedBytes for AddPlayerData {
 }
 
 const ROUNDS_LATE_JOIN_PLAYERS: usize = 3;
+pub const MAX_NAME_CHARS: usize = 20;
+pub const MAX_CLAN_CHARS: usize = 5;
+pub const MAX_MESSAGE_CHARS: usize = 200;
+const DEFAULT_PLAYER_NAME: &str = "Player";
+
+pub fn sanitize_text(text: &str, max_chars: usize) -> String {
+    let cleaned: String = text.chars().filter(|c| !c.is_control()).collect();
+    cleaned
+        .trim()
+        .chars()
+        .take(max_chars)
+        .collect::<String>()
+        .trim_end()
+        .to_string()
+}
 
 impl World {
     pub(crate) fn handle_input(&mut self, input_events: Vec<ServerInput>) -> Vec<ServerOutput> {
@@ -210,12 +226,19 @@ impl World {
                         p.set_keys(keys);
                     }
                 }
+                PlayerCommand::EndRound => {
+                    self.force_end_round();
+                }
                 PlayerCommand::SetPing(ping) => {
                     if let Some((_, player)) = self.get_player_from_guid_mut(&guid) {
                         player.set_ping(ping);
                     }
                 }
                 PlayerCommand::SendMessage(message, is_global) => {
+                    let message = sanitize_text(&message, MAX_MESSAGE_CHARS);
+                    if message.is_empty() {
+                        continue;
+                    }
                     if let Some((_, player)) = self.get_player_from_guid(&guid) {
                         game_output.push(ServerOutput::ChatMessage(
                             player.get_guid().clone(),
@@ -250,7 +273,15 @@ impl World {
             && self.players.get_map().len() + 1 >= ROUNDS_LATE_JOIN_PLAYERS
             && self.team_has_players(Team::Centrals)
             && self.team_has_players(Team::Allies);
-        let mut player = Player::new(guid, data.name, data.clan);
+        let name = match sanitize_text(&data.name, MAX_NAME_CHARS) {
+            name if name.is_empty() => DEFAULT_PLAYER_NAME.to_string(),
+            name => name,
+        };
+        let clan = data
+            .clan
+            .map(|clan| sanitize_text(&clan, MAX_CLAN_CHARS))
+            .filter(|clan| !clan.is_empty());
+        let mut player = Player::new(guid, name, clan);
         player.set_bot(is_bot);
         if let Some((id, p)) = self.players.insert(player) {
             output.push(ServerOutput::PlayerJoin(p.get_name()));
@@ -379,5 +410,100 @@ impl World {
                 }
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::{
+        network::{encoding::NetworkedBytes, player_command_json_from_binary},
+        world::World,
+    };
+
+    #[test]
+    fn malformed_command_bytes_never_panic() {
+        let mut seed: u32 = 12345;
+        let mut next = || {
+            seed = seed.wrapping_mul(1_103_515_245).wrapping_add(12_345);
+            (seed >> 16) as u8
+        };
+
+        assert_eq!(player_command_json_from_binary(&vec![]), "");
+        for tag in 0..=255u8 {
+            for len in 0..12 {
+                let mut bytes = vec![tag];
+                bytes.extend((0..len).map(|_| next()));
+                let _ = player_command_json_from_binary(&bytes);
+            }
+        }
+        assert!(PlayerCommand::from_bytes(&[200]).is_none());
+        assert!(PlayerCommand::from_bytes(&[2, 1]).is_none());
+        assert!(PlayerCommand::from_bytes(&[2, 1, 99]).is_none());
+        assert!(PlayerCommand::from_bytes(&[3, 0, 0, 99]).is_none());
+        assert!(PlayerCommand::from_bytes(&[5, 0, 0, 0, 0]).is_none());
+    }
+
+    #[test]
+    fn sanitize_text_strips_control_chars_and_limits_length() {
+        assert_eq!(sanitize_text("  a\u{0}b\nc\u{7f}  ", 20), "abc");
+        assert_eq!(sanitize_text(&"x".repeat(50), 20).chars().count(), 20);
+        assert_eq!(sanitize_text("ääääää", 3), "äää");
+        assert_eq!(sanitize_text("ab        cd", 4), "ab");
+    }
+
+    #[test]
+    fn hostile_player_data_is_sanitized() {
+        let mut world = World::new();
+        let long_name = "n".repeat(500);
+        world.handle_input(vec![
+            ServerInput {
+                player_guid: PlayerGuid::from("a"),
+                command: PlayerCommand::AddPlayer(AddPlayerData {
+                    guid: PlayerGuid::from("ignored"),
+                    name: long_name,
+                    clan: Some("c".repeat(100)),
+                }),
+            },
+            ServerInput {
+                player_guid: PlayerGuid::from("b"),
+                command: PlayerCommand::AddPlayer(AddPlayerData {
+                    guid: PlayerGuid::from("b"),
+                    name: "\n\t ".to_string(),
+                    clan: Some("\u{0}".to_string()),
+                }),
+            },
+        ]);
+
+        let (_, a) = world.get_player_from_guid(&PlayerGuid::from("a")).unwrap();
+        assert_eq!(a.get_name().chars().count(), MAX_NAME_CHARS);
+        assert_eq!(
+            a.get_clan().as_ref().unwrap().chars().count(),
+            MAX_CLAN_CHARS
+        );
+
+        let (_, b) = world.get_player_from_guid(&PlayerGuid::from("b")).unwrap();
+        assert_eq!(b.get_name(), DEFAULT_PLAYER_NAME);
+        assert!(b.get_clan().is_none());
+
+        let output = world.handle_input(vec![
+            ServerInput {
+                player_guid: PlayerGuid::from("a"),
+                command: PlayerCommand::SendMessage("m".repeat(10_000), true),
+            },
+            ServerInput {
+                player_guid: PlayerGuid::from("a"),
+                command: PlayerCommand::SendMessage(" \n ".to_string(), true),
+            },
+        ]);
+        let messages: Vec<_> = output
+            .iter()
+            .filter_map(|o| match o {
+                ServerOutput::ChatMessage(_, m) => Some(m.message.clone()),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(messages.len(), 1);
+        assert_eq!(messages[0].chars().count(), MAX_MESSAGE_CHARS);
     }
 }

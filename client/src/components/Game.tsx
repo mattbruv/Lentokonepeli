@@ -1,11 +1,13 @@
-import { CSSProperties, forwardRef } from "react";
+import { CSSProperties, forwardRef, ReactNode } from "react";
 import { VIEW_WIDTH } from "../client/constants";
 import { useSettingsContext } from "../contexts/settingsContext";
 import { Chat, ChatGlobalProps } from "./Chat";
 import "./Game.css";
 import { Scoreboard, ScoreboardProps } from "./Scoreboard";
 
-interface GameProps extends ScoreboardProps, ChatGlobalProps {}
+interface GameProps extends ScoreboardProps, ChatGlobalProps {
+    overlay?: ReactNode;
+}
 
 export const Game = forwardRef<HTMLDivElement, GameProps>((props, ref) => {
     const { globalState, settings } = useSettingsContext();
@@ -28,6 +30,7 @@ export const Game = forwardRef<HTMLDivElement, GameProps>((props, ref) => {
                 />
             )}
             {<Chat messages={props.messages} onSendMessage={props.onSendMessage} myTeam={myTeam} />}
+            {props.overlay}
         </div>
     );
 });

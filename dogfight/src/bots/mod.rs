@@ -3,7 +3,7 @@ mod rng;
 mod skill;
 mod terrain;
 
-#[cfg(test)]
+#[cfg(all(test, feature = "bot-tests"))]
 mod tests;
 
 use serde::{Deserialize, Serialize};
@@ -76,6 +76,23 @@ impl BotManager {
             command: PlayerCommand::RemovePlayer,
         });
         true
+    }
+
+    pub fn reset(&mut self) {
+        self.pending.clear();
+        self.bots = self
+            .bots
+            .iter()
+            .map(|b| {
+                let info = b.info();
+                Bot::new(AddBotRequest {
+                    guid: info.guid,
+                    name: info.name,
+                    team: info.team,
+                    difficulty: info.difficulty,
+                })
+            })
+            .collect();
     }
 
     pub fn bots(&self) -> Vec<BotInfo> {

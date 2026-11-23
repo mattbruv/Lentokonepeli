@@ -10,6 +10,7 @@ import { Team } from "dogfight-types/Team";
 import { WorldState } from "dogfight-types/WorldState";
 import * as PIXI from "pixi.js";
 import { IntlShape } from "react-intl";
+import { bulletMotion } from "./entities/bullet";
 import { Entity, isFollowable } from "./entities/entity";
 import { Hill } from "./entities/hill";
 import { Player } from "./entities/player";
@@ -30,6 +31,15 @@ import { soundManager } from "./soundManager";
 import { GAME_INTL } from "../intl/messages";
 
 const TEAM_CHOOSER_CAMERA = { x: 0, y: -150 };
+
+export const MIN_ZOOM = 0.5;
+export const MAX_ZOOM = 8;
+const ZOOM_STEPS = [0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8];
+
+export type CameraState = {
+    free: boolean;
+    zoom: number;
+};
 
 const MAX_BOMBS: Record<PlaneType, number> = {
     Albatros: 0,
@@ -94,6 +104,9 @@ export class DogfightClient {
     private roundInfo: RoundInfo = new RoundInfo();
     private worldState: WorldState | null = null;
     private isReplay = false;
+    private freeCamera = false;
+    private cameraTarget: PIXI.IPointData = { x: 0, y: 0 };
+    private cameraListener: ((state: CameraState) => void) | null = null;
     public keyboard: GameKeyboard = new GameKeyboard();
 
     private callbacks?: GameClientCallbacks;
@@ -134,6 +147,7 @@ export class DogfightClient {
 
         this.callbacks = callbacks;
         this.intl = intl;
+        bulletMotion.extrapolate = true;
         this.runwaySelector.init(this.callbacks, intl);
         this.keyboard.init((keyboard) => this.onKeyChange(keyboard));
         this.gameHUD.init(
@@ -174,13 +188,21 @@ export class DogfightClient {
         this.roundInfo.init(intl, screen.width, GAME_HEIGHT);
 
         this.centerCamera(TEAM_CHOOSER_CAMERA.x, TEAM_CHOOSER_CAMERA.y);
+    }
+
+    public startAudio() {
         soundManager.startMotorLoop();
+    }
+
+    public stopAudio() {
+        soundManager.stopMotorLoop();
     }
 
     public clearEntities() {
         destroyEntities(this.entities, {
             onRemove: this.onEntityRemoved.bind(this),
         });
+        this.killFeed.clear();
     }
 
     public destroy() {
@@ -197,6 +219,7 @@ export class DogfightClient {
 
     public setReplayMode() {
         this.isReplay = true;
+        bulletMotion.extrapolate = false;
         this.refreshOverlays();
     }
 
@@ -389,9 +412,92 @@ export class DogfightClient {
      * Coordinates must be in game world space.
      */
     private centerCamera(x: number, y: number): void {
+        this.cameraTarget = { x, y };
+        if (this.freeCamera) return;
+        this.applyCamera(x, y);
+    }
+
+    private applyCamera(x: number, y: number): void {
         this.renderClient.centerCamera(x, y);
         this.gameHUD.radar.centerCamera(-x, -y);
         this.applyParallax();
+    }
+
+    private syncCameraToView(): void {
+        const { x, y } = this.renderClient.getViewCenter();
+        this.renderClient.positionRelativeGameObjects(x, y);
+        this.gameHUD.radar.centerCamera(-x, -y);
+        this.applyParallax();
+    }
+
+    private onViewChanged(): void {
+        if (this.freeCamera) {
+            this.syncCameraToView();
+        } else {
+            this.applyCamera(this.cameraTarget.x, this.cameraTarget.y);
+        }
+        this.emitCameraState();
+    }
+
+    private emitCameraState(): void {
+        this.cameraListener?.({ free: this.freeCamera, zoom: this.renderClient.getZoom() });
+    }
+
+    public enableCameraControls(listener: (state: CameraState) => void): void {
+        this.cameraListener = listener;
+        this.renderClient.enableCameraControls({
+            minZoom: MIN_ZOOM,
+            maxZoom: MAX_ZOOM,
+            onPanStart: () => this.setFreeCamera(true),
+            onViewChanged: () => this.onViewChanged(),
+        });
+        this.emitCameraState();
+    }
+
+    public onPointerHover(callback: (screen: PIXI.IPointData | null) => void): void {
+        this.renderClient.onPointerHover(callback);
+    }
+
+    public screenToWorld(point: PIXI.IPointData): PIXI.IPointData {
+        return this.renderClient.screenToWorld(point);
+    }
+
+    public getCanvasScale(): number {
+        return this.renderClient.getCanvasScale();
+    }
+
+    public getZoom(): number {
+        return this.renderClient.getZoom();
+    }
+
+    public highlightInspected(boxes: { x: number; y: number; width: number; height: number }[]): void {
+        this.renderClient.highlight(boxes);
+    }
+
+    public setFreeCamera(free: boolean): void {
+        if (this.freeCamera === free) return;
+        this.freeCamera = free;
+        if (!free) {
+            this.applyCamera(this.cameraTarget.x, this.cameraTarget.y);
+        }
+        this.emitCameraState();
+    }
+
+    public setZoom(zoom: number): void {
+        const clamped = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom));
+        const center = this.freeCamera ? this.renderClient.getViewCenter() : this.cameraTarget;
+        this.renderClient.setZoom(clamped);
+        this.applyCamera(center.x, center.y);
+        this.emitCameraState();
+    }
+
+    public stepZoom(direction: 1 | -1): void {
+        const current = this.renderClient.getZoom();
+        const next =
+            direction > 0
+                ? ZOOM_STEPS.find((step) => step > current + 0.001)
+                : [...ZOOM_STEPS].reverse().find((step) => step < current - 0.001);
+        this.setZoom(next ?? current);
     }
 
     private updateRadar() {
@@ -536,7 +642,6 @@ export class DogfightClient {
     private followEntity(entity: Entity<unknown>) {
         if (isFollowable(entity)) {
             const pos = entity.getCenter();
-            this.renderClient.debugCoords.text = `${pos.x}, ${pos.y}`;
             this.centerCamera(pos.x, pos.y);
             this.gameHUD.updateStats(entity.getStats());
         }

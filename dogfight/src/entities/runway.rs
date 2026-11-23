@@ -1,3 +1,4 @@
+use crate::inspect::{BuildingInspect, RunwayInspect};
 use dogfight_macros::Networked;
 use image::RgbaImage;
 
@@ -62,6 +63,26 @@ impl Runway {
         runway.set_health(runway.get_max_health());
 
         runway
+    }
+
+    fn inspect_building(&self) -> BuildingInspect {
+        let max_health = self.get_max_health();
+        BuildingInspect {
+            health: self.total_health,
+            max_health,
+            health_percent: (self.total_health * 100 / max_health) as u8,
+            alive: self.total_health > 0,
+            repairing: self.total_health > 0 && self.total_health < max_health,
+        }
+    }
+
+    pub fn inspect(&self) -> RunwayInspect {
+        RunwayInspect {
+            building: self.inspect_building(),
+            facing: *self.facing.get(),
+            last_reservation: self.last_reserve.as_ref().map(|r| format!("{:?}", r)),
+            ms_since_reservation: self.reserve_timer,
+        }
     }
 
     pub fn reset(&mut self) {

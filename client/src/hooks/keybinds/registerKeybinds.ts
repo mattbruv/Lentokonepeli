@@ -8,6 +8,13 @@ const keybindToIdentifier = <T extends string>(keybind: Keybind<T>) => keybind.k
 
 const eventToIdentifier = (e: KeyboardEvent) => e.key.toLowerCase();
 
+const isEditableTarget = (target: EventTarget | null) =>
+    target instanceof HTMLElement &&
+    (target.isContentEditable ||
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.tagName === "SELECT");
+
 export const registerKeybinds = <T extends string>(config: KeybindConfig<T>) => {
     const callbacks = new Map<string, T[]>();
 
@@ -18,6 +25,7 @@ export const registerKeybinds = <T extends string>(config: KeybindConfig<T>) => 
     }
 
     const handleKeyEvent = (eventType: "down" | "up") => (event: KeyboardEvent) => {
+        if (eventType === "down" && config.ignoreEditableTargets && isEditableTarget(event.target)) return;
         const plainKeybindIdentifier = eventToIdentifier(event);
         const plainKeybindCallbacks = callbacks.get(plainKeybindIdentifier);
         if (plainKeybindCallbacks) {

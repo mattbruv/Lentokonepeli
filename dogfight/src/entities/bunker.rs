@@ -1,3 +1,4 @@
+use crate::inspect::BuildingInspect;
 use dogfight_macros::Networked;
 use image::RgbaImage;
 
@@ -51,6 +52,21 @@ impl Bunker {
 
     pub fn get_team(&self) -> &Team {
         self.team.get()
+    }
+
+    fn inspect_building(&self) -> BuildingInspect {
+        let max_health = self.get_max_health();
+        BuildingInspect {
+            health: self.total_health,
+            max_health,
+            health_percent: (self.total_health * 100 / max_health) as u8,
+            alive: self.total_health > 0,
+            repairing: self.total_health > 0 && self.total_health < max_health,
+        }
+    }
+
+    pub fn inspect(&self) -> BuildingInspect {
+        self.inspect_building()
     }
 
     pub fn reset(&mut self) {

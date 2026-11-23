@@ -1,4 +1,6 @@
 import { ChatMessage } from "dogfight-types/ChatMessage";
+import { DebugEntity } from "dogfight-types/DebugEntity";
+import { InspectEntity } from "dogfight-types/InspectEntity";
 import { PlaneType } from "dogfight-types/PlaneType";
 import { PlayerCommand } from "dogfight-types/PlayerCommand";
 import { PlayerKeyboard } from "dogfight-types/PlayerKeyboard";
@@ -9,10 +11,9 @@ import { WorldState } from "dogfight-types/WorldState";
 import { DogfightWeb } from "dogfight-web";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
-import { DogfightClient, GameClientCallbacks } from "../client/DogfightClient";
+import { CameraState, DogfightClient, GameClientCallbacks } from "../client/DogfightClient";
 import { ChatMessageTimed } from "../components/Chat";
 import { randomGuid } from "../helpers";
-import { useDevKeybinds } from "./keybinds/useDevKeybinds";
 import { useGameKeybinds } from "./keybinds/useGameKeybinds";
 import { useSettingsContext } from "../contexts/settingsContext";
 import { leaveActiveGame } from "./useActiveView";
@@ -38,7 +39,6 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
     useEffect(() => {
         client.setSoundsChecked(!settings.audioSettings.muted);
     }, [client, settings.audioSettings.muted]);
-    useDevKeybinds({ client, engine });
 
     const handleGameEvents = useCallback(
         (events: ServerOutput[]): void => {
@@ -55,7 +55,7 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
         [client],
     );
 
-    function initialize(div: HTMLDivElement) {
+    function initialize(div: HTMLDivElement, startAudio = true) {
         // TODO: clean this up, just expose the onCommand directly in the client
         // and write out the command in the client
         const client_callbacks: GameClientCallbacks = {
@@ -126,6 +126,15 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
         };
 
         client.init(client_callbacks, div, intl);
+        if (startAudio) client.startAudio();
+    }
+
+    function startAudio() {
+        client.startAudio();
+    }
+
+    function stopAudio() {
+        client.stopAudio();
     }
 
     useEffect(() => {
@@ -137,6 +146,56 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
             console.log("UseDogfight hook destructor called.");
         };
     }, []);
+
+    function drawCollisionTerrain() {
+        client.renderClient.renderDebugTerrain(JSON.parse(engine.debug_terrain()) as DebugEntity[]);
+    }
+
+    function drawCollisionDynamic() {
+        client.renderClient.renderDebug(JSON.parse(engine.debug_dynamic()) as DebugEntity[]);
+    }
+
+    function clearCollision() {
+        client.renderClient.clearDebug();
+    }
+
+    function enableCameraControls(listener: (state: CameraState) => void) {
+        client.enableCameraControls(listener);
+    }
+
+    function onPointerHover(callback: (screen: { x: number; y: number } | null) => void) {
+        client.onPointerHover(callback);
+    }
+
+    function inspectAt(screen: { x: number; y: number }, radiusPx: number): InspectEntity[] {
+        const world = client.screenToWorld(screen);
+        const radius = Math.max(1, Math.round(radiusPx / client.getZoom()));
+        const entities = JSON.parse(
+            engine.inspect(Math.round(world.x), Math.round(world.y), radius),
+        ) as InspectEntity[];
+        client.highlightInspected(entities.map((entity) => entity.bounding_box));
+        return entities;
+    }
+
+    function clearInspection() {
+        client.highlightInspected([]);
+    }
+
+    function getCanvasScale() {
+        return client.getCanvasScale();
+    }
+
+    function setFreeCamera(free: boolean) {
+        client.setFreeCamera(free);
+    }
+
+    function setZoom(zoom: number) {
+        client.setZoom(zoom);
+    }
+
+    function stepZoom(direction: 1 | -1) {
+        client.stepZoom(direction);
+    }
 
     function clearEntities() {
         client.clearEntities();
@@ -155,12 +214,26 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
         clearEntities,
         setReplayMode,
         refreshView,
+        startAudio,
+        stopAudio,
+        drawCollisionTerrain,
+        drawCollisionDynamic,
+        clearCollision,
+        enableCameraControls,
+        onPointerHover,
+        inspectAt,
+        clearInspection,
+        getCanvasScale,
+        setFreeCamera,
+        setZoom,
+        stepZoom,
         handleGameEvents,
         setMyPlayerGuid,
         playerGuid,
         messages,
         playerData,
         intermission: worldState === "Intermission",
+        worldState,
         engine,
     };
 }

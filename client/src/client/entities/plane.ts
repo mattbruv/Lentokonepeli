@@ -62,32 +62,29 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         return this.props.mode === "Flying" || this.props.mode === "Dodging";
     }
 
-    private createGraySmoke: TaskFn = () => {
+    private createGraySmoke() {
         const offset = Math.floor(this.getPaddedSize() / 2) + 2;
         const x = Math.floor(this.props.client_x - Math.cos(this.angle) * offset);
         const y = Math.floor(this.props.client_y - Math.sin(this.angle) * offset);
         this.spawnSmoke(Textures["smoke1.gif"], x, y);
-    };
+    }
 
-    private createDarkSmoke: TaskFn = () => {
+    private darkSmokeInterval(): number {
+        if (this.props.mode === "Falling") return 10;
+        const delayMs = Math.max(100, Math.floor((600 * this.props.client_health) / 255));
+        return Math.max(1, Math.round(delayMs / 10));
+    }
+
+    private animate: TaskFn = (tick) => {
+        if (tick % 10 === 0 && this.props.motor_on && this.isFlying()) {
+            this.createGraySmoke();
+        }
+
         const falling = this.props.mode === "Falling";
         const damaged = this.isFlying() && this.props.client_health < 255;
-
-        let delayMs = 100;
-        if (!falling) {
-            delayMs = Math.max(100, Math.floor((600 * this.props.client_health) / 255));
-        }
-
-        if (falling || damaged) {
+        if ((falling || damaged) && tick % this.darkSmokeInterval() === 0) {
             this.spawnSmoke(Textures["smoke2.gif"], this.props.client_x, this.props.client_y);
         }
-
-        scheduler.scheduleTask(this.createDarkSmoke, Math.max(1, Math.round(delayMs / 10)));
-    };
-
-    private animate: TaskFn = () => {
-        if (!this.props.motor_on || !this.isFlying()) return;
-        this.createGraySmoke(0);
     };
 
     constructor() {
@@ -111,8 +108,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         this.smokeContainer.zIndex = DrawLayer.Smoke;
         this.nameContainer.zIndex = DrawLayer.Name;
 
-        scheduler.scheduleRecurring(this.animate, 10);
-        scheduler.scheduleTask(this.createDarkSmoke, 10);
+        scheduler.scheduleRecurring(this.animate, 1);
     }
 
     private positionName() {
@@ -217,7 +213,6 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
 
     public destroy() {
         scheduler.unregister(this.animate);
-        scheduler.unregister(this.createDarkSmoke);
         scheduler.unregister(this.advanceFlip);
     }
 

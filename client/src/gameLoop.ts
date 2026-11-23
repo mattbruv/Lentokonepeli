@@ -6,7 +6,7 @@ export const noop = () => {};
  */
 class GameLoop {
     private paused: boolean = false;
-    private advanceTick: boolean = false;
+    private pendingTicks: number = 0;
     private currentTick: number = 0;
     private lastTime: number = performance.now();
     private requestId: number | null = null;
@@ -40,9 +40,9 @@ class GameLoop {
             this.scheduler.runTasks(this.currentTick);
         };
 
-        if (this.advanceTick) {
+        while (this.pendingTicks > 0) {
             doTick();
-            this.advanceTick = false;
+            this.pendingTicks--;
         }
 
         if (!this.paused) {
@@ -85,8 +85,8 @@ class GameLoop {
         return this.requestId !== null;
     }
 
-    public advanceOneTick() {
-        this.advanceTick = true;
+    public advanceTicks(count: number) {
+        this.pendingTicks += Math.max(0, Math.floor(count));
         this.lastTime = performance.now();
     }
 }

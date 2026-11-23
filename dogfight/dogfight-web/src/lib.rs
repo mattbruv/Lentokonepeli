@@ -3,7 +3,7 @@ mod utils;
 use dogfight::{
     bots::{add_bot_request_from_string, BotManager},
     entities::world_info::GameMode,
-    input::{game_input_from_string, is_valid_command},
+    input::{game_input_from_string, is_valid_command, ServerInput},
     level::parse_level_to_json,
     network::{
         encoding::NetworkedBytes, game_events_from_bytes, game_events_to_binary,
@@ -12,11 +12,18 @@ use dogfight::{
     output::ServerOutput,
     replay::{
         events::get_replay_summary,
-        file::{get_build_version, get_commit_version, ReplayFile},
+        file::{get_build_version, get_commit_version, get_replay_version, ReplayFile},
     },
     world::{self, World},
 };
 use wasm_bindgen::prelude::*;
+
+fn parse_game_mode(mode: &str) -> GameMode {
+    match mode {
+        "Rounds" => GameMode::Rounds,
+        _ => GameMode::Normal,
+    }
+}
 
 #[wasm_bindgen]
 extern "C" {
@@ -28,6 +35,7 @@ pub struct DogfightWeb {
     world: World,
     replay: Option<ReplayFile>,
     bots: BotManager,
+    pending_input: Vec<ServerInput>,
 }
 
 #[wasm_bindgen]
@@ -39,6 +47,7 @@ impl DogfightWeb {
             world: World::new(),
             replay: None,
             bots: BotManager::new(),
+            pending_input: vec![],
         }
     }
 
@@ -49,6 +58,7 @@ impl DogfightWeb {
     pub fn load_replay(&mut self, bytes: Vec<u8>) -> () {
         if let Some((_, replay)) = ReplayFile::from_bytes(&bytes) {
             self.world = World::new();
+            self.world.sync_bullet_positions = true;
             self.bots = BotManager::new();
             self.world.load_level(&replay.level_data);
             self.world
@@ -64,11 +74,25 @@ impl DogfightWeb {
     }
 
     pub fn set_game_mode(&mut self, mode: &str) {
-        let mode = match mode {
-            "Rounds" => GameMode::Rounds,
-            _ => GameMode::Normal,
-        };
-        self.world.set_game_mode(mode);
+        self.world.set_game_mode(parse_game_mode(mode));
+    }
+
+    pub fn change_game(
+        &mut self,
+        level: String,
+        mode: &str,
+        game_time_minutes: u16,
+        intermission_seconds: u16,
+    ) {
+        let (world, rejoin) = self.world.restarted(
+            &level,
+            parse_game_mode(mode),
+            game_time_minutes,
+            intermission_seconds,
+        );
+        self.world = world;
+        self.bots.reset();
+        self.pending_input = rejoin;
     }
 
     pub fn init(&mut self) {
@@ -85,6 +109,10 @@ impl DogfightWeb {
 
     pub fn get_replay_summary(&self, bytes: Vec<u8>) -> String {
         get_replay_summary(bytes)
+    }
+
+    pub fn get_replay_version(&self, bytes: Vec<u8>) -> String {
+        get_replay_version(bytes)
     }
 
     pub fn parse_level(&self, level_str: &str) -> String {
@@ -108,7 +136,8 @@ impl DogfightWeb {
     }
 
     pub fn tick(&mut self, input_json: String) -> () {
-        let mut input = game_input_from_string(input_json);
+        let mut input: Vec<ServerInput> = self.pending_input.drain(..).collect();
+        input.extend(game_input_from_string(input_json));
         input.extend(self.bots.tick(&self.world));
         self.world.tick(input);
     }
@@ -131,6 +160,7 @@ impl DogfightWeb {
     pub fn load_replay_until(&mut self, until_tick: u32) -> () {
         if let Some(replay) = &self.replay {
             self.world = World::new();
+            self.world.sync_bullet_positions = true;
             self.world.load_level(&replay.level_data);
             self.world
                 .set_round_settings(replay.game_time_minutes, replay.intermission_seconds);
@@ -158,8 +188,16 @@ impl DogfightWeb {
         game_events_to_binary(&out)
     }
 
-    pub fn debug(&mut self) -> String {
-        self.world.debug()
+    pub fn inspect(&self, x: i16, y: i16, radius: i16) -> String {
+        self.world.inspect_json(x, y, radius)
+    }
+
+    pub fn debug_terrain(&self) -> String {
+        self.world.debug(true, false)
+    }
+
+    pub fn debug_dynamic(&self) -> String {
+        self.world.debug(false, true)
     }
 
     pub fn game_events_from_binary(&self, binary: Vec<u8>) -> String {

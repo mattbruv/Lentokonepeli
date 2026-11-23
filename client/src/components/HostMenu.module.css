@@ -1,3 +1,25 @@
+.title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+}
+
+.grow {
+    flex: 1;
+    min-width: 0;
+}
+
+.count {
+    width: 88px;
+    flex: none;
+}
+
+.hint {
+    font-size: 0.85rem;
+    opacity: 0.75;
+}
+
 .teamOption {
     display: flex;
     flex-direction: column;
@@ -5,34 +27,33 @@
     gap: 2px;
     font-size: 0.75rem;
     line-height: 1.1;
+}
 
-    & img {
-        image-rendering: pixelated;
-    }
+.flag {
+    flex: none;
+    image-rendering: pixelated;
 }
 
 .list {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    margin: 4px 0 0;
+    max-height: 320px;
+    margin: 0;
     padding: 0;
+    overflow-y: auto;
     list-style: none;
 }
 
-.bot {
+.row {
     display: flex;
     align-items: center;
     gap: 8px;
+    min-height: 40px;
     padding: 4px 6px 4px 10px;
     border: 2px solid var(--lk-ink);
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.55);
-
-    & img {
-        flex: none;
-        image-rendering: pixelated;
-    }
 }
 
 .name {
@@ -44,9 +65,18 @@
     white-space: nowrap;
 }
 
-.difficulty {
+.meta {
     flex: none;
     font-size: 0.8rem;
     font-weight: 600;
     opacity: 0.75;
+}
+
+.lobbyName {
+    overflow: hidden;
+    font-size: 1.15rem;
+    font-weight: 800;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

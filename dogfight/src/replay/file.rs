@@ -1,4 +1,4 @@
-use std::collections::{BTreeMap, HashMap};
+use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
@@ -59,7 +59,7 @@ pub struct ReplayFile {
 
     pub player_guids: BTreeMap<PlayerGuid, u16>,
 
-    pub ticks: HashMap<u32, Vec<ReplayTickCommand>>,
+    pub ticks: BTreeMap<u32, Vec<ReplayTickCommand>>,
 }
 
 #[derive(Serialize, Debug, TS)]
@@ -71,6 +71,24 @@ pub struct ReplaySummary {
     pub total_ticks: u32,
     pub players: BTreeMap<PlayerGuid, String>,
     pub events: Vec<ReplayEvent>,
+}
+
+#[derive(Serialize, Debug, TS)]
+#[ts(export)]
+pub struct ReplayVersion {
+    pub build_version: String,
+    pub build_commit: String,
+}
+
+pub fn get_replay_version(bytes: Vec<u8>) -> String {
+    match ReplayFile::from_bytes(&bytes) {
+        Some((_, replay_file)) => serde_json::to_string(&ReplayVersion {
+            build_version: replay_file.build_version,
+            build_commit: replay_file.build_commit,
+        })
+        .unwrap(),
+        None => "".to_string(),
+    }
 }
 
 pub fn get_build_version() -> String {
@@ -92,7 +110,7 @@ impl ReplayFile {
             intermission_seconds: 20,
             game_mode: GameMode::Normal,
             player_guids: BTreeMap::new(),
-            ticks: HashMap::new(),
+            ticks: BTreeMap::new(),
         }
     }
 }

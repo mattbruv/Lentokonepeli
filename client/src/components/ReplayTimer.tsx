@@ -1,6 +1,9 @@
 import { ActionIcon, Slider, Tooltip } from "@mantine/core";
 import {
+    IconArrowLeftBar,
     IconArrowRightBar,
+    IconChevronsLeft,
+    IconChevronsRight,
     IconPlayerPauseFilled,
     IconPlayerPlayFilled,
     IconPlayerSkipBackFilled,
@@ -9,9 +12,11 @@ import {
     IconPlayerTrackPrevFilled,
 } from "@tabler/icons-react";
 import { ReplaySummary } from "dogfight-types/ReplaySummary";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ReplayCallbacks, ReplayInfo } from "src/hooks/useReplay";
 import { ticksToHHMMSS } from "../helpers";
+import { KeybindConfig } from "../hooks/keybinds/models";
+import { registerKeybinds } from "../hooks/keybinds/registerKeybinds";
 import classes from "./ReplayControls.module.css";
 
 type ReplayTimerProps = {
@@ -27,6 +32,36 @@ export function ReplayTimer({ info, callbacks, summary }: ReplayTimerProps) {
     useEffect(() => {
         if (!isScrubbing) setScrubTick(info.tick);
     }, [info.tick, isScrubbing]);
+
+    const latest = useRef({ callbacks, paused: info.paused });
+    latest.current = { callbacks, paused: info.paused };
+
+    useEffect(() => {
+        const frames = { stepBack: -1, stepForward: 1, jumpBack: -10, jumpForward: 10 } as const;
+        const keybinds: KeybindConfig<keyof typeof frames> = {
+            keybinds: [
+                { key: ",", action: "stepBack" },
+                { key: ".", action: "stepForward" },
+                { key: "<", action: "jumpBack" },
+                { key: ">", action: "jumpForward" },
+            ],
+            callback: (action, type, event) => {
+                if (type !== "down") return;
+                const target = event.target as HTMLElement | null;
+                if (target?.closest("input, textarea, select, [contenteditable='true']")) return;
+                event.preventDefault();
+                const { callbacks, paused } = latest.current;
+                const count = frames[action];
+                if (count < 0) {
+                    if (!event.repeat) callbacks.stepFrames(count);
+                    return;
+                }
+                if (!paused) callbacks.setPaused(true);
+                callbacks.stepFrames(count);
+            },
+        };
+        return registerKeybinds(keybinds);
+    }, []);
 
     return (
         <div className={classes.timer}>
@@ -82,14 +117,44 @@ export function ReplayTimer({ info, callbacks, summary }: ReplayTimerProps) {
                 </Tooltip>
             </div>
             <div className={classes.frameStep}>
-                <Tooltip label={"Advance one frame"}>
+                <Tooltip label={"Back 10 frames (<)"}>
                     <ActionIcon
                         variant="light"
                         color={"gray"}
-                        disabled={!info.paused}
-                        onClick={(_) => callbacks.advanceOneTick()}
+                        disabled={!info.paused || info.tick <= 0}
+                        onClick={(_) => callbacks.stepFrames(-10)}
+                    >
+                        <IconChevronsLeft size={18} />
+                    </ActionIcon>
+                </Tooltip>
+                <Tooltip label={"Back one frame (,)"}>
+                    <ActionIcon
+                        variant="light"
+                        color={"gray"}
+                        disabled={!info.paused || info.tick <= 0}
+                        onClick={(_) => callbacks.stepFrames(-1)}
+                    >
+                        <IconArrowLeftBar size={18} />
+                    </ActionIcon>
+                </Tooltip>
+                <Tooltip label={"Advance one frame (.)"}>
+                    <ActionIcon
+                        variant="light"
+                        color={"gray"}
+                        disabled={!info.paused || info.tick >= summary.total_ticks}
+                        onClick={(_) => callbacks.stepFrames(1)}
                     >
                         <IconArrowRightBar size={18} />
+                    </ActionIcon>
+                </Tooltip>
+                <Tooltip label={"Advance 10 frames (>)"}>
+                    <ActionIcon
+                        variant="light"
+                        color={"gray"}
+                        disabled={!info.paused || info.tick >= summary.total_ticks}
+                        onClick={(_) => callbacks.stepFrames(10)}
+                    >
+                        <IconChevronsRight size={18} />
                     </ActionIcon>
                 </Tooltip>
             </div>

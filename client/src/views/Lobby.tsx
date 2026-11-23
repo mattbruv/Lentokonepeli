@@ -1,21 +1,21 @@
-import { Button, Modal, PinInput, Select } from "@mantine/core";
-import { GameMode } from "dogfight-types/GameMode";
+import { Button, Modal, NumberInput, PinInput, Select, TextInput } from "@mantine/core";
+import { BotDifficulty } from "dogfight-types/BotDifficulty";
 import { useDisclosure } from "@mantine/hooks";
 import { IconPlaneDeparture, IconUsers } from "@tabler/icons-react";
 import { FormEvent, useState } from "react";
-import Levels from "../assets/levels.json";
 
 import { FormattedMessage, useIntl } from "react-intl";
 import hostArt from "../assets/ui/pic_plane6.gif";
 import joinArt from "../assets/ui/pic_plane9.gif";
+import { GameSettings, GameSettingsFields } from "../components/GameSettingsFields";
 import { Guest } from "../components/Guest";
 import { Host } from "../components/Host";
+import { BOT_MESSAGES, DIFFICULTIES } from "../components/HostMenu";
 import { NameEditor } from "../components/NameEditor";
 import { Panel } from "../components/ui/Panel";
 import { useSettingsContext } from "../contexts/settingsContext";
+import { LOBBY_NAME_MAX_LENGTH, MAX_BOTS } from "../hooks/useLocalHost";
 import classes from "./Lobby.module.css";
-
-export type LevelName = keyof typeof Levels;
 
 enum LobbyState {
     Choosing,
@@ -23,15 +23,18 @@ enum LobbyState {
     Joining,
 }
 
-const GAME_TIME_OPTIONS = [0, 5, 10, 15, 20, 30, 60];
-
 export function Lobby() {
     const intl = useIntl();
     const [lobbyState, setLobbyState] = useState<LobbyState>(LobbyState.Choosing);
 
-    const [gameMap, setGameMap] = useState<LevelName>("classic");
-    const [gameTime, setGameTime] = useState<number>(0);
-    const [gameMode, setGameMode] = useState<GameMode>("Normal");
+    const [gameSettings, setGameSettings] = useState<GameSettings>({
+        levelKey: "classic",
+        gameTime: 0,
+        gameMode: "Normal",
+    });
+    const [lobbyName, setLobbyName] = useState("");
+    const [botCount, setBotCount] = useState(0);
+    const [botDifficulty, setBotDifficulty] = useState<BotDifficulty>("Medium");
 
     const [joinId, setJoinId] = useState<string>("");
 
@@ -49,8 +52,16 @@ export function Lobby() {
         if (joinId.length === 4) setLobbyState(LobbyState.Joining);
     }
 
-    if (lobbyState === LobbyState.Hosting)
-        return <Host level={gameMap} recordGame={false} gameTime={gameTime} gameMode={gameMode} />;
+    if (lobbyState === LobbyState.Hosting) {
+        return (
+            <Host
+                settings={gameSettings}
+                recordGame={false}
+                lobbyName={lobbyName}
+                initialBots={{ count: botCount, difficulty: botDifficulty }}
+            />
+        );
+    }
     if (lobbyState === LobbyState.Joining) return <Guest gameCode={joinId} />;
 
     return (
@@ -94,7 +105,7 @@ export function Lobby() {
                                 length={4}
                                 size="xl"
                                 placeholder=""
-                                type={/^[0-9a-fA-F]$/}
+                                type={/^[0-9a-fA-F]+$/}
                                 value={joinId}
                                 onChange={(value) => setJoinId(value.toLowerCase())}
                                 aria-label={intl.formatMessage({
@@ -137,92 +148,55 @@ export function Lobby() {
                         <div className={classes.art}>
                             <img src={hostArt} alt="" />
                         </div>
+                        <TextInput
+                            label={intl.formatMessage({
+                                defaultMessage: "Lobby name",
+                                description: "Label for the input used to name the hosted game",
+                            })}
+                            placeholder={intl.formatMessage({
+                                defaultMessage: "Unnamed lobby",
+                                description: "Placeholder for the lobby name input when no name is set",
+                            })}
+                            maxLength={LOBBY_NAME_MAX_LENGTH}
+                            value={lobbyName}
+                            onChange={(event) => setLobbyName(event.currentTarget.value)}
+                        />
                         <div className={classes.row}>
-                            <Select
+                            <GameSettingsFields
+                                value={gameSettings}
+                                onChange={setGameSettings}
+                                className={classes.grow}
+                                levelClassNames={{ input: classes.levelInput, option: classes.levelOption }}
+                            />
+                        </div>
+                        <div className={classes.row}>
+                            <NumberInput
                                 className={classes.grow}
                                 label={intl.formatMessage({
-                                    defaultMessage: "Level",
-                                    description: "Title for selection used to choose the game level",
+                                    defaultMessage: "Bots",
+                                    description: "Label for the number of bots the hosted game starts with",
                                 })}
-                                classNames={{ input: classes.levelInput, option: classes.levelOption }}
-                                data={Object.keys(Levels)}
-                                value={gameMap}
-                                allowDeselect={false}
-                                searchable
-                                maxDropdownHeight={260}
-                                onChange={(v) => {
-                                    if (v) {
-                                        setGameMap(v as keyof typeof Levels);
-                                    }
-                                }}
-                                placeholder={intl.formatMessage({
-                                    defaultMessage: "Select a game map...",
-                                    description:
-                                        "Infotext for input used to select which map will be used for the hosted game",
-                                })}
+                                min={0}
+                                max={MAX_BOTS}
+                                clampBehavior="strict"
+                                allowDecimal={false}
+                                value={botCount}
+                                onChange={(value) => setBotCount(typeof value === "number" ? value : 0)}
                             />
                             <Select
                                 className={classes.grow}
                                 label={intl.formatMessage({
-                                    defaultMessage: "Game time",
-                                    description: "Title for selection used to choose the length of each round",
+                                    defaultMessage: "Difficulty",
+                                    description: "Bot panel: label for the bot difficulty dropdown",
                                 })}
-                                data={GAME_TIME_OPTIONS.map((minutes) => ({
-                                    value: `${minutes}`,
-                                    label:
-                                        minutes === 0
-                                            ? intl.formatMessage({
-                                                  defaultMessage: "Unlimited",
-                                                  description:
-                                                      "Game time option for rounds that only end when a team's base is destroyed",
-                                              })
-                                            : intl.formatMessage(
-                                                  {
-                                                      defaultMessage: "{minutes} minutes",
-                                                      description: "Game time option showing round length",
-                                                  },
-                                                  { minutes },
-                                              ),
+                                disabled={botCount === 0}
+                                value={botDifficulty}
+                                allowDeselect={false}
+                                data={DIFFICULTIES.map((d) => ({
+                                    value: d,
+                                    label: intl.formatMessage(BOT_MESSAGES[d]),
                                 }))}
-                                value={`${gameTime}`}
-                                allowDeselect={false}
-                                onChange={(v) => {
-                                    if (v) {
-                                        setGameTime(Number(v));
-                                    }
-                                }}
-                            />
-                            <Select
-                                className={classes.grow}
-                                label={intl.formatMessage({
-                                    defaultMessage: "Game mode",
-                                    description: "Title for selection used to choose the game mode",
-                                })}
-                                data={[
-                                    {
-                                        value: "Normal",
-                                        label: intl.formatMessage({
-                                            defaultMessage: "Normal",
-                                            description:
-                                                "Game mode where players respawn after dying and the round ends when a base is destroyed",
-                                        }),
-                                    },
-                                    {
-                                        value: "Rounds",
-                                        label: intl.formatMessage({
-                                            defaultMessage: "Rounds",
-                                            description:
-                                                "Game mode with no respawning, where a team wins a round by eliminating every enemy player or destroying their base",
-                                        }),
-                                    },
-                                ]}
-                                value={gameMode}
-                                allowDeselect={false}
-                                onChange={(v) => {
-                                    if (v) {
-                                        setGameMode(v as GameMode);
-                                    }
-                                }}
+                                onChange={(v) => v && setBotDifficulty(v as BotDifficulty)}
                             />
                         </div>
                         <Button

@@ -424,6 +424,10 @@ impl Player {
         self.name.get().clone()
     }
 
+    pub fn get_clan(&self) -> Option<String> {
+        self.clan.get().clone()
+    }
+
     pub fn get_guid(&self) -> &PlayerGuid {
         self.guid.get()
     }

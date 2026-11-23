@@ -77,6 +77,7 @@ export const useGameKeybinds = ({ client }: { client: DogfightClient; engine: Do
     const gameKeybinds: KeybindConfig<GameAction> = {
         callback: handleGameEvent,
         keybinds: settings.controls,
+        ignoreEditableTargets: true,
     };
 
     const chatKeybinds: KeybindConfig<ChatAction> = {

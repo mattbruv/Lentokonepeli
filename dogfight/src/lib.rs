@@ -2,10 +2,13 @@ pub mod bots;
 pub mod choosers;
 pub mod collision;
 pub mod debug;
+#[cfg(test)]
+mod determinism_tests;
 pub mod entities;
 pub mod game_event;
 pub mod images;
 pub mod input;
+pub mod inspect;
 pub mod level;
 pub mod math;
 pub mod network;

@@ -1,5 +1,6 @@
 import { KillEvent } from "dogfight-types/KillEvent";
 import * as PIXI from "pixi.js";
+import { scheduler } from "../gameLoop";
 import { Player } from "./entities/player";
 import { Team } from "dogfight-types/Team";
 import { TeamColor } from "./constants";
@@ -9,6 +10,7 @@ import { formatName } from "./helpers";
 const FEED_WIDTH = 220;
 const FEED_MAX_HEIGHT = 220;
 const ROW_HEIGHT = 17;
+export const KILL_FEED_DURATION_TICKS = 800;
 
 export interface KillEventUIData extends KillEvent {
     killer_data: Player;
@@ -91,10 +93,14 @@ export class KillFeed {
         }
         this.reorderEntries();
 
-        setTimeout(() => {
+        scheduler.scheduleTask(() => {
             this.entries.removeChild(entry);
             this.reorderEntries();
-        }, 8_000);
+        }, KILL_FEED_DURATION_TICKS);
+    }
+
+    public clear() {
+        this.entries.removeChildren();
     }
 
     setTeam(team: Team | null) {

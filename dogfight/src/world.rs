@@ -6,8 +6,8 @@ use crate::{
         bunker::Bunker,
         coast::Coast,
         container::{
-            BackgroundItemId, BombId, BulletId, BunkerId, CoastId, EntityContainer, ExplosionId,
-            GroundId, HillId, ManId, PlaneId, PlayerId, RunwayId, WaterId,
+            BackgroundItemId, BombId, BulletId, BunkerId, CoastId, EntityContainer, EntityId,
+            ExplosionId, GroundId, HillId, ManId, PlaneId, PlayerId, RunwayId, WaterId,
         },
         explosion::Explosion,
         ground::Ground,
@@ -20,7 +20,7 @@ use crate::{
         water::Water,
         world_info::{GameMode, WorldInfo},
     },
-    input::ServerInput,
+    input::{AddPlayerData, PlayerCommand, ServerInput},
     output::ServerOutput,
     replay::file::ReplayFile,
 };
@@ -31,6 +31,7 @@ pub const LEVEL_BORDER_X: i16 = 20_000;
 
 pub struct World {
     game_tick: u32,
+    pub sync_bullet_positions: bool,
     game_output: Vec<ServerOutput>,
     pub world_info: WorldInfo,
     pub players: EntityContainer<Player, PlayerId>,
@@ -61,6 +62,7 @@ impl World {
     pub fn new() -> Self {
         let world = World {
             game_tick: 0,
+            sync_bullet_positions: false,
             world_info: WorldInfo::new(),
             men: EntityContainer::new(EntityType::Man),
             planes: EntityContainer::new(EntityType::Plane),
@@ -109,6 +111,44 @@ impl World {
     }
     */
 
+    pub fn restarted(
+        &self,
+        level: &str,
+        game_mode: GameMode,
+        game_time_minutes: u16,
+        intermission_seconds: u16,
+    ) -> (World, Vec<ServerInput>) {
+        let mut world = World::new();
+        world.sync_bullet_positions = self.sync_bullet_positions;
+        world.team_balance = self.team_balance;
+        world.load_level(level);
+        world.set_round_settings(game_time_minutes, intermission_seconds);
+        world.set_game_mode(game_mode);
+        world.init();
+
+        let mut humans: Vec<(&PlayerId, &Player)> = self
+            .players
+            .get_map()
+            .iter()
+            .filter(|(_, p)| !p.is_bot())
+            .collect();
+        humans.sort_by_key(|(id, _)| id.raw_value());
+
+        let rejoin = humans
+            .into_iter()
+            .map(|(_, p)| ServerInput {
+                player_guid: p.get_guid().clone(),
+                command: PlayerCommand::AddPlayer(AddPlayerData {
+                    guid: p.get_guid().clone(),
+                    name: p.get_name(),
+                    clan: p.get_clan(),
+                }),
+            })
+            .collect();
+
+        (world, rejoin)
+    }
+
     pub fn get_tick(&self) -> u32 {
         self.game_tick
     }
@@ -142,6 +182,24 @@ impl World {
         self.game_output.extend(tick_coll);
 
         self.tick_round();
+
+        self.recycle_freed_ids();
+    }
+
+    fn recycle_freed_ids(&mut self) {
+        self.players.recycle_freed_ids();
+        self.planes.recycle_freed_ids();
+        self.men.recycle_freed_ids();
+        self.background_items.recycle_freed_ids();
+        self.grounds.recycle_freed_ids();
+        self.coasts.recycle_freed_ids();
+        self.runways.recycle_freed_ids();
+        self.waters.recycle_freed_ids();
+        self.bunkers.recycle_freed_ids();
+        self.bombs.recycle_freed_ids();
+        self.explosions.recycle_freed_ids();
+        self.hills.recycle_freed_ids();
+        self.bullets.recycle_freed_ids();
     }
 
     pub fn set_round_settings(&mut self, game_time_minutes: u16, intermission_seconds: u16) {

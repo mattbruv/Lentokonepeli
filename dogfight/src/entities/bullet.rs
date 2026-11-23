@@ -1,3 +1,4 @@
+use crate::inspect::BulletInspect;
 use dogfight_macros::Networked;
 use image::RgbaImage;
 
@@ -84,6 +85,21 @@ impl Bullet {
         //self.client_y.set((self.y / RESOLUTION) as i16);
     }
 
+    pub fn sync_client_position(&mut self) {
+        self.client_x.set(self.get_x());
+        self.client_y.set(self.get_y());
+    }
+
+    pub fn inspect(&self) -> BulletInspect {
+        BulletInspect {
+            age: self.age,
+            damage_factor: self.get_damage_factor(),
+            speed: *self.speed.get(),
+            direction: *self.direction.get(),
+            hit_enemy: self.hit_enemy,
+        }
+    }
+
     pub fn mark_hit_enemy(&mut self) {
         self.hit_enemy = true;
     }
@@ -144,5 +160,42 @@ impl SolidEntity for Bullet {
 
     fn is_alive(&self) -> bool {
         self.is_alive
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Bullet;
+    use crate::{entities::container::PlayerId, network::encoding::NetworkedBytes, world::World};
+
+    fn world_with_bullet(sync: bool) -> (World, super::BulletId) {
+        let mut world = World::new();
+        world.sync_bullet_positions = sync;
+        let (_, owner) = PlayerId::from_bytes(&[0, 0]).unwrap();
+        let (id, _) = world
+            .bullets
+            .insert(Bullet::new(owner, 100, 100, 0.0, 4.0))
+            .unwrap();
+        for _ in 0..10 {
+            world.tick(vec![]);
+        }
+        (world, id)
+    }
+
+    #[test]
+    fn replay_worlds_keep_bullet_client_position_in_sync() {
+        let (world, id) = world_with_bullet(true);
+        let bullet = world.bullets.get(id).unwrap();
+        assert_ne!(bullet.get_x(), 100);
+        assert_eq!(*bullet.client_x.get(), bullet.get_x());
+        assert_eq!(*bullet.client_y.get(), bullet.get_y());
+    }
+
+    #[test]
+    fn live_worlds_only_send_bullet_spawn_position() {
+        let (world, id) = world_with_bullet(false);
+        let bullet = world.bullets.get(id).unwrap();
+        assert_ne!(bullet.get_x(), 100);
+        assert_eq!(*bullet.client_x.get(), 100);
     }
 }

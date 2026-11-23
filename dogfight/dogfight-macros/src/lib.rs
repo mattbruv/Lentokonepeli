@@ -48,8 +48,6 @@ pub fn enum_bytes(input: TokenStream) -> TokenStream {
         //
     });
 
-    let error_string = format!("Unrecognized {} byte:", enum_name) + " {}";
-
     TokenStream::from(quote! {
         impl NetworkedBytes for #enum_name {
             fn to_bytes(&self) -> Vec<u8> {
@@ -57,9 +55,9 @@ pub fn enum_bytes(input: TokenStream) -> TokenStream {
             }
 
             fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
-                let value = match bytes[0] {
+                let value = match *bytes.first()? {
                     #(#mappings)*
-                    _ => panic!(#error_string, bytes[0]),
+                    _ => return None,
                 };
                 Some((&bytes[1..], value))
             }

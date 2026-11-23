@@ -1,0 +1,119 @@
+.preview {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 240px;
+    color: var(--lk-text);
+}
+
+.header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.name {
+    overflow: hidden;
+    font-family: Fredoka, Nunito, sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.designer {
+    flex: none;
+    max-width: 45%;
+    overflow: hidden;
+    color: var(--lk-text-dim);
+    font-size: 0.75rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.map {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 2px solid var(--lk-ink);
+    border-radius: 6px;
+    background: linear-gradient(180deg, var(--lk-sky-3), var(--lk-sky-4));
+}
+
+.grass {
+    fill: #4f9a2e;
+}
+
+.desert {
+    fill: #d8b25c;
+}
+
+.water {
+    fill: #2f7fd8;
+}
+
+.allies {
+    fill: #3d7bff;
+}
+
+.centrals {
+    fill: #e2531a;
+}
+
+.bunker {
+    stroke: var(--lk-ink);
+    stroke-width: 1;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 3px 12px;
+    margin: 0;
+    font-size: 0.8rem;
+
+    & dt {
+        color: var(--lk-text-dim);
+        font-weight: 600;
+    }
+
+    & dd {
+        margin: 0;
+        font-weight: 700;
+        text-align: right;
+    }
+}
+
+.teams {
+    display: inline-flex;
+    gap: 10px;
+}
+
+.team {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    & img {
+        image-rendering: pixelated;
+    }
+}
+
+.flag {
+    vertical-align: middle;
+    image-rendering: pixelated;
+}
+
+.tooltip {
+    padding: 10px 12px;
+    border: 2.5px solid var(--lk-ink);
+    border-radius: 10px;
+    background: var(--lk-paper);
+    box-shadow: 0 4px 0 var(--lk-shadow);
+}
+
+.option {
+    display: block;
+    flex: 1;
+}

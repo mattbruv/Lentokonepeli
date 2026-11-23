@@ -43,3 +43,28 @@
         animation: none;
     }
 }
+
+.versions {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 6px 16px;
+    margin: 0;
+    padding: 12px 14px;
+    border: 2px solid var(--lk-paper-line);
+    border-radius: 12px;
+    font-size: 0.9rem;
+
+    & dt {
+        color: var(--lk-text-dim);
+        font-weight: 600;
+    }
+
+    & dd {
+        margin: 0;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+}
+
+.mismatch {
+    margin-bottom: 12px;
+}

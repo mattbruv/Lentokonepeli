@@ -1,162 +1,98 @@
 use crate::{
     collision::{DebugEntity, DebugEntityType, SolidEntity},
+    entities::{
+        bomb::Bomb, bullet::Bullet, bunker::Bunker, explosion::Explosion, man::Man, plane::Plane,
+        player::ControllingEntity, runway::Runway,
+    },
     world::World,
 };
 
-impl World {
-    pub fn debug(&mut self) -> String {
-        let mut debug_info: Vec<DebugEntity> = vec![];
-
-        let man_bounds: Vec<DebugEntity> = self
-            .men
-            .get_map_mut()
-            .iter_mut()
-            .map(|(idx, man)| {
-                let bounds = man.get_collision_bounds();
-                DebugEntity {
-                    ent_type: DebugEntityType::Man(*idx),
-                    bounding_box: bounds,
-                    pixels: man.get_debug_pixels(),
-                }
-            })
-            .collect();
-
-        let water_bounds: Vec<DebugEntity> = self
-            .waters
-            .get_map_mut()
-            .iter_mut()
-            .map(|(idx, water)| {
-                let bounds = water.get_collision_bounds();
-                DebugEntity {
-                    ent_type: DebugEntityType::Water(*idx),
-                    bounding_box: bounds,
-                    pixels: water.get_debug_pixels(),
-                }
-            })
-            .collect();
-
-        let plane_bounds: Vec<DebugEntity> = self
-            .planes
-            .get_map_mut()
-            .iter_mut()
-            .map(|(idx, plane)| {
-                let bounds = plane.get_collision_bounds();
-                DebugEntity {
-                    ent_type: DebugEntityType::Plane(*idx),
-                    bounding_box: bounds,
-                    pixels: plane.get_debug_pixels(),
-                }
-            })
-            .collect();
-
-        let ground_bounds: Vec<DebugEntity> = self
-            .grounds
-            .get_map_mut()
-            .iter_mut()
-            .map(|(idx, ground)| {
-                let bounds = ground.get_collision_bounds();
-                DebugEntity {
-                    ent_type: DebugEntityType::Ground(*idx),
-                    bounding_box: bounds,
-                    pixels: ground.get_debug_pixels(),
-                }
-            })
-            .collect();
-
-        let coast_bounds: Vec<DebugEntity> = self
-            .coasts
-            .get_map_mut()
-            .iter_mut()
-            .map(|(idx, coast)| {
-                let bounds = coast.get_collision_bounds();
-                DebugEntity {
-                    ent_type: DebugEntityType::Coast(*idx),
-                    bounding_box: bounds,
-                    pixels: coast.get_debug_pixels(),
-                }
-            })
-            .collect();
-
-        let runway_bounds: Vec<DebugEntity> = self
-            .runways
-            .get_map_mut()
-            .iter_mut()
-            .map(|(idx, runway)| {
-                let bounds = runway.get_collision_bounds();
-                DebugEntity {
-                    ent_type: DebugEntityType::Runway(*idx),
-                    bounding_box: bounds,
-                    pixels: runway.get_debug_pixels(),
-                }
-            })
-            .collect();
-
-        let landing_strips: Vec<DebugEntity> = self
-            .runways
+macro_rules! collect_debug {
+    ($world:ident, $field:ident, $variant:ident, $team:expr) => {
+        $world
+            .$field
             .get_map()
             .iter()
-            .map(|(idx, runway)| {
-                let bounds = runway.get_landing_bounds();
+            .map(|(idx, entity)| {
+                let (bounding_box, pixels) = entity.get_debug_shape();
                 DebugEntity {
-                    ent_type: DebugEntityType::Runway(*idx),
-                    bounding_box: bounds,
-                    pixels: None,
+                    ent_type: DebugEntityType::$variant(*idx),
+                    bounding_box,
+                    pixels,
+                    team: $team(entity),
+                    abandoned: false,
                 }
             })
-            .collect();
+            .collect::<Vec<DebugEntity>>()
+    };
+}
 
-        let bomb_bounds: Vec<DebugEntity> = self
-            .bombs
-            .get_map_mut()
-            .iter_mut()
-            .map(|(idx, bomb)| {
-                let bounds = bomb.get_collision_bounds();
-                DebugEntity {
-                    ent_type: DebugEntityType::Bomb(*idx),
-                    bounding_box: bounds,
-                    pixels: bomb.get_debug_pixels(),
+impl World {
+    pub fn debug(&self, terrain: bool, dynamic: bool) -> String {
+        let mut debug_info: Vec<DebugEntity> = vec![];
+        let players = &self.players;
+
+        if dynamic {
+            debug_info.extend(collect_debug!(self, men, Man, |man: &Man| {
+                Some(man.get_team())
+            }));
+        }
+
+        if terrain {
+            debug_info.extend(collect_debug!(self, grounds, Ground, |_| None));
+            debug_info.extend(collect_debug!(self, waters, Water, |_| None));
+        }
+
+        if dynamic {
+            let mut planes =
+                collect_debug!(self, planes, Plane, |plane: &Plane| Some(plane.get_team()));
+            for entry in planes.iter_mut() {
+                if let DebugEntityType::Plane(id) = entry.ent_type {
+                    entry.abandoned = !players
+                        .get_map()
+                        .values()
+                        .any(|p| p.get_controlling() == Some(ControllingEntity::Plane(id)));
                 }
-            })
-            .collect();
+            }
+            debug_info.extend(planes);
+        }
 
-        let explosion_bounds: Vec<DebugEntity> = self
-            .explosions
-            .get_map_mut()
-            .iter_mut()
-            .map(|(idx, explosion)| {
-                let bounds = explosion.get_collision_bounds();
-                DebugEntity {
-                    ent_type: DebugEntityType::Explosion(*idx),
-                    bounding_box: bounds,
-                    pixels: explosion.get_debug_pixels(),
-                }
-            })
-            .collect();
+        if terrain {
+            debug_info.extend(collect_debug!(self, coasts, Coast, |_| None));
+            debug_info.extend(collect_debug!(self, runways, Runway, |runway: &Runway| {
+                Some(*runway.get_team())
+            }));
+            debug_info.extend(collect_debug!(self, bunkers, Bunker, |bunker: &Bunker| {
+                Some(*bunker.get_team())
+            }));
+            debug_info.extend(
+                self.runways
+                    .get_map()
+                    .iter()
+                    .map(|(idx, runway)| DebugEntity {
+                        ent_type: DebugEntityType::Runway(*idx),
+                        bounding_box: runway.get_landing_bounds(),
+                        pixels: None,
+                        team: Some(*runway.get_team()),
+                        abandoned: false,
+                    }),
+            );
+        }
 
-        let bullet_bounds: Vec<DebugEntity> = self
-            .bullets
-            .get_map_mut()
-            .iter_mut()
-            .map(|(idx, bullet)| {
-                let bounds = bullet.get_collision_bounds();
-                DebugEntity {
-                    ent_type: DebugEntityType::Bullet(*idx),
-                    bounding_box: bounds,
-                    pixels: bullet.get_debug_pixels(),
-                }
-            })
-            .collect();
-
-        debug_info.extend(man_bounds);
-        debug_info.extend(ground_bounds);
-        debug_info.extend(water_bounds);
-        debug_info.extend(plane_bounds);
-        debug_info.extend(coast_bounds);
-        debug_info.extend(runway_bounds);
-        debug_info.extend(landing_strips);
-        debug_info.extend(bomb_bounds);
-        debug_info.extend(explosion_bounds);
-        debug_info.extend(bullet_bounds);
+        if dynamic {
+            debug_info.extend(collect_debug!(self, bombs, Bomb, |bomb: &Bomb| players
+                .get(bomb.player_id())
+                .and_then(|p| *p.get_team())));
+            debug_info.extend(collect_debug!(
+                self,
+                explosions,
+                Explosion,
+                |explosion: &Explosion| *explosion.get_team()
+            ));
+            debug_info.extend(collect_debug!(self, bullets, Bullet, |bullet: &Bullet| {
+                players.get(bullet.player_id()).and_then(|p| *p.get_team())
+            }));
+        }
 
         serde_json::to_string(&debug_info).unwrap()
     }

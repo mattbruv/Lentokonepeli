@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use image::RgbaImage;
 use serde::Serialize;
 use ts_rs::TS;
@@ -5,9 +7,11 @@ use ts_rs::TS;
 use crate::{
     entities::{
         container::{
-            BombId, BulletId, CoastId, ExplosionId, GroundId, ManId, PlaneId, RunwayId, WaterId,
+            BombId, BulletId, BunkerId, CoastId, ExplosionId, GroundId, ManId, PlaneId, RunwayId,
+            WaterId,
         },
         entity::Entity,
+        types::Team,
     },
     math::Point,
 };
@@ -25,6 +29,7 @@ pub enum DebugEntityType {
     Bomb(BombId),
     Explosion(ExplosionId),
     Bullet(BulletId),
+    Bunker(BunkerId),
 }
 
 #[derive(Debug, Clone, Serialize, TS)]
@@ -33,6 +38,8 @@ pub struct DebugEntity {
     pub ent_type: DebugEntityType,
     pub bounding_box: BoundingBox,
     pub pixels: Option<Vec<Point>>,
+    pub team: Option<Team>,
+    pub abandoned: bool,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, TS)]
@@ -133,10 +140,16 @@ pub trait SolidEntity: Entity {
         false
     }
 
-    fn get_debug_pixels(&mut self) -> Option<Vec<Point>> {
-        self.do_rotate_collision_image();
+    fn debug_shape(&self) -> (BoundingBox, Option<Cow<'_, RgbaImage>>) {
+        (
+            self.get_collision_bounds(),
+            self.get_collision_image().map(Cow::Borrowed),
+        )
+    }
+
+    fn get_debug_shape(&self) -> (BoundingBox, Option<Vec<Point>>) {
+        let (bounds, img) = self.debug_shape();
         let mut pixels = vec![];
-        let img = self.get_collision_image();
 
         if let Some(i) = img {
             for (x, y, pixel) in i.enumerate_pixels() {
@@ -150,8 +163,8 @@ pub trait SolidEntity: Entity {
         }
 
         match pixels.len() {
-            0 => None,
-            _ => Some(pixels),
+            0 => (bounds, None),
+            _ => (bounds, Some(pixels)),
         }
     }
 }

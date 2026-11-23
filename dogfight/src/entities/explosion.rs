@@ -1,3 +1,4 @@
+use crate::inspect::ExplosionInspect;
 use dogfight_macros::Networked;
 use image::RgbaImage;
 
@@ -64,6 +65,14 @@ impl Explosion {
         self.do_collision
     }
 
+    pub fn inspect(&self) -> ExplosionInspect {
+        ExplosionInspect {
+            phase: *self.phase.get(),
+            age_ms: self.age_ms,
+            damaging: self.do_collision,
+        }
+    }
+
     pub fn get_team(&self) -> &Option<Team> {
         self.team.get()
     }
@@ -83,14 +92,11 @@ impl Explosion {
         // as the original seemed to be designed to do.
         self.age_ms += 10;
 
+        let previous_phase = *self.phase.get();
         self.phase.set((self.age_ms / PHASE_TIME_MS) as u8);
 
         // If the phase just turned to 3, do collision once.
-        if *self.phase.get() == 3 && self.phase.is_dirty() {
-            self.do_collision = true;
-        } else {
-            self.do_collision = false;
-        }
+        self.do_collision = *self.phase.get() == 3 && previous_phase != 3;
 
         // Mark this explosion to be destroyed if older than max phase.
         if self.age_ms > TOTAL_PHASES * PHASE_TIME_MS {

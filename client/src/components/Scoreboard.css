@@ -5,6 +5,9 @@
     z-index: 2;
     width: calc(100% - 40px);
     max-width: 700px;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100% - 20px);
     transform: translateX(-50%);
     overflow: hidden;
     border: 2.5px solid #1c1f21;
@@ -19,6 +22,23 @@
     background: linear-gradient(180deg, #646d72, #3c4245);
     border-bottom: 2px solid #1c1f21;
     text-align: center;
+    flex: none;
+}
+
+.scoreboard-body {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.scoreboard .team-columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    align-items: start;
+}
+
+.scoreboard .team-columns > .team-block + .team-block {
+    border-left: 2px solid #1c1f21;
 }
 
 .scoreboard .room-name {
@@ -37,6 +57,78 @@
 .scoreboard table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.scoreboard th.col-team {
+    width: 30px;
+}
+
+.scoreboard th.col-name {
+    width: auto;
+}
+
+.scoreboard th.col-num {
+    width: 3.6em;
+}
+
+.scoreboard th.col-wide {
+    width: 5em;
+}
+
+.scoreboard .team-caption {
+    padding: 3px 8px;
+    background: #3c4245;
+    color: #fff;
+    font-family: Fredoka, Nunito, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.scoreboard .team-caption img {
+    vertical-align: middle;
+    image-rendering: pixelated;
+}
+
+.scoreboard .team-count {
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.scoreboard .name-cell {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+}
+
+.scoreboard .name-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.scoreboard tr.me td.name {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.scoreboard.split th {
+    padding: 2px 3px;
+    font-size: 12px;
+}
+
+.scoreboard.split td {
+    padding: 1px 3px;
+    font-size: 13px;
+}
+
+.scoreboard.split th.col-num {
+    width: 3.4em;
+}
+
+.scoreboard.split th.col-wide {
+    width: 4.8em;
 }
 
 .scoreboard th {
@@ -67,6 +159,7 @@
 }
 
 .scoreboard .bot-icon {
+    flex: none;
     margin-left: 4px;
     vertical-align: -2px;
     opacity: 0.8;

@@ -96,3 +96,7 @@
         transform: translateY(-2px) rotate(-1deg);
     }
 }
+
+.grow {
+    flex: 1;
+}

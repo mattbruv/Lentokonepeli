@@ -1,12 +1,14 @@
 import { ManProperties } from "dogfight-types/ManProperties";
 import { Team } from "dogfight-types/Team";
 import * as PIXI from "pixi.js";
-import { scheduler } from "../../gameLoop";
+import { scheduler, TaskFn } from "../../gameLoop";
 import { DrawLayer, TeamColor } from "../constants";
 import { Stats } from "../hud";
 import { RadarObject, RadarObjectType } from "../radar";
 import { Textures } from "../textures";
 import { Entity, EntityUpdateCallbacks, Followable, Point, RadarEnabled } from "./entity";
+
+const WALK_FRAME_TICKS = 10;
 
 export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
     public props: Required<ManProperties> = {
@@ -23,10 +25,8 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
     private manSprite: PIXI.Sprite;
 
     private nameText: PIXI.Text;
-    private frameCount = 0;
-
-    private animate = () => {
-        this.animateWalk();
+    private animate: TaskFn = (tick) => {
+        if (tick % WALK_FRAME_TICKS === 0) this.animateWalk(tick);
     };
 
     constructor() {
@@ -54,7 +54,7 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
 
         this.container.zIndex = DrawLayer.Man;
 
-        scheduler.scheduleRecurring(this.animate, 10);
+        scheduler.scheduleRecurring(this.animate, 1);
     }
 
     public callbackOrder: (keyof ManProperties)[] = ["client_x", "client_y"];
@@ -145,18 +145,13 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
         };
     }
 
-    private animateWalk(): void {
+    private animateWalk(tick: number): void {
         if (!(this.props.state == "WalkingLeft" || this.props.state == "WalkingRight")) {
             return;
         }
 
-        if (this.frameCount == 0) {
-            this.manSprite.texture = Textures["parachuter3.gif"];
-            this.frameCount = 1;
-        } else if (this.frameCount == 1) {
-            this.manSprite.texture = Textures["parachuter2.gif"];
-            this.frameCount = 0;
-        }
+        const frame = Math.floor(tick / WALK_FRAME_TICKS) % 2;
+        this.manSprite.texture = Textures[frame === 0 ? "parachuter3.gif" : "parachuter2.gif"];
     }
 
     setPlayerName(name: string | null, team: Team | null) {
