@@ -2,6 +2,7 @@
 import shutil
 import subprocess
 import os
+import sys
 
 def get_latest_commit():
     """Gets the latest Git commit hash (short version)."""
@@ -32,6 +33,7 @@ def build_lento():
 
     except subprocess.CalledProcessError as e:
         print(f"Error executing command: {e.cmd}")
+        sys.exit(e.returncode or 1)
 
 if __name__ == "__main__":
     build_lento()

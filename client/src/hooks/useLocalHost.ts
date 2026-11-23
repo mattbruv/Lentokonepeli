@@ -370,12 +370,12 @@ export function useLocalHost(
                 return;
             }
 
+            const now = performance.now();
             const cached = replayCache.current;
-            const bytes =
-                cached && performance.now() - cached.createdAt < REPLAY_CACHE_MS
-                    ? cached.bytes
-                    : dogfight.engine.get_replay_file();
-            replayCache.current = { bytes, createdAt: cached?.bytes === bytes ? cached.createdAt : performance.now() };
+            if (!cached || now - cached.createdAt >= REPLAY_CACHE_MS) {
+                replayCache.current = { bytes: dogfight.engine.get_replay_file(), createdAt: now };
+            }
+            const bytes = replayCache.current!.bytes;
 
             const start: ReplayMessage = { type: "ReplayStart", data: bytes.length };
             if (!safeSend(user, JSON.stringify(start))) {
