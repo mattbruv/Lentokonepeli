@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { FormattedMessage, useIntl } from "react-intl";
 import { LevelEditor, MapPiece } from "../client/LevelEditor";
-import { customLevelName, deleteCustomLevel, saveCustomLevel, useCustomLevels } from "../customLevels";
+import { customLevelName, deleteCustomLevel, saveCustomLevel, sortedLevelNames, useCustomLevels } from "../customLevels";
 import { Panel } from "../components/ui/Panel";
 import { useSettingsContext } from "../contexts/settingsContext";
 import style from "./Editor.module.css";
@@ -108,7 +108,7 @@ export const Editor = () => {
                                 defaultMessage: "Open a saved level...",
                                 description: "Placeholder for selection in the level editor used to open a saved level",
                             })}
-                            data={Object.keys(customLevels)}
+                            data={sortedLevelNames(customLevels)}
                             value={selectedCustom && selectedCustom in customLevels ? selectedCustom : null}
                             searchable
                             onChange={(name) => {

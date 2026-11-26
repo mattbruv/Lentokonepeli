@@ -69,6 +69,10 @@ export function useCustomLevels(): CustomLevels {
 
 export const CUSTOM_LEVEL_PREFIX = "custom:";
 
+export function sortedLevelNames(levels: object): string[] {
+    return Object.keys(levels).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" }));
+}
+
 export type LevelName = keyof typeof Levels;
 
 export type ResolvedLevel = { key: string; name: string; data: string };

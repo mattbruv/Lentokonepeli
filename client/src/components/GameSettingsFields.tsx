@@ -2,7 +2,7 @@ import { Select, Tooltip } from "@mantine/core";
 import { GameMode } from "dogfight-types/GameMode";
 import { useIntl } from "react-intl";
 import Levels from "../assets/levels.json";
-import { CUSTOM_LEVEL_PREFIX, resolveLevel, useCustomLevels } from "../customLevels";
+import { CUSTOM_LEVEL_PREFIX, resolveLevel, sortedLevelNames, useCustomLevels } from "../customLevels";
 import { getLevelStats } from "../levelStats";
 import { LevelPreview } from "./LevelPreview";
 import previewClasses from "./LevelPreview.module.css";
@@ -42,7 +42,7 @@ export function GameSettingsFields({ value, onChange, className, levelClassNames
                             defaultMessage: "Original levels",
                             description: "Group heading in the level selection for the built-in levels",
                         }),
-                        items: Object.keys(Levels),
+                        items: sortedLevelNames(Levels),
                     },
                     ...(Object.keys(customLevels).length
                         ? [
@@ -52,7 +52,7 @@ export function GameSettingsFields({ value, onChange, className, levelClassNames
                                       description:
                                           "Group heading in the level selection for levels saved from the level editor",
                                   }),
-                                  items: Object.keys(customLevels).map((name) => ({
+                                  items: sortedLevelNames(customLevels).map((name) => ({
                                       value: CUSTOM_LEVEL_PREFIX + name,
                                       label: name,
                                   })),
