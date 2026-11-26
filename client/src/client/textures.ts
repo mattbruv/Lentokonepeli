@@ -1,9 +1,13 @@
 import * as PIXI from "pixi.js";
+import { loadBigTextFont } from "./bigText";
 
 export let Textures: TextureMap = {} as unknown as TextureMap;
 
 export async function loadTextures() {
-    const spritesheet = await PIXI.Assets.load<PIXI.Spritesheet>("./images/images.json");
+    const [spritesheet] = await Promise.all([
+        PIXI.Assets.load<PIXI.Spritesheet>("./images/images.json"),
+        loadBigTextFont(),
+    ]);
     spritesheet.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
     const textures = spritesheet.textures as unknown as TextureMap;
     Textures = textures;

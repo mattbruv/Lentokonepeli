@@ -3,6 +3,7 @@ import { WorldState } from "dogfight-types/WorldState";
 import * as PIXI from "pixi.js";
 import { IntlShape } from "react-intl";
 import { GAME_INTL } from "../intl/messages";
+import { BigText } from "./bigText";
 import { Textures } from "./textures";
 
 const FG_COLOR = 0xafaf5a;
@@ -13,19 +14,20 @@ export class RoundInfo {
     public container: PIXI.Container;
     public clockContainer: PIXI.Container;
 
-    private banner: PIXI.Text;
+    private banner: BigText;
     private splash: PIXI.Container;
     private splashImage: PIXI.Sprite;
     private splashMask: PIXI.Graphics;
     private readyText: PIXI.Text;
     private clockText: PIXI.Text;
     private intl?: IntlShape;
+    private bannerCenter = new PIXI.Point();
 
     constructor() {
         this.container = new PIXI.Container();
         this.clockContainer = new PIXI.Container();
 
-        this.banner = new PIXI.Text("", {
+        this.banner = new BigText(FG_COLOR, {
             fontFamily: "Arial",
             fontSize: 48,
             fontWeight: "bold",
@@ -33,8 +35,7 @@ export class RoundInfo {
             stroke: BG_COLOR,
             strokeThickness: 4,
         });
-        this.banner.anchor.set(0.5);
-        this.banner.visible = false;
+        this.banner.container.visible = false;
 
         this.splash = new PIXI.Container();
         this.splashImage = new PIXI.Sprite();
@@ -63,7 +64,7 @@ export class RoundInfo {
         this.clockContainer.visible = false;
 
         this.container.addChild(this.splash);
-        this.container.addChild(this.banner);
+        this.container.addChild(this.banner.container);
     }
 
     public init(intl: IntlShape, width: number, gameHeight: number) {
@@ -75,7 +76,7 @@ export class RoundInfo {
         this.splashMask.endFill();
         this.readyText.text = intl.formatMessage(GAME_INTL.press_enter_when_ready);
         this.readyText.position.set(width / 2, 360);
-        this.banner.position.set(width / 2, gameHeight / 2 - 70);
+        this.bannerCenter.set(width / 2, gameHeight / 2 - 70);
         this.clockText.position.set(350, gameHeight - 3);
     }
 
@@ -84,10 +85,14 @@ export class RoundInfo {
         this.readyText.visible = !myPlayerReady;
 
         if (state === "PostGame" && this.intl) {
-            this.banner.text = this.getWinnerMessage(winner);
-            this.banner.visible = true;
+            this.banner.setText(this.getWinnerMessage(winner));
+            this.banner.container.position.set(
+                Math.trunc(this.bannerCenter.x - this.banner.width / 2),
+                Math.trunc(this.bannerCenter.y - this.banner.height / 2),
+            );
+            this.banner.container.visible = true;
         } else {
-            this.banner.visible = false;
+            this.banner.container.visible = false;
         }
     }
 
