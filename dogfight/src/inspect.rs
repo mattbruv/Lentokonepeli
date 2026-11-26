@@ -272,7 +272,14 @@ mod tests {
     fn inspect_finds_bullet_near_point_only() {
         let mut world = World::new();
         let (_, owner) = PlayerId::from_bytes(&[0, 0]).unwrap();
-        world.bullets.insert(Bullet::new(owner, 100, 100, 0.0, 4.0));
+        world.bullets.insert(Bullet::new(
+            owner,
+            crate::entities::bullet::BulletOrigin::Man(crate::entities::container::ManId::from(0)),
+            100,
+            100,
+            0.0,
+            4.0,
+        ));
 
         let hits = world.inspect(101, 101, 0);
         assert_eq!(hits.len(), 1);

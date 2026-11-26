@@ -6,19 +6,27 @@ use crate::{
     collision::{BoundingBox, SolidEntity},
     math::{direction_to_radians, radians_to_direction},
     network::{property::Property, EntityProperties, NetworkedEntity},
-    tick_actions::{Action, RemoveData},
     world::RESOLUTION,
 };
 
 use super::{
-    container::{BulletId, PlayerId},
+    container::{ManId, PlaneId, PlayerId},
     entity::Entity,
     types::EntityType,
 };
 
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum BulletOrigin {
+    Plane(PlaneId),
+    Man(ManId),
+}
+
+pub const BULLET_LIFETIME: i32 = 175;
+
 #[derive(Networked)]
 pub struct Bullet {
     player_id: PlayerId,
+    origin: BulletOrigin,
     x: i32,
     y: i32,
     client_x: Property<i16>,
@@ -32,11 +40,19 @@ pub struct Bullet {
 }
 
 impl Bullet {
-    pub fn new(owner: PlayerId, x: i16, y: i16, angle: f64, speed: f64) -> Bullet {
+    pub fn new(
+        owner: PlayerId,
+        origin: BulletOrigin,
+        x: i16,
+        y: i16,
+        angle: f64,
+        speed: f64,
+    ) -> Bullet {
         let dir = radians_to_direction(angle);
         let angle = direction_to_radians(dir);
         let mut bullet = Bullet {
             player_id: owner,
+            origin,
             x: x as i32 * RESOLUTION,
             y: y as i32 * RESOLUTION,
             client_x: Property::new(x),
@@ -64,18 +80,17 @@ impl Bullet {
         bullet
     }
 
-    pub fn tick(&mut self, my_bullet_id: &BulletId) -> Vec<Action> {
-        let mut actions = vec![];
-
+    pub fn tick(&mut self) {
         self.age += 1;
-
         self.move_bullet();
+    }
 
-        if self.age == 175 {
-            actions.push(Action::RemoveEntity(RemoveData::Bullet(*my_bullet_id)));
-        }
+    pub fn expired(&self) -> bool {
+        self.age >= BULLET_LIFETIME
+    }
 
-        actions
+    pub fn get_origin(&self) -> BulletOrigin {
+        self.origin
     }
 
     pub fn move_bullet(&mut self) -> () {
@@ -168,13 +183,20 @@ mod tests {
     use super::Bullet;
     use crate::{entities::container::PlayerId, network::encoding::NetworkedBytes, world::World};
 
-    fn world_with_bullet(sync: bool) -> (World, super::BulletId) {
+    fn world_with_bullet(sync: bool) -> (World, crate::entities::container::BulletId) {
         let mut world = World::new();
         world.sync_bullet_positions = sync;
         let (_, owner) = PlayerId::from_bytes(&[0, 0]).unwrap();
         let (id, _) = world
             .bullets
-            .insert(Bullet::new(owner, 100, 100, 0.0, 4.0))
+            .insert(Bullet::new(
+                owner,
+                super::BulletOrigin::Man(crate::entities::container::ManId::from(0)),
+                100,
+                100,
+                0.0,
+                4.0,
+            ))
             .unwrap();
         for _ in 0..10 {
             world.tick(vec![]);

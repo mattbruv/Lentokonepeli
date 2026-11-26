@@ -71,8 +71,8 @@ impl World {
 
         // Tick bullets
         let sync_bullet_positions = self.sync_bullet_positions;
-        for (bullet_id, bullet) in self.bullets.get_map_mut() {
-            actions.extend(bullet.tick(&bullet_id));
+        for (_, bullet) in self.bullets.get_map_mut() {
+            bullet.tick();
             if sync_bullet_positions {
                 bullet.sync_client_position();
             }

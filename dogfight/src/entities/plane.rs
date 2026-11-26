@@ -22,7 +22,7 @@ use crate::{
 
 use super::{
     bomb::Bomb,
-    bullet::Bullet,
+    bullet::{Bullet, BulletOrigin},
     container::{PlaneId, PlayerId, RunwayId},
     entity::Entity,
     man::Man,
@@ -548,6 +548,7 @@ impl Plane {
 
                 actions.push(Action::SpawnBullet(Bullet::new(
                     self.player_id,
+                    BulletOrigin::Plane(*my_id),
                     i3,
                     i4,
                     self.angle,
@@ -568,6 +569,7 @@ impl Plane {
 
                 actions.push(Action::SpawnBomb(Bomb::new(
                     self.player_id,
+                    *my_id,
                     x,
                     y,
                     self.angle,
@@ -711,14 +713,10 @@ impl Plane {
 
     pub fn is_facing_runway_correctly(&self, runway: &mut Runway) -> bool {
         let facing = runway.get_facing();
-        if (((facing == Facing::Right) && (self.angle == PI))
-            || ((facing == Facing::Left) && (self.angle == 0.0)))
-            && (runway.reserve_for(RunwayReservation::Landing))
-        {
-            return true;
-        }
-
-        false
+        (facing == Facing::Right && self.angle == PI)
+            || (facing == Facing::Left
+                && self.angle == 0.0
+                && runway.reserve_for(RunwayReservation::Landing))
     }
 
     pub fn flipped(&self) -> bool {

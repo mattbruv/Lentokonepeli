@@ -34,8 +34,14 @@ impl Coast {
             client_y: Property::new(y),
             image_normal: get_image(BEACH_L),
             image_desert: get_image(BEACH_L_DESERT),
-            image_normal_flipped: mirror_into_width(&get_image(BEACH_L), get_image(BEACH_L).width()),
-            image_desert_flipped: mirror_into_width(&get_image(BEACH_L_DESERT), get_image(BEACH_L).width()),
+            image_normal_flipped: mirror_into_width(
+                &get_image(BEACH_L),
+                get_image(BEACH_L).width(),
+            ),
+            image_desert_flipped: mirror_into_width(
+                &get_image(BEACH_L_DESERT),
+                get_image(BEACH_L).width(),
+            ),
         }
     }
 }

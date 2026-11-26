@@ -58,45 +58,62 @@ For a right-facing desert coast, the original mirrors the desert beach using the
 
 `Man.getCollisionImage()` always returns `image[0]` (`parachuter0`). The parachute canopy never collides.
 
-## Behaviour differences (not yet fixed)
+## Behaviour differences
 
-The reference points to code in the original. Paths are relative to `server/entities/` and `dogfight/src/`.
+All of these are fixed, and the engine stays fully deterministic. Collision phases still run in a fixed order: men, bullets, bombs, planes, explosions.
+
+### How the collision loop works now
+
+Each mover (bullet, bomb, explosion, man) now checks **every** target it overlaps, the way `SolidEntity.checkCollision()` does, instead of stopping at the first. Within a phase, an entity removed by an earlier mover is skipped, matching the original's per-mover snapshot of entities. Where the original's outcome depended on its HashMap iteration order (for example, which target a bomb "hits first"), Rust uses a fixed target order instead.
 
 ### Planes
 
-1. **A falling plane can land on, or damage, a runway.** The original handles mode 4 (falling) before any runway logic and just explodes (`Plane.java:542-559`). Rust runs the landing check and `planeCrash` for any mode (`tick_collision.rs` runway loop). A falling plane can snap onto its own runway and land, and it takes 17 health off any runway it hits.
-2. **Your own explosion destroys your own falling plane.** In mode 4 the original ignores entities owned by the same player (`Plane.java:544`). Rust has no owner check (`tick_collision.rs` explosions vs planes), so it also logs an extra suicide.
-3. **Bullets pass through falling planes.** In the original, the bullet hits the falling plane and is removed without doing damage (`Bullet.java:104-130`). Rust skips falling planes entirely, so the bullet carries on and hits whatever is behind.
-4. **A bomb hitting a falling plane gives an extra plane kill.** The original only records a man kill (`Plane.java:553`). Rust always records a plane kill and a man kill (`tick_collision.rs` bombs vs planes).
-5. **Landing reservation.** The original reads `(dir==1 && angle==π) || (dir==0 && angle==0 && reserveFor(2))`, so only left-facing runways are reserved (`Plane.java:573`). Rust reserves for both directions (`plane.rs` `is_facing_runway_correctly`), which can delay landings on right-facing runways.
-6. **Same-player plane collisions.** The original only dodges planes owned by another player (`Plane.java:592`). Rust dodges any pair. This only matters when your new plane meets your own abandoned one.
-7. **Landing requires a pilot in Rust.** An abandoned plane meeting the landing conditions snaps onto the runway in the original. In Rust it crashes. Low impact.
+| # | Difference | Fix |
+|---|---|---|
+| 1 | A falling plane landed on or damaged a runway | It crashes like it would on ground: no landing, no `planeCrash` |
+| 2 | Your own explosion destroyed your falling plane | Ignored when the explosion's owner is the plane's player |
+| 3 | Bullets passed through falling planes | The bullet is absorbed with no damage |
+| 4 | A bomb on a falling plane gave an extra plane kill | Only the man kill is recorded |
+| 5 | Landing reserved both runway directions | Only left-facing runways reserve, as in the original's operator precedence |
+| 6 | Same-player planes dodged each other | Only planes of different players dodge |
+| 7 | Landing required a pilot | Pilot check removed |
+| — | Own runway in landing/take-off skipped every other check | Only that runway is skipped |
+| — | Landed planes ran their own collision checks | They don't, matching the original's mode 2. Other entities still collide with them |
 
 ### Men
 
-8. **Touching ground skips the coast and water checks.** `continue 'men` after a ground hit (`tick_collision.rs` men vs ground) means a man on a ground/water or ground/coast seam survives. The original kills him.
-9. **Bullets from the man's own player.** The original removes the bullet and the man survives. Rust neither removes the bullet nor checks its other targets that tick:
-   - the pilot's own bullets pass through his parachuting man;
-   - a man's point-blank shot can't hit anything while it still overlaps him.
-10. **A bomb hitting a man explodes at the man's top-left corner.** The original explodes at the bomb's position (`Bomb.java:149`).
-11. **Suicide and shoot.** The original's `if (shoot) … else if (suicide)` means holding both just shoots (`Man.java:177-187`). Rust does both.
-12. **Blocked walking reverts to the wrong x.** The original restores `lastX`, fixed at the start of the tick (`Man.java:156, 233, 246`). Rust's `previous_x` changes on every `set_x`, so two blockers in one tick cancel out and the man walks through.
+| # | Difference | Fix |
+|---|---|---|
+| 8 | Touching ground skipped coast and water | All terrain is checked; a man on a ground/water seam dies |
+| 9 | Own-player bullets were neither absorbed nor fatal | A bullet skips only the entity that fired it (new `BulletOrigin`). Bullets from the same player are absorbed without killing |
+| 10 | A bomb on a man exploded at the man's corner | The explosion is at the bomb's position |
+| 11 | Suicide and shoot both fired | Shoot takes priority, then suicide |
+| 12 | Blocked walking reverted to a moving `previous_x` | `previous_x` is fixed at the start of the walk tick |
+| — | Grace period was `> 200 ms` | Now `>= 200 ms` |
+| — | A man could be killed by several things in one tick | Removed men are skipped for the rest of the phase |
 
-### Structure (bullets, bombs, explosions)
+### Bullets, bombs, explosions
 
-13. **A mover only hits its first target.** The original has no early exit, so one bullet or bomb hits everything it overlaps that tick (`SolidEntity.java:86-98`). Rust `continue`s after the first match. For example, a bomb overlapping a plane and a runway only kills the plane, and the runway misses its 30 damage.
-14. **One target can be hit twice in a tick.** Rust doesn't mark a target dead until the action queue runs:
-    - two bullets hitting one bomb make two explosions;
-    - several bombs or explosions hitting one plane or man give duplicate kills and explosions.
+| # | Difference | Fix |
+|---|---|---|
+| 13 | A mover hit only its first target | Every overlapping target takes its effect. A bomb's first hit decides its own explosion and structure stats; later overlaps still take damage |
+| 14 | One target could be hit twice in a tick | Bombs, planes and men consumed earlier in the phase are skipped |
+| — | A bullet at age 175 was removed before colliding | It collides on its last tick with damage factor 0, then is removed |
+| — | Bombs skipped every same-player plane | A bomb skips only the plane that dropped it (new bomb `origin`). Same-player planes still ignore the bomb |
 
-    In the original, the first hit removes the target.
+### Deliberately not replicated
 
-### Minor or uncertain
+- **Interleaved timing.** The original checks each mover right after it moves, in HashMap order, which isn't reproducible. Rust moves everything first, then checks in a fixed order.
+- **Planes overlapping two terrain pieces at once** create two explosions in the original, because `explode()` doesn't check whether the plane was already removed.
+- **Men left behind by a departed player** can't be killed in the original (`removeSelf` checks the controller). In Rust they stay frozen and can still be killed. This is about how players leave, not about collision.
+- **Decompiler-ambiguous conditions:** landing ending when `!checkCollision()`, and a falling plane spawning a man on `!checkCollision()`. Both read as decompile artefacts.
+- **Skipping collision checks when nothing moved.** The original only checks flying and dodging planes when their pixel position or direction changes. This has no effect, because nothing they could hit changes in between.
 
-- **Collision timing.** The original checks each mover right after it moves. Rust moves everything first, then checks. A few near-misses that the original registers are lost.
-- **Bullet's last tick.** A bullet reaching age 175 still collides in the original on that tick, with zero damage, but can still kill a man or detonate a bomb. Rust removes it before collisions.
-- **Man grace period.** The original requires ≥ 200 ms; Rust requires > 200 ms, about one tick longer.
-- **Man without a controller.** The original can't kill such a man. Rust only protects him from bullets.
+### Verification
+
+- **Tests:** all 103 pass, including the determinism and replay round-trip tests.
+- **Katala replay:** survives the take-off flip.
+- **Bot simulation** (8 bots × 30,000 ticks on all 15 levels): no plane crashes while landing or taking off. Every crash is a falling plane or a plane in flight.
 
 ## Faithful (checked)
 

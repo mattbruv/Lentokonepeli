@@ -2,7 +2,7 @@ use crate::{
     collision::{BoundingBox, SolidEntity},
     entities::{
         bomb::Bomb,
-        bullet::Bullet,
+        bullet::{Bullet, BulletOrigin},
         container::{BombId, BulletId, BunkerId, ExplosionId, ManId, PlaneId, PlayerId, RunwayId},
         explosion::Explosion,
         man::Man,
@@ -471,7 +471,14 @@ impl World {
 
             let j = my_box.x + my_box.width / 2;
             let m = my_box.y + my_box.height - 10;
-            output.extend(self.spawn_bullet(Bullet::new(shoot_data.player_id, j, m, angle, 0.0)));
+            output.extend(self.spawn_bullet(Bullet::new(
+                shoot_data.player_id,
+                BulletOrigin::Man(shoot_data.man_ent_id),
+                j,
+                m,
+                angle,
+                0.0,
+            )));
         }
 
         /*

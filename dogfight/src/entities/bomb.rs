@@ -11,11 +11,16 @@ use crate::{
     world::RESOLUTION,
 };
 
-use super::{container::PlayerId, entity::Entity, types::EntityType};
+use super::{
+    container::{PlaneId, PlayerId},
+    entity::Entity,
+    types::EntityType,
+};
 
 #[derive(Networked)]
 pub struct Bomb {
     player_id: PlayerId,
+    origin: PlaneId,
     x: i32,
     y: i32,
     client_x: Property<i16>,
@@ -30,11 +35,19 @@ pub struct Bomb {
 }
 
 impl Bomb {
-    pub fn new(player_id: PlayerId, x: i16, y: i16, angle: f64, speed: f64) -> Bomb {
+    pub fn new(
+        player_id: PlayerId,
+        origin: PlaneId,
+        x: i16,
+        y: i16,
+        angle: f64,
+        speed: f64,
+    ) -> Bomb {
         let dir = radians_to_direction(angle);
         let angle = direction_to_radians(dir);
         Bomb {
             player_id,
+            origin,
             x: (x as i32) * RESOLUTION,
             y: (y as i32) * RESOLUTION,
             client_x: Property::new(x),
@@ -48,6 +61,10 @@ impl Bomb {
             rotated_image: get_rotateable_image(BOMB),
             is_alive: true,
         }
+    }
+
+    pub fn get_origin(&self) -> PlaneId {
+        self.origin
     }
 
     pub fn kill(&mut self) -> () {

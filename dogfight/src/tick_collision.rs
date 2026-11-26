@@ -1,13 +1,14 @@
-use std::f64::consts::PI;
+use std::{collections::HashSet, f64::consts::PI};
 
 use crate::{
     collision::SolidEntity,
-    debug::log,
     entities::{
-        container::PlayerId,
+        bullet::BulletOrigin,
+        container::{EntityContainer, ManId, PlaneId, PlayerId},
         man::ManState,
         plane::{Plane, PlaneMode},
-        player::{self, ControllingEntity},
+        player::{self, ControllingEntity, Player},
+        types::Team,
     },
     game_event::{KillEvent, KillMethod},
     output::ServerOutput,
@@ -70,123 +71,69 @@ impl World {
         let mut actions = vec![];
 
         'men: for (man_id, man) in self.men.get_map_mut() {
-            let controlling = self
-                .players
-                .get_player_controlling(ControllingEntity::Man(*man_id));
+            let controller = controller_of(&mut self.players, ControllingEntity::Man(*man_id));
 
             for (runway_id, runway) in self.runways.get_map_mut() {
-                if man.check_collision(runway) {
-                    // If we're landing on the correct runway, choose a plane
-                    let walking = matches!(
-                        man.get_state(),
-                        ManState::Standing | ManState::WalkingLeft | ManState::WalkingRight
-                    );
-                    let own_runway = *runway.get_team() == man.get_team();
+                if !man.check_collision(runway) {
+                    continue;
+                }
+                let walking = matches!(
+                    man.get_state(),
+                    ManState::Standing | ManState::WalkingLeft | ManState::WalkingRight
+                );
+                let own_runway = *runway.get_team() == man.get_team();
 
-                    if walking && own_runway {
-                        actions.push(Action::ManEnteredRunway(*man_id, *runway_id));
-                        continue 'men;
-                    } else if walking {
+                if walking && own_runway {
+                    actions.push(Action::ManEnteredRunway(*man_id, *runway_id));
+                    continue 'men;
+                } else if walking {
+                    man.set_to_previous_x();
+                } else if !own_runway {
+                    man_dies(&mut actions, *man_id, controller);
+                    continue 'men;
+                }
+            }
+
+            for (_, bunker) in self.bunkers.get_map_mut() {
+                if !man.check_collision(bunker) {
+                    continue;
+                }
+                match man.get_state() {
+                    ManState::Standing | ManState::WalkingLeft | ManState::WalkingRight => {
                         man.set_to_previous_x();
-                    } else if !own_runway {
-                        actions.push(Action::RemoveEntity(RemoveData::Man(*man_id)));
-
-                        if let Some((pid, _)) = controlling {
-                            actions.push(Action::RegisterKill(KillEvent::new(
-                                *pid,
-                                None,
-                                KillMethod::Man,
-                            )));
-                        }
+                    }
+                    _ => {
+                        man_dies(&mut actions, *man_id, controller);
                         continue 'men;
                     }
                 }
             }
 
-            for (_bunker_id, bunker) in self.bunkers.get_map_mut() {
-                if man.check_collision(bunker) {
-                    match man.get_state() {
-                        // If we're walking into a bunker, don't move forward
-                        ManState::Standing | ManState::WalkingLeft | ManState::WalkingRight => {
-                            man.set_to_previous_x();
-                        }
-                        // Otherwise, kill the man
-                        _ => {
-                            actions.push(Action::RemoveEntity(RemoveData::Man(*man_id)));
-
-                            if let Some((pid, _)) = controlling {
-                                actions.push(Action::RegisterKill(KillEvent::new(
-                                    *pid,
-                                    None,
-                                    KillMethod::Man,
-                                )));
-                            }
-                        }
-                    }
-                    continue 'men;
-                }
-            }
-
-            // Man -> Ground
             for (_, ground) in self.grounds.get_map_mut() {
-                if man.check_collision(ground) {
-                    match man.get_state() {
-                        // Update the state to walking only if we're not already doing it.
-                        ManState::Falling | ManState::Parachuting => {
-                            // If we're falling faster than a certain speed, kill player.
-                            if man.die_from_fall() {
-                                if let Some((pid, _)) = controlling {
-                                    actions.push(Action::RegisterKill(KillEvent::new(
-                                        *pid,
-                                        None,
-                                        KillMethod::Man,
-                                    )));
-                                }
-                                actions.push(Action::RemoveEntity(RemoveData::Man(*man_id)));
-                            } else {
-                                man.set_state(ManState::Standing);
-                                let h = man.get_collision_image().unwrap().height();
-                                man.set_client_y(ground.get_collision_bounds().y - h as i16);
-                            }
-                        }
-                        _ => {}
-                    };
-
-                    //log(&format!("man collide ground!").into());
-                    continue 'men;
+                if !man.check_collision(ground) {
+                    continue;
+                }
+                if let ManState::Falling | ManState::Parachuting = man.get_state() {
+                    if man.die_from_fall() {
+                        man_dies(&mut actions, *man_id, controller);
+                        continue 'men;
+                    }
+                    man.set_state(ManState::Standing);
+                    let h = man.get_collision_image().unwrap().height();
+                    man.set_client_y(ground.get_collision_bounds().y - h as i16);
                 }
             }
 
-            // Man -> Coast
             for (_, coast) in self.coasts.get_map_mut() {
-                //
                 if man.check_collision(coast) {
-                    if let Some((pid, _)) = controlling {
-                        actions.push(Action::RegisterKill(KillEvent::new(
-                            *pid,
-                            None,
-                            KillMethod::Man,
-                        )));
-                    }
-                    // just kill me
-                    actions.push(Action::RemoveEntity(RemoveData::Man(*man_id)));
-                    //log(&format!("man collide coast!").into());
+                    man_dies(&mut actions, *man_id, controller);
                     continue 'men;
                 }
             }
 
-            // Man -> Water
-            for (_water_id, water) in self.waters.get_map_mut() {
-                //
+            for (_, water) in self.waters.get_map_mut() {
                 if man.check_collision(water) {
-                    if let Some((pid, _)) = controlling {
-                        actions.push(Action::RegisterKill(KillEvent::new(
-                            *pid,
-                            None,
-                            KillMethod::Man,
-                        )));
-                    }
-                    actions.push(Action::RemoveEntity(RemoveData::Man(*man_id)));
+                    man_dies(&mut actions, *man_id, controller);
                     continue 'men;
                 }
             }
@@ -197,188 +144,152 @@ impl World {
 
     fn collide_bombs(&mut self) -> Vec<Action> {
         let mut actions = vec![];
-
-        // First let's check bomb to bomb collision
-        // We need to iterate over the bomb in a special way for this
-        // To not have two mutable references to the same thing.
+        let mut removed_planes: HashSet<PlaneId> = HashSet::new();
+        let mut removed_men: HashSet<ManId> = HashSet::new();
         let mut bombs: Vec<_> = self.bombs.get_map_mut().iter_mut().collect();
 
         for i in 0..bombs.len() {
-            let (left, right) = bombs.split_at_mut(i + 1);
-            let (bomb_id, bomb) = &mut left[i];
-
-            for (other_id, other) in right.iter_mut() {
-                if !bomb.is_alive() || !other.is_alive() {
-                    continue;
-                }
-                if bomb.check_collision(*other) {
-                    // Remove these bombs from processing further on in the tick.
-                    bomb.kill();
-                    other.kill();
-
-                    blow_up(
-                        &mut actions,
-                        Some(bomb.player_id()),
-                        RemoveData::Bomb(**bomb_id),
-                        bomb.get_x(),
-                        bomb.get_y(),
-                    );
-                    blow_up(
-                        &mut actions,
-                        Some(other.player_id()),
-                        RemoveData::Bomb(**other_id),
-                        other.get_x(),
-                        other.get_y(),
-                    );
-                }
-            }
-        }
-
-        'bombs: for (bomb_id, bomb) in self.bombs.get_map_mut() {
+            let (before, rest) = bombs.split_at_mut(i);
+            let ((bomb_id, bomb), after) = rest.split_first_mut().unwrap();
             if !bomb.is_alive() {
                 continue;
             }
+            let bomb_id = **bomb_id;
+            let owner = bomb.player_id();
+            let origin = bomb.get_origin();
+            let mut first_hit: Option<BombHit> = None;
+
+            for (other_id, other) in before.iter_mut().chain(after.iter_mut()) {
+                if !other.is_alive() || !bomb.check_collision(*other) {
+                    continue;
+                }
+                first_hit.get_or_insert(BombHit::Explode);
+                other.kill();
+                blow_up(
+                    &mut actions,
+                    Some(other.player_id()),
+                    RemoveData::Bomb(**other_id),
+                    other.get_x(),
+                    other.get_y(),
+                );
+            }
 
             for (plane_id, plane) in self.planes.get_map_mut() {
-                if bomb.player_id() != plane.player_id() && bomb.check_collision(plane) {
-                    // log("Bomb collision plane?".to_string());
-
-                    if let Some((owner_id, _)) = self
-                        .players
-                        .get_player_controlling(ControllingEntity::Plane(*plane_id))
-                    {
-                        // Draw plane death icon
+                if *plane_id == origin
+                    || removed_planes.contains(plane_id)
+                    || !bomb.check_collision(plane)
+                {
+                    continue;
+                }
+                first_hit.get_or_insert(BombHit::Explode);
+                if plane.player_id() == owner {
+                    continue;
+                }
+                let falling = plane.get_mode() == PlaneMode::Falling;
+                if let Some(pilot) =
+                    controller_of(&mut self.players, ControllingEntity::Plane(*plane_id))
+                {
+                    if !falling {
                         actions.push(Action::RegisterKill(KillEvent::new(
-                            bomb.player_id(),
-                            Some(*owner_id),
+                            owner,
+                            Some(pilot),
                             KillMethod::Plane,
                         )));
-                        // draw man death icon
-                        actions.push(Action::RegisterKill(KillEvent::new(
-                            bomb.player_id(),
-                            Some(*owner_id),
-                            KillMethod::Man,
-                        )));
                     }
-                    actions.push(Action::RemoveEntity(RemoveData::Plane(*plane_id)));
-                    actions.push(Action::Explosion(ExplosionData {
-                        explosion_owner: Some(plane.player_id()),
-                        team: None,
-                        client_x: plane.get_client_x(),
-                        client_y: plane.get_client_y(),
-                    }));
-
-                    blow_up(
-                        &mut actions,
-                        Some(bomb.player_id()),
-                        RemoveData::Bomb(*bomb_id),
-                        bomb.get_x(),
-                        bomb.get_y(),
-                    );
-                    continue 'bombs;
+                    actions.push(Action::RegisterKill(KillEvent::new(
+                        owner,
+                        Some(pilot),
+                        KillMethod::Man,
+                    )));
                 }
+                removed_planes.insert(*plane_id);
+                blow_up(
+                    &mut actions,
+                    Some(plane.player_id()),
+                    RemoveData::Plane(*plane_id),
+                    plane.get_client_x(),
+                    plane.get_client_y(),
+                );
             }
 
             for (man_id, man) in self.men.get_map_mut() {
-                if bomb.check_collision(man) {
-                    if let Some((owner_id, _)) = self
-                        .players
-                        .get_player_controlling(ControllingEntity::Man(*man_id))
-                    {
-                        let victim = (bomb.player_id() != *owner_id).then_some(*owner_id);
-
-                        actions.push(Action::RegisterKill(KillEvent::new(
-                            bomb.player_id(),
-                            victim,
-                            KillMethod::Man,
-                        )));
-                    }
-                    actions.push(Action::RemoveEntity(RemoveData::Man(*man_id)));
-                    blow_up(
-                        &mut actions,
-                        Some(bomb.player_id()),
-                        RemoveData::Bomb(*bomb_id),
-                        man.get_client_x(),
-                        man.get_client_y(),
-                    );
-                    continue 'bombs;
+                if removed_men.contains(man_id) || !bomb.check_collision(man) {
+                    continue;
                 }
+                first_hit.get_or_insert(BombHit::Explode);
+                if let Some(victim) =
+                    controller_of(&mut self.players, ControllingEntity::Man(*man_id))
+                {
+                    actions.push(Action::RegisterKill(KillEvent::new(
+                        owner,
+                        (owner != victim).then_some(victim),
+                        KillMethod::Man,
+                    )));
+                }
+                removed_men.insert(*man_id);
+                actions.push(Action::RemoveEntity(RemoveData::Man(*man_id)));
             }
 
             for (runway_id, runway) in self.runways.get_map_mut() {
-                if bomb.check_collision(runway) {
-                    if runway.subtract_health(30) {
-                        actions.push(Action::RunwayDestroyed(*runway_id));
-                    }
-                    actions.push(Action::BombHitStructure(
-                        bomb.player_id(),
-                        *runway.get_team(),
-                    ));
-                    blow_up(
-                        &mut actions,
-                        Some(bomb.player_id()),
-                        RemoveData::Bomb(*bomb_id),
-                        bomb.get_x(),
-                        bomb.get_y(),
-                    );
-                    continue 'bombs;
+                if !bomb.check_collision(runway) {
+                    continue;
+                }
+                first_hit.get_or_insert(BombHit::Structure(*runway.get_team()));
+                if runway.subtract_health(30) {
+                    actions.push(Action::RunwayDestroyed(*runway_id));
                 }
             }
 
             for (bunker_id, bunker) in self.bunkers.get_map_mut() {
-                if bomb.check_collision(bunker) {
-                    if bunker.subtract_health(30) {
-                        actions.push(Action::BunkerDestroyed(*bunker_id));
+                if !bomb.check_collision(bunker) {
+                    continue;
+                }
+                first_hit.get_or_insert(BombHit::Structure(*bunker.get_team()));
+                if bunker.subtract_health(30) {
+                    actions.push(Action::BunkerDestroyed(*bunker_id));
+                }
+            }
+
+            if self
+                .grounds
+                .get_map_mut()
+                .iter_mut()
+                .any(|(_, g)| bomb.check_collision(g))
+                || self
+                    .coasts
+                    .get_map_mut()
+                    .iter_mut()
+                    .any(|(_, c)| bomb.check_collision(c))
+            {
+                first_hit.get_or_insert(BombHit::Explode);
+            }
+
+            if self
+                .waters
+                .get_map_mut()
+                .iter_mut()
+                .any(|(_, w)| bomb.check_collision(w))
+            {
+                first_hit.get_or_insert(BombHit::Sink);
+            }
+
+            let Some(hit) = first_hit else {
+                continue;
+            };
+            bomb.kill();
+            match hit {
+                BombHit::Sink => actions.push(Action::RemoveEntity(RemoveData::Bomb(bomb_id))),
+                BombHit::Explode | BombHit::Structure(_) => {
+                    if let BombHit::Structure(team) = hit {
+                        actions.push(Action::BombHitStructure(owner, team));
                     }
-                    actions.push(Action::BombHitStructure(
-                        bomb.player_id(),
-                        *bunker.get_team(),
-                    ));
                     blow_up(
                         &mut actions,
-                        Some(bomb.player_id()),
-                        RemoveData::Bomb(*bomb_id),
+                        Some(owner),
+                        RemoveData::Bomb(bomb_id),
                         bomb.get_x(),
                         bomb.get_y(),
                     );
-                    continue 'bombs;
-                }
-            }
-
-            for (_, ground) in self.grounds.get_map_mut() {
-                if bomb.check_collision(ground) {
-                    //log("Bomb collision ground!?".to_string());
-                    blow_up(
-                        &mut actions,
-                        Some(bomb.player_id()),
-                        RemoveData::Bomb(*bomb_id),
-                        bomb.get_x(),
-                        bomb.get_y(),
-                    );
-                    //log(&format!("bomb collide ground!").into());
-                    continue 'bombs;
-                }
-            }
-
-            for (_, coast) in self.coasts.get_map_mut() {
-                if bomb.check_collision(coast) {
-                    blow_up(
-                        &mut actions,
-                        Some(bomb.player_id()),
-                        RemoveData::Bomb(*bomb_id),
-                        bomb.get_x(),
-                        bomb.get_y(),
-                    );
-                    //log(&format!("bomb collide coast!").into());
-                    continue 'bombs;
-                }
-            }
-
-            for (_, water) in self.waters.get_map_mut() {
-                if bomb.check_collision(water) {
-                    actions.push(Action::RemoveEntity(RemoveData::Bomb(*bomb_id)));
-                    //log(&format!("bomb collide water!").into());
-                    continue 'bombs;
                 }
             }
         }
@@ -388,173 +299,147 @@ impl World {
 
     fn collide_bullets(&mut self) -> Vec<Action> {
         let mut actions = vec![];
-
-        // First let's check bullet to bullet collision
-        // We need to iterate over the bullet in a special way for this
-        // To not have two mutable references to the same thing.
+        let mut removed_men: HashSet<ManId> = HashSet::new();
         let mut bullets: Vec<_> = self.bullets.get_map_mut().iter_mut().collect();
 
         for i in 0..bullets.len() {
-            let (left, right) = bullets.split_at_mut(i + 1);
-            let (bullet_id, bullet) = &mut left[i];
+            let (before, rest) = bullets.split_at_mut(i);
+            let ((bullet_id, bullet), after) = rest.split_first_mut().unwrap();
+            if !bullet.is_alive() {
+                continue;
+            }
+            let bullet_id = **bullet_id;
+            let shooter = bullet.player_id();
+            let origin = bullet.get_origin();
+            let shooter_team = team_of(&self.players, shooter);
+            let mut hit = false;
 
-            for (other_id, other) in right.iter_mut() {
-                if !bullet.is_alive() || !other.is_alive() {
+            for (other_id, other) in before.iter_mut().chain(after.iter_mut()) {
+                if !other.is_alive() || other.expired() || !bullet.check_collision(*other) {
                     continue;
                 }
-                if bullet.check_collision(*other) {
-                    // Remove these bullets from processing further on in the tick.
-                    bullet.kill();
-                    other.kill();
-
-                    let bullet_team = self
-                        .players
-                        .get(bullet.player_id())
-                        .and_then(|p| *p.get_team());
-                    let other_team = self
-                        .players
-                        .get(other.player_id())
-                        .and_then(|p| *p.get_team());
-                    if bullet_team != other_team {
-                        bullet.mark_hit_enemy();
-                        other.mark_hit_enemy();
-                    }
-
-                    actions.push(Action::RemoveEntity(RemoveData::Bullet(**bullet_id)));
-                    actions.push(Action::RemoveEntity(RemoveData::Bullet(**other_id)));
+                hit = true;
+                other.kill();
+                if team_of(&self.players, other.player_id()) != shooter_team {
+                    bullet.mark_hit_enemy();
+                    other.mark_hit_enemy();
                 }
+                actions.push(Action::RemoveEntity(RemoveData::Bullet(**other_id)));
             }
-        }
-
-        'bullets: for (bullet_id, bullet) in self.bullets.get_map_mut() {
-            let shooter_team = self
-                .players
-                .get(bullet.player_id())
-                .and_then(|p| *p.get_team());
 
             for (man_id, man) in self.men.get_map_mut() {
-                if bullet.check_collision(man) {
-                    if shooter_team != Some(man.get_team()) {
-                        bullet.mark_hit_enemy();
+                if removed_men.contains(man_id)
+                    || origin == BulletOrigin::Man(*man_id)
+                    || !bullet.check_collision(man)
+                {
+                    continue;
+                }
+                hit = true;
+                if shooter_team != Some(man.get_team()) {
+                    bullet.mark_hit_enemy();
+                }
+                if let Some(victim) =
+                    controller_of(&mut self.players, ControllingEntity::Man(*man_id))
+                {
+                    if victim != shooter {
+                        actions.push(Action::RegisterKill(KillEvent::new(
+                            shooter,
+                            Some(victim),
+                            KillMethod::Man,
+                        )));
+                        removed_men.insert(*man_id);
+                        actions.push(Action::RemoveEntity(RemoveData::Man(*man_id)));
                     }
-                    if let Some((owner_id, _)) = self
-                        .players
-                        .get_player_controlling(ControllingEntity::Man(*man_id))
-                    {
-                        // Kill Man if the bullet owner isn't the man owner
-                        if bullet.player_id() != *owner_id {
-                            actions.push(Action::RegisterKill(KillEvent::new(
-                                bullet.player_id(),
-                                Some(*owner_id),
-                                KillMethod::Man,
-                            )));
-
-                            actions.push(Action::RemoveEntity(RemoveData::Bullet(*bullet_id)));
-                            actions.push(Action::RemoveEntity(RemoveData::Man(*man_id)));
-                        }
-                    }
-                    continue 'bullets;
                 }
             }
 
             for (plane_id, plane) in self.planes.get_map_mut() {
-                // Don't collide our own bullet with our own plane
-                if bullet.player_id() != plane.player_id()
-                    && plane.get_mode() != PlaneMode::Falling
-                    && bullet.check_collision(plane)
-                {
-                    if shooter_team != Some(plane.get_team()) {
-                        bullet.mark_hit_enemy();
-                    }
-                    let amount = (30.0 * bullet.get_damage_factor()) as i32;
-                    plane.subtract_health(amount);
+                if origin == BulletOrigin::Plane(*plane_id) || !bullet.check_collision(plane) {
+                    continue;
+                }
+                hit = true;
+                if shooter_team != Some(plane.get_team()) {
+                    bullet.mark_hit_enemy();
+                }
+                if plane.player_id() == shooter || plane.get_mode() == PlaneMode::Falling {
+                    continue;
+                }
+                plane.subtract_health((30.0 * bullet.get_damage_factor()) as i32);
 
-                    if plane.health() <= 0 && plane.get_downed_by().is_none() {
-                        if let Some((owner_id, _)) = self
-                            .players
-                            .get_player_controlling(ControllingEntity::Plane(*plane_id))
-                        {
-                            plane.set_downed_by(Some(bullet.player_id()));
-                            actions.push(Action::RegisterKill(KillEvent::new(
-                                bullet.player_id(),
-                                Some(*owner_id),
-                                KillMethod::Plane,
-                            )));
-                        }
+                if plane.health() <= 0 && plane.get_downed_by().is_none() {
+                    if let Some(pilot) =
+                        controller_of(&mut self.players, ControllingEntity::Plane(*plane_id))
+                    {
+                        plane.set_downed_by(Some(shooter));
+                        actions.push(Action::RegisterKill(KillEvent::new(
+                            shooter,
+                            Some(pilot),
+                            KillMethod::Plane,
+                        )));
                     }
-                    actions.push(Action::RemoveEntity(RemoveData::Bullet(*bullet_id)));
-                    continue 'bullets;
                 }
             }
 
             for (bomb_id, bomb) in self.bombs.get_map_mut() {
-                // Don't collide our own bullet with our own plane
-                if bullet.check_collision(bomb) {
-                    let bomb_team = self
-                        .players
-                        .get(bomb.player_id())
-                        .and_then(|p| *p.get_team());
-                    if shooter_team != bomb_team {
-                        bullet.mark_hit_enemy();
-                    }
-                    actions.push(Action::RemoveEntity(RemoveData::Bullet(*bullet_id)));
-
-                    blow_up(
-                        &mut actions,
-                        Some(bomb.player_id()),
-                        RemoveData::Bomb(*bomb_id),
-                        bomb.get_x(),
-                        bomb.get_y(),
-                    );
-
-                    continue 'bullets;
+                if !bomb.is_alive() || !bullet.check_collision(bomb) {
+                    continue;
                 }
+                hit = true;
+                if shooter_team != team_of(&self.players, bomb.player_id()) {
+                    bullet.mark_hit_enemy();
+                }
+                bomb.kill();
+                blow_up(
+                    &mut actions,
+                    Some(bomb.player_id()),
+                    RemoveData::Bomb(*bomb_id),
+                    bomb.get_x(),
+                    bomb.get_y(),
+                );
             }
 
             for (runway_id, runway) in self.runways.get_map_mut() {
-                if bullet.check_collision(runway) {
-                    if shooter_team != Some(*runway.get_team()) {
-                        bullet.mark_hit_enemy();
-                    }
-                    let amount = (4.0 * bullet.get_damage_factor()) as i32;
-                    if runway.subtract_health(amount) {
-                        actions.push(Action::RunwayDestroyed(*runway_id));
-                    }
-                    actions.push(Action::RemoveEntity(RemoveData::Bullet(*bullet_id)));
-                    continue 'bullets;
+                if !bullet.check_collision(runway) {
+                    continue;
+                }
+                hit = true;
+                if shooter_team != Some(*runway.get_team()) {
+                    bullet.mark_hit_enemy();
+                }
+                if runway.subtract_health((4.0 * bullet.get_damage_factor()) as i32) {
+                    actions.push(Action::RunwayDestroyed(*runway_id));
                 }
             }
 
             for (bunker_id, bunker) in self.bunkers.get_map_mut() {
-                if bullet.check_collision(bunker) {
-                    let amount = (3.0 * bullet.get_damage_factor()) as i32;
-                    if bunker.subtract_health(amount) {
-                        actions.push(Action::BunkerDestroyed(*bunker_id));
-                    }
-                    actions.push(Action::RemoveEntity(RemoveData::Bullet(*bullet_id)));
-                    continue 'bullets;
+                if !bullet.check_collision(bunker) {
+                    continue;
+                }
+                hit = true;
+                if bunker.subtract_health((3.0 * bullet.get_damage_factor()) as i32) {
+                    actions.push(Action::BunkerDestroyed(*bunker_id));
                 }
             }
 
-            for (_, ground) in self.grounds.get_map_mut() {
-                if bullet.check_collision(ground) {
-                    actions.push(Action::RemoveEntity(RemoveData::Bullet(*bullet_id)));
-                    continue 'bullets;
-                }
-            }
+            hit |= self
+                .grounds
+                .get_map_mut()
+                .iter_mut()
+                .any(|(_, g)| bullet.check_collision(g))
+                || self
+                    .coasts
+                    .get_map_mut()
+                    .iter_mut()
+                    .any(|(_, c)| bullet.check_collision(c))
+                || self
+                    .waters
+                    .get_map_mut()
+                    .iter_mut()
+                    .any(|(_, w)| bullet.check_collision(w));
 
-            for (_, coast) in self.coasts.get_map_mut() {
-                if bullet.check_collision(coast) {
-                    actions.push(Action::RemoveEntity(RemoveData::Bullet(*bullet_id)));
-                    continue 'bullets;
-                }
-            }
-
-            for (_, water) in self.waters.get_map_mut() {
-                if bullet.check_collision(water) {
-                    actions.push(Action::RemoveEntity(RemoveData::Bullet(*bullet_id)));
-                    continue 'bullets;
-                }
+            if hit || bullet.expired() {
+                bullet.kill();
+                actions.push(Action::RemoveEntity(RemoveData::Bullet(bullet_id)));
             }
         }
 
@@ -563,47 +448,52 @@ impl World {
 
     fn collide_explosions(&mut self) -> Vec<Action> {
         let mut actions = vec![];
-        //
+        let mut removed_planes: HashSet<PlaneId> = HashSet::new();
+        let mut removed_men: HashSet<ManId> = HashSet::new();
 
-        '_explosions: for (_, explosion) in self.explosions.get_map_mut() {
+        for (_, explosion) in self.explosions.get_map_mut() {
             let explosion_owner = explosion.player_id();
 
             for (plane_id, plane) in self.planes.get_map_mut() {
-                if explosion.check_collision(plane) {
-                    let falling = plane.get_mode() == PlaneMode::Falling;
-                    if !falling {
-                        plane.subtract_health(50);
-                    }
-                    if falling || plane.health() <= 0 {
-                        if let Some((owner_id, _)) = self
-                            .players
-                            .get_player_controlling(ControllingEntity::Plane(*plane_id))
-                        {
-                            if let Some(killer) = explosion_owner {
-                                if !falling {
-                                    plane.set_downed_by(Some(killer));
-                                    actions.push(Action::RegisterKill(KillEvent::new(
-                                        killer,
-                                        Some(*owner_id),
-                                        KillMethod::Plane,
-                                    )));
-                                }
-                                actions.push(Action::RegisterKill(KillEvent::new(
-                                    killer,
-                                    Some(*owner_id),
-                                    KillMethod::Man,
-                                )));
-                            }
-                        }
-                        blow_up(
-                            &mut actions,
-                            Some(plane.player_id()),
-                            RemoveData::Plane(*plane_id),
-                            plane.get_client_x(),
-                            plane.get_client_y(),
-                        );
+                if removed_planes.contains(plane_id) || !explosion.check_collision(plane) {
+                    continue;
+                }
+                let falling = plane.get_mode() == PlaneMode::Falling;
+                if falling && explosion_owner == Some(plane.player_id()) {
+                    continue;
+                }
+                if !falling {
+                    plane.subtract_health(50);
+                    if plane.health() > 0 {
+                        continue;
                     }
                 }
+                if let (Some(killer), Some(pilot)) = (
+                    explosion_owner,
+                    controller_of(&mut self.players, ControllingEntity::Plane(*plane_id)),
+                ) {
+                    if !falling {
+                        plane.set_downed_by(Some(killer));
+                        actions.push(Action::RegisterKill(KillEvent::new(
+                            killer,
+                            Some(pilot),
+                            KillMethod::Plane,
+                        )));
+                    }
+                    actions.push(Action::RegisterKill(KillEvent::new(
+                        killer,
+                        Some(pilot),
+                        KillMethod::Man,
+                    )));
+                }
+                removed_planes.insert(*plane_id);
+                blow_up(
+                    &mut actions,
+                    Some(plane.player_id()),
+                    RemoveData::Plane(*plane_id),
+                    plane.get_client_x(),
+                    plane.get_client_y(),
+                );
             }
 
             for (bomb_id, bomb) in self.bombs.get_map_mut() {
@@ -627,44 +517,32 @@ impl World {
             }
 
             for (man_id, man) in self.men.get_map_mut() {
-                if explosion.check_collision(man) {
-                    if let Some(killer) = explosion_owner {
-                        if let Some((owner_id, _)) = self
-                            .players
-                            .get_player_controlling(ControllingEntity::Man(*man_id))
-                        {
-                            let victim = (killer != *owner_id).then_some(*owner_id);
-                            // Draw kill plane icon and kill man icon
-                            actions.push(Action::RegisterKill(KillEvent::new(
-                                killer,
-                                victim,
-                                KillMethod::Man,
-                            )));
-                        }
-                    }
-                    actions.push(Action::RemoveEntity(RemoveData::Man(*man_id)));
+                if removed_men.contains(man_id) || !explosion.check_collision(man) {
+                    continue;
                 }
+                if let (Some(killer), Some(victim)) = (
+                    explosion_owner,
+                    controller_of(&mut self.players, ControllingEntity::Man(*man_id)),
+                ) {
+                    actions.push(Action::RegisterKill(KillEvent::new(
+                        killer,
+                        (killer != victim).then_some(victim),
+                        KillMethod::Man,
+                    )));
+                }
+                removed_men.insert(*man_id);
+                actions.push(Action::RemoveEntity(RemoveData::Man(*man_id)));
             }
 
             for (runway_id, runway) in self.runways.get_map_mut() {
-                if explosion.check_collision(runway) {
-                    // TODO: check for team
-                    // // NOTE: based on original code the damage taken was always 17 on explosion. above todo maybe irrelevant
-                    // damage runway
-                    if runway.subtract_health(17) {
-                        actions.push(Action::RunwayDestroyed(*runway_id));
-                    }
+                if explosion.check_collision(runway) && runway.subtract_health(17) {
+                    actions.push(Action::RunwayDestroyed(*runway_id));
                 }
             }
 
             for (bunker_id, bunker) in self.bunkers.get_map_mut() {
-                if explosion.check_collision(bunker) {
-                    // TODO: check for team
-                    // NOTE: based on original code the damage taken was always 17 on explosion. above todo maybe irrelevant
-                    // damage bunker
-                    if bunker.subtract_health(17) {
-                        actions.push(Action::BunkerDestroyed(*bunker_id));
-                    }
+                if explosion.check_collision(bunker) && bunker.subtract_health(17) {
+                    actions.push(Action::BunkerDestroyed(*bunker_id));
                 }
             }
         }
@@ -686,7 +564,7 @@ impl World {
             let (_, plane) = &mut left[i];
 
             for (_, other) in right.iter_mut() {
-                if plane.check_collision(*other) {
+                if plane.player_id() != other.player_id() && plane.check_collision(*other) {
                     let plane_hit = plane.do_plane_collision();
                     let other_hit = other.do_plane_collision();
 
@@ -710,39 +588,31 @@ impl World {
             }
         }
 
-        // Check plane collision against everything else
+        let mut removed_men: HashSet<ManId> = HashSet::new();
+
         'planes: for (plane_id, plane) in self.planes.get_map_mut() {
             for (man_id, man) in self.men.get_map_mut() {
-                if plane.check_collision(man) {
-                    // Only kill the man if the invincibility grace period has passed.
-                    //log(format!("{}", man.age_ms));
-                    let controlling = self
-                        .players
-                        .get_player_controlling(ControllingEntity::Man(*man_id));
-                    let killer = plane.player_id();
-
-                    // we want to know if we hit ourselves or someone else
-                    let victim: Option<PlayerId> = match controlling {
-                        // If we hit ourselves, we shouldn't display a victim
-                        Some((controlling_player_id, _)) => {
-                            if killer == *controlling_player_id {
-                                None
-                            } else {
-                                Some(*controlling_player_id)
-                            }
-                        }
-                        None => None,
-                    };
-
-                    if man.past_grace_period() {
-                        actions.push(Action::RegisterKill(KillEvent::new(
-                            killer,
-                            victim,
-                            KillMethod::Man,
-                        )));
-                        actions.push(Action::RemoveEntity(RemoveData::Man(*man_id)));
-                    }
+                if removed_men.contains(man_id)
+                    || !man.past_grace_period()
+                    || !plane.check_collision(man)
+                {
+                    continue;
                 }
+                let killer = plane.player_id();
+                let victim = controller_of(&mut self.players, ControllingEntity::Man(*man_id))
+                    .filter(|victim| *victim != killer);
+                actions.push(Action::RegisterKill(KillEvent::new(
+                    killer,
+                    victim,
+                    KillMethod::Man,
+                )));
+                removed_men.insert(*man_id);
+                actions.push(Action::RemoveEntity(RemoveData::Man(*man_id)));
+            }
+
+            let mode = plane.get_mode();
+            if mode == PlaneMode::Landed {
+                continue;
             }
 
             let controlling = self
@@ -750,56 +620,48 @@ impl World {
                 .get_player_controlling(ControllingEntity::Plane(*plane_id));
 
             for (runway_id, runway) in self.runways.get_map_mut() {
-                if plane.check_collision(runway) {
-                    let mode = plane.get_mode();
-                    let runway_id_matches = match plane.get_runway() {
-                        Some(rid) => rid == *runway_id,
-                        None => false,
-                    };
+                if !plane.check_collision(runway) {
+                    continue;
+                }
 
-                    if (mode == PlaneMode::Landing
-                        || mode == PlaneMode::Landed
-                        || mode == PlaneMode::TakingOff)
-                        && runway_id_matches
-                    {
-                        continue 'planes;
+                if mode != PlaneMode::Falling {
+                    let on_own_runway = plane.get_runway() == Some(*runway_id)
+                        && matches!(mode, PlaneMode::Landing | PlaneMode::TakingOff);
+                    if on_own_runway {
+                        continue;
                     }
 
-                    if controlling.is_some() && plane.can_land_on_runway(runway) {
+                    if plane.can_land_on_runway(runway) {
                         if plane.flipped() {
                             plane.set_angle(PI);
                         } else {
                             plane.set_angle(0.0);
                         }
-
-                        log(format!("plane can land on runway").into());
                         plane.set_client_y(runway.get_landable_y() - plane.get_bottom_height());
 
-                        // We want to do the team check before is_facing_runway
-                        // because is_facing_runway makes a plane reservation if possible to land,
-                        // so we only want to do that if this is our team's runway
                         if plane.get_team() == *runway.get_team()
                             && plane.is_facing_runway_correctly(runway)
                         {
-                            log(format!("plane facing runway correctly").into());
                             plane.set_mode(PlaneMode::Landing);
                             plane.set_runway(Some(*runway_id));
                         }
-                    } else {
-                        if runway.subtract_health(17) {
-                            actions.push(Action::RunwayDestroyed(*runway_id));
-                        }
-                        kill_plane_and_give_credit(&mut actions, plane, &controlling);
-                        blow_up(
-                            &mut actions,
-                            Some(plane.player_id()),
-                            RemoveData::Plane(*plane_id),
-                            plane.get_client_x(),
-                            plane.get_client_y(),
-                        );
+                        continue;
                     }
-                    continue 'planes;
+
+                    if runway.subtract_health(17) {
+                        actions.push(Action::RunwayDestroyed(*runway_id));
+                    }
                 }
+
+                kill_plane_and_give_credit(&mut actions, plane, &controlling);
+                blow_up(
+                    &mut actions,
+                    Some(plane.player_id()),
+                    RemoveData::Plane(*plane_id),
+                    plane.get_client_x(),
+                    plane.get_client_y(),
+                );
+                continue 'planes;
             }
 
             for (_, bunker) in self.bunkers.get_map_mut() {
@@ -932,4 +794,32 @@ pub fn blow_up(
         client_x: explosion_x,
         client_y: explosion_y,
     }));
+}
+
+enum BombHit {
+    Explode,
+    Structure(Team),
+    Sink,
+}
+
+fn controller_of(
+    players: &mut EntityContainer<Player, PlayerId>,
+    entity: ControllingEntity,
+) -> Option<PlayerId> {
+    players.get_player_controlling(entity).map(|(id, _)| *id)
+}
+
+fn team_of(players: &EntityContainer<Player, PlayerId>, player_id: PlayerId) -> Option<Team> {
+    players.get(player_id).and_then(|p| *p.get_team())
+}
+
+fn man_dies(actions: &mut Vec<Action>, man_id: ManId, controller: Option<PlayerId>) {
+    if let Some(pid) = controller {
+        actions.push(Action::RegisterKill(KillEvent::new(
+            pid,
+            None,
+            KillMethod::Man,
+        )));
+    }
+    actions.push(Action::RemoveEntity(RemoveData::Man(man_id)));
 }

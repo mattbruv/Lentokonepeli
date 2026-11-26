@@ -74,7 +74,7 @@ impl Man {
     }
 
     pub fn past_grace_period(&self) -> bool {
-        self.age_ms > INVULNERABILITY_TIME
+        self.age_ms >= INVULNERABILITY_TIME
     }
 
     pub fn tick(
@@ -104,7 +104,6 @@ impl Man {
     }
 
     pub fn set_x(&mut self, x: i32) -> () {
-        self.previous_x = self.x;
         self.x = x;
         self.client_x.set((x / RESOLUTION) as i16);
     }
@@ -198,6 +197,7 @@ impl Man {
         actions: &mut Vec<Action>,
     ) {
         self.state.set(ManState::Standing);
+        self.previous_x = self.x;
 
         if keyboard.left {
             self.set_x(self.x - 100);
@@ -217,11 +217,6 @@ impl Man {
             }
         }
 
-        if keyboard.shift {
-            self.blow_me_up(my_owner, actions, man_id);
-        }
-
-        // If we're shooting
         if keyboard.ctrl && self.last_shot_ms >= SHOOT_DELAY_MS {
             self.last_shot_ms = 0;
 
@@ -229,6 +224,8 @@ impl Man {
                 man_ent_id: man_id,
                 player_id: my_owner,
             }));
+        } else if keyboard.shift {
+            self.blow_me_up(my_owner, actions, man_id);
         }
     }
 

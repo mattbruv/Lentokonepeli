@@ -77,7 +77,8 @@ pub fn rotate_image(img: &RgbaImage, angle: f64, flip_vertically: bool) -> RgbaI
             if !in_bounds(source(x as f64 + 0.5, row_y)) {
                 continue;
             }
-            if sample_x >= 0 && sample_y >= 0 && sample_x < width as i64 && sample_y < height as i64 {
+            if sample_x >= 0 && sample_y >= 0 && sample_x < width as i64 && sample_y < height as i64
+            {
                 rotated.put_pixel(x, y, *img.get_pixel(sample_x as u32, sample_y as u32));
             }
         }
