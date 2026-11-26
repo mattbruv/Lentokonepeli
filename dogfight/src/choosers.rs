@@ -21,15 +21,12 @@ enum ChooserRequest {
 
 impl World {
     fn team_runways(&self, team: Team) -> Vec<RunwayId> {
-        let mut runways: Vec<(RunwayId, i16)> = self
-            .runways
+        self.runways
             .get_map()
             .iter()
             .filter(|(_, runway)| *runway.get_team() == team && runway.is_alive())
-            .map(|(id, runway)| (*id, runway.get_client_x()))
-            .collect();
-        runways.sort_by_key(|(_, x)| *x);
-        runways.into_iter().map(|(id, _)| id).collect()
+            .map(|(id, _)| *id)
+            .collect()
     }
 
     pub(crate) fn tick_choosers(&mut self) -> Vec<ServerOutput> {
@@ -111,7 +108,7 @@ impl World {
                             }
                         }
 
-                        if enter_pressed {
+                        if player.hold_takeoff(enter_pressed, keys.enter) {
                             if let Some(runway_id) = player.get_selected_runway() {
                                 requests.push(ChooserRequest::Takeoff(
                                     player.get_guid().clone(),

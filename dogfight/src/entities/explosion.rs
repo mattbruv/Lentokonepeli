@@ -92,16 +92,15 @@ impl Explosion {
         // as the original seemed to be designed to do.
         self.age_ms += 10;
 
+        if self.age_ms >= TOTAL_PHASES * PHASE_TIME_MS {
+            self.do_collision = false;
+            actions.push(Action::RemoveEntity(RemoveData::Explosion(my_id)));
+            return actions;
+        }
+
         let previous_phase = *self.phase.get();
         self.phase.set((self.age_ms / PHASE_TIME_MS) as u8);
-
-        // If the phase just turned to 3, do collision once.
         self.do_collision = *self.phase.get() == 3 && previous_phase != 3;
-
-        // Mark this explosion to be destroyed if older than max phase.
-        if self.age_ms > TOTAL_PHASES * PHASE_TIME_MS {
-            actions.push(Action::RemoveEntity(RemoveData::Explosion(my_id)));
-        }
 
         actions
     }

@@ -205,7 +205,17 @@ impl World {
                 }
                 PlayerCommand::RemovePlayer => {
                     if let Some((id, _)) = self.get_player_from_guid(&guid) {
-                        if let Some(player) = self.players.remove(*id) {
+                        let id = *id;
+                        match self.players.get(id).and_then(|p| p.get_controlling()) {
+                            Some(ControllingEntity::Plane(plane_id)) => {
+                                self.planes.remove(plane_id);
+                            }
+                            Some(ControllingEntity::Man(man_id)) => {
+                                self.men.remove(man_id);
+                            }
+                            _ => {}
+                        }
+                        if let Some(player) = self.players.remove(id) {
                             game_output.push(ServerOutput::PlayerLeave(player.get_name()));
                         }
                     }

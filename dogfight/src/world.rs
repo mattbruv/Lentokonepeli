@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use crate::{
     entities::{
         background_item::BackgroundItem,
@@ -187,7 +189,21 @@ impl World {
     }
 
     fn recycle_freed_ids(&mut self) {
-        self.players.recycle_freed_ids();
+        let referenced: HashSet<PlayerId> = self
+            .bullets
+            .get_map()
+            .values()
+            .map(|b| b.player_id())
+            .chain(self.bombs.get_map().values().map(|b| b.player_id()))
+            .chain(
+                self.explosions
+                    .get_map()
+                    .values()
+                    .filter_map(|e| e.player_id()),
+            )
+            .collect();
+        self.players
+            .recycle_freed_ids_except(|id| referenced.contains(id));
         self.planes.recycle_freed_ids();
         self.men.recycle_freed_ids();
         self.background_items.recycle_freed_ids();

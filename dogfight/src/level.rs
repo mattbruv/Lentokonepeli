@@ -324,7 +324,7 @@ fn parse_layer(layer: &str) -> Vec<LevelObject> {
                     ));
                 }
                 MapPiece::RunwayCentralsLeft => {
-                    let img = get_image(RUNWAY2);
+                    let img = get_image(RUNWAY);
                     objects.push(LevelObject::Runway(
                         Point {
                             x: i + j * 100 + 50 - (img.width() / 2) as i32,
@@ -335,7 +335,7 @@ fn parse_layer(layer: &str) -> Vec<LevelObject> {
                     ))
                 }
                 MapPiece::RunwayCentralsRight => {
-                    let img = get_image(RUNWAY);
+                    let img = get_image(RUNWAY2);
                     objects.push(LevelObject::Runway(
                         Point {
                             x: i + j * 100 + 50 - (img.width() / 2) as i32,
@@ -346,7 +346,7 @@ fn parse_layer(layer: &str) -> Vec<LevelObject> {
                     ))
                 }
                 MapPiece::RunwayAlliesLeft => {
-                    let img = get_image(RUNWAY2);
+                    let img = get_image(RUNWAY);
                     objects.push(LevelObject::Runway(
                         Point {
                             x: i + j * 100 + 50 - (img.width() / 2) as i32,
@@ -357,7 +357,7 @@ fn parse_layer(layer: &str) -> Vec<LevelObject> {
                     ))
                 }
                 MapPiece::RunwayAlliesRight => {
-                    let img = get_image(RUNWAY);
+                    let img = get_image(RUNWAY2);
                     objects.push(LevelObject::Runway(
                         Point {
                             x: i + j * 100 + 50 - (img.width() / 2) as i32,

@@ -21,7 +21,10 @@ pub fn direction_to_radians(direction: u8) -> f64 {
     direction as f64 * TAU / (DIRECTIONS as f64)
 }
 
+pub fn radians_to_signed_direction(angle_radians: f64) -> i32 {
+    (angle_radians * (DIRECTIONS as f64) / TAU) as i32
+}
+
 pub fn radians_to_direction(angle_radians: f64) -> u8 {
-    let direction = angle_radians * (DIRECTIONS as f64) / TAU;
-    direction as u8
+    radians_to_signed_direction(angle_radians) as u8
 }

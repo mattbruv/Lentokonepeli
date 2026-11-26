@@ -131,6 +131,7 @@ pub struct Player {
     keys: PlayerKeyboard,
     previous_keys: PlayerKeyboard,
     chooser_timer: u32,
+    takeoff_held: bool,
 
     guid: Property<PlayerGuid>,
     name: Property<String>,
@@ -172,6 +173,7 @@ impl Player {
             keys: PlayerKeyboard::new(),
             previous_keys: PlayerKeyboard::new(),
             chooser_timer: CHOOSER_KEY_DELAY_TICKS,
+            takeoff_held: false,
             guid: Property::new(guid),
             name: Property::new(name),
             clan: Property::new(clan),
@@ -259,6 +261,11 @@ impl Player {
     pub fn advance_chooser_timer(&mut self) -> bool {
         self.chooser_timer = self.chooser_timer.saturating_add(1);
         self.chooser_timer > CHOOSER_KEY_DELAY_TICKS
+    }
+
+    pub fn hold_takeoff(&mut self, enter_pressed: bool, enter_down: bool) -> bool {
+        self.takeoff_held = enter_down && (self.takeoff_held || enter_pressed);
+        self.takeoff_held
     }
 
     pub fn reset_chooser_timer(&mut self) {
@@ -378,6 +385,7 @@ impl Player {
 
         if ticks == 0 {
             self.respawn_ticks = None;
+            self.next_respawn = RespawnType::Default;
             self.respawn_seconds.set(0);
             self.state.set(PlayerState::ChoosingRunway);
         } else {

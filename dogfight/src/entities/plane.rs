@@ -187,15 +187,15 @@ impl Plane {
             total_ammo: 0,
             total_health: 0,
 
-            last_flip_ms: 0,
+            last_flip_ms: i32::MAX,
             flip_delay_ms: 200,
 
-            last_bomb_ms: 0,
+            last_bomb_ms: i32::MAX,
             bomb_delay_ms: 500,
 
-            last_shot_ms: 0,
+            last_shot_ms: i32::MAX,
 
-            last_motor_on_ms: 0,
+            last_motor_on_ms: i32::MAX,
             motor_on_delay_ms: 200,
 
             takeoff_counter: 0,
@@ -262,10 +262,10 @@ impl Plane {
         // log(&format!("ticking plane! {:?}", self.mode.get()).into());
 
         // Add a tick to our counters
-        self.last_bomb_ms += 10;
-        self.last_flip_ms += 10;
-        self.last_shot_ms += 10;
-        self.last_motor_on_ms += 10;
+        self.last_bomb_ms = self.last_bomb_ms.saturating_add(10);
+        self.last_flip_ms = self.last_flip_ms.saturating_add(10);
+        self.last_shot_ms = self.last_shot_ms.saturating_add(10);
+        self.last_motor_on_ms = self.last_motor_on_ms.saturating_add(10);
 
         match self.mode.get() {
             PlaneMode::Flying => self.tick_flying(my_id, keyboard, &mut actions),
@@ -338,12 +338,8 @@ impl Plane {
     }
 
     fn park(&mut self, runway: &Runway) -> () {
-        log(format!("start_x {}", runway.get_start_x()).into());
-        self.set_client_x(runway.get_start_x());
-
-        log(format!("start_y {}", runway.get_start_y()).into());
+        self.set_client_x(runway.get_start_x() + self.half_canvas_width() as i16);
         self.set_client_y(runway.get_start_y() - self.get_bottom_height());
-        log(format!("bottom_height {}", self.get_bottom_height()).into());
 
         if runway.get_facing() == Facing::Left {
             self.set_angle(PI);
@@ -430,8 +426,8 @@ impl Plane {
         }
 
         if let Some((runway_id, runway)) = maybe_runway {
-            let runway_x = runway.get_start_x();
-            let plane_x = self.get_client_x();
+            let runway_x = runway.get_start_x() as i32;
+            let plane_x = self.java_x() / RESOLUTION;
             let landed = match runway.get_facing() {
                 Facing::Right => plane_x <= runway_x,
                 Facing::Left => plane_x >= runway_x,
@@ -469,35 +465,17 @@ impl Plane {
             }
 
             // PLANE_MOTOR = 40 = down
-            if keys.down && self.last_motor_on_ms >= self.motor_on_delay_ms && self.fuel_counter > 0
+            if keys.down && self.last_motor_on_ms > self.motor_on_delay_ms && self.fuel_counter > 0
             {
                 self.motor_on.set(!self.motor_on.get());
                 self.last_motor_on_ms = 0;
             }
 
-            // Spawn man if jumping out of plane
-            // Or force plan abandon if out of bounds
-            let is_out_of_bounds = *self.client_x.get() > 20_000 || *self.client_x.get() < -20_000;
-
-            // Jump out of plane
-            if keys.space || is_out_of_bounds {
-                self.spawn_man_action(*self.team.get(), my_id, actions);
-
-                self.mode.set(PlaneMode::Falling);
-
-                // Kill plane
-                self.set_health(0);
-                actions.push(Action::RegisterKill(KillEvent::new(
-                    self.player_id,
-                    None,
-                    KillMethod::Plane,
-                )));
-            }
+            // If we are flying within bounds
         }
 
-        // If we are flying within bounds
-        if *self.motor_on.get() && (self.x / RESOLUTION < 20_000) && (self.x / RESOLUTION > -20_000)
-        {
+        let java_x = self.java_x() / RESOLUTION;
+        if *self.motor_on.get() && java_x < 20_000 && java_x > -20_000 {
             self.drain_fuel();
             self.accelerate();
         }
@@ -526,44 +504,37 @@ impl Plane {
 
         if let Some(keys) = keyboard {
             // Shoot bullets
-            if keys.ctrl && (self.last_shot_ms >= self.get_shoot_delay()) && self.total_ammo > 0 {
+            if keys.ctrl && (self.last_shot_ms > self.get_shoot_delay()) && self.total_ammo > 0 {
                 self.last_shot_ms = 0;
                 let new_ammo_amount = self.total_ammo - 1;
 
-                let x = *self.client_x.get();
-                let y = *self.client_y.get();
-                let img = self.get_image();
-                let w = img.width() as i16;
-                let h = img.height() as i16;
-
+                let half_w = self.half_canvas_width();
+                let half_h = self.half_canvas_height();
                 let d3 = self.angle;
-                let i3: i16 = x + ((d3.cos() * ((w / 2 + 2) as f64)) as i16);
-                let i4: i16 = y + ((d3.sin() * ((h / 2 + 2) as f64)) as i16);
-
-                /*
-                i3 = (int)(this.x + this.w / 2 * 100 + Math.cos(d3) * (this.w / 2 + 2) * 100.0D) / 100;
-                i4 = (int)(this.y + this.h / 2 * 100 + Math.sin(d3) * (this.h / 2 + 2) * 100.0D) / 100;
-                */
+                let i3 = ((self.java_x() + half_w * RESOLUTION) as f64
+                    + d3.cos() * (half_w + 2) as f64 * 100.0) as i32
+                    / RESOLUTION;
+                let i4 = ((self.java_y() + half_h * RESOLUTION) as f64
+                    + d3.sin() * (half_h + 2) as f64 * 100.0) as i32
+                    / RESOLUTION;
                 self.set_ammo(new_ammo_amount);
 
                 actions.push(Action::SpawnBullet(Bullet::new(
                     self.player_id,
                     BulletOrigin::Plane(*my_id),
-                    i3,
-                    i4,
+                    i3 as i16,
+                    i4 as i16,
                     self.angle,
                     self.speed / 100.0,
                 )));
             }
 
             // Bombs away
-            if keys.shift && self.last_bomb_ms >= self.bomb_delay_ms && *self.total_bombs.get() > 0
-            {
+            if keys.shift && self.last_bomb_ms > self.bomb_delay_ms && *self.total_bombs.get() > 0 {
                 self.last_bomb_ms = 0;
                 self.total_bombs.set(self.total_bombs.get() - 1);
 
-                let x = *self.client_x.get();
-                let y = *self.client_y.get();
+                let (x, y) = self.get_center();
 
                 // log(format!("angle: {}", self.angle));
 
@@ -575,7 +546,17 @@ impl Plane {
                     self.angle,
                     self.speed / 100.0,
                 )));
-                //
+            }
+
+            let java_x = self.java_x() / RESOLUTION;
+            if keys.space || java_x > 20_000 || java_x < -20_000 {
+                self.spawn_man_action(*self.team.get(), my_id, actions);
+                self.mode.set(PlaneMode::Falling);
+                actions.push(Action::RegisterKill(KillEvent::new(
+                    self.player_id,
+                    None,
+                    KillMethod::Plane,
+                )));
             }
         }
     }
@@ -724,7 +705,7 @@ impl Plane {
     }
 
     pub fn can_land_on_runway(&self, runway: &Runway) -> bool {
-        let x = *self.client_x.get();
+        let x = (self.java_x() / RESOLUTION) as i16;
 
         if *self.mode.get() == PlaneMode::Landing {
             return false;
@@ -768,10 +749,33 @@ impl Plane {
         self.mode.set(mode);
     }
 
+    fn half_canvas_width(&self) -> i32 {
+        (self.get_rotateable_image().width() / 2) as i32
+    }
+
+    fn half_canvas_height(&self) -> i32 {
+        (self.get_rotateable_image().height() / 2) as i32
+    }
+
+    fn java_x(&self) -> i32 {
+        self.x - self.half_canvas_width() * RESOLUTION
+    }
+
+    fn java_y(&self) -> i32 {
+        self.y - self.half_canvas_height() * RESOLUTION
+    }
+
+    pub(crate) fn get_center(&self) -> (i16, i16) {
+        (
+            (self.java_x() / RESOLUTION + self.half_canvas_width()) as i16,
+            (self.java_y() / RESOLUTION + self.half_canvas_height()) as i16,
+        )
+    }
+
     fn bounds_for_image(&self, img: &RgbaImage) -> BoundingBox {
         BoundingBox {
-            x: (self.x / RESOLUTION) as i16 - (img.width() / 2) as i16,
-            y: (self.y / RESOLUTION) as i16 - (img.height() / 2) as i16,
+            x: (self.java_x() / RESOLUTION) as i16,
+            y: (self.java_y() / RESOLUTION) as i16,
             width: img.width() as i16,
             height: img.height() as i16,
         }
@@ -939,7 +943,7 @@ impl Plane {
 
     fn get_height_multiplier(&self) -> f64 {
         let mut multiplier =
-            (((self.get_y() / RESOLUTION) as i16) - (MAX_Y + self.get_max_y())) as f64 / 150.0;
+            ((self.java_y() / RESOLUTION) as i16 - (MAX_Y + self.get_max_y())) as f64 / 150.0;
         if multiplier > 1.0 {
             multiplier = 1.0;
         }
@@ -1045,10 +1049,6 @@ impl Plane {
             PlaneType::Salmson => 50.0,
             PlaneType::Sopwith => 50.0,
         }
-    }
-
-    fn get_y(&self) -> i32 {
-        self.y
     }
 
     fn get_rotateable_image(&self) -> &RgbaImage {

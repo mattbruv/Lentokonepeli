@@ -1,10 +1,11 @@
 use crate::inspect::BulletInspect;
 use dogfight_macros::Networked;
 use image::RgbaImage;
+use std::f64::consts::TAU;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
-    math::{direction_to_radians, radians_to_direction},
+    math::radians_to_signed_direction,
     network::{property::Property, EntityProperties, NetworkedEntity},
     world::RESOLUTION,
 };
@@ -48,8 +49,9 @@ impl Bullet {
         angle: f64,
         speed: f64,
     ) -> Bullet {
-        let dir = radians_to_direction(angle);
-        let angle = direction_to_radians(dir);
+        let signed_dir = radians_to_signed_direction(angle);
+        let dir = signed_dir as u8;
+        let angle = signed_dir as f64 * TAU / 256.0;
         let mut bullet = Bullet {
             player_id: owner,
             origin,

@@ -105,12 +105,6 @@ impl Bomb {
 
         // update angle/direction
         self.angle = self.y_speed.atan2(self.x_speed);
-        // For some reason the rust version is returning negative angles with atan2
-        // and the java version doesn't, maybe the java version y coords are flipped?
-        // Either way, ChatGPT says this is the way to flip it and it seems to work
-        if self.angle < 0.0 {
-            self.angle += std::f64::consts::TAU; // stop negative angle values
-        }
         self.direction.set(radians_to_direction(self.angle));
     }
 

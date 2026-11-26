@@ -180,7 +180,7 @@ impl Man {
         }
 
         // If we're shooting
-        if keyboard.ctrl && self.last_shot_ms >= SHOOT_DELAY_MS {
+        if keyboard.ctrl && self.last_shot_ms > SHOOT_DELAY_MS {
             self.last_shot_ms = 0;
             actions.push(Action::ManShootBullet(ManShootData {
                 player_id: my_owner,
@@ -217,7 +217,7 @@ impl Man {
             }
         }
 
-        if keyboard.ctrl && self.last_shot_ms >= SHOOT_DELAY_MS {
+        if keyboard.ctrl && self.last_shot_ms > SHOOT_DELAY_MS {
             self.last_shot_ms = 0;
 
             actions.push(Action::ManShootBullet(ManShootData {

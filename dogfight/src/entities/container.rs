@@ -138,6 +138,13 @@ where
         self.ids.append(&mut self.freed_ids);
     }
 
+    pub fn recycle_freed_ids_except(&mut self, held: impl Fn(&EntId) -> bool) {
+        let (kept, mut recycled): (Vec<EntId>, Vec<EntId>) =
+            self.freed_ids.drain(..).partition(|id| held(id));
+        self.ids.append(&mut recycled);
+        self.freed_ids = kept;
+    }
+
     pub fn get_mut(&mut self, id: EntId) -> Option<&mut T> {
         self.map.get_mut(&id)
     }

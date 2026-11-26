@@ -155,13 +155,9 @@ impl Runway {
     }
 
     pub fn get_start_x(&self) -> i16 {
-        // original offsets are 15 for right facing, and 230 for left facing,
-        // but these don't seem quite right, at least the left facing one.
-        // probably just a difference between how planes X,Y are calculated
-        // in the original vs this one.
         match self.facing.get() {
-            Facing::Right => self.client_x.get() + 20,
-            Facing::Left => self.client_x.get() + 255,
+            Facing::Right => self.client_x.get() + 15,
+            Facing::Left => self.client_x.get() + 230,
         }
     }
 

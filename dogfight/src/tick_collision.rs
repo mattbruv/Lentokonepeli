@@ -207,8 +207,8 @@ impl World {
                     &mut actions,
                     Some(plane.player_id()),
                     RemoveData::Plane(*plane_id),
-                    plane.get_client_x(),
-                    plane.get_client_y(),
+                    plane.get_center().0,
+                    plane.get_center().1,
                 );
             }
 
@@ -491,8 +491,8 @@ impl World {
                     &mut actions,
                     Some(plane.player_id()),
                     RemoveData::Plane(*plane_id),
-                    plane.get_client_x(),
-                    plane.get_client_y(),
+                    plane.get_center().0,
+                    plane.get_center().1,
                 );
             }
 
@@ -658,8 +658,8 @@ impl World {
                     &mut actions,
                     Some(plane.player_id()),
                     RemoveData::Plane(*plane_id),
-                    plane.get_client_x(),
-                    plane.get_client_y(),
+                    plane.get_center().0,
+                    plane.get_center().1,
                 );
                 continue 'planes;
             }
@@ -671,8 +671,8 @@ impl World {
                         &mut actions,
                         Some(plane.player_id()),
                         RemoveData::Plane(*plane_id),
-                        plane.get_client_x(),
-                        plane.get_client_y(),
+                        plane.get_center().0,
+                        plane.get_center().1,
                     );
 
                     continue 'planes;
@@ -686,8 +686,8 @@ impl World {
                         &mut actions,
                         Some(plane.player_id()),
                         RemoveData::Plane(*plane_id),
-                        plane.get_client_x(),
-                        plane.get_client_y(),
+                        plane.get_center().0,
+                        plane.get_center().1,
                     );
                     continue 'planes;
                 }
@@ -700,8 +700,8 @@ impl World {
                         &mut actions,
                         Some(plane.player_id()),
                         RemoveData::Plane(*plane_id),
-                        plane.get_client_x(),
-                        plane.get_client_y(),
+                        plane.get_center().0,
+                        plane.get_center().1,
                     );
                     continue 'planes;
                 }
