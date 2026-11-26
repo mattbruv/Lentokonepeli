@@ -14,7 +14,6 @@ import {
 } from "@mantine/core";
 import {
     IconDeviceFloppy,
-    IconFileDownload,
     IconMap,
     IconRefresh,
     IconPlayerSkipForward,
@@ -66,7 +65,6 @@ type HostMenuProps = {
     onEndRound: () => void;
     gameSettings: GameSettings;
     onChangeGame: (settings: GameSettings) => void;
-    onSaveReplay: () => void;
     hostGuid: string;
     playerData: PlayerProperties[];
     onKickPlayer: (guid: string) => void;
@@ -138,7 +136,7 @@ export function HostMenu(props: HostMenuProps) {
     );
 }
 
-function GameTab({ lobbyName, onLobbyNameChange, worldState, onEndRound, onSaveReplay }: HostMenuProps) {
+function GameTab({ lobbyName, onLobbyNameChange, worldState, onEndRound }: HostMenuProps) {
     const intl = useIntl();
     const [draft, setDraft] = useState(lobbyName);
 
@@ -216,18 +214,6 @@ function GameTab({ lobbyName, onLobbyNameChange, worldState, onEndRound, onSaveR
                     )}
                 </span>
             </Stack>
-
-            <Button
-                onClick={onSaveReplay}
-                color="sky"
-                fullWidth
-                rightSection={<IconFileDownload size={18} stroke={2.4} />}
-            >
-                <FormattedMessage
-                    defaultMessage={"Save Replay File"}
-                    description={"Button text for button which saves replay file"}
-                />
-            </Button>
         </Stack>
     );
 }

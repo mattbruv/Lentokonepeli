@@ -1,6 +1,6 @@
 import { Button, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconSettings } from "@tabler/icons-react";
+import { IconFileDownload, IconSettings } from "@tabler/icons-react";
 import saveAs from "file-saver";
 import { useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
@@ -86,7 +86,6 @@ export function Host({ settings, recordGame, lobbyName, initialBots }: HostProps
                     gameMode: host.gameSettings.gameMode,
                 }}
                 onChangeGame={changeGame}
-                onSaveReplay={saveReplay}
                 hostGuid={host.hostGuid}
                 playerData={host.playerData}
                 onKickPlayer={host.kickPlayer}
@@ -118,6 +117,17 @@ export function Host({ settings, recordGame, lobbyName, initialBots }: HostProps
                         <Stack gap="lg">
                             {host.lobbyName && <div className={classes.lobbyName}>{host.lobbyName}</div>}
                             <RoomCode code={host.roomCode} />
+                            <Button
+                                onClick={saveReplay}
+                                color="copper"
+                                fullWidth
+                                rightSection={<IconFileDownload stroke={2.4} />}
+                            >
+                                <FormattedMessage
+                                    defaultMessage={"Save Replay File"}
+                                    description={"Button text for button which saves replay file"}
+                                />
+                            </Button>
                             <Button
                                 onClick={menu.open}
                                 color="copper"
