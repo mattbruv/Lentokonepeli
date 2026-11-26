@@ -9,6 +9,7 @@ const SKY_Y = -500;
 const MASK_BOUNDS_ALPHA = 0.4;
 const TERRAIN_FILL_ALPHA = 0.25;
 const INSPECT_HIGHLIGHT_COLOR = "#ffffff";
+const MAX_RESOLUTION = 4;
 
 export class RenderClient {
     // https://pixijs.download/v7.x/docs/index.html
@@ -71,6 +72,28 @@ export class RenderClient {
         this.debugCollision.zIndex = 999;
         this.viewport.addChild(this.inspectHighlight);
         this.inspectHighlight.zIndex = 1000;
+
+        this.matchResolutionToDisplaySize();
+    }
+
+    private matchResolutionToDisplaySize() {
+        const observer = new ResizeObserver(() => {
+            const renderer = this.app.renderer;
+            if (!renderer) {
+                observer.disconnect();
+                return;
+            }
+            const displayScale = this.app.view.clientWidth / VIEW_WIDTH;
+            if (!displayScale) return;
+            const resolution = Math.min(
+                MAX_RESOLUTION,
+                Math.max(1, Math.ceil(displayScale * window.devicePixelRatio - 0.05)),
+            );
+            if (resolution === renderer.resolution) return;
+            renderer.resolution = resolution;
+            renderer.resize(VIEW_WIDTH, VIEW_HEIGHT);
+        });
+        observer.observe(this.app.view);
     }
 
     public enableCameraControls({

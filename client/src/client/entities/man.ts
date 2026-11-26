@@ -2,7 +2,7 @@ import { ManProperties } from "dogfight-types/ManProperties";
 import { Team } from "dogfight-types/Team";
 import * as PIXI from "pixi.js";
 import { scheduler, TaskFn } from "../../gameLoop";
-import { DrawLayer, TeamColor } from "../constants";
+import { DrawLayer, MAX_ZOOM, TeamColor } from "../constants";
 import { Stats } from "../hud";
 import { RadarObject, RadarObjectType } from "../radar";
 import { Textures } from "../textures";
@@ -39,6 +39,7 @@ export class Man implements Entity<ManProperties>, Followable, RadarEnabled {
             fontFamily: "arial",
             fontSize: 10,
         });
+        this.nameText.resolution = MAX_ZOOM;
         this.nameContainer = new PIXI.Container();
         this.nameContainer.addChild(this.nameText);
         this.nameContainer.zIndex = DrawLayer.Name;

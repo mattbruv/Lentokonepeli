@@ -3,7 +3,7 @@ import { PlaneType } from "dogfight-types/PlaneType";
 import { Team } from "dogfight-types/Team";
 import * as PIXI from "pixi.js";
 import { TaskFn, scheduler } from "../../gameLoop";
-import { DrawLayer, TeamColor } from "../constants";
+import { DrawLayer, MAX_ZOOM, TeamColor } from "../constants";
 import { directionToRadians } from "../helpers";
 import { Stats } from "../hud";
 import { RadarObject, RadarObjectType } from "../radar";
@@ -98,6 +98,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
             fontFamily: "arial",
             fontSize: 10,
         });
+        this.nameText.resolution = MAX_ZOOM;
         this.nameContainer.addChild(this.nameText);
 
         this.planeContainer = new PIXI.Container();

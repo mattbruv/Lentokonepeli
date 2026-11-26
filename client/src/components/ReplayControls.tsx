@@ -24,7 +24,7 @@ import {
     TERRAIN_COLLISION_COLORS,
     TERRAIN_COLLISION_KINDS,
 } from "../client/collisionColors";
-import { MAX_ZOOM, MIN_ZOOM } from "../client/DogfightClient";
+import { MAX_ZOOM, MIN_ZOOM } from "../client/constants";
 import { ticksToHHMMSS } from "../helpers";
 import { REPLAY_SPEEDS, ReplayCallbacks, ReplayInfo, ReplaySpeed } from "../hooks/useReplay";
 import classes from "./ReplayControls.module.css";

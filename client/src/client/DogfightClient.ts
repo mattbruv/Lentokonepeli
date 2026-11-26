@@ -25,15 +25,13 @@ import { RespawnInfo } from "./respawnInfo";
 import { RoundInfo } from "./roundInfo";
 import { TeamChooser } from "./teamChooser";
 import { Textures } from "./textures";
-import { GAME_HEIGHT } from "./constants";
+import { GAME_HEIGHT, MAX_ZOOM, MIN_ZOOM } from "./constants";
 import { drawQuality } from "./drawQuality";
 import { soundManager } from "./soundManager";
 import { GAME_INTL } from "../intl/messages";
 
 const TEAM_CHOOSER_CAMERA = { x: 0, y: -150 };
 
-export const MIN_ZOOM = 0.5;
-export const MAX_ZOOM = 8;
 const ZOOM_STEPS = [0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8];
 
 export type CameraState = {

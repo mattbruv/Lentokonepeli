@@ -3,6 +3,8 @@ import { Terrain } from "dogfight-types/Terrain";
 export const VIEW_WIDTH = 740;
 export const VIEW_HEIGHT = 550;
 export const HUD_HEIGHT = 150;
+export const MIN_ZOOM = 0.5;
+export const MAX_ZOOM = 8;
 export const GAME_HEIGHT = VIEW_HEIGHT - HUD_HEIGHT;
 
 export const DrawLayer = {
