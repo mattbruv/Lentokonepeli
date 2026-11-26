@@ -2,7 +2,7 @@ use crate::inspect::{InspectOwner, PlaneInspect};
 use std::{borrow::Cow, f64::consts::PI};
 
 use dogfight_macros::{EnumBytes, Networked};
-use image::{Rgba, RgbaImage};
+use image::RgbaImage;
 use serde::Deserialize;
 
 use crate::{
@@ -14,7 +14,7 @@ use crate::{
         PLANE9,
     },
     input::PlayerKeyboard,
-    math::{get_client_percentage, radians_to_direction},
+    math::{direction_to_radians, get_client_percentage, radians_to_direction},
     network::{property::Property, EntityProperties, NetworkedEntity},
     tick_actions::{Action, RemoveData},
     world::RESOLUTION,
@@ -1065,16 +1065,11 @@ impl Plane {
     }
 
     fn rotated_collision_image(&self) -> RgbaImage {
-        let mut img = rotate_image(self.get_rotateable_image(), self.angle, self.flipped());
-        let (width, height) = self.get_image().dimensions();
-        let left = (img.width() - width) / 2;
-        let top = (img.height() - height) / 2;
-        for (x, y, pixel) in img.enumerate_pixels_mut() {
-            if x < left || x >= left + width || y < top || y >= top + height {
-                *pixel = Rgba([0, 0, 0, 0]);
-            }
-        }
-        img
+        rotate_image(
+            self.get_rotateable_image(),
+            direction_to_radians(*self.direction.get()),
+            self.flipped(),
+        )
     }
 
     fn get_image(&self) -> &RgbaImage {

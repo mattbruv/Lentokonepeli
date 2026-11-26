@@ -4,7 +4,7 @@ use image::RgbaImage;
 use crate::{
     collision::{BoundingBox, SolidEntity},
     game_event::{KillEvent, KillMethod},
-    images::{get_image, PARACHUTER0, PARACHUTER1},
+    images::{get_image, PARACHUTER0},
     input::PlayerKeyboard,
     network::{property::*, EntityProperties, NetworkedEntity},
     tick_actions::{Action, ExplosionData, ManShootData, RemoveData},
@@ -49,7 +49,6 @@ pub struct Man {
     state: Property<ManState>,
 
     image_standing: RgbaImage,
-    image_parachuting: RgbaImage,
 
     age_ms: u32,
 
@@ -69,7 +68,6 @@ impl Man {
             x_speed: 0,
             y_speed: 0,
             image_standing: get_image(PARACHUTER0),
-            image_parachuting: get_image(PARACHUTER1),
             age_ms: 0,
             last_shot_ms: SHOOT_DELAY_MS,
         }
@@ -289,16 +287,13 @@ impl SolidEntity for Man {
         BoundingBox {
             x: (self.x / RESOLUTION) as i16,
             y: (self.y / RESOLUTION) as i16,
-            width: self.image_parachuting.width() as i16,
-            height: self.image_parachuting.height() as i16,
+            width: self.image_standing.width() as i16,
+            height: self.image_standing.height() as i16,
         }
     }
 
     fn get_collision_image(&self) -> Option<&RgbaImage> {
-        match self.state.get() {
-            ManState::Parachuting => Some(&self.image_parachuting),
-            _ => Some(&self.image_standing),
-        }
+        Some(&self.image_standing)
     }
 
     fn do_rotate_collision_image(&mut self) -> () {}

@@ -1,5 +1,5 @@
 use dogfight_macros::Networked;
-use image::{imageops, RgbaImage};
+use image::RgbaImage;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
@@ -34,10 +34,21 @@ impl Coast {
             client_y: Property::new(y),
             image_normal: get_image(BEACH_L),
             image_desert: get_image(BEACH_L_DESERT),
-            image_normal_flipped: imageops::flip_horizontal(&get_image(BEACH_L)),
-            image_desert_flipped: imageops::flip_horizontal(&get_image(BEACH_L_DESERT)),
+            image_normal_flipped: mirror_into_width(&get_image(BEACH_L), get_image(BEACH_L).width()),
+            image_desert_flipped: mirror_into_width(&get_image(BEACH_L_DESERT), get_image(BEACH_L).width()),
         }
     }
+}
+
+fn mirror_into_width(source: &RgbaImage, width: u32) -> RgbaImage {
+    let mut mirrored = RgbaImage::new(width, source.height());
+    for (x, y, pixel) in mirrored.enumerate_pixels_mut() {
+        let source_x = width as i64 - 1 - x as i64;
+        if source_x >= 0 && source_x < source.width() as i64 {
+            *pixel = *source.get_pixel(source_x as u32, y);
+        }
+    }
+    mirrored
 }
 
 impl Entity for Coast {

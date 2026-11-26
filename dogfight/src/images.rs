@@ -1,5 +1,4 @@
 use image::{self, GenericImage, Rgba, RgbaImage};
-use imageproc::geometric_transformations::Interpolation;
 
 pub fn get_rotateable_image(bytes: &[u8]) -> image::RgbaImage {
     let img = get_image(bytes);
@@ -26,18 +25,65 @@ pub fn get_rotateable_image(bytes: &[u8]) -> image::RgbaImage {
 }
 
 pub fn rotate_image(img: &RgbaImage, angle: f64, flip_vertically: bool) -> RgbaImage {
-    let mut new_image = img.clone();
+    const SHIFT: u32 = 16;
+    const PRECISION: f64 = (1 << SHIFT) as f64;
 
-    if flip_vertically {
-        image::imageops::flip_vertical_in_place(&mut new_image);
+    let (width, height) = img.dimensions();
+    let (w, h) = (width as f64, height as f64);
+    let (mut sin, mut cos) = angle.sin_cos();
+    if sin == 1.0 || sin == -1.0 {
+        cos = 0.0;
+    }
+    if cos == 1.0 || cos == -1.0 {
+        sin = 0.0;
     }
 
-    imageproc::geometric_transformations::rotate_about_center(
-        &new_image,
-        angle as f32,
-        Interpolation::Nearest,
-        image::Rgba([0, 0, 0, 0]),
-    )
+    let pivot_x = (width / 2) as f64;
+    let pivot_y = (height / 2) as f64;
+    let m00 = cos;
+    let (mut m01, mut m02) = (-sin, pivot_x * (1.0 - cos) + pivot_y * sin);
+    let (m10, mut m11, mut m12) = (sin, cos, pivot_y * (1.0 - cos) - pivot_x * sin);
+    if flip_vertically {
+        m02 += m01 * h;
+        m12 += m11 * h;
+        m01 = -m01;
+        m11 = -m11;
+    }
+
+    let det = m00 * m11 - m01 * m10;
+    let (i00, i01, i02) = (m11 / det, -m01 / det, (m01 * m12 - m11 * m02) / det);
+    let (i10, i11, i12) = (-m10 / det, m00 / det, (m10 * m02 - m00 * m12) / det);
+    let source = |x: f64, y: f64| (i00 * x + i01 * y + i02, i10 * x + i11 * y + i12);
+    let in_bounds = |(x, y): (f64, f64)| x >= 0.0 && y >= 0.0 && x < w && y < h;
+
+    let step_x = (i00 * PRECISION) as i64;
+    let step_y = (i10 * PRECISION) as i64;
+    let mut rotated = RgbaImage::new(width, height);
+
+    for y in 0..height {
+        let row_y = y as f64 + 0.5;
+        let Some(first) = (0..width).find(|&x| in_bounds(source(x as f64 + 0.5, row_y))) else {
+            continue;
+        };
+        let (start_x, start_y) = source(first as f64 + 0.5, row_y);
+        let mut fixed_x = (start_x * PRECISION) as i64;
+        let mut fixed_y = (start_y * PRECISION) as i64;
+
+        for x in first..width {
+            let sample_x = fixed_x >> SHIFT;
+            let sample_y = fixed_y >> SHIFT;
+            fixed_x += step_x;
+            fixed_y += step_y;
+            if !in_bounds(source(x as f64 + 0.5, row_y)) {
+                continue;
+            }
+            if sample_x >= 0 && sample_y >= 0 && sample_x < width as i64 && sample_y < height as i64 {
+                rotated.put_pixel(x, y, *img.get_pixel(sample_x as u32, sample_y as u32));
+            }
+        }
+    }
+
+    rotated
 }
 
 pub fn get_image(bytes: &[u8]) -> image::RgbaImage {
