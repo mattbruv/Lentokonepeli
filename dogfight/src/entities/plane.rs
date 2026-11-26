@@ -7,7 +7,6 @@ use serde::Deserialize;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
-    debug::log,
     game_event::{KillEvent, KillMethod},
     images::{
         get_image, get_rotateable_image, rotate_image, PLANE4, PLANE5, PLANE6, PLANE7, PLANE8,
@@ -508,22 +507,14 @@ impl Plane {
                 self.last_shot_ms = 0;
                 let new_ammo_amount = self.total_ammo - 1;
 
-                let half_w = self.half_canvas_width();
-                let half_h = self.half_canvas_height();
-                let d3 = self.angle;
-                let i3 = ((self.java_x() + half_w * RESOLUTION) as f64
-                    + d3.cos() * (half_w + 2) as f64 * 100.0) as i32
-                    / RESOLUTION;
-                let i4 = ((self.java_y() + half_h * RESOLUTION) as f64
-                    + d3.sin() * (half_h + 2) as f64 * 100.0) as i32
-                    / RESOLUTION;
+                let (i3, i4) = self.bullet_spawn(&self.flight_state());
                 self.set_ammo(new_ammo_amount);
 
                 actions.push(Action::SpawnBullet(Bullet::new(
                     self.player_id,
                     BulletOrigin::Plane(*my_id),
-                    i3 as i16,
-                    i4 as i16,
+                    i3,
+                    i4,
                     self.angle,
                     self.speed / 100.0,
                 )));
@@ -868,10 +859,6 @@ impl Plane {
         self.total_health as f64 / self.get_max_health() as f64
     }
 
-    pub(crate) fn get_turn_rate(&self) -> f64 {
-        self.speed / 100.0 / 4.0 * self.get_turn_step()
-    }
-
     pub(crate) fn get_bullet_speed(&self) -> f64 {
         ((self.speed / 100.0 + 4.0) * 25.0).min(200.0).floor() / 25.0
     }
@@ -881,73 +868,265 @@ impl Plane {
     }
 }
 
-// Impl Physical Model
-impl Plane {
-    fn run(&mut self) {
-        self.gravity();
-        self.air_resistance();
+#[derive(Clone, Copy, Debug)]
+pub(crate) struct Ghost {
+    pub state: FlightState,
+    pub flipped: bool,
+}
+
+#[derive(Clone, Copy, Debug)]
+pub(crate) struct FlightState {
+    pub x: i32,
+    pub y: i32,
+    pub angle: f64,
+    pub speed: f64,
+}
+
+#[derive(Clone, Copy)]
+pub(crate) struct FlightModel {
+    gravity: f64,
+    gravity_pull: f64,
+    min_resistance: f64,
+    speed_modifier: f64,
+    acceleration: f64,
+    max_y: i16,
+    turn_step: f64,
+    half_canvas_height: i32,
+}
+
+impl FlightModel {
+    pub(crate) fn run(&self, s: &mut FlightState) {
+        self.gravity(s);
+        self.air_resistance(s);
     }
 
-    fn accelerate(&mut self) {
-        self.speed += self.get_acceleration_speed() * self.get_height_multiplier();
+    pub(crate) fn accelerate(&self, s: &mut FlightState) {
+        s.speed += self.acceleration * self.height_multiplier(s);
     }
 
-    fn air_resistance(&mut self) {
-        let mut resistance = (self.speed - self.get_speed_modifier()).powi(2) * 5.0e-5;
-        if resistance < self.air_resistance {
-            resistance = self.air_resistance;
+    pub(crate) fn steer_up(&self, s: &mut FlightState) {
+        s.angle += s.speed / 100.0 / 4.0 * self.turn_step;
+        if s.angle >= 2.0 * PI {
+            s.angle -= 2.0 * PI;
         }
-        self.speed -= resistance;
-        if self.speed < 0.0 {
-            self.speed = 0.0;
+    }
+
+    pub(crate) fn steer_down(&self, s: &mut FlightState) {
+        s.angle -= s.speed / 100.0 / 4.0 * self.turn_step;
+        if s.angle < 0.0 {
+            s.angle += 2.0 * PI;
         }
     }
 
-    fn gravity(&mut self) {
-        let mut d1 = (1.0 - self.speed / 150.0) * self.gravity_pull;
+    pub(crate) fn advance(&self, s: &mut FlightState) {
+        s.x += (100.0 * s.angle.cos() * s.speed / 100.0) as i32;
+        s.y += (100.0 * s.angle.sin() * s.speed / 100.0) as i32;
+    }
+
+    pub(crate) fn in_motor_bounds(&self, s: &FlightState, half_canvas_width: i32) -> bool {
+        let java_x = (s.x - half_canvas_width * RESOLUTION) / RESOLUTION;
+        java_x < 20_000 && java_x > -20_000
+    }
+
+    fn air_resistance(&self, s: &mut FlightState) {
+        let mut resistance = (s.speed - self.speed_modifier).powi(2) * 5.0e-5;
+        if resistance < self.min_resistance {
+            resistance = self.min_resistance;
+        }
+        s.speed -= resistance;
+        if s.speed < 0.0 {
+            s.speed = 0.0;
+        }
+    }
+
+    fn gravity(&self, s: &mut FlightState) {
+        let mut d1 = (1.0 - s.speed / 150.0) * self.gravity_pull;
         if d1 < 0.0 {
             d1 = 0.0;
         }
 
-        if (self.angle >= PI / 2.0) && (self.angle <= 3.0 * PI / 2.0) {
+        if (s.angle >= PI / 2.0) && (s.angle <= 3.0 * PI / 2.0) {
             d1 = -d1;
         }
 
-        self.angle += d1;
-        if self.angle < 0.0 {
-            self.angle += 2.0 * PI;
-        } else if self.angle >= 2.0 * PI {
-            self.angle -= 2.0 * PI;
+        s.angle += d1;
+        if s.angle < 0.0 {
+            s.angle += 2.0 * PI;
+        } else if s.angle >= 2.0 * PI {
+            s.angle -= 2.0 * PI;
         }
 
-        let d2 = self.gravity * self.angle.sin();
-        self.speed += d2;
-        if self.speed < 0.0 {
-            self.speed = 0.0;
-        }
-    }
-
-    fn steer_up(&mut self) {
-        self.angle += self.speed / 100.0 / 4.0 * self.get_turn_step();
-        if self.angle >= 2.0 * PI {
-            self.angle -= 2.0 * PI;
+        let d2 = self.gravity * s.angle.sin();
+        s.speed += d2;
+        if s.speed < 0.0 {
+            s.speed = 0.0;
         }
     }
 
-    fn steer_down(&mut self) {
-        self.angle -= self.speed / 100.0 / 4.0 * self.get_turn_step();
-        if self.angle < 0.0 {
-            self.angle += 2.0 * PI;
-        }
-    }
-
-    fn get_height_multiplier(&self) -> f64 {
-        let mut multiplier =
-            ((self.java_y() / RESOLUTION) as i16 - (MAX_Y + self.get_max_y())) as f64 / 150.0;
+    fn height_multiplier(&self, s: &FlightState) -> f64 {
+        let java_y = s.y - self.half_canvas_height * RESOLUTION;
+        let mut multiplier = ((java_y / RESOLUTION) as i16 - (MAX_Y + self.max_y)) as f64 / 150.0;
         if multiplier > 1.0 {
             multiplier = 1.0;
         }
         multiplier
+    }
+}
+
+impl Plane {
+    pub(crate) fn flight_model(&self) -> FlightModel {
+        FlightModel {
+            gravity: self.gravity,
+            gravity_pull: self.gravity_pull,
+            min_resistance: self.air_resistance,
+            speed_modifier: self.get_speed_modifier(),
+            acceleration: self.get_acceleration_speed(),
+            max_y: self.get_max_y(),
+            turn_step: self.get_turn_step(),
+            half_canvas_height: self.half_canvas_height(),
+        }
+    }
+
+    pub(crate) fn flight_state(&self) -> FlightState {
+        FlightState {
+            x: self.x,
+            y: self.y,
+            angle: self.angle,
+            speed: self.speed,
+        }
+    }
+
+    pub(crate) fn bullet_spawn(&self, s: &FlightState) -> (i16, i16) {
+        let half_w = self.half_canvas_width();
+        let half_h = self.half_canvas_height();
+        let java_x = s.x - half_w * RESOLUTION;
+        let java_y = s.y - half_h * RESOLUTION;
+        let x = ((java_x + half_w * RESOLUTION) as f64
+            + s.angle.cos() * (half_w + 2) as f64 * 100.0) as i32
+            / RESOLUTION;
+        let y = ((java_y + half_h * RESOLUTION) as f64
+            + s.angle.sin() * (half_h + 2) as f64 * 100.0) as i32
+            / RESOLUTION;
+        (x as i16, y as i16)
+    }
+
+    pub(crate) fn center_of(&self, s: &FlightState) -> (i16, i16) {
+        let half_w = self.half_canvas_width();
+        let half_h = self.half_canvas_height();
+        (
+            ((s.x - half_w * RESOLUTION) / RESOLUTION + half_w) as i16,
+            ((s.y - half_h * RESOLUTION) / RESOLUTION + half_h) as i16,
+        )
+    }
+
+    pub(crate) fn ghost_bounds(&self, g: &Ghost) -> BoundingBox {
+        let img = self.get_rotateable_image();
+        BoundingBox {
+            x: ((g.state.x - self.half_canvas_width() * RESOLUTION) / RESOLUTION) as i16,
+            y: ((g.state.y - self.half_canvas_height() * RESOLUTION) / RESOLUTION) as i16,
+            width: img.width() as i16,
+            height: img.height() as i16,
+        }
+    }
+
+    pub(crate) fn ghost_mask(&self, g: &Ghost) -> RgbaImage {
+        rotate_image(
+            self.get_rotateable_image(),
+            direction_to_radians(radians_to_direction(g.state.angle)),
+            g.flipped,
+        )
+    }
+
+    pub(crate) fn predict(&self, keys: Option<&PlayerKeyboard>, ticks: usize) -> Vec<Ghost> {
+        let model = self.flight_model();
+        let half_w = self.half_canvas_width();
+        let mut s = self.flight_state();
+        let mut mode = *self.mode.get();
+        let mut flipped = *self.flipped.get();
+        let mut motor = *self.motor_on.get();
+        let mut last_flip = self.last_flip_ms;
+        let mut last_motor = self.last_motor_on_ms;
+        let mut dodge = self.dodge_counter;
+        let mut path = Vec::with_capacity(ticks);
+
+        for _ in 0..ticks {
+            last_flip = last_flip.saturating_add(10);
+            last_motor = last_motor.saturating_add(10);
+            match mode {
+                PlaneMode::Flying => {
+                    if let Some(k) = keys {
+                        if k.up && last_flip > self.flip_delay_ms {
+                            flipped = !flipped;
+                            last_flip = 0;
+                        }
+                        if k.right {
+                            model.steer_up(&mut s);
+                        }
+                        if k.left {
+                            model.steer_down(&mut s);
+                        }
+                        if k.down && last_motor > self.motor_on_delay_ms && self.fuel_counter > 0 {
+                            motor = !motor;
+                            last_motor = 0;
+                        }
+                    }
+                    if motor && model.in_motor_bounds(&s, half_w) {
+                        model.accelerate(&mut s);
+                    }
+                    model.run(&mut s);
+                    if s.speed != 0.0 {
+                        model.advance(&mut s);
+                    }
+                }
+                PlaneMode::Dodging => {
+                    if motor {
+                        model.accelerate(&mut s);
+                    }
+                    model.run(&mut s);
+                    model.advance(&mut s);
+                    dodge += 1;
+                    if dodge > 40 {
+                        mode = PlaneMode::Flying;
+                        dodge = 0;
+                    } else if dodge == 10 || dodge == 20 || dodge == 30 {
+                        flipped = !flipped;
+                    }
+                }
+                PlaneMode::Falling => {
+                    model.run(&mut s);
+                    model.advance(&mut s);
+                }
+                _ => {}
+            }
+            path.push(Ghost { state: s, flipped });
+        }
+        path
+    }
+
+    fn with_flight(&mut self, f: impl FnOnce(&FlightModel, &mut FlightState)) {
+        let model = self.flight_model();
+        let mut state = self.flight_state();
+        f(&model, &mut state);
+        self.x = state.x;
+        self.y = state.y;
+        self.angle = state.angle;
+        self.speed = state.speed;
+    }
+
+    fn run(&mut self) {
+        self.with_flight(|m, s| m.run(s));
+    }
+
+    fn accelerate(&mut self) {
+        self.with_flight(|m, s| m.accelerate(s));
+    }
+
+    fn steer_up(&mut self) {
+        self.with_flight(|m, s| m.steer_up(s));
+    }
+
+    fn steer_down(&mut self) {
+        self.with_flight(|m, s| m.steer_down(s));
     }
 }
 

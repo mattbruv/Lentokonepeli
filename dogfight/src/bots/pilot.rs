@@ -5,6 +5,7 @@ use std::f64::consts::{PI, TAU};
 use crate::{
     collision::SolidEntity,
     entities::{
+        bomb::bomb_path,
         container::{ManId, PlaneId, RunwayId},
         man::{Man, ManState},
         plane::{Plane, PlaneMode, PlaneType},
@@ -278,6 +279,7 @@ impl Bot {
         }
         self.phase = phase;
         self.wait_ticks = match phase {
+            Phase::ChoosingTeam if self.skill.perfect => 0,
             Phase::ChoosingTeam => self.rng.range_u32(20, 60),
             Phase::ChoosingRunway => {
                 let (low, high) = self.skill.respawn_delay;
@@ -306,7 +308,7 @@ impl Bot {
             self.wait_ticks -= 1;
             return false;
         }
-        self.wait_ticks = retry;
+        self.wait_ticks = if self.skill.perfect { 0 } else { retry };
         true
     }
 
@@ -468,7 +470,7 @@ impl Bot {
                     return self.held_keys;
                 }
                 self.control_timer = self.skill.control_interval - 1;
-                keys = self.pilot(world, team, plane);
+                keys = self.pilot(world, team, plane_id, plane);
                 self.held_keys = keys;
                 keys
             }
@@ -816,12 +818,19 @@ impl Bot {
         (positive((py - y).atan2(px - x)), distance)
     }
 
-    fn should_fire(&self, world: &World, team: Team, plane: &Plane) -> bool {
+    fn should_fire(
+        &self,
+        world: &World,
+        team: Team,
+        plane_id: PlaneId,
+        plane: &Plane,
+        keys: &PlayerKeyboard,
+    ) -> bool {
         if plane.get_ammo() <= 0 {
             return false;
         }
-        if self.skill.tactics && self.tactical_fire(world, team, plane) {
-            return true;
+        if self.skill.perfect {
+            return self.exact_fire(world, team, plane_id, plane, keys);
         }
         let angle = plane.get_angle();
         let mut targets: Vec<(f64, f64, f64, f64)> = world
@@ -880,6 +889,16 @@ impl Bot {
     }
 
     fn predict_bomb(&self, plane: &Plane, target_y: f64) -> (f64, f64) {
+        if self.skill.perfect {
+            let next = plane.predict(Some(&self.held_keys), 1)[0].state;
+            let (cx, cy) = plane.center_of(&next);
+            let path = bomb_path(cx, cy, next.angle, next.speed / 100.0, 600);
+            let hit = path
+                .iter()
+                .position(|(_, by)| *by as f64 + 6.0 >= target_y)
+                .unwrap_or(path.len() - 1);
+            return (path[hit].0 as f64 + 5.0, hit as f64 + 1.0);
+        }
         let (mut x, mut y) = plane_pos(plane);
         let angle = plane.get_angle();
         let mut vx = angle.cos() * plane.get_speed() / 100.0;
@@ -898,7 +917,13 @@ impl Bot {
         (x, ticks)
     }
 
-    fn pilot(&mut self, world: &World, team: Team, plane: &Plane) -> PlayerKeyboard {
+    fn pilot(
+        &mut self,
+        world: &World,
+        team: Team,
+        plane_id: PlaneId,
+        plane: &Plane,
+    ) -> PlayerKeyboard {
         let mut keys = PlayerKeyboard::new();
         let (x, y) = plane_pos(plane);
         let angle = plane.get_angle();
@@ -907,7 +932,7 @@ impl Bot {
         let h = if angle.cos() >= 0.0 { 1.0 } else { -1.0 };
 
         if self.skill.tactics {
-            self.update_tracks(world, team);
+            self.update_tracks(world, x, y);
         }
 
         if self.think_timer == 0 {
@@ -1075,7 +1100,7 @@ impl Bot {
             keys.down = true;
         }
 
-        if !landing && self.should_fire(world, team, plane) {
+        if !landing && self.should_fire(world, team, plane_id, plane, &keys) {
             keys.ctrl = true;
         }
 

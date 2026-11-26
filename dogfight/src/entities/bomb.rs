@@ -94,14 +94,15 @@ impl Bomb {
     }
 
     pub fn tick(&mut self) {
-        self.x += ((RESOLUTION as f64) * self.x_speed / (RESOLUTION as f64)) as i32;
-        self.y += ((RESOLUTION as f64) * self.y_speed / (RESOLUTION as f64)) as i32;
+        bomb_step(
+            &mut self.x,
+            &mut self.y,
+            &mut self.x_speed,
+            &mut self.y_speed,
+        );
 
         self.client_x.set((self.x / RESOLUTION) as i16);
         self.client_y.set((self.y / RESOLUTION) as i16);
-
-        self.x_speed -= self.x_speed * 0.01;
-        self.y_speed += 3.3333333333333335;
 
         // update angle/direction
         self.angle = self.y_speed.atan2(self.x_speed);
@@ -151,4 +152,25 @@ impl SolidEntity for Bomb {
     fn is_alive(&self) -> bool {
         self.is_alive
     }
+}
+
+fn bomb_step(x: &mut i32, y: &mut i32, x_speed: &mut f64, y_speed: &mut f64) {
+    *x += ((RESOLUTION as f64) * *x_speed / (RESOLUTION as f64)) as i32;
+    *y += ((RESOLUTION as f64) * *y_speed / (RESOLUTION as f64)) as i32;
+    *x_speed -= *x_speed * 0.01;
+    *y_speed += 3.3333333333333335;
+}
+
+pub(crate) fn bomb_path(x: i16, y: i16, angle: f64, speed: f64, ticks: usize) -> Vec<(i16, i16)> {
+    let angle = direction_to_radians(radians_to_direction(angle));
+    let mut bx = x as i32 * RESOLUTION;
+    let mut by = y as i32 * RESOLUTION;
+    let mut x_speed = angle.cos() * speed * 100.0;
+    let mut y_speed = angle.sin() * speed * 100.0;
+    (0..ticks)
+        .map(|_| {
+            bomb_step(&mut bx, &mut by, &mut x_speed, &mut y_speed);
+            ((bx / RESOLUTION) as i16, (by / RESOLUTION) as i16)
+        })
+        .collect()
 }

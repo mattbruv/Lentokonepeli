@@ -1,108 +1,99 @@
+use std::collections::HashMap;
+
+use image::RgbaImage;
+
 use crate::{
+    collision::{BoundingBox, SolidEntity},
     entities::{
+        bullet::{Bullet, BulletOrigin, BULLET_LIFETIME},
         container::PlaneId,
-        plane::{Plane, PlaneMode},
+        man::ManState,
+        plane::{Ghost, Plane, PlaneMode},
+        player::ControllingEntity,
         types::Team,
     },
-    math::{direction_to_radians, radians_to_direction},
-    world::World,
+    input::PlayerKeyboard,
+    math::radians_to_direction,
+    world::{World, RESOLUTION},
 };
 
 use super::{plane_pos, positive, wrap, Bot};
 
 const TAIL_RANGE: f64 = 360.0;
-const FIRE_HORIZON: f64 = 120.0;
+const HORIZON: usize = BULLET_LIFETIME as usize + 1;
+const REACH: f64 = 1600.0;
 
-#[derive(Clone, Copy)]
+fn within_reach(x: f64, y: f64, (px, py): (f64, f64)) -> bool {
+    (px - x).abs() < REACH && (py - y).abs() < REACH
+}
+
 pub(super) struct Track {
     id: PlaneId,
-    angle: f64,
-    omega: f64,
-    tick: u32,
+    path: Vec<Ghost>,
 }
 
-struct Kinematics {
-    x: f64,
-    y: f64,
-    angle: f64,
-    speed: f64,
-    omega: f64,
+fn keys_of(world: &World, entity: ControllingEntity) -> Option<&PlayerKeyboard> {
+    world
+        .players
+        .get_map()
+        .values()
+        .find(|p| p.get_controlling() == Some(entity))
+        .map(|p| p.get_keys())
 }
 
-impl Kinematics {
-    fn at(&self, t: f64) -> (f64, f64) {
-        if self.omega.abs() < 1e-4 {
-            let d = self.speed / 100.0 * t;
-            return (self.x + self.angle.cos() * d, self.y + self.angle.sin() * d);
-        }
-        let r = self.speed / 100.0 / self.omega;
-        let a = self.angle + self.omega * t;
-        (
-            self.x + r * (a.sin() - self.angle.sin()),
-            self.y - r * (a.cos() - self.angle.cos()),
-        )
-    }
+fn ghost_center(g: &Ghost) -> (f64, f64) {
+    (
+        (g.state.x / RESOLUTION) as f64,
+        (g.state.y / RESOLUTION) as f64,
+    )
 }
 
-fn fired_angle(angle: f64) -> f64 {
-    direction_to_radians(radians_to_direction(angle))
+fn mask_hits(mask: &RgbaImage, mask_bounds: &BoundingBox, other: &BoundingBox) -> bool {
+    let Some(i) = mask_bounds.intersection(other) else {
+        return false;
+    };
+    (0..i.height).any(|dy| {
+        (0..i.width).any(|dx| {
+            let px = (i.x + dx - mask_bounds.x) as u32;
+            let py = (i.y + dy - mask_bounds.y) as u32;
+            px < mask.width() && py < mask.height() && mask.get_pixel(px, py)[3] != 0
+        })
+    })
 }
 
 impl Bot {
-    pub(super) fn update_tracks(&mut self, world: &World, team: Team) {
-        let tick = world.get_tick();
-        let mut next = Vec::with_capacity(self.tracks.len());
-        for (id, p) in world.planes.get_map() {
-            if p.get_team() == team || p.get_mode() != PlaneMode::Flying {
-                continue;
-            }
-            let angle = p.get_angle();
-            let omega = match self.tracks.iter().find(|t| t.id == *id) {
-                Some(prev) if tick > prev.tick => {
-                    let measured = wrap(angle - prev.angle) / (tick - prev.tick) as f64;
-                    let limit = p.get_turn_rate() * 1.5 + 0.02;
-                    0.5 * prev.omega + 0.5 * measured.clamp(-limit, limit)
-                }
-                Some(prev) => prev.omega,
-                None => 0.0,
-            };
-            next.push(Track {
+    pub(super) fn update_tracks(&mut self, world: &World, x: f64, y: f64) {
+        self.tracks = world
+            .planes
+            .get_map()
+            .iter()
+            .filter(|(_, p)| within_reach(x, y, plane_pos(p)))
+            .map(|(id, p)| Track {
                 id: *id,
-                angle,
-                omega,
-                tick,
-            });
-        }
-        self.tracks = next;
+                path: p.predict(keys_of(world, ControllingEntity::Plane(*id)), HORIZON),
+            })
+            .collect();
     }
 
-    fn kinematics(&self, id: PlaneId, p: &Plane) -> Kinematics {
-        let (x, y) = plane_pos(p);
-        let omega = self
-            .tracks
-            .iter()
-            .find(|t| t.id == id)
-            .map(|t| t.omega)
-            .unwrap_or(0.0);
-        let flying = matches!(p.get_mode(), PlaneMode::Flying | PlaneMode::Dodging);
-        Kinematics {
-            x,
-            y,
-            angle: p.get_angle(),
-            speed: if flying { p.get_speed() } else { 0.0 },
-            omega: if flying { omega } else { 0.0 },
-        }
+    fn path(&self, id: PlaneId) -> Option<&Vec<Ghost>> {
+        self.tracks.iter().find(|t| t.id == id).map(|t| &t.path)
     }
 
     pub(super) fn tracked_aim(&self, shooter: &Plane, id: PlaneId, target: &Plane) -> (f64, f64) {
         let (sx, sy) = plane_pos(shooter);
-        let k = self.kinematics(id, target);
         let bullet = shooter.get_bullet_speed();
-        let mut t = ((k.x - sx).powi(2) + (k.y - sy).powi(2)).sqrt() / bullet;
-        let mut point = (k.x, k.y);
-        for _ in 0..6 {
-            point = k.at(t.min(175.0));
-            t = ((point.0 - sx).powi(2) + (point.1 - sy).powi(2)).sqrt() / bullet;
+        let at = |t: f64| -> (f64, f64) {
+            match self.path(id) {
+                Some(path) if !path.is_empty() => {
+                    ghost_center(&path[(t.max(0.0) as usize).min(path.len() - 1)])
+                }
+                _ => plane_pos(target),
+            }
+        };
+        let mut point = at(0.0);
+        for _ in 0..8 {
+            let t = ((point.0 - sx).powi(2) + (point.1 - sy).powi(2)).sqrt() / bullet;
+            point = at(t);
         }
         let distance = ((point.0 - sx).powi(2) + (point.1 - sy).powi(2)).sqrt();
         (positive((point.1 - sy).atan2(point.0 - sx)), distance)
@@ -164,30 +155,130 @@ impl Bot {
             .map(|(id, _)| id)
     }
 
-    pub(super) fn tactical_fire(&self, world: &World, team: Team, me: &Plane) -> bool {
-        if me.get_ammo() <= 0 {
+    pub(super) fn exact_fire(
+        &self,
+        world: &World,
+        team: Team,
+        my_id: PlaneId,
+        me: &Plane,
+        keys: &PlayerKeyboard,
+    ) -> bool {
+        let (mx, my) = plane_pos(me);
+        let hunts_men = self.hunts_men(world);
+        let enemy_in_reach = self.tracks.iter().any(|t| {
+            world
+                .planes
+                .get(t.id)
+                .is_some_and(|p| p.get_team() != team && p.get_mode() != PlaneMode::Falling)
+        }) || (hunts_men
+            && world
+                .men
+                .get_map()
+                .values()
+                .any(|m| m.get_team() != team && within_reach(mx, my, super::man_pos(m))));
+        if !enemy_in_reach {
             return false;
         }
-        let (x, y) = plane_pos(me);
-        let heading = fired_angle(me.get_angle());
-        let bullet = me.get_bullet_speed();
-        world
-            .planes
+
+        let next = me.predict(Some(keys), 1)[0].state;
+        let (sx, sy) = me.bullet_spawn(&next);
+        let mut bullet = Bullet::new(
+            me.player_id(),
+            BulletOrigin::Plane(my_id),
+            sx,
+            sy,
+            next.angle,
+            next.speed / 100.0,
+        );
+        let men: Vec<(bool, BoundingBox, &RgbaImage, Vec<(i32, i32)>)> = world
+            .men
             .get_map()
             .iter()
-            .filter(|(_, p)| p.get_team() != team && p.get_mode() != PlaneMode::Falling)
-            .any(|(id, p)| {
-                let k = self.kinematics(*id, p);
-                let mut best = f64::INFINITY;
-                let mut t = 0.0;
-                while t < FIRE_HORIZON {
-                    let (px, py) = k.at(t);
-                    let bx = x + heading.cos() * bullet * t;
-                    let by = y + heading.sin() * bullet * t;
-                    best = best.min(((px - bx).powi(2) + (py - by).powi(2)).sqrt());
-                    t += 2.0;
+            .filter(|(_, m)| within_reach(mx, my, super::man_pos(m)))
+            .filter_map(|(id, m)| {
+                let keys = keys_of(world, ControllingEntity::Man(*id))
+                    .copied()
+                    .unwrap_or_else(PlayerKeyboard::new);
+                let mut offsets = Vec::with_capacity(HORIZON);
+                let (mut ox, mut oy) = (0i32, 0i32);
+                let mut y_speed = m.get_y_speed();
+                for _ in 0..HORIZON {
+                    match m.get_state() {
+                        ManState::Falling => {
+                            oy += y_speed / 100;
+                            y_speed += 100 / 30;
+                        }
+                        ManState::Parachuting => {
+                            y_speed = ((y_speed as f64 * 0.95) as i32).max(100);
+                            oy += y_speed / 100;
+                            ox += keys.right as i32 - keys.left as i32;
+                        }
+                        _ => {
+                            ox += keys.right as i32 - keys.left as i32;
+                        }
+                    }
+                    offsets.push((ox, oy));
                 }
-                best < 9.0 + self.skill.fire_slack * 0.5
+                Some((
+                    m.get_team() != team,
+                    m.get_collision_bounds(),
+                    m.get_collision_image()?,
+                    offsets,
+                ))
             })
+            .collect();
+
+        let mut masks: HashMap<(PlaneId, u8, bool), RgbaImage> = HashMap::new();
+
+        for k in 0..HORIZON {
+            if k > 0 {
+                bullet.move_bullet();
+            }
+            let b = bullet.get_collision_bounds();
+
+            if let Some(terrain) = self.terrain.as_ref() {
+                if (b.y + b.height) as f64 > terrain.surface(b.x as f64, (b.x + b.width) as f64) {
+                    return false;
+                }
+            }
+
+            for track in &self.tracks {
+                if track.id == my_id {
+                    continue;
+                }
+                let Some(plane) = world.planes.get(track.id) else {
+                    continue;
+                };
+                let Some(ghost) = track.path.get(k) else {
+                    continue;
+                };
+                let bounds = plane.ghost_bounds(ghost);
+                if !bounds.intersects(&b) {
+                    continue;
+                }
+                let key = (
+                    track.id,
+                    radians_to_direction(ghost.state.angle),
+                    ghost.flipped,
+                );
+                let mask = masks.entry(key).or_insert_with(|| plane.ghost_mask(ghost));
+                if mask_hits(mask, &bounds, &b) {
+                    return plane.get_team() != team && plane.get_mode() != PlaneMode::Falling;
+                }
+            }
+
+            for (enemy, bounds, mask, offsets) in &men {
+                let (ox, oy) = offsets[k];
+                let moved = BoundingBox {
+                    x: bounds.x + ox as i16,
+                    y: bounds.y + oy as i16,
+                    ..*bounds
+                };
+                if moved.intersects(&b) && mask_hits(mask, &moved, &b) {
+                    return *enemy && hunts_men;
+                }
+            }
+        }
+        false
     }
 }
