@@ -2,7 +2,7 @@ use crate::inspect::{InspectOwner, PlaneInspect};
 use std::{borrow::Cow, f64::consts::PI};
 
 use dogfight_macros::{EnumBytes, Networked};
-use image::RgbaImage;
+use image::{Rgba, RgbaImage};
 use serde::Deserialize;
 
 use crate::{
@@ -1064,6 +1064,19 @@ impl Plane {
         }
     }
 
+    fn rotated_collision_image(&self) -> RgbaImage {
+        let mut img = rotate_image(self.get_rotateable_image(), self.angle, self.flipped());
+        let (width, height) = self.get_image().dimensions();
+        let left = (img.width() - width) / 2;
+        let top = (img.height() - height) / 2;
+        for (x, y, pixel) in img.enumerate_pixels_mut() {
+            if x < left || x >= left + width || y < top || y >= top + height {
+                *pixel = Rgba([0, 0, 0, 0]);
+            }
+        }
+        img
+    }
+
     fn get_image(&self) -> &RgbaImage {
         match self.plane_type.get() {
             PlaneType::Albatros => &self.image_albatros,
@@ -1088,7 +1101,7 @@ impl SolidEntity for Plane {
     }
 
     fn debug_shape(&self) -> (BoundingBox, Option<Cow<'_, RgbaImage>>) {
-        let img = rotate_image(self.get_rotateable_image(), self.angle, self.flipped());
+        let img = self.rotated_collision_image();
         (self.bounds_for_image(&img), Some(Cow::Owned(img)))
     }
 
@@ -1097,9 +1110,7 @@ impl SolidEntity for Plane {
     }
 
     fn do_rotate_collision_image(&mut self) -> () {
-        let flip = self.flipped();
-
-        self.rotated_image = rotate_image(self.get_rotateable_image(), self.angle, flip);
+        self.rotated_image = self.rotated_collision_image();
     }
 
     fn is_alive(&self) -> bool {
