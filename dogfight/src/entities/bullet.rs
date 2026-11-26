@@ -140,6 +140,15 @@ impl Bullet {
         return 1.0 - d;
     }
 
+    pub(crate) fn get_velocity(&self) -> (f64, f64) {
+        let speed = *self.speed.get() as f64 / 25.0;
+        (speed * self.angle.cos(), speed * self.angle.sin())
+    }
+
+    pub(crate) fn remaining_ticks(&self) -> i32 {
+        BULLET_LIFETIME - self.age
+    }
+
     pub fn get_x(&self) -> i16 {
         (self.x / RESOLUTION) as i16
     }

@@ -259,6 +259,10 @@ impl Man {
         }));
     }
 
+    pub(crate) fn get_y_speed(&self) -> i32 {
+        self.y_speed
+    }
+
     pub fn die_from_fall(&self) -> bool {
         // log(self.y_speed.to_string());
         (self.y_speed as f64) >= (SPEED_PER_PIXEL as f64) * 1.5

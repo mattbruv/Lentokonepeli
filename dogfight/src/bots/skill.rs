@@ -25,6 +25,9 @@ pub struct BotSkill {
     pub max_walk: f64,
     pub respawn_delay: (u32, u32),
     pub refuel_delay: (u32, u32),
+    pub bail_reaction: (u32, u32),
+    pub chute_reaction: (u32, u32),
+    pub bail_hold: u32,
 }
 
 impl BotSkill {
@@ -55,6 +58,9 @@ impl BotSkill {
                 max_walk: f64::INFINITY,
                 respawn_delay: (250, 500),
                 refuel_delay: (200, 400),
+                bail_reaction: (70, 130),
+                chute_reaction: (20, 45),
+                bail_hold: 30,
             },
             BotDifficulty::Medium => BotSkill {
                 think_interval: 20,
@@ -81,6 +87,9 @@ impl BotSkill {
                 max_walk: 2500.0,
                 respawn_delay: (120, 260),
                 refuel_delay: (100, 200),
+                bail_reaction: (40, 80),
+                chute_reaction: (12, 30),
+                bail_hold: 70,
             },
             BotDifficulty::Hard => BotSkill {
                 think_interval: 10,
@@ -107,6 +116,9 @@ impl BotSkill {
                 max_walk: 1500.0,
                 respawn_delay: (40, 120),
                 refuel_delay: (50, 100),
+                bail_reaction: (20, 45),
+                chute_reaction: (6, 15),
+                bail_hold: 130,
             },
             BotDifficulty::Ace => BotSkill {
                 think_interval: 5,
@@ -133,6 +145,9 @@ impl BotSkill {
                 max_walk: 3000.0,
                 respawn_delay: (10, 50),
                 refuel_delay: (20, 50),
+                bail_reaction: (10, 25),
+                chute_reaction: (3, 8),
+                bail_hold: 180,
             },
         }
     }

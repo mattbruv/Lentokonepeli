@@ -77,6 +77,9 @@ pub struct Bot {
     terrain: Option<Terrain>,
     pub(crate) force_land: bool,
     tracks: Vec<tactics::Track>,
+    bail_wait: Option<u32>,
+    bail_hold: u32,
+    chute_wait: Option<u32>,
 }
 
 fn wrap(angle: f64) -> f64 {
@@ -108,6 +111,98 @@ fn velocity(angle: f64, speed: f64) -> (f64, f64) {
 
 fn plane_pos(plane: &Plane) -> (f64, f64) {
     (plane.get_client_x() as f64, plane.get_client_y() as f64)
+}
+
+fn enemy_plane_within(world: &World, team: Team, x: f64, y: f64, range: f64) -> bool {
+    world.planes.get_map().values().any(|p| {
+        let (px, py) = plane_pos(p);
+        p.get_team() != team
+            && p.get_mode() != PlaneMode::Falling
+            && ((px - x).powi(2) + (py - y).powi(2)).sqrt() < range
+    })
+}
+
+fn incoming_fire(world: &World, team: Team, x: f64, y: f64, drop: f64) -> bool {
+    let near_column = |px: f64, py: f64, margin: f64| {
+        (px - x).abs() < margin && py > y - margin && py < y + drop + margin
+    };
+
+    let aimed_planes = world.planes.get_map().values().any(|p| {
+        if p.get_team() == team || p.get_mode() == PlaneMode::Falling {
+            return false;
+        }
+        let (px, py) = plane_pos(p);
+        let (dx, dy) = (x - px, y + drop / 2.0 - py);
+        let distance = (dx * dx + dy * dy).sqrt();
+        if distance < 220.0 {
+            return true;
+        }
+        if distance > 650.0 {
+            return false;
+        }
+        let bearing = dy.atan2(dx);
+        let spread = 0.12 + (drop / 2.0 + 40.0) / distance;
+        wrap(bearing - p.get_angle()).abs() < spread
+    });
+    if aimed_planes {
+        return true;
+    }
+
+    world.bullets.get_map().values().any(|b| {
+        let shooter_team = world.players.get(b.player_id()).and_then(|p| *p.get_team());
+        if shooter_team == Some(team) || b.remaining_ticks() <= 0 {
+            return false;
+        }
+        let (vx, vy) = b.get_velocity();
+        let (bx, by) = (b.get_x() as f64, b.get_y() as f64);
+        (0..b.remaining_ticks().min(90))
+            .step_by(2)
+            .any(|t| near_column(bx + vx * t as f64, by + vy * t as f64, 30.0))
+    })
+}
+
+fn landing_hazard(world: &World, team: Team, terrain: &Terrain, x: f64) -> bool {
+    let overlaps = |b: crate::collision::BoundingBox| {
+        x + 16.0 >= b.x as f64 && x - 16.0 <= (b.x + b.width) as f64
+    };
+    terrain.is_water(x)
+        || world
+            .coasts
+            .get_map()
+            .values()
+            .any(|c| overlaps(c.get_collision_bounds()))
+        || world
+            .bunkers
+            .get_map()
+            .values()
+            .any(|b| b.is_alive() && overlaps(b.get_collision_bounds()))
+        || world
+            .runways
+            .get_map()
+            .values()
+            .any(|r| r.is_alive() && *r.get_team() != team && overlaps(r.get_collision_bounds()))
+}
+
+fn safe_landing(world: &World, team: Team, terrain: &Terrain, x: f64, reach: f64) -> Option<f64> {
+    let safe = |candidate: f64| {
+        candidate >= terrain.min_x
+            && candidate <= terrain.max_x
+            && !landing_hazard(world, team, terrain, candidate)
+    };
+    let mut offset = 0.0;
+    while offset <= reach {
+        for candidate in [x - offset, x + offset] {
+            if safe(candidate) {
+                if offset == 0.0 {
+                    return Some(candidate);
+                }
+                let deeper = candidate + (candidate - x).signum() * 40.0;
+                return Some(if safe(deeper) { deeper } else { candidate });
+            }
+        }
+        offset += 20.0;
+    }
+    None
 }
 
 fn man_pos(man: &Man) -> (f64, f64) {
@@ -151,6 +246,9 @@ impl Bot {
             terrain: None,
             force_land: false,
             tracks: vec![],
+            bail_wait: None,
+            bail_hold: 0,
+            chute_wait: None,
         }
     }
 
@@ -198,6 +296,9 @@ impl Bot {
         self.turn_commit = None;
         self.evade_ticks = 0;
         self.held_keys = PlayerKeyboard::new();
+        self.bail_wait = None;
+        self.bail_hold = 0;
+        self.chute_wait = None;
     }
 
     fn countdown(&mut self, retry: u32) -> bool {
@@ -358,7 +459,7 @@ impl Bot {
 
         match plane.get_mode() {
             PlaneMode::Falling => {
-                keys.space = true;
+                keys.space = self.should_bail(world, team, plane);
                 keys
             }
             PlaneMode::Flying => {
@@ -1051,6 +1152,135 @@ impl Bot {
         Some((desired, true, None, false))
     }
 
+    fn height_above_ground(&self, x: f64, bottom: f64) -> f64 {
+        self.terrain
+            .as_ref()
+            .map(|t| t.surface(x - 20.0, x + 20.0) - bottom)
+            .unwrap_or(0.0)
+    }
+
+    fn own_wreck_impact(&self, world: &World) -> Option<f64> {
+        let terrain = self.terrain.as_ref()?;
+        let (me, _) = world.get_player_from_guid(&self.request.guid)?;
+        world
+            .planes
+            .get_map()
+            .values()
+            .filter(|p| p.player_id() == *me && p.get_mode() == PlaneMode::Falling)
+            .map(|p| {
+                let (px, py) = plane_pos(p);
+                let (vx, vy) = velocity(p.get_angle(), p.get_speed());
+                let height = terrain.surface(px - 30.0, px + 30.0) - py;
+                px + vx * (height / vy.max(0.5)).min(400.0)
+            })
+            .next()
+    }
+
+    fn should_bail(&mut self, world: &World, team: Team, plane: &Plane) -> bool {
+        let Some(terrain) = self.terrain.as_ref() else {
+            return true;
+        };
+        let (x, y) = plane_pos(plane);
+        let (vx, vy) = velocity(plane.get_angle(), plane.get_speed());
+        let height = terrain.surface(x - 30.0, x + 30.0) - y;
+        let ahead_x = x + vx * 25.0;
+        let ahead_height =
+            terrain.surface(x.min(ahead_x) - 30.0, x.max(ahead_x) + 30.0) - (y + vy * 25.0);
+        let ticks_to_impact = if vy > 0.05 {
+            height / vy
+        } else {
+            f64::INFINITY
+        };
+        if height < 140.0 || ahead_height < 90.0 || ticks_to_impact < 45.0 {
+            return true;
+        }
+
+        let wait = match self.bail_wait {
+            Some(wait) => wait,
+            None => {
+                let (low, high) = self.skill.bail_reaction;
+                self.rng.range_u32(low, high)
+            }
+        };
+        if wait > 0 {
+            self.bail_wait = Some(wait - 1);
+            return false;
+        }
+        self.bail_wait = Some(0);
+
+        if self.bail_hold < self.skill.bail_hold && incoming_fire(world, team, x, y, 80.0) {
+            self.bail_hold += 1;
+            return false;
+        }
+
+        let reach = (height - 40.0).max(0.0) * 0.8;
+        if safe_landing(world, team, terrain, x, reach).is_some() {
+            return true;
+        }
+
+        let Some(sx) = safe_landing(world, team, terrain, x, 4000.0) else {
+            return true;
+        };
+        if (sx - x).signum() != vx.signum() {
+            return true;
+        }
+        let ride_ticks = (height - 110.0).max(0.0) / (vy.max(0.0) + 0.6);
+        let ride_reach = vx.abs() * ride_ticks + 55.0;
+        ride_reach <= reach
+    }
+
+    fn should_open_chute(&mut self, world: &World, team: Team, man: &Man, x: f64, y: f64) -> bool {
+        let height = self.height_above_ground(x, y + 17.0);
+        let mut speed = man.get_y_speed() + 100 / 30;
+        let mut braking = speed as f64 / 100.0;
+        while speed >= 150 {
+            speed = ((speed as f64 * 0.95) as i32).max(100);
+            braking += speed as f64 / 100.0;
+        }
+        if height <= braking + 30.0 {
+            return true;
+        }
+
+        let own_wreck_close = world
+            .get_player_from_guid(&self.request.guid)
+            .map(|(me, _)| {
+                world.planes.get_map().values().any(|p| {
+                    let (px, py) = plane_pos(p);
+                    p.player_id() == *me
+                        && p.get_mode() == PlaneMode::Falling
+                        && (px - x).abs() < 160.0
+                        && py > y - 60.0
+                })
+            })
+            .unwrap_or(false);
+        if own_wreck_close {
+            return true;
+        }
+
+        let wait = match self.chute_wait {
+            Some(wait) => wait,
+            None => {
+                let (low, high) = self.skill.chute_reaction;
+                self.rng.range_u32(low, high)
+            }
+        };
+        if wait > 0 {
+            self.chute_wait = Some(wait - 1);
+            return false;
+        }
+        self.chute_wait = Some(0);
+
+        let needs_steering = self
+            .terrain
+            .as_ref()
+            .map(|t| safe_landing(world, team, t, x, 0.0).is_none())
+            .unwrap_or(false);
+        if incoming_fire(world, team, x, y, height.min(160.0)) {
+            return false;
+        }
+        needs_steering || !(self.skill.evade && enemy_plane_within(world, team, x, y, 400.0))
+    }
+
     fn walk(&mut self, world: &World, team: Team, man_id: ManId) -> PlayerKeyboard {
         let mut keys = PlayerKeyboard::new();
         let Some(man) = world.men.get(man_id) else {
@@ -1080,18 +1310,22 @@ impl Bot {
 
         match man.get_state() {
             ManState::Falling => {
-                keys.space = true;
+                keys.space = self.should_open_chute(world, team, man, x, y);
             }
             ManState::Parachuting => {
-                let over_water = self
-                    .terrain
-                    .as_ref()
-                    .map(|t| t.is_water(x))
-                    .unwrap_or(false);
-                let goal = match home {
-                    Some(hx) => Some(hx),
-                    None if over_water => self.terrain.as_ref().map(|t| (t.min_x + t.max_x) / 2.0),
-                    None => None,
+                let height = self.height_above_ground(x, y + 17.0);
+                let goal = match self.own_wreck_impact(world) {
+                    Some(impact_x) if (impact_x - x).abs() < 110.0 => {
+                        Some(x + (x - impact_x).signum() * 200.0)
+                    }
+                    _ => match home {
+                        Some(hx) if (hx - x).abs() <= height => Some(hx),
+                        _ => self
+                            .terrain
+                            .as_ref()
+                            .and_then(|t| safe_landing(world, team, t, x, height.max(3000.0)))
+                            .or(home),
+                    },
                 };
                 if let Some(gx) = goal {
                     if gx < x - 4.0 {
