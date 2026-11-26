@@ -61,7 +61,7 @@
 }
 
 .scoreboard th.col-team {
-    width: 30px;
+    width: 46px;
 }
 
 .scoreboard th.col-name {
@@ -173,6 +173,7 @@
 
 .scoreboard td.flag img {
     display: block;
+    image-rendering: pixelated;
 }
 
 .scoreboard .noteam {
