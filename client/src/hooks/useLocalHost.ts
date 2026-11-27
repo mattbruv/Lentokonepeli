@@ -65,7 +65,9 @@ export function isLobbyMessage(message: unknown): message is LobbyMessage {
 }
 
 export const LOBBY_NAME_MAX_LENGTH = 32;
-export const MAX_BOTS = 32;
+export const BOT_WARNING_THRESHOLD = 32;
+export const DIFFICULTIES: BotDifficulty[] = ["Easy", "Medium", "Hard", "Ace"];
+export type BotDifficultyChoice = BotDifficulty | "Random";
 const KICK_CLOSE_DELAY_MS = 500;
 const MAX_GUESTS = 32;
 const MAX_GUEST_STRING_LENGTH = 256;
@@ -91,7 +93,7 @@ const INTERMISSION_SECONDS = 20;
 
 export type InitialBots = {
     count: number;
-    difficulty: BotDifficulty;
+    difficulty: BotDifficultyChoice;
 };
 
 export const REPLAY_COOLDOWN_MS = 60000;
@@ -423,15 +425,17 @@ export function useLocalHost(
         setBots(JSON.parse(dogfight.engine.get_bots()) as BotInfo[]);
     }
 
-    function addBots(count: number, team: Team | null, difficulty: BotDifficulty) {
+    function addBots(count: number, team: Team | null, choice: BotDifficultyChoice) {
         const existing = JSON.parse(dogfight.engine.get_bots()) as BotInfo[];
-        const toAdd = Math.max(0, Math.min(count, MAX_BOTS - existing.length));
+        const toAdd = Math.max(0, count);
         const taken = new Set([...existing.map((b) => b.name), ...dogfight.playerData.map((p) => p.name)]);
         let number = 1;
         for (let i = 0; i < toAdd; i++) {
             while (taken.has(`Bot ${number}`)) number++;
             const name = `Bot ${number}`;
             taken.add(name);
+            const difficulty =
+                choice === "Random" ? DIFFICULTIES[Math.floor(Math.random() * DIFFICULTIES.length)] : choice;
             const request: AddBotRequest = { guid: randomGuid(), name, team, difficulty };
             dogfight.engine.add_bot(JSON.stringify(request));
         }

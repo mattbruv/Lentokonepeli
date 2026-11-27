@@ -79,6 +79,10 @@
     "defaultMessage": "Small",
     "description": "Level preview: map is small"
   },
+  "6C102L": {
+    "defaultMessage": "Settings",
+    "description": "Button that opens the settings dialog during a game"
+  },
   "6OnDBs": {
     "defaultMessage": "Fuel",
     "description": "Replay inspector row: plane fuel"
@@ -251,6 +255,10 @@
     "defaultMessage": "Current version",
     "description": "Label for the game version currently running"
   },
+  "GgV4fK": {
+    "defaultMessage": "{count, plural, one {# bot} other {# bots}}",
+    "description": "Host menu checkbox that selects all bots, showing the bot count"
+  },
   "H0TxYO": {
     "defaultMessage": "No game was found with code {code}. Check the code and try again.",
     "description": "Error shown when joining a game code that does not exist"
@@ -322,6 +330,10 @@
   "Ma6JVf": {
     "defaultMessage": "Abandoned plane",
     "description": "Collision legend label for planes whose pilot bailed out"
+  },
+  "Mewnhs": {
+    "defaultMessage": "More than {max} bots may slow the game down.",
+    "description": "Warning shown when the chosen number of bots is above the recommended maximum"
   },
   "Mn1HEl": {
     "defaultMessage": "Centrals",
@@ -807,6 +819,10 @@
     "defaultMessage": "Add {count, plural, one {Bot} other {# Bots}}",
     "description": "Host menu button that adds the chosen number of bots"
   },
+  "nivA/t": {
+    "defaultMessage": "Settings",
+    "description": "Title of the settings dialog opened during a game"
+  },
   "obtz7Y": {
     "defaultMessage": "Rounds",
     "description": "Game mode with no respawning, where a team wins a round by eliminating every enemy player or destroying their base"
@@ -907,10 +923,6 @@
     "defaultMessage": "Unbind Last Key",
     "description": "Tooltip for a button used to remove last keybind from an action"
   },
-  "vFvAJ1": {
-    "defaultMessage": "{count} / {max} bots",
-    "description": "Host menu checkbox that selects all bots, showing the bot count"
-  },
   "vL5iqo": {
     "defaultMessage": "Site Settings",
     "description": "Title for a settings section used to modify general site settings"
@@ -962,6 +974,10 @@
   "y49T/p": {
     "defaultMessage": "Chat All",
     "description": "Title for the 'Chat All' action shown on the keybind settings section"
+  },
+  "y7BgjC": {
+    "defaultMessage": "Random",
+    "description": "Bot panel: difficulty option that gives each added bot a random difficulty"
   },
   "yG7bvi": {
     "defaultMessage": "Replay version",

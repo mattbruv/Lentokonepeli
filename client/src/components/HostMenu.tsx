@@ -9,6 +9,7 @@ import {
     Select,
     Stack,
     Tabs,
+    Text,
     TextInput,
     Tooltip,
 } from "@mantine/core";
@@ -25,20 +26,17 @@ import {
     IconUsers,
     IconX,
 } from "@tabler/icons-react";
-import { BotDifficulty } from "dogfight-types/BotDifficulty";
 import { BotInfo } from "dogfight-types/BotInfo";
 import { PlayerProperties } from "dogfight-types/PlayerProperties";
 import { Team } from "dogfight-types/Team";
 import { WorldState } from "dogfight-types/WorldState";
 import { FormEvent, useEffect, useState } from "react";
-import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { LOBBY_NAME_MAX_LENGTH, MAX_BOTS } from "../hooks/useLocalHost";
+import { defineMessages, FormattedMessage, IntlShape, useIntl } from "react-intl";
+import { BOT_WARNING_THRESHOLD, BotDifficultyChoice, DIFFICULTIES, LOBBY_NAME_MAX_LENGTH } from "../hooks/useLocalHost";
 import { GameSettings, GameSettingsFields } from "./GameSettingsFields";
 import classes from "./HostMenu.module.css";
 
 type TeamChoice = Team | "Random";
-
-export const DIFFICULTIES: BotDifficulty[] = ["Easy", "Medium", "Hard", "Ace"];
 
 const FLAGS: Record<TeamChoice, string> = {
     Centrals: "images/germanflag_small.gif",
@@ -54,7 +52,22 @@ export const BOT_MESSAGES = defineMessages({
     Medium: { defaultMessage: "Medium", description: "Bot panel: medium bot difficulty" },
     Hard: { defaultMessage: "Hard", description: "Bot panel: hard bot difficulty" },
     Ace: { defaultMessage: "Ace", description: "Bot panel: hardest bot difficulty" },
+    RandomDifficulty: {
+        defaultMessage: "Random",
+        description: "Bot panel: difficulty option that gives each added bot a random difficulty",
+    },
+    TooManyBots: {
+        defaultMessage: "More than {max} bots may slow the game down.",
+        description: "Warning shown when the chosen number of bots is above the recommended maximum",
+    },
 });
+
+export function difficultyOptions(intl: IntlShape) {
+    return [
+        ...DIFFICULTIES.map((d) => ({ value: d, label: intl.formatMessage(BOT_MESSAGES[d]) })),
+        { value: "Random", label: intl.formatMessage(BOT_MESSAGES.RandomDifficulty) },
+    ];
+}
 
 type HostMenuProps = {
     opened: boolean;
@@ -69,7 +82,7 @@ type HostMenuProps = {
     playerData: PlayerProperties[];
     onKickPlayer: (guid: string) => void;
     bots: BotInfo[];
-    onAddBots: (count: number, team: Team | null, difficulty: BotDifficulty) => void;
+    onAddBots: (count: number, team: Team | null, difficulty: BotDifficultyChoice) => void;
     onRemoveBots: (guids: string[]) => void;
 };
 
@@ -374,11 +387,10 @@ function PlayersTab({ hostGuid, playerData, onKickPlayer }: HostMenuProps) {
 function BotsTab({ bots, playerData, onAddBots, onRemoveBots }: HostMenuProps) {
     const intl = useIntl();
     const [team, setTeam] = useState<TeamChoice>("Random");
-    const [difficulty, setDifficulty] = useState<BotDifficulty>("Medium");
+    const [difficulty, setDifficulty] = useState<BotDifficultyChoice>("Medium");
     const [count, setCount] = useState(1);
     const [selected, setSelected] = useState<Set<string>>(new Set());
 
-    const remaining = MAX_BOTS - bots.length;
     const selectedBots = bots.filter((b) => selected.has(b.guid));
     const allSelected = bots.length > 0 && selectedBots.length === bots.length;
 
@@ -423,7 +435,6 @@ function BotsTab({ bots, playerData, onAddBots, onRemoveBots }: HostMenuProps) {
                         description: "Label for the number of bots to add at once in the host menu",
                     })}
                     min={1}
-                    max={Math.max(1, remaining)}
                     clampBehavior="strict"
                     allowDecimal={false}
                     value={count}
@@ -436,13 +447,12 @@ function BotsTab({ bots, playerData, onAddBots, onRemoveBots }: HostMenuProps) {
                         description: "Bot panel: label for the bot difficulty dropdown",
                     })}
                     value={difficulty}
-                    onChange={(value) => value && setDifficulty(value as BotDifficulty)}
-                    data={DIFFICULTIES.map((d) => ({ value: d, label: intl.formatMessage(BOT_MESSAGES[d]) }))}
+                    onChange={(value) => value && setDifficulty(value as BotDifficultyChoice)}
+                    data={difficultyOptions(intl)}
                     allowDeselect={false}
                 />
                 <Button
                     color="copper"
-                    disabled={remaining <= 0}
                     onClick={() => onAddBots(count, team === "Random" ? null : team, difficulty)}
                     rightSection={<IconUserPlus size={18} stroke={2.4} />}
                 >
@@ -453,6 +463,11 @@ function BotsTab({ bots, playerData, onAddBots, onRemoveBots }: HostMenuProps) {
                     />
                 </Button>
             </Group>
+            {bots.length + count > BOT_WARNING_THRESHOLD && (
+                <Text size="sm" c="orange">
+                    {intl.formatMessage(BOT_MESSAGES.TooManyBots, { max: BOT_WARNING_THRESHOLD })}
+                </Text>
+            )}
             {team === "Random" && (
                 <span className={classes.hint}>
                     <FormattedMessage
@@ -468,10 +483,10 @@ function BotsTab({ bots, playerData, onAddBots, onRemoveBots }: HostMenuProps) {
                         <Checkbox
                             label={intl.formatMessage(
                                 {
-                                    defaultMessage: "{count} / {max} bots",
+                                    defaultMessage: "{count, plural, one {# bot} other {# bots}}",
                                     description: "Host menu checkbox that selects all bots, showing the bot count",
                                 },
-                                { count: bots.length, max: MAX_BOTS },
+                                { count: bots.length },
                             )}
                             checked={allSelected}
                             indeterminate={selectedBots.length > 0 && !allSelected}

@@ -119,6 +119,12 @@
       "value": "Small"
     }
   ],
+  "6C102L": [
+    {
+      "type": 0,
+      "value": "Settings"
+    }
+  ],
   "6OnDBs": [
     {
       "type": 0,
@@ -399,6 +405,38 @@
       "value": "Current version"
     }
   ],
+  "GgV4fK": [
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 7
+            },
+            {
+              "type": 0,
+              "value": " bot"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 7
+            },
+            {
+              "type": 0,
+              "value": " bots"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
   "H0TxYO": [
     {
       "type": 0,
@@ -521,6 +559,20 @@
     {
       "type": 0,
       "value": "Abandoned plane"
+    }
+  ],
+  "Mewnhs": [
+    {
+      "type": 0,
+      "value": "More than "
+    },
+    {
+      "type": 1,
+      "value": "max"
+    },
+    {
+      "type": 0,
+      "value": " bots may slow the game down."
     }
   ],
   "Mn1HEl": [
@@ -1358,6 +1410,12 @@
       "value": "count"
     }
   ],
+  "nivA/t": [
+    {
+      "type": 0,
+      "value": "Settings"
+    }
+  ],
   "obtz7Y": [
     {
       "type": 0,
@@ -1610,6 +1668,12 @@
     {
       "type": 0,
       "value": "Viestitä kaikille"
+    }
+  ],
+  "y7BgjC": [
+    {
+      "type": 0,
+      "value": "Random"
     }
   ],
   "yG7bvi": [

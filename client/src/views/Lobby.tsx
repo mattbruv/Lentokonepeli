@@ -1,5 +1,4 @@
-import { Button, Modal, NumberInput, PinInput, Select, TextInput } from "@mantine/core";
-import { BotDifficulty } from "dogfight-types/BotDifficulty";
+import { Button, Modal, NumberInput, PinInput, Select, Text, TextInput } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconPlaneDeparture, IconUsers } from "@tabler/icons-react";
 import { FormEvent, useState } from "react";
@@ -10,11 +9,11 @@ import joinArt from "../assets/ui/pic_plane9.gif";
 import { GameSettings, GameSettingsFields } from "../components/GameSettingsFields";
 import { Guest } from "../components/Guest";
 import { Host } from "../components/Host";
-import { BOT_MESSAGES, DIFFICULTIES } from "../components/HostMenu";
+import { BOT_MESSAGES, difficultyOptions } from "../components/HostMenu";
 import { NameEditor } from "../components/NameEditor";
 import { Panel } from "../components/ui/Panel";
 import { useSettingsContext } from "../contexts/settingsContext";
-import { LOBBY_NAME_MAX_LENGTH, MAX_BOTS } from "../hooks/useLocalHost";
+import { BOT_WARNING_THRESHOLD, BotDifficultyChoice, LOBBY_NAME_MAX_LENGTH } from "../hooks/useLocalHost";
 import classes from "./Lobby.module.css";
 
 enum LobbyState {
@@ -34,7 +33,7 @@ export function Lobby() {
     });
     const [lobbyName, setLobbyName] = useState("");
     const [botCount, setBotCount] = useState(0);
-    const [botDifficulty, setBotDifficulty] = useState<BotDifficulty>("Medium");
+    const [botDifficulty, setBotDifficulty] = useState<BotDifficultyChoice>("Medium");
 
     const [joinId, setJoinId] = useState<string>("");
 
@@ -177,7 +176,6 @@ export function Lobby() {
                                     description: "Label for the number of bots the hosted game starts with",
                                 })}
                                 min={0}
-                                max={MAX_BOTS}
                                 clampBehavior="strict"
                                 allowDecimal={false}
                                 value={botCount}
@@ -192,13 +190,15 @@ export function Lobby() {
                                 disabled={botCount === 0}
                                 value={botDifficulty}
                                 allowDeselect={false}
-                                data={DIFFICULTIES.map((d) => ({
-                                    value: d,
-                                    label: intl.formatMessage(BOT_MESSAGES[d]),
-                                }))}
-                                onChange={(v) => v && setBotDifficulty(v as BotDifficulty)}
+                                data={difficultyOptions(intl)}
+                                onChange={(v) => v && setBotDifficulty(v as BotDifficultyChoice)}
                             />
                         </div>
+                        {botCount > BOT_WARNING_THRESHOLD && (
+                            <Text size="sm" c="orange">
+                                {intl.formatMessage(BOT_MESSAGES.TooManyBots, { max: BOT_WARNING_THRESHOLD })}
+                            </Text>
+                        )}
                         <Button
                             className={classes.cta}
                             onMouseOver={promptUsername}
