@@ -9,7 +9,7 @@ import {
     Switch,
     Tooltip,
 } from "@mantine/core";
-import { IconCurrentLocation, IconEye, IconZoomIn, IconZoomOut } from "@tabler/icons-react";
+import { IconCalendarTime, IconCurrentLocation, IconEye, IconMap, IconZoomIn, IconZoomOut } from "@tabler/icons-react";
 import { PlayerGuid } from "dogfight-types/PlayerGuid";
 import { ReplayEvent } from "dogfight-types/ReplayEvent";
 import { ReplayEventType } from "dogfight-types/ReplayEventType";
@@ -111,8 +111,27 @@ export function ReplayControls({ summary, callbacks, events, players, info }: Re
         });
     }, [info.spectating]);
 
+    const recordedAt = useMemo(() => {
+        if (summary.start_time_ms == null) return null;
+        return intl.formatDate(new Date(summary.start_time_ms), { dateStyle: "medium", timeStyle: "short" });
+    }, [summary.start_time_ms, intl]);
+
     return (
         <div className={classes.controls}>
+            <div className={classes.meta}>
+                {summary.level_name && (
+                    <div className={classes.metaRow}>
+                        <IconMap size={18} stroke={2.2} />
+                        <span className={classes.levelName}>{summary.level_name}</span>
+                    </div>
+                )}
+                {recordedAt && (
+                    <div className={classes.metaRow}>
+                        <IconCalendarTime size={18} stroke={2.2} />
+                        <time dateTime={new Date(summary.start_time_ms!).toISOString()}>{recordedAt}</time>
+                    </div>
+                )}
+            </div>
             <ReplayTimer info={info} summary={summary} callbacks={callbacks} />
             <SegmentedControl
                 fullWidth

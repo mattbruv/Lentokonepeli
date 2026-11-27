@@ -356,6 +356,17 @@ impl NetworkedBytes for u32 {
     }
 }
 
+impl NetworkedBytes for u64 {
+    fn to_bytes(&self) -> Vec<u8> {
+        u64::to_le_bytes(*self).into()
+    }
+
+    fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
+        let value = u64::from_le_bytes(bytes.get(..8)?.try_into().ok()?);
+        Some((&bytes[8..], value))
+    }
+}
+
 impl NetworkedBytes for i32 {
     fn to_bytes(&self) -> Vec<u8> {
         i32::to_le_bytes(*self).into()

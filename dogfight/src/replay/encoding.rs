@@ -58,6 +58,7 @@ impl NetworkedBytes for ReplayFile {
         bytes.extend(self.game_time_minutes.to_bytes());
         bytes.extend(self.intermission_seconds.to_bytes());
         bytes.extend(self.game_mode.to_bytes());
+        bytes.extend(self.start_time_ms.unwrap_or(0).to_bytes());
 
         bytes
     }
@@ -84,6 +85,11 @@ impl NetworkedBytes for ReplayFile {
             Some(_) => (&bytes[1..], GameMode::Normal),
             None => (bytes, GameMode::Normal),
         };
+        let (bytes, start_time_ms) = match u64::from_bytes(bytes) {
+            Some((rest, 0)) => (rest, None),
+            Some((rest, time)) => (rest, Some(time)),
+            None => (bytes, None),
+        };
 
         // See note in to_bytes to understand why we're converting this
         let mut ticks: BTreeMap<u32, Vec<ReplayTickCommand>> = BTreeMap::new();
@@ -101,6 +107,7 @@ impl NetworkedBytes for ReplayFile {
                 game_time_minutes,
                 intermission_seconds,
                 game_mode,
+                start_time_ms,
                 player_guids,
                 ticks,
             },

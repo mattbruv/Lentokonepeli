@@ -143,6 +143,7 @@ fn summarize_replay(replay_file: ReplayFile) -> ReplaySummary {
         build_version: replay_file.build_version.clone(),
         build_commit: replay_file.build_commit.clone(),
         level_name: replay_file.level_name.clone(),
+        start_time_ms: replay_file.start_time_ms,
         total_ticks: replay_file.ticks.iter().map(|x| *x.0).max().unwrap(),
         players: replay_file
             .player_guids

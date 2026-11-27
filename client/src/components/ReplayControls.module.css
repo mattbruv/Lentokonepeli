@@ -4,6 +4,34 @@
     gap: 14px;
 }
 
+.meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: var(--lk-text-dim);
+}
+
+.metaRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.metaRow > svg {
+    flex-shrink: 0;
+}
+
+.levelName {
+    font-family: Fredoka, Nunito, sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--lk-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .timer {
     display: flex;
     flex-direction: column;

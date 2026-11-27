@@ -509,10 +509,30 @@ designer=polofel"#;
         let (_, replay) = ReplayFile::from_bytes(&bytes).unwrap();
         assert_eq!(replay.game_mode, GameMode::Rounds);
 
-        let without_mode = &bytes[..bytes.len() - 1];
+        let without_mode = &bytes[..bytes.len() - 9];
         let (_, old) = ReplayFile::from_bytes(without_mode).unwrap();
         assert_eq!(old.game_mode, GameMode::Normal);
         assert_eq!(old.game_time_minutes, 5);
+    }
+
+    #[test]
+    fn start_time_survives_replay_round_trip() {
+        let mut world = world_with_level(5, 20);
+        world.set_game_mode(GameMode::Rounds);
+        world.set_replay_start_time(1_764_201_600_000);
+        let bytes = world.get_replay_file_bytes();
+        let (rest, replay) = ReplayFile::from_bytes(&bytes).unwrap();
+        assert!(rest.is_empty());
+        assert_eq!(replay.start_time_ms, Some(1_764_201_600_000));
+
+        let without_time = &bytes[..bytes.len() - 8];
+        let (_, old) = ReplayFile::from_bytes(without_time).unwrap();
+        assert_eq!(old.start_time_ms, None);
+        assert_eq!(old.game_mode, GameMode::Rounds);
+
+        let unset = world_with_level(5, 20).get_replay_file_bytes();
+        let (_, unset) = ReplayFile::from_bytes(&unset).unwrap();
+        assert_eq!(unset.start_time_ms, None);
     }
 
     #[test]

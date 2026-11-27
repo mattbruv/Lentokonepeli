@@ -28,6 +28,9 @@ fn parse_game_mode(mode: &str) -> GameMode {
 #[wasm_bindgen]
 extern "C" {
     fn alert();
+
+    #[wasm_bindgen(js_namespace = Date)]
+    fn now() -> f64;
 }
 
 #[wasm_bindgen]
@@ -91,12 +94,14 @@ impl DogfightWeb {
             intermission_seconds,
         );
         self.world = world;
+        self.world.set_replay_start_time(now() as u64);
         self.bots.reset();
         self.pending_input = rejoin;
     }
 
     pub fn init(&mut self) {
         self.world.init();
+        self.world.set_replay_start_time(now() as u64);
     }
 
     pub fn get_build_version(&self) -> String {

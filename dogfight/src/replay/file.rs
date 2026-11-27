@@ -57,6 +57,9 @@ pub struct ReplayFile {
     pub intermission_seconds: u16,
     pub game_mode: GameMode,
 
+    #[ts(type = "number | null")]
+    pub start_time_ms: Option<u64>,
+
     pub player_guids: BTreeMap<PlayerGuid, u16>,
 
     pub ticks: BTreeMap<u32, Vec<ReplayTickCommand>>,
@@ -68,6 +71,8 @@ pub struct ReplaySummary {
     pub build_version: String,
     pub build_commit: String,
     pub level_name: String,
+    #[ts(type = "number | null")]
+    pub start_time_ms: Option<u64>,
     pub total_ticks: u32,
     pub players: BTreeMap<PlayerGuid, String>,
     pub events: Vec<ReplayEvent>,
@@ -109,6 +114,7 @@ impl ReplayFile {
             game_time_minutes: 0,
             intermission_seconds: 20,
             game_mode: GameMode::Normal,
+            start_time_ms: None,
             player_guids: BTreeMap::new(),
             ticks: BTreeMap::new(),
         }

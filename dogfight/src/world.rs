@@ -232,6 +232,10 @@ impl World {
         self.replay_file.game_mode = mode;
     }
 
+    pub fn set_replay_start_time(&mut self, start_time_ms: u64) {
+        self.replay_file.start_time_ms = Some(start_time_ms);
+    }
+
     pub fn get_game_mode(&self) -> GameMode {
         self.game_mode
     }
