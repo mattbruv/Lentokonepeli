@@ -118,6 +118,7 @@ impl World {
                 }
             }
         }
+        self.apply_rules_to_buildings();
     }
 }
 

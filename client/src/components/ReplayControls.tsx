@@ -1,5 +1,6 @@
 import {
     ActionIcon,
+    Alert,
     Button,
     ComboboxItem,
     MultiSelect,
@@ -9,7 +10,15 @@ import {
     Switch,
     Tooltip,
 } from "@mantine/core";
-import { IconCalendarTime, IconCurrentLocation, IconEye, IconMap, IconZoomIn, IconZoomOut } from "@tabler/icons-react";
+import {
+    IconAdjustments,
+    IconCalendarTime,
+    IconCurrentLocation,
+    IconEye,
+    IconMap,
+    IconZoomIn,
+    IconZoomOut,
+} from "@tabler/icons-react";
 import { PlayerGuid } from "dogfight-types/PlayerGuid";
 import { ReplayEvent } from "dogfight-types/ReplayEvent";
 import { ReplayEventType } from "dogfight-types/ReplayEventType";
@@ -28,6 +37,8 @@ import { MAX_ZOOM, MIN_ZOOM } from "../client/constants";
 import { ticksToHHMMSS } from "../helpers";
 import { REPLAY_SPEEDS, ReplayCallbacks, ReplayInfo, ReplaySpeed } from "../hooks/useReplay";
 import classes from "./ReplayControls.module.css";
+import { isDefaultRules } from "../rules";
+import { RuleChangesList } from "./RulesEditor";
 import { ReplayTimer } from "./ReplayTimer";
 
 type ReplayControlsProps = {
@@ -130,6 +141,22 @@ export function ReplayControls({ summary, callbacks, events, players, info }: Re
                         <IconCalendarTime size={18} stroke={2.2} />
                         <time dateTime={new Date(summary.start_time_ms!).toISOString()}>{recordedAt}</time>
                     </div>
+                )}
+                {summary.rules && !isDefaultRules(summary.rules) && (
+                    <Alert
+                        mt={6}
+                        color="yellow"
+                        variant="light"
+                        icon={<IconAdjustments size={20} />}
+                        title={intl.formatMessage({
+                            defaultMessage: "Custom game rules",
+                            description: "Title of the notice in the game sidebar listing the rules the host changed",
+                        })}
+                    >
+                        <ScrollArea.Autosize mah={200} type="auto" scrollbars="y" offsetScrollbars>
+                            <RuleChangesList rules={summary.rules} />
+                        </ScrollArea.Autosize>
+                    </Alert>
                 )}
             </div>
             <ReplayTimer info={info} summary={summary} callbacks={callbacks} />

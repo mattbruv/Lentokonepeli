@@ -40,7 +40,7 @@ impl World {
         let mut actions = vec![];
 
         for (player_id, player) in self.players.get_map_mut() {
-            player.tick_respawn();
+            player.tick_respawn(&self.rules);
 
             if let Some(controlled) = player.get_controlling() {
                 match controlled {

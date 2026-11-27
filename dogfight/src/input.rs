@@ -384,7 +384,10 @@ impl World {
             .map(|r| *r.get_team() == team)
             .unwrap_or(false);
 
-        state_allows && runway_ok && selection.plane_type.team() == team
+        state_allows
+            && runway_ok
+            && selection.plane_type.team() == team
+            && self.rules.plane_allowed(selection.plane_type)
     }
 
     pub(crate) fn process_takeoff(&mut self, guid: &PlayerGuid, selection: RunwaySelection) {
@@ -407,6 +410,7 @@ impl World {
                             selection.plane_type,
                             selection.runway_id,
                             runway,
+                            &self.rules,
                         );
 
                         if let Some((plane_id, _)) = self.planes.insert(plane) {

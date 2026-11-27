@@ -1,12 +1,14 @@
-import { Button, Select, Stack } from "@mantine/core";
-import { IconEye, IconFileDownload } from "@tabler/icons-react";
+import { Alert, Button, Modal, ScrollArea, Select, Stack, Text } from "@mantine/core";
+import { IconAdjustments, IconEye, IconFileDownload } from "@tabler/icons-react";
 import saveAs from "file-saver";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useSettingsContext } from "../contexts/settingsContext";
 import { leaveActiveGame, useActiveView } from "../hooks/useActiveView";
 import { ReplayDownload, useGuest } from "../hooks/useGuest";
+import { isDefaultRules } from "../rules";
 import { ConnectionOverlay } from "./ConnectionOverlay";
+import { RuleChangesList } from "./RulesEditor";
 import { Game } from "./Game";
 import { GameStage } from "./GameStage";
 import { RoomCode } from "./RoomCode";
@@ -48,10 +50,16 @@ function GuestSession({ gameCode, spectator = false, onRetry }: GuestProps & { o
         requestReplay,
         replayDownload,
         lobbyName,
+        rules,
         spectating,
         followPlayer,
         followablePlayers,
     } = useGuest(getUsername(), getClan(), spectator);
+
+    const customRules = useMemo(() => (rules && !isDefaultRules(rules) ? rules : null), [rules]);
+    const rulesKey = customRules ? JSON.stringify(customRules) : null;
+    const [acknowledgedRules, setAcknowledgedRules] = useState<string | null>(null);
+    const showRulesWarning = rulesKey !== null && rulesKey !== acknowledgedRules && status.phase === "ready";
 
     function downloadReplay() {
         requestReplay((bytes) => {
@@ -78,62 +86,111 @@ function GuestSession({ gameCode, spectator = false, onRetry }: GuestProps & { o
     }, []);
 
     return (
-        <GameStage
-            game={
-                <Game
-                    ref={gameContainer}
-                    myPlayerGuid={spectator ? null : playerGuid}
-                    playerData={playerData}
-                    intermission={intermission}
-                    roomName={lobbyName || gameCode}
-                    messages={messages}
-                    onSendMessage={sendChatMessage}
-                    overlay={
-                        <ConnectionOverlay status={status} gameCode={gameCode} onRetry={onRetry} onLeave={leave} />
-                    }
-                />
-            }
-            side={
-                <Panel
-                    title={
+        <>
+            <Modal
+                opened={showRulesWarning}
+                onClose={() => setAcknowledgedRules(rulesKey)}
+                centered
+                title={intl.formatMessage({
+                    defaultMessage: "This game uses custom rules",
+                    description: "Title of the dialog warning a joining player that the host changed the game rules",
+                })}
+            >
+                <Stack gap="md">
+                    <Text size="sm">
                         <FormattedMessage
-                            defaultMessage={"Game Code"}
-                            description={"Title shown above the shareable room code"}
+                            defaultMessage="The host has changed these rules from the original game:"
+                            description="Text above the list of game rules the host has changed"
                         />
-                    }
-                >
-                    <Stack gap="lg">
-                        {lobbyName && <div className={classes.lobbyName}>{lobbyName}</div>}
-                        <RoomCode code={gameCode} />
-                        {spectator && (
-                            <Select
-                                label={intl.formatMessage({
-                                    defaultMessage: "Following",
-                                    description: "Label for the player picker while spectating a game",
-                                })}
-                                leftSection={<IconEye size={18} stroke={2.2} />}
-                                disabled={status.phase !== "ready" || followablePlayers.length === 0}
-                                allowDeselect={false}
-                                value={spectating}
-                                onChange={(guid) => guid && followPlayer(guid)}
-                                data={followablePlayers
-                                    .map((p) => ({ value: p.guid, label: p.name ?? p.guid }))
-                                    .sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: "base" }))}
+                    </Text>
+                    {customRules && (
+                        <ScrollArea.Autosize mah={320} type="auto" scrollbars="y" offsetScrollbars>
+                            <RuleChangesList rules={customRules} />
+                        </ScrollArea.Autosize>
+                    )}
+                    <Button color="copper" onClick={() => setAcknowledgedRules(rulesKey)}>
+                        <FormattedMessage
+                            defaultMessage="Got it"
+                            description="Button that closes the custom game rules warning"
+                        />
+                    </Button>
+                </Stack>
+            </Modal>
+            <GameStage
+                game={
+                    <Game
+                        ref={gameContainer}
+                        myPlayerGuid={spectator ? null : playerGuid}
+                        playerData={playerData}
+                        intermission={intermission}
+                        roomName={lobbyName || gameCode}
+                        messages={messages}
+                        onSendMessage={sendChatMessage}
+                        overlay={
+                            <ConnectionOverlay status={status} gameCode={gameCode} onRetry={onRetry} onLeave={leave} />
+                        }
+                    />
+                }
+                side={
+                    <Panel
+                        title={
+                            <FormattedMessage
+                                defaultMessage={"Game Code"}
+                                description={"Title shown above the shareable room code"}
                             />
-                        )}
-                        <Button
-                            onClick={downloadReplay}
-                            disabled={status.phase !== "ready" || replayDownload.phase !== "idle"}
-                            color="grass"
-                            fullWidth
-                            rightSection={<IconFileDownload stroke={2.4} />}
-                        >
-                            <ReplayButtonLabel download={replayDownload} />
-                        </Button>
-                    </Stack>
-                </Panel>
-            }
-        />
+                        }
+                    >
+                        <Stack gap="lg">
+                            {lobbyName && <div className={classes.lobbyName}>{lobbyName}</div>}
+                            <RoomCode code={gameCode} />
+                            {customRules && (
+                                <Alert
+                                    color="yellow"
+                                    variant="light"
+                                    icon={<IconAdjustments size={20} />}
+                                    title={intl.formatMessage({
+                                        defaultMessage: "Custom game rules",
+                                        description:
+                                            "Title of the notice in the game sidebar listing the rules the host changed",
+                                    })}
+                                >
+                                    <ScrollArea.Autosize mah={200} type="auto" scrollbars="y" offsetScrollbars>
+                                        <RuleChangesList rules={customRules} />
+                                    </ScrollArea.Autosize>
+                                </Alert>
+                            )}
+                            {spectator && (
+                                <Select
+                                    label={intl.formatMessage({
+                                        defaultMessage: "Following",
+                                        description: "Label for the player picker while spectating a game",
+                                    })}
+                                    leftSection={<IconEye size={18} stroke={2.2} />}
+                                    disabled={status.phase !== "ready" || followablePlayers.length === 0}
+                                    allowDeselect={false}
+                                    value={spectating}
+                                    onChange={(guid) => guid && followPlayer(guid)}
+                                    data={followablePlayers
+                                        .map((p) => ({ value: p.guid, label: p.name ?? p.guid }))
+                                        .sort((a, b) =>
+                                            a.label.localeCompare(b.label, undefined, { sensitivity: "base" }),
+                                        )}
+                                />
+                            )}
+                            <Button
+                                onClick={downloadReplay}
+                                disabled={status.phase !== "ready" || replayDownload.phase !== "idle"}
+                                color="grass"
+                                fullWidth
+                                rightSection={<IconFileDownload stroke={2.4} />}
+                            >
+                                <ReplayButtonLabel download={replayDownload} />
+                            </Button>
+                        </Stack>
+                    </Panel>
+                }
+            />
+        </>
     );
 }
 

@@ -5,6 +5,12 @@
       "value": "Motor"
     }
   ],
+  "+KYPqH": [
+    {
+      "type": 0,
+      "value": "Wiedereinstiegszeit nach Teamkill"
+    }
+  ],
   "+VHHqo": [
     {
       "type": 0,
@@ -15,6 +21,12 @@
     {
       "type": 0,
       "value": "Unentschieden!"
+    }
+  ],
+  "+nHbxx": [
+    {
+      "type": 0,
+      "value": "Unzerstörbare Gebäude"
     }
   ],
   "+ptLoi": [
@@ -71,6 +83,12 @@
       "value": "Passiv"
     }
   ],
+  "0QdJF3": [
+    {
+      "type": 0,
+      "value": "nicht erlaubt"
+    }
+  ],
   "1ICbwz": [
     {
       "type": 0,
@@ -93,6 +111,12 @@
     {
       "type": 0,
       "value": "Tode"
+    }
+  ],
+  "3+iy8l": [
+    {
+      "type": 0,
+      "value": "Startbahn-Lebenspunkte"
     }
   ],
   "309viz": [
@@ -131,6 +155,12 @@
       "value": "Aussteigen, Fallschirm öffnen"
     }
   ],
+  "5BEOU3": [
+    {
+      "type": 0,
+      "value": "Speichern"
+    }
+  ],
   "5jSC1l": [
     {
       "type": 0,
@@ -155,10 +185,22 @@
       "value": "Treibstoff"
     }
   ],
+  "6Oypsp": [
+    {
+      "type": 0,
+      "value": "Jedes Team behält immer mindestens ein erlaubtes Flugzeug."
+    }
+  ],
   "6h1L5u": [
     {
       "type": 0,
       "value": "Leicht"
+    }
+  ],
+  "6mhHB1": [
+    {
+      "type": 0,
+      "value": "Fallschirmabsprung"
     }
   ],
   "6zMC33": [
@@ -197,6 +239,12 @@
       "value": "Umgedreht"
     }
   ],
+  "82c6/K": [
+    {
+      "type": 0,
+      "value": "Auf Original zurücksetzen"
+    }
+  ],
   "8Am/Pl": [
     {
       "type": 0,
@@ -231,6 +279,38 @@
     {
       "type": 0,
       "value": "Letzte Nutzung"
+    }
+  ],
+  "93xZ94": [
+    {
+      "type": 1,
+      "value": "label"
+    },
+    {
+      "type": 0,
+      "value": ": "
+    },
+    {
+      "type": 1,
+      "value": "value"
+    },
+    {
+      "type": 0,
+      "value": " (normal "
+    },
+    {
+      "type": 1,
+      "value": "original"
+    },
+    {
+      "type": 0,
+      "value": ")"
+    }
+  ],
+  "9aUWlD": [
+    {
+      "type": 0,
+      "value": "Pilotenpistolen"
     }
   ],
   "9bQEK7": [
@@ -271,6 +351,12 @@
       "value": " zerstört."
     }
   ],
+  "A7lzCj": [
+    {
+      "type": 0,
+      "value": "Flugzeug-MGs"
+    }
+  ],
   "AY7tVh": [
     {
       "type": 0,
@@ -307,6 +393,20 @@
       "value": "Hauptquartier"
     }
   ],
+  "BFGUDR": [
+    {
+      "type": 1,
+      "value": "plane"
+    },
+    {
+      "type": 0,
+      "value": ": "
+    },
+    {
+      "type": 1,
+      "value": "value"
+    }
+  ],
   "BLykMd": [
     {
       "type": 0,
@@ -329,6 +429,24 @@
     {
       "type": 0,
       "value": "Host wird erreicht"
+    }
+  ],
+  "C3T5iK": [
+    {
+      "type": 0,
+      "value": "Feuerverzögerung"
+    }
+  ],
+  "C8OJE8": [
+    {
+      "type": 0,
+      "value": "Lebenspunkte"
+    }
+  ],
+  "CKHrD1": [
+    {
+      "type": 0,
+      "value": "Eigenbeschuss"
     }
   ],
   "CpTJ9C": [
@@ -403,6 +521,12 @@
       "value": "Verbinde mit Server"
     }
   ],
+  "FInvrp": [
+    {
+      "type": 0,
+      "value": "Beschleunigung"
+    }
+  ],
   "FVxFnN": [
     {
       "type": 0,
@@ -413,6 +537,12 @@
     {
       "type": 0,
       "value": "Bombe"
+    }
+  ],
+  "Fvi+0H": [
+    {
+      "type": 0,
+      "value": "Spielregeln"
     }
   ],
   "G7DhrV": [
@@ -497,6 +627,58 @@
       "value": "4-stelligen Spielcode eingeben..."
     }
   ],
+  "InAFP6": [
+    {
+      "type": 0,
+      "value": "Treibstoff"
+    }
+  ],
+  "J88gsh": [
+    {
+      "type": 0,
+      "value": "Unbegrenzter Treibstoff"
+    }
+  ],
+  "JP86zV": [
+    {
+      "type": 1,
+      "value": "plane"
+    },
+    {
+      "type": 0,
+      "value": " – "
+    },
+    {
+      "type": 1,
+      "value": "label"
+    },
+    {
+      "type": 0,
+      "value": ": "
+    },
+    {
+      "type": 1,
+      "value": "value"
+    },
+    {
+      "type": 0,
+      "value": " (normal "
+    },
+    {
+      "type": 1,
+      "value": "original"
+    },
+    {
+      "type": 0,
+      "value": ")"
+    }
+  ],
+  "JQ/vL6": [
+    {
+      "type": 0,
+      "value": "Unbegrenzte Bomben"
+    }
+  ],
   "JSLtOI": [
     {
       "type": 0,
@@ -545,6 +727,12 @@
     {
       "type": 0,
       "value": "Abbrechen"
+    }
+  ],
+  "LNYaBb": [
+    {
+      "type": 0,
+      "value": "Unbegrenzte Munition"
     }
   ],
   "Lo5tsu": [
@@ -645,6 +833,12 @@
       "value": "Nach rechts"
     }
   ],
+  "NlmIRX": [
+    {
+      "type": 0,
+      "value": "Der Host hat diese Regeln gegenüber dem Originalspiel geändert:"
+    }
+  ],
   "NyL4Zc": [
     {
       "type": 0,
@@ -703,6 +897,12 @@
       "value": "Zufällig"
     }
   ],
+  "PyjTpa": [
+    {
+      "type": 0,
+      "value": "Wiedereinstieg & Piloten"
+    }
+  ],
   "PzZfKW": [
     {
       "type": 0,
@@ -735,10 +935,22 @@
       "value": " bei"
     }
   ],
+  "QZbnsN": [
+    {
+      "type": 0,
+      "value": "Name der Vorlage"
+    }
+  ],
   "QdN+gh": [
     {
       "type": 0,
       "value": "Wüste"
+    }
+  ],
+  "QhGde8": [
+    {
+      "type": 0,
+      "value": "Bombenabwurf"
     }
   ],
   "Qj15PN": [
@@ -769,6 +981,12 @@
     {
       "type": 0,
       "value": "Zurück zur Lobby"
+    }
+  ],
+  "RHcX+j": [
+    {
+      "type": 0,
+      "value": "Munition"
     }
   ],
   "RJPf0Z": [
@@ -849,6 +1067,12 @@
       "value": "Alliierte"
     }
   ],
+  "Te6Km7": [
+    {
+      "type": 0,
+      "value": "Hauptquartier-Lebenspunkte"
+    }
+  ],
   "Telnt5": [
     {
       "type": 0,
@@ -859,6 +1083,12 @@
     {
       "type": 0,
       "value": "Host"
+    }
+  ],
+  "TnCmTk": [
+    {
+      "type": 0,
+      "value": "Feuerverzögerung der Piloten"
     }
   ],
   "Tsq+GT": [
@@ -915,6 +1145,12 @@
       "value": "Mittel"
     }
   ],
+  "VFOn0Q": [
+    {
+      "type": 0,
+      "value": "an"
+    }
+  ],
   "VJkmRe": [
     {
       "type": 0,
@@ -925,6 +1161,12 @@
     {
       "type": 0,
       "value": "Spiel"
+    }
+  ],
+  "VOpWC1": [
+    {
+      "type": 0,
+      "value": "Bombenverzögerung"
     }
   ],
   "VVxUC9": [
@@ -987,6 +1229,12 @@
       "value": "Punkte"
     }
   ],
+  "X5bw8W": [
+    {
+      "type": 0,
+      "value": "Eigene Spielregeln"
+    }
+  ],
   "XH4Nct": [
     {
       "type": 0,
@@ -1011,6 +1259,20 @@
       "value": "Landebahn"
     }
   ],
+  "Xtm0Kr": [
+    {
+      "type": 1,
+      "value": "label"
+    },
+    {
+      "type": 0,
+      "value": ": "
+    },
+    {
+      "type": 1,
+      "value": "value"
+    }
+  ],
   "Xx0fru": [
     {
       "type": 0,
@@ -1027,6 +1289,12 @@
     {
       "type": 0,
       "value": "Dieses Replay konnte nicht geladen werden. Wenn es mit einer anderen Spielversion aufgenommen wurde, ist es möglicherweise nicht kompatibel."
+    }
+  ],
+  "YtguIH": [
+    {
+      "type": 0,
+      "value": "Auf alle Flugzeuge kopieren"
     }
   ],
   "YzB1NF": [
@@ -1153,6 +1421,12 @@
       "value": " gewonnen!"
     }
   ],
+  "c2TURS": [
+    {
+      "type": 0,
+      "value": "Verstanden"
+    }
+  ],
   "cFDrGv": [
     {
       "type": 0,
@@ -1199,6 +1473,12 @@
       "value": "Nach links"
     }
   ],
+  "dS8sdi": [
+    {
+      "type": 0,
+      "value": "Eigene Spielregeln"
+    }
+  ],
   "daomJy": [
     {
       "type": 0,
@@ -1209,6 +1489,12 @@
     {
       "type": 0,
       "value": "Startet für alle ein neues Spiel auf der gewählten Karte. Spieler und Bots bleiben, aber Teams, Punkte und das Replay beginnen von vorn."
+    }
+  ],
+  "e3y/hO": [
+    {
+      "type": 0,
+      "value": "Übernehmen"
     }
   ],
   "e5OODe": [
@@ -1223,10 +1509,22 @@
       "value": "Nächste Runde starten"
     }
   ],
+  "eyUUf8": [
+    {
+      "type": 0,
+      "value": "Waffen"
+    }
+  ],
   "ezKLsY": [
     {
       "type": 0,
       "value": "Fokker DR.I"
+    }
+  ],
+  "f/eMSW": [
+    {
+      "type": 0,
+      "value": "Reparaturzeit pro Lebenspunkt"
     }
   ],
   "f3ix4b": [
@@ -1309,10 +1607,22 @@
       "value": "Replay aus einer anderen Version"
     }
   ],
+  "hmqhvt": [
+    {
+      "type": 0,
+      "value": "Gebäude"
+    }
+  ],
   "iMTNwO": [
     {
       "type": 0,
       "value": "Gemischt"
+    }
+  ],
+  "iOTzhw": [
+    {
+      "type": 0,
+      "value": "Keine gespeicherten Vorlagen"
     }
   ],
   "ioK/G6": [
@@ -1345,10 +1655,22 @@
       "value": "Explosion"
     }
   ],
+  "jICMij": [
+    {
+      "type": 0,
+      "value": "Aktuelle Regeln speichern als"
+    }
+  ],
   "jLMFLF": [
     {
       "type": 0,
       "value": "Erneut versuchen"
+    }
+  ],
+  "jet5Io": [
+    {
+      "type": 0,
+      "value": "Start-/Landeverzögerung der Startbahn"
     }
   ],
   "jlutC2": [
@@ -1361,6 +1683,18 @@
     {
       "type": 0,
       "value": "An Fenster anpassen"
+    }
+  ],
+  "kM8e0a": [
+    {
+      "type": 0,
+      "value": "Dieses Spiel verwendet eigene Regeln"
+    }
+  ],
+  "kZfSKa": [
+    {
+      "type": 0,
+      "value": "Schaden"
     }
   ],
   "kfnjH9": [
@@ -1393,6 +1727,12 @@
       "value": "Name"
     }
   ],
+  "l9mP9j": [
+    {
+      "type": 0,
+      "value": "Vorlage"
+    }
+  ],
   "lA7naj": [
     {
       "type": 0,
@@ -1417,6 +1757,22 @@
       "value": "Abbrechen"
     }
   ],
+  "m8Oi8l": [
+    {
+      "type": 0,
+      "value": "Abbrechen"
+    }
+  ],
+  "mBIlTO": [
+    {
+      "type": 0,
+      "value": "Original: "
+    },
+    {
+      "type": 1,
+      "value": "value"
+    }
+  ],
   "mq7h++": [
     {
       "type": 0,
@@ -1427,6 +1783,12 @@
     {
       "type": 0,
       "value": "Schlachtfeld wird geladen"
+    }
+  ],
+  "mtnKEB": [
+    {
+      "type": 0,
+      "value": "Wiedereinstiegszeit"
     }
   ],
   "mv9zeu": [
@@ -1486,10 +1848,34 @@
       "value": " hinzufügen"
     }
   ],
+  "ngpgyC": [
+    {
+      "type": 0,
+      "value": "Wendigkeit"
+    }
+  ],
   "nivA/t": [
     {
       "type": 0,
       "value": "Einstellungen"
+    }
+  ],
+  "nsD9i0": [
+    {
+      "type": 0,
+      "value": "Pilotenschutz nach Absprung"
+    }
+  ],
+  "o5MbpS": [
+    {
+      "type": 0,
+      "value": "Vorlage löschen"
+    }
+  ],
+  "oUrRwQ": [
+    {
+      "type": 0,
+      "value": "Flugzeugkollisionen"
     }
   ],
   "obtz7Y": [
@@ -1514,6 +1900,12 @@
     {
       "type": 0,
       "value": "Spiel hosten"
+    }
+  ],
+  "p4NtLy": [
+    {
+      "type": 0,
+      "value": "Flugzeuge"
     }
   ],
   "pPlaQd": [
@@ -1556,6 +1948,18 @@
     {
       "type": 0,
       "value": "Schwierigkeit"
+    }
+  ],
+  "qLiOrX": [
+    {
+      "type": 0,
+      "value": "Höchstgeschwindigkeitsbonus"
+    }
+  ],
+  "qsl4M+": [
+    {
+      "type": 0,
+      "value": "Bomben"
     }
   ],
   "qtiDl6": [
@@ -1604,6 +2008,12 @@
     {
       "type": 0,
       "value": "(Strafe für Selbstmord)"
+    }
+  ],
+  "siC31q": [
+    {
+      "type": 0,
+      "value": "Original-Spielregeln"
     }
   ],
   "szCmDm": [
@@ -1656,6 +2066,12 @@
       "value": " ist ein Wiedergabefehler aufgetreten. Das passiert meist, wenn ein Replay mit einer anderen Spielversion aufgenommen wurde."
     }
   ],
+  "uBGNVH": [
+    {
+      "type": 0,
+      "value": "Erlaubt"
+    }
+  ],
   "ult8LX": [
     {
       "type": 0,
@@ -1680,6 +2096,12 @@
       "value": "Bristol F.2b"
     }
   ],
+  "vwC+hs": [
+    {
+      "type": 0,
+      "value": "Wiedereinstiegszeit nach Selbstmord"
+    }
+  ],
   "wpH/Pl": [
     {
       "type": 0,
@@ -1696,6 +2118,12 @@
     {
       "type": 0,
       "value": "Server nicht erreichbar. Prüfe deine Internetverbindung und versuche es erneut."
+    }
+  ],
+  "x+GGpE": [
+    {
+      "type": 0,
+      "value": "aus"
     }
   ],
   "x6pbo9": [

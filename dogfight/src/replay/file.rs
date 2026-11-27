@@ -8,6 +8,7 @@ use crate::{
     entities::{player::PlayerGuid, world_info::GameMode},
     input::{PlayerCommand, ServerInput},
     network::encoding::NetworkedBytes,
+    rules::GameRules,
     world::World,
 };
 
@@ -60,6 +61,8 @@ pub struct ReplayFile {
     #[ts(type = "number | null")]
     pub start_time_ms: Option<u64>,
 
+    pub rules: GameRules,
+
     pub player_guids: BTreeMap<PlayerGuid, u16>,
 
     pub ticks: BTreeMap<u32, Vec<ReplayTickCommand>>,
@@ -73,6 +76,7 @@ pub struct ReplaySummary {
     pub level_name: String,
     #[ts(type = "number | null")]
     pub start_time_ms: Option<u64>,
+    pub rules: GameRules,
     pub total_ticks: u32,
     pub players: BTreeMap<PlayerGuid, String>,
     pub events: Vec<ReplayEvent>,
@@ -115,6 +119,7 @@ impl ReplayFile {
             intermission_seconds: 20,
             game_mode: GameMode::Normal,
             start_time_ms: None,
+            rules: GameRules::default(),
             player_guids: BTreeMap::new(),
             ticks: BTreeMap::new(),
         }

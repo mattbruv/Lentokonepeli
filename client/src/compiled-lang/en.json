@@ -5,6 +5,12 @@
       "value": "Motor"
     }
   ],
+  "+KYPqH": [
+    {
+      "type": 0,
+      "value": "Respawn time after team kill"
+    }
+  ],
   "+VHHqo": [
     {
       "type": 0,
@@ -15,6 +21,12 @@
     {
       "type": 0,
       "value": "Tie!"
+    }
+  ],
+  "+nHbxx": [
+    {
+      "type": 0,
+      "value": "Indestructible buildings"
     }
   ],
   "+ptLoi": [
@@ -71,6 +83,12 @@
       "value": "Passive"
     }
   ],
+  "0QdJF3": [
+    {
+      "type": 0,
+      "value": "not allowed"
+    }
+  ],
   "1ICbwz": [
     {
       "type": 0,
@@ -93,6 +111,12 @@
     {
       "type": 0,
       "value": "Deaths"
+    }
+  ],
+  "3+iy8l": [
+    {
+      "type": 0,
+      "value": "Runway health"
     }
   ],
   "309viz": [
@@ -131,6 +155,12 @@
       "value": "Eject, Open Parachute"
     }
   ],
+  "5BEOU3": [
+    {
+      "type": 0,
+      "value": "Save"
+    }
+  ],
   "5jSC1l": [
     {
       "type": 0,
@@ -155,10 +185,22 @@
       "value": "Fuel"
     }
   ],
+  "6Oypsp": [
+    {
+      "type": 0,
+      "value": "Each team always keeps at least one allowed plane."
+    }
+  ],
   "6h1L5u": [
     {
       "type": 0,
       "value": "Easy"
+    }
+  ],
+  "6mhHB1": [
+    {
+      "type": 0,
+      "value": "Bailing out"
     }
   ],
   "6zMC33": [
@@ -197,6 +239,12 @@
       "value": "Flipped"
     }
   ],
+  "82c6/K": [
+    {
+      "type": 0,
+      "value": "Reset to original"
+    }
+  ],
   "8Am/Pl": [
     {
       "type": 0,
@@ -233,6 +281,38 @@
       "value": "Last use"
     }
   ],
+  "93xZ94": [
+    {
+      "type": 1,
+      "value": "label"
+    },
+    {
+      "type": 0,
+      "value": ": "
+    },
+    {
+      "type": 1,
+      "value": "value"
+    },
+    {
+      "type": 0,
+      "value": " (normally "
+    },
+    {
+      "type": 1,
+      "value": "original"
+    },
+    {
+      "type": 0,
+      "value": ")"
+    }
+  ],
+  "9aUWlD": [
+    {
+      "type": 0,
+      "value": "Pilot pistols"
+    }
+  ],
   "9bQEK7": [
     {
       "type": 0,
@@ -265,6 +345,12 @@
     {
       "type": 0,
       "value": " runway destroyed."
+    }
+  ],
+  "A7lzCj": [
+    {
+      "type": 0,
+      "value": "Plane guns"
     }
   ],
   "AY7tVh": [
@@ -303,6 +389,20 @@
       "value": "Headquarters"
     }
   ],
+  "BFGUDR": [
+    {
+      "type": 1,
+      "value": "plane"
+    },
+    {
+      "type": 0,
+      "value": ": "
+    },
+    {
+      "type": 1,
+      "value": "value"
+    }
+  ],
   "BLykMd": [
     {
       "type": 0,
@@ -325,6 +425,24 @@
     {
       "type": 0,
       "value": "Reaching the host"
+    }
+  ],
+  "C3T5iK": [
+    {
+      "type": 0,
+      "value": "Fire delay"
+    }
+  ],
+  "C8OJE8": [
+    {
+      "type": 0,
+      "value": "Health"
+    }
+  ],
+  "CKHrD1": [
+    {
+      "type": 0,
+      "value": "Friendly fire"
     }
   ],
   "CpTJ9C": [
@@ -399,6 +517,12 @@
       "value": "Connecting to server"
     }
   ],
+  "FInvrp": [
+    {
+      "type": 0,
+      "value": "Acceleration"
+    }
+  ],
   "FVxFnN": [
     {
       "type": 0,
@@ -409,6 +533,12 @@
     {
       "type": 0,
       "value": "Bomb"
+    }
+  ],
+  "Fvi+0H": [
+    {
+      "type": 0,
+      "value": "Game rules"
     }
   ],
   "G7DhrV": [
@@ -493,6 +623,58 @@
       "value": "Enter the 4 digit game code..."
     }
   ],
+  "InAFP6": [
+    {
+      "type": 0,
+      "value": "Fuel"
+    }
+  ],
+  "J88gsh": [
+    {
+      "type": 0,
+      "value": "Unlimited fuel"
+    }
+  ],
+  "JP86zV": [
+    {
+      "type": 1,
+      "value": "plane"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "type": 1,
+      "value": "label"
+    },
+    {
+      "type": 0,
+      "value": ": "
+    },
+    {
+      "type": 1,
+      "value": "value"
+    },
+    {
+      "type": 0,
+      "value": " (normally "
+    },
+    {
+      "type": 1,
+      "value": "original"
+    },
+    {
+      "type": 0,
+      "value": ")"
+    }
+  ],
+  "JQ/vL6": [
+    {
+      "type": 0,
+      "value": "Unlimited bombs"
+    }
+  ],
   "JSLtOI": [
     {
       "type": 0,
@@ -541,6 +723,12 @@
     {
       "type": 0,
       "value": "Cancel"
+    }
+  ],
+  "LNYaBb": [
+    {
+      "type": 0,
+      "value": "Unlimited ammo"
     }
   ],
   "Lo5tsu": [
@@ -641,6 +829,12 @@
       "value": "Move Right"
     }
   ],
+  "NlmIRX": [
+    {
+      "type": 0,
+      "value": "The host has changed these rules from the original game:"
+    }
+  ],
   "NyL4Zc": [
     {
       "type": 0,
@@ -699,6 +893,12 @@
       "value": "Random"
     }
   ],
+  "PyjTpa": [
+    {
+      "type": 0,
+      "value": "Respawn & pilots"
+    }
+  ],
   "PzZfKW": [
     {
       "type": 0,
@@ -727,10 +927,22 @@
       "value": "code"
     }
   ],
+  "QZbnsN": [
+    {
+      "type": 0,
+      "value": "Preset name"
+    }
+  ],
   "QdN+gh": [
     {
       "type": 0,
       "value": "Desert"
+    }
+  ],
+  "QhGde8": [
+    {
+      "type": 0,
+      "value": "Bombing"
     }
   ],
   "Qj15PN": [
@@ -761,6 +973,12 @@
     {
       "type": 0,
       "value": "Back to lobby"
+    }
+  ],
+  "RHcX+j": [
+    {
+      "type": 0,
+      "value": "Ammo"
     }
   ],
   "RJPf0Z": [
@@ -841,6 +1059,12 @@
       "value": "Allies"
     }
   ],
+  "Te6Km7": [
+    {
+      "type": 0,
+      "value": "Headquarters health"
+    }
+  ],
   "Telnt5": [
     {
       "type": 0,
@@ -851,6 +1075,12 @@
     {
       "type": 0,
       "value": "Host"
+    }
+  ],
+  "TnCmTk": [
+    {
+      "type": 0,
+      "value": "Pilot fire delay"
     }
   ],
   "Tsq+GT": [
@@ -907,6 +1137,12 @@
       "value": "Medium"
     }
   ],
+  "VFOn0Q": [
+    {
+      "type": 0,
+      "value": "on"
+    }
+  ],
   "VJkmRe": [
     {
       "type": 0,
@@ -917,6 +1153,12 @@
     {
       "type": 0,
       "value": "Game"
+    }
+  ],
+  "VOpWC1": [
+    {
+      "type": 0,
+      "value": "Bomb delay"
     }
   ],
   "VVxUC9": [
@@ -979,6 +1221,12 @@
       "value": "Score"
     }
   ],
+  "X5bw8W": [
+    {
+      "type": 0,
+      "value": "Custom game rules"
+    }
+  ],
   "XH4Nct": [
     {
       "type": 0,
@@ -1003,6 +1251,20 @@
       "value": "Runway"
     }
   ],
+  "Xtm0Kr": [
+    {
+      "type": 1,
+      "value": "label"
+    },
+    {
+      "type": 0,
+      "value": ": "
+    },
+    {
+      "type": 1,
+      "value": "value"
+    }
+  ],
   "Xx0fru": [
     {
       "type": 0,
@@ -1019,6 +1281,12 @@
     {
       "type": 0,
       "value": "This replay couldn't be loaded. If it was recorded with a different version of the game, it may not be compatible."
+    }
+  ],
+  "YtguIH": [
+    {
+      "type": 0,
+      "value": "Copy to all planes"
     }
   ],
   "YzB1NF": [
@@ -1145,6 +1413,12 @@
       "value": " have won!"
     }
   ],
+  "c2TURS": [
+    {
+      "type": 0,
+      "value": "Got it"
+    }
+  ],
   "cFDrGv": [
     {
       "type": 0,
@@ -1191,6 +1465,12 @@
       "value": "Move Left"
     }
   ],
+  "dS8sdi": [
+    {
+      "type": 0,
+      "value": "Custom game rules"
+    }
+  ],
   "daomJy": [
     {
       "type": 0,
@@ -1201,6 +1481,12 @@
     {
       "type": 0,
       "value": "Starts a fresh game on the chosen map for everyone. Players and bots stay, but teams, scores and the replay start over."
+    }
+  ],
+  "e3y/hO": [
+    {
+      "type": 0,
+      "value": "Apply"
     }
   ],
   "e5OODe": [
@@ -1215,10 +1501,22 @@
       "value": "Start next round"
     }
   ],
+  "eyUUf8": [
+    {
+      "type": 0,
+      "value": "Weapons"
+    }
+  ],
   "ezKLsY": [
     {
       "type": 0,
       "value": "Fokker DR.I"
+    }
+  ],
+  "f/eMSW": [
+    {
+      "type": 0,
+      "value": "Repair time per health point"
     }
   ],
   "f3ix4b": [
@@ -1297,10 +1595,22 @@
       "value": "Replay from a different version"
     }
   ],
+  "hmqhvt": [
+    {
+      "type": 0,
+      "value": "Buildings"
+    }
+  ],
   "iMTNwO": [
     {
       "type": 0,
       "value": "Mixed"
+    }
+  ],
+  "iOTzhw": [
+    {
+      "type": 0,
+      "value": "No saved presets"
     }
   ],
   "ioK/G6": [
@@ -1333,10 +1643,22 @@
       "value": "Explosion"
     }
   ],
+  "jICMij": [
+    {
+      "type": 0,
+      "value": "Save current rules as"
+    }
+  ],
   "jLMFLF": [
     {
       "type": 0,
       "value": "Try again"
+    }
+  ],
+  "jet5Io": [
+    {
+      "type": 0,
+      "value": "Runway takeoff/landing delay"
     }
   ],
   "jlutC2": [
@@ -1349,6 +1671,18 @@
     {
       "type": 0,
       "value": "Fit to window"
+    }
+  ],
+  "kM8e0a": [
+    {
+      "type": 0,
+      "value": "This game uses custom rules"
+    }
+  ],
+  "kZfSKa": [
+    {
+      "type": 0,
+      "value": "Damage"
     }
   ],
   "kfnjH9": [
@@ -1381,6 +1715,12 @@
       "value": "Name"
     }
   ],
+  "l9mP9j": [
+    {
+      "type": 0,
+      "value": "Preset"
+    }
+  ],
   "lA7naj": [
     {
       "type": 0,
@@ -1405,6 +1745,22 @@
       "value": "Cancel"
     }
   ],
+  "m8Oi8l": [
+    {
+      "type": 0,
+      "value": "Cancel"
+    }
+  ],
+  "mBIlTO": [
+    {
+      "type": 0,
+      "value": "Original: "
+    },
+    {
+      "type": 1,
+      "value": "value"
+    }
+  ],
   "mq7h++": [
     {
       "type": 0,
@@ -1415,6 +1771,12 @@
     {
       "type": 0,
       "value": "Loading the battlefield"
+    }
+  ],
+  "mtnKEB": [
+    {
+      "type": 0,
+      "value": "Respawn time"
     }
   ],
   "mv9zeu": [
@@ -1474,10 +1836,34 @@
       "value": "count"
     }
   ],
+  "ngpgyC": [
+    {
+      "type": 0,
+      "value": "Turn rate"
+    }
+  ],
   "nivA/t": [
     {
       "type": 0,
       "value": "Settings"
+    }
+  ],
+  "nsD9i0": [
+    {
+      "type": 0,
+      "value": "Pilot spawn protection"
+    }
+  ],
+  "o5MbpS": [
+    {
+      "type": 0,
+      "value": "Delete preset"
+    }
+  ],
+  "oUrRwQ": [
+    {
+      "type": 0,
+      "value": "Plane collisions"
     }
   ],
   "obtz7Y": [
@@ -1502,6 +1888,12 @@
     {
       "type": 0,
       "value": "Host Game"
+    }
+  ],
+  "p4NtLy": [
+    {
+      "type": 0,
+      "value": "Planes"
     }
   ],
   "pPlaQd": [
@@ -1544,6 +1936,18 @@
     {
       "type": 0,
       "value": "Difficulty"
+    }
+  ],
+  "qLiOrX": [
+    {
+      "type": 0,
+      "value": "Top speed bonus"
+    }
+  ],
+  "qsl4M+": [
+    {
+      "type": 0,
+      "value": "Bombs"
     }
   ],
   "qtiDl6": [
@@ -1592,6 +1996,12 @@
     {
       "type": 0,
       "value": "(Suicide penalty)"
+    }
+  ],
+  "siC31q": [
+    {
+      "type": 0,
+      "value": "Original game rules"
     }
   ],
   "szCmDm": [
@@ -1644,6 +2054,12 @@
       "value": ". This usually happens when a replay was recorded with a different version of the game."
     }
   ],
+  "uBGNVH": [
+    {
+      "type": 0,
+      "value": "Allowed"
+    }
+  ],
   "ult8LX": [
     {
       "type": 0,
@@ -1668,6 +2084,12 @@
       "value": "Bristol F.2b"
     }
   ],
+  "vwC+hs": [
+    {
+      "type": 0,
+      "value": "Respawn time after suicide"
+    }
+  ],
   "wpH/Pl": [
     {
       "type": 0,
@@ -1684,6 +2106,12 @@
     {
       "type": 0,
       "value": "Couldn't reach the server. Check your internet connection and try again."
+    }
+  ],
+  "x+GGpE": [
+    {
+      "type": 0,
+      "value": "off"
     }
   ],
   "x6pbo9": [

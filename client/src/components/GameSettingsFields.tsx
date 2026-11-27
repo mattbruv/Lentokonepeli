@@ -1,5 +1,6 @@
 import { Select, Tooltip } from "@mantine/core";
 import { GameMode } from "dogfight-types/GameMode";
+import { GameRules } from "dogfight-types/GameRules";
 import { useIntl } from "react-intl";
 import Levels from "../assets/levels.json";
 import { CUSTOM_LEVEL_PREFIX, resolveLevel, sortedLevelNames, useCustomLevels } from "../customLevels";
@@ -13,6 +14,7 @@ export type GameSettings = {
     levelKey: string;
     gameTime: number;
     gameMode: GameMode;
+    rules: GameRules;
 };
 
 type GameSettingsFieldsProps = {

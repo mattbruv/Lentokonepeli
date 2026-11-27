@@ -1,4 +1,5 @@
 use crate::inspect::{InspectOwner, PlaneInspect};
+use crate::rules::{scale_percent, GameRules};
 use std::{borrow::Cow, f64::consts::PI};
 
 use dogfight_macros::{EnumBytes, Networked};
@@ -115,6 +116,8 @@ pub struct Plane {
     last_bomb_ms: i32,
     bomb_delay_ms: i32,
 
+    rules: GameRules,
+
     last_motor_on_ms: i32,
     motor_on_delay_ms: i32,
 
@@ -160,6 +163,7 @@ impl Plane {
         plane_type: PlaneType,
         runway_id: RunwayId,
         runway: &Runway,
+        rules: &GameRules,
     ) -> Plane {
         let mut plane = Plane {
             downed_by: None,
@@ -190,7 +194,9 @@ impl Plane {
             flip_delay_ms: 200,
 
             last_bomb_ms: i32::MAX,
-            bomb_delay_ms: 500,
+            bomb_delay_ms: rules.plane(plane_type).bomb_delay_ms as i32,
+
+            rules: *rules,
 
             last_shot_ms: i32::MAX,
 
@@ -503,9 +509,17 @@ impl Plane {
 
         if let Some(keys) = keyboard {
             // Shoot bullets
-            if keys.ctrl && (self.last_shot_ms > self.get_shoot_delay()) && self.total_ammo > 0 {
+            if self.rules.plane_guns
+                && keys.ctrl
+                && (self.last_shot_ms > self.get_shoot_delay())
+                && self.total_ammo > 0
+            {
                 self.last_shot_ms = 0;
-                let new_ammo_amount = self.total_ammo - 1;
+                let new_ammo_amount = if self.rules.unlimited_ammo {
+                    self.total_ammo
+                } else {
+                    self.total_ammo - 1
+                };
 
                 let (i3, i4) = self.bullet_spawn(&self.flight_state());
                 self.set_ammo(new_ammo_amount);
@@ -521,9 +535,15 @@ impl Plane {
             }
 
             // Bombs away
-            if keys.shift && self.last_bomb_ms > self.bomb_delay_ms && *self.total_bombs.get() > 0 {
+            if self.rules.bombs
+                && keys.shift
+                && self.last_bomb_ms > self.bomb_delay_ms
+                && *self.total_bombs.get() > 0
+            {
                 self.last_bomb_ms = 0;
-                self.total_bombs.set(self.total_bombs.get() - 1);
+                if !self.rules.unlimited_bombs {
+                    self.total_bombs.set(self.total_bombs.get() - 1);
+                }
 
                 let (x, y) = self.get_center();
 
@@ -540,7 +560,7 @@ impl Plane {
             }
 
             let java_x = self.java_x() / RESOLUTION;
-            if keys.space || java_x > 20_000 || java_x < -20_000 {
+            if (keys.space && self.rules.bail_out) || java_x > 20_000 || java_x < -20_000 {
                 self.spawn_man_action(*self.team.get(), my_id, actions);
                 self.mode.set(PlaneMode::Falling);
                 actions.push(Action::RegisterKill(KillEvent::new(
@@ -553,6 +573,9 @@ impl Plane {
     }
 
     fn drain_fuel(&mut self) {
+        if self.rules.unlimited_fuel {
+            return;
+        }
         // drain fuel
         if self.fuel_counter > 0 {
             self.fuel_counter -= 1;
@@ -619,7 +642,7 @@ impl Plane {
             self.angle += rotation_factor;
 
             self.flipped.set(!self.flipped.get());
-            self.set_health(self.health() - 25);
+            self.set_health(self.health() - self.rules.scale_damage(25));
             // TODO: add message for the player who took out this plane if health < 0
             return true;
         }
@@ -627,7 +650,7 @@ impl Plane {
     }
 
     pub fn subtract_health(&mut self, amount: i32) -> () {
-        let new_health = self.total_health - amount;
+        let new_health = self.total_health - self.rules.scale_damage(amount);
         self.set_health(new_health);
     }
 
@@ -646,7 +669,7 @@ impl Plane {
     }
 
     fn spawn_man_action(&mut self, team: Team, my_id: &PlaneId, actions: &mut Vec<Action>) {
-        let mut man = Man::new(team);
+        let mut man = Man::with_rules(team, &self.rules);
         let bounds = self.get_collision_bounds();
         man.set_x(bounds.x as i32 * RESOLUTION);
         man.set_y(bounds.y as i32 * RESOLUTION);
@@ -1132,50 +1155,37 @@ impl Plane {
 
 impl Plane {
     fn get_max_ammo(&self) -> i32 {
-        match self.plane_type.get() {
-            PlaneType::Albatros => 95,
-            PlaneType::Junkers => 100,
-            PlaneType::Fokker => 90,
-            PlaneType::Bristol => 100,
-            PlaneType::Salmson => 60,
-            PlaneType::Sopwith => 80,
-        }
+        self.plane_rules().ammo as i32
     }
 
     fn get_max_bombs(&self) -> u8 {
-        match self.plane_type.get() {
-            PlaneType::Albatros => 0,
-            PlaneType::Junkers => 5,
-            PlaneType::Fokker => 0,
-            PlaneType::Bristol => 0,
-            PlaneType::Salmson => 5,
-            PlaneType::Sopwith => 0,
-        }
+        self.plane_rules().bombs
     }
 
     fn get_max_fuel(&self) -> i32 {
-        match self.plane_type.get() {
-            PlaneType::Albatros => 80,
-            PlaneType::Junkers => 100,
-            PlaneType::Fokker => 90,
-            PlaneType::Bristol => 60,
-            PlaneType::Salmson => 60,
-            PlaneType::Sopwith => 80,
-        }
+        self.plane_rules().fuel as i32
     }
 
     fn get_max_health(&self) -> i32 {
-        match self.plane_type.get() {
-            PlaneType::Albatros => 135,
-            PlaneType::Junkers => 160,
-            PlaneType::Fokker => 120,
-            PlaneType::Bristol => 135,
-            PlaneType::Salmson => 90,
-            PlaneType::Sopwith => 120,
-        }
+        self.plane_rules().health as i32
+    }
+
+    fn plane_rules(&self) -> &crate::rules::PlaneRules {
+        self.rules.plane(*self.plane_type.get())
+    }
+
+    pub(crate) fn carries_bombs(&self) -> bool {
+        self.rules.bombs && self.get_max_bombs() > 0
     }
 
     fn get_acceleration_speed(&self) -> f64 {
+        scale_percent(
+            self.base_acceleration_speed(),
+            self.plane_rules().acceleration_percent,
+        )
+    }
+
+    fn base_acceleration_speed(&self) -> f64 {
         match self.plane_type.get() {
             PlaneType::Albatros => 4.75,
             PlaneType::Junkers => 4.65,
@@ -1198,6 +1208,10 @@ impl Plane {
     }
 
     pub(crate) fn get_turn_step(&self) -> f64 {
+        scale_percent(self.base_turn_step(), self.plane_rules().turn_percent)
+    }
+
+    fn base_turn_step(&self) -> f64 {
         match self.plane_type.get() {
             PlaneType::Albatros => 0.031415926535897934,
             PlaneType::Junkers => 0.028559933214452663,
@@ -1209,25 +1223,11 @@ impl Plane {
     }
 
     fn get_shoot_delay(&self) -> i32 {
-        match self.plane_type.get() {
-            PlaneType::Albatros => 118,
-            PlaneType::Junkers => 170,
-            PlaneType::Fokker => 120,
-            PlaneType::Bristol => 97,
-            PlaneType::Salmson => 180,
-            PlaneType::Sopwith => 130,
-        }
+        self.plane_rules().shoot_delay_ms as i32
     }
 
     fn get_speed_modifier(&self) -> f64 {
-        match self.plane_type.get() {
-            PlaneType::Albatros => 55.0,
-            PlaneType::Junkers => 0.0,
-            PlaneType::Fokker => 0.0,
-            PlaneType::Bristol => 0.0,
-            PlaneType::Salmson => 50.0,
-            PlaneType::Sopwith => 50.0,
-        }
+        self.plane_rules().speed_bonus as f64
     }
 
     fn get_rotateable_image(&self) -> &RgbaImage {

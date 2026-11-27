@@ -5,6 +5,12 @@
       "value": "Motor"
     }
   ],
+  "+KYPqH": [
+    {
+      "type": 0,
+      "value": "Uudelleensyntymisaika tiimitapon jälkeen"
+    }
+  ],
   "+VHHqo": [
     {
       "type": 0,
@@ -15,6 +21,12 @@
     {
       "type": 0,
       "value": "Tasapeli!"
+    }
+  ],
+  "+nHbxx": [
+    {
+      "type": 0,
+      "value": "Tuhoutumattomat rakennukset"
     }
   ],
   "+ptLoi": [
@@ -71,6 +83,12 @@
       "value": "Passive"
     }
   ],
+  "0QdJF3": [
+    {
+      "type": 0,
+      "value": "ei sallittu"
+    }
+  ],
   "1ICbwz": [
     {
       "type": 0,
@@ -93,6 +111,12 @@
     {
       "type": 0,
       "value": "Kuolleet"
+    }
+  ],
+  "3+iy8l": [
+    {
+      "type": 0,
+      "value": "Kiitoradan kestävyys"
     }
   ],
   "309viz": [
@@ -131,6 +155,12 @@
       "value": "Laukaise heittoistuin, Avaa laskuvarjo"
     }
   ],
+  "5BEOU3": [
+    {
+      "type": 0,
+      "value": "Tallenna"
+    }
+  ],
   "5jSC1l": [
     {
       "type": 0,
@@ -155,10 +185,22 @@
       "value": "Fuel"
     }
   ],
+  "6Oypsp": [
+    {
+      "type": 0,
+      "value": "Kummallekin joukkueelle jää aina vähintään yksi sallittu kone."
+    }
+  ],
   "6h1L5u": [
     {
       "type": 0,
       "value": "Easy"
+    }
+  ],
+  "6mhHB1": [
+    {
+      "type": 0,
+      "value": "Laskuvarjohyppy"
     }
   ],
   "6zMC33": [
@@ -197,6 +239,12 @@
       "value": "Flipped"
     }
   ],
+  "82c6/K": [
+    {
+      "type": 0,
+      "value": "Palauta alkuperäiset"
+    }
+  ],
   "8Am/Pl": [
     {
       "type": 0,
@@ -233,6 +281,38 @@
       "value": "Last use"
     }
   ],
+  "93xZ94": [
+    {
+      "type": 1,
+      "value": "label"
+    },
+    {
+      "type": 0,
+      "value": ": "
+    },
+    {
+      "type": 1,
+      "value": "value"
+    },
+    {
+      "type": 0,
+      "value": " (normaalisti "
+    },
+    {
+      "type": 1,
+      "value": "original"
+    },
+    {
+      "type": 0,
+      "value": ")"
+    }
+  ],
+  "9aUWlD": [
+    {
+      "type": 0,
+      "value": "Lentäjän pistooli"
+    }
+  ],
   "9bQEK7": [
     {
       "type": 0,
@@ -265,6 +345,12 @@
     {
       "type": 0,
       "value": " kiitorata tuhottu."
+    }
+  ],
+  "A7lzCj": [
+    {
+      "type": 0,
+      "value": "Koneen aseet"
     }
   ],
   "AY7tVh": [
@@ -303,6 +389,20 @@
       "value": "Headquarters"
     }
   ],
+  "BFGUDR": [
+    {
+      "type": 1,
+      "value": "plane"
+    },
+    {
+      "type": 0,
+      "value": ": "
+    },
+    {
+      "type": 1,
+      "value": "value"
+    }
+  ],
   "BLykMd": [
     {
       "type": 0,
@@ -325,6 +425,24 @@
     {
       "type": 0,
       "value": "Reaching the host"
+    }
+  ],
+  "C3T5iK": [
+    {
+      "type": 0,
+      "value": "Tulitusviive"
+    }
+  ],
+  "C8OJE8": [
+    {
+      "type": 0,
+      "value": "Kestävyys"
+    }
+  ],
+  "CKHrD1": [
+    {
+      "type": 0,
+      "value": "Omien ampuminen"
     }
   ],
   "CpTJ9C": [
@@ -399,6 +517,12 @@
       "value": "Connecting to server"
     }
   ],
+  "FInvrp": [
+    {
+      "type": 0,
+      "value": "Kiihtyvyys"
+    }
+  ],
   "FVxFnN": [
     {
       "type": 0,
@@ -409,6 +533,12 @@
     {
       "type": 0,
       "value": "Bomb"
+    }
+  ],
+  "Fvi+0H": [
+    {
+      "type": 0,
+      "value": "Pelisäännöt"
     }
   ],
   "G7DhrV": [
@@ -493,6 +623,58 @@
       "value": "Syötä 4 merkkiä sisältävä pelikoodi..."
     }
   ],
+  "InAFP6": [
+    {
+      "type": 0,
+      "value": "Polttoaine"
+    }
+  ],
+  "J88gsh": [
+    {
+      "type": 0,
+      "value": "Rajaton polttoaine"
+    }
+  ],
+  "JP86zV": [
+    {
+      "type": 1,
+      "value": "plane"
+    },
+    {
+      "type": 0,
+      "value": " – "
+    },
+    {
+      "type": 1,
+      "value": "label"
+    },
+    {
+      "type": 0,
+      "value": ": "
+    },
+    {
+      "type": 1,
+      "value": "value"
+    },
+    {
+      "type": 0,
+      "value": " (normaalisti "
+    },
+    {
+      "type": 1,
+      "value": "original"
+    },
+    {
+      "type": 0,
+      "value": ")"
+    }
+  ],
+  "JQ/vL6": [
+    {
+      "type": 0,
+      "value": "Rajattomat pommit"
+    }
+  ],
   "JSLtOI": [
     {
       "type": 0,
@@ -541,6 +723,12 @@
     {
       "type": 0,
       "value": "Cancel"
+    }
+  ],
+  "LNYaBb": [
+    {
+      "type": 0,
+      "value": "Rajattomat ammukset"
     }
   ],
   "Lo5tsu": [
@@ -641,6 +829,12 @@
       "value": "Liiku oikealle"
     }
   ],
+  "NlmIRX": [
+    {
+      "type": 0,
+      "value": "Pelin isäntä on muuttanut näitä sääntöjä alkuperäisestä pelistä:"
+    }
+  ],
   "NyL4Zc": [
     {
       "type": 0,
@@ -699,6 +893,12 @@
       "value": "Random"
     }
   ],
+  "PyjTpa": [
+    {
+      "type": 0,
+      "value": "Uudelleensyntyminen ja lentäjät"
+    }
+  ],
   "PzZfKW": [
     {
       "type": 0,
@@ -727,10 +927,22 @@
       "value": "code"
     }
   ],
+  "QZbnsN": [
+    {
+      "type": 0,
+      "value": "Esiasetuksen nimi"
+    }
+  ],
   "QdN+gh": [
     {
       "type": 0,
       "value": "Desert"
+    }
+  ],
+  "QhGde8": [
+    {
+      "type": 0,
+      "value": "Pommitus"
     }
   ],
   "Qj15PN": [
@@ -761,6 +973,12 @@
     {
       "type": 0,
       "value": "Back to lobby"
+    }
+  ],
+  "RHcX+j": [
+    {
+      "type": 0,
+      "value": "Ammukset"
     }
   ],
   "RJPf0Z": [
@@ -841,6 +1059,12 @@
       "value": "Allies"
     }
   ],
+  "Te6Km7": [
+    {
+      "type": 0,
+      "value": "Päämajan kestävyys"
+    }
+  ],
   "Telnt5": [
     {
       "type": 0,
@@ -851,6 +1075,12 @@
     {
       "type": 0,
       "value": "Host"
+    }
+  ],
+  "TnCmTk": [
+    {
+      "type": 0,
+      "value": "Lentäjän tulitusviive"
     }
   ],
   "Tsq+GT": [
@@ -907,6 +1137,12 @@
       "value": "Medium"
     }
   ],
+  "VFOn0Q": [
+    {
+      "type": 0,
+      "value": "päällä"
+    }
+  ],
   "VJkmRe": [
     {
       "type": 0,
@@ -917,6 +1153,12 @@
     {
       "type": 0,
       "value": "Game"
+    }
+  ],
+  "VOpWC1": [
+    {
+      "type": 0,
+      "value": "Pommitusviive"
     }
   ],
   "VVxUC9": [
@@ -979,6 +1221,12 @@
       "value": "Pisteet"
     }
   ],
+  "X5bw8W": [
+    {
+      "type": 0,
+      "value": "Mukautetut pelisäännöt"
+    }
+  ],
   "XH4Nct": [
     {
       "type": 0,
@@ -1003,6 +1251,20 @@
       "value": "Runway"
     }
   ],
+  "Xtm0Kr": [
+    {
+      "type": 1,
+      "value": "label"
+    },
+    {
+      "type": 0,
+      "value": ": "
+    },
+    {
+      "type": 1,
+      "value": "value"
+    }
+  ],
   "Xx0fru": [
     {
       "type": 0,
@@ -1019,6 +1281,12 @@
     {
       "type": 0,
       "value": "This replay couldn't be loaded. If it was recorded with a different version of the game, it may not be compatible."
+    }
+  ],
+  "YtguIH": [
+    {
+      "type": 0,
+      "value": "Kopioi kaikkiin koneisiin"
     }
   ],
   "YzB1NF": [
@@ -1151,6 +1419,12 @@
       "value": " voittivat!"
     }
   ],
+  "c2TURS": [
+    {
+      "type": 0,
+      "value": "Selvä"
+    }
+  ],
   "cFDrGv": [
     {
       "type": 0,
@@ -1197,6 +1471,12 @@
       "value": "Liiku vasemmalle"
     }
   ],
+  "dS8sdi": [
+    {
+      "type": 0,
+      "value": "Mukautetut pelisäännöt"
+    }
+  ],
   "daomJy": [
     {
       "type": 0,
@@ -1207,6 +1487,12 @@
     {
       "type": 0,
       "value": "Starts a fresh game on the chosen map for everyone. Players and bots stay, but teams, scores and the replay start over."
+    }
+  ],
+  "e3y/hO": [
+    {
+      "type": 0,
+      "value": "Käytä"
     }
   ],
   "e5OODe": [
@@ -1221,10 +1507,22 @@
       "value": "Start next round"
     }
   ],
+  "eyUUf8": [
+    {
+      "type": 0,
+      "value": "Aseet"
+    }
+  ],
   "ezKLsY": [
     {
       "type": 0,
       "value": "Fokker DR.I"
+    }
+  ],
+  "f/eMSW": [
+    {
+      "type": 0,
+      "value": "Korjausaika kestävyyspistettä kohden"
     }
   ],
   "f3ix4b": [
@@ -1303,10 +1601,22 @@
       "value": "Replay from a different version"
     }
   ],
+  "hmqhvt": [
+    {
+      "type": 0,
+      "value": "Rakennukset"
+    }
+  ],
   "iMTNwO": [
     {
       "type": 0,
       "value": "Mixed"
+    }
+  ],
+  "iOTzhw": [
+    {
+      "type": 0,
+      "value": "Ei tallennettuja esiasetuksia"
     }
   ],
   "ioK/G6": [
@@ -1339,10 +1649,22 @@
       "value": "Explosion"
     }
   ],
+  "jICMij": [
+    {
+      "type": 0,
+      "value": "Tallenna nykyiset säännöt nimellä"
+    }
+  ],
   "jLMFLF": [
     {
       "type": 0,
       "value": "Try again"
+    }
+  ],
+  "jet5Io": [
+    {
+      "type": 0,
+      "value": "Kiitoradan nousu-/laskeutumisviive"
     }
   ],
   "jlutC2": [
@@ -1355,6 +1677,18 @@
     {
       "type": 0,
       "value": "Fit to window"
+    }
+  ],
+  "kM8e0a": [
+    {
+      "type": 0,
+      "value": "Tässä pelissä on mukautetut säännöt"
+    }
+  ],
+  "kZfSKa": [
+    {
+      "type": 0,
+      "value": "Vahinko"
     }
   ],
   "kfnjH9": [
@@ -1387,6 +1721,12 @@
       "value": "Nimi"
     }
   ],
+  "l9mP9j": [
+    {
+      "type": 0,
+      "value": "Esiasetus"
+    }
+  ],
   "lA7naj": [
     {
       "type": 0,
@@ -1411,6 +1751,22 @@
       "value": "Cancel"
     }
   ],
+  "m8Oi8l": [
+    {
+      "type": 0,
+      "value": "Peruuta"
+    }
+  ],
+  "mBIlTO": [
+    {
+      "type": 0,
+      "value": "Alkuperäinen: "
+    },
+    {
+      "type": 1,
+      "value": "value"
+    }
+  ],
   "mq7h++": [
     {
       "type": 0,
@@ -1421,6 +1777,12 @@
     {
       "type": 0,
       "value": "Loading the battlefield"
+    }
+  ],
+  "mtnKEB": [
+    {
+      "type": 0,
+      "value": "Uudelleensyntymisaika"
     }
   ],
   "mv9zeu": [
@@ -1480,10 +1842,34 @@
       "value": "count"
     }
   ],
+  "ngpgyC": [
+    {
+      "type": 0,
+      "value": "Kääntymisnopeus"
+    }
+  ],
   "nivA/t": [
     {
       "type": 0,
       "value": "Settings"
+    }
+  ],
+  "nsD9i0": [
+    {
+      "type": 0,
+      "value": "Lentäjän suoja-aika"
+    }
+  ],
+  "o5MbpS": [
+    {
+      "type": 0,
+      "value": "Poista esiasetus"
+    }
+  ],
+  "oUrRwQ": [
+    {
+      "type": 0,
+      "value": "Koneiden törmäykset"
     }
   ],
   "obtz7Y": [
@@ -1508,6 +1894,12 @@
     {
       "type": 0,
       "value": "Isännöi"
+    }
+  ],
+  "p4NtLy": [
+    {
+      "type": 0,
+      "value": "Koneet"
     }
   ],
   "pPlaQd": [
@@ -1550,6 +1942,18 @@
     {
       "type": 0,
       "value": "Difficulty"
+    }
+  ],
+  "qLiOrX": [
+    {
+      "type": 0,
+      "value": "Huippunopeuslisä"
+    }
+  ],
+  "qsl4M+": [
+    {
+      "type": 0,
+      "value": "Pommit"
     }
   ],
   "qtiDl6": [
@@ -1598,6 +2002,12 @@
     {
       "type": 0,
       "value": "(Rangaistus itsemurhasta)"
+    }
+  ],
+  "siC31q": [
+    {
+      "type": 0,
+      "value": "Alkuperäiset pelisäännöt"
     }
   ],
   "szCmDm": [
@@ -1650,6 +2060,12 @@
       "value": ". This usually happens when a replay was recorded with a different version of the game."
     }
   ],
+  "uBGNVH": [
+    {
+      "type": 0,
+      "value": "Sallittu"
+    }
+  ],
   "ult8LX": [
     {
       "type": 0,
@@ -1698,6 +2114,12 @@
       "value": "Bristol F.2b"
     }
   ],
+  "vwC+hs": [
+    {
+      "type": 0,
+      "value": "Uudelleensyntymisaika itsemurhan jälkeen"
+    }
+  ],
   "wpH/Pl": [
     {
       "type": 0,
@@ -1714,6 +2136,12 @@
     {
       "type": 0,
       "value": "Couldn't reach the server. Check your internet connection and try again."
+    }
+  ],
+  "x+GGpE": [
+    {
+      "type": 0,
+      "value": "pois"
     }
   ],
   "x6pbo9": [

@@ -33,6 +33,7 @@ impl World {
         let intermission = self.world_info.get_state() == WorldState::Intermission;
         let centrals_runways = self.team_runways(Team::Centrals);
         let allies_runways = self.team_runways(Team::Allies);
+        let rules = self.rules;
         let mut requests = vec![];
 
         let mut active: Vec<(PlayerId, Option<Team>)> = self
@@ -84,15 +85,29 @@ impl World {
                             .or_else(|| runways.first().copied());
                         player.set_selected_runway(selected);
 
+                        let current = player.get_selected_plane();
+                        let allowed = rules.allowed_plane_index(team, current, 1);
+                        if allowed != current {
+                            player.set_selected_plane(allowed);
+                        }
+
                         if can_move {
                             let plane = player.get_selected_plane();
                             let index =
                                 selected.and_then(|id| runways.iter().position(|r| *r == id));
                             if keys.up {
-                                player.set_selected_plane(plane + 2);
+                                player.set_selected_plane(rules.allowed_plane_index(
+                                    team,
+                                    plane + 2,
+                                    2,
+                                ));
                                 player.reset_chooser_timer();
                             } else if keys.down {
-                                player.set_selected_plane(plane + 1);
+                                player.set_selected_plane(rules.allowed_plane_index(
+                                    team,
+                                    plane + 1,
+                                    1,
+                                ));
                                 player.reset_chooser_timer();
                             } else if keys.left || keys.right {
                                 if let Some(index) = index {

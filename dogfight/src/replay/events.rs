@@ -135,6 +135,7 @@ fn summarize_replay(replay_file: ReplayFile) -> ReplaySummary {
         replay_file.intermission_seconds,
     );
     world.set_game_mode(replay_file.game_mode);
+    world.set_rules(replay_file.rules);
 
     // simulates the entire game and returns all events
     let events = world.simulate_until(&replay_file, None, true);
@@ -144,6 +145,7 @@ fn summarize_replay(replay_file: ReplayFile) -> ReplaySummary {
         build_commit: replay_file.build_commit.clone(),
         level_name: replay_file.level_name.clone(),
         start_time_ms: replay_file.start_time_ms,
+        rules: replay_file.rules,
         total_ticks: replay_file.ticks.iter().map(|x| *x.0).max().unwrap(),
         players: replay_file
             .player_guids

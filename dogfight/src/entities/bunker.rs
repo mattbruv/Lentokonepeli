@@ -1,4 +1,5 @@
 use crate::inspect::BuildingInspect;
+use crate::rules::{scale_damage, GameRules};
 use dogfight_macros::Networked;
 use image::RgbaImage;
 
@@ -22,6 +23,10 @@ pub struct Bunker {
     client_health: Property<u8>,
     total_health: i32,
     health_timer: i32,
+    max_health: i32,
+    repair_ticks: i32,
+    indestructible: bool,
+    damage_percent: u16,
 
     image_raf: RgbaImage,
     image_germans: RgbaImage,
@@ -37,6 +42,10 @@ impl Bunker {
             client_health: Property::new(0),
             total_health: 0,
             health_timer: 0,
+            max_health: 350,
+            repair_ticks: 50,
+            indestructible: false,
+            damage_percent: 100,
             image_germans: get_image(HEADQUARTER_GERMANS),
             image_raf: get_image(HEADQUARTER_RAF),
             image_destroyed: get_image(HEADQUARTER_BROKE),
@@ -47,7 +56,15 @@ impl Bunker {
     }
 
     fn get_max_health(&self) -> i32 {
-        350
+        self.max_health
+    }
+
+    pub fn apply_rules(&mut self, rules: &GameRules) {
+        self.max_health = rules.headquarters_health as i32;
+        self.repair_ticks = rules.repair_ticks as i32;
+        self.indestructible = rules.indestructible_buildings;
+        self.damage_percent = rules.damage_percent;
+        self.reset();
     }
 
     pub fn get_team(&self) -> &Team {
@@ -75,8 +92,11 @@ impl Bunker {
     }
 
     pub fn tick(&mut self) {
-        if self.total_health > 0 && self.total_health < self.get_max_health() {
-            self.health_timer = (self.health_timer + 1) % 50;
+        if self.repair_ticks > 0
+            && self.total_health > 0
+            && self.total_health < self.get_max_health()
+        {
+            self.health_timer = (self.health_timer + 1) % self.repair_ticks;
 
             if self.health_timer == 0 {
                 self.set_health(self.total_health + 1);
@@ -98,10 +118,10 @@ impl Bunker {
     }
 
     pub fn subtract_health(&mut self, amount: i32) -> bool {
-        if self.total_health <= 0 {
+        if self.total_health <= 0 || self.indestructible {
             return false;
         }
-        let new_health = self.total_health - amount;
+        let new_health = self.total_health - scale_damage(amount, self.damage_percent);
         self.set_health(new_health);
         self.total_health == 0
     }

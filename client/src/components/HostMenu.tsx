@@ -26,6 +26,7 @@ import {
     IconUsers,
     IconX,
 } from "@tabler/icons-react";
+import { RulesField } from "./RulesEditor";
 import { BotInfo } from "dogfight-types/BotInfo";
 import { PlayerProperties } from "dogfight-types/PlayerProperties";
 import { Team } from "dogfight-types/Team";
@@ -260,6 +261,13 @@ function MapTab({ gameSettings, onChangeGame, onClose }: HostMenuProps) {
                     }}
                 />
             </Group>
+            <RulesField
+                value={draft.rules}
+                onChange={(rules) => {
+                    setDraft({ ...draft, rules });
+                    setConfirming(false);
+                }}
+            />
             <span className={classes.hint}>
                 <FormattedMessage
                     defaultMessage="Starts a fresh game on the chosen map for everyone. Players and bots stay, but teams, scores and the replay start over."

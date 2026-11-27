@@ -495,7 +495,7 @@ impl Bot {
 
         Some(RunwaySelection {
             runway_id,
-            plane_type: PlaneType::for_team(team, index),
+            plane_type: PlaneType::for_team(team, world.rules.allowed_plane_index(team, index, 1)),
         })
     }
 
@@ -566,10 +566,7 @@ impl Bot {
     fn choose_goal(&mut self, world: &World, team: Team, plane: &Plane) -> Goal {
         let (x, y) = plane_pos(plane);
 
-        let is_bomber = matches!(
-            plane.get_plane_type(),
-            PlaneType::Junkers | PlaneType::Salmson
-        );
+        let is_bomber = plane.carries_bombs();
         let needs_service = self.force_land
             || plane.get_fuel_ratio() < 0.15
             || (self.skill.manage_resources
@@ -594,7 +591,7 @@ impl Bot {
         }
 
         let rounds = is_rounds(world);
-        let has_bombs = plane.get_bombs() > 0;
+        let has_bombs = plane.carries_bombs() && plane.get_bombs() > 0;
         let bomb_player = if has_bombs {
             self.ground_bomb_target(world, team, x)
                 .map(Goal::BombTarget)

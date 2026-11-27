@@ -2,6 +2,7 @@ import { AddBotRequest } from "dogfight-types/AddBotRequest";
 import { BotDifficulty } from "dogfight-types/BotDifficulty";
 import { BotInfo } from "dogfight-types/BotInfo";
 import { GameMode } from "dogfight-types/GameMode";
+import { GameRules } from "dogfight-types/GameRules";
 import { PlayerCommand } from "dogfight-types/PlayerCommand";
 import { ServerInput } from "dogfight-types/ServerInput";
 import { ServerOutput } from "dogfight-types/ServerOutput";
@@ -57,7 +58,10 @@ export function isReplayMessage(message: unknown): message is ReplayMessage {
     return type === "ReplayRequest" || type === "ReplayDenied" || type === "ReplayStart" || type === "ReplayChunk";
 }
 
-export type LobbyMessage = { type: "LobbyInfo"; data: { name: string } } | { type: "Kicked" } | { type: "WorldReset" };
+export type LobbyMessage =
+    | { type: "LobbyInfo"; data: { name: string; rules?: GameRules } }
+    | { type: "Kicked" }
+    | { type: "WorldReset" };
 
 export function isLobbyMessage(message: unknown): message is LobbyMessage {
     if (typeof message !== "object" || message === null) return false;
@@ -120,6 +124,7 @@ export type HostGameSettings = {
     level: ResolvedLevel;
     gameTime: number;
     gameMode: GameMode;
+    rules: GameRules;
 };
 
 const INTERMISSION_SECONDS = 20;
@@ -167,6 +172,11 @@ export function useLocalHost(
     const [lobbyName, setLobbyNameState] = useState(sanitizeLobbyName(initialLobbyName));
     const lobbyNameRef = useRef(lobbyName);
     const [gameSettings, setGameSettings] = useState<HostGameSettings>(initialSettings);
+    const rulesRef = useRef<GameRules>(initialSettings.rules);
+
+    function lobbyInfo(): LobbyMessage {
+        return { type: "LobbyInfo", data: { name: lobbyNameRef.current, rules: rulesRef.current } };
+    }
 
     // A collection of the connected users
     const dataConnections = useRef<Map<string, ConnectedPlayer>>(new Map());
@@ -214,6 +224,7 @@ export function useLocalHost(
             dogfight.engine.load_level(initialSettings.level.data);
             dogfight.engine.set_round_settings(initialSettings.gameTime, INTERMISSION_SECONDS);
             dogfight.engine.set_game_mode(initialSettings.gameMode);
+            dogfight.engine.set_rules(JSON.stringify(initialSettings.rules));
             dogfight.engine.init();
             console.log(dogfight.engine.get_build_version());
             console.log(dogfight.engine.get_commit());
@@ -274,11 +285,10 @@ export function useLocalHost(
                 dataConnections.current.set(conn.connectionId, user);
 
                 const out: ServerOutput = { type: "YourPlayerGuid", data: PLAYER_GUID };
-                const lobbyInfo: LobbyMessage = { type: "LobbyInfo", data: { name: lobbyNameRef.current } };
                 if (
                     !safeSend(user, dogfight.engine.get_full_state()) ||
                     (spectator === null && !safeSend(user, JSON.stringify(out))) ||
-                    !safeSend(user, JSON.stringify(lobbyInfo))
+                    !safeSend(user, JSON.stringify(lobbyInfo()))
                 ) {
                     return;
                 }
@@ -525,7 +535,14 @@ export function useLocalHost(
     }
 
     function changeGame(settings: HostGameSettings) {
-        dogfight.engine.change_game(settings.level.data, settings.gameMode, settings.gameTime, INTERMISSION_SECONDS);
+        dogfight.engine.change_game(
+            settings.level.data,
+            settings.gameMode,
+            settings.gameTime,
+            INTERMISSION_SECONDS,
+            JSON.stringify(settings.rules),
+        );
+        rulesRef.current = settings.rules;
         hostInput.current = [];
         guestInput.current = [];
         replayCache.current = null;
@@ -535,6 +552,7 @@ export function useLocalHost(
         dogfight.clearEntities();
         const reset: LobbyMessage = { type: "WorldReset" };
         broadcast(JSON.stringify(reset));
+        broadcast(JSON.stringify(lobbyInfo()));
         setGameSettings(settings);
         refreshBots();
     }
@@ -547,8 +565,7 @@ export function useLocalHost(
         const sanitized = sanitizeLobbyName(name);
         lobbyNameRef.current = sanitized;
         setLobbyNameState(sanitized);
-        const message: LobbyMessage = { type: "LobbyInfo", data: { name: sanitized } };
-        broadcast(JSON.stringify(message));
+        broadcast(JSON.stringify(lobbyInfo()));
     }
 
     function getReplayBinary(): Uint8Array {

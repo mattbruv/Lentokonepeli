@@ -12,6 +12,7 @@ use crate::{
     },
     game_event::{KillEvent, KillMethod},
     output::ServerOutput,
+    rules::GameRules,
     tick_actions::{Action, ExplosionData, RemoveData},
     world::World,
 };
@@ -143,6 +144,7 @@ impl World {
     }
 
     fn collide_bombs(&mut self) -> Vec<Action> {
+        let rules = self.rules;
         let mut actions = vec![];
         let mut removed_planes: HashSet<PlaneId> = HashSet::new();
         let mut removed_men: HashSet<ManId> = HashSet::new();
@@ -157,6 +159,7 @@ impl World {
             let bomb_id = **bomb_id;
             let owner = bomb.player_id();
             let origin = bomb.get_origin();
+            let owner_team = team_of(&self.players, owner);
             let mut first_hit: Option<BombHit> = None;
 
             for (other_id, other) in before.iter_mut().chain(after.iter_mut()) {
@@ -182,7 +185,7 @@ impl World {
                     continue;
                 }
                 first_hit.get_or_insert(BombHit::Explode);
-                if plane.player_id() == owner {
+                if plane.player_id() == owner || shielded(&rules, owner_team, plane.get_team()) {
                     continue;
                 }
                 let falling = plane.get_mode() == PlaneMode::Falling;
@@ -217,6 +220,9 @@ impl World {
                     continue;
                 }
                 first_hit.get_or_insert(BombHit::Explode);
+                if shielded(&rules, owner_team, man.get_team()) {
+                    continue;
+                }
                 if let Some(victim) =
                     controller_of(&mut self.players, ControllingEntity::Man(*man_id))
                 {
@@ -235,7 +241,7 @@ impl World {
                     continue;
                 }
                 first_hit.get_or_insert(BombHit::Structure(*runway.get_team()));
-                if runway.subtract_health(30) {
+                if !shielded(&rules, owner_team, *runway.get_team()) && runway.subtract_health(30) {
                     actions.push(Action::RunwayDestroyed(*runway_id));
                 }
             }
@@ -245,7 +251,7 @@ impl World {
                     continue;
                 }
                 first_hit.get_or_insert(BombHit::Structure(*bunker.get_team()));
-                if bunker.subtract_health(30) {
+                if !shielded(&rules, owner_team, *bunker.get_team()) && bunker.subtract_health(30) {
                     actions.push(Action::BunkerDestroyed(*bunker_id));
                 }
             }
@@ -298,6 +304,7 @@ impl World {
     }
 
     fn collide_bullets(&mut self) -> Vec<Action> {
+        let rules = self.rules;
         let mut actions = vec![];
         let mut removed_men: HashSet<ManId> = HashSet::new();
         let mut bullets: Vec<_> = self.bullets.get_map_mut().iter_mut().collect();
@@ -338,6 +345,9 @@ impl World {
                 if shooter_team != Some(man.get_team()) {
                     bullet.mark_hit_enemy();
                 }
+                if shielded(&rules, shooter_team, man.get_team()) {
+                    continue;
+                }
                 if let Some(victim) =
                     controller_of(&mut self.players, ControllingEntity::Man(*man_id))
                 {
@@ -361,7 +371,10 @@ impl World {
                 if shooter_team != Some(plane.get_team()) {
                     bullet.mark_hit_enemy();
                 }
-                if plane.player_id() == shooter || plane.get_mode() == PlaneMode::Falling {
+                if plane.player_id() == shooter
+                    || plane.get_mode() == PlaneMode::Falling
+                    || shielded(&rules, shooter_team, plane.get_team())
+                {
                     continue;
                 }
                 plane.subtract_health((30.0 * bullet.get_damage_factor()) as i32);
@@ -406,7 +419,9 @@ impl World {
                 if shooter_team != Some(*runway.get_team()) {
                     bullet.mark_hit_enemy();
                 }
-                if runway.subtract_health((4.0 * bullet.get_damage_factor()) as i32) {
+                if !shielded(&rules, shooter_team, *runway.get_team())
+                    && runway.subtract_health((4.0 * bullet.get_damage_factor()) as i32)
+                {
                     actions.push(Action::RunwayDestroyed(*runway_id));
                 }
             }
@@ -416,7 +431,9 @@ impl World {
                     continue;
                 }
                 hit = true;
-                if bunker.subtract_health((3.0 * bullet.get_damage_factor()) as i32) {
+                if !shielded(&rules, shooter_team, *bunker.get_team())
+                    && bunker.subtract_health((3.0 * bullet.get_damage_factor()) as i32)
+                {
                     actions.push(Action::BunkerDestroyed(*bunker_id));
                 }
             }
@@ -447,12 +464,14 @@ impl World {
     }
 
     fn collide_explosions(&mut self) -> Vec<Action> {
+        let rules = self.rules;
         let mut actions = vec![];
         let mut removed_planes: HashSet<PlaneId> = HashSet::new();
         let mut removed_men: HashSet<ManId> = HashSet::new();
 
         for (_, explosion) in self.explosions.get_map_mut() {
             let explosion_owner = explosion.player_id();
+            let explosion_team = explosion_owner.and_then(|owner| team_of(&self.players, owner));
 
             for (plane_id, plane) in self.planes.get_map_mut() {
                 if removed_planes.contains(plane_id) || !explosion.check_collision(plane) {
@@ -460,6 +479,11 @@ impl World {
                 }
                 let falling = plane.get_mode() == PlaneMode::Falling;
                 if falling && explosion_owner == Some(plane.player_id()) {
+                    continue;
+                }
+                if explosion_owner != Some(plane.player_id())
+                    && shielded(&rules, explosion_team, plane.get_team())
+                {
                     continue;
                 }
                 if !falling {
@@ -520,6 +544,12 @@ impl World {
                 if removed_men.contains(man_id) || !explosion.check_collision(man) {
                     continue;
                 }
+                if shielded(&rules, explosion_team, man.get_team())
+                    && controller_of(&mut self.players, ControllingEntity::Man(*man_id))
+                        != explosion_owner
+                {
+                    continue;
+                }
                 if let (Some(killer), Some(victim)) = (
                     explosion_owner,
                     controller_of(&mut self.players, ControllingEntity::Man(*man_id)),
@@ -535,13 +565,19 @@ impl World {
             }
 
             for (runway_id, runway) in self.runways.get_map_mut() {
-                if explosion.check_collision(runway) && runway.subtract_health(17) {
+                if explosion.check_collision(runway)
+                    && !shielded(&rules, explosion_team, *runway.get_team())
+                    && runway.subtract_health(17)
+                {
                     actions.push(Action::RunwayDestroyed(*runway_id));
                 }
             }
 
             for (bunker_id, bunker) in self.bunkers.get_map_mut() {
-                if explosion.check_collision(bunker) && bunker.subtract_health(17) {
+                if explosion.check_collision(bunker)
+                    && !shielded(&rules, explosion_team, *bunker.get_team())
+                    && bunker.subtract_health(17)
+                {
                     actions.push(Action::BunkerDestroyed(*bunker_id));
                 }
             }
@@ -551,6 +587,7 @@ impl World {
     }
 
     fn collide_planes(&mut self) -> Vec<Action> {
+        let plane_collisions = self.rules.plane_collisions;
         let mut actions: Vec<Action> = vec![];
 
         // First let's check plane to plane collision
@@ -564,7 +601,10 @@ impl World {
             let (_, plane) = &mut left[i];
 
             for (_, other) in right.iter_mut() {
-                if plane.player_id() != other.player_id() && plane.check_collision(*other) {
+                if plane_collisions
+                    && plane.player_id() != other.player_id()
+                    && plane.check_collision(*other)
+                {
                     let plane_hit = plane.do_plane_collision();
                     let other_hit = other.do_plane_collision();
 
@@ -800,6 +840,10 @@ enum BombHit {
     Explode,
     Structure(Team),
     Sink,
+}
+
+fn shielded(rules: &GameRules, attacker: Option<Team>, target: Team) -> bool {
+    !rules.friendly_fire && attacker == Some(target)
 }
 
 fn controller_of(

@@ -33,6 +33,7 @@ export function Host({ settings, recordGame, lobbyName, initialBots }: HostProps
             level: resolveLevel(settings.levelKey, getCustomLevels()),
             gameTime: settings.gameTime,
             gameMode: settings.gameMode,
+            rules: settings.rules,
         },
         recordGame,
         getUsername(),
@@ -46,6 +47,7 @@ export function Host({ settings, recordGame, lobbyName, initialBots }: HostProps
             level: resolveLevel(next.levelKey, getCustomLevels()),
             gameTime: next.gameTime,
             gameMode: next.gameMode,
+            rules: next.rules,
         });
     }
 
@@ -84,6 +86,7 @@ export function Host({ settings, recordGame, lobbyName, initialBots }: HostProps
                     levelKey: host.gameSettings.level.key,
                     gameTime: host.gameSettings.gameTime,
                     gameMode: host.gameSettings.gameMode,
+                    rules: host.gameSettings.rules,
                 }}
                 onChangeGame={changeGame}
                 hostGuid={host.hostGuid}

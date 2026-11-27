@@ -3,6 +3,7 @@ use crate::{
     entities::{player::PlayerGuid, types::Team, world_info::GameMode},
     network::encoding::NetworkedBytes,
     replay::file::ReplayFile,
+    rules::GameRules,
     world::World,
 };
 
@@ -48,7 +49,26 @@ fn state_bytes(world: &World) -> Vec<u8> {
 }
 
 fn play_live() -> World {
+    play_live_with(GameRules::default())
+}
+
+fn custom_rules() -> GameRules {
+    let mut rules = GameRules::default();
+    rules.friendly_fire = false;
+    rules.plane_collisions = false;
+    rules.unlimited_ammo = true;
+    rules.damage_percent = 300;
+    rules.runway_health = 400;
+    rules.respawn_ticks = 100;
+    rules.planes.junkers.allowed = false;
+    rules.planes.sopwith.bombs = 3;
+    rules.planes.fokker.turn_percent = 150;
+    rules
+}
+
+fn play_live_with(rules: GameRules) -> World {
     let mut world = new_world();
+    world.set_rules(rules);
     let mut bots = new_bots();
     for tick in 1..=TICKS {
         let input = bots.tick(&world);
@@ -79,6 +99,24 @@ fn replay_matches_live_game_regardless_of_flush_timing() {
         assert_eq!(replayed.get_tick(), live.get_tick());
         assert_eq!(state_bytes(&replayed), state_bytes(&live));
     }
+}
+
+#[test]
+fn custom_rules_replay_matches_live_game() {
+    let live = play_live_with(custom_rules());
+    assert_ne!(state_bytes(&live), state_bytes(&play_live()));
+    let (_, replay) = ReplayFile::from_bytes(&live.get_replay_file_bytes()).unwrap();
+    assert_eq!(replay.rules, custom_rules());
+
+    let mut replayed = new_world();
+    replayed.set_rules(replay.rules);
+    replayed.simulate_until(&replay, Some(live.get_tick()), false);
+    assert_eq!(state_bytes(&replayed), state_bytes(&live));
+    assert!(live
+        .planes
+        .get_map()
+        .values()
+        .all(|p| p.get_plane_type() != crate::entities::plane::PlaneType::Junkers));
 }
 
 #[test]

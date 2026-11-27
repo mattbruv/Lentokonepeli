@@ -1,3 +1,4 @@
+use crate::rules::GameRules;
 use crate::{
     input::PlayerKeyboard,
     network::{property::*, EntityProperties, NetworkedEntity},
@@ -110,11 +111,11 @@ pub enum RespawnType {
 }
 
 impl RespawnType {
-    fn wait_ticks(&self) -> u32 {
+    fn wait_ticks(&self, rules: &GameRules) -> u32 {
         match self {
-            RespawnType::Default => 400,
-            RespawnType::Suicide => 800,
-            RespawnType::TeamKill => 1000,
+            RespawnType::Default => rules.respawn_ticks as u32,
+            RespawnType::Suicide => rules.suicide_respawn_ticks as u32,
+            RespawnType::TeamKill => rules.team_kill_respawn_ticks as u32,
         }
     }
 }
@@ -368,14 +369,14 @@ impl Player {
         self.state.set(PlayerState::WaitingRespawn);
     }
 
-    pub fn tick_respawn(&mut self) {
+    pub fn tick_respawn(&mut self, rules: &GameRules) {
         if *self.state.get() != PlayerState::WaitingRespawn {
             return;
         }
 
         let ticks = match self.respawn_ticks {
             None => {
-                let wait = self.next_respawn.wait_ticks();
+                let wait = self.next_respawn.wait_ticks(rules);
                 self.respawn_type.set(self.next_respawn);
                 self.next_respawn = RespawnType::Default;
                 wait

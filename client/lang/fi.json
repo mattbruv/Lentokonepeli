@@ -3,6 +3,10 @@
     "defaultMessage": "Motor",
     "description": "Replay inspector row: whether the plane motor is on"
   },
+  "+KYPqH": {
+    "defaultMessage": "Uudelleensyntymisaika tiimitapon jälkeen",
+    "description": "Game rule: seconds to wait before respawning after killing a teammate"
+  },
   "+VHHqo": {
     "defaultMessage": "Leave game",
     "description": "Button in the leave game dialog that confirms leaving the active game"
@@ -10,6 +14,10 @@
   "+hJmve": {
     "defaultMessage": "Tasapeli!",
     "description": "Shown in large text and in chat when a round ends in a tie"
+  },
+  "+nHbxx": {
+    "defaultMessage": "Tuhoutumattomat rakennukset",
+    "description": "Game rule: runways and headquarters cannot be damaged"
   },
   "+ptLoi": {
     "defaultMessage": "You'll be disconnected from the current match. If you're the host, the game will end for everyone.",
@@ -39,6 +47,10 @@
     "defaultMessage": "Passive",
     "description": "Bot panel: bot difficulty that never shoots or bombs"
   },
+  "0QdJF3": {
+    "defaultMessage": "ei sallittu",
+    "description": "Value shown for a plane that players cannot pick"
+  },
   "1ICbwz": {
     "defaultMessage": "Remove",
     "description": "Host menu button that confirms removing a player from the game"
@@ -54,6 +66,10 @@
   "2w7ZSO": {
     "defaultMessage": "Kuolleet",
     "description": "scoreboard: Deaths"
+  },
+  "3+iy8l": {
+    "defaultMessage": "Kiitoradan kestävyys",
+    "description": "Game rule: how much damage a runway can take"
   },
   "309viz": {
     "defaultMessage": "Snap to player",
@@ -79,6 +95,10 @@
     "defaultMessage": "Laukaise heittoistuin, Avaa laskuvarjo",
     "description": "Title for the 'Eject, Open Parachute' action shown on the keybind settings section"
   },
+  "5BEOU3": {
+    "defaultMessage": "Tallenna",
+    "description": "Button that saves the current game rules as a named preset"
+  },
   "5jSC1l": {
     "defaultMessage": "The host didn't respond in time. They may have left, or a firewall is blocking the connection.",
     "description": "Error shown when connecting to the game host times out"
@@ -95,9 +115,17 @@
     "defaultMessage": "Fuel",
     "description": "Replay inspector row: plane fuel"
   },
+  "6Oypsp": {
+    "defaultMessage": "Kummallekin joukkueelle jää aina vähintään yksi sallittu kone.",
+    "description": "Hint in the rules editor plane tab explaining that a team cannot have every plane disabled"
+  },
   "6h1L5u": {
     "defaultMessage": "Easy",
     "description": "Bot panel: easiest bot difficulty"
+  },
+  "6mhHB1": {
+    "defaultMessage": "Laskuvarjohyppy",
+    "description": "Game rule: pilots can jump out of their plane"
   },
   "6zMC33": {
     "defaultMessage": "The host removed you from the game.",
@@ -123,6 +151,10 @@
     "defaultMessage": "Flipped",
     "description": "Replay inspector row: whether the plane is flipped upside down"
   },
+  "82c6/K": {
+    "defaultMessage": "Palauta alkuperäiset",
+    "description": "Rules editor button that restores every rule to the original game's value"
+  },
   "8Am/Pl": {
     "defaultMessage": "Konekiväärillä varustettu peruskone ilman erityisen hyviä tai huonoja puolia. Hyvä valinta aloittelijalle.",
     "description": "Description of the Albatros D.II aircraft"
@@ -147,6 +179,14 @@
     "defaultMessage": "Last use",
     "description": "Replay inspector row: whether the runway was last used for takeoff or landing"
   },
+  "93xZ94": {
+    "defaultMessage": "{label}: {value} (normaalisti {original})",
+    "description": "One changed game rule, showing its new value and the original game's value"
+  },
+  "9aUWlD": {
+    "defaultMessage": "Lentäjän pistooli",
+    "description": "Game rule: pilots on foot can shoot"
+  },
   "9bQEK7": {
     "defaultMessage": "Headquarters",
     "description": "Replay inspector title for a team headquarters building"
@@ -154,6 +194,10 @@
   "9l2moM": {
     "defaultMessage": "{team, select, Centrals {Keskusvaltojen} other {Liittoutuneiden}} kiitorata tuhottu.",
     "description": "Chat notice when a team's runway is destroyed"
+  },
+  "A7lzCj": {
+    "defaultMessage": "Koneen aseet",
+    "description": "Game rule: planes can fire their machine guns"
   },
   "AY7tVh": {
     "defaultMessage": "Bot",
@@ -179,6 +223,10 @@
     "defaultMessage": "Headquarters",
     "description": "Collision legend label for team headquarters buildings"
   },
+  "BFGUDR": {
+    "defaultMessage": "{plane}: {value}",
+    "description": "A plane that players are not allowed to pick"
+  },
   "BLykMd": {
     "defaultMessage": "Klaani",
     "description": "Settings section title used to modify the clan name"
@@ -194,6 +242,18 @@
   "C06Dta": {
     "defaultMessage": "Reaching the host",
     "description": "Connection step shown while establishing a connection to the game host"
+  },
+  "C3T5iK": {
+    "defaultMessage": "Tulitusviive",
+    "description": "Plane rule: milliseconds between machine gun shots"
+  },
+  "C8OJE8": {
+    "defaultMessage": "Kestävyys",
+    "description": "Plane rule: how much damage the plane can take"
+  },
+  "CKHrD1": {
+    "defaultMessage": "Omien ampuminen",
+    "description": "Game rule: players can damage their own team's players and buildings"
   },
   "CpTJ9C": {
     "defaultMessage": "End round",
@@ -243,6 +303,10 @@
     "defaultMessage": "Connecting to server",
     "description": "Connection step shown while contacting the matchmaking server"
   },
+  "FInvrp": {
+    "defaultMessage": "Kiihtyvyys",
+    "description": "Plane rule: engine acceleration multiplier"
+  },
   "FVxFnN": {
     "defaultMessage": "Replay stopped",
     "description": "Title shown when replay playback hits an error"
@@ -250,6 +314,10 @@
   "FeaIOV": {
     "defaultMessage": "Bomb",
     "description": "Replay inspector title for a bomb"
+  },
+  "Fvi+0H": {
+    "defaultMessage": "Pelisäännöt",
+    "description": "Title of the dialog for editing advanced game rules"
   },
   "G7DhrV": {
     "defaultMessage": "Pelaa",
@@ -283,6 +351,22 @@
     "defaultMessage": "Syötä 4 merkkiä sisältävä pelikoodi...",
     "description": "Infotext for input which is used to insert 4 digit game code to join games"
   },
+  "InAFP6": {
+    "defaultMessage": "Polttoaine",
+    "description": "Plane rule: amount of fuel the plane carries"
+  },
+  "J88gsh": {
+    "defaultMessage": "Rajaton polttoaine",
+    "description": "Game rule: planes never run out of fuel"
+  },
+  "JP86zV": {
+    "defaultMessage": "{plane} – {label}: {value} (normaalisti {original})",
+    "description": "One changed plane rule, showing the plane name, new value and the original game's value"
+  },
+  "JQ/vL6": {
+    "defaultMessage": "Rajattomat pommit",
+    "description": "Game rule: planes never run out of bombs"
+  },
   "JSLtOI": {
     "defaultMessage": "Downed by",
     "description": "Replay inspector row: player who shot the plane down"
@@ -310,6 +394,10 @@
   "L9AKyJ": {
     "defaultMessage": "Cancel",
     "description": "Button that cancels watching an out of date replay"
+  },
+  "LNYaBb": {
+    "defaultMessage": "Rajattomat ammukset",
+    "description": "Game rule: planes never run out of bullets"
   },
   "Lo5tsu": {
     "defaultMessage": "Keep playing",
@@ -371,6 +459,10 @@
     "defaultMessage": "Liiku oikealle",
     "description": "Title for the 'Move Right' action shown on the keybind settings section"
   },
+  "NlmIRX": {
+    "defaultMessage": "Pelin isäntä on muuttanut näitä sääntöjä alkuperäisestä pelistä:",
+    "description": "Text above the list of game rules the host has changed"
+  },
   "NyL4Zc": {
     "defaultMessage": "Recorded with {replayVersion}, you're running {currentVersion}. Playback may desync.",
     "description": "Notice shown while watching a replay recorded with another game version"
@@ -399,6 +491,10 @@
     "defaultMessage": "Random",
     "description": "Bot panel: option to add a bot to whichever team needs players"
   },
+  "PyjTpa": {
+    "defaultMessage": "Uudelleensyntyminen ja lentäjät",
+    "description": "Rules editor tab for respawn timers and pilot rules"
+  },
   "PzZfKW": {
     "defaultMessage": "Original levels",
     "description": "Group heading in the level selection for the built-in levels"
@@ -415,9 +511,17 @@
     "defaultMessage": "Joining game {code}",
     "description": "Title shown while connecting to a game"
   },
+  "QZbnsN": {
+    "defaultMessage": "Esiasetuksen nimi",
+    "description": "Placeholder for the rule preset name input"
+  },
   "QdN+gh": {
     "defaultMessage": "Desert",
     "description": "Level preview: map terrain is desert sand"
+  },
+  "QhGde8": {
+    "defaultMessage": "Pommitus",
+    "description": "Game rule: planes can drop bombs"
   },
   "Qj15PN": {
     "defaultMessage": "Vaihda Light-teema",
@@ -438,6 +542,10 @@
   "R7Fptk": {
     "defaultMessage": "Back to lobby",
     "description": "Button that leaves a game that failed to connect and returns to the lobby"
+  },
+  "RHcX+j": {
+    "defaultMessage": "Ammukset",
+    "description": "Plane rule: number of bullets the plane carries"
   },
   "RJPf0Z": {
     "defaultMessage": "Äänet",
@@ -491,6 +599,10 @@
     "defaultMessage": "Allies",
     "description": "Bot panel: option to add a bot to the Allies team"
   },
+  "Te6Km7": {
+    "defaultMessage": "Päämajan kestävyys",
+    "description": "Game rule: how much damage a headquarters building can take"
+  },
   "Telnt5": {
     "defaultMessage": "State",
     "description": "Replay inspector row: plane or pilot state"
@@ -498,6 +610,10 @@
   "TktZUh": {
     "defaultMessage": "Host",
     "description": "Label next to the host's own name in the host menu players list"
+  },
+  "TnCmTk": {
+    "defaultMessage": "Lentäjän tulitusviive",
+    "description": "Game rule: milliseconds between pistol shots for pilots on foot"
   },
   "Tsq+GT": {
     "defaultMessage": "Lobby name",
@@ -535,6 +651,10 @@
     "defaultMessage": "Medium",
     "description": "Bot panel: medium bot difficulty"
   },
+  "VFOn0Q": {
+    "defaultMessage": "päällä",
+    "description": "Value shown for a game rule that is switched on"
+  },
   "VJkmRe": {
     "defaultMessage": "Removed from game",
     "description": "Title shown when the host removes this player from the game"
@@ -542,6 +662,10 @@
   "VKJO6U": {
     "defaultMessage": "Game",
     "description": "Host menu tab with lobby and round settings"
+  },
+  "VOpWC1": {
+    "defaultMessage": "Pommitusviive",
+    "description": "Plane rule: milliseconds between dropped bombs"
   },
   "VVxUC9": {
     "defaultMessage": "On",
@@ -583,6 +707,10 @@
     "defaultMessage": "Pisteet",
     "description": "scoreboard: Score"
   },
+  "X5bw8W": {
+    "defaultMessage": "Mukautetut pelisäännöt",
+    "description": "Title of the notice in the game sidebar listing the rules the host changed"
+  },
   "XH4Nct": {
     "defaultMessage": "Download Replay File",
     "description": "Button text for button which downloads the replay file from the host"
@@ -599,6 +727,10 @@
     "defaultMessage": "Runway",
     "description": "Replay inspector title for a runway"
   },
+  "Xtm0Kr": {
+    "defaultMessage": "{label}: {value}",
+    "description": "One game rule that has been switched on or off"
+  },
   "Xx0fru": {
     "defaultMessage": "Off",
     "description": "Replay inspector value for a disabled toggle"
@@ -610,6 +742,10 @@
   "Yc8TsJ": {
     "defaultMessage": "This replay couldn't be loaded. If it was recorded with a different version of the game, it may not be compatible.",
     "description": "Error shown when a replay file fails to load"
+  },
+  "YtguIH": {
+    "defaultMessage": "Kopioi kaikkiin koneisiin",
+    "description": "Rules editor button that copies the selected plane's values to every plane"
   },
   "YzB1NF": {
     "defaultMessage": "Ends the round as a tie. Press again to skip straight to the next round.",
@@ -671,6 +807,10 @@
     "defaultMessage": "{team, select, Centrals {Keskusvallat} other {Liittoutuneet}} voittivat!",
     "description": "Shown in large text and in chat when a team wins the round"
   },
+  "c2TURS": {
+    "defaultMessage": "Selvä",
+    "description": "Button that closes the custom game rules warning"
+  },
   "cFDrGv": {
     "defaultMessage": "Valinnainen etuliite käyttääjänimen eteen",
     "description": "Tooltip for the clan setting section"
@@ -699,6 +839,10 @@
     "defaultMessage": "Liiku vasemmalle",
     "description": "Title for the 'Move Left' action shown on the keybind settings section"
   },
+  "dS8sdi": {
+    "defaultMessage": "Mukautetut pelisäännöt",
+    "description": "Button label when the host has changed the game rules from the original game"
+  },
   "daomJy": {
     "defaultMessage": "Couldn't join game",
     "description": "Title shown when joining a game fails"
@@ -706,6 +850,10 @@
   "ddsayU": {
     "defaultMessage": "Starts a fresh game on the chosen map for everyone. Players and bots stay, but teams, scores and the replay start over.",
     "description": "Explanation in the host menu of what changing the map or mode does"
+  },
+  "e3y/hO": {
+    "defaultMessage": "Käytä",
+    "description": "Rules editor button that keeps the edited rules"
   },
   "e5OODe": {
     "defaultMessage": "Valmis",
@@ -715,9 +863,17 @@
     "defaultMessage": "Start next round",
     "description": "Host menu button that skips the round results and intermission"
   },
+  "eyUUf8": {
+    "defaultMessage": "Aseet",
+    "description": "Rules editor tab for weapon and combat rules"
+  },
   "ezKLsY": {
     "defaultMessage": "Fokker DR.I",
     "description": "Name of the Fokker DR.I aircraft"
+  },
+  "f/eMSW": {
+    "defaultMessage": "Korjausaika kestävyyspistettä kohden",
+    "description": "Game rule: seconds for a damaged building to regain one health point, 0 turns repairs off"
   },
   "f3ix4b": {
     "defaultMessage": "Pommita",
@@ -755,9 +911,17 @@
     "defaultMessage": "Replay from a different version",
     "description": "Title of the dialog warning that a replay was recorded with another game version"
   },
+  "hmqhvt": {
+    "defaultMessage": "Rakennukset",
+    "description": "Rules editor tab for runway and headquarters rules"
+  },
   "iMTNwO": {
     "defaultMessage": "Mixed",
     "description": "Level preview: map has both grass and desert terrain"
+  },
+  "iOTzhw": {
+    "defaultMessage": "Ei tallennettuja esiasetuksia",
+    "description": "Placeholder for the rule preset picker when nothing is selected or saved"
   },
   "ioK/G6": {
     "defaultMessage": "Count",
@@ -779,9 +943,17 @@
     "defaultMessage": "Explosion",
     "description": "Collision legend label for explosions"
   },
+  "jICMij": {
+    "defaultMessage": "Tallenna nykyiset säännöt nimellä",
+    "description": "Label for the input naming a new rule preset"
+  },
   "jLMFLF": {
     "defaultMessage": "Try again",
     "description": "Button that retries joining a game after a failed connection"
+  },
+  "jet5Io": {
+    "defaultMessage": "Kiitoradan nousu-/laskeutumisviive",
+    "description": "Game rule: multiplier for how long a runway is blocked after a takeoff or landing"
   },
   "jlutC2": {
     "defaultMessage": "No",
@@ -790,6 +962,14 @@
   "jwBIfl": {
     "defaultMessage": "Fit to window",
     "description": "Button that resets the game view size so it fits the browser window"
+  },
+  "kM8e0a": {
+    "defaultMessage": "Tässä pelissä on mukautetut säännöt",
+    "description": "Title of the dialog warning a joining player that the host changed the game rules"
+  },
+  "kZfSKa": {
+    "defaultMessage": "Vahinko",
+    "description": "Game rule: multiplier for all damage dealt"
   },
   "kfnjH9": {
     "defaultMessage": "Asetukset",
@@ -811,6 +991,10 @@
     "defaultMessage": "Nimi",
     "description": "scoreboard: Name"
   },
+  "l9mP9j": {
+    "defaultMessage": "Esiasetus",
+    "description": "Label for the saved game rule preset picker"
+  },
   "lA7naj": {
     "defaultMessage": "Lisää näppäin",
     "description": "Tooltip for a button used to add a new keybind for an action"
@@ -827,6 +1011,14 @@
     "defaultMessage": "Cancel",
     "description": "Host menu button that cancels removing a player"
   },
+  "m8Oi8l": {
+    "defaultMessage": "Peruuta",
+    "description": "Rules editor button that discards rule changes"
+  },
+  "mBIlTO": {
+    "defaultMessage": "Alkuperäinen: {value}",
+    "description": "Hint under a changed game rule showing the original game's value"
+  },
   "mq7h++": {
     "defaultMessage": "Uusinnat",
     "description": "Sidebar link description for the Replay System page"
@@ -834,6 +1026,10 @@
   "mt8kyi": {
     "defaultMessage": "Loading the battlefield",
     "description": "Connection step shown while downloading the game state from the host"
+  },
+  "mtnKEB": {
+    "defaultMessage": "Uudelleensyntymisaika",
+    "description": "Game rule: seconds to wait before respawning"
   },
   "mv9zeu": {
     "defaultMessage": "Health",
@@ -855,9 +1051,25 @@
     "defaultMessage": "Add {count, plural, one {Bot} other {# Bots}}",
     "description": "Host menu button that adds the chosen number of bots"
   },
+  "ngpgyC": {
+    "defaultMessage": "Kääntymisnopeus",
+    "description": "Plane rule: turning speed multiplier"
+  },
   "nivA/t": {
     "defaultMessage": "Settings",
     "description": "Title of the settings dialog opened during a game"
+  },
+  "nsD9i0": {
+    "defaultMessage": "Lentäjän suoja-aika",
+    "description": "Game rule: milliseconds a pilot cannot be run over after bailing out"
+  },
+  "o5MbpS": {
+    "defaultMessage": "Poista esiasetus",
+    "description": "Tooltip for the button that deletes the selected rule preset"
+  },
+  "oUrRwQ": {
+    "defaultMessage": "Koneiden törmäykset",
+    "description": "Game rule: planes can crash into each other"
   },
   "obtz7Y": {
     "defaultMessage": "Erät",
@@ -874,6 +1086,10 @@
   "p1ezxU": {
     "defaultMessage": "Isännöi",
     "description": "Call to action button text for button which starts a new game as a Host"
+  },
+  "p4NtLy": {
+    "defaultMessage": "Koneet",
+    "description": "Rules editor tab for per-plane values"
   },
   "pPlaQd": {
     "defaultMessage": "Invulnerable",
@@ -902,6 +1118,14 @@
   "q9p7Ga": {
     "defaultMessage": "Difficulty",
     "description": "Bot panel: label for the bot difficulty dropdown"
+  },
+  "qLiOrX": {
+    "defaultMessage": "Huippunopeuslisä",
+    "description": "Plane rule: extra top speed before air resistance slows the plane"
+  },
+  "qsl4M+": {
+    "defaultMessage": "Pommit",
+    "description": "Plane rule: number of bombs the plane carries"
   },
   "qtiDl6": {
     "defaultMessage": "Position",
@@ -935,6 +1159,10 @@
     "defaultMessage": "(Rangaistus itsemurhasta)",
     "description": "Shown below the respawn countdown when the wait is longer because of a suicide"
   },
+  "siC31q": {
+    "defaultMessage": "Alkuperäiset pelisäännöt",
+    "description": "Button label when the game rules match the original game"
+  },
   "szCmDm": {
     "defaultMessage": "J",
     "description": "scoreboard: Team column, one letter"
@@ -963,6 +1191,10 @@
     "defaultMessage": "Playback hit an error at {time}. This usually happens when a replay was recorded with a different version of the game.",
     "description": "Message shown when replay playback fails partway through"
   },
+  "uBGNVH": {
+    "defaultMessage": "Sallittu",
+    "description": "Plane rule: whether players may pick this plane"
+  },
   "ult8LX": {
     "defaultMessage": "Chat & Interface",
     "description": "Heading for the group of chat and interface keybinds on the settings page"
@@ -979,6 +1211,10 @@
     "defaultMessage": "Bristol F.2b",
     "description": "Name of the Bristol F.2b aircraft"
   },
+  "vwC+hs": {
+    "defaultMessage": "Uudelleensyntymisaika itsemurhan jälkeen",
+    "description": "Game rule: seconds to wait before respawning after killing yourself"
+  },
   "wpH/Pl": {
     "defaultMessage": "Liity discord palvelimelle!",
     "description": "Navbar hover for discord button"
@@ -990,6 +1226,10 @@
   "wsJr7x": {
     "defaultMessage": "Couldn't reach the server. Check your internet connection and try again.",
     "description": "Error shown when the matchmaking server cannot be reached"
+  },
+  "x+GGpE": {
+    "defaultMessage": "pois",
+    "description": "Value shown for a game rule that is switched off"
   },
   "x6pbo9": {
     "defaultMessage": "Runways",

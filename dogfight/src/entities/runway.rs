@@ -1,4 +1,5 @@
 use crate::inspect::{BuildingInspect, RunwayInspect};
+use crate::rules::{scale_damage, GameRules};
 use dogfight_macros::Networked;
 use image::RgbaImage;
 
@@ -36,6 +37,11 @@ pub struct Runway {
 
     total_health: i32,
     health_timer: i32,
+    max_health: i32,
+    repair_ticks: i32,
+    indestructible: bool,
+    damage_percent: u16,
+    delay_percent: u16,
 
     last_reserve: Option<RunwayReservation>,
     reserve_timer: i32,
@@ -54,6 +60,11 @@ impl Runway {
             client_health: Property::new(0),
             total_health: 0,
             health_timer: 0,
+            max_health: 1530,
+            repair_ticks: 50,
+            indestructible: false,
+            damage_percent: 100,
+            delay_percent: 100,
             image_runway: get_image(RUNWAY),
             image_runway2: get_image(RUNWAY2),
             last_reserve: None,
@@ -95,8 +106,11 @@ impl Runway {
     pub fn tick(&mut self) -> () {
         self.reserve_timer += 10;
 
-        if self.total_health > 0 && self.total_health < self.get_max_health() {
-            self.health_timer = (self.health_timer + 1) % 50;
+        if self.repair_ticks > 0
+            && self.total_health > 0
+            && self.total_health < self.get_max_health()
+        {
+            self.health_timer = (self.health_timer + 1) % self.repair_ticks;
 
             if self.health_timer == 0 {
                 self.set_health(self.total_health + 1);
@@ -105,10 +119,10 @@ impl Runway {
     }
 
     pub fn subtract_health(&mut self, amount: i32) -> bool {
-        if self.total_health <= 0 {
+        if self.total_health <= 0 || self.indestructible {
             return false;
         }
-        let new_health = self.total_health - amount;
+        let new_health = self.total_health - scale_damage(amount, self.damage_percent);
         self.set_health(new_health);
         self.total_health == 0
     }
@@ -127,7 +141,16 @@ impl Runway {
     }
 
     fn get_max_health(&self) -> i32 {
-        1530
+        self.max_health
+    }
+
+    pub fn apply_rules(&mut self, rules: &GameRules) {
+        self.max_health = rules.runway_health as i32;
+        self.repair_ticks = rules.repair_ticks as i32;
+        self.indestructible = rules.indestructible_buildings;
+        self.damage_percent = rules.damage_percent;
+        self.delay_percent = rules.runway_delay_percent;
+        self.reset();
     }
 
     pub fn get_team(&self) -> &Team {
@@ -198,6 +221,7 @@ impl Runway {
                 }
             }
         };
+        let delay = scale_damage(delay, self.delay_percent);
 
         /*
         log(format!(

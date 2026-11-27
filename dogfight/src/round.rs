@@ -346,7 +346,13 @@ designer=polofel"#;
         assert_eq!(world.players.get_map().len(), 3);
 
         const ISLANDS: &str = "islands\nlayer1=..FH...........H...........fH.\nlayer2=...R......................l...\nlayer3=....T....................t....\nlayer4=\\<###>//////////////////<###>/\ndesigner=polofel";
-        let (mut next, rejoin) = world.restarted(ISLANDS, GameMode::Normal, 5, 20);
+        let (mut next, rejoin) = world.restarted(
+            ISLANDS,
+            GameMode::Normal,
+            5,
+            20,
+            crate::rules::GameRules::default(),
+        );
         assert_eq!(rejoin.len(), 2);
         assert_eq!(next.get_game_mode(), GameMode::Normal);
         assert_eq!(next.get_tick(), 0);
@@ -509,7 +515,8 @@ designer=polofel"#;
         let (_, replay) = ReplayFile::from_bytes(&bytes).unwrap();
         assert_eq!(replay.game_mode, GameMode::Rounds);
 
-        let without_mode = &bytes[..bytes.len() - 9];
+        let rules_len = world.rules.to_json().to_bytes().len();
+        let without_mode = &bytes[..bytes.len() - 9 - rules_len];
         let (_, old) = ReplayFile::from_bytes(without_mode).unwrap();
         assert_eq!(old.game_mode, GameMode::Normal);
         assert_eq!(old.game_time_minutes, 5);
@@ -525,7 +532,8 @@ designer=polofel"#;
         assert!(rest.is_empty());
         assert_eq!(replay.start_time_ms, Some(1_764_201_600_000));
 
-        let without_time = &bytes[..bytes.len() - 8];
+        let rules_len = world.rules.to_json().to_bytes().len();
+        let without_time = &bytes[..bytes.len() - 8 - rules_len];
         let (_, old) = ReplayFile::from_bytes(without_time).unwrap();
         assert_eq!(old.start_time_ms, None);
         assert_eq!(old.game_mode, GameMode::Rounds);
@@ -533,6 +541,60 @@ designer=polofel"#;
         let unset = world_with_level(5, 20).get_replay_file_bytes();
         let (_, unset) = ReplayFile::from_bytes(&unset).unwrap();
         assert_eq!(unset.start_time_ms, None);
+    }
+
+    #[test]
+    fn rules_survive_replay_round_trip() {
+        let mut world = world_with_level(5, 20);
+        let mut rules = crate::rules::GameRules::default();
+        rules.bombs = false;
+        rules.damage_percent = 250;
+        rules.planes.sopwith.ammo = 7;
+        world.set_rules(rules);
+        let bytes = world.get_replay_file_bytes();
+        let (rest, replay) = ReplayFile::from_bytes(&bytes).unwrap();
+        assert!(rest.is_empty());
+        assert_eq!(replay.rules, rules);
+
+        let rules_len = world.rules.to_json().to_bytes().len();
+        let (_, old) = ReplayFile::from_bytes(&bytes[..bytes.len() - rules_len]).unwrap();
+        assert_eq!(old.rules, crate::rules::GameRules::default());
+        assert!(old.start_time_ms.is_none());
+    }
+
+    #[test]
+    fn forbidden_planes_cannot_take_off_and_are_skipped_in_chooser() {
+        let mut world = world_with_level(0, 5);
+        let mut rules = crate::rules::GameRules::default();
+        rules.planes.albatros.allowed = false;
+        world.set_rules(rules);
+        add_player(&mut world, "a");
+        world.choose_team(&PlayerGuid::from("a"), Some(Team::Centrals));
+        take_off(&mut world, "a", Team::Centrals);
+        let id = player_id(&world, "a");
+        assert!(world.players.get(id).unwrap().get_controlling().is_none());
+
+        world.tick(vec![]);
+        assert_ne!(world.players.get(id).unwrap().get_selected_plane(), 0);
+    }
+
+    #[test]
+    fn building_rules_apply_to_loaded_and_reset_buildings() {
+        let mut world = world_with_level(0, 5);
+        let mut rules = crate::rules::GameRules::default();
+        rules.indestructible_buildings = true;
+        world.set_rules(rules);
+        for (_, runway) in world.runways.get_map_mut() {
+            assert!(!runway.subtract_health(100_000));
+        }
+
+        rules.indestructible_buildings = false;
+        rules.headquarters_health = 10;
+        rules.damage_percent = 200;
+        world.set_rules(rules);
+        for (_, bunker) in world.bunkers.get_map_mut() {
+            assert!(bunker.subtract_health(5));
+        }
     }
 
     #[test]

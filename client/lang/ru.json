@@ -3,6 +3,10 @@
     "defaultMessage": "Двигатель",
     "description": "Replay inspector row: whether the plane motor is on"
   },
+  "+KYPqH": {
+    "defaultMessage": "Время возрождения после убийства союзника",
+    "description": "Game rule: seconds to wait before respawning after killing a teammate"
+  },
   "+VHHqo": {
     "defaultMessage": "Покинуть игру",
     "description": "Button in the leave game dialog that confirms leaving the active game"
@@ -10,6 +14,10 @@
   "+hJmve": {
     "defaultMessage": "Ничья!",
     "description": "Shown in large text and in chat when a round ends in a tie"
+  },
+  "+nHbxx": {
+    "defaultMessage": "Неразрушимые здания",
+    "description": "Game rule: runways and headquarters cannot be damaged"
   },
   "+ptLoi": {
     "defaultMessage": "Вы будете отключены от текущего матча. Если вы хост, игра закончится для всех.",
@@ -39,6 +47,10 @@
     "defaultMessage": "Пассивный",
     "description": "Bot panel: bot difficulty that never shoots or bombs"
   },
+  "0QdJF3": {
+    "defaultMessage": "запрещён",
+    "description": "Value shown for a plane that players cannot pick"
+  },
   "1ICbwz": {
     "defaultMessage": "Удалить",
     "description": "Host menu button that confirms removing a player from the game"
@@ -54,6 +66,10 @@
   "2w7ZSO": {
     "defaultMessage": "Смерти",
     "description": "scoreboard: Deaths"
+  },
+  "3+iy8l": {
+    "defaultMessage": "Прочность взлётной полосы",
+    "description": "Game rule: how much damage a runway can take"
   },
   "309viz": {
     "defaultMessage": "К игроку",
@@ -79,6 +95,10 @@
     "defaultMessage": "Катапультироваться, раскрыть парашют",
     "description": "Title for the 'Eject, Open Parachute' action shown on the keybind settings section"
   },
+  "5BEOU3": {
+    "defaultMessage": "Сохранить",
+    "description": "Button that saves the current game rules as a named preset"
+  },
   "5jSC1l": {
     "defaultMessage": "Хост не ответил вовремя. Возможно, он вышел, или соединение блокирует брандмауэр.",
     "description": "Error shown when connecting to the game host times out"
@@ -95,9 +115,17 @@
     "defaultMessage": "Топливо",
     "description": "Replay inspector row: plane fuel"
   },
+  "6Oypsp": {
+    "defaultMessage": "У каждой команды всегда остаётся хотя бы один разрешённый самолёт.",
+    "description": "Hint in the rules editor plane tab explaining that a team cannot have every plane disabled"
+  },
   "6h1L5u": {
     "defaultMessage": "Лёгкий",
     "description": "Bot panel: easiest bot difficulty"
+  },
+  "6mhHB1": {
+    "defaultMessage": "Катапультирование",
+    "description": "Game rule: pilots can jump out of their plane"
   },
   "6zMC33": {
     "defaultMessage": "Хост удалил вас из игры.",
@@ -123,6 +151,10 @@
     "defaultMessage": "Перевёрнут",
     "description": "Replay inspector row: whether the plane is flipped upside down"
   },
+  "82c6/K": {
+    "defaultMessage": "Сбросить к оригиналу",
+    "description": "Rules editor button that restores every rule to the original game's value"
+  },
   "8Am/Pl": {
     "defaultMessage": "Простой самолёт с пулемётом, без особо сильных или слабых сторон. Хороший выбор для новичка.",
     "description": "Description of the Albatros D.II aircraft"
@@ -147,6 +179,14 @@
     "defaultMessage": "Последнее использование",
     "description": "Replay inspector row: whether the runway was last used for takeoff or landing"
   },
+  "93xZ94": {
+    "defaultMessage": "{label}: {value} (обычно {original})",
+    "description": "One changed game rule, showing its new value and the original game's value"
+  },
+  "9aUWlD": {
+    "defaultMessage": "Пистолеты пилотов",
+    "description": "Game rule: pilots on foot can shoot"
+  },
   "9bQEK7": {
     "defaultMessage": "Штаб",
     "description": "Replay inspector title for a team headquarters building"
@@ -154,6 +194,10 @@
   "9l2moM": {
     "defaultMessage": "Взлётная полоса {team, select, Centrals {Центральных держав} other {Союзников}} уничтожена.",
     "description": "Chat notice when a team's runway is destroyed"
+  },
+  "A7lzCj": {
+    "defaultMessage": "Пулемёты самолётов",
+    "description": "Game rule: planes can fire their machine guns"
   },
   "AY7tVh": {
     "defaultMessage": "Бот",
@@ -179,6 +223,10 @@
     "defaultMessage": "Штаб",
     "description": "Collision legend label for team headquarters buildings"
   },
+  "BFGUDR": {
+    "defaultMessage": "{plane}: {value}",
+    "description": "A plane that players are not allowed to pick"
+  },
   "BLykMd": {
     "defaultMessage": "Клан",
     "description": "Settings section title used to modify the clan name"
@@ -194,6 +242,18 @@
   "C06Dta": {
     "defaultMessage": "Связь с хостом",
     "description": "Connection step shown while establishing a connection to the game host"
+  },
+  "C3T5iK": {
+    "defaultMessage": "Задержка стрельбы",
+    "description": "Plane rule: milliseconds between machine gun shots"
+  },
+  "C8OJE8": {
+    "defaultMessage": "Прочность",
+    "description": "Plane rule: how much damage the plane can take"
+  },
+  "CKHrD1": {
+    "defaultMessage": "Огонь по своим",
+    "description": "Game rule: players can damage their own team's players and buildings"
   },
   "CpTJ9C": {
     "defaultMessage": "Завершить раунд",
@@ -243,6 +303,10 @@
     "defaultMessage": "Подключение к серверу",
     "description": "Connection step shown while contacting the matchmaking server"
   },
+  "FInvrp": {
+    "defaultMessage": "Ускорение",
+    "description": "Plane rule: engine acceleration multiplier"
+  },
   "FVxFnN": {
     "defaultMessage": "Повтор остановлен",
     "description": "Title shown when replay playback hits an error"
@@ -250,6 +314,10 @@
   "FeaIOV": {
     "defaultMessage": "Бомба",
     "description": "Replay inspector title for a bomb"
+  },
+  "Fvi+0H": {
+    "defaultMessage": "Правила игры",
+    "description": "Title of the dialog for editing advanced game rules"
   },
   "G7DhrV": {
     "defaultMessage": "Играть",
@@ -283,6 +351,22 @@
     "defaultMessage": "Введите 4-значный код игры...",
     "description": "Infotext for input which is used to insert 4 digit game code to join games"
   },
+  "InAFP6": {
+    "defaultMessage": "Топливо",
+    "description": "Plane rule: amount of fuel the plane carries"
+  },
+  "J88gsh": {
+    "defaultMessage": "Бесконечное топливо",
+    "description": "Game rule: planes never run out of fuel"
+  },
+  "JP86zV": {
+    "defaultMessage": "{plane} – {label}: {value} (обычно {original})",
+    "description": "One changed plane rule, showing the plane name, new value and the original game's value"
+  },
+  "JQ/vL6": {
+    "defaultMessage": "Бесконечные бомбы",
+    "description": "Game rule: planes never run out of bombs"
+  },
   "JSLtOI": {
     "defaultMessage": "Сбит игроком",
     "description": "Replay inspector row: player who shot the plane down"
@@ -310,6 +394,10 @@
   "L9AKyJ": {
     "defaultMessage": "Отмена",
     "description": "Button that cancels watching an out of date replay"
+  },
+  "LNYaBb": {
+    "defaultMessage": "Бесконечные патроны",
+    "description": "Game rule: planes never run out of bullets"
   },
   "Lo5tsu": {
     "defaultMessage": "Продолжить игру",
@@ -371,6 +459,10 @@
     "defaultMessage": "Вправо",
     "description": "Title for the 'Move Right' action shown on the keybind settings section"
   },
+  "NlmIRX": {
+    "defaultMessage": "Хост изменил эти правила по сравнению с оригинальной игрой:",
+    "description": "Text above the list of game rules the host has changed"
+  },
   "NyL4Zc": {
     "defaultMessage": "Записано в версии {replayVersion}, у вас {currentVersion}. Воспроизведение может рассинхронизироваться.",
     "description": "Notice shown while watching a replay recorded with another game version"
@@ -399,6 +491,10 @@
     "defaultMessage": "Случайно",
     "description": "Bot panel: option to add a bot to whichever team needs players"
   },
+  "PyjTpa": {
+    "defaultMessage": "Возрождение и пилоты",
+    "description": "Rules editor tab for respawn timers and pilot rules"
+  },
   "PzZfKW": {
     "defaultMessage": "Оригинальные уровни",
     "description": "Group heading in the level selection for the built-in levels"
@@ -415,9 +511,17 @@
     "defaultMessage": "Подключение к игре {code}",
     "description": "Title shown while connecting to a game"
   },
+  "QZbnsN": {
+    "defaultMessage": "Название пресета",
+    "description": "Placeholder for the rule preset name input"
+  },
   "QdN+gh": {
     "defaultMessage": "Пустыня",
     "description": "Level preview: map terrain is desert sand"
+  },
+  "QhGde8": {
+    "defaultMessage": "Бомбометание",
+    "description": "Game rule: planes can drop bombs"
   },
   "Qj15PN": {
     "defaultMessage": "Включить светлую тему",
@@ -438,6 +542,10 @@
   "R7Fptk": {
     "defaultMessage": "Назад в лобби",
     "description": "Button that leaves a game that failed to connect and returns to the lobby"
+  },
+  "RHcX+j": {
+    "defaultMessage": "Патроны",
+    "description": "Plane rule: number of bullets the plane carries"
   },
   "RJPf0Z": {
     "defaultMessage": "Звук",
@@ -491,6 +599,10 @@
     "defaultMessage": "Союзники",
     "description": "Bot panel: option to add a bot to the Allies team"
   },
+  "Te6Km7": {
+    "defaultMessage": "Прочность штаба",
+    "description": "Game rule: how much damage a headquarters building can take"
+  },
   "Telnt5": {
     "defaultMessage": "Состояние",
     "description": "Replay inspector row: plane or pilot state"
@@ -498,6 +610,10 @@
   "TktZUh": {
     "defaultMessage": "Хост",
     "description": "Label next to the host's own name in the host menu players list"
+  },
+  "TnCmTk": {
+    "defaultMessage": "Задержка стрельбы пилота",
+    "description": "Game rule: milliseconds between pistol shots for pilots on foot"
   },
   "Tsq+GT": {
     "defaultMessage": "Название лобби",
@@ -535,6 +651,10 @@
     "defaultMessage": "Средний",
     "description": "Bot panel: medium bot difficulty"
   },
+  "VFOn0Q": {
+    "defaultMessage": "вкл.",
+    "description": "Value shown for a game rule that is switched on"
+  },
   "VJkmRe": {
     "defaultMessage": "Удалён из игры",
     "description": "Title shown when the host removes this player from the game"
@@ -542,6 +662,10 @@
   "VKJO6U": {
     "defaultMessage": "Игра",
     "description": "Host menu tab with lobby and round settings"
+  },
+  "VOpWC1": {
+    "defaultMessage": "Задержка бомб",
+    "description": "Plane rule: milliseconds between dropped bombs"
   },
   "VVxUC9": {
     "defaultMessage": "Вкл",
@@ -583,6 +707,10 @@
     "defaultMessage": "Очки",
     "description": "scoreboard: Score"
   },
+  "X5bw8W": {
+    "defaultMessage": "Изменённые правила игры",
+    "description": "Title of the notice in the game sidebar listing the rules the host changed"
+  },
   "XH4Nct": {
     "defaultMessage": "Скачать файл повтора",
     "description": "Button text for button which downloads the replay file from the host"
@@ -599,6 +727,10 @@
     "defaultMessage": "Взлётная полоса",
     "description": "Replay inspector title for a runway"
   },
+  "Xtm0Kr": {
+    "defaultMessage": "{label}: {value}",
+    "description": "One game rule that has been switched on or off"
+  },
   "Xx0fru": {
     "defaultMessage": "Выкл",
     "description": "Replay inspector value for a disabled toggle"
@@ -610,6 +742,10 @@
   "Yc8TsJ": {
     "defaultMessage": "Не удалось загрузить повтор. Если он записан в другой версии игры, он может быть несовместим.",
     "description": "Error shown when a replay file fails to load"
+  },
+  "YtguIH": {
+    "defaultMessage": "Скопировать на все самолёты",
+    "description": "Rules editor button that copies the selected plane's values to every plane"
   },
   "YzB1NF": {
     "defaultMessage": "Завершает раунд ничьей. Нажмите ещё раз, чтобы сразу перейти к следующему раунду.",
@@ -671,6 +807,10 @@
     "defaultMessage": "{team, select, Centrals {Центральные державы} other {Союзники}} победили!",
     "description": "Shown in large text and in chat when a team wins the round"
   },
+  "c2TURS": {
+    "defaultMessage": "Понятно",
+    "description": "Button that closes the custom game rules warning"
+  },
   "cFDrGv": {
     "defaultMessage": "Необязательный клан перед вашим именем",
     "description": "Tooltip for the clan setting section"
@@ -699,6 +839,10 @@
     "defaultMessage": "Влево",
     "description": "Title for the 'Move Left' action shown on the keybind settings section"
   },
+  "dS8sdi": {
+    "defaultMessage": "Изменённые правила игры",
+    "description": "Button label when the host has changed the game rules from the original game"
+  },
   "daomJy": {
     "defaultMessage": "Не удалось присоединиться",
     "description": "Title shown when joining a game fails"
@@ -706,6 +850,10 @@
   "ddsayU": {
     "defaultMessage": "Начинает новую игру на выбранной карте для всех. Игроки и боты остаются, но команды, очки и повтор начинаются заново.",
     "description": "Explanation in the host menu of what changing the map or mode does"
+  },
+  "e3y/hO": {
+    "defaultMessage": "Применить",
+    "description": "Rules editor button that keeps the edited rules"
   },
   "e5OODe": {
     "defaultMessage": "Готов",
@@ -715,9 +863,17 @@
     "defaultMessage": "Начать следующий раунд",
     "description": "Host menu button that skips the round results and intermission"
   },
+  "eyUUf8": {
+    "defaultMessage": "Оружие",
+    "description": "Rules editor tab for weapon and combat rules"
+  },
   "ezKLsY": {
     "defaultMessage": "Fokker DR.I",
     "description": "Name of the Fokker DR.I aircraft"
+  },
+  "f/eMSW": {
+    "defaultMessage": "Время ремонта на единицу прочности",
+    "description": "Game rule: seconds for a damaged building to regain one health point, 0 turns repairs off"
   },
   "f3ix4b": {
     "defaultMessage": "Бомба",
@@ -755,9 +911,17 @@
     "defaultMessage": "Повтор из другой версии",
     "description": "Title of the dialog warning that a replay was recorded with another game version"
   },
+  "hmqhvt": {
+    "defaultMessage": "Здания",
+    "description": "Rules editor tab for runway and headquarters rules"
+  },
   "iMTNwO": {
     "defaultMessage": "Смешанная",
     "description": "Level preview: map has both grass and desert terrain"
+  },
+  "iOTzhw": {
+    "defaultMessage": "Нет сохранённых пресетов",
+    "description": "Placeholder for the rule preset picker when nothing is selected or saved"
   },
   "ioK/G6": {
     "defaultMessage": "Количество",
@@ -779,9 +943,17 @@
     "defaultMessage": "Взрыв",
     "description": "Collision legend label for explosions"
   },
+  "jICMij": {
+    "defaultMessage": "Сохранить текущие правила как",
+    "description": "Label for the input naming a new rule preset"
+  },
   "jLMFLF": {
     "defaultMessage": "Попробовать снова",
     "description": "Button that retries joining a game after a failed connection"
+  },
+  "jet5Io": {
+    "defaultMessage": "Задержка взлёта/посадки на полосе",
+    "description": "Game rule: multiplier for how long a runway is blocked after a takeoff or landing"
   },
   "jlutC2": {
     "defaultMessage": "Нет",
@@ -790,6 +962,14 @@
   "jwBIfl": {
     "defaultMessage": "По размеру окна",
     "description": "Button that resets the game view size so it fits the browser window"
+  },
+  "kM8e0a": {
+    "defaultMessage": "В этой игре изменены правила",
+    "description": "Title of the dialog warning a joining player that the host changed the game rules"
+  },
+  "kZfSKa": {
+    "defaultMessage": "Урон",
+    "description": "Game rule: multiplier for all damage dealt"
   },
   "kfnjH9": {
     "defaultMessage": "Настройки",
@@ -811,6 +991,10 @@
     "defaultMessage": "Имя",
     "description": "scoreboard: Name"
   },
+  "l9mP9j": {
+    "defaultMessage": "Пресет",
+    "description": "Label for the saved game rule preset picker"
+  },
   "lA7naj": {
     "defaultMessage": "Добавить клавишу",
     "description": "Tooltip for a button used to add a new keybind for an action"
@@ -827,6 +1011,14 @@
     "defaultMessage": "Отмена",
     "description": "Host menu button that cancels removing a player"
   },
+  "m8Oi8l": {
+    "defaultMessage": "Отмена",
+    "description": "Rules editor button that discards rule changes"
+  },
+  "mBIlTO": {
+    "defaultMessage": "Оригинал: {value}",
+    "description": "Hint under a changed game rule showing the original game's value"
+  },
   "mq7h++": {
     "defaultMessage": "Смотреть повтор",
     "description": "Sidebar link description for the Replay System page"
@@ -834,6 +1026,10 @@
   "mt8kyi": {
     "defaultMessage": "Загрузка поля боя",
     "description": "Connection step shown while downloading the game state from the host"
+  },
+  "mtnKEB": {
+    "defaultMessage": "Время возрождения",
+    "description": "Game rule: seconds to wait before respawning"
   },
   "mv9zeu": {
     "defaultMessage": "Здоровье",
@@ -855,9 +1051,25 @@
     "defaultMessage": "Добавить {count, plural, =1 {бота} one {# бота} few {# бота} many {# ботов} other {# бота}}",
     "description": "Host menu button that adds the chosen number of bots"
   },
+  "ngpgyC": {
+    "defaultMessage": "Скорость поворота",
+    "description": "Plane rule: turning speed multiplier"
+  },
   "nivA/t": {
     "defaultMessage": "Настройки",
     "description": "Title of the settings dialog opened during a game"
+  },
+  "nsD9i0": {
+    "defaultMessage": "Защита пилота после прыжка",
+    "description": "Game rule: milliseconds a pilot cannot be run over after bailing out"
+  },
+  "o5MbpS": {
+    "defaultMessage": "Удалить пресет",
+    "description": "Tooltip for the button that deletes the selected rule preset"
+  },
+  "oUrRwQ": {
+    "defaultMessage": "Столкновения самолётов",
+    "description": "Game rule: planes can crash into each other"
   },
   "obtz7Y": {
     "defaultMessage": "Раунды",
@@ -874,6 +1086,10 @@
   "p1ezxU": {
     "defaultMessage": "Создать игру",
     "description": "Call to action button text for button which starts a new game as a Host"
+  },
+  "p4NtLy": {
+    "defaultMessage": "Самолёты",
+    "description": "Rules editor tab for per-plane values"
   },
   "pPlaQd": {
     "defaultMessage": "Неуязвим",
@@ -902,6 +1118,14 @@
   "q9p7Ga": {
     "defaultMessage": "Сложность",
     "description": "Bot panel: label for the bot difficulty dropdown"
+  },
+  "qLiOrX": {
+    "defaultMessage": "Бонус к максимальной скорости",
+    "description": "Plane rule: extra top speed before air resistance slows the plane"
+  },
+  "qsl4M+": {
+    "defaultMessage": "Бомбы",
+    "description": "Plane rule: number of bombs the plane carries"
   },
   "qtiDl6": {
     "defaultMessage": "Позиция",
@@ -935,6 +1159,10 @@
     "defaultMessage": "(Штраф за самоубийство)",
     "description": "Shown below the respawn countdown when the wait is longer because of a suicide"
   },
+  "siC31q": {
+    "defaultMessage": "Оригинальные правила игры",
+    "description": "Button label when the game rules match the original game"
+  },
   "szCmDm": {
     "defaultMessage": "К",
     "description": "scoreboard: Team column, one letter"
@@ -963,6 +1191,10 @@
     "defaultMessage": "Ошибка воспроизведения на {time}. Обычно это происходит, если повтор записан в другой версии игры.",
     "description": "Message shown when replay playback fails partway through"
   },
+  "uBGNVH": {
+    "defaultMessage": "Разрешён",
+    "description": "Plane rule: whether players may pick this plane"
+  },
   "ult8LX": {
     "defaultMessage": "Чат и интерфейс",
     "description": "Heading for the group of chat and interface keybinds on the settings page"
@@ -979,6 +1211,10 @@
     "defaultMessage": "Bristol F.2b",
     "description": "Name of the Bristol F.2b aircraft"
   },
+  "vwC+hs": {
+    "defaultMessage": "Время возрождения после самоубийства",
+    "description": "Game rule: seconds to wait before respawning after killing yourself"
+  },
   "wpH/Pl": {
     "defaultMessage": "Присоединяйтесь к нам в Discord!",
     "description": "Navbar hover for discord button"
@@ -990,6 +1226,10 @@
   "wsJr7x": {
     "defaultMessage": "Не удалось связаться с сервером. Проверьте подключение к интернету и попробуйте снова.",
     "description": "Error shown when the matchmaking server cannot be reached"
+  },
+  "x+GGpE": {
+    "defaultMessage": "выкл.",
+    "description": "Value shown for a game rule that is switched off"
   },
   "x6pbo9": {
     "defaultMessage": "Взлётные полосы",

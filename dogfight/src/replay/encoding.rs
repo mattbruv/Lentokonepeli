@@ -4,6 +4,7 @@ use crate::{
     entities::{player::PlayerGuid, world_info::GameMode},
     input::PlayerCommand,
     network::encoding::NetworkedBytes,
+    rules::GameRules,
 };
 
 use super::file::{ReplayFile, ReplayTick, ReplayTickCommand};
@@ -59,6 +60,7 @@ impl NetworkedBytes for ReplayFile {
         bytes.extend(self.intermission_seconds.to_bytes());
         bytes.extend(self.game_mode.to_bytes());
         bytes.extend(self.start_time_ms.unwrap_or(0).to_bytes());
+        bytes.extend(self.rules.to_json().to_bytes());
 
         bytes
     }
@@ -90,6 +92,10 @@ impl NetworkedBytes for ReplayFile {
             Some((rest, time)) => (rest, Some(time)),
             None => (bytes, None),
         };
+        let (bytes, rules) = match String::from_bytes(bytes) {
+            Some((rest, json)) => (rest, GameRules::from_json(&json).unwrap_or_default()),
+            None => (bytes, GameRules::default()),
+        };
 
         // See note in to_bytes to understand why we're converting this
         let mut ticks: BTreeMap<u32, Vec<ReplayTickCommand>> = BTreeMap::new();
@@ -108,6 +114,7 @@ impl NetworkedBytes for ReplayFile {
                 intermission_seconds,
                 game_mode,
                 start_time_ms,
+                rules,
                 player_guids,
                 ticks,
             },

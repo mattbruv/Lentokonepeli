@@ -1,0 +1,43 @@
+.title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+}
+
+.grow {
+    flex: 1;
+    min-width: 0;
+}
+
+.presets {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border: 2px dashed var(--lk-paper-line);
+    border-radius: 12px;
+}
+
+.changed {
+    border-color: var(--mantine-color-copper-6);
+}
+
+.changedLabel {
+    color: var(--mantine-color-copper-7);
+    font-weight: 700;
+}
+
+.disallowed {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.hint {
+    font-size: 0.85rem;
+    opacity: 0.75;
+}
+
+.changes {
+    font-size: 0.85rem;
+}

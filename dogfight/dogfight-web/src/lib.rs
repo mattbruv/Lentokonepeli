@@ -14,6 +14,7 @@ use dogfight::{
         events::get_replay_summary,
         file::{get_build_version, get_commit_version, get_replay_version, ReplayFile},
     },
+    rules::{default_rules_json, sanitize_rules_json, GameRules},
     world::{self, World},
 };
 use wasm_bindgen::prelude::*;
@@ -67,6 +68,7 @@ impl DogfightWeb {
             self.world
                 .set_round_settings(replay.game_time_minutes, replay.intermission_seconds);
             self.world.set_game_mode(replay.game_mode);
+            self.world.set_rules(replay.rules);
             self.replay = Some(replay);
         }
     }
@@ -80,18 +82,37 @@ impl DogfightWeb {
         self.world.set_game_mode(parse_game_mode(mode));
     }
 
+    pub fn set_rules(&mut self, rules_json: &str) {
+        self.world
+            .set_rules(GameRules::from_json(rules_json).unwrap_or_default());
+    }
+
+    pub fn get_rules(&self) -> String {
+        self.world.rules.to_json()
+    }
+
+    pub fn default_rules(&self) -> String {
+        default_rules_json()
+    }
+
+    pub fn sanitize_rules(&self, rules_json: &str) -> String {
+        sanitize_rules_json(rules_json)
+    }
+
     pub fn change_game(
         &mut self,
         level: String,
         mode: &str,
         game_time_minutes: u16,
         intermission_seconds: u16,
+        rules_json: &str,
     ) {
         let (world, rejoin) = self.world.restarted(
             &level,
             parse_game_mode(mode),
             game_time_minutes,
             intermission_seconds,
+            GameRules::from_json(rules_json).unwrap_or_default(),
         );
         self.world = world;
         self.world.set_replay_start_time(now() as u64);
@@ -170,6 +191,7 @@ impl DogfightWeb {
             self.world
                 .set_round_settings(replay.game_time_minutes, replay.intermission_seconds);
             self.world.set_game_mode(replay.game_mode);
+            self.world.set_rules(replay.rules);
             self.world.simulate_until(replay, Some(until_tick), true);
         }
     }

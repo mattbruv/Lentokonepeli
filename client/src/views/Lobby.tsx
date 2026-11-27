@@ -11,8 +11,10 @@ import { Guest } from "../components/Guest";
 import { Host } from "../components/Host";
 import { BOT_MESSAGES, difficultyOptions } from "../components/HostMenu";
 import { NameEditor } from "../components/NameEditor";
+import { RulesField } from "../components/RulesEditor";
 import { Panel } from "../components/ui/Panel";
 import { useSettingsContext } from "../contexts/settingsContext";
+import { defaultRules } from "../rules";
 import { BOT_WARNING_THRESHOLD, BotDifficultyChoice, LOBBY_NAME_MAX_LENGTH, MAX_BOTS } from "../hooks/useLocalHost";
 import classes from "./Lobby.module.css";
 
@@ -31,6 +33,7 @@ export function Lobby() {
         levelKey: "classic",
         gameTime: 0,
         gameMode: "Normal",
+        rules: defaultRules(),
     });
     const [lobbyName, setLobbyName] = useState("");
     const [botCount, setBotCount] = useState(0);
@@ -184,6 +187,10 @@ export function Lobby() {
                                 levelClassNames={{ input: classes.levelInput, option: classes.levelOption }}
                             />
                         </div>
+                        <RulesField
+                            value={gameSettings.rules}
+                            onChange={(rules) => setGameSettings({ ...gameSettings, rules })}
+                        />
                         <div className={classes.row}>
                             <NumberInput
                                 className={classes.grow}

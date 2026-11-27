@@ -1,3 +1,4 @@
+use crate::rules::GameRules;
 use dogfight_macros::{EnumBytes, Networked};
 use image::RgbaImage;
 
@@ -54,6 +55,9 @@ pub struct Man {
     age_ms: u32,
 
     last_shot_ms: u32,
+    shoot_delay_ms: u32,
+    invulnerability_ms: u32,
+    guns: bool,
 }
 
 impl Man {
@@ -72,11 +76,23 @@ impl Man {
             image_parachuting: get_image(PARACHUTER1),
             age_ms: 0,
             last_shot_ms: SHOOT_DELAY_MS,
+            shoot_delay_ms: SHOOT_DELAY_MS,
+            invulnerability_ms: INVULNERABILITY_TIME,
+            guns: true,
         }
     }
 
+    pub fn with_rules(team: Team, rules: &GameRules) -> Self {
+        let mut man = Man::new(team);
+        man.shoot_delay_ms = rules.pilot_shoot_delay_ms as u32;
+        man.last_shot_ms = man.shoot_delay_ms;
+        man.invulnerability_ms = rules.pilot_invulnerability_ms as u32;
+        man.guns = rules.pilot_guns;
+        man
+    }
+
     pub fn past_grace_period(&self) -> bool {
-        self.age_ms >= INVULNERABILITY_TIME
+        self.age_ms >= self.invulnerability_ms
     }
 
     pub fn tick(
@@ -182,7 +198,7 @@ impl Man {
         }
 
         // If we're shooting
-        if keyboard.ctrl && self.last_shot_ms > SHOOT_DELAY_MS {
+        if self.guns && keyboard.ctrl && self.last_shot_ms > self.shoot_delay_ms {
             self.last_shot_ms = 0;
             actions.push(Action::ManShootBullet(ManShootData {
                 player_id: my_owner,
@@ -219,7 +235,7 @@ impl Man {
             }
         }
 
-        if keyboard.ctrl && self.last_shot_ms > SHOOT_DELAY_MS {
+        if self.guns && keyboard.ctrl && self.last_shot_ms > self.shoot_delay_ms {
             self.last_shot_ms = 0;
 
             actions.push(Action::ManShootBullet(ManShootData {

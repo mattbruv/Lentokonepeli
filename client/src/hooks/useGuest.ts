@@ -1,8 +1,10 @@
+import { GameRules } from "dogfight-types/GameRules";
 import { PlayerCommand } from "dogfight-types/PlayerCommand";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import Peer, { DataConnection } from "peerjs";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { gameLoop } from "../gameLoop";
+import { sanitizeRules } from "../rules";
 import { useDogfight } from "./useDogfight";
 import {
     isLobbyMessage,
@@ -61,6 +63,7 @@ export function useGuest(myName: string, clan: string, spectator: boolean) {
     const heartbeatTimer = useRef<ReturnType<typeof setInterval> | null>(null);
     const lastMessageAt = useRef(0);
     const [lobbyName, setLobbyName] = useState("");
+    const [rules, setRules] = useState<GameRules | null>(null);
     const [spectating, setSpectatingState] = useState<string | null>(null);
     const preferredSpectating = useRef<string | null>(null);
 
@@ -335,6 +338,7 @@ export function useGuest(myName: string, clan: string, spectator: boolean) {
                     if (isLobbyMessage(parsed)) {
                         if (parsed.type === "LobbyInfo") {
                             setLobbyName(parsed.data.name);
+                            setRules(parsed.data.rules ? sanitizeRules(parsed.data.rules) : null);
                         } else if (parsed.type === "WorldReset") {
                             dogfight.clearEntities();
                         } else {
@@ -401,6 +405,7 @@ export function useGuest(myName: string, clan: string, spectator: boolean) {
         requestReplay,
         replayDownload,
         lobbyName,
+        rules,
         status,
         spectating,
         followPlayer,

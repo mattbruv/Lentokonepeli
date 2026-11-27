@@ -1,3 +1,4 @@
+use crate::rules::GameRules;
 use std::collections::HashSet;
 
 use crate::{
@@ -51,6 +52,7 @@ pub struct World {
     pub bullets: EntityContainer<Bullet, BulletId>,
 
     pub replay_file: ReplayFile,
+    pub rules: GameRules,
     pub team_balance: bool,
     pub(crate) game_time_ticks: u32,
     pub(crate) intermission_ticks: u32,
@@ -82,6 +84,7 @@ impl World {
             game_output: vec![],
 
             replay_file: ReplayFile::new(),
+            rules: GameRules::default(),
             team_balance: true,
             game_time_ticks: 0,
             intermission_ticks: 2_000,
@@ -119,10 +122,12 @@ impl World {
         game_mode: GameMode,
         game_time_minutes: u16,
         intermission_seconds: u16,
+        rules: GameRules,
     ) -> (World, Vec<ServerInput>) {
         let mut world = World::new();
         world.sync_bullet_positions = self.sync_bullet_positions;
         world.team_balance = self.team_balance;
+        world.set_rules(rules);
         world.load_level(level);
         world.set_round_settings(game_time_minutes, intermission_seconds);
         world.set_game_mode(game_mode);
@@ -230,6 +235,23 @@ impl World {
         self.game_mode = mode;
         self.world_info.set_game_mode(mode);
         self.replay_file.game_mode = mode;
+    }
+
+    pub fn set_rules(&mut self, rules: GameRules) {
+        let rules = rules.sanitized();
+        self.rules = rules;
+        self.replay_file.rules = rules;
+        self.apply_rules_to_buildings();
+    }
+
+    pub(crate) fn apply_rules_to_buildings(&mut self) {
+        let rules = self.rules;
+        for (_, runway) in self.runways.get_map_mut() {
+            runway.apply_rules(&rules);
+        }
+        for (_, bunker) in self.bunkers.get_map_mut() {
+            bunker.apply_rules(&rules);
+        }
     }
 
     pub fn set_replay_start_time(&mut self, start_time_ms: u64) {

@@ -192,6 +192,7 @@ fn bot_games_replay_identically() {
     replayed.load_level(&replay.level_data);
     replayed.set_round_settings(replay.game_time_minutes, replay.intermission_seconds);
     replayed.set_game_mode(replay.game_mode);
+    replayed.set_rules(replay.rules);
     replayed.simulate_until(&replay, Some(world.get_tick()), true);
 
     let summary = |w: &World| {
