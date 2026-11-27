@@ -129,6 +129,10 @@
     max-width: 1320px;
     margin: 0 auto;
     padding: 24px 16px 64px;
+
+    &[data-wide] {
+        max-width: none;
+    }
 }
 
 @media (max-width: 48em) {

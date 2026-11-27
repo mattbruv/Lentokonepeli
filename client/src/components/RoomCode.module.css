@@ -2,12 +2,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 14px;
+    gap: 10px;
     min-height: 64px;
 }
 
 .tiles {
     display: flex;
+    min-width: 0;
     gap: 6px;
 }
 
@@ -15,7 +16,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
+    flex: 0 1 44px;
+    min-width: 34px;
     height: 54px;
     font-family: Fredoka, Nunito, sans-serif;
     font-weight: 600;

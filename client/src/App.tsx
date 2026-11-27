@@ -156,7 +156,7 @@ function App() {
                     </div>
                 </div>
             </header>
-            <main className={classes.main}>
+            <main className={classes.main} data-wide={globalState.activeView !== null || undefined}>
                 <Routes>
                     <Route path="/" element={<Lobby />} />
                     <Route path="/replay" element={<Replay />} />

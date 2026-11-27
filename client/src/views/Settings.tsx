@@ -97,172 +97,182 @@ export function Settings() {
     const controlsChanged = JSON.stringify(settings.controls) !== JSON.stringify(DEFAULT_GAME_KEYBINDS);
 
     return (
-        <div className={classes.layout}>
-            {addToAction && (
-                <Modal
-                    onKeyDown={registerKey}
-                    opened={opened}
-                    onClose={close}
-                    title={intl.formatMessage({
-                        defaultMessage: "Add Key Binding",
-                        description: "Title for modal where keybinds are added",
-                    })}
-                >
-                    <div className={classes.listen}>
-                        <Text className={classes.listenAction}>{intl.formatMessage(KEYBIND_INTL[addToAction])}</Text>
-                        <Kbd className={classes.listenKey}>?</Kbd>
-                        <Text c="dimmed" fw={700}>
+        <div className={classes.container}>
+            <div className={classes.layout}>
+                {addToAction && (
+                    <Modal
+                        onKeyDown={registerKey}
+                        opened={opened}
+                        onClose={close}
+                        title={intl.formatMessage({
+                            defaultMessage: "Add Key Binding",
+                            description: "Title for modal where keybinds are added",
+                        })}
+                    >
+                        <div className={classes.listen}>
+                            <Text className={classes.listenAction}>
+                                {intl.formatMessage(KEYBIND_INTL[addToAction])}
+                            </Text>
+                            <Kbd className={classes.listenKey}>?</Kbd>
+                            <Text c="dimmed" fw={700}>
+                                <FormattedMessage
+                                    defaultMessage={"Press any key..."}
+                                    description={
+                                        "Info text explaining to press any key to set a keybind for a game action"
+                                    }
+                                />
+                            </Text>
+                        </div>
+                    </Modal>
+                )}
+                <div className={classes.column}>
+                    <Panel
+                        pop
+                        icon={<IconUser size={24} stroke={2.4} />}
+                        title={
                             <FormattedMessage
-                                defaultMessage={"Press any key..."}
-                                description={"Info text explaining to press any key to set a keybind for a game action"}
+                                defaultMessage={"User Settings"}
+                                description={"Title for a settings section used to modify user info used in-game"}
                             />
-                        </Text>
-                    </div>
-                </Modal>
-            )}
-            <div className={classes.column}>
+                        }
+                    >
+                        <NameEditor showTip={false} />
+                    </Panel>
+                    <Panel
+                        pop
+                        className={classes.delay2}
+                        icon={<IconSitemap size={24} stroke={2.4} />}
+                        title={
+                            <FormattedMessage
+                                defaultMessage={"Site Settings"}
+                                description={"Title for a settings section used to modify general site settings"}
+                            />
+                        }
+                    >
+                        <Select
+                            label="Select Locale"
+                            value={settings.locale}
+                            allowDeselect={false}
+                            onChange={(_, item) => {
+                                setSettings({
+                                    ...settings,
+                                    locale: (item?.value as KnownLocale) ?? getDefaultLocale(),
+                                });
+                            }}
+                            data={KNOWN_LOCALE_DROPDOWN_VALUES}
+                            placeholder="Choose locale"
+                            leftSection={<LocaleFlag locale={settings.locale} />}
+                            leftSectionWidth={46}
+                            renderOption={({ option }) => (
+                                <span className={classes.localeOption}>
+                                    <LocaleFlag locale={option.value} />
+                                    {option.label}
+                                </span>
+                            )}
+                        />
+                    </Panel>
+                </div>
                 <Panel
                     pop
-                    icon={<IconUser size={24} stroke={2.4} />}
+                    className={classes.delay1}
+                    icon={<IconDeviceGamepad2 size={26} stroke={2.4} />}
                     title={
                         <FormattedMessage
-                            defaultMessage={"User Settings"}
-                            description={"Title for a settings section used to modify user info used in-game"}
+                            defaultMessage={"Control Settings"}
+                            description={"Title for a settings section used to modify the keybinds used in-game"}
                         />
                     }
                 >
-                    <NameEditor showTip={false} />
-                </Panel>
-                <Panel
-                    pop
-                    className={classes.delay2}
-                    icon={<IconSitemap size={24} stroke={2.4} />}
-                    title={
-                        <FormattedMessage
-                            defaultMessage={"Site Settings"}
-                            description={"Title for a settings section used to modify general site settings"}
-                        />
-                    }
-                >
-                    <Select
-                        label="Select Locale"
-                        value={settings.locale}
-                        allowDeselect={false}
-                        onChange={(_, item) => {
-                            setSettings({
-                                ...settings,
-                                locale: (item?.value as KnownLocale) ?? getDefaultLocale(),
-                            });
-                        }}
-                        data={KNOWN_LOCALE_DROPDOWN_VALUES}
-                        placeholder="Choose locale"
-                        leftSection={<LocaleFlag locale={settings.locale} />}
-                        leftSectionWidth={46}
-                        renderOption={({ option }) => (
-                            <span className={classes.localeOption}>
-                                <LocaleFlag locale={option.value} />
-                                {option.label}
-                            </span>
-                        )}
-                    />
-                </Panel>
-            </div>
-            <Panel
-                pop
-                className={classes.delay1}
-                icon={<IconDeviceGamepad2 size={26} stroke={2.4} />}
-                title={
-                    <FormattedMessage
-                        defaultMessage={"Control Settings"}
-                        description={"Title for a settings section used to modify the keybinds used in-game"}
-                    />
-                }
-            >
-                <div className={classes.groups}>
-                    {KEYBIND_GROUPS.map((group) => (
-                        <section key={group.id} className={classes.group}>
-                            <h3 className={classes.groupTitle}>{intl.formatMessage(group.title)}</h3>
-                            <ul className={classes.binds}>
-                                {group.actions.map((action) => {
-                                    const binds = settings.controls.filter((bind) => bind.action === action);
-                                    const actionName = intl.formatMessage(KEYBIND_INTL[action]);
-                                    return (
-                                        <li key={action} className={classes.bind}>
-                                            <span className={classes.action}>{actionName}</span>
-                                            <span className={classes.keys}>
-                                                {binds.map((bind) => {
-                                                    const count = settings.controls.filter(
-                                                        (b) => b.key === bind.key,
-                                                    ).length;
-                                                    return (
-                                                        <span
-                                                            key={bind.key}
-                                                            className={classes.keyChip}
-                                                            data-conflict={count > 1 || undefined}
-                                                        >
-                                                            <Kbd className={classes.key}>{formatKey(bind.key)}</Kbd>
-                                                            <button
-                                                                type="button"
-                                                                className={classes.unbind}
-                                                                onClick={() => removeKey(action, bind.key)}
-                                                                aria-label={intl.formatMessage(
-                                                                    {
-                                                                        defaultMessage: "Unbind {key} from {action}",
-                                                                        description:
-                                                                            "Accessible label for a button that removes one key from a game action",
-                                                                    },
-                                                                    { key: formatKey(bind.key), action: actionName },
-                                                                )}
+                    <div className={classes.groups}>
+                        {KEYBIND_GROUPS.map((group) => (
+                            <section key={group.id} className={classes.group}>
+                                <h3 className={classes.groupTitle}>{intl.formatMessage(group.title)}</h3>
+                                <ul className={classes.binds}>
+                                    {group.actions.map((action) => {
+                                        const binds = settings.controls.filter((bind) => bind.action === action);
+                                        const actionName = intl.formatMessage(KEYBIND_INTL[action]);
+                                        return (
+                                            <li key={action} className={classes.bind}>
+                                                <span className={classes.action}>{actionName}</span>
+                                                <span className={classes.keys}>
+                                                    {binds.map((bind) => {
+                                                        const count = settings.controls.filter(
+                                                            (b) => b.key === bind.key,
+                                                        ).length;
+                                                        return (
+                                                            <span
+                                                                key={bind.key}
+                                                                className={classes.keyChip}
+                                                                data-conflict={count > 1 || undefined}
                                                             >
-                                                                <IconX size={12} stroke={3.5} />
-                                                            </button>
-                                                        </span>
-                                                    );
-                                                })}
-                                                <Tooltip
-                                                    openDelay={250}
-                                                    label={intl.formatMessage({
-                                                        defaultMessage: "Add new key",
-                                                        description:
-                                                            "Tooltip for a button used to add a new keybind for an action",
+                                                                <Kbd className={classes.key}>{formatKey(bind.key)}</Kbd>
+                                                                <button
+                                                                    type="button"
+                                                                    className={classes.unbind}
+                                                                    onClick={() => removeKey(action, bind.key)}
+                                                                    aria-label={intl.formatMessage(
+                                                                        {
+                                                                            defaultMessage:
+                                                                                "Unbind {key} from {action}",
+                                                                            description:
+                                                                                "Accessible label for a button that removes one key from a game action",
+                                                                        },
+                                                                        {
+                                                                            key: formatKey(bind.key),
+                                                                            action: actionName,
+                                                                        },
+                                                                    )}
+                                                                >
+                                                                    <IconX size={12} stroke={3.5} />
+                                                                </button>
+                                                            </span>
+                                                        );
                                                     })}
-                                                >
-                                                    <button
-                                                        type="button"
-                                                        className={classes.addKey}
-                                                        onClick={() => addKey(action)}
-                                                        aria-label={intl.formatMessage({
+                                                    <Tooltip
+                                                        openDelay={250}
+                                                        label={intl.formatMessage({
                                                             defaultMessage: "Add new key",
                                                             description:
                                                                 "Tooltip for a button used to add a new keybind for an action",
                                                         })}
                                                     >
-                                                        <IconPlus size={14} stroke={3} />
-                                                    </button>
-                                                </Tooltip>
-                                            </span>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
-                        </section>
-                    ))}
-                </div>
-                {controlsChanged && (
-                    <Button
-                        mt="lg"
-                        color="copper"
-                        onClick={resetControls}
-                        rightSection={<IconRestore size={18} stroke={2.4} />}
-                        className={classes.reset}
-                    >
-                        <FormattedMessage
-                            defaultMessage={"Reset Controls"}
-                            description={"Button used to reset user defined keybinds on the settings page"}
-                        />
-                    </Button>
-                )}
-            </Panel>
+                                                        <button
+                                                            type="button"
+                                                            className={classes.addKey}
+                                                            onClick={() => addKey(action)}
+                                                            aria-label={intl.formatMessage({
+                                                                defaultMessage: "Add new key",
+                                                                description:
+                                                                    "Tooltip for a button used to add a new keybind for an action",
+                                                            })}
+                                                        >
+                                                            <IconPlus size={14} stroke={3} />
+                                                        </button>
+                                                    </Tooltip>
+                                                </span>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            </section>
+                        ))}
+                    </div>
+                    {controlsChanged && (
+                        <Button
+                            mt="lg"
+                            color="copper"
+                            onClick={resetControls}
+                            rightSection={<IconRestore size={18} stroke={2.4} />}
+                            className={classes.reset}
+                        >
+                            <FormattedMessage
+                                defaultMessage={"Reset Controls"}
+                                description={"Button used to reset user defined keybinds on the settings page"}
+                            />
+                        </Button>
+                    )}
+                </Panel>
+            </div>
         </div>
     );
 }

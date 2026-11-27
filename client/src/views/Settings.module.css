@@ -1,9 +1,13 @@
+.container {
+    container-type: inline-size;
+}
+
 .layout {
     display: grid;
-    grid-template-columns: minmax(0, 380px) minmax(0, 560px);
+    grid-template-columns: minmax(280px, 380px) minmax(400px, 560px);
     justify-content: center;
     align-items: start;
-    gap: 32px;
+    gap: clamp(16px, 2.5vw, 32px);
     margin-top: 2vh;
 }
 
@@ -207,7 +211,7 @@
     }
 }
 
-@media (max-width: 62em) {
+@container (max-width: 720px) {
     .layout {
         grid-template-columns: minmax(0, 560px);
     }
