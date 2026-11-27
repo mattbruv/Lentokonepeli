@@ -1197,7 +1197,7 @@ impl Plane {
         }
     }
 
-    fn get_turn_step(&self) -> f64 {
+    pub(crate) fn get_turn_step(&self) -> f64 {
         match self.plane_type.get() {
             PlaneType::Albatros => 0.031415926535897934,
             PlaneType::Junkers => 0.028559933214452663,

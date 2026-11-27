@@ -460,3 +460,54 @@ fn ace_beats_hard_in_duels() {
     println!("Ace {ace} - {hard} Hard");
     assert!(ace * 10 > hard * 14, "{ace} vs {hard}");
 }
+
+fn teammate_collisions(level_name: &str, difficulties: &[BotDifficulty], ticks: u32) -> u32 {
+    use crate::entities::plane::PlaneMode;
+    let mut world = World::new();
+    world.load_level(&level(level_name));
+    world.set_round_settings(0, 20);
+    let mut manager = BotManager::new();
+    for (i, difficulty) in difficulties.iter().enumerate() {
+        manager.add_bot(AddBotRequest {
+            guid: guid(&format!("bot{i}")),
+            name: format!("Bot {i}"),
+            team: Some(Team::Centrals),
+            difficulty: *difficulty,
+        });
+    }
+    let mut previous = HashMap::new();
+    let mut collisions = 0;
+    for _ in 0..ticks {
+        let input = manager.tick(&world);
+        world.tick(input);
+        world.flush_changed_state();
+        for (id, plane) in world.planes.get_map() {
+            let mode = plane.get_mode();
+            if mode == PlaneMode::Dodging && previous.get(id) != Some(&PlaneMode::Dodging) {
+                collisions += 1;
+            }
+            previous.insert(*id, mode);
+        }
+    }
+    collisions
+}
+
+#[test]
+fn bots_avoid_teammates() {
+    let squad = [
+        BotDifficulty::Easy,
+        BotDifficulty::Medium,
+        BotDifficulty::Medium,
+        BotDifficulty::Hard,
+        BotDifficulty::Hard,
+        BotDifficulty::Ace,
+    ];
+    let mut total = 0;
+    for level_name in ["classic", "london", "islands"] {
+        let collisions = teammate_collisions(level_name, &squad, 20_000);
+        println!("{level_name}: {collisions} teammate collisions");
+        total += collisions;
+    }
+    println!("total: {total}");
+    assert!(total < 40, "{total} teammate collisions");
+}

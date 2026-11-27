@@ -6,7 +6,7 @@ use crate::{
     collision::SolidEntity,
     entities::{
         bomb::bomb_path,
-        container::{ManId, PlaneId, RunwayId},
+        container::{ManId, PlaneId, PlayerId, RunwayId},
         man::{Man, ManState},
         plane::{Plane, PlaneMode, PlaneType},
         player::{ControllingEntity, Player, PlayerGuid, PlayerState},
@@ -23,6 +23,9 @@ use super::{rng::Rng, skill::BotSkill, terrain::Terrain, AddBotRequest, BotInfo}
 
 const CEILING_Y: f64 = -460.0;
 const CRUISE_Y: f64 = -280.0;
+const CRUISE_BAND: (f64, f64) = (-400.0, -170.0);
+const BOMB_ALTITUDE_SPREAD: (f64, f64) = (-45.0, 15.0);
+const AVOID_RADIUS: f64 = 60.0;
 const ROUNDS_BOMBER_FACTOR: f64 = 0.2;
 const ROUNDS_VISION_FACTOR: f64 = 1.5;
 
@@ -46,6 +49,13 @@ enum Phase {
 enum Target {
     Plane(PlaneId),
     Man(ManId),
+}
+
+#[derive(Clone, Copy)]
+enum PatrolStyle {
+    Forward,
+    Midfield,
+    Defensive,
 }
 
 #[derive(Clone, Copy)]
@@ -81,6 +91,10 @@ pub struct Bot {
     bail_wait: Option<u32>,
     bail_hold: u32,
     chute_wait: Option<u32>,
+    cruise_y: f64,
+    bomb_altitude: f64,
+    patrol_style: PatrolStyle,
+    avoid_turn: Option<f64>,
 }
 
 fn wrap(angle: f64) -> f64 {
@@ -250,7 +264,30 @@ impl Bot {
             bail_wait: None,
             bail_hold: 0,
             chute_wait: None,
+            cruise_y: CRUISE_Y,
+            bomb_altitude: 0.0,
+            patrol_style: PatrolStyle::Forward,
+            avoid_turn: None,
         }
+    }
+
+    fn roll_sortie(&mut self) {
+        self.roll_cruise();
+        let (low, high) = BOMB_ALTITUDE_SPREAD;
+        self.bomb_altitude = self.rng.range(low, high);
+        let roll = self.rng.next_f64();
+        self.patrol_style = if roll < 0.5 {
+            PatrolStyle::Forward
+        } else if roll < 0.8 {
+            PatrolStyle::Midfield
+        } else {
+            PatrolStyle::Defensive
+        };
+    }
+
+    fn roll_cruise(&mut self) {
+        let (low, high) = CRUISE_BAND;
+        self.cruise_y = self.rng.range(low, high);
     }
 
     pub fn guid(&self) -> &PlayerGuid {
@@ -291,9 +328,12 @@ impl Bot {
             }
             _ => 0,
         };
+        if phase == Phase::Flying {
+            self.roll_sortie();
+        }
         self.think_timer = 0;
         self.control_timer = 0;
-        self.goal = Goal::Patrol(0.0, CRUISE_Y);
+        self.goal = Goal::Patrol(0.0, self.cruise_y);
         self.approach = false;
         self.turn_commit = None;
         self.evade_ticks = 0;
@@ -301,6 +341,7 @@ impl Bot {
         self.bail_wait = None;
         self.bail_hold = 0;
         self.chute_wait = None;
+        self.avoid_turn = None;
     }
 
     fn countdown(&mut self, retry: u32) -> bool {
@@ -329,7 +370,7 @@ impl Bot {
             self.terrain = Some(Terrain::from_world(world));
         }
 
-        let Some((_, player)) = world.get_player_from_guid(&self.request.guid) else {
+        let Some((player_id, player)) = world.get_player_from_guid(&self.request.guid) else {
             return commands;
         };
 
@@ -352,9 +393,9 @@ impl Bot {
                     self.enter_phase(Phase::Man);
                     keys = self.walk(world, team, man_id);
                 }
-                (_, Some(_), Some(ControllingEntity::Runway(runway_id, plane_type))) => {
+                (_, Some(team), Some(ControllingEntity::Runway(runway_id, plane_type))) => {
                     self.enter_phase(Phase::Parked);
-                    if self.countdown(30) {
+                    if self.countdown(30) && !self.runway_busy(world, team, *player_id, runway_id) {
                         commands.push(self.command(PlayerCommand::PlayerChooseRunway(
                             RunwaySelection {
                                 runway_id,
@@ -597,9 +638,12 @@ impl Bot {
             }
         }
 
-        let patrol_x = match self.goal {
-            Goal::Patrol(px, _) if (px - x).abs() > 150.0 => px,
-            _ => {
+        match self.goal {
+            Goal::Patrol(px, py) if (px - x).abs() > 150.0 => Goal::Patrol(px, py),
+            current => {
+                if matches!(current, Goal::Patrol(..)) && self.rng.chance(0.35) {
+                    self.roll_cruise();
+                }
                 let enemy_plane_x = if rounds {
                     self.nearest_enemy_plane(world, team, x, y, f64::INFINITY)
                         .and_then(|(id, _)| world.planes.get(id))
@@ -607,19 +651,186 @@ impl Bot {
                 } else {
                     None
                 };
-                match enemy_plane_x {
+                let patrol_x = match enemy_plane_x {
                     Some(px) => px + self.rng.range(-200.0, 200.0),
-                    None => {
-                        let base = self
-                            .enemy_structure(world, team, x)
-                            .map(|s| s.0)
-                            .unwrap_or(0.0);
-                        base + self.rng.range(-600.0, 600.0)
-                    }
+                    None => self.patrol_anchor(world, team, x),
+                };
+                let patrol_y = self.patrol_altitude(world, team, plane, patrol_x);
+                Goal::Patrol(patrol_x, patrol_y)
+            }
+        }
+    }
+
+    fn patrol_anchor(&mut self, world: &World, team: Team, x: f64) -> f64 {
+        let enemy = self.enemy_structure(world, team, x).map(|s| s.0);
+        let own = self
+            .nearest_own_runway(world, team, enemy.unwrap_or(x))
+            .and_then(|id| world.runways.get(id))
+            .map(|r| r.get_start_x() as f64);
+        let (base, spread) = match (self.patrol_style, enemy, own) {
+            (PatrolStyle::Midfield, Some(e), Some(o)) => ((e + o) / 2.0, 400.0),
+            (PatrolStyle::Defensive, _, Some(o)) => (o, 500.0),
+            (_, Some(e), _) => (e, 600.0),
+            _ => (0.0, 600.0),
+        };
+        let patrol_x = base + self.rng.range(-spread, spread);
+        match &self.terrain {
+            Some(t) => patrol_x.clamp(t.min_x + 300.0, t.max_x - 300.0),
+            None => patrol_x,
+        }
+    }
+
+    fn patrol_altitude(&self, world: &World, team: Team, plane: &Plane, patrol_x: f64) -> f64 {
+        let ceiling = CEILING_Y + 40.0;
+        let floor = self
+            .terrain
+            .as_ref()
+            .map(|t| t.surface(patrol_x - 150.0, patrol_x + 150.0) - 180.0)
+            .unwrap_or(f64::INFINITY)
+            .max(ceiling);
+        let mut target = self.cruise_y.clamp(ceiling, floor);
+        let (x, _) = plane_pos(plane);
+        let teammates: Vec<f64> = world
+            .planes
+            .get_map()
+            .values()
+            .filter(|p| {
+                p.get_team() == team
+                    && p.player_id() != plane.player_id()
+                    && matches!(p.get_mode(), PlaneMode::Flying | PlaneMode::Dodging)
+                    && ((plane_pos(p).0 - patrol_x).abs() < 500.0
+                        || (plane_pos(p).0 - x).abs() < 500.0)
+            })
+            .map(|p| plane_pos(p).1)
+            .collect();
+        for _ in 0..3 {
+            let Some(close) = teammates.iter().find(|ty| (*ty - target).abs() < 60.0) else {
+                break;
+            };
+            let away = if *close < target { 1.0 } else { -1.0 };
+            let shifted = target + away * 110.0;
+            target = if (ceiling..=floor).contains(&shifted) {
+                shifted
+            } else {
+                (target - away * 110.0).clamp(ceiling, floor)
+            };
+        }
+        target
+    }
+
+    fn runway_busy(&self, world: &World, team: Team, me: PlayerId, runway_id: RunwayId) -> bool {
+        let Some(runway) = world.runways.get(runway_id) else {
+            return false;
+        };
+        let center = runway.get_landable_x() as f64 + runway.get_landable_width() as f64 / 2.0;
+        let reach = runway.get_landable_width() as f64 / 2.0 + 250.0;
+        let ground = runway.get_landable_y() as f64;
+        world.planes.get_map().values().any(|p| {
+            if p.get_team() != team || p.player_id() == me {
+                return false;
+            }
+            let (px, py) = plane_pos(p);
+            match p.get_mode() {
+                PlaneMode::Landing => (px - center).abs() < reach,
+                PlaneMode::Flying => (px - center).abs() < reach + 400.0 && py > ground - 160.0,
+                _ => false,
+            }
+        })
+    }
+
+    fn avoid_teammates(
+        &mut self,
+        world: &World,
+        team: Team,
+        plane_id: PlaneId,
+        plane: &Plane,
+        desired: f64,
+    ) -> Option<f64> {
+        let horizon = self.skill.avoid_horizon;
+        if horizon == 0 {
+            return None;
+        }
+        let (x, y) = plane_pos(plane);
+        let angle = plane.get_angle();
+        let speed = plane.get_speed();
+        let reach = AVOID_RADIUS + horizon as f64 * 12.0;
+        let others: Vec<(f64, f64, f64, f64)> = world
+            .planes
+            .get_map()
+            .iter()
+            .filter(|(id, p)| {
+                **id != plane_id
+                    && p.get_team() == team
+                    && p.player_id() != plane.player_id()
+                    && matches!(
+                        p.get_mode(),
+                        PlaneMode::Flying | PlaneMode::Dodging | PlaneMode::TakingOff
+                    )
+            })
+            .map(|(_, p)| {
+                let (px, py) = plane_pos(p);
+                let (pvx, pvy) = velocity(p.get_angle(), p.get_speed());
+                (px, py, pvx, pvy)
+            })
+            .filter(|(px, py, _, _)| (px - x).hypot(py - y) < reach)
+            .collect();
+        if others.is_empty() {
+            self.avoid_turn = None;
+            return None;
+        }
+
+        let omega = speed / 400.0 * plane.get_turn_step();
+        let miss = |turn: f64| {
+            let (mut px, mut py, mut a) = (x, y, angle);
+            let mut closest = f64::INFINITY;
+            for t in 1..=horizon {
+                a += turn * omega;
+                px += a.cos() * speed / 100.0;
+                py += a.sin() * speed / 100.0;
+                for (ox, oy, ovx, ovy) in &others {
+                    let d = (ox + ovx * t as f64 - px).hypot(oy + ovy * t as f64 - py);
+                    closest = closest.min(d);
                 }
             }
+            closest
         };
-        Goal::Patrol(patrol_x, CRUISE_Y + self.rng.range(-80.0, 80.0))
+
+        let diff = wrap(desired - angle);
+        let goal_turn = if diff.abs() < 0.03 {
+            0.0
+        } else {
+            diff.signum()
+        };
+        if self.avoid_turn.is_none() && miss(goal_turn) >= AVOID_RADIUS {
+            return None;
+        }
+
+        let (turn, clearance) = [1.0, -1.0, 0.0]
+            .into_iter()
+            .map(|turn| {
+                let sticky = if self.avoid_turn == Some(turn) {
+                    15.0
+                } else {
+                    0.0
+                };
+                (turn, miss(turn) + sticky)
+            })
+            .fold((0.0, f64::NEG_INFINITY), |best, option| {
+                if option.1 > best.1 {
+                    option
+                } else {
+                    best
+                }
+            });
+        if self.avoid_turn.is_some()
+            && clearance >= AVOID_RADIUS + 30.0
+            && miss(goal_turn) >= AVOID_RADIUS
+        {
+            self.avoid_turn = None;
+            return None;
+        }
+        self.avoid_turn = Some(turn);
+        Some(positive(angle + turn * 0.9))
     }
 
     fn ground_bomb_target(&self, world: &World, team: Team, x: f64) -> Option<Target> {
@@ -696,7 +907,7 @@ impl Bot {
         let dx = aim_x - x;
         let toward = if dx.abs() < 40.0 { h } else { dx.signum() };
         positive(
-            (self.skill.bomb_y - y)
+            (self.skill.bomb_y + self.bomb_altitude - y)
                 .clamp(-120.0, 120.0)
                 .atan2(toward * 300.0),
         )
@@ -1037,11 +1248,21 @@ impl Bot {
             (t.surface(x - 40.0, fx + 40.0), t.min_x, t.max_x)
         });
 
-        let mut low = false;
+        let low = terrain_floor
+            .is_some_and(|(surface, _, _)| y > surface - self.skill.floor_margin - 220.0);
+
+        if let Some(avoid) = self.avoid_teammates(world, team, plane_id, plane, desired) {
+            if landing {
+                self.approach = false;
+                landing = false;
+                motor = true;
+            }
+            desired = avoid;
+        }
+
         if let Some((surface, min_x, max_x)) = terrain_floor {
             let floor = surface - self.skill.floor_margin;
             let future_y = y + vy * self.skill.lookahead;
-            low = y > floor - 220.0;
 
             let margin = if matches!(self.goal, Goal::Land(_)) {
                 -1500.0
