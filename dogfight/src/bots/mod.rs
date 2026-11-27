@@ -20,6 +20,7 @@ use pilot::Bot;
 #[derive(Serialize, Deserialize, Debug, TS, Clone, Copy, PartialEq, Eq)]
 #[ts(export)]
 pub enum BotDifficulty {
+    Passive,
     Easy,
     Medium,
     Hard,

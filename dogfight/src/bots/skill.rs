@@ -29,11 +29,16 @@ pub struct BotSkill {
     pub chute_reaction: (u32, u32),
     pub bail_hold: u32,
     pub perfect: bool,
+    pub armed: bool,
 }
 
 impl BotSkill {
     pub fn for_difficulty(difficulty: BotDifficulty) -> Self {
         match difficulty {
+            BotDifficulty::Passive => BotSkill {
+                armed: false,
+                ..Self::for_difficulty(BotDifficulty::Easy)
+            },
             BotDifficulty::Easy => BotSkill {
                 think_interval: 40,
                 control_interval: 4,
@@ -63,6 +68,7 @@ impl BotSkill {
                 chute_reaction: (20, 45),
                 bail_hold: 30,
                 perfect: false,
+                armed: true,
             },
             BotDifficulty::Medium => BotSkill {
                 think_interval: 20,
@@ -93,6 +99,7 @@ impl BotSkill {
                 chute_reaction: (12, 30),
                 bail_hold: 70,
                 perfect: false,
+                armed: true,
             },
             BotDifficulty::Hard => BotSkill {
                 think_interval: 10,
@@ -123,6 +130,7 @@ impl BotSkill {
                 chute_reaction: (6, 15),
                 bail_hold: 130,
                 perfect: false,
+                armed: true,
             },
             BotDifficulty::Ace => BotSkill {
                 think_interval: 1,
@@ -153,6 +161,7 @@ impl BotSkill {
                 chute_reaction: (0, 0),
                 bail_hold: u32::MAX,
                 perfect: true,
+                armed: true,
             },
         }
     }

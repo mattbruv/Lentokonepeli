@@ -31,6 +31,10 @@
     "defaultMessage": "Legendaarinen kolmitaso. Erittäin kettärä ja myös mainio maksimilentokorkeus.",
     "description": "Description of the Fokker DR.I aircraft"
   },
+  "0Bk2IN": {
+    "defaultMessage": "Passive",
+    "description": "Bot panel: bot difficulty that never shoots or bombs"
+  },
   "1ICbwz": {
     "defaultMessage": "Remove",
     "description": "Host menu button that confirms removing a player from the game"

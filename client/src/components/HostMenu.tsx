@@ -48,6 +48,7 @@ export const BOT_MESSAGES = defineMessages({
     Centrals: { defaultMessage: "Centrals", description: "Bot panel: option to add a bot to the Centrals team" },
     Random: { defaultMessage: "Random", description: "Bot panel: option to add a bot to whichever team needs players" },
     Allies: { defaultMessage: "Allies", description: "Bot panel: option to add a bot to the Allies team" },
+    Passive: { defaultMessage: "Passive", description: "Bot panel: bot difficulty that never shoots or bombs" },
     Easy: { defaultMessage: "Easy", description: "Bot panel: easiest bot difficulty" },
     Medium: { defaultMessage: "Medium", description: "Bot panel: medium bot difficulty" },
     Hard: { defaultMessage: "Hard", description: "Bot panel: hard bot difficulty" },
@@ -64,6 +65,7 @@ export const BOT_MESSAGES = defineMessages({
 
 export function difficultyOptions(intl: IntlShape) {
     return [
+        { value: "Passive", label: intl.formatMessage(BOT_MESSAGES.Passive) },
         ...DIFFICULTIES.map((d) => ({ value: d, label: intl.formatMessage(BOT_MESSAGES[d]) })),
         { value: "Random", label: intl.formatMessage(BOT_MESSAGES.RandomDifficulty) },
     ];

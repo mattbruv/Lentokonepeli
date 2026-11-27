@@ -386,6 +386,11 @@ impl Bot {
             }
         }
 
+        if !self.skill.armed {
+            keys.ctrl = false;
+            keys.shift = false;
+        }
+
         if keys != *player.get_keys() {
             commands.insert(0, self.command(PlayerCommand::PlayerKeyboard(keys)));
         }

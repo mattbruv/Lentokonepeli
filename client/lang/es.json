@@ -31,6 +31,10 @@
     "defaultMessage": "Un triplano legendario. Extremadamente ágil y también excelente a máxima altitud de vuelo.",
     "description": "Description of the Fokker DR.I aircraft"
   },
+  "0Bk2IN": {
+    "defaultMessage": "Passive",
+    "description": "Bot panel: bot difficulty that never shoots or bombs"
+  },
   "1ICbwz": {
     "defaultMessage": "Remove",
     "description": "Host menu button that confirms removing a player from the game"
