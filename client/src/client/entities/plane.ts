@@ -2,7 +2,7 @@ import { PlaneProperties } from "dogfight-types/PlaneProperties";
 import { PlaneType } from "dogfight-types/PlaneType";
 import { Team } from "dogfight-types/Team";
 import * as PIXI from "pixi.js";
-import { TaskFn, scheduler } from "../../gameLoop";
+import { DEFAULT_TICK_INTERVAL, TaskFn, scheduler } from "../../gameLoop";
 import { DrawLayer, MAX_ZOOM, TeamColor } from "../constants";
 import { directionToRadians } from "../helpers";
 import { Stats } from "../hud";
@@ -19,6 +19,30 @@ const PLANE_TEXTURE_ID = {
     Sopwith: 9,
 } as const satisfies Record<PlaneType, number>;
 
+const FLIP_FRAME_DELAY_MS = 80;
+
+function paddedSize(tex: PIXI.Texture): number {
+    return Math.ceil(Math.sqrt(tex.width * tex.width + tex.height * tex.height));
+}
+
+function javaDrawCenter(tex: PIXI.Texture, base: PIXI.Texture, mirrored: boolean, angle: number): Point {
+    const baseSize = paddedSize(base);
+    const size = paddedSize(tex);
+    const pivot = baseSize / 2;
+    const cx = Math.floor((size - tex.width) / 2) + tex.width / 2;
+    let cy = Math.floor((size - tex.height) / 2) + tex.height / 2;
+    if (mirrored) cy = baseSize - cy;
+    const dx = cx - pivot;
+    const dy = cy - pivot;
+    const shift = Math.trunc(-(size - baseSize) / 2);
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    return {
+        x: pivot + cos * dx - sin * dy + shift,
+        y: pivot + sin * dx + cos * dy + shift,
+    };
+}
+
 export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled {
     private container: PIXI.Container;
     private planeContainer: PIXI.Container;
@@ -29,6 +53,8 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
     private nameContainer: PIXI.Container;
     private angle: number = 0;
     private flipFrame: 0 | 1 | 2 | 3 = 0;
+    private flipFrameTick: number = 0;
+    private currentTick: number = 0;
 
     public props: Required<PlaneProperties> = {
         team: "Allies",
@@ -46,8 +72,7 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
     };
 
     private getPaddedSize(): number {
-        const tex = this.getTexture();
-        return Math.ceil(Math.sqrt(tex.width * tex.width + tex.height * tex.height));
+        return paddedSize(this.getTexture());
     }
 
     private spawnSmoke(texture: PIXI.Texture, x: number, y: number) {
@@ -76,6 +101,13 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
     }
 
     private animate: TaskFn = (tick) => {
+        this.currentTick = tick;
+        if (this.flipFrame !== 0 && (tick - this.flipFrameTick) * DEFAULT_TICK_INTERVAL > FLIP_FRAME_DELAY_MS) {
+            this.flipFrame = this.flipFrame >= 3 ? 0 : ((this.flipFrame + 1) as 1 | 2 | 3);
+            this.flipFrameTick = tick;
+            this.renderFlipFrame();
+        }
+
         if (tick % 10 === 0 && this.props.motor_on && this.isFlying()) {
             this.createGraySmoke();
         }
@@ -147,21 +179,18 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         const frame = this.flipFrame;
         const imageIndex = frame === 3 ? 1 : frame;
         const id = PLANE_TEXTURE_ID[this.props.plane_type];
-        this.planeSprite.texture =
-            imageIndex === 0 ? this.getTexture() : Textures[`plane${id}_flip${imageIndex as 1 | 2}.gif`];
+        const base = this.getTexture();
+        const texture = imageIndex === 0 ? base : Textures[`plane${id}_flip${imageIndex as 1 | 2}.gif`];
+        this.planeSprite.texture = texture;
 
         const flipped = this.props.flipped;
         const mirrored = (flipped && (frame === 0 || frame === 3)) || (!flipped && frame !== 0);
         this.planeSprite.scale.y = mirrored ? -1 : 1;
-    }
 
-    private advanceFlip: TaskFn = () => {
-        this.flipFrame = this.flipFrame >= 3 ? 0 : ((this.flipFrame + 1) as 1 | 2 | 3);
-        this.renderFlipFrame();
-        if (this.flipFrame !== 0) {
-            scheduler.scheduleTask(this.advanceFlip, 8);
-        }
-    };
+        const drawn = javaDrawCenter(texture, base, mirrored, this.angle);
+        const reference = javaDrawCenter(base, base, false, this.angle);
+        this.planeSprite.position.set(drawn.x - reference.x, drawn.y - reference.y);
+    }
 
     public updateCallbacks: EntityUpdateCallbacks<PlaneProperties> = {
         client_x: () => {
@@ -181,14 +210,13 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
             console.log("Bombs", this.props.total_bombs);
         },
 
-        flipped: () => {
-            scheduler.unregister(this.advanceFlip);
+        flipped: (oldProps) => {
             if (this.first_flip) {
                 this.first_flip = false;
                 this.flipFrame = 0;
-            } else {
+            } else if (oldProps.flipped !== this.props.flipped) {
                 this.flipFrame = 1;
-                scheduler.scheduleTask(this.advanceFlip, 8);
+                this.flipFrameTick = this.currentTick;
             }
             this.renderFlipFrame();
         },
@@ -209,12 +237,12 @@ export class Plane implements Entity<PlaneProperties>, Followable, RadarEnabled 
         direction: () => {
             this.angle = directionToRadians(this.props.direction);
             this.planeSprite.rotation = this.angle;
+            this.renderFlipFrame();
         },
     };
 
     public destroy() {
         scheduler.unregister(this.animate);
-        scheduler.unregister(this.advanceFlip);
     }
 
     public getRadarInfo(): RadarObject {
