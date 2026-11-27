@@ -5,8 +5,6 @@
 This is a modern remake of the competitive 2D multiplayer airplane game [Lentokonepeli](https://www.youtube.com/watch?v=qCCCUXUwlT8)
 (_Literal translation from Finnish: "airplane game", also known in English as Dogfight_).
 
-⚠️ **CURRENTLY IN DEVELOPMENT** ⚠️
-
 ## Discord
 
 [Join us on Discord](https://discord.gg/QjtXPmx) if you are interested in staying up to date on the remake of this game
@@ -41,9 +39,10 @@ You will also need wasm-pack installed in order to export the game to WASM so it
 
 You can build all of the Rust code and generate a WebAssembly build
 by simply running `python3 build.py` which will:
-  - Build the main game engine
-  - Generate TypeScript types from the game engine types
-  - Build the WebAssembly binary and JavaScript bridge to enable the game engine to run in the browser
+
+- Build the main game engine
+- Generate TypeScript types from the game engine types
+- Build the WebAssembly binary and JavaScript bridge to enable the game engine to run in the browser
 
 The Rust code consists of three projects:
 
@@ -65,7 +64,6 @@ The web client is rendered with [React](https://react.dev/)
 and uses [Mantine](https://mantine.dev/) components.
 The game world is rendered using [pixi.js](https://pixijs.com/).
 [Peer.js](https://peerjs.com/) is used to allow users to easily host a game and connect to each other via WebRTC.
-
 
 - [./client/src/](./client/src/):
   The main React web user interface
