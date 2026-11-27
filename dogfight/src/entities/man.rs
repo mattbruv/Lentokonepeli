@@ -1,10 +1,10 @@
 use dogfight_macros::{EnumBytes, Networked};
-use image::{imageops::flip_horizontal, RgbaImage};
+use image::RgbaImage;
 
 use crate::{
     collision::{BoundingBox, SolidEntity},
     game_event::{KillEvent, KillMethod},
-    images::{get_image, PARACHUTER0, PARACHUTER1, PARACHUTER2, PARACHUTER3},
+    images::{get_image, PARACHUTER0, PARACHUTER1},
     input::PlayerKeyboard,
     network::{property::*, EntityProperties, NetworkedEntity},
     tick_actions::{Action, ExplosionData, ManShootData, RemoveData},
@@ -50,8 +50,6 @@ pub struct Man {
 
     image_standing: RgbaImage,
     image_parachuting: RgbaImage,
-    image_walking: [RgbaImage; 2],
-    image_walking_flipped: [RgbaImage; 2],
 
     age_ms: u32,
 
@@ -72,11 +70,6 @@ impl Man {
             y_speed: 0,
             image_standing: get_image(PARACHUTER0),
             image_parachuting: get_image(PARACHUTER1),
-            image_walking: [get_image(PARACHUTER3), get_image(PARACHUTER2)],
-            image_walking_flipped: [
-                flip_horizontal(&get_image(PARACHUTER3)),
-                flip_horizontal(&get_image(PARACHUTER2)),
-            ],
             age_ms: 0,
             last_shot_ms: SHOOT_DELAY_MS,
         }
@@ -303,11 +296,8 @@ impl SolidEntity for Man {
     }
 
     fn get_collision_image(&self) -> Option<&RgbaImage> {
-        let walk_frame = (self.get_client_x() as i32).div_euclid(10).rem_euclid(2) as usize;
         match self.get_state() {
             ManState::Parachuting => Some(&self.image_parachuting),
-            ManState::WalkingLeft => Some(&self.image_walking[walk_frame]),
-            ManState::WalkingRight => Some(&self.image_walking_flipped[walk_frame]),
             _ => Some(&self.image_standing),
         }
     }
