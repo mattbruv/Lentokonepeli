@@ -3,6 +3,7 @@ import {
     Badge,
     Button,
     Group,
+    Input,
     List,
     Modal,
     NumberInput,
@@ -54,7 +55,23 @@ import {
     useRulePresets,
     WEAPON_RULES,
 } from "../rules";
+import albatrosImage from "../assets/ui/plane4.gif";
+import junkersImage from "../assets/ui/plane5.gif";
+import fokkerImage from "../assets/ui/plane6.gif";
+import bristolImage from "../assets/ui/plane7.gif";
+import salmsonImage from "../assets/ui/plane8.gif";
+import sopwithImage from "../assets/ui/plane9.gif";
+import themeClasses from "../theme.module.css";
 import classes from "./RulesEditor.module.css";
+
+const PLANE_IMAGES: Record<keyof PlaneRulesByType, string> = {
+    albatros: albatrosImage,
+    junkers: junkersImage,
+    fokker: fokkerImage,
+    bristol: bristolImage,
+    salmson: salmsonImage,
+    sopwith: sopwithImage,
+};
 
 function unitSuffix(unit: RuleUnit): string {
     if (unit === "percent") return "%";
@@ -193,13 +210,15 @@ function PlanesTab({
                 {PLANE_TYPES.map(({ key, type }) => (
                     <Button
                         key={key}
-                        size="xs"
                         color="sky"
                         variant={key === selected ? "filled" : "default"}
+                        h="auto"
                         className={value.planes[key].allowed ? undefined : classes.disallowed}
+                        classNames={{ inner: classes.planeButtonInner, label: classes.planeButtonLabel }}
                         onClick={() => setSelected(key)}
                     >
-                        {planeName(intl, type)}
+                        <img className={classes.planeImage} src={PLANE_IMAGES[key]} alt="" />
+                        <span>{planeName(intl, type)}</span>
                     </Button>
                 ))}
             </SimpleGrid>
@@ -409,7 +428,15 @@ export function RuleChangesList({ rules }: { rules: GameRules }) {
     );
 }
 
-export function RulesField({ value, onChange }: { value: GameRules; onChange: (rules: GameRules) => void }) {
+export function RulesField({
+    value,
+    onChange,
+    className,
+}: {
+    value: GameRules;
+    onChange: (rules: GameRules) => void;
+    className?: string;
+}) {
     const intl = useIntl();
     const [opened, setOpened] = useState(false);
     const [draft, setDraft] = useState<GameRules>(value);
@@ -427,29 +454,39 @@ export function RulesField({ value, onChange }: { value: GameRules; onChange: (r
 
     return (
         <>
-            <Button
-                variant="default"
-                fullWidth
-                onClick={open}
-                leftSection={<IconAdjustments size={18} stroke={2.2} />}
-                rightSection={
-                    changes > 0 ? (
-                        <Badge color="copper" variant="filled" size="sm">
-                            {changes}
-                        </Badge>
-                    ) : undefined
-                }
+            <Input.Wrapper
+                className={className}
+                classNames={{ label: themeClasses.label }}
+                label={intl.formatMessage({
+                    defaultMessage: "Rules",
+                    description: "Label above the button that opens the game rules editor",
+                })}
             >
-                {changes > 0
-                    ? intl.formatMessage({
-                          defaultMessage: "Custom game rules",
-                          description: "Button label when the host has changed the game rules from the original game",
-                      })
-                    : intl.formatMessage({
-                          defaultMessage: "Original game rules",
-                          description: "Button label when the game rules match the original game",
-                      })}
-            </Button>
+                <Button
+                    variant="default"
+                    fullWidth
+                    onClick={open}
+                    leftSection={<IconAdjustments size={18} stroke={2.2} />}
+                    rightSection={
+                        changes > 0 ? (
+                            <Badge color="copper" variant="filled" size="sm">
+                                {changes}
+                            </Badge>
+                        ) : undefined
+                    }
+                >
+                    {changes > 0
+                        ? intl.formatMessage({
+                              defaultMessage: "Custom",
+                              description:
+                                  "Rules button label when the host has changed the game rules from the original game",
+                          })
+                        : intl.formatMessage({
+                              defaultMessage: "Original",
+                              description: "Rules button label when the game rules match the original game",
+                          })}
+                </Button>
+            </Input.Wrapper>
             <Modal
                 opened={opened}
                 onClose={() => setOpened(false)}

@@ -731,6 +731,12 @@
       "value": "Rajattomat ammukset"
     }
   ],
+  "LTWz4J": [
+    {
+      "type": 0,
+      "value": "Säännöt"
+    }
+  ],
   "Lo5tsu": [
     {
       "type": 0,
@@ -985,6 +991,12 @@
     {
       "type": 0,
       "value": "Äänet"
+    }
+  ],
+  "RvXRbe": [
+    {
+      "type": 0,
+      "value": "Alkuperäiset"
     }
   ],
   "RyQOi8": [
@@ -1335,6 +1347,12 @@
       "value": "Kenttäeditori"
     }
   ],
+  "aOwuI3": [
+    {
+      "type": 0,
+      "value": "Mukautetut"
+    }
+  ],
   "aQA+eU": [
     {
       "type": 0,
@@ -1469,12 +1487,6 @@
     {
       "type": 0,
       "value": "Liiku vasemmalle"
-    }
-  ],
-  "dS8sdi": [
-    {
-      "type": 0,
-      "value": "Mukautetut pelisäännöt"
     }
   ],
   "daomJy": [
@@ -2002,12 +2014,6 @@
     {
       "type": 0,
       "value": "(Rangaistus itsemurhasta)"
-    }
-  ],
-  "siC31q": [
-    {
-      "type": 0,
-      "value": "Alkuperäiset pelisäännöt"
     }
   ],
   "szCmDm": [

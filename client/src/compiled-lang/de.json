@@ -735,6 +735,12 @@
       "value": "Unbegrenzte Munition"
     }
   ],
+  "LTWz4J": [
+    {
+      "type": 0,
+      "value": "Regeln"
+    }
+  ],
   "Lo5tsu": [
     {
       "type": 0,
@@ -993,6 +999,12 @@
     {
       "type": 0,
       "value": "Sound"
+    }
+  ],
+  "RvXRbe": [
+    {
+      "type": 0,
+      "value": "Original"
     }
   ],
   "RyQOi8": [
@@ -1343,6 +1355,12 @@
       "value": "Level-Editor"
     }
   ],
+  "aOwuI3": [
+    {
+      "type": 0,
+      "value": "Eigene"
+    }
+  ],
   "aQA+eU": [
     {
       "type": 0,
@@ -1471,12 +1489,6 @@
     {
       "type": 0,
       "value": "Nach links"
-    }
-  ],
-  "dS8sdi": [
-    {
-      "type": 0,
-      "value": "Eigene Spielregeln"
     }
   ],
   "daomJy": [
@@ -2008,12 +2020,6 @@
     {
       "type": 0,
       "value": "(Strafe für Selbstmord)"
-    }
-  ],
-  "siC31q": [
-    {
-      "type": 0,
-      "value": "Original-Spielregeln"
     }
   ],
   "szCmDm": [

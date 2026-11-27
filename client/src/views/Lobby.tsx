@@ -186,11 +186,12 @@ export function Lobby() {
                                 className={classes.grow}
                                 levelClassNames={{ input: classes.levelInput, option: classes.levelOption }}
                             />
+                            <RulesField
+                                className={classes.grow}
+                                value={gameSettings.rules}
+                                onChange={(rules) => setGameSettings({ ...gameSettings, rules })}
+                            />
                         </div>
-                        <RulesField
-                            value={gameSettings.rules}
-                            onChange={(rules) => setGameSettings({ ...gameSettings, rules })}
-                        />
                         <div className={classes.row}>
                             <NumberInput
                                 className={classes.grow}

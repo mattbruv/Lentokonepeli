@@ -41,3 +41,27 @@
 .changes {
     font-size: 0.85rem;
 }
+
+.planeButtonInner {
+    height: auto;
+    padding-block: 6px;
+}
+
+.planeButtonLabel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    height: auto;
+    overflow: visible;
+}
+
+.planeImage {
+    height: 30px;
+    width: auto;
+    image-rendering: pixelated;
+}
+
+.disallowed .planeImage {
+    filter: grayscale(1);
+}

@@ -735,6 +735,12 @@
       "value": "Munición ilimitada"
     }
   ],
+  "LTWz4J": [
+    {
+      "type": 0,
+      "value": "Reglas"
+    }
+  ],
   "Lo5tsu": [
     {
       "type": 0,
@@ -989,6 +995,12 @@
     {
       "type": 0,
       "value": "Sonidos"
+    }
+  ],
+  "RvXRbe": [
+    {
+      "type": 0,
+      "value": "Originales"
     }
   ],
   "RyQOi8": [
@@ -1339,6 +1351,12 @@
       "value": "Editor de Mapas"
     }
   ],
+  "aOwuI3": [
+    {
+      "type": 0,
+      "value": "Personalizadas"
+    }
+  ],
   "aQA+eU": [
     {
       "type": 0,
@@ -1477,12 +1495,6 @@
     {
       "type": 0,
       "value": "Mover a la izquierda"
-    }
-  ],
-  "dS8sdi": [
-    {
-      "type": 0,
-      "value": "Reglas de juego personalizadas"
     }
   ],
   "daomJy": [
@@ -2010,12 +2022,6 @@
     {
       "type": 0,
       "value": "(Penalización por suicidio)"
-    }
-  ],
-  "siC31q": [
-    {
-      "type": 0,
-      "value": "Reglas de juego originales"
     }
   ],
   "szCmDm": [

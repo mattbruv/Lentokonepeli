@@ -399,6 +399,10 @@
     "defaultMessage": "Unbegrenzte Munition",
     "description": "Game rule: planes never run out of bullets"
   },
+  "LTWz4J": {
+    "defaultMessage": "Regeln",
+    "description": "Label above the button that opens the game rules editor"
+  },
   "Lo5tsu": {
     "defaultMessage": "Weiterspielen",
     "description": "Button in the leave game dialog that closes the dialog and returns to the game"
@@ -550,6 +554,10 @@
   "RJPf0Z": {
     "defaultMessage": "Sound",
     "description": "Checkbox on the bottom game panel that turns sound on or off"
+  },
+  "RvXRbe": {
+    "defaultMessage": "Original",
+    "description": "Rules button label when the game rules match the original game"
   },
   "RyQOi8": {
     "defaultMessage": "Hauptquartiere",
@@ -775,6 +783,10 @@
     "defaultMessage": "Level-Editor",
     "description": "Sidebar link description for the Level Editor"
   },
+  "aOwuI3": {
+    "defaultMessage": "Eigene",
+    "description": "Rules button label when the host has changed the game rules from the original game"
+  },
   "aQA+eU": {
     "defaultMessage": "Dieses Replay wurde mit einer anderen Spielversion aufgenommen. Es kann abweichen oder nicht richtig abgespielt werden.",
     "description": "Warning shown before watching a replay recorded with another game version"
@@ -838,10 +850,6 @@
   "dPTAzZ": {
     "defaultMessage": "Nach links",
     "description": "Title for the 'Move Left' action shown on the keybind settings section"
-  },
-  "dS8sdi": {
-    "defaultMessage": "Eigene Spielregeln",
-    "description": "Button label when the host has changed the game rules from the original game"
   },
   "daomJy": {
     "defaultMessage": "Beitritt fehlgeschlagen",
@@ -1158,10 +1166,6 @@
   "sW9neH": {
     "defaultMessage": "(Strafe für Selbstmord)",
     "description": "Shown below the respawn countdown when the wait is longer because of a suicide"
-  },
-  "siC31q": {
-    "defaultMessage": "Original-Spielregeln",
-    "description": "Button label when the game rules match the original game"
   },
   "szCmDm": {
     "defaultMessage": "T",

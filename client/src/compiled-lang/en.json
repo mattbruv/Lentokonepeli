@@ -731,6 +731,12 @@
       "value": "Unlimited ammo"
     }
   ],
+  "LTWz4J": [
+    {
+      "type": 0,
+      "value": "Rules"
+    }
+  ],
   "Lo5tsu": [
     {
       "type": 0,
@@ -985,6 +991,12 @@
     {
       "type": 0,
       "value": "Sounds"
+    }
+  ],
+  "RvXRbe": [
+    {
+      "type": 0,
+      "value": "Original"
     }
   ],
   "RyQOi8": [
@@ -1335,6 +1347,12 @@
       "value": "Level Editor"
     }
   ],
+  "aOwuI3": [
+    {
+      "type": 0,
+      "value": "Custom"
+    }
+  ],
   "aQA+eU": [
     {
       "type": 0,
@@ -1463,12 +1481,6 @@
     {
       "type": 0,
       "value": "Move Left"
-    }
-  ],
-  "dS8sdi": [
-    {
-      "type": 0,
-      "value": "Custom game rules"
     }
   ],
   "daomJy": [
@@ -1996,12 +2008,6 @@
     {
       "type": 0,
       "value": "(Suicide penalty)"
-    }
-  ],
-  "siC31q": [
-    {
-      "type": 0,
-      "value": "Original game rules"
     }
   ],
   "szCmDm": [

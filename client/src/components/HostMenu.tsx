@@ -7,6 +7,7 @@ import {
     NumberInput,
     SegmentedControl,
     Select,
+    SimpleGrid,
     Stack,
     Tabs,
     Text,
@@ -252,7 +253,7 @@ function MapTab({ gameSettings, onChangeGame, onClose }: HostMenuProps) {
 
     return (
         <Stack gap="lg">
-            <Group gap="xs" grow align="flex-start">
+            <SimpleGrid cols={{ base: 1, xs: 2 }} spacing="xs" verticalSpacing="sm">
                 <GameSettingsFields
                     value={draft}
                     onChange={(next) => {
@@ -260,14 +261,14 @@ function MapTab({ gameSettings, onChangeGame, onClose }: HostMenuProps) {
                         setConfirming(false);
                     }}
                 />
-            </Group>
-            <RulesField
-                value={draft.rules}
-                onChange={(rules) => {
-                    setDraft({ ...draft, rules });
-                    setConfirming(false);
-                }}
-            />
+                <RulesField
+                    value={draft.rules}
+                    onChange={(rules) => {
+                        setDraft({ ...draft, rules });
+                        setConfirming(false);
+                    }}
+                />
+            </SimpleGrid>
             <span className={classes.hint}>
                 <FormattedMessage
                     defaultMessage="Starts a fresh game on the chosen map for everyone. Players and bots stay, but teams, scores and the replay start over."
