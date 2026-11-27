@@ -1,4 +1,4 @@
-import { Alert, Button, Modal, ScrollArea, Select, Stack, Text } from "@mantine/core";
+import { Alert, Button, Modal, Select, Stack, Text } from "@mantine/core";
 import { IconAdjustments, IconEye, IconFileDownload } from "@tabler/icons-react";
 import saveAs from "file-saver";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -103,11 +103,7 @@ function GuestSession({ gameCode, spectator = false, onRetry }: GuestProps & { o
                             description="Text above the list of game rules the host has changed"
                         />
                     </Text>
-                    {customRules && (
-                        <ScrollArea.Autosize mah={320} type="auto" scrollbars="y" offsetScrollbars>
-                            <RuleChangesList rules={customRules} />
-                        </ScrollArea.Autosize>
-                    )}
+                    {customRules && <RuleChangesList rules={customRules} maxHeight={320} />}
                     <Button color="copper" onClick={() => setAcknowledgedRules(rulesKey)}>
                         <FormattedMessage
                             defaultMessage="Got it"
@@ -154,9 +150,7 @@ function GuestSession({ gameCode, spectator = false, onRetry }: GuestProps & { o
                                             "Title of the notice in the game sidebar listing the rules the host changed",
                                     })}
                                 >
-                                    <ScrollArea.Autosize mah={200} type="auto" scrollbars="y" offsetScrollbars>
-                                        <RuleChangesList rules={customRules} />
-                                    </ScrollArea.Autosize>
+                                    <RuleChangesList rules={customRules} maxHeight={200} />
                                 </Alert>
                             )}
                             {spectator && (

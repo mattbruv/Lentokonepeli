@@ -22,6 +22,12 @@
     flex-shrink: 0;
 }
 
+.commit {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.85em;
+    color: inherit;
+}
+
 .levelName {
     font-family: Fredoka, Nunito, sans-serif;
     font-size: 1.15rem;

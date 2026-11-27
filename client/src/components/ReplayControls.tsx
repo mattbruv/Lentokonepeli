@@ -15,6 +15,7 @@ import {
     IconCalendarTime,
     IconCurrentLocation,
     IconEye,
+    IconGitCommit,
     IconMap,
     IconZoomIn,
     IconZoomOut,
@@ -142,6 +143,29 @@ export function ReplayControls({ summary, callbacks, events, players, info }: Re
                         <time dateTime={new Date(summary.start_time_ms!).toISOString()}>{recordedAt}</time>
                     </div>
                 )}
+                <div className={classes.metaRow}>
+                    <IconGitCommit size={18} stroke={2.2} />
+                    <span>
+                        v{summary.build_version}
+                        {summary.build_commit && (
+                            <>
+                                {" · "}
+                                {/^[0-9a-f]{7,40}$/i.test(summary.build_commit) ? (
+                                    <a
+                                        className={classes.commit}
+                                        href={`https://github.com/mattbruv/Lentokonepeli/commit/${summary.build_commit}`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+                                        {summary.build_commit}
+                                    </a>
+                                ) : (
+                                    <span className={classes.commit}>{summary.build_commit}</span>
+                                )}
+                            </>
+                        )}
+                    </span>
+                </div>
                 {summary.rules && !isDefaultRules(summary.rules) && (
                     <Alert
                         mt={6}
@@ -153,9 +177,7 @@ export function ReplayControls({ summary, callbacks, events, players, info }: Re
                             description: "Title of the notice in the game sidebar listing the rules the host changed",
                         })}
                     >
-                        <ScrollArea.Autosize mah={200} type="auto" scrollbars="y" offsetScrollbars>
-                            <RuleChangesList rules={summary.rules} />
-                        </ScrollArea.Autosize>
+                        <RuleChangesList rules={summary.rules} maxHeight={200} />
                     </Alert>
                 )}
             </div>

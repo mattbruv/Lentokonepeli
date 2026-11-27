@@ -7,6 +7,7 @@ import {
     List,
     Modal,
     NumberInput,
+    ScrollArea,
     Select,
     SimpleGrid,
     SimpleGridProps,
@@ -537,16 +538,18 @@ export function RulesEditor({ value, onChange }: { value: GameRules; onChange: (
     );
 }
 
-export function RuleChangesList({ rules }: { rules: GameRules }) {
+export function RuleChangesList({ rules, maxHeight }: { rules: GameRules; maxHeight: number }) {
     const intl = useIntl();
     const changes = useMemo(() => describeRuleChanges(intl, rules), [intl, rules]);
     if (changes.length === 0) return null;
     return (
-        <List size="sm" spacing={2} className={classes.changes}>
-            {changes.map((change) => (
-                <List.Item key={change}>{change}</List.Item>
-            ))}
-        </List>
+        <ScrollArea.Autosize mah={maxHeight} type="auto" scrollbars="y" offsetScrollbars>
+            <List size="sm" spacing={2} className={classes.changes}>
+                {changes.map((change) => (
+                    <List.Item key={change}>{change}</List.Item>
+                ))}
+            </List>
+        </ScrollArea.Autosize>
     );
 }
 
