@@ -63,10 +63,6 @@
     "defaultMessage": "Nousu laskeutumisen jälkeen",
     "description": "Game rule: milliseconds a runway is blocked for takeoffs after a plane lands on it"
   },
-  "1ZRxhF": {
-    "defaultMessage": "Räjähdys → rakennus",
-    "description": "Game rule: damage an explosion does to a runway or headquarters"
-  },
   "1ms0hN": {
     "defaultMessage": "Players",
     "description": "Host menu tab listing connected players"
@@ -102,6 +98,10 @@
   "4MNKGm": {
     "defaultMessage": "Laukaise heittoistuin, Avaa laskuvarjo",
     "description": "Title for the 'Eject, Open Parachute' action shown on the keybind settings section"
+  },
+  "4XUtRs": {
+    "defaultMessage": "Kiitoradan vahinko",
+    "description": "Rules editor damage field, shown under its damage source: damage a bullet does to a runway, before scaling by bullet speed"
   },
   "5BEOU3": {
     "defaultMessage": "Tallenna",
@@ -235,13 +235,17 @@
     "defaultMessage": "{plane}: {value}",
     "description": "A plane that players are not allowed to pick"
   },
+  "BGy3UH": {
+    "defaultMessage": "Luodit",
+    "description": "Damage source picker: damage done by bullets"
+  },
+  "BH4uaM": {
+    "defaultMessage": "Päämajan vahinko",
+    "description": "Rules editor damage field, shown under its damage source: damage a bullet does to a headquarters, before scaling by bullet speed"
+  },
   "BLykMd": {
     "defaultMessage": "Klaani",
     "description": "Settings section title used to modify the clan name"
-  },
-  "BRjsfV": {
-    "defaultMessage": "Koneiden törmäys",
-    "description": "Game rule: damage each plane takes when two planes collide"
   },
   "BXJgxS": {
     "defaultMessage": "Something went wrong while connecting to the host.",
@@ -311,13 +315,13 @@
     "defaultMessage": "The connection to the host was lost. The host may have left the game.",
     "description": "Message shown when the connection to the game host is lost"
   },
-  "F25xxv": {
-    "defaultMessage": "Luoti → päämaja",
-    "description": "Game rule: damage a bullet does to a headquarters, before scaling by bullet speed"
-  },
   "F3eL+0": {
     "defaultMessage": "Connecting to server",
     "description": "Connection step shown while contacting the matchmaking server"
+  },
+  "FDL1P5": {
+    "defaultMessage": "Putoavien koneiden vahinko kiitoratoihin",
+    "description": "Changed game rule in the list shown to players: damage a crashing plane does to a runway"
   },
   "FVxFnN": {
     "defaultMessage": "Replay stopped",
@@ -359,13 +363,13 @@
     "defaultMessage": "Tuetut rakennuspalikat",
     "description": "supported pieces to be used in level editor"
   },
+  "HwZrIq": {
+    "defaultMessage": "Törmäysvahinko",
+    "description": "Rules editor damage field, shown under its damage source: damage each plane takes when two planes collide"
+  },
   "INGml3": {
     "defaultMessage": "Syötä 4 merkkiä sisältävä pelikoodi...",
     "description": "Infotext for input which is used to insert 4 digit game code to join games"
-  },
-  "IdxpA3": {
-    "defaultMessage": "Luoti → kone",
-    "description": "Game rule: damage a bullet does to a plane, before scaling by bullet speed"
   },
   "InAFP6": {
     "defaultMessage": "Polttoaine",
@@ -402,6 +406,10 @@
   "Jyv5JT": {
     "defaultMessage": "Normaali",
     "description": "Game mode where players respawn after dying and the round ends when a base is destroyed"
+  },
+  "KCU8wa": {
+    "defaultMessage": "Vahinko",
+    "description": "Rules editor tab for damage values"
   },
   "Kdsx9u": {
     "defaultMessage": "Map & mode",
@@ -475,6 +483,10 @@
     "defaultMessage": "Load another replay",
     "description": "Button that returns to the replay file picker after playback failed"
   },
+  "NRvCa5": {
+    "defaultMessage": "Räjähdykset",
+    "description": "Damage source picker: damage done by explosions"
+  },
   "Nbb2Yc": {
     "defaultMessage": "Liiku oikealle",
     "description": "Title for the 'Move Right' action shown on the keybind settings section"
@@ -486,6 +498,14 @@
   "NyL4Zc": {
     "defaultMessage": "Recorded with {replayVersion}, you're running {currentVersion}. Playback may desync.",
     "description": "Notice shown while watching a replay recorded with another game version"
+  },
+  "OJ+LRJ": {
+    "defaultMessage": "Räjähdysten vahinko rakennuksiin",
+    "description": "Changed game rule in the list shown to players: damage an explosion does to a runway or headquarters"
+  },
+  "OTRBgD": {
+    "defaultMessage": "Koneiden törmäysvahinko",
+    "description": "Changed game rule in the list shown to players: damage each plane takes when two planes collide"
   },
   "OVTgWq": {
     "defaultMessage": "Rajoittamaton",
@@ -502,6 +522,10 @@
   "PEq6j5": {
     "defaultMessage": "sulkea chat",
     "description": "message indicating 'Esc' closes the chat"
+  },
+  "PFwc7n": {
+    "defaultMessage": "Räjähdysten vahinko koneisiin",
+    "description": "Changed game rule in the list shown to players: damage an explosion does to a plane caught in it"
   },
   "PSkosK": {
     "defaultMessage": "Game size",
@@ -551,6 +575,10 @@
     "defaultMessage": "Bots",
     "description": "Label for the number of bots the hosted game starts with"
   },
+  "Qo7/oS": {
+    "defaultMessage": "Törmäykset",
+    "description": "Damage source picker: damage from planes colliding with each other or crashing into runways"
+  },
   "Qt6faF": {
     "defaultMessage": "Isännöi peli",
     "description": "Title for section used for hosting a game"
@@ -562,6 +590,10 @@
   "R7Fptk": {
     "defaultMessage": "Back to lobby",
     "description": "Button that leaves a game that failed to connect and returns to the lobby"
+  },
+  "RFfTWV": {
+    "defaultMessage": "Kiitoradan vahinko",
+    "description": "Rules editor damage field, shown under its damage source: damage a crashing plane does to a runway"
   },
   "RHcX+j": {
     "defaultMessage": "Ammukset",
@@ -751,9 +783,17 @@
     "defaultMessage": "Poistu",
     "description": "Button on the bottom game panel that leaves the game"
   },
+  "XS6Kq6": {
+    "defaultMessage": "Pommit",
+    "description": "Damage source picker: damage done by direct bomb hits"
+  },
   "XUWCAc": {
     "defaultMessage": "Bullet",
     "description": "Replay inspector title for a bullet"
+  },
+  "XVNz9A": {
+    "defaultMessage": "Koneen vahinko",
+    "description": "Rules editor damage field, shown under its damage source: damage an explosion does to a plane caught in it"
   },
   "XiQxa8": {
     "defaultMessage": "Runway",
@@ -803,6 +843,10 @@
     "defaultMessage": "Medium",
     "description": "Level preview: map is medium sized"
   },
+  "a3nKbD": {
+    "defaultMessage": "Rakennusten vahinko",
+    "description": "Rules editor damage field, shown under its damage source: damage an explosion does to a runway or headquarters"
+  },
   "aLjUL6": {
     "defaultMessage": "Kenttäeditori",
     "description": "Sidebar link description for the Level Editor"
@@ -835,10 +879,6 @@
     "defaultMessage": "Download Replay ({seconds}s)",
     "description": "Button text while the replay download is on cooldown"
   },
-  "bM6b32": {
-    "defaultMessage": "Räjähdys → kone",
-    "description": "Game rule: damage an explosion does to a plane caught in it"
-  },
   "buqDOb": {
     "defaultMessage": "Valitse Käyttäjänimi",
     "description": "Title for modal used to choose username"
@@ -862,10 +902,6 @@
   "caIqIm": {
     "defaultMessage": "Seurataan",
     "description": "Label for the player picker while spectating a game"
-  },
-  "crB04S": {
-    "defaultMessage": "Luoti → kiitorata",
-    "description": "Game rule: damage a bullet does to a runway, before scaling by bullet speed"
   },
   "crlI8a": {
     "defaultMessage": "Salmson 2",
@@ -922,6 +958,10 @@
   "f3ix4b": {
     "defaultMessage": "Pommita",
     "description": "Title for the 'Bomb' action shown on the keybind settings section"
+  },
+  "fM3oqA": {
+    "defaultMessage": "Koneen vahinko",
+    "description": "Rules editor damage field, shown under its damage source: damage a bullet does to a plane, before scaling by bullet speed"
   },
   "g26t4O": {
     "defaultMessage": "Remove selected",
@@ -991,10 +1031,6 @@
     "defaultMessage": "Tallenna nykyiset säännöt nimellä",
     "description": "Label for the input naming a new rule preset"
   },
-  "jIDnWe": {
-    "defaultMessage": "Vahinko",
-    "description": "Heading above the damage values in the rules editor"
-  },
   "jLMFLF": {
     "defaultMessage": "Try again",
     "description": "Button that retries joining a game after a failed connection"
@@ -1047,6 +1083,10 @@
     "defaultMessage": "Yes",
     "description": "Replay inspector value for true"
   },
+  "lczFRl": {
+    "defaultMessage": "Luotien vahinko päämajaan",
+    "description": "Changed game rule in the list shown to players: damage a bullet does to a headquarters, before scaling by bullet speed"
+  },
   "lyNeuJ": {
     "defaultMessage": "Cancel",
     "description": "Host menu button that cancels removing a player"
@@ -1098,6 +1138,10 @@
   "nsD9i0": {
     "defaultMessage": "Lentäjän suoja-aika",
     "description": "Game rule: milliseconds a pilot cannot be run over after bailing out"
+  },
+  "o1nONq": {
+    "defaultMessage": "Rakennusten vahinko",
+    "description": "Rules editor damage field, shown under its damage source: damage a direct bomb hit does to a runway or headquarters"
   },
   "o5MbpS": {
     "defaultMessage": "Poista esiasetus",
@@ -1155,10 +1199,6 @@
     "defaultMessage": "Difficulty",
     "description": "Bot panel: label for the bot difficulty dropdown"
   },
-  "qBEdfv": {
-    "defaultMessage": "Pommi → rakennus",
-    "description": "Game rule: damage a direct bomb hit does to a runway or headquarters"
-  },
   "qLiOrX": {
     "defaultMessage": "Huippunopeuslisä",
     "description": "Plane rule: extra top speed before air resistance slows the plane"
@@ -1198,6 +1238,10 @@
   "sW9neH": {
     "defaultMessage": "(Rangaistus itsemurhasta)",
     "description": "Shown below the respawn countdown when the wait is longer because of a suicide"
+  },
+  "spHMLv": {
+    "defaultMessage": "Luotien vahinko kiitoratoihin",
+    "description": "Changed game rule in the list shown to players: damage a bullet does to a runway, before scaling by bullet speed"
   },
   "szCmDm": {
     "defaultMessage": "J",
@@ -1239,6 +1283,10 @@
     "defaultMessage": "Chat & Interface",
     "description": "Heading for the group of chat and interface keybinds on the settings page"
   },
+  "uxbzVT": {
+    "defaultMessage": "Pommien vahinko rakennuksiin",
+    "description": "Changed game rule in the list shown to players: damage a direct bomb hit does to a runway or headquarters"
+  },
   "uzItKz": {
     "defaultMessage": "Nousu nousun jälkeen",
     "description": "Game rule: milliseconds a runway is blocked for takeoffs after a plane takes off from it"
@@ -1246,6 +1294,10 @@
   "vL5iqo": {
     "defaultMessage": "Sivustoasetukset",
     "description": "Title for a settings section used to modify general site settings"
+  },
+  "vRfiAl": {
+    "defaultMessage": "Luotien vahinko koneisiin",
+    "description": "Changed game rule in the list shown to players: damage a bullet does to a plane, before scaling by bullet speed"
   },
   "vdZK2r": {
     "defaultMessage": "Clan can't contain [ or ]",
@@ -1302,10 +1354,6 @@
   "xgjp90": {
     "defaultMessage": "Show collision",
     "description": "Toggle that draws collision boxes and masks over the replay"
-  },
-  "xv2iiQ": {
-    "defaultMessage": "Koneen törmäys → kiitorata",
-    "description": "Game rule: damage a crashing plane does to a runway"
   },
   "y49T/p": {
     "defaultMessage": "Viestitä kaikille",

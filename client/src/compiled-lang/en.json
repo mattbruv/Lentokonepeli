@@ -107,12 +107,6 @@
       "value": "Takeoff after a landing"
     }
   ],
-  "1ZRxhF": [
-    {
-      "type": 0,
-      "value": "Explosion → building"
-    }
-  ],
   "1ms0hN": [
     {
       "type": 0,
@@ -165,6 +159,12 @@
     {
       "type": 0,
       "value": "Eject, Open Parachute"
+    }
+  ],
+  "4XUtRs": [
+    {
+      "type": 0,
+      "value": "Runway damage"
     }
   ],
   "5BEOU3": [
@@ -415,16 +415,22 @@
       "value": "value"
     }
   ],
+  "BGy3UH": [
+    {
+      "type": 0,
+      "value": "Bullets"
+    }
+  ],
+  "BH4uaM": [
+    {
+      "type": 0,
+      "value": "Headquarters damage"
+    }
+  ],
   "BLykMd": [
     {
       "type": 0,
       "value": "Clan"
-    }
-  ],
-  "BRjsfV": [
-    {
-      "type": 0,
-      "value": "Plane collision"
     }
   ],
   "BXJgxS": [
@@ -529,16 +535,16 @@
       "value": "The connection to the host was lost. The host may have left the game."
     }
   ],
-  "F25xxv": [
-    {
-      "type": 0,
-      "value": "Bullet → headquarters"
-    }
-  ],
   "F3eL+0": [
     {
       "type": 0,
       "value": "Connecting to server"
+    }
+  ],
+  "FDL1P5": [
+    {
+      "type": 0,
+      "value": "Runway damage from crashing planes"
     }
   ],
   "FVxFnN": [
@@ -635,16 +641,16 @@
       "value": "Supported pieces"
     }
   ],
+  "HwZrIq": [
+    {
+      "type": 0,
+      "value": "Collision damage"
+    }
+  ],
   "INGml3": [
     {
       "type": 0,
       "value": "Enter the 4 digit game code..."
-    }
-  ],
-  "IdxpA3": [
-    {
-      "type": 0,
-      "value": "Bullet → plane"
     }
   ],
   "InAFP6": [
@@ -735,6 +741,12 @@
     {
       "type": 0,
       "value": "Normal"
+    }
+  ],
+  "KCU8wa": [
+    {
+      "type": 0,
+      "value": "Damage"
     }
   ],
   "Kdsx9u": [
@@ -853,6 +865,12 @@
       "value": "Load another replay"
     }
   ],
+  "NRvCa5": [
+    {
+      "type": 0,
+      "value": "Explosions"
+    }
+  ],
   "Nbb2Yc": [
     {
       "type": 0,
@@ -887,6 +905,18 @@
       "value": ". Playback may desync."
     }
   ],
+  "OJ+LRJ": [
+    {
+      "type": 0,
+      "value": "Building damage from explosions"
+    }
+  ],
+  "OTRBgD": [
+    {
+      "type": 0,
+      "value": "Plane collision damage"
+    }
+  ],
   "OVTgWq": [
     {
       "type": 0,
@@ -909,6 +939,12 @@
     {
       "type": 0,
       "value": "to close chat"
+    }
+  ],
+  "PFwc7n": [
+    {
+      "type": 0,
+      "value": "Plane damage from explosions"
     }
   ],
   "PSkosK": [
@@ -987,6 +1023,12 @@
       "value": "Bots"
     }
   ],
+  "Qo7/oS": [
+    {
+      "type": 0,
+      "value": "Crashes"
+    }
+  ],
   "Qt6faF": [
     {
       "type": 0,
@@ -1003,6 +1045,12 @@
     {
       "type": 0,
       "value": "Back to lobby"
+    }
+  ],
+  "RFfTWV": [
+    {
+      "type": 0,
+      "value": "Runway damage"
     }
   ],
   "RHcX+j": [
@@ -1287,10 +1335,22 @@
       "value": "Exit"
     }
   ],
+  "XS6Kq6": [
+    {
+      "type": 0,
+      "value": "Bombs"
+    }
+  ],
   "XUWCAc": [
     {
       "type": 0,
       "value": "Bullet"
+    }
+  ],
+  "XVNz9A": [
+    {
+      "type": 0,
+      "value": "Plane damage"
     }
   ],
   "XiQxa8": [
@@ -1377,6 +1437,12 @@
       "value": "Medium"
     }
   ],
+  "a3nKbD": [
+    {
+      "type": 0,
+      "value": "Building damage"
+    }
+  ],
   "aLjUL6": [
     {
       "type": 0,
@@ -1431,12 +1497,6 @@
     {
       "type": 0,
       "value": "s)"
-    }
-  ],
-  "bM6b32": [
-    {
-      "type": 0,
-      "value": "Explosion → plane"
     }
   ],
   "buqDOb": [
@@ -1495,12 +1555,6 @@
     {
       "type": 0,
       "value": "Following"
-    }
-  ],
-  "crB04S": [
-    {
-      "type": 0,
-      "value": "Bullet → runway"
     }
   ],
   "crlI8a": [
@@ -1589,6 +1643,12 @@
     {
       "type": 0,
       "value": "Bomb"
+    }
+  ],
+  "fM3oqA": [
+    {
+      "type": 0,
+      "value": "Plane damage"
     }
   ],
   "g26t4O": [
@@ -1715,12 +1775,6 @@
       "value": "Save current rules as"
     }
   ],
-  "jIDnWe": [
-    {
-      "type": 0,
-      "value": "Damage"
-    }
-  ],
   "jLMFLF": [
     {
       "type": 0,
@@ -1797,6 +1851,12 @@
     {
       "type": 0,
       "value": "Yes"
+    }
+  ],
+  "lczFRl": [
+    {
+      "type": 0,
+      "value": "Headquarters damage from bullets"
     }
   ],
   "lyNeuJ": [
@@ -1908,6 +1968,12 @@
       "value": "Pilot spawn protection"
     }
   ],
+  "o1nONq": [
+    {
+      "type": 0,
+      "value": "Building damage"
+    }
+  ],
   "o5MbpS": [
     {
       "type": 0,
@@ -1992,12 +2058,6 @@
       "value": "Difficulty"
     }
   ],
-  "qBEdfv": [
-    {
-      "type": 0,
-      "value": "Bomb → building"
-    }
-  ],
   "qLiOrX": [
     {
       "type": 0,
@@ -2056,6 +2116,12 @@
     {
       "type": 0,
       "value": "(Suicide penalty)"
+    }
+  ],
+  "spHMLv": [
+    {
+      "type": 0,
+      "value": "Runway damage from bullets"
     }
   ],
   "szCmDm": [
@@ -2126,6 +2192,12 @@
       "value": "Chat & Interface"
     }
   ],
+  "uxbzVT": [
+    {
+      "type": 0,
+      "value": "Building damage from bombs"
+    }
+  ],
   "uzItKz": [
     {
       "type": 0,
@@ -2136,6 +2208,12 @@
     {
       "type": 0,
       "value": "Site Settings"
+    }
+  ],
+  "vRfiAl": [
+    {
+      "type": 0,
+      "value": "Plane damage from bullets"
     }
   ],
   "vdZK2r": [
@@ -2220,12 +2298,6 @@
     {
       "type": 0,
       "value": "Show collision"
-    }
-  ],
-  "xv2iiQ": [
-    {
-      "type": 0,
-      "value": "Plane crash → runway"
     }
   ],
   "y49T/p": [

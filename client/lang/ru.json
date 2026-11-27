@@ -63,10 +63,6 @@
     "defaultMessage": "Взлёт после посадки",
     "description": "Game rule: milliseconds a runway is blocked for takeoffs after a plane lands on it"
   },
-  "1ZRxhF": {
-    "defaultMessage": "Взрыв → здание",
-    "description": "Game rule: damage an explosion does to a runway or headquarters"
-  },
   "1ms0hN": {
     "defaultMessage": "Игроки",
     "description": "Host menu tab listing connected players"
@@ -102,6 +98,10 @@
   "4MNKGm": {
     "defaultMessage": "Катапультироваться, раскрыть парашют",
     "description": "Title for the 'Eject, Open Parachute' action shown on the keybind settings section"
+  },
+  "4XUtRs": {
+    "defaultMessage": "Урон взлётной полосе",
+    "description": "Rules editor damage field, shown under its damage source: damage a bullet does to a runway, before scaling by bullet speed"
   },
   "5BEOU3": {
     "defaultMessage": "Сохранить",
@@ -235,13 +235,17 @@
     "defaultMessage": "{plane}: {value}",
     "description": "A plane that players are not allowed to pick"
   },
+  "BGy3UH": {
+    "defaultMessage": "Пули",
+    "description": "Damage source picker: damage done by bullets"
+  },
+  "BH4uaM": {
+    "defaultMessage": "Урон штабу",
+    "description": "Rules editor damage field, shown under its damage source: damage a bullet does to a headquarters, before scaling by bullet speed"
+  },
   "BLykMd": {
     "defaultMessage": "Клан",
     "description": "Settings section title used to modify the clan name"
-  },
-  "BRjsfV": {
-    "defaultMessage": "Столкновение самолётов",
-    "description": "Game rule: damage each plane takes when two planes collide"
   },
   "BXJgxS": {
     "defaultMessage": "Что-то пошло не так при подключении к хосту.",
@@ -311,13 +315,13 @@
     "defaultMessage": "Соединение с хостом потеряно. Возможно, хост покинул игру.",
     "description": "Message shown when the connection to the game host is lost"
   },
-  "F25xxv": {
-    "defaultMessage": "Пуля → штаб",
-    "description": "Game rule: damage a bullet does to a headquarters, before scaling by bullet speed"
-  },
   "F3eL+0": {
     "defaultMessage": "Подключение к серверу",
     "description": "Connection step shown while contacting the matchmaking server"
+  },
+  "FDL1P5": {
+    "defaultMessage": "Урон полосам от разбившихся самолётов",
+    "description": "Changed game rule in the list shown to players: damage a crashing plane does to a runway"
   },
   "FVxFnN": {
     "defaultMessage": "Повтор остановлен",
@@ -359,13 +363,13 @@
     "defaultMessage": "Доступные элементы",
     "description": "supported pieces to be used in level editor"
   },
+  "HwZrIq": {
+    "defaultMessage": "Урон от столкновения",
+    "description": "Rules editor damage field, shown under its damage source: damage each plane takes when two planes collide"
+  },
   "INGml3": {
     "defaultMessage": "Введите 4-значный код игры...",
     "description": "Infotext for input which is used to insert 4 digit game code to join games"
-  },
-  "IdxpA3": {
-    "defaultMessage": "Пуля → самолёт",
-    "description": "Game rule: damage a bullet does to a plane, before scaling by bullet speed"
   },
   "InAFP6": {
     "defaultMessage": "Топливо",
@@ -402,6 +406,10 @@
   "Jyv5JT": {
     "defaultMessage": "Обычный",
     "description": "Game mode where players respawn after dying and the round ends when a base is destroyed"
+  },
+  "KCU8wa": {
+    "defaultMessage": "Урон",
+    "description": "Rules editor tab for damage values"
   },
   "Kdsx9u": {
     "defaultMessage": "Карта и режим",
@@ -475,6 +483,10 @@
     "defaultMessage": "Загрузить другой повтор",
     "description": "Button that returns to the replay file picker after playback failed"
   },
+  "NRvCa5": {
+    "defaultMessage": "Взрывы",
+    "description": "Damage source picker: damage done by explosions"
+  },
   "Nbb2Yc": {
     "defaultMessage": "Вправо",
     "description": "Title for the 'Move Right' action shown on the keybind settings section"
@@ -486,6 +498,14 @@
   "NyL4Zc": {
     "defaultMessage": "Записано в версии {replayVersion}, у вас {currentVersion}. Воспроизведение может рассинхронизироваться.",
     "description": "Notice shown while watching a replay recorded with another game version"
+  },
+  "OJ+LRJ": {
+    "defaultMessage": "Урон зданиям от взрывов",
+    "description": "Changed game rule in the list shown to players: damage an explosion does to a runway or headquarters"
+  },
+  "OTRBgD": {
+    "defaultMessage": "Урон при столкновении самолётов",
+    "description": "Changed game rule in the list shown to players: damage each plane takes when two planes collide"
   },
   "OVTgWq": {
     "defaultMessage": "Без ограничения",
@@ -502,6 +522,10 @@
   "PEq6j5": {
     "defaultMessage": "чтобы закрыть чат",
     "description": "message indicating 'Esc' closes the chat"
+  },
+  "PFwc7n": {
+    "defaultMessage": "Урон самолётам от взрывов",
+    "description": "Changed game rule in the list shown to players: damage an explosion does to a plane caught in it"
   },
   "PSkosK": {
     "defaultMessage": "Размер игры",
@@ -551,6 +575,10 @@
     "defaultMessage": "Боты",
     "description": "Label for the number of bots the hosted game starts with"
   },
+  "Qo7/oS": {
+    "defaultMessage": "Столкновения",
+    "description": "Damage source picker: damage from planes colliding with each other or crashing into runways"
+  },
   "Qt6faF": {
     "defaultMessage": "Создать игру",
     "description": "Title for section used for hosting a game"
@@ -562,6 +590,10 @@
   "R7Fptk": {
     "defaultMessage": "Назад в лобби",
     "description": "Button that leaves a game that failed to connect and returns to the lobby"
+  },
+  "RFfTWV": {
+    "defaultMessage": "Урон взлётной полосе",
+    "description": "Rules editor damage field, shown under its damage source: damage a crashing plane does to a runway"
   },
   "RHcX+j": {
     "defaultMessage": "Патроны",
@@ -751,9 +783,17 @@
     "defaultMessage": "Выход",
     "description": "Button on the bottom game panel that leaves the game"
   },
+  "XS6Kq6": {
+    "defaultMessage": "Бомбы",
+    "description": "Damage source picker: damage done by direct bomb hits"
+  },
   "XUWCAc": {
     "defaultMessage": "Пуля",
     "description": "Replay inspector title for a bullet"
+  },
+  "XVNz9A": {
+    "defaultMessage": "Урон самолёту",
+    "description": "Rules editor damage field, shown under its damage source: damage an explosion does to a plane caught in it"
   },
   "XiQxa8": {
     "defaultMessage": "Взлётная полоса",
@@ -803,6 +843,10 @@
     "defaultMessage": "Средняя",
     "description": "Level preview: map is medium sized"
   },
+  "a3nKbD": {
+    "defaultMessage": "Урон зданиям",
+    "description": "Rules editor damage field, shown under its damage source: damage an explosion does to a runway or headquarters"
+  },
   "aLjUL6": {
     "defaultMessage": "Редактор уровней",
     "description": "Sidebar link description for the Level Editor"
@@ -835,10 +879,6 @@
     "defaultMessage": "Скачать повтор ({seconds} с)",
     "description": "Button text while the replay download is on cooldown"
   },
-  "bM6b32": {
-    "defaultMessage": "Взрыв → самолёт",
-    "description": "Game rule: damage an explosion does to a plane caught in it"
-  },
   "buqDOb": {
     "defaultMessage": "Выберите имя",
     "description": "Title for modal used to choose username"
@@ -862,10 +902,6 @@
   "caIqIm": {
     "defaultMessage": "Наблюдение за",
     "description": "Label for the player picker while spectating a game"
-  },
-  "crB04S": {
-    "defaultMessage": "Пуля → взлётная полоса",
-    "description": "Game rule: damage a bullet does to a runway, before scaling by bullet speed"
   },
   "crlI8a": {
     "defaultMessage": "Salmson 2",
@@ -922,6 +958,10 @@
   "f3ix4b": {
     "defaultMessage": "Бомба",
     "description": "Title for the 'Bomb' action shown on the keybind settings section"
+  },
+  "fM3oqA": {
+    "defaultMessage": "Урон самолёту",
+    "description": "Rules editor damage field, shown under its damage source: damage a bullet does to a plane, before scaling by bullet speed"
   },
   "g26t4O": {
     "defaultMessage": "Удалить выбранных",
@@ -991,10 +1031,6 @@
     "defaultMessage": "Сохранить текущие правила как",
     "description": "Label for the input naming a new rule preset"
   },
-  "jIDnWe": {
-    "defaultMessage": "Урон",
-    "description": "Heading above the damage values in the rules editor"
-  },
   "jLMFLF": {
     "defaultMessage": "Попробовать снова",
     "description": "Button that retries joining a game after a failed connection"
@@ -1047,6 +1083,10 @@
     "defaultMessage": "Да",
     "description": "Replay inspector value for true"
   },
+  "lczFRl": {
+    "defaultMessage": "Урон штабу от пуль",
+    "description": "Changed game rule in the list shown to players: damage a bullet does to a headquarters, before scaling by bullet speed"
+  },
   "lyNeuJ": {
     "defaultMessage": "Отмена",
     "description": "Host menu button that cancels removing a player"
@@ -1098,6 +1138,10 @@
   "nsD9i0": {
     "defaultMessage": "Защита пилота после прыжка",
     "description": "Game rule: milliseconds a pilot cannot be run over after bailing out"
+  },
+  "o1nONq": {
+    "defaultMessage": "Урон зданиям",
+    "description": "Rules editor damage field, shown under its damage source: damage a direct bomb hit does to a runway or headquarters"
   },
   "o5MbpS": {
     "defaultMessage": "Удалить пресет",
@@ -1155,10 +1199,6 @@
     "defaultMessage": "Сложность",
     "description": "Bot panel: label for the bot difficulty dropdown"
   },
-  "qBEdfv": {
-    "defaultMessage": "Бомба → здание",
-    "description": "Game rule: damage a direct bomb hit does to a runway or headquarters"
-  },
   "qLiOrX": {
     "defaultMessage": "Бонус к максимальной скорости",
     "description": "Plane rule: extra top speed before air resistance slows the plane"
@@ -1198,6 +1238,10 @@
   "sW9neH": {
     "defaultMessage": "(Штраф за самоубийство)",
     "description": "Shown below the respawn countdown when the wait is longer because of a suicide"
+  },
+  "spHMLv": {
+    "defaultMessage": "Урон взлётным полосам от пуль",
+    "description": "Changed game rule in the list shown to players: damage a bullet does to a runway, before scaling by bullet speed"
   },
   "szCmDm": {
     "defaultMessage": "К",
@@ -1239,6 +1283,10 @@
     "defaultMessage": "Чат и интерфейс",
     "description": "Heading for the group of chat and interface keybinds on the settings page"
   },
+  "uxbzVT": {
+    "defaultMessage": "Урон зданиям от бомб",
+    "description": "Changed game rule in the list shown to players: damage a direct bomb hit does to a runway or headquarters"
+  },
   "uzItKz": {
     "defaultMessage": "Взлёт после взлёта",
     "description": "Game rule: milliseconds a runway is blocked for takeoffs after a plane takes off from it"
@@ -1246,6 +1294,10 @@
   "vL5iqo": {
     "defaultMessage": "Настройки сайта",
     "description": "Title for a settings section used to modify general site settings"
+  },
+  "vRfiAl": {
+    "defaultMessage": "Урон самолётам от пуль",
+    "description": "Changed game rule in the list shown to players: damage a bullet does to a plane, before scaling by bullet speed"
   },
   "vdZK2r": {
     "defaultMessage": "Клан не может содержать [ или ]",
@@ -1302,10 +1354,6 @@
   "xgjp90": {
     "defaultMessage": "Показать столкновения",
     "description": "Toggle that draws collision boxes and masks over the replay"
-  },
-  "xv2iiQ": {
-    "defaultMessage": "Крушение самолёта → полоса",
-    "description": "Game rule: damage a crashing plane does to a runway"
   },
   "y49T/p": {
     "defaultMessage": "Общий чат",

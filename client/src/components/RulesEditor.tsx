@@ -9,6 +9,7 @@ import {
     NumberInput,
     Select,
     SimpleGrid,
+    SimpleGridProps,
     Stack,
     Switch,
     Tabs,
@@ -20,6 +21,7 @@ import {
     IconBuildingCastle,
     IconCopy,
     IconDeviceFloppy,
+    IconFlame,
     IconPlane,
     IconRefresh,
     IconSwords,
@@ -29,13 +31,14 @@ import {
 import { GameRules } from "dogfight-types/GameRules";
 import { PlaneRules } from "dogfight-types/PlaneRules";
 import { PlaneRulesByType } from "dogfight-types/PlaneRulesByType";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, ReactNode, useEffect, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import {
     BooleanRule,
     BUILDING_RULES,
     BUILDING_TOGGLES,
-    DAMAGE_RULES,
+    DAMAGE_SOURCES,
+    DamageSource,
     defaultRules,
     deleteRulePreset,
     describeRuleChanges,
@@ -60,6 +63,9 @@ import albatrosImage from "../assets/ui/plane4.gif";
 import junkersImage from "../assets/ui/plane5.gif";
 import fokkerImage from "../assets/ui/plane6.gif";
 import bristolImage from "../assets/ui/plane7.gif";
+import bombImage from "../assets/ui/bomb.gif";
+import bulletImage from "../assets/ui/bullet.gif";
+import explosionImage from "../assets/ui/explosion.png";
 import salmsonImage from "../assets/ui/plane8.gif";
 import sopwithImage from "../assets/ui/plane9.gif";
 import themeClasses from "../theme.module.css";
@@ -210,6 +216,92 @@ function RuleNumbers({
     );
 }
 
+type PickerItem<K extends string> = {
+    key: K;
+    label: string;
+    picture: ReactNode;
+    disabled?: boolean;
+    changed?: boolean;
+};
+
+function PicturePicker<K extends string>({
+    items,
+    selected,
+    onSelect,
+    cols,
+}: {
+    items: PickerItem<K>[];
+    selected: K;
+    onSelect: (key: K) => void;
+    cols: SimpleGridProps["cols"];
+}) {
+    return (
+        <SimpleGrid cols={cols} spacing="xs">
+            {items.map((item) => (
+                <Button
+                    key={item.key}
+                    color="sky"
+                    variant={item.key === selected ? "filled" : "default"}
+                    h="auto"
+                    className={[item.disabled && classes.disallowed, item.changed && classes.changedPick]
+                        .filter(Boolean)
+                        .join(" ")}
+                    classNames={{ inner: classes.pickerInner, label: classes.pickerLabel }}
+                    onClick={() => onSelect(item.key)}
+                >
+                    <span className={classes.pictureFrame}>{item.picture}</span>
+                    <span>{item.label}</span>
+                </Button>
+            ))}
+        </SimpleGrid>
+    );
+}
+
+const DAMAGE_PICTURES: Record<DamageSource, ReactNode> = {
+    bullets: (
+        <span className={classes.bulletBurst}>
+            {[0, 1, 2].map((i) => (
+                <img key={i} className={classes.bullet} src={bulletImage} alt="" />
+            ))}
+        </span>
+    ),
+    bombs: <img className={classes.bomb} src={bombImage} alt="" />,
+    explosions: <img className={classes.explosion} src={explosionImage} alt="" />,
+    crashes: <img className={classes.picture} src={fokkerImage} alt="" />,
+};
+
+function DamageTab({
+    value,
+    original,
+    onChange,
+}: {
+    value: GameRules;
+    original: GameRules;
+    onChange: (rules: GameRules) => void;
+}) {
+    const intl = useIntl();
+    const [selected, setSelected] = useState<DamageSource>("bullets");
+    const source = DAMAGE_SOURCES.find((s) => s.key === selected) ?? DAMAGE_SOURCES[0];
+
+    return (
+        <Stack gap="md">
+            <PicturePicker
+                cols={{ base: 2, xs: 4 }}
+                selected={selected}
+                onSelect={setSelected}
+                items={DAMAGE_SOURCES.map((s) => ({
+                    key: s.key,
+                    label: intl.formatMessage(s.label),
+                    picture: DAMAGE_PICTURES[s.key],
+                    changed: s.rules.some((rule) => value[rule.key] !== original[rule.key]),
+                }))}
+            />
+            <RuleNumbers rules={source.rules} value={value} original={original} onChange={onChange} />
+            {source.hint && <span className={classes.hint}>{intl.formatMessage(source.hint)}</span>}
+        </Stack>
+    );
+}
+
 function PlanesTab({
     value,
     original,
@@ -237,22 +329,18 @@ function PlanesTab({
 
     return (
         <Stack gap="md">
-            <SimpleGrid cols={{ base: 2, xs: 3 }} spacing="xs">
-                {PLANE_TYPES.map(({ key, type }) => (
-                    <Button
-                        key={key}
-                        color="sky"
-                        variant={key === selected ? "filled" : "default"}
-                        h="auto"
-                        className={value.planes[key].allowed ? undefined : classes.disallowed}
-                        classNames={{ inner: classes.planeButtonInner, label: classes.planeButtonLabel }}
-                        onClick={() => setSelected(key)}
-                    >
-                        <img className={classes.planeImage} src={PLANE_IMAGES[key]} alt="" />
-                        <span>{planeName(intl, type)}</span>
-                    </Button>
-                ))}
-            </SimpleGrid>
+            <PicturePicker
+                cols={{ base: 2, xs: 3 }}
+                selected={selected}
+                onSelect={setSelected}
+                items={PLANE_TYPES.map(({ key, type }) => ({
+                    key,
+                    label: planeName(intl, type),
+                    picture: <img className={classes.picture} src={PLANE_IMAGES[key]} alt="" />,
+                    disabled: !value.planes[key].allowed,
+                    changed: JSON.stringify(value.planes[key]) !== JSON.stringify(original.planes[key]),
+                }))}
+            />
             <Group justify="space-between">
                 <Switch
                     color="grass"
@@ -410,6 +498,9 @@ export function RulesEditor({ value, onChange }: { value: GameRules; onChange: (
                             description: "Rules editor tab for per-plane values",
                         })}
                     </Tabs.Tab>
+                    <Tabs.Tab value="damage" leftSection={<IconFlame size={16} stroke={2.2} />}>
+                        {intl.formatMessage(RULE_MESSAGES.damage_heading)}
+                    </Tabs.Tab>
                     <Tabs.Tab value="buildings" leftSection={<IconBuildingCastle size={16} stroke={2.2} />}>
                         {intl.formatMessage({
                             defaultMessage: "Buildings",
@@ -424,16 +515,10 @@ export function RulesEditor({ value, onChange }: { value: GameRules; onChange: (
                     </Tabs.Tab>
                 </Tabs.List>
                 <Tabs.Panel value="weapons">
-                    <Stack gap="lg">
-                        <RuleSwitches rules={WEAPON_RULES} value={value} original={original} onChange={onChange} />
-                        <Stack gap={4}>
-                            <span className={classes.sectionTitle}>
-                                {intl.formatMessage(RULE_MESSAGES.damage_heading)}
-                            </span>
-                            <span className={classes.hint}>{intl.formatMessage(RULE_MESSAGES.damage_hint)}</span>
-                        </Stack>
-                        <RuleNumbers rules={DAMAGE_RULES} value={value} original={original} onChange={onChange} />
-                    </Stack>
+                    <RuleSwitches rules={WEAPON_RULES} value={value} original={original} onChange={onChange} />
+                </Tabs.Panel>
+                <Tabs.Panel value="damage">
+                    <DamageTab value={value} original={original} onChange={onChange} />
                 </Tabs.Panel>
                 <Tabs.Panel value="planes">
                     <PlanesTab value={value} original={original} onChange={onChange} />

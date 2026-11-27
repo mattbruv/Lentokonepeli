@@ -45,6 +45,7 @@ export type RuleUnit = "seconds" | "ms" | "count" | "degrees" | "decimal";
 export type NumberRule<K> = {
     key: K;
     label: MessageDescriptor;
+    summary?: MessageDescriptor;
     unit: RuleUnit;
     min: number;
     max: number;
@@ -74,38 +75,90 @@ const M = defineMessages({
         description: "Game rule: runways and headquarters cannot be damaged",
     },
     bullet_plane_damage: {
-        defaultMessage: "Bullet → plane",
-        description: "Game rule: damage a bullet does to a plane, before scaling by bullet speed",
+        defaultMessage: "Plane damage",
+        description:
+            "Rules editor damage field, shown under its damage source: damage a bullet does to a plane, before scaling by bullet speed",
+    },
+    bullet_plane_damage_summary: {
+        defaultMessage: "Plane damage from bullets",
+        description:
+            "Changed game rule in the list shown to players: damage a bullet does to a plane, before scaling by bullet speed",
     },
     bullet_runway_damage: {
-        defaultMessage: "Bullet → runway",
-        description: "Game rule: damage a bullet does to a runway, before scaling by bullet speed",
+        defaultMessage: "Runway damage",
+        description:
+            "Rules editor damage field, shown under its damage source: damage a bullet does to a runway, before scaling by bullet speed",
+    },
+    bullet_runway_damage_summary: {
+        defaultMessage: "Runway damage from bullets",
+        description:
+            "Changed game rule in the list shown to players: damage a bullet does to a runway, before scaling by bullet speed",
     },
     bullet_headquarters_damage: {
-        defaultMessage: "Bullet → headquarters",
-        description: "Game rule: damage a bullet does to a headquarters, before scaling by bullet speed",
+        defaultMessage: "Headquarters damage",
+        description:
+            "Rules editor damage field, shown under its damage source: damage a bullet does to a headquarters, before scaling by bullet speed",
+    },
+    bullet_headquarters_damage_summary: {
+        defaultMessage: "Headquarters damage from bullets",
+        description:
+            "Changed game rule in the list shown to players: damage a bullet does to a headquarters, before scaling by bullet speed",
     },
     bomb_building_damage: {
-        defaultMessage: "Bomb → building",
-        description: "Game rule: damage a direct bomb hit does to a runway or headquarters",
+        defaultMessage: "Building damage",
+        description:
+            "Rules editor damage field, shown under its damage source: damage a direct bomb hit does to a runway or headquarters",
+    },
+    bomb_building_damage_summary: {
+        defaultMessage: "Building damage from bombs",
+        description:
+            "Changed game rule in the list shown to players: damage a direct bomb hit does to a runway or headquarters",
     },
     explosion_plane_damage: {
-        defaultMessage: "Explosion → plane",
-        description: "Game rule: damage an explosion does to a plane caught in it",
+        defaultMessage: "Plane damage",
+        description:
+            "Rules editor damage field, shown under its damage source: damage an explosion does to a plane caught in it",
+    },
+    explosion_plane_damage_summary: {
+        defaultMessage: "Plane damage from explosions",
+        description: "Changed game rule in the list shown to players: damage an explosion does to a plane caught in it",
     },
     explosion_building_damage: {
-        defaultMessage: "Explosion → building",
-        description: "Game rule: damage an explosion does to a runway or headquarters",
+        defaultMessage: "Building damage",
+        description:
+            "Rules editor damage field, shown under its damage source: damage an explosion does to a runway or headquarters",
+    },
+    explosion_building_damage_summary: {
+        defaultMessage: "Building damage from explosions",
+        description:
+            "Changed game rule in the list shown to players: damage an explosion does to a runway or headquarters",
     },
     collision_damage: {
-        defaultMessage: "Plane collision",
-        description: "Game rule: damage each plane takes when two planes collide",
+        defaultMessage: "Collision damage",
+        description:
+            "Rules editor damage field, shown under its damage source: damage each plane takes when two planes collide",
+    },
+    collision_damage_summary: {
+        defaultMessage: "Plane collision damage",
+        description: "Changed game rule in the list shown to players: damage each plane takes when two planes collide",
     },
     crash_runway_damage: {
-        defaultMessage: "Plane crash → runway",
-        description: "Game rule: damage a crashing plane does to a runway",
+        defaultMessage: "Runway damage",
+        description:
+            "Rules editor damage field, shown under its damage source: damage a crashing plane does to a runway",
     },
-    damage_heading: { defaultMessage: "Damage", description: "Heading above the damage values in the rules editor" },
+    crash_runway_damage_summary: {
+        defaultMessage: "Runway damage from crashing planes",
+        description: "Changed game rule in the list shown to players: damage a crashing plane does to a runway",
+    },
+    damage_heading: { defaultMessage: "Damage", description: "Rules editor tab for damage values" },
+    source_bullets: { defaultMessage: "Bullets", description: "Damage source picker: damage done by bullets" },
+    source_bombs: { defaultMessage: "Bombs", description: "Damage source picker: damage done by direct bomb hits" },
+    source_explosions: { defaultMessage: "Explosions", description: "Damage source picker: damage done by explosions" },
+    source_crashes: {
+        defaultMessage: "Crashes",
+        description: "Damage source picker: damage from planes colliding with each other or crashing into runways",
+    },
     damage_hint: {
         defaultMessage: "Bullet damage is scaled by how fast the bullet is travelling, as in the original game.",
         description: "Hint under the damage settings explaining that bullet damage depends on bullet speed",
@@ -211,28 +264,78 @@ export const WEAPON_RULES: BooleanRule[] = [
 ];
 
 export const DAMAGE_RULES: NumberRule<NumberKeys<GameRules>>[] = [
-    { key: "bullet_plane_damage", label: M.bullet_plane_damage, unit: "count", min: 0, max: 10000, step: 5 },
-    { key: "bullet_runway_damage", label: M.bullet_runway_damage, unit: "count", min: 0, max: 10000, step: 1 },
+    {
+        key: "bullet_plane_damage",
+        label: M.bullet_plane_damage,
+        summary: M.bullet_plane_damage_summary,
+        unit: "count",
+        min: 0,
+        max: 10000,
+        step: 5,
+    },
+    {
+        key: "bullet_runway_damage",
+        label: M.bullet_runway_damage,
+        summary: M.bullet_runway_damage_summary,
+        unit: "count",
+        min: 0,
+        max: 10000,
+        step: 1,
+    },
     {
         key: "bullet_headquarters_damage",
         label: M.bullet_headquarters_damage,
+        summary: M.bullet_headquarters_damage_summary,
         unit: "count",
         min: 0,
         max: 10000,
         step: 1,
     },
-    { key: "bomb_building_damage", label: M.bomb_building_damage, unit: "count", min: 0, max: 10000, step: 5 },
-    { key: "explosion_plane_damage", label: M.explosion_plane_damage, unit: "count", min: 0, max: 10000, step: 5 },
+    {
+        key: "bomb_building_damage",
+        label: M.bomb_building_damage,
+        summary: M.bomb_building_damage_summary,
+        unit: "count",
+        min: 0,
+        max: 10000,
+        step: 5,
+    },
+    {
+        key: "explosion_plane_damage",
+        label: M.explosion_plane_damage,
+        summary: M.explosion_plane_damage_summary,
+        unit: "count",
+        min: 0,
+        max: 10000,
+        step: 5,
+    },
     {
         key: "explosion_building_damage",
         label: M.explosion_building_damage,
+        summary: M.explosion_building_damage_summary,
         unit: "count",
         min: 0,
         max: 10000,
         step: 1,
     },
-    { key: "collision_damage", label: M.collision_damage, unit: "count", min: 0, max: 10000, step: 5 },
-    { key: "crash_runway_damage", label: M.crash_runway_damage, unit: "count", min: 0, max: 10000, step: 1 },
+    {
+        key: "collision_damage",
+        label: M.collision_damage,
+        summary: M.collision_damage_summary,
+        unit: "count",
+        min: 0,
+        max: 10000,
+        step: 5,
+    },
+    {
+        key: "crash_runway_damage",
+        label: M.crash_runway_damage,
+        summary: M.crash_runway_damage_summary,
+        unit: "count",
+        min: 0,
+        max: 10000,
+        step: 1,
+    },
 ];
 
 export const BUILDING_TOGGLES: BooleanRule[] = [{ key: "indestructible_buildings", label: M.indestructible_buildings }];
@@ -315,7 +418,7 @@ export function describeRuleChanges(intl: IntlShape, rules: GameRules): string[]
         if (rules[rule.key] === original[rule.key]) continue;
         changes.push(
             intl.formatMessage(M.change, {
-                label: intl.formatMessage(rule.label),
+                label: intl.formatMessage(rule.summary ?? rule.label),
                 value: formatRuleValue(intl, rule.unit, rules[rule.key]),
                 original: formatRuleValue(intl, rule.unit, original[rule.key]),
             }),
@@ -413,3 +516,36 @@ export function useRulePresets(): RulePresets {
 
     return presets;
 }
+
+export type DamageSource = "bullets" | "bombs" | "explosions" | "crashes";
+
+const damageRule = (key: NumberKeys<GameRules>) => DAMAGE_RULES.find((rule) => rule.key === key)!;
+
+export const DAMAGE_SOURCES: {
+    key: DamageSource;
+    label: MessageDescriptor;
+    rules: NumberRule<NumberKeys<GameRules>>[];
+    hint?: MessageDescriptor;
+}[] = [
+    {
+        key: "bullets",
+        label: M.source_bullets,
+        rules: [
+            damageRule("bullet_plane_damage"),
+            damageRule("bullet_runway_damage"),
+            damageRule("bullet_headquarters_damage"),
+        ],
+        hint: M.damage_hint,
+    },
+    { key: "bombs", label: M.source_bombs, rules: [damageRule("bomb_building_damage")] },
+    {
+        key: "explosions",
+        label: M.source_explosions,
+        rules: [damageRule("explosion_plane_damage"), damageRule("explosion_building_damage")],
+    },
+    {
+        key: "crashes",
+        label: M.source_crashes,
+        rules: [damageRule("collision_damage"), damageRule("crash_runway_damage")],
+    },
+];

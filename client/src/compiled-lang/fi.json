@@ -107,12 +107,6 @@
       "value": "Nousu laskeutumisen jälkeen"
     }
   ],
-  "1ZRxhF": [
-    {
-      "type": 0,
-      "value": "Räjähdys → rakennus"
-    }
-  ],
   "1ms0hN": [
     {
       "type": 0,
@@ -165,6 +159,12 @@
     {
       "type": 0,
       "value": "Laukaise heittoistuin, Avaa laskuvarjo"
+    }
+  ],
+  "4XUtRs": [
+    {
+      "type": 0,
+      "value": "Kiitoradan vahinko"
     }
   ],
   "5BEOU3": [
@@ -415,16 +415,22 @@
       "value": "value"
     }
   ],
+  "BGy3UH": [
+    {
+      "type": 0,
+      "value": "Luodit"
+    }
+  ],
+  "BH4uaM": [
+    {
+      "type": 0,
+      "value": "Päämajan vahinko"
+    }
+  ],
   "BLykMd": [
     {
       "type": 0,
       "value": "Klaani"
-    }
-  ],
-  "BRjsfV": [
-    {
-      "type": 0,
-      "value": "Koneiden törmäys"
     }
   ],
   "BXJgxS": [
@@ -529,16 +535,16 @@
       "value": "The connection to the host was lost. The host may have left the game."
     }
   ],
-  "F25xxv": [
-    {
-      "type": 0,
-      "value": "Luoti → päämaja"
-    }
-  ],
   "F3eL+0": [
     {
       "type": 0,
       "value": "Connecting to server"
+    }
+  ],
+  "FDL1P5": [
+    {
+      "type": 0,
+      "value": "Putoavien koneiden vahinko kiitoratoihin"
     }
   ],
   "FVxFnN": [
@@ -635,16 +641,16 @@
       "value": "Tuetut rakennuspalikat"
     }
   ],
+  "HwZrIq": [
+    {
+      "type": 0,
+      "value": "Törmäysvahinko"
+    }
+  ],
   "INGml3": [
     {
       "type": 0,
       "value": "Syötä 4 merkkiä sisältävä pelikoodi..."
-    }
-  ],
-  "IdxpA3": [
-    {
-      "type": 0,
-      "value": "Luoti → kone"
     }
   ],
   "InAFP6": [
@@ -735,6 +741,12 @@
     {
       "type": 0,
       "value": "Normaali"
+    }
+  ],
+  "KCU8wa": [
+    {
+      "type": 0,
+      "value": "Vahinko"
     }
   ],
   "Kdsx9u": [
@@ -853,6 +865,12 @@
       "value": "Load another replay"
     }
   ],
+  "NRvCa5": [
+    {
+      "type": 0,
+      "value": "Räjähdykset"
+    }
+  ],
   "Nbb2Yc": [
     {
       "type": 0,
@@ -887,6 +905,18 @@
       "value": ". Playback may desync."
     }
   ],
+  "OJ+LRJ": [
+    {
+      "type": 0,
+      "value": "Räjähdysten vahinko rakennuksiin"
+    }
+  ],
+  "OTRBgD": [
+    {
+      "type": 0,
+      "value": "Koneiden törmäysvahinko"
+    }
+  ],
   "OVTgWq": [
     {
       "type": 0,
@@ -909,6 +939,12 @@
     {
       "type": 0,
       "value": "sulkea chat"
+    }
+  ],
+  "PFwc7n": [
+    {
+      "type": 0,
+      "value": "Räjähdysten vahinko koneisiin"
     }
   ],
   "PSkosK": [
@@ -987,6 +1023,12 @@
       "value": "Bots"
     }
   ],
+  "Qo7/oS": [
+    {
+      "type": 0,
+      "value": "Törmäykset"
+    }
+  ],
   "Qt6faF": [
     {
       "type": 0,
@@ -1003,6 +1045,12 @@
     {
       "type": 0,
       "value": "Back to lobby"
+    }
+  ],
+  "RFfTWV": [
+    {
+      "type": 0,
+      "value": "Kiitoradan vahinko"
     }
   ],
   "RHcX+j": [
@@ -1287,10 +1335,22 @@
       "value": "Poistu"
     }
   ],
+  "XS6Kq6": [
+    {
+      "type": 0,
+      "value": "Pommit"
+    }
+  ],
   "XUWCAc": [
     {
       "type": 0,
       "value": "Bullet"
+    }
+  ],
+  "XVNz9A": [
+    {
+      "type": 0,
+      "value": "Koneen vahinko"
     }
   ],
   "XiQxa8": [
@@ -1377,6 +1437,12 @@
       "value": "Medium"
     }
   ],
+  "a3nKbD": [
+    {
+      "type": 0,
+      "value": "Rakennusten vahinko"
+    }
+  ],
   "aLjUL6": [
     {
       "type": 0,
@@ -1439,12 +1505,6 @@
       "value": "s)"
     }
   ],
-  "bM6b32": [
-    {
-      "type": 0,
-      "value": "Räjähdys → kone"
-    }
-  ],
   "buqDOb": [
     {
       "type": 0,
@@ -1501,12 +1561,6 @@
     {
       "type": 0,
       "value": "Seurataan"
-    }
-  ],
-  "crB04S": [
-    {
-      "type": 0,
-      "value": "Luoti → kiitorata"
     }
   ],
   "crlI8a": [
@@ -1595,6 +1649,12 @@
     {
       "type": 0,
       "value": "Pommita"
+    }
+  ],
+  "fM3oqA": [
+    {
+      "type": 0,
+      "value": "Koneen vahinko"
     }
   ],
   "g26t4O": [
@@ -1721,12 +1781,6 @@
       "value": "Tallenna nykyiset säännöt nimellä"
     }
   ],
-  "jIDnWe": [
-    {
-      "type": 0,
-      "value": "Vahinko"
-    }
-  ],
   "jLMFLF": [
     {
       "type": 0,
@@ -1803,6 +1857,12 @@
     {
       "type": 0,
       "value": "Yes"
+    }
+  ],
+  "lczFRl": [
+    {
+      "type": 0,
+      "value": "Luotien vahinko päämajaan"
     }
   ],
   "lyNeuJ": [
@@ -1914,6 +1974,12 @@
       "value": "Lentäjän suoja-aika"
     }
   ],
+  "o1nONq": [
+    {
+      "type": 0,
+      "value": "Rakennusten vahinko"
+    }
+  ],
   "o5MbpS": [
     {
       "type": 0,
@@ -1998,12 +2064,6 @@
       "value": "Difficulty"
     }
   ],
-  "qBEdfv": [
-    {
-      "type": 0,
-      "value": "Pommi → rakennus"
-    }
-  ],
   "qLiOrX": [
     {
       "type": 0,
@@ -2062,6 +2122,12 @@
     {
       "type": 0,
       "value": "(Rangaistus itsemurhasta)"
+    }
+  ],
+  "spHMLv": [
+    {
+      "type": 0,
+      "value": "Luotien vahinko kiitoratoihin"
     }
   ],
   "szCmDm": [
@@ -2138,6 +2204,12 @@
       "value": "Poista viimeisin pikanäppäin"
     }
   ],
+  "uxbzVT": [
+    {
+      "type": 0,
+      "value": "Pommien vahinko rakennuksiin"
+    }
+  ],
   "uzItKz": [
     {
       "type": 0,
@@ -2166,6 +2238,12 @@
     {
       "type": 0,
       "value": "Sivustoasetukset"
+    }
+  ],
+  "vRfiAl": [
+    {
+      "type": 0,
+      "value": "Luotien vahinko koneisiin"
     }
   ],
   "vdZK2r": [
@@ -2250,12 +2328,6 @@
     {
       "type": 0,
       "value": "Show collision"
-    }
-  ],
-  "xv2iiQ": [
-    {
-      "type": 0,
-      "value": "Koneen törmäys → kiitorata"
     }
   ],
   "y49T/p": [

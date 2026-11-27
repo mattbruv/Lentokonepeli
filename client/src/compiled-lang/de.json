@@ -107,12 +107,6 @@
       "value": "Start nach einer Landung"
     }
   ],
-  "1ZRxhF": [
-    {
-      "type": 0,
-      "value": "Explosion → Gebäude"
-    }
-  ],
   "1ms0hN": [
     {
       "type": 0,
@@ -165,6 +159,12 @@
     {
       "type": 0,
       "value": "Aussteigen, Fallschirm öffnen"
+    }
+  ],
+  "4XUtRs": [
+    {
+      "type": 0,
+      "value": "Startbahnschaden"
     }
   ],
   "5BEOU3": [
@@ -419,16 +419,22 @@
       "value": "value"
     }
   ],
+  "BGy3UH": [
+    {
+      "type": 0,
+      "value": "Kugeln"
+    }
+  ],
+  "BH4uaM": [
+    {
+      "type": 0,
+      "value": "Hauptquartierschaden"
+    }
+  ],
   "BLykMd": [
     {
       "type": 0,
       "value": "Clan"
-    }
-  ],
-  "BRjsfV": [
-    {
-      "type": 0,
-      "value": "Flugzeugkollision"
     }
   ],
   "BXJgxS": [
@@ -533,16 +539,16 @@
       "value": "Die Verbindung zum Host wurde unterbrochen. Vielleicht hat der Host das Spiel verlassen."
     }
   ],
-  "F25xxv": [
-    {
-      "type": 0,
-      "value": "Kugel → Hauptquartier"
-    }
-  ],
   "F3eL+0": [
     {
       "type": 0,
       "value": "Verbinde mit Server"
+    }
+  ],
+  "FDL1P5": [
+    {
+      "type": 0,
+      "value": "Startbahnschaden durch abstürzende Flugzeuge"
     }
   ],
   "FVxFnN": [
@@ -639,16 +645,16 @@
       "value": "Unterstützte Teile"
     }
   ],
+  "HwZrIq": [
+    {
+      "type": 0,
+      "value": "Kollisionsschaden"
+    }
+  ],
   "INGml3": [
     {
       "type": 0,
       "value": "4-stelligen Spielcode eingeben..."
-    }
-  ],
-  "IdxpA3": [
-    {
-      "type": 0,
-      "value": "Kugel → Flugzeug"
     }
   ],
   "InAFP6": [
@@ -739,6 +745,12 @@
     {
       "type": 0,
       "value": "Normal"
+    }
+  ],
+  "KCU8wa": [
+    {
+      "type": 0,
+      "value": "Schaden"
     }
   ],
   "Kdsx9u": [
@@ -857,6 +869,12 @@
       "value": "Anderes Replay laden"
     }
   ],
+  "NRvCa5": [
+    {
+      "type": 0,
+      "value": "Explosionen"
+    }
+  ],
   "Nbb2Yc": [
     {
       "type": 0,
@@ -891,6 +909,18 @@
       "value": ". Die Wiedergabe kann abweichen."
     }
   ],
+  "OJ+LRJ": [
+    {
+      "type": 0,
+      "value": "Explosionsschaden an Gebäuden"
+    }
+  ],
+  "OTRBgD": [
+    {
+      "type": 0,
+      "value": "Schaden bei Flugzeugkollisionen"
+    }
+  ],
   "OVTgWq": [
     {
       "type": 0,
@@ -913,6 +943,12 @@
     {
       "type": 0,
       "value": "um den Chat zu schließen"
+    }
+  ],
+  "PFwc7n": [
+    {
+      "type": 0,
+      "value": "Explosionsschaden an Flugzeugen"
     }
   ],
   "PSkosK": [
@@ -995,6 +1031,12 @@
       "value": "Bots"
     }
   ],
+  "Qo7/oS": [
+    {
+      "type": 0,
+      "value": "Abstürze"
+    }
+  ],
   "Qt6faF": [
     {
       "type": 0,
@@ -1011,6 +1053,12 @@
     {
       "type": 0,
       "value": "Zurück zur Lobby"
+    }
+  ],
+  "RFfTWV": [
+    {
+      "type": 0,
+      "value": "Startbahnschaden"
     }
   ],
   "RHcX+j": [
@@ -1295,10 +1343,22 @@
       "value": "Ende"
     }
   ],
+  "XS6Kq6": [
+    {
+      "type": 0,
+      "value": "Bomben"
+    }
+  ],
   "XUWCAc": [
     {
       "type": 0,
       "value": "Kugel"
+    }
+  ],
+  "XVNz9A": [
+    {
+      "type": 0,
+      "value": "Flugzeugschaden"
     }
   ],
   "XiQxa8": [
@@ -1385,6 +1445,12 @@
       "value": "Mittel"
     }
   ],
+  "a3nKbD": [
+    {
+      "type": 0,
+      "value": "Gebäudeschaden"
+    }
+  ],
   "aLjUL6": [
     {
       "type": 0,
@@ -1439,12 +1505,6 @@
     {
       "type": 0,
       "value": "s)"
-    }
-  ],
-  "bM6b32": [
-    {
-      "type": 0,
-      "value": "Explosion → Flugzeug"
     }
   ],
   "buqDOb": [
@@ -1503,12 +1563,6 @@
     {
       "type": 0,
       "value": "Folge"
-    }
-  ],
-  "crB04S": [
-    {
-      "type": 0,
-      "value": "Kugel → Startbahn"
     }
   ],
   "crlI8a": [
@@ -1597,6 +1651,12 @@
     {
       "type": 0,
       "value": "Bombe"
+    }
+  ],
+  "fM3oqA": [
+    {
+      "type": 0,
+      "value": "Flugzeugschaden"
     }
   ],
   "g26t4O": [
@@ -1727,12 +1787,6 @@
       "value": "Aktuelle Regeln speichern als"
     }
   ],
-  "jIDnWe": [
-    {
-      "type": 0,
-      "value": "Schaden"
-    }
-  ],
   "jLMFLF": [
     {
       "type": 0,
@@ -1809,6 +1863,12 @@
     {
       "type": 0,
       "value": "Ja"
+    }
+  ],
+  "lczFRl": [
+    {
+      "type": 0,
+      "value": "Kugelschaden am Hauptquartier"
     }
   ],
   "lyNeuJ": [
@@ -1920,6 +1980,12 @@
       "value": "Pilotenschutz nach Absprung"
     }
   ],
+  "o1nONq": [
+    {
+      "type": 0,
+      "value": "Gebäudeschaden"
+    }
+  ],
   "o5MbpS": [
     {
       "type": 0,
@@ -2004,12 +2070,6 @@
       "value": "Schwierigkeit"
     }
   ],
-  "qBEdfv": [
-    {
-      "type": 0,
-      "value": "Bombe → Gebäude"
-    }
-  ],
   "qLiOrX": [
     {
       "type": 0,
@@ -2068,6 +2128,12 @@
     {
       "type": 0,
       "value": "(Strafe für Selbstmord)"
+    }
+  ],
+  "spHMLv": [
+    {
+      "type": 0,
+      "value": "Kugelschaden an Startbahnen"
     }
   ],
   "szCmDm": [
@@ -2138,6 +2204,12 @@
       "value": "Chat & Oberfläche"
     }
   ],
+  "uxbzVT": [
+    {
+      "type": 0,
+      "value": "Bombenschaden an Gebäuden"
+    }
+  ],
   "uzItKz": [
     {
       "type": 0,
@@ -2148,6 +2220,12 @@
     {
       "type": 0,
       "value": "Seiteneinstellungen"
+    }
+  ],
+  "vRfiAl": [
+    {
+      "type": 0,
+      "value": "Kugelschaden an Flugzeugen"
     }
   ],
   "vdZK2r": [
@@ -2232,12 +2310,6 @@
     {
       "type": 0,
       "value": "Kollision anzeigen"
-    }
-  ],
-  "xv2iiQ": [
-    {
-      "type": 0,
-      "value": "Flugzeugabsturz → Startbahn"
     }
   ],
   "y49T/p": [
