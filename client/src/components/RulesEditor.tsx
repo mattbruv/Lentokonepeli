@@ -52,6 +52,7 @@ import {
     sanitizeRules,
     saveRulePreset,
     toDisplay,
+    unitDecimals,
     useRulePresets,
     WEAPON_RULES,
 } from "../rules";
@@ -74,9 +75,9 @@ const PLANE_IMAGES: Record<keyof PlaneRulesByType, string> = {
 };
 
 function unitSuffix(unit: RuleUnit): string {
-    if (unit === "percent") return "%";
-    if (unit === "seconds") return " s";
-    if (unit === "ms") return " ms";
+    if (unit === "seconds") return "s";
+    if (unit === "ms") return "ms";
+    if (unit === "degrees") return "°";
     return "";
 }
 
@@ -106,6 +107,7 @@ function RuleNumberInput({ label, unit, min, max, step, value, original, onChang
     function commit() {
         setEditing(false);
         const parsed = typeof text === "number" ? text : parseFloat(text);
+        if (parsed === toDisplay(unit, value)) return;
         const next = Number.isFinite(parsed)
             ? fromDisplay(unit, Math.min(shownMax, Math.max(shownMin, parsed)))
             : value;
@@ -113,7 +115,7 @@ function RuleNumberInput({ label, unit, min, max, step, value, original, onChang
         if (next !== value) onChange(next);
     }
 
-    const suffix = unitSuffix(unit).trim();
+    const suffix = unitSuffix(unit);
 
     return (
         <NumberInput
@@ -130,7 +132,7 @@ function RuleNumberInput({ label, unit, min, max, step, value, original, onChang
             min={shownMin}
             max={shownMax}
             step={toDisplay(unit, step)}
-            decimalScale={unit === "seconds" ? 2 : 0}
+            decimalScale={unitDecimals(unit)}
             allowNegative={false}
             clampBehavior="none"
             value={text}
@@ -424,6 +426,12 @@ export function RulesEditor({ value, onChange }: { value: GameRules; onChange: (
                 <Tabs.Panel value="weapons">
                     <Stack gap="lg">
                         <RuleSwitches rules={WEAPON_RULES} value={value} original={original} onChange={onChange} />
+                        <Stack gap={4}>
+                            <span className={classes.sectionTitle}>
+                                {intl.formatMessage(RULE_MESSAGES.damage_heading)}
+                            </span>
+                            <span className={classes.hint}>{intl.formatMessage(RULE_MESSAGES.damage_hint)}</span>
+                        </Stack>
                         <RuleNumbers rules={DAMAGE_RULES} value={value} original={original} onChange={onChange} />
                     </Stack>
                 </Tabs.Panel>

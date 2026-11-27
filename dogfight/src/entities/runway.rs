@@ -1,5 +1,5 @@
 use crate::inspect::{BuildingInspect, RunwayInspect};
-use crate::rules::{scale_damage, GameRules};
+use crate::rules::GameRules;
 use dogfight_macros::Networked;
 use image::RgbaImage;
 
@@ -40,8 +40,7 @@ pub struct Runway {
     max_health: i32,
     repair_ticks: i32,
     indestructible: bool,
-    damage_percent: u16,
-    delay_percent: u16,
+    delays_ms: [i32; 4],
 
     last_reserve: Option<RunwayReservation>,
     reserve_timer: i32,
@@ -63,8 +62,12 @@ impl Runway {
             max_health: 1530,
             repair_ticks: 50,
             indestructible: false,
-            damage_percent: 100,
-            delay_percent: 100,
+            delays_ms: [
+                RESERVE_TAKEOFF_LANDING_DELAY,
+                RESERVE_TAKEOFF_TAKEOFF_DELAY,
+                RESERVE_LANDING_TAKEOFF_DELAY,
+                RESERVE_LANDING_LANDING_DELAY,
+            ],
             image_runway: get_image(RUNWAY),
             image_runway2: get_image(RUNWAY2),
             last_reserve: None,
@@ -122,7 +125,7 @@ impl Runway {
         if self.total_health <= 0 || self.indestructible {
             return false;
         }
-        let new_health = self.total_health - scale_damage(amount, self.damage_percent);
+        let new_health = self.total_health - amount;
         self.set_health(new_health);
         self.total_health == 0
     }
@@ -148,8 +151,12 @@ impl Runway {
         self.max_health = rules.runway_health as i32;
         self.repair_ticks = rules.repair_ticks as i32;
         self.indestructible = rules.indestructible_buildings;
-        self.damage_percent = rules.damage_percent;
-        self.delay_percent = rules.runway_delay_percent;
+        self.delays_ms = [
+            rules.landing_after_landing_ms as i32,
+            rules.landing_after_takeoff_ms as i32,
+            rules.takeoff_after_landing_ms as i32,
+            rules.takeoff_after_takeoff_ms as i32,
+        ];
         self.reset();
     }
 
@@ -208,20 +215,19 @@ impl Runway {
         let delay = match reservation {
             RunwayReservation::Landing => {
                 if let Some(RunwayReservation::Landing) = self.last_reserve {
-                    RESERVE_TAKEOFF_LANDING_DELAY
+                    self.delays_ms[0]
                 } else {
-                    RESERVE_TAKEOFF_TAKEOFF_DELAY
+                    self.delays_ms[1]
                 }
             }
             RunwayReservation::Takeoff => {
                 if let Some(RunwayReservation::Landing) = self.last_reserve {
-                    RESERVE_LANDING_TAKEOFF_DELAY
+                    self.delays_ms[2]
                 } else {
-                    RESERVE_LANDING_LANDING_DELAY
+                    self.delays_ms[3]
                 }
             }
         };
-        let delay = scale_damage(delay, self.delay_percent);
 
         /*
         log(format!(

@@ -548,7 +548,8 @@ designer=polofel"#;
         let mut world = world_with_level(5, 20);
         let mut rules = crate::rules::GameRules::default();
         rules.bombs = false;
-        rules.damage_percent = 250;
+        rules.bomb_building_damage = 60;
+        rules.planes.junkers.turn_step = 0.05;
         rules.planes.sopwith.ammo = 7;
         world.set_rules(rules);
         let bytes = world.get_replay_file_bytes();
@@ -590,9 +591,9 @@ designer=polofel"#;
 
         rules.indestructible_buildings = false;
         rules.headquarters_health = 10;
-        rules.damage_percent = 200;
         world.set_rules(rules);
         for (_, bunker) in world.bunkers.get_map_mut() {
+            assert!(!bunker.subtract_health(5));
             assert!(bunker.subtract_health(5));
         }
     }

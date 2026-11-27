@@ -14,8 +14,8 @@ pub struct PlaneRules {
     pub bombs: u8,
     pub shoot_delay_ms: u16,
     pub bomb_delay_ms: u16,
-    pub acceleration_percent: u16,
-    pub turn_percent: u16,
+    pub acceleration: f64,
+    pub turn_step: f64,
     pub speed_bonus: u16,
 }
 
@@ -29,6 +29,14 @@ impl PlaneRules {
             PlaneType::Salmson => (90, 60, 60, 5, 180, 50),
             PlaneType::Sopwith => (120, 80, 80, 0, 130, 50),
         };
+        let (acceleration, turn_step) = match plane_type {
+            PlaneType::Albatros => (4.75, 0.031415926535897934),
+            PlaneType::Junkers => (4.65, 0.028559933214452663),
+            PlaneType::Fokker => (5.0, 0.0483321946706122),
+            PlaneType::Bristol => (4.85, 0.036110260386089575),
+            PlaneType::Salmson => (4.7, 0.031415926535897934),
+            PlaneType::Sopwith => (5.0, 0.04487989505128276),
+        };
         PlaneRules {
             allowed: true,
             health,
@@ -37,8 +45,8 @@ impl PlaneRules {
             bombs,
             shoot_delay_ms,
             bomb_delay_ms: 500,
-            acceleration_percent: 100,
-            turn_percent: 100,
+            acceleration,
+            turn_step,
             speed_bonus,
         }
     }
@@ -52,8 +60,8 @@ impl PlaneRules {
             bombs: self.bombs.min(50),
             shoot_delay_ms: self.shoot_delay_ms.clamp(10, 2_000),
             bomb_delay_ms: self.bomb_delay_ms.clamp(50, 5_000),
-            acceleration_percent: self.acceleration_percent.clamp(25, 300),
-            turn_percent: self.turn_percent.clamp(25, 300),
+            acceleration: clamp_f64(self.acceleration, 0.5, 20.0, 5.0),
+            turn_step: clamp_f64(self.turn_step, 0.005, 0.3, 0.031415926535897934),
             speed_bonus: self.speed_bonus.min(200),
         }
     }
@@ -127,12 +135,22 @@ pub struct GameRules {
     pub unlimited_ammo: bool,
     pub unlimited_fuel: bool,
     pub unlimited_bombs: bool,
-    pub damage_percent: u16,
+    pub bullet_plane_damage: u16,
+    pub bullet_runway_damage: u16,
+    pub bullet_headquarters_damage: u16,
+    pub bomb_building_damage: u16,
+    pub explosion_plane_damage: u16,
+    pub explosion_building_damage: u16,
+    pub collision_damage: u16,
+    pub crash_runway_damage: u16,
     pub runway_health: u16,
     pub headquarters_health: u16,
     pub repair_ticks: u16,
     pub indestructible_buildings: bool,
-    pub runway_delay_percent: u16,
+    pub takeoff_after_takeoff_ms: u16,
+    pub takeoff_after_landing_ms: u16,
+    pub landing_after_landing_ms: u16,
+    pub landing_after_takeoff_ms: u16,
     pub respawn_ticks: u16,
     pub suicide_respawn_ticks: u16,
     pub team_kill_respawn_ticks: u16,
@@ -153,12 +171,22 @@ impl Default for GameRules {
             unlimited_ammo: false,
             unlimited_fuel: false,
             unlimited_bombs: false,
-            damage_percent: 100,
+            bullet_plane_damage: 30,
+            bullet_runway_damage: 4,
+            bullet_headquarters_damage: 3,
+            bomb_building_damage: 30,
+            explosion_plane_damage: 50,
+            explosion_building_damage: 17,
+            collision_damage: 25,
+            crash_runway_damage: 17,
             runway_health: 1530,
             headquarters_health: 350,
             repair_ticks: 50,
             indestructible_buildings: false,
-            runway_delay_percent: 100,
+            takeoff_after_takeoff_ms: 1000,
+            takeoff_after_landing_ms: 2000,
+            landing_after_landing_ms: 1000,
+            landing_after_takeoff_ms: 1000,
             respawn_ticks: 400,
             suicide_respawn_ticks: 800,
             team_kill_respawn_ticks: 1000,
@@ -183,11 +211,21 @@ const TEAM_PLANES: [(Team, [PlaneType; 3]); 2] = [
 impl GameRules {
     pub fn sanitized(self) -> Self {
         let mut rules = GameRules {
-            damage_percent: self.damage_percent.min(1_000),
+            bullet_plane_damage: self.bullet_plane_damage.min(10_000),
+            bullet_runway_damage: self.bullet_runway_damage.min(10_000),
+            bullet_headquarters_damage: self.bullet_headquarters_damage.min(10_000),
+            bomb_building_damage: self.bomb_building_damage.min(10_000),
+            explosion_plane_damage: self.explosion_plane_damage.min(10_000),
+            explosion_building_damage: self.explosion_building_damage.min(10_000),
+            collision_damage: self.collision_damage.min(10_000),
+            crash_runway_damage: self.crash_runway_damage.min(10_000),
             runway_health: self.runway_health.clamp(1, 20_000),
             headquarters_health: self.headquarters_health.clamp(1, 20_000),
             repair_ticks: self.repair_ticks.min(1_000),
-            runway_delay_percent: self.runway_delay_percent.min(500),
+            takeoff_after_takeoff_ms: self.takeoff_after_takeoff_ms.min(10_000),
+            takeoff_after_landing_ms: self.takeoff_after_landing_ms.min(10_000),
+            landing_after_landing_ms: self.landing_after_landing_ms.min(10_000),
+            landing_after_takeoff_ms: self.landing_after_takeoff_ms.min(10_000),
             respawn_ticks: self.respawn_ticks.min(6_000),
             suicide_respawn_ticks: self.suicide_respawn_ticks.min(6_000),
             team_kill_respawn_ticks: self.team_kill_respawn_ticks.min(6_000),
@@ -234,10 +272,6 @@ impl GameRules {
         preferred % 3
     }
 
-    pub fn scale_damage(&self, amount: i32) -> i32 {
-        scale_damage(amount, self.damage_percent)
-    }
-
     pub fn to_json(&self) -> String {
         serde_json::to_string(self).unwrap_or_default()
     }
@@ -249,19 +283,11 @@ impl GameRules {
     }
 }
 
-pub fn scale_damage(amount: i32, percent: u16) -> i32 {
-    if percent == 100 {
-        amount
+fn clamp_f64(value: f64, min: f64, max: f64, fallback: f64) -> f64 {
+    if value.is_finite() {
+        value.clamp(min, max)
     } else {
-        amount * percent as i32 / 100
-    }
-}
-
-pub fn scale_percent(value: f64, percent: u16) -> f64 {
-    if percent == 100 {
-        value
-    } else {
-        value * percent as f64 / 100.0
+        fallback
     }
 }
 

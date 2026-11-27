@@ -57,12 +57,14 @@ fn custom_rules() -> GameRules {
     rules.friendly_fire = false;
     rules.plane_collisions = false;
     rules.unlimited_ammo = true;
-    rules.damage_percent = 300;
+    rules.bullet_plane_damage = 90;
+    rules.explosion_building_damage = 40;
     rules.runway_health = 400;
     rules.respawn_ticks = 100;
     rules.planes.junkers.allowed = false;
     rules.planes.sopwith.bombs = 3;
-    rules.planes.fokker.turn_percent = 150;
+    rules.planes.fokker.turn_step = 0.07;
+    rules.planes.albatros.acceleration = 6.5;
     rules
 }
 

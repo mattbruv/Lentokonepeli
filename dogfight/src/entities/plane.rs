@@ -1,5 +1,5 @@
 use crate::inspect::{InspectOwner, PlaneInspect};
-use crate::rules::{scale_percent, GameRules};
+use crate::rules::GameRules;
 use std::{borrow::Cow, f64::consts::PI};
 
 use dogfight_macros::{EnumBytes, Networked};
@@ -642,7 +642,7 @@ impl Plane {
             self.angle += rotation_factor;
 
             self.flipped.set(!self.flipped.get());
-            self.set_health(self.health() - self.rules.scale_damage(25));
+            self.set_health(self.health() - self.rules.collision_damage as i32);
             // TODO: add message for the player who took out this plane if health < 0
             return true;
         }
@@ -650,7 +650,7 @@ impl Plane {
     }
 
     pub fn subtract_health(&mut self, amount: i32) -> () {
-        let new_health = self.total_health - self.rules.scale_damage(amount);
+        let new_health = self.total_health - amount;
         self.set_health(new_health);
     }
 
@@ -1179,21 +1179,7 @@ impl Plane {
     }
 
     fn get_acceleration_speed(&self) -> f64 {
-        scale_percent(
-            self.base_acceleration_speed(),
-            self.plane_rules().acceleration_percent,
-        )
-    }
-
-    fn base_acceleration_speed(&self) -> f64 {
-        match self.plane_type.get() {
-            PlaneType::Albatros => 4.75,
-            PlaneType::Junkers => 4.65,
-            PlaneType::Fokker => 5.0,
-            PlaneType::Bristol => 4.85,
-            PlaneType::Salmson => 4.7,
-            PlaneType::Sopwith => 5.0,
-        }
+        self.plane_rules().acceleration
     }
 
     fn get_max_y(&self) -> i16 {
@@ -1208,18 +1194,7 @@ impl Plane {
     }
 
     pub(crate) fn get_turn_step(&self) -> f64 {
-        scale_percent(self.base_turn_step(), self.plane_rules().turn_percent)
-    }
-
-    fn base_turn_step(&self) -> f64 {
-        match self.plane_type.get() {
-            PlaneType::Albatros => 0.031415926535897934,
-            PlaneType::Junkers => 0.028559933214452663,
-            PlaneType::Fokker => 0.0483321946706122,
-            PlaneType::Bristol => 0.036110260386089575,
-            PlaneType::Salmson => 0.031415926535897934,
-            PlaneType::Sopwith => 0.04487989505128276,
-        }
+        self.plane_rules().turn_step
     }
 
     fn get_shoot_delay(&self) -> i32 {

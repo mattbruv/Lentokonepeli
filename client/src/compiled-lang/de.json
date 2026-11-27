@@ -101,6 +101,18 @@
       "value": "Flugzeug"
     }
   ],
+  "1VJJKG": [
+    {
+      "type": 0,
+      "value": "Start nach einer Landung"
+    }
+  ],
+  "1ZRxhF": [
+    {
+      "type": 0,
+      "value": "Explosion → Gebäude"
+    }
+  ],
   "1ms0hN": [
     {
       "type": 0,
@@ -413,6 +425,12 @@
       "value": "Clan"
     }
   ],
+  "BRjsfV": [
+    {
+      "type": 0,
+      "value": "Flugzeugkollision"
+    }
+  ],
   "BXJgxS": [
     {
       "type": 0,
@@ -515,16 +533,16 @@
       "value": "Die Verbindung zum Host wurde unterbrochen. Vielleicht hat der Host das Spiel verlassen."
     }
   ],
+  "F25xxv": [
+    {
+      "type": 0,
+      "value": "Kugel → Hauptquartier"
+    }
+  ],
   "F3eL+0": [
     {
       "type": 0,
       "value": "Verbinde mit Server"
-    }
-  ],
-  "FInvrp": [
-    {
-      "type": 0,
-      "value": "Beschleunigung"
     }
   ],
   "FVxFnN": [
@@ -625,6 +643,12 @@
     {
       "type": 0,
       "value": "4-stelligen Spielcode eingeben..."
+    }
+  ],
+  "IdxpA3": [
+    {
+      "type": 0,
+      "value": "Kugel → Flugzeug"
     }
   ],
   "InAFP6": [
@@ -1115,6 +1139,12 @@
       "value": "Steuerung zurücksetzen"
     }
   ],
+  "U9AOD+": [
+    {
+      "type": 0,
+      "value": "Beschleunigung"
+    }
+  ],
   "URI5Vx": [
     {
       "type": 0,
@@ -1125,6 +1155,12 @@
     {
       "type": 0,
       "value": "Replay wird angefordert..."
+    }
+  ],
+  "UYkO9X": [
+    {
+      "type": 0,
+      "value": "Wendigkeit"
     }
   ],
   "UdvUli": [
@@ -1405,6 +1441,12 @@
       "value": "s)"
     }
   ],
+  "bM6b32": [
+    {
+      "type": 0,
+      "value": "Explosion → Flugzeug"
+    }
+  ],
   "buqDOb": [
     {
       "type": 0,
@@ -1445,6 +1487,12 @@
       "value": "Verstanden"
     }
   ],
+  "c3wUy0": [
+    {
+      "type": 0,
+      "value": "Der Kugelschaden hängt wie im Originalspiel von der Geschwindigkeit der Kugel ab."
+    }
+  ],
   "cFDrGv": [
     {
       "type": 0,
@@ -1455,6 +1503,12 @@
     {
       "type": 0,
       "value": "Folge"
+    }
+  ],
+  "crB04S": [
+    {
+      "type": 0,
+      "value": "Kugel → Startbahn"
     }
   ],
   "crlI8a": [
@@ -1673,16 +1727,16 @@
       "value": "Aktuelle Regeln speichern als"
     }
   ],
+  "jIDnWe": [
+    {
+      "type": 0,
+      "value": "Schaden"
+    }
+  ],
   "jLMFLF": [
     {
       "type": 0,
       "value": "Erneut versuchen"
-    }
-  ],
-  "jet5Io": [
-    {
-      "type": 0,
-      "value": "Start-/Landeverzögerung der Startbahn"
     }
   ],
   "jlutC2": [
@@ -1701,12 +1755,6 @@
     {
       "type": 0,
       "value": "Dieses Spiel verwendet eigene Regeln"
-    }
-  ],
-  "kZfSKa": [
-    {
-      "type": 0,
-      "value": "Schaden"
     }
   ],
   "kfnjH9": [
@@ -1860,12 +1908,6 @@
       "value": " hinzufügen"
     }
   ],
-  "ngpgyC": [
-    {
-      "type": 0,
-      "value": "Wendigkeit"
-    }
-  ],
   "nivA/t": [
     {
       "type": 0,
@@ -1962,6 +2004,12 @@
       "value": "Schwierigkeit"
     }
   ],
+  "qBEdfv": [
+    {
+      "type": 0,
+      "value": "Bombe → Gebäude"
+    }
+  ],
   "qLiOrX": [
     {
       "type": 0,
@@ -2046,6 +2094,12 @@
       "value": "Gespeichertes Level löschen"
     }
   ],
+  "tedPAk": [
+    {
+      "type": 0,
+      "value": "Landung nach einer Landung"
+    }
+  ],
   "thIICO": [
     {
       "type": 0,
@@ -2082,6 +2136,12 @@
     {
       "type": 0,
       "value": "Chat & Oberfläche"
+    }
+  ],
+  "uzItKz": [
+    {
+      "type": 0,
+      "value": "Start nach einem Start"
     }
   ],
   "vL5iqo": [
@@ -2174,6 +2234,12 @@
       "value": "Kollision anzeigen"
     }
   ],
+  "xv2iiQ": [
+    {
+      "type": 0,
+      "value": "Flugzeugabsturz → Startbahn"
+    }
+  ],
   "y49T/p": [
     {
       "type": 0,
@@ -2208,6 +2274,12 @@
     {
       "type": 0,
       "value": "Mittelmächte"
+    }
+  ],
+  "yjf9N8": [
+    {
+      "type": 0,
+      "value": "Landung nach einem Start"
     }
   ],
   "yjtXtd": [

@@ -65,3 +65,7 @@
 .disallowed .planeImage {
     filter: grayscale(1);
 }
+
+.sectionTitle {
+    font-weight: 800;
+}

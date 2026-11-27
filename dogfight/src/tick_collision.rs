@@ -241,7 +241,9 @@ impl World {
                     continue;
                 }
                 first_hit.get_or_insert(BombHit::Structure(*runway.get_team()));
-                if !shielded(&rules, owner_team, *runway.get_team()) && runway.subtract_health(30) {
+                if !shielded(&rules, owner_team, *runway.get_team())
+                    && runway.subtract_health(rules.bomb_building_damage as i32)
+                {
                     actions.push(Action::RunwayDestroyed(*runway_id));
                 }
             }
@@ -251,7 +253,9 @@ impl World {
                     continue;
                 }
                 first_hit.get_or_insert(BombHit::Structure(*bunker.get_team()));
-                if !shielded(&rules, owner_team, *bunker.get_team()) && bunker.subtract_health(30) {
+                if !shielded(&rules, owner_team, *bunker.get_team())
+                    && bunker.subtract_health(rules.bomb_building_damage as i32)
+                {
                     actions.push(Action::BunkerDestroyed(*bunker_id));
                 }
             }
@@ -377,7 +381,9 @@ impl World {
                 {
                     continue;
                 }
-                plane.subtract_health((30.0 * bullet.get_damage_factor()) as i32);
+                plane.subtract_health(
+                    (rules.bullet_plane_damage as f64 * bullet.get_damage_factor()) as i32,
+                );
 
                 if plane.health() <= 0 && plane.get_downed_by().is_none() {
                     if let Some(pilot) =
@@ -420,7 +426,9 @@ impl World {
                     bullet.mark_hit_enemy();
                 }
                 if !shielded(&rules, shooter_team, *runway.get_team())
-                    && runway.subtract_health((4.0 * bullet.get_damage_factor()) as i32)
+                    && runway.subtract_health(
+                        (rules.bullet_runway_damage as f64 * bullet.get_damage_factor()) as i32,
+                    )
                 {
                     actions.push(Action::RunwayDestroyed(*runway_id));
                 }
@@ -432,7 +440,10 @@ impl World {
                 }
                 hit = true;
                 if !shielded(&rules, shooter_team, *bunker.get_team())
-                    && bunker.subtract_health((3.0 * bullet.get_damage_factor()) as i32)
+                    && bunker.subtract_health(
+                        (rules.bullet_headquarters_damage as f64 * bullet.get_damage_factor())
+                            as i32,
+                    )
                 {
                     actions.push(Action::BunkerDestroyed(*bunker_id));
                 }
@@ -487,7 +498,7 @@ impl World {
                     continue;
                 }
                 if !falling {
-                    plane.subtract_health(50);
+                    plane.subtract_health(rules.explosion_plane_damage as i32);
                     if plane.health() > 0 {
                         continue;
                     }
@@ -567,7 +578,7 @@ impl World {
             for (runway_id, runway) in self.runways.get_map_mut() {
                 if explosion.check_collision(runway)
                     && !shielded(&rules, explosion_team, *runway.get_team())
-                    && runway.subtract_health(17)
+                    && runway.subtract_health(rules.explosion_building_damage as i32)
                 {
                     actions.push(Action::RunwayDestroyed(*runway_id));
                 }
@@ -576,7 +587,7 @@ impl World {
             for (bunker_id, bunker) in self.bunkers.get_map_mut() {
                 if explosion.check_collision(bunker)
                     && !shielded(&rules, explosion_team, *bunker.get_team())
-                    && bunker.subtract_health(17)
+                    && bunker.subtract_health(rules.explosion_building_damage as i32)
                 {
                     actions.push(Action::BunkerDestroyed(*bunker_id));
                 }
@@ -587,7 +598,8 @@ impl World {
     }
 
     fn collide_planes(&mut self) -> Vec<Action> {
-        let plane_collisions = self.rules.plane_collisions;
+        let rules = self.rules;
+        let plane_collisions = rules.plane_collisions;
         let mut actions: Vec<Action> = vec![];
 
         // First let's check plane to plane collision
@@ -688,7 +700,7 @@ impl World {
                         continue;
                     }
 
-                    if runway.subtract_health(17) {
+                    if runway.subtract_health(rules.crash_runway_damage as i32) {
                         actions.push(Action::RunwayDestroyed(*runway_id));
                     }
                 }

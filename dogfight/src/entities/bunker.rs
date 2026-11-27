@@ -1,5 +1,5 @@
 use crate::inspect::BuildingInspect;
-use crate::rules::{scale_damage, GameRules};
+use crate::rules::GameRules;
 use dogfight_macros::Networked;
 use image::RgbaImage;
 
@@ -26,7 +26,6 @@ pub struct Bunker {
     max_health: i32,
     repair_ticks: i32,
     indestructible: bool,
-    damage_percent: u16,
 
     image_raf: RgbaImage,
     image_germans: RgbaImage,
@@ -45,7 +44,6 @@ impl Bunker {
             max_health: 350,
             repair_ticks: 50,
             indestructible: false,
-            damage_percent: 100,
             image_germans: get_image(HEADQUARTER_GERMANS),
             image_raf: get_image(HEADQUARTER_RAF),
             image_destroyed: get_image(HEADQUARTER_BROKE),
@@ -63,7 +61,6 @@ impl Bunker {
         self.max_health = rules.headquarters_health as i32;
         self.repair_ticks = rules.repair_ticks as i32;
         self.indestructible = rules.indestructible_buildings;
-        self.damage_percent = rules.damage_percent;
         self.reset();
     }
 
@@ -121,7 +118,7 @@ impl Bunker {
         if self.total_health <= 0 || self.indestructible {
             return false;
         }
-        let new_health = self.total_health - scale_damage(amount, self.damage_percent);
+        let new_health = self.total_health - amount;
         self.set_health(new_health);
         self.total_health == 0
     }

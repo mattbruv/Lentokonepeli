@@ -101,6 +101,18 @@
       "value": "Plane"
     }
   ],
+  "1VJJKG": [
+    {
+      "type": 0,
+      "value": "Takeoff after a landing"
+    }
+  ],
+  "1ZRxhF": [
+    {
+      "type": 0,
+      "value": "Explosion → building"
+    }
+  ],
   "1ms0hN": [
     {
       "type": 0,
@@ -409,6 +421,12 @@
       "value": "Clan"
     }
   ],
+  "BRjsfV": [
+    {
+      "type": 0,
+      "value": "Plane collision"
+    }
+  ],
   "BXJgxS": [
     {
       "type": 0,
@@ -511,16 +529,16 @@
       "value": "The connection to the host was lost. The host may have left the game."
     }
   ],
+  "F25xxv": [
+    {
+      "type": 0,
+      "value": "Bullet → headquarters"
+    }
+  ],
   "F3eL+0": [
     {
       "type": 0,
       "value": "Connecting to server"
-    }
-  ],
-  "FInvrp": [
-    {
-      "type": 0,
-      "value": "Acceleration"
     }
   ],
   "FVxFnN": [
@@ -621,6 +639,12 @@
     {
       "type": 0,
       "value": "Enter the 4 digit game code..."
+    }
+  ],
+  "IdxpA3": [
+    {
+      "type": 0,
+      "value": "Bullet → plane"
     }
   ],
   "InAFP6": [
@@ -1107,6 +1131,12 @@
       "value": "Reset Controls"
     }
   ],
+  "U9AOD+": [
+    {
+      "type": 0,
+      "value": "Acceleration"
+    }
+  ],
   "URI5Vx": [
     {
       "type": 0,
@@ -1117,6 +1147,12 @@
     {
       "type": 0,
       "value": "Requesting Replay..."
+    }
+  ],
+  "UYkO9X": [
+    {
+      "type": 0,
+      "value": "Turn rate"
     }
   ],
   "UdvUli": [
@@ -1397,6 +1433,12 @@
       "value": "s)"
     }
   ],
+  "bM6b32": [
+    {
+      "type": 0,
+      "value": "Explosion → plane"
+    }
+  ],
   "buqDOb": [
     {
       "type": 0,
@@ -1437,6 +1479,12 @@
       "value": "Got it"
     }
   ],
+  "c3wUy0": [
+    {
+      "type": 0,
+      "value": "Bullet damage is scaled by how fast the bullet is travelling, as in the original game."
+    }
+  ],
   "cFDrGv": [
     {
       "type": 0,
@@ -1447,6 +1495,12 @@
     {
       "type": 0,
       "value": "Following"
+    }
+  ],
+  "crB04S": [
+    {
+      "type": 0,
+      "value": "Bullet → runway"
     }
   ],
   "crlI8a": [
@@ -1661,16 +1715,16 @@
       "value": "Save current rules as"
     }
   ],
+  "jIDnWe": [
+    {
+      "type": 0,
+      "value": "Damage"
+    }
+  ],
   "jLMFLF": [
     {
       "type": 0,
       "value": "Try again"
-    }
-  ],
-  "jet5Io": [
-    {
-      "type": 0,
-      "value": "Runway takeoff/landing delay"
     }
   ],
   "jlutC2": [
@@ -1689,12 +1743,6 @@
     {
       "type": 0,
       "value": "This game uses custom rules"
-    }
-  ],
-  "kZfSKa": [
-    {
-      "type": 0,
-      "value": "Damage"
     }
   ],
   "kfnjH9": [
@@ -1848,12 +1896,6 @@
       "value": "count"
     }
   ],
-  "ngpgyC": [
-    {
-      "type": 0,
-      "value": "Turn rate"
-    }
-  ],
   "nivA/t": [
     {
       "type": 0,
@@ -1950,6 +1992,12 @@
       "value": "Difficulty"
     }
   ],
+  "qBEdfv": [
+    {
+      "type": 0,
+      "value": "Bomb → building"
+    }
+  ],
   "qLiOrX": [
     {
       "type": 0,
@@ -2034,6 +2082,12 @@
       "value": "Delete saved level"
     }
   ],
+  "tedPAk": [
+    {
+      "type": 0,
+      "value": "Landing after a landing"
+    }
+  ],
   "thIICO": [
     {
       "type": 0,
@@ -2070,6 +2124,12 @@
     {
       "type": 0,
       "value": "Chat & Interface"
+    }
+  ],
+  "uzItKz": [
+    {
+      "type": 0,
+      "value": "Takeoff after a takeoff"
     }
   ],
   "vL5iqo": [
@@ -2162,6 +2222,12 @@
       "value": "Show collision"
     }
   ],
+  "xv2iiQ": [
+    {
+      "type": 0,
+      "value": "Plane crash → runway"
+    }
+  ],
   "y49T/p": [
     {
       "type": 0,
@@ -2196,6 +2262,12 @@
     {
       "type": 0,
       "value": "Centrals"
+    }
+  ],
+  "yjf9N8": [
+    {
+      "type": 0,
+      "value": "Landing after a takeoff"
     }
   ],
   "yjtXtd": [

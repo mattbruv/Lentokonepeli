@@ -59,6 +59,14 @@
     "defaultMessage": "Plane",
     "description": "Replay inspector title for a plane"
   },
+  "1VJJKG": {
+    "defaultMessage": "Nousu laskeutumisen jälkeen",
+    "description": "Game rule: milliseconds a runway is blocked for takeoffs after a plane lands on it"
+  },
+  "1ZRxhF": {
+    "defaultMessage": "Räjähdys → rakennus",
+    "description": "Game rule: damage an explosion does to a runway or headquarters"
+  },
   "1ms0hN": {
     "defaultMessage": "Players",
     "description": "Host menu tab listing connected players"
@@ -231,6 +239,10 @@
     "defaultMessage": "Klaani",
     "description": "Settings section title used to modify the clan name"
   },
+  "BRjsfV": {
+    "defaultMessage": "Koneiden törmäys",
+    "description": "Game rule: damage each plane takes when two planes collide"
+  },
   "BXJgxS": {
     "defaultMessage": "Something went wrong while connecting to the host.",
     "description": "Generic error shown when joining a game fails"
@@ -299,13 +311,13 @@
     "defaultMessage": "The connection to the host was lost. The host may have left the game.",
     "description": "Message shown when the connection to the game host is lost"
   },
+  "F25xxv": {
+    "defaultMessage": "Luoti → päämaja",
+    "description": "Game rule: damage a bullet does to a headquarters, before scaling by bullet speed"
+  },
   "F3eL+0": {
     "defaultMessage": "Connecting to server",
     "description": "Connection step shown while contacting the matchmaking server"
-  },
-  "FInvrp": {
-    "defaultMessage": "Kiihtyvyys",
-    "description": "Plane rule: engine acceleration multiplier"
   },
   "FVxFnN": {
     "defaultMessage": "Replay stopped",
@@ -350,6 +362,10 @@
   "INGml3": {
     "defaultMessage": "Syötä 4 merkkiä sisältävä pelikoodi...",
     "description": "Infotext for input which is used to insert 4 digit game code to join games"
+  },
+  "IdxpA3": {
+    "defaultMessage": "Luoti → kone",
+    "description": "Game rule: damage a bullet does to a plane, before scaling by bullet speed"
   },
   "InAFP6": {
     "defaultMessage": "Polttoaine",
@@ -631,6 +647,10 @@
     "defaultMessage": "Nollaa asetukset",
     "description": "Button used to reset user defined keybinds on the settings page"
   },
+  "U9AOD+": {
+    "defaultMessage": "Kiihtyvyys",
+    "description": "Plane rule: speed the engine adds each step"
+  },
   "URI5Vx": {
     "defaultMessage": "Käyttäjäasetukset",
     "description": "Title for a settings section used to modify user info used in-game"
@@ -638,6 +658,10 @@
   "URl7v/": {
     "defaultMessage": "Requesting Replay...",
     "description": "Button text while waiting for the host to start sending the replay file"
+  },
+  "UYkO9X": {
+    "defaultMessage": "Kääntymisnopeus",
+    "description": "Plane rule: degrees the plane turns each step while steering"
   },
   "UdvUli": {
     "defaultMessage": "Grass",
@@ -811,6 +835,10 @@
     "defaultMessage": "Download Replay ({seconds}s)",
     "description": "Button text while the replay download is on cooldown"
   },
+  "bM6b32": {
+    "defaultMessage": "Räjähdys → kone",
+    "description": "Game rule: damage an explosion does to a plane caught in it"
+  },
   "buqDOb": {
     "defaultMessage": "Valitse Käyttäjänimi",
     "description": "Title for modal used to choose username"
@@ -823,6 +851,10 @@
     "defaultMessage": "Selvä",
     "description": "Button that closes the custom game rules warning"
   },
+  "c3wUy0": {
+    "defaultMessage": "Luodin vahinko riippuu sen nopeudesta, kuten alkuperäisessä pelissä.",
+    "description": "Hint under the damage settings explaining that bullet damage depends on bullet speed"
+  },
   "cFDrGv": {
     "defaultMessage": "Valinnainen etuliite käyttääjänimen eteen",
     "description": "Tooltip for the clan setting section"
@@ -830,6 +862,10 @@
   "caIqIm": {
     "defaultMessage": "Seurataan",
     "description": "Label for the player picker while spectating a game"
+  },
+  "crB04S": {
+    "defaultMessage": "Luoti → kiitorata",
+    "description": "Game rule: damage a bullet does to a runway, before scaling by bullet speed"
   },
   "crlI8a": {
     "defaultMessage": "Salmson 2",
@@ -955,13 +991,13 @@
     "defaultMessage": "Tallenna nykyiset säännöt nimellä",
     "description": "Label for the input naming a new rule preset"
   },
+  "jIDnWe": {
+    "defaultMessage": "Vahinko",
+    "description": "Heading above the damage values in the rules editor"
+  },
   "jLMFLF": {
     "defaultMessage": "Try again",
     "description": "Button that retries joining a game after a failed connection"
-  },
-  "jet5Io": {
-    "defaultMessage": "Kiitoradan nousu-/laskeutumisviive",
-    "description": "Game rule: multiplier for how long a runway is blocked after a takeoff or landing"
   },
   "jlutC2": {
     "defaultMessage": "No",
@@ -974,10 +1010,6 @@
   "kM8e0a": {
     "defaultMessage": "Tässä pelissä on mukautetut säännöt",
     "description": "Title of the dialog warning a joining player that the host changed the game rules"
-  },
-  "kZfSKa": {
-    "defaultMessage": "Vahinko",
-    "description": "Game rule: multiplier for all damage dealt"
   },
   "kfnjH9": {
     "defaultMessage": "Asetukset",
@@ -1059,10 +1091,6 @@
     "defaultMessage": "Add {count, plural, one {Bot} other {# Bots}}",
     "description": "Host menu button that adds the chosen number of bots"
   },
-  "ngpgyC": {
-    "defaultMessage": "Kääntymisnopeus",
-    "description": "Plane rule: turning speed multiplier"
-  },
   "nivA/t": {
     "defaultMessage": "Settings",
     "description": "Title of the settings dialog opened during a game"
@@ -1127,6 +1155,10 @@
     "defaultMessage": "Difficulty",
     "description": "Bot panel: label for the bot difficulty dropdown"
   },
+  "qBEdfv": {
+    "defaultMessage": "Pommi → rakennus",
+    "description": "Game rule: damage a direct bomb hit does to a runway or headquarters"
+  },
   "qLiOrX": {
     "defaultMessage": "Huippunopeuslisä",
     "description": "Plane rule: extra top speed before air resistance slows the plane"
@@ -1183,6 +1215,10 @@
     "defaultMessage": "Delete saved level",
     "description": "Accessible label for button in the level editor that deletes a saved level"
   },
+  "tedPAk": {
+    "defaultMessage": "Laskeutuminen laskeutumisen jälkeen",
+    "description": "Game rule: milliseconds a runway is blocked for landings after a plane lands on it"
+  },
   "thIICO": {
     "defaultMessage": "Since last use",
     "description": "Replay inspector row: time since the runway was last reserved for takeoff or landing"
@@ -1202,6 +1238,10 @@
   "ult8LX": {
     "defaultMessage": "Chat & Interface",
     "description": "Heading for the group of chat and interface keybinds on the settings page"
+  },
+  "uzItKz": {
+    "defaultMessage": "Nousu nousun jälkeen",
+    "description": "Game rule: milliseconds a runway is blocked for takeoffs after a plane takes off from it"
   },
   "vL5iqo": {
     "defaultMessage": "Sivustoasetukset",
@@ -1263,6 +1303,10 @@
     "defaultMessage": "Show collision",
     "description": "Toggle that draws collision boxes and masks over the replay"
   },
+  "xv2iiQ": {
+    "defaultMessage": "Koneen törmäys → kiitorata",
+    "description": "Game rule: damage a crashing plane does to a runway"
+  },
   "y49T/p": {
     "defaultMessage": "Viestitä kaikille",
     "description": "Title for the 'Chat All' action shown on the keybind settings section"
@@ -1286,6 +1330,10 @@
   "yi/9eD": {
     "defaultMessage": "Centrals",
     "description": "Bot panel: option to add a bot to the Centrals team"
+  },
+  "yjf9N8": {
+    "defaultMessage": "Laskeutuminen nousun jälkeen",
+    "description": "Game rule: milliseconds a runway is blocked for landings after a plane takes off from it"
   },
   "yjtXtd": {
     "defaultMessage": "Ace",

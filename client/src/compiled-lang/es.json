@@ -101,6 +101,18 @@
       "value": "Plane"
     }
   ],
+  "1VJJKG": [
+    {
+      "type": 0,
+      "value": "Despegue tras un aterrizaje"
+    }
+  ],
+  "1ZRxhF": [
+    {
+      "type": 0,
+      "value": "Explosión → edificio"
+    }
+  ],
   "1ms0hN": [
     {
       "type": 0,
@@ -413,6 +425,12 @@
       "value": "Clan"
     }
   ],
+  "BRjsfV": [
+    {
+      "type": 0,
+      "value": "Colisión de aviones"
+    }
+  ],
   "BXJgxS": [
     {
       "type": 0,
@@ -515,16 +533,16 @@
       "value": "The connection to the host was lost. The host may have left the game."
     }
   ],
+  "F25xxv": [
+    {
+      "type": 0,
+      "value": "Bala → cuartel general"
+    }
+  ],
   "F3eL+0": [
     {
       "type": 0,
       "value": "Connecting to server"
-    }
-  ],
-  "FInvrp": [
-    {
-      "type": 0,
-      "value": "Aceleración"
     }
   ],
   "FVxFnN": [
@@ -625,6 +643,12 @@
     {
       "type": 0,
       "value": "Introduce el código de juego de 4 dígitos..."
+    }
+  ],
+  "IdxpA3": [
+    {
+      "type": 0,
+      "value": "Bala → avión"
     }
   ],
   "InAFP6": [
@@ -1111,6 +1135,12 @@
       "value": "Restablecer controles"
     }
   ],
+  "U9AOD+": [
+    {
+      "type": 0,
+      "value": "Aceleración"
+    }
+  ],
   "URI5Vx": [
     {
       "type": 0,
@@ -1121,6 +1151,12 @@
     {
       "type": 0,
       "value": "Requesting Replay..."
+    }
+  ],
+  "UYkO9X": [
+    {
+      "type": 0,
+      "value": "Velocidad de giro"
     }
   ],
   "UdvUli": [
@@ -1407,6 +1443,12 @@
       "value": "s)"
     }
   ],
+  "bM6b32": [
+    {
+      "type": 0,
+      "value": "Explosión → avión"
+    }
+  ],
   "buqDOb": [
     {
       "type": 0,
@@ -1451,6 +1493,12 @@
       "value": "Entendido"
     }
   ],
+  "c3wUy0": [
+    {
+      "type": 0,
+      "value": "El daño de las balas depende de su velocidad, como en el juego original."
+    }
+  ],
   "cFDrGv": [
     {
       "type": 0,
@@ -1461,6 +1509,12 @@
     {
       "type": 0,
       "value": "Siguiendo a"
+    }
+  ],
+  "crB04S": [
+    {
+      "type": 0,
+      "value": "Bala → pista"
     }
   ],
   "crlI8a": [
@@ -1675,16 +1729,16 @@
       "value": "Guardar las reglas actuales como"
     }
   ],
+  "jIDnWe": [
+    {
+      "type": 0,
+      "value": "Daño"
+    }
+  ],
   "jLMFLF": [
     {
       "type": 0,
       "value": "Try again"
-    }
-  ],
-  "jet5Io": [
-    {
-      "type": 0,
-      "value": "Retardo de despegue/aterrizaje en pista"
     }
   ],
   "jlutC2": [
@@ -1703,12 +1757,6 @@
     {
       "type": 0,
       "value": "Esta partida usa reglas personalizadas"
-    }
-  ],
-  "kZfSKa": [
-    {
-      "type": 0,
-      "value": "Daño"
     }
   ],
   "kfnjH9": [
@@ -1862,12 +1910,6 @@
       "value": "count"
     }
   ],
-  "ngpgyC": [
-    {
-      "type": 0,
-      "value": "Velocidad de giro"
-    }
-  ],
   "nivA/t": [
     {
       "type": 0,
@@ -1964,6 +2006,12 @@
       "value": "Difficulty"
     }
   ],
+  "qBEdfv": [
+    {
+      "type": 0,
+      "value": "Bomba → edificio"
+    }
+  ],
   "qLiOrX": [
     {
       "type": 0,
@@ -2048,6 +2096,12 @@
       "value": "Delete saved level"
     }
   ],
+  "tedPAk": [
+    {
+      "type": 0,
+      "value": "Aterrizaje tras un aterrizaje"
+    }
+  ],
   "thIICO": [
     {
       "type": 0,
@@ -2090,6 +2144,12 @@
     {
       "type": 0,
       "value": "Desvincular última tecla"
+    }
+  ],
+  "uzItKz": [
+    {
+      "type": 0,
+      "value": "Despegue tras un despegue"
     }
   ],
   "vFvAJ1": [
@@ -2200,6 +2260,12 @@
       "value": "Show collision"
     }
   ],
+  "xv2iiQ": [
+    {
+      "type": 0,
+      "value": "Choque de avión → pista"
+    }
+  ],
   "y49T/p": [
     {
       "type": 0,
@@ -2234,6 +2300,12 @@
     {
       "type": 0,
       "value": "Centrals"
+    }
+  ],
+  "yjf9N8": [
+    {
+      "type": 0,
+      "value": "Aterrizaje tras un despegue"
     }
   ],
   "yjtXtd": [

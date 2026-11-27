@@ -101,6 +101,18 @@
       "value": "Plane"
     }
   ],
+  "1VJJKG": [
+    {
+      "type": 0,
+      "value": "Nousu laskeutumisen jälkeen"
+    }
+  ],
+  "1ZRxhF": [
+    {
+      "type": 0,
+      "value": "Räjähdys → rakennus"
+    }
+  ],
   "1ms0hN": [
     {
       "type": 0,
@@ -409,6 +421,12 @@
       "value": "Klaani"
     }
   ],
+  "BRjsfV": [
+    {
+      "type": 0,
+      "value": "Koneiden törmäys"
+    }
+  ],
   "BXJgxS": [
     {
       "type": 0,
@@ -511,16 +529,16 @@
       "value": "The connection to the host was lost. The host may have left the game."
     }
   ],
+  "F25xxv": [
+    {
+      "type": 0,
+      "value": "Luoti → päämaja"
+    }
+  ],
   "F3eL+0": [
     {
       "type": 0,
       "value": "Connecting to server"
-    }
-  ],
-  "FInvrp": [
-    {
-      "type": 0,
-      "value": "Kiihtyvyys"
     }
   ],
   "FVxFnN": [
@@ -621,6 +639,12 @@
     {
       "type": 0,
       "value": "Syötä 4 merkkiä sisältävä pelikoodi..."
+    }
+  ],
+  "IdxpA3": [
+    {
+      "type": 0,
+      "value": "Luoti → kone"
     }
   ],
   "InAFP6": [
@@ -1107,6 +1131,12 @@
       "value": "Nollaa asetukset"
     }
   ],
+  "U9AOD+": [
+    {
+      "type": 0,
+      "value": "Kiihtyvyys"
+    }
+  ],
   "URI5Vx": [
     {
       "type": 0,
@@ -1117,6 +1147,12 @@
     {
       "type": 0,
       "value": "Requesting Replay..."
+    }
+  ],
+  "UYkO9X": [
+    {
+      "type": 0,
+      "value": "Kääntymisnopeus"
     }
   ],
   "UdvUli": [
@@ -1403,6 +1439,12 @@
       "value": "s)"
     }
   ],
+  "bM6b32": [
+    {
+      "type": 0,
+      "value": "Räjähdys → kone"
+    }
+  ],
   "buqDOb": [
     {
       "type": 0,
@@ -1443,6 +1485,12 @@
       "value": "Selvä"
     }
   ],
+  "c3wUy0": [
+    {
+      "type": 0,
+      "value": "Luodin vahinko riippuu sen nopeudesta, kuten alkuperäisessä pelissä."
+    }
+  ],
   "cFDrGv": [
     {
       "type": 0,
@@ -1453,6 +1501,12 @@
     {
       "type": 0,
       "value": "Seurataan"
+    }
+  ],
+  "crB04S": [
+    {
+      "type": 0,
+      "value": "Luoti → kiitorata"
     }
   ],
   "crlI8a": [
@@ -1667,16 +1721,16 @@
       "value": "Tallenna nykyiset säännöt nimellä"
     }
   ],
+  "jIDnWe": [
+    {
+      "type": 0,
+      "value": "Vahinko"
+    }
+  ],
   "jLMFLF": [
     {
       "type": 0,
       "value": "Try again"
-    }
-  ],
-  "jet5Io": [
-    {
-      "type": 0,
-      "value": "Kiitoradan nousu-/laskeutumisviive"
     }
   ],
   "jlutC2": [
@@ -1695,12 +1749,6 @@
     {
       "type": 0,
       "value": "Tässä pelissä on mukautetut säännöt"
-    }
-  ],
-  "kZfSKa": [
-    {
-      "type": 0,
-      "value": "Vahinko"
     }
   ],
   "kfnjH9": [
@@ -1854,12 +1902,6 @@
       "value": "count"
     }
   ],
-  "ngpgyC": [
-    {
-      "type": 0,
-      "value": "Kääntymisnopeus"
-    }
-  ],
   "nivA/t": [
     {
       "type": 0,
@@ -1956,6 +1998,12 @@
       "value": "Difficulty"
     }
   ],
+  "qBEdfv": [
+    {
+      "type": 0,
+      "value": "Pommi → rakennus"
+    }
+  ],
   "qLiOrX": [
     {
       "type": 0,
@@ -2040,6 +2088,12 @@
       "value": "Delete saved level"
     }
   ],
+  "tedPAk": [
+    {
+      "type": 0,
+      "value": "Laskeutuminen laskeutumisen jälkeen"
+    }
+  ],
   "thIICO": [
     {
       "type": 0,
@@ -2082,6 +2136,12 @@
     {
       "type": 0,
       "value": "Poista viimeisin pikanäppäin"
+    }
+  ],
+  "uzItKz": [
+    {
+      "type": 0,
+      "value": "Nousu nousun jälkeen"
     }
   ],
   "vFvAJ1": [
@@ -2192,6 +2252,12 @@
       "value": "Show collision"
     }
   ],
+  "xv2iiQ": [
+    {
+      "type": 0,
+      "value": "Koneen törmäys → kiitorata"
+    }
+  ],
   "y49T/p": [
     {
       "type": 0,
@@ -2226,6 +2292,12 @@
     {
       "type": 0,
       "value": "Centrals"
+    }
+  ],
+  "yjf9N8": [
+    {
+      "type": 0,
+      "value": "Laskeutuminen nousun jälkeen"
     }
   ],
   "yjtXtd": [

@@ -40,7 +40,7 @@ export const PLANE_TYPES: { key: keyof PlaneRulesByType; type: PlaneType }[] = [
 type BooleanKeys<T> = { [K in keyof T]: T[K] extends boolean ? K : never }[keyof T];
 type NumberKeys<T> = { [K in keyof T]: T[K] extends number ? K : never }[keyof T];
 
-export type RuleUnit = "percent" | "seconds" | "ms" | "count";
+export type RuleUnit = "seconds" | "ms" | "count" | "degrees" | "decimal";
 
 export type NumberRule<K> = {
     key: K;
@@ -73,7 +73,43 @@ const M = defineMessages({
         defaultMessage: "Indestructible buildings",
         description: "Game rule: runways and headquarters cannot be damaged",
     },
-    damage_percent: { defaultMessage: "Damage", description: "Game rule: multiplier for all damage dealt" },
+    bullet_plane_damage: {
+        defaultMessage: "Bullet → plane",
+        description: "Game rule: damage a bullet does to a plane, before scaling by bullet speed",
+    },
+    bullet_runway_damage: {
+        defaultMessage: "Bullet → runway",
+        description: "Game rule: damage a bullet does to a runway, before scaling by bullet speed",
+    },
+    bullet_headquarters_damage: {
+        defaultMessage: "Bullet → headquarters",
+        description: "Game rule: damage a bullet does to a headquarters, before scaling by bullet speed",
+    },
+    bomb_building_damage: {
+        defaultMessage: "Bomb → building",
+        description: "Game rule: damage a direct bomb hit does to a runway or headquarters",
+    },
+    explosion_plane_damage: {
+        defaultMessage: "Explosion → plane",
+        description: "Game rule: damage an explosion does to a plane caught in it",
+    },
+    explosion_building_damage: {
+        defaultMessage: "Explosion → building",
+        description: "Game rule: damage an explosion does to a runway or headquarters",
+    },
+    collision_damage: {
+        defaultMessage: "Plane collision",
+        description: "Game rule: damage each plane takes when two planes collide",
+    },
+    crash_runway_damage: {
+        defaultMessage: "Plane crash → runway",
+        description: "Game rule: damage a crashing plane does to a runway",
+    },
+    damage_heading: { defaultMessage: "Damage", description: "Heading above the damage values in the rules editor" },
+    damage_hint: {
+        defaultMessage: "Bullet damage is scaled by how fast the bullet is travelling, as in the original game.",
+        description: "Hint under the damage settings explaining that bullet damage depends on bullet speed",
+    },
     runway_health: { defaultMessage: "Runway health", description: "Game rule: how much damage a runway can take" },
     headquarters_health: {
         defaultMessage: "Headquarters health",
@@ -83,9 +119,21 @@ const M = defineMessages({
         defaultMessage: "Repair time per health point",
         description: "Game rule: seconds for a damaged building to regain one health point, 0 turns repairs off",
     },
-    runway_delay_percent: {
-        defaultMessage: "Runway takeoff/landing delay",
-        description: "Game rule: multiplier for how long a runway is blocked after a takeoff or landing",
+    takeoff_after_takeoff_ms: {
+        defaultMessage: "Takeoff after a takeoff",
+        description: "Game rule: milliseconds a runway is blocked for takeoffs after a plane takes off from it",
+    },
+    takeoff_after_landing_ms: {
+        defaultMessage: "Takeoff after a landing",
+        description: "Game rule: milliseconds a runway is blocked for takeoffs after a plane lands on it",
+    },
+    landing_after_landing_ms: {
+        defaultMessage: "Landing after a landing",
+        description: "Game rule: milliseconds a runway is blocked for landings after a plane lands on it",
+    },
+    landing_after_takeoff_ms: {
+        defaultMessage: "Landing after a takeoff",
+        description: "Game rule: milliseconds a runway is blocked for landings after a plane takes off from it",
     },
     respawn_ticks: { defaultMessage: "Respawn time", description: "Game rule: seconds to wait before respawning" },
     suicide_respawn_ticks: {
@@ -114,8 +162,11 @@ const M = defineMessages({
         description: "Plane rule: milliseconds between machine gun shots",
     },
     bomb_delay_ms: { defaultMessage: "Bomb delay", description: "Plane rule: milliseconds between dropped bombs" },
-    acceleration_percent: { defaultMessage: "Acceleration", description: "Plane rule: engine acceleration multiplier" },
-    turn_percent: { defaultMessage: "Turn rate", description: "Plane rule: turning speed multiplier" },
+    acceleration: { defaultMessage: "Acceleration", description: "Plane rule: speed the engine adds each step" },
+    turn_step: {
+        defaultMessage: "Turn rate",
+        description: "Plane rule: degrees the plane turns each step while steering",
+    },
     speed_bonus: {
         defaultMessage: "Top speed bonus",
         description: "Plane rule: extra top speed before air resistance slows the plane",
@@ -160,7 +211,28 @@ export const WEAPON_RULES: BooleanRule[] = [
 ];
 
 export const DAMAGE_RULES: NumberRule<NumberKeys<GameRules>>[] = [
-    { key: "damage_percent", label: M.damage_percent, unit: "percent", min: 0, max: 1000, step: 10 },
+    { key: "bullet_plane_damage", label: M.bullet_plane_damage, unit: "count", min: 0, max: 10000, step: 5 },
+    { key: "bullet_runway_damage", label: M.bullet_runway_damage, unit: "count", min: 0, max: 10000, step: 1 },
+    {
+        key: "bullet_headquarters_damage",
+        label: M.bullet_headquarters_damage,
+        unit: "count",
+        min: 0,
+        max: 10000,
+        step: 1,
+    },
+    { key: "bomb_building_damage", label: M.bomb_building_damage, unit: "count", min: 0, max: 10000, step: 5 },
+    { key: "explosion_plane_damage", label: M.explosion_plane_damage, unit: "count", min: 0, max: 10000, step: 5 },
+    {
+        key: "explosion_building_damage",
+        label: M.explosion_building_damage,
+        unit: "count",
+        min: 0,
+        max: 10000,
+        step: 1,
+    },
+    { key: "collision_damage", label: M.collision_damage, unit: "count", min: 0, max: 10000, step: 5 },
+    { key: "crash_runway_damage", label: M.crash_runway_damage, unit: "count", min: 0, max: 10000, step: 1 },
 ];
 
 export const BUILDING_TOGGLES: BooleanRule[] = [{ key: "indestructible_buildings", label: M.indestructible_buildings }];
@@ -169,7 +241,10 @@ export const BUILDING_RULES: NumberRule<NumberKeys<GameRules>>[] = [
     { key: "runway_health", label: M.runway_health, unit: "count", min: 1, max: 20000, step: 50 },
     { key: "headquarters_health", label: M.headquarters_health, unit: "count", min: 1, max: 20000, step: 25 },
     { key: "repair_ticks", label: M.repair_ticks, unit: "seconds", min: 0, max: 1000, step: 10 },
-    { key: "runway_delay_percent", label: M.runway_delay_percent, unit: "percent", min: 0, max: 500, step: 10 },
+    { key: "takeoff_after_takeoff_ms", label: M.takeoff_after_takeoff_ms, unit: "ms", min: 0, max: 10000, step: 100 },
+    { key: "takeoff_after_landing_ms", label: M.takeoff_after_landing_ms, unit: "ms", min: 0, max: 10000, step: 100 },
+    { key: "landing_after_landing_ms", label: M.landing_after_landing_ms, unit: "ms", min: 0, max: 10000, step: 100 },
+    { key: "landing_after_takeoff_ms", label: M.landing_after_takeoff_ms, unit: "ms", min: 0, max: 10000, step: 100 },
 ];
 
 export const RESPAWN_RULES: NumberRule<NumberKeys<GameRules>>[] = [
@@ -187,22 +262,32 @@ export const PLANE_RULES: NumberRule<NumberKeys<PlaneRules>>[] = [
     { key: "bombs", label: M.plane_bombs, unit: "count", min: 0, max: 50, step: 1 },
     { key: "shoot_delay_ms", label: M.shoot_delay_ms, unit: "ms", min: 10, max: 2000, step: 10 },
     { key: "bomb_delay_ms", label: M.bomb_delay_ms, unit: "ms", min: 50, max: 5000, step: 50 },
-    { key: "acceleration_percent", label: M.acceleration_percent, unit: "percent", min: 25, max: 300, step: 5 },
-    { key: "turn_percent", label: M.turn_percent, unit: "percent", min: 25, max: 300, step: 5 },
+    { key: "acceleration", label: M.acceleration, unit: "decimal", min: 0.5, max: 20, step: 0.05 },
+    { key: "turn_step", label: M.turn_step, unit: "degrees", min: 0.005, max: 0.3, step: Math.PI / 1800 },
     { key: "speed_bonus", label: M.speed_bonus, unit: "count", min: 0, max: 200, step: 5 },
 ];
 
 export function toDisplay(unit: RuleUnit, value: number): number {
-    return unit === "seconds" ? value / 100 : value;
+    if (unit === "seconds") return value / 100;
+    if (unit === "degrees") return (value * 180) / Math.PI;
+    return value;
 }
 
 export function fromDisplay(unit: RuleUnit, value: number): number {
-    return unit === "seconds" ? Math.round(value * 100) : Math.round(value);
+    if (unit === "seconds") return Math.round(value * 100);
+    if (unit === "degrees") return (value * Math.PI) / 180;
+    if (unit === "decimal") return value;
+    return Math.round(value);
+}
+
+export function unitDecimals(unit: RuleUnit): number {
+    return unit === "seconds" || unit === "degrees" || unit === "decimal" ? 2 : 0;
 }
 
 export function formatRuleValue(intl: IntlShape, unit: RuleUnit, value: number): string {
     const shown = toDisplay(unit, value);
-    if (unit === "percent") return intl.formatNumber(shown / 100, { style: "percent" });
+    if (unit === "degrees") return intl.formatNumber(shown, { maximumFractionDigits: 2 }) + "°";
+    if (unit === "decimal") return intl.formatNumber(shown, { maximumFractionDigits: 2 });
     if (unit === "seconds") return intl.formatNumber(shown, { style: "unit", unit: "second", unitDisplay: "short" });
     if (unit === "ms") return intl.formatNumber(shown, { style: "unit", unit: "millisecond", unitDisplay: "short" });
     return intl.formatNumber(shown);
