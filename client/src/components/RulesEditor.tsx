@@ -29,7 +29,7 @@ import {
 import { GameRules } from "dogfight-types/GameRules";
 import { PlaneRules } from "dogfight-types/PlaneRules";
 import { PlaneRulesByType } from "dogfight-types/PlaneRulesByType";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import {
     BooleanRule,
@@ -94,9 +94,30 @@ type RuleNumberInputProps = {
 function RuleNumberInput({ label, unit, min, max, step, value, original, onChange }: RuleNumberInputProps) {
     const intl = useIntl();
     const changed = value !== original;
+    const shownMin = toDisplay(unit, min);
+    const shownMax = toDisplay(unit, max);
+    const [text, setText] = useState<string | number>(toDisplay(unit, value));
+    const [editing, setEditing] = useState(false);
+
+    useEffect(() => {
+        if (!editing) setText(toDisplay(unit, value));
+    }, [editing, unit, value]);
+
+    function commit() {
+        setEditing(false);
+        const parsed = typeof text === "number" ? text : parseFloat(text);
+        const next = Number.isFinite(parsed)
+            ? fromDisplay(unit, Math.min(shownMax, Math.max(shownMin, parsed)))
+            : value;
+        setText(toDisplay(unit, next));
+        if (next !== value) onChange(next);
+    }
+
+    const suffix = unitSuffix(unit).trim();
+
     return (
         <NumberInput
-            label={label}
+            label={suffix ? `${label} (${suffix})` : label}
             inputWrapperOrder={["label", "input", "description"]}
             classNames={{ input: changed ? classes.changed : undefined }}
             description={
@@ -106,15 +127,23 @@ function RuleNumberInput({ label, unit, min, max, step, value, original, onChang
                       })
                     : undefined
             }
-            min={toDisplay(unit, min)}
-            max={toDisplay(unit, max)}
+            min={shownMin}
+            max={shownMax}
             step={toDisplay(unit, step)}
             decimalScale={unit === "seconds" ? 2 : 0}
-            suffix={unitSuffix(unit)}
-            clampBehavior="strict"
-            value={toDisplay(unit, value)}
+            allowNegative={false}
+            clampBehavior="none"
+            value={text}
+            onFocus={() => setEditing(true)}
+            onBlur={commit}
+            onKeyDown={(event) => {
+                if (event.key === "Enter") commit();
+            }}
             onChange={(next) => {
-                if (typeof next === "number" && Number.isFinite(next)) onChange(fromDisplay(unit, next));
+                setText(next);
+                if (typeof next === "number" && next >= shownMin && next <= shownMax) {
+                    onChange(fromDisplay(unit, next));
+                }
             }}
         />
     );
