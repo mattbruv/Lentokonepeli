@@ -1,0 +1,1070 @@
+{
+  "++E6GV": {
+    "defaultMessage": "Motor",
+    "description": "Replay inspector row: whether the plane motor is on"
+  },
+  "+VHHqo": {
+    "defaultMessage": "Spiel verlassen",
+    "description": "Button in the leave game dialog that confirms leaving the active game"
+  },
+  "+hJmve": {
+    "defaultMessage": "Unentschieden!",
+    "description": "Shown in large text and in chat when a round ends in a tie"
+  },
+  "+ptLoi": {
+    "defaultMessage": "Du wirst vom laufenden Spiel getrennt. Wenn du der Host bist, endet das Spiel für alle.",
+    "description": "Body of the dialog shown when navigating away from an active game"
+  },
+  "+vayKN": {
+    "defaultMessage": "{key} von {action} entfernen",
+    "description": "Accessible label for a button that removes one key from a game action"
+  },
+  "/Dq9eZ": {
+    "defaultMessage": "Grafik",
+    "description": "Checkbox on the bottom game panel that switches between full and simple graphics"
+  },
+  "/KlrcC": {
+    "defaultMessage": "Benutzername",
+    "description": "Settings section title used to modify the username"
+  },
+  "/U2XaA": {
+    "defaultMessage": "Explosion",
+    "description": "Replay inspector title for an explosion"
+  },
+  "07P703": {
+    "defaultMessage": "Ein legendärer Dreidecker. Äußerst wendig und auch in maximaler Flughöhe hervorragend.",
+    "description": "Description of the Fokker DR.I aircraft"
+  },
+  "0Bk2IN": {
+    "defaultMessage": "Passiv",
+    "description": "Bot panel: bot difficulty that never shoots or bombs"
+  },
+  "1ICbwz": {
+    "defaultMessage": "Entfernen",
+    "description": "Host menu button that confirms removing a player from the game"
+  },
+  "1UE6bt": {
+    "defaultMessage": "Flugzeug",
+    "description": "Replay inspector title for a plane"
+  },
+  "1ms0hN": {
+    "defaultMessage": "Spieler",
+    "description": "Host menu tab listing connected players"
+  },
+  "2w7ZSO": {
+    "defaultMessage": "Tode",
+    "description": "scoreboard: Deaths"
+  },
+  "309viz": {
+    "defaultMessage": "Zum Spieler springen",
+    "description": "Replay camera button that returns the camera to the spectated player"
+  },
+  "3R2xaB": {
+    "defaultMessage": "Schießen",
+    "description": "Title for the 'Shoot' action shown on the keybind settings section"
+  },
+  "45aPwk": {
+    "defaultMessage": "Munition",
+    "description": "Replay inspector row: plane ammunition"
+  },
+  "4EiQX8": {
+    "defaultMessage": "Unbenannte Lobby",
+    "description": "Placeholder for the lobby name input when no name is set"
+  },
+  "4GxiBe": {
+    "defaultMessage": "Karte auswählen...",
+    "description": "Infotext for input used to select which map will be used for the hosted game"
+  },
+  "4MNKGm": {
+    "defaultMessage": "Aussteigen, Fallschirm öffnen",
+    "description": "Title for the 'Eject, Open Parachute' action shown on the keybind settings section"
+  },
+  "5jSC1l": {
+    "defaultMessage": "Der Host hat nicht rechtzeitig geantwortet. Vielleicht hat er das Spiel verlassen, oder eine Firewall blockiert die Verbindung.",
+    "description": "Error shown when connecting to the game host times out"
+  },
+  "6AtUzs": {
+    "defaultMessage": "Klein",
+    "description": "Level preview: map is small"
+  },
+  "6C102L": {
+    "defaultMessage": "Einstellungen",
+    "description": "Button that opens the settings dialog during a game"
+  },
+  "6OnDBs": {
+    "defaultMessage": "Treibstoff",
+    "description": "Replay inspector row: plane fuel"
+  },
+  "6h1L5u": {
+    "defaultMessage": "Leicht",
+    "description": "Bot panel: easiest bot difficulty"
+  },
+  "6zMC33": {
+    "defaultMessage": "Der Host hat dich aus dem Spiel entfernt.",
+    "description": "Message shown when the host removes this player from the game"
+  },
+  "79SXbl": {
+    "defaultMessage": "Meine Level",
+    "description": "Group heading in the level selection for levels saved from the level editor"
+  },
+  "7GHFcs": {
+    "defaultMessage": "Wiedereinstieg in",
+    "description": "Shown on screen with a countdown while waiting to respawn after dying"
+  },
+  "7sejUS": {
+    "defaultMessage": "Richtung",
+    "description": "Replay inspector row: entity heading in degrees"
+  },
+  "7uvnUw": {
+    "defaultMessage": "Keine",
+    "description": "Replay inspector value when nothing applies"
+  },
+  "80jhcO": {
+    "defaultMessage": "Umgedreht",
+    "description": "Replay inspector row: whether the plane is flipped upside down"
+  },
+  "8Am/Pl": {
+    "defaultMessage": "Einfaches Flugzeug mit Maschinengewehr, ohne besonders gute oder schlechte Eigenschaften. Eine gute Wahl für Anfänger.",
+    "description": "Description of the Albatros D.II aircraft"
+  },
+  "8B1K0N": {
+    "defaultMessage": "Gespeichert!",
+    "description": "Button text shown briefly after a level is saved to my levels"
+  },
+  "8WM3G7": {
+    "defaultMessage": "Eingabe",
+    "description": "Title for the 'Enter' action shown on the keybind settings section"
+  },
+  "8iVdSN": {
+    "defaultMessage": "Steuerung",
+    "description": "Title for a settings section used to modify the keybinds used in-game"
+  },
+  "9+0fXW": {
+    "defaultMessage": "Gelände",
+    "description": "Level preview: ground type of the map"
+  },
+  "93dkEY": {
+    "defaultMessage": "Letzte Nutzung",
+    "description": "Replay inspector row: whether the runway was last used for takeoff or landing"
+  },
+  "9bQEK7": {
+    "defaultMessage": "Hauptquartier",
+    "description": "Replay inspector title for a team headquarters building"
+  },
+  "9l2moM": {
+    "defaultMessage": "Landebahn der {team, select, Centrals {Mittelmächte} other {Alliierten}} zerstört.",
+    "description": "Chat notice when a team's runway is destroyed"
+  },
+  "AY7tVh": {
+    "defaultMessage": "Bot",
+    "description": "scoreboard: accessible label for the icon marking a bot"
+  },
+  "AZRVPH": {
+    "defaultMessage": "Host-Menü",
+    "description": "Title of the host game management dialog"
+  },
+  "AeYTDy": {
+    "defaultMessage": "Trotzdem ansehen",
+    "description": "Button that starts watching a replay despite a version mismatch"
+  },
+  "B/tYl9": {
+    "defaultMessage": "Küste",
+    "description": "Collision legend label for coastline terrain"
+  },
+  "B1CMe5": {
+    "defaultMessage": "Als Host kannst du jederzeit eine Replay-Datei herunterladen.",
+    "description": "Tooltip for a button explaining that replay files can be downloaded during gameplay, this button will be used to find a replay file from the user's computer"
+  },
+  "BDEGh4": {
+    "defaultMessage": "Hauptquartier",
+    "description": "Collision legend label for team headquarters buildings"
+  },
+  "BLykMd": {
+    "defaultMessage": "Clan",
+    "description": "Settings section title used to modify the clan name"
+  },
+  "BXJgxS": {
+    "defaultMessage": "Beim Verbinden mit dem Host ist etwas schiefgelaufen.",
+    "description": "Generic error shown when joining a game fails"
+  },
+  "BkSsse": {
+    "defaultMessage": "Diese Datei konnte nicht gelesen werden. Vielleicht ist sie kein Replay, oder sie wurde mit einer zu alten Spielversion aufgenommen.",
+    "description": "Error shown when a selected replay file cannot be parsed"
+  },
+  "C06Dta": {
+    "defaultMessage": "Host wird erreicht",
+    "description": "Connection step shown while establishing a connection to the game host"
+  },
+  "CpTJ9C": {
+    "defaultMessage": "Runde beenden",
+    "description": "Host menu button that ends the current round as a tie"
+  },
+  "D/agNw": {
+    "defaultMessage": "Wasser",
+    "description": "Collision legend label for water"
+  },
+  "DMjXm5": {
+    "defaultMessage": "Hineinzoomen",
+    "description": "Replay camera zoom in button"
+  },
+  "DWNyUG": {
+    "defaultMessage": "Replay auswählen",
+    "description": "Button text for a button which opens system file system to select a lentokonepeli replay file from"
+  },
+  "DcRgtq": {
+    "defaultMessage": "Alliierte",
+    "description": "Collision legend column header for the Allies team"
+  },
+  "Dyoy6E": {
+    "defaultMessage": "Spieler entfernen",
+    "description": "Host menu tooltip for the button that removes a player"
+  },
+  "E/uHyU": {
+    "defaultMessage": "Ein Flugzeug mit recht starkem Maschinengewehr. Eine gute Wahl, besonders für Anfänger.",
+    "description": "Description of the Bristol F.2b aircraft"
+  },
+  "EB+s18": {
+    "defaultMessage": "Überspringt Ergebnisse und Pause und startet sofort eine neue Runde.",
+    "description": "Explanation under the host menu start next round button"
+  },
+  "EJxKHB": {
+    "defaultMessage": "Sieg bei Zeitablauf",
+    "description": "Level preview: which team wins when the round time runs out"
+  },
+  "El6eCJ": {
+    "defaultMessage": "Kleiner",
+    "description": "Tooltip for the button that makes the game view smaller"
+  },
+  "F/owlo": {
+    "defaultMessage": "Die Verbindung zum Host wurde unterbrochen. Vielleicht hat der Host das Spiel verlassen.",
+    "description": "Message shown when the connection to the game host is lost"
+  },
+  "F3eL+0": {
+    "defaultMessage": "Verbinde mit Server",
+    "description": "Connection step shown while contacting the matchmaking server"
+  },
+  "FVxFnN": {
+    "defaultMessage": "Replay angehalten",
+    "description": "Title shown when replay playback hits an error"
+  },
+  "FeaIOV": {
+    "defaultMessage": "Bombe",
+    "description": "Replay inspector title for a bomb"
+  },
+  "G7DhrV": {
+    "defaultMessage": "Spielen",
+    "description": "Sidebar link description for the main game page used to play the game"
+  },
+  "GEspS4": {
+    "defaultMessage": "Sopwith Camel",
+    "description": "Name of the Sopwith Camel aircraft"
+  },
+  "GJuTty": {
+    "defaultMessage": "Aktuelle Version",
+    "description": "Label for the game version currently running"
+  },
+  "GgV4fK": {
+    "defaultMessage": "{count, plural, one {# Bot} other {# Bots}}",
+    "description": "Host menu checkbox that selects all bots, showing the bot count"
+  },
+  "H0TxYO": {
+    "defaultMessage": "Kein Spiel mit dem Code {code} gefunden. Prüfe den Code und versuche es erneut.",
+    "description": "Error shown when joining a game code that does not exist"
+  },
+  "H6qNPr": {
+    "defaultMessage": "Spiel beitreten",
+    "description": "Title for part for joining the game"
+  },
+  "HUQWTK": {
+    "defaultMessage": "Unterstützte Teile",
+    "description": "supported pieces to be used in level editor"
+  },
+  "INGml3": {
+    "defaultMessage": "4-stelligen Spielcode eingeben...",
+    "description": "Infotext for input which is used to insert 4 digit game code to join games"
+  },
+  "JSLtOI": {
+    "defaultMessage": "Abgeschossen von",
+    "description": "Replay inspector row: player who shot the plane down"
+  },
+  "JqPC9Z": {
+    "defaultMessage": "Folge Spieler",
+    "description": "Replay camera button label while the camera follows the spectated player"
+  },
+  "JtkM9d": {
+    "defaultMessage": "Keins",
+    "description": "Level preview: map has no water"
+  },
+  "JwnLHL": {
+    "defaultMessage": "Replay wird heruntergeladen {percent}%",
+    "description": "Button text while the replay file is downloading from the host"
+  },
+  "Jyv5JT": {
+    "defaultMessage": "Normal",
+    "description": "Game mode where players respawn after dying and the round ends when a base is destroyed"
+  },
+  "Kdsx9u": {
+    "defaultMessage": "Karte & Modus",
+    "description": "Host menu tab for changing the level, game mode and round length"
+  },
+  "L9AKyJ": {
+    "defaultMessage": "Abbrechen",
+    "description": "Button that cancels watching an out of date replay"
+  },
+  "Lo5tsu": {
+    "defaultMessage": "Weiterspielen",
+    "description": "Button in the leave game dialog that closes the dialog and returns to the game"
+  },
+  "M2xffJ": {
+    "defaultMessage": "Replay-Datei speichern",
+    "description": "Button text for button which saves replay file"
+  },
+  "M9/1jj": {
+    "defaultMessage": "Äußerst wendig. Nicht für Anfänger empfohlen.",
+    "description": "Description of the Sopwith Camel aircraft"
+  },
+  "M9uG/P": {
+    "defaultMessage": "Bots",
+    "description": "Title of the host panel for managing bots"
+  },
+  "MMvi2N": {
+    "defaultMessage": "Kugel",
+    "description": "Collision legend label for bullets"
+  },
+  "MYX7pK": {
+    "defaultMessage": "Alter",
+    "description": "Replay inspector row: how long the entity has existed"
+  },
+  "Ma6JVf": {
+    "defaultMessage": "Verlassenes Flugzeug",
+    "description": "Collision legend label for planes whose pilot bailed out"
+  },
+  "Mewnhs": {
+    "defaultMessage": "Mehr als {max} Bots können das Spiel verlangsamen.",
+    "description": "Warning shown when the chosen number of bots is above the recommended maximum"
+  },
+  "Mn1HEl": {
+    "defaultMessage": "Mittelmächte",
+    "description": "Collision legend column header for the Centrals team"
+  },
+  "MnSHDt": {
+    "defaultMessage": "Sprache wählen",
+    "description": "Placeholder for the site language dropdown on the settings page"
+  },
+  "MrbN1S": {
+    "defaultMessage": "(Strafe für Teamkill)",
+    "description": "Shown below the respawn countdown when the wait is longer because of a teamkill"
+  },
+  "NCSY6O": {
+    "defaultMessage": "Kampf",
+    "description": "Heading for the group of combat related keybinds on the settings page"
+  },
+  "NGiyEX": {
+    "defaultMessage": "Höhere Punktzahl",
+    "description": "Level preview: the team with more points wins when time runs out"
+  },
+  "NRgcth": {
+    "defaultMessage": "Anderes Replay laden",
+    "description": "Button that returns to the replay file picker after playback failed"
+  },
+  "Nbb2Yc": {
+    "defaultMessage": "Nach rechts",
+    "description": "Title for the 'Move Right' action shown on the keybind settings section"
+  },
+  "NyL4Zc": {
+    "defaultMessage": "Aufgenommen mit {replayVersion}, du verwendest {currentVersion}. Die Wiedergabe kann abweichen.",
+    "description": "Notice shown while watching a replay recorded with another game version"
+  },
+  "OVTgWq": {
+    "defaultMessage": "Unbegrenzt",
+    "description": "Game time option for rounds that only end when a team's base is destroyed"
+  },
+  "P2G+0B": {
+    "defaultMessage": "Pilot",
+    "description": "Collision legend label for pilots who bailed out"
+  },
+  "PEq+cf": {
+    "defaultMessage": "Flugzeug",
+    "description": "Collision legend label for planes"
+  },
+  "PEq6j5": {
+    "defaultMessage": "um den Chat zu schließen",
+    "description": "message indicating 'Esc' closes the chat"
+  },
+  "PSkosK": {
+    "defaultMessage": "Spielgröße",
+    "description": "Title of the panel used to resize the game view"
+  },
+  "PUiIc0": {
+    "defaultMessage": "Zufällig",
+    "description": "Bot panel: option to add a bot to whichever team needs players"
+  },
+  "PzZfKW": {
+    "defaultMessage": "Original-Level",
+    "description": "Group heading in the level selection for the built-in levels"
+  },
+  "Q1mV6L": {
+    "defaultMessage": "Verbindung getrennt",
+    "description": "Title shown when the connection to the game host is lost"
+  },
+  "Q9UCoB": {
+    "defaultMessage": "Größer",
+    "description": "Tooltip for the button that makes the game view bigger"
+  },
+  "QYueam": {
+    "defaultMessage": "Trete Spiel {code} bei",
+    "description": "Title shown while connecting to a game"
+  },
+  "QdN+gh": {
+    "defaultMessage": "Wüste",
+    "description": "Level preview: map terrain is desert sand"
+  },
+  "Qj15PN": {
+    "defaultMessage": "Hellen Modus umschalten",
+    "description": "Toggle light mode button text"
+  },
+  "QnT7VI": {
+    "defaultMessage": "Bots",
+    "description": "Label for the number of bots the hosted game starts with"
+  },
+  "Qt6faF": {
+    "defaultMessage": "Spiel hosten",
+    "description": "Title for section used for hosting a game"
+  },
+  "QwMaWJ": {
+    "defaultMessage": "Speichern",
+    "description": "Button that saves the lobby name in the host menu"
+  },
+  "R7Fptk": {
+    "defaultMessage": "Zurück zur Lobby",
+    "description": "Button that leaves a game that failed to connect and returns to the lobby"
+  },
+  "RJPf0Z": {
+    "defaultMessage": "Sound",
+    "description": "Checkbox on the bottom game panel that turns sound on or off"
+  },
+  "RyQOi8": {
+    "defaultMessage": "Hauptquartiere",
+    "description": "Level preview: headquarters buildings per team"
+  },
+  "SDo2PQ": {
+    "defaultMessage": "Quellcode auf GitHub ansehen",
+    "description": "Navbar hover for viewing the source code"
+  },
+  "SDyaJI": {
+    "defaultMessage": "Bombe",
+    "description": "Collision legend label for bombs"
+  },
+  "SP08Wt": {
+    "defaultMessage": "Schaden",
+    "description": "Replay inspector row: bullet damage multiplier"
+  },
+  "SdyT+q": {
+    "defaultMessage": "Bomben",
+    "description": "Replay inspector row: bombs left on the plane"
+  },
+  "Sxp4im": {
+    "defaultMessage": "Code",
+    "description": "Title for selection used to insert the game code"
+  },
+  "T+D+U2": {
+    "defaultMessage": "Landebahn",
+    "description": "Collision legend label for runways"
+  },
+  "T+NmK1": {
+    "defaultMessage": "Bot entfernen",
+    "description": "Bot panel: tooltip for the button that removes a bot"
+  },
+  "T2A0lT": {
+    "defaultMessage": "Riesig",
+    "description": "Level preview: map is very large"
+  },
+  "T631Pr": {
+    "defaultMessage": "Gespeichertes Level öffnen...",
+    "description": "Placeholder for selection in the level editor used to open a saved level"
+  },
+  "TF2HVX": {
+    "defaultMessage": "Keiner",
+    "description": "Replay inspector value when an entity has no owner"
+  },
+  "TcT+Lx": {
+    "defaultMessage": "Alliierte",
+    "description": "Bot panel: option to add a bot to the Allies team"
+  },
+  "Telnt5": {
+    "defaultMessage": "Zustand",
+    "description": "Replay inspector row: plane or pilot state"
+  },
+  "TktZUh": {
+    "defaultMessage": "Host",
+    "description": "Label next to the host's own name in the host menu players list"
+  },
+  "Tsq+GT": {
+    "defaultMessage": "Lobbyname",
+    "description": "Label for the input used to name the hosted game"
+  },
+  "U/mSA3": {
+    "defaultMessage": "Steuerung zurücksetzen",
+    "description": "Button used to reset user defined keybinds on the settings page"
+  },
+  "URI5Vx": {
+    "defaultMessage": "Benutzereinstellungen",
+    "description": "Title for a settings section used to modify user info used in-game"
+  },
+  "URl7v/": {
+    "defaultMessage": "Replay wird angefordert...",
+    "description": "Button text while waiting for the host to start sending the replay file"
+  },
+  "UdvUli": {
+    "defaultMessage": "Gras",
+    "description": "Level preview: map terrain is grass"
+  },
+  "UwCHgC": {
+    "defaultMessage": "(Drücke Enter, wenn du bereit bist)",
+    "description": "Shown on the intermission screen between rounds until the player presses enter"
+  },
+  "V/EQaQ": {
+    "defaultMessage": "Wird repariert",
+    "description": "Replay inspector row: whether a damaged building is regaining health"
+  },
+  "V07IkD": {
+    "defaultMessage": "Ziehe das Spielfeld, um die Kamera frei zu bewegen, scrolle zum Zoomen.",
+    "description": "Hint explaining replay camera mouse controls"
+  },
+  "V27mjT": {
+    "defaultMessage": "Mittel",
+    "description": "Bot panel: medium bot difficulty"
+  },
+  "VJkmRe": {
+    "defaultMessage": "Aus dem Spiel entfernt",
+    "description": "Title shown when the host removes this player from the game"
+  },
+  "VKJO6U": {
+    "defaultMessage": "Spiel",
+    "description": "Host menu tab with lobby and round settings"
+  },
+  "VVxUC9": {
+    "defaultMessage": "An",
+    "description": "Replay inspector value for an enabled toggle"
+  },
+  "WBeTqK": {
+    "defaultMessage": "Host-Menü",
+    "description": "Button that opens the host game management dialog"
+  },
+  "WLqWDd": {
+    "defaultMessage": "Größe",
+    "description": "Level preview: how wide the map is"
+  },
+  "WRYYYZ": {
+    "defaultMessage": "Geschwindigkeit",
+    "description": "Replay inspector row: entity speed"
+  },
+  "WW6Pjz": {
+    "defaultMessage": "Pilot",
+    "description": "Replay inspector title for a pilot who bailed out"
+  },
+  "WWTrIb": {
+    "defaultMessage": "Vielseitiges Flugzeug der Mittelklasse. Neben dem Maschinengewehr mit Bomben ausgerüstet. Schneller, starker Motor, aber nicht wendig.",
+    "description": "Description of the Salmson 2 aircraft"
+  },
+  "WXjYmQ": {
+    "defaultMessage": "Noch keine Spieler beigetreten.",
+    "description": "Shown in the host menu players tab when nobody is connected"
+  },
+  "WYS1bQ": {
+    "defaultMessage": "Beliebige Taste drücken...",
+    "description": "Info text explaining to press any key to set a keybind for a game action"
+  },
+  "Wjn/We": {
+    "defaultMessage": "Punktetabelle anzeigen",
+    "description": "Title for the 'View Scoreboard' action shown on the keybind settings section"
+  },
+  "Wo8cms": {
+    "defaultMessage": "Punkte",
+    "description": "scoreboard: Score"
+  },
+  "XH4Nct": {
+    "defaultMessage": "Replay-Datei herunterladen",
+    "description": "Button text for button which downloads the replay file from the host"
+  },
+  "XS5GTW": {
+    "defaultMessage": "Ende",
+    "description": "Button on the bottom game panel that leaves the game"
+  },
+  "XUWCAc": {
+    "defaultMessage": "Kugel",
+    "description": "Replay inspector title for a bullet"
+  },
+  "XiQxa8": {
+    "defaultMessage": "Landebahn",
+    "description": "Replay inspector title for a runway"
+  },
+  "Xx0fru": {
+    "defaultMessage": "Aus",
+    "description": "Replay inspector value for a disabled toggle"
+  },
+  "Y5ZG9P": {
+    "defaultMessage": "Du kannst das jederzeit in den Einstellungen ändern",
+    "description": "Tooltip for the username setting section"
+  },
+  "Yc8TsJ": {
+    "defaultMessage": "Dieses Replay konnte nicht geladen werden. Wenn es mit einer anderen Spielversion aufgenommen wurde, ist es möglicherweise nicht kompatibel.",
+    "description": "Error shown when a replay file fails to load"
+  },
+  "YzB1NF": {
+    "defaultMessage": "Beendet die Runde mit Unentschieden. Erneut drücken, um direkt zur nächsten Runde zu springen.",
+    "description": "Explanation under the host menu end round button"
+  },
+  "Z0iZnK": {
+    "defaultMessage": "{minutes} Minuten",
+    "description": "Game time option showing round length"
+  },
+  "Z6qKwZ": {
+    "defaultMessage": "Abbrechen",
+    "description": "Host menu button that cancels restarting the game with new settings"
+  },
+  "ZNwZqy": {
+    "defaultMessage": "(Warte, bis die Runde endet)",
+    "description": "Shown on screen in rounds mode while a dead or newly joined player waits for the next round"
+  },
+  "ZX0/sf": {
+    "defaultMessage": "Zufällige Bots treten dem Team mit weniger Spielern bei, damit die Teams ausgeglichen bleiben.",
+    "description": "Explanation in the host menu of how bots without a chosen team pick a team"
+  },
+  "ZaKgdz": {
+    "defaultMessage": "Mittel",
+    "description": "Level preview: map is medium sized"
+  },
+  "aLjUL6": {
+    "defaultMessage": "Level-Editor",
+    "description": "Sidebar link description for the Level Editor"
+  },
+  "aQA+eU": {
+    "defaultMessage": "Dieses Replay wurde mit einer anderen Spielversion aufgenommen. Es kann abweichen oder nicht richtig abgespielt werden.",
+    "description": "Warning shown before watching a replay recorded with another game version"
+  },
+  "aSDY0F": {
+    "defaultMessage": "Albatros D.II",
+    "description": "Name of the Albatros D.II aircraft"
+  },
+  "awpOU6": {
+    "defaultMessage": "Besitzer",
+    "description": "Replay inspector row: player who owns the entity"
+  },
+  "azXaJ7": {
+    "defaultMessage": "ja",
+    "description": "scoreboard: player is ready for the next round"
+  },
+  "b0BOYV": {
+    "defaultMessage": "Schwer",
+    "description": "Bot panel: hard bot difficulty"
+  },
+  "bLlX70": {
+    "defaultMessage": "Replay herunterladen ({seconds}s)",
+    "description": "Button text while the replay download is on cooldown"
+  },
+  "buqDOb": {
+    "defaultMessage": "Benutzernamen wählen",
+    "description": "Title for modal used to choose username"
+  },
+  "byMHD6": {
+    "defaultMessage": "{team, select, Centrals {Die Mittelmächte haben} other {Die Alliierten haben}} gewonnen!",
+    "description": "Shown in large text and in chat when a team wins the round"
+  },
+  "cFDrGv": {
+    "defaultMessage": "Ein optionaler Clan, der deinem Namen vorangestellt wird",
+    "description": "Tooltip for the clan setting section"
+  },
+  "crlI8a": {
+    "defaultMessage": "Salmson 2",
+    "description": "Name of the Salmson 2 aircraft"
+  },
+  "czwMiI": {
+    "defaultMessage": "Feind getroffen",
+    "description": "Replay inspector row: whether the bullet has hit an enemy"
+  },
+  "d2cMrt": {
+    "defaultMessage": "Stumm schalten",
+    "description": "Title for the 'Toggle Mute' action shown on the keybind settings section"
+  },
+  "dPTAzZ": {
+    "defaultMessage": "Nach links",
+    "description": "Title for the 'Move Left' action shown on the keybind settings section"
+  },
+  "daomJy": {
+    "defaultMessage": "Beitritt fehlgeschlagen",
+    "description": "Title shown when joining a game fails"
+  },
+  "ddsayU": {
+    "defaultMessage": "Startet für alle ein neues Spiel auf der gewählten Karte. Spieler und Bots bleiben, aber Teams, Punkte und das Replay beginnen von vorn.",
+    "description": "Explanation in the host menu of what changing the map or mode does"
+  },
+  "e5OODe": {
+    "defaultMessage": "Bereit",
+    "description": "scoreboard: Ready, shown between rounds"
+  },
+  "e9AUQd": {
+    "defaultMessage": "Nächste Runde starten",
+    "description": "Host menu button that skips the round results and intermission"
+  },
+  "ezKLsY": {
+    "defaultMessage": "Fokker DR.I",
+    "description": "Name of the Fokker DR.I aircraft"
+  },
+  "f3ix4b": {
+    "defaultMessage": "Bombe",
+    "description": "Title for the 'Bomb' action shown on the keybind settings section"
+  },
+  "g26t4O": {
+    "defaultMessage": "Auswahl entfernen",
+    "description": "Host menu button that removes the selected bots"
+  },
+  "gAAkRv": {
+    "defaultMessage": "Der Name muss zwischen 3 und 20 Zeichen lang sein",
+    "description": "Label explaining username constraints"
+  },
+  "gLE9z1": {
+    "defaultMessage": "Sprache",
+    "description": "Label for the dropdown on the settings page used to choose the site language"
+  },
+  "gVhE9z": {
+    "defaultMessage": "Spielmodus",
+    "description": "Title for selection used to choose the game mode"
+  },
+  "gg+aZq": {
+    "defaultMessage": "Tastenbelegung hinzufügen",
+    "description": "Title for modal where keybinds are added"
+  },
+  "hAeFx5": {
+    "defaultMessage": "Wichtiges Gebäude der {team, select, Centrals {Mittelmächte} other {Alliierten}} zerstört.",
+    "description": "Chat notice when a team's headquarters is destroyed"
+  },
+  "hfjqBq": {
+    "defaultMessage": "Fliegen",
+    "description": "Heading for the group of flight related keybinds on the settings page"
+  },
+  "hfzZFF": {
+    "defaultMessage": "Replay aus einer anderen Version",
+    "description": "Title of the dialog warning that a replay was recorded with another game version"
+  },
+  "iMTNwO": {
+    "defaultMessage": "Gemischt",
+    "description": "Level preview: map has both grass and desert terrain"
+  },
+  "ioK/G6": {
+    "defaultMessage": "Anzahl",
+    "description": "Label for the number of bots to add at once in the host menu"
+  },
+  "iu4I/w": {
+    "defaultMessage": "Trefferquote",
+    "description": "scoreboard: Accuracy"
+  },
+  "ivAE2s": {
+    "defaultMessage": "Ping",
+    "description": "scoreboard: Ping"
+  },
+  "izomYD": {
+    "defaultMessage": "Spiel-Replay ansehen",
+    "description": "Title for the Replay System page"
+  },
+  "jGs85w": {
+    "defaultMessage": "Explosion",
+    "description": "Collision legend label for explosions"
+  },
+  "jLMFLF": {
+    "defaultMessage": "Erneut versuchen",
+    "description": "Button that retries joining a game after a failed connection"
+  },
+  "jlutC2": {
+    "defaultMessage": "Nein",
+    "description": "Replay inspector value for false"
+  },
+  "jwBIfl": {
+    "defaultMessage": "An Fenster anpassen",
+    "description": "Button that resets the game view size so it fits the browser window"
+  },
+  "kfnjH9": {
+    "defaultMessage": "Einstellungen",
+    "description": "Sidebar link description for the Settings page"
+  },
+  "kp9XuR": {
+    "defaultMessage": "Pilot",
+    "description": "Replay inspector row: player flying the plane"
+  },
+  "ksNvP/": {
+    "defaultMessage": "Ausrichtung",
+    "description": "Replay inspector row: which way a runway faces"
+  },
+  "l2d2GO": {
+    "defaultMessage": "Name",
+    "description": "scoreboard: Name"
+  },
+  "lA7naj": {
+    "defaultMessage": "Neue Taste hinzufügen",
+    "description": "Tooltip for a button used to add a new keybind for an action"
+  },
+  "lQ6PJs": {
+    "defaultMessage": "Boden",
+    "description": "Collision legend label for ground terrain"
+  },
+  "lRuNA7": {
+    "defaultMessage": "Ja",
+    "description": "Replay inspector value for true"
+  },
+  "lyNeuJ": {
+    "defaultMessage": "Abbrechen",
+    "description": "Host menu button that cancels removing a player"
+  },
+  "mq7h++": {
+    "defaultMessage": "Replay ansehen",
+    "description": "Sidebar link description for the Replay System page"
+  },
+  "mt8kyi": {
+    "defaultMessage": "Schlachtfeld wird geladen",
+    "description": "Connection step shown while downloading the game state from the host"
+  },
+  "mv9zeu": {
+    "defaultMessage": "Gesundheit",
+    "description": "Replay inspector row: plane health"
+  },
+  "mwsPKY": {
+    "defaultMessage": "Bot",
+    "description": "Replay inspector tag shown after a bot player's name"
+  },
+  "nJj5BE": {
+    "defaultMessage": "Mit diesen Einstellungen neu starten",
+    "description": "Host menu button that starts a new game with the chosen map and mode, keeping players"
+  },
+  "nTiiQa": {
+    "defaultMessage": "Verlassen",
+    "description": "Replay inspector badge for a plane whose pilot bailed out"
+  },
+  "naawT1": {
+    "defaultMessage": "{count, plural, one {Bot} other {# Bots}} hinzufügen",
+    "description": "Host menu button that adds the chosen number of bots"
+  },
+  "nivA/t": {
+    "defaultMessage": "Einstellungen",
+    "description": "Title of the settings dialog opened during a game"
+  },
+  "obtz7Y": {
+    "defaultMessage": "Runden",
+    "description": "Game mode with no respawning, where a team wins a round by eliminating every enemy player or destroying their base"
+  },
+  "ohIqzI": {
+    "defaultMessage": "Motor an/aus",
+    "description": "Title for the 'Toggle Motor' action shown on the keybind settings section"
+  },
+  "ov7Lo+": {
+    "defaultMessage": "Spielzeit",
+    "description": "Title for selection used to choose the length of each round"
+  },
+  "p1ezxU": {
+    "defaultMessage": "Spiel hosten",
+    "description": "Call to action button text for button which starts a new game as a Host"
+  },
+  "pPlaQd": {
+    "defaultMessage": "Unverwundbar",
+    "description": "Replay inspector row: whether a pilot who just bailed out is still immune to plane collisions"
+  },
+  "pd7fXb": {
+    "defaultMessage": "Beitreten",
+    "description": "Call to action button text for button which joins a an existing game"
+  },
+  "ph+zWI": {
+    "defaultMessage": "Phase",
+    "description": "Replay inspector row: explosion animation phase"
+  },
+  "q/Nn6p": {
+    "defaultMessage": "Herauszoomen",
+    "description": "Replay camera zoom out button"
+  },
+  "q/xC9j": {
+    "defaultMessage": "Level",
+    "description": "Title for selection used to choose the game level"
+  },
+  "q58rGv": {
+    "defaultMessage": "Dein Name",
+    "description": "Placeholder in the name preview on the settings page when no username is entered"
+  },
+  "q9p7Ga": {
+    "defaultMessage": "Schwierigkeit",
+    "description": "Bot panel: label for the bot difficulty dropdown"
+  },
+  "qtiDl6": {
+    "defaultMessage": "Position",
+    "description": "Replay inspector row: entity world position"
+  },
+  "r/dEWT": {
+    "defaultMessage": "Dein Browser unterstützt die Verbindung nicht, die dieses Spiel benötigt.",
+    "description": "Error shown when the browser does not support WebRTC"
+  },
+  "r1oUWJ": {
+    "defaultMessage": "Alle Nachrichten anzeigen",
+    "description": "'show all messages' switch text"
+  },
+  "r4/ar4": {
+    "defaultMessage": "Wasser",
+    "description": "Level preview: how much of the map width is water"
+  },
+  "rSfZu5": {
+    "defaultMessage": "Jetzt neu starten",
+    "description": "Host menu button that confirms restarting the game with new settings"
+  },
+  "rntL0I": {
+    "defaultMessage": "Groß",
+    "description": "Level preview: map is large"
+  },
+  "sH9h71": {
+    "defaultMessage": "Zoom zurücksetzen",
+    "description": "Tooltip for the replay zoom level button that resets zoom to 100%"
+  },
+  "sW9neH": {
+    "defaultMessage": "(Strafe für Selbstmord)",
+    "description": "Shown below the respawn countdown when the wait is longer because of a suicide"
+  },
+  "szCmDm": {
+    "defaultMessage": "T",
+    "description": "scoreboard: Team column, one letter"
+  },
+  "tN8/0L": {
+    "defaultMessage": "Team-Chat",
+    "description": "Title for the 'Chat Team' action shown on the keybind settings section"
+  },
+  "tNvYDv": {
+    "defaultMessage": "nein",
+    "description": "scoreboard: player is not ready for the next round"
+  },
+  "tWStS8": {
+    "defaultMessage": "Gespeichertes Level löschen",
+    "description": "Accessible label for button in the level editor that deletes a saved level"
+  },
+  "thIICO": {
+    "defaultMessage": "Seit letzter Nutzung",
+    "description": "Replay inspector row: time since the runway was last reserved for takeoff or landing"
+  },
+  "twmPPM": {
+    "defaultMessage": "Dunklen Modus umschalten",
+    "description": "Toggle dark mode button text"
+  },
+  "u0u7ge": {
+    "defaultMessage": "Bei {time} ist ein Wiedergabefehler aufgetreten. Das passiert meist, wenn ein Replay mit einer anderen Spielversion aufgenommen wurde.",
+    "description": "Message shown when replay playback fails partway through"
+  },
+  "ult8LX": {
+    "defaultMessage": "Chat & Oberfläche",
+    "description": "Heading for the group of chat and interface keybinds on the settings page"
+  },
+  "vL5iqo": {
+    "defaultMessage": "Seiteneinstellungen",
+    "description": "Title for a settings section used to modify general site settings"
+  },
+  "vdZK2r": {
+    "defaultMessage": "Clan darf kein [ oder ] enthalten",
+    "description": "Error shown under the clan field when it contains square brackets"
+  },
+  "vrJzQq": {
+    "defaultMessage": "Bristol F.2b",
+    "description": "Name of the Bristol F.2b aircraft"
+  },
+  "wpH/Pl": {
+    "defaultMessage": "Komm auf unseren Discord!",
+    "description": "Navbar hover for discord button"
+  },
+  "wqE9Oy": {
+    "defaultMessage": "Zerstört",
+    "description": "Replay inspector badge for a destroyed building"
+  },
+  "wsJr7x": {
+    "defaultMessage": "Server nicht erreichbar. Prüfe deine Internetverbindung und versuche es erneut.",
+    "description": "Error shown when the matchmaking server cannot be reached"
+  },
+  "x6pbo9": {
+    "defaultMessage": "Landebahnen",
+    "description": "Level preview: runways per team"
+  },
+  "xPJ6oZ": {
+    "defaultMessage": "Flugzeug drehen",
+    "description": "Title for the 'Flip Plane' action shown on the keybind settings section"
+  },
+  "xRGqrp": {
+    "defaultMessage": "Name festlegen",
+    "description": "Call to action on setting section button which sets the name user has input"
+  },
+  "xS6Oh+": {
+    "defaultMessage": "Nachricht senden...",
+    "description": "chat: new message input placeholder"
+  },
+  "xUQ3kM": {
+    "defaultMessage": "Alle entfernen",
+    "description": "Host menu button that removes every bot"
+  },
+  "xVnyJE": {
+    "defaultMessage": "Frags",
+    "description": "scoreboard: Frags"
+  },
+  "xgjp90": {
+    "defaultMessage": "Kollision anzeigen",
+    "description": "Toggle that draws collision boxes and masks over the replay"
+  },
+  "y49T/p": {
+    "defaultMessage": "Chat an alle",
+    "description": "Title for the 'Chat All' action shown on the keybind settings section"
+  },
+  "y7BgjC": {
+    "defaultMessage": "Zufällig",
+    "description": "Bot panel: difficulty option that gives each added bot a random difficulty"
+  },
+  "yG7bvi": {
+    "defaultMessage": "Replay-Version",
+    "description": "Label for the game version a replay was recorded with"
+  },
+  "yHmsMU": {
+    "defaultMessage": "Meine Level",
+    "description": "Label for selection in the level editor used to open a saved level"
+  },
+  "yRjHTu": {
+    "defaultMessage": "Junkers J.1",
+    "description": "Name of the Junkers J.1 aircraft"
+  },
+  "yi/9eD": {
+    "defaultMessage": "Mittelmächte",
+    "description": "Bot panel: option to add a bot to the Centrals team"
+  },
+  "yjtXtd": {
+    "defaultMessage": "Ass",
+    "description": "Bot panel: hardest bot difficulty"
+  },
+  "zE1YNo": {
+    "defaultMessage": "Dieses Spiel verlassen?",
+    "description": "Title of the dialog shown when navigating away from an active game"
+  },
+  "zJii4v": {
+    "defaultMessage": "Wieder beitreten",
+    "description": "Button that reconnects to a game after the connection was lost"
+  },
+  "zKK/Af": {
+    "defaultMessage": "Verursacht Schaden",
+    "description": "Replay inspector row: whether the explosion still deals damage"
+  },
+  "zV7RzE": {
+    "defaultMessage": "Neben dem Maschinengewehr mit Bomben ausgerüstet, extrem robust, aber ein schwerfälliges Flugzeug.",
+    "description": "Description of the Junkers J.1 aircraft"
+  },
+  "zt6DPR": {
+    "defaultMessage": "Name gespeichert!",
+    "description": "Button text shown briefly after the user saves their name in settings"
+  },
+  "ztDpWK": {
+    "defaultMessage": "Landezone",
+    "description": "Collision legend label for runway landing areas"
+  },
+  "zvKn4f": {
+    "defaultMessage": "Spielcode",
+    "description": "Title shown above the shareable room code"
+  },
+  "zy+Ad+": {
+    "defaultMessage": "In meinen Leveln speichern",
+    "description": "Button text in the level editor that saves the level so it can be hosted"
+  }
+}

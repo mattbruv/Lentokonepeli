@@ -42,10 +42,32 @@ function Spain() {
     );
 }
 
+function Germany() {
+    return (
+        <svg viewBox="0 0 5 3" preserveAspectRatio="xMidYMid slice">
+            <rect width="5" height="1" fill="#000" />
+            <rect y="1" width="5" height="1" fill="#DD0000" />
+            <rect y="2" width="5" height="1" fill="#FFCE00" />
+        </svg>
+    );
+}
+
+function Russia() {
+    return (
+        <svg viewBox="0 0 9 6" preserveAspectRatio="xMidYMid slice">
+            <rect width="9" height="2" fill="#fff" />
+            <rect y="2" width="9" height="2" fill="#0039A6" />
+            <rect y="4" width="9" height="2" fill="#D52B1E" />
+        </svg>
+    );
+}
+
 const FLAGS: Record<KnownLocale, () => JSX.Element> = {
     en: UnitedKingdom,
     fi: Finland,
     es: Spain,
+    de: Germany,
+    ru: Russia,
 };
 
 export function LocaleFlag({ locale }: { locale?: string | null }) {

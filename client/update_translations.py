@@ -3,7 +3,7 @@ import json
 import os
 
 DEFAULT_LANG_FILE = "lang/en.json"
-LOCALES_TO_TRANSLATE = ["en", "fi", "es"]
+LOCALES_TO_TRANSLATE = ["en", "fi", "es", "de", "ru"]
 
 def run_command(command):
     """Run a shell command and print its output."""

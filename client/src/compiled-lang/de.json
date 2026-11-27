@@ -1,0 +1,1811 @@
+{
+  "++E6GV": [
+    {
+      "type": 0,
+      "value": "Motor"
+    }
+  ],
+  "+VHHqo": [
+    {
+      "type": 0,
+      "value": "Spiel verlassen"
+    }
+  ],
+  "+hJmve": [
+    {
+      "type": 0,
+      "value": "Unentschieden!"
+    }
+  ],
+  "+ptLoi": [
+    {
+      "type": 0,
+      "value": "Du wirst vom laufenden Spiel getrennt. Wenn du der Host bist, endet das Spiel für alle."
+    }
+  ],
+  "+vayKN": [
+    {
+      "type": 1,
+      "value": "key"
+    },
+    {
+      "type": 0,
+      "value": " von "
+    },
+    {
+      "type": 1,
+      "value": "action"
+    },
+    {
+      "type": 0,
+      "value": " entfernen"
+    }
+  ],
+  "/Dq9eZ": [
+    {
+      "type": 0,
+      "value": "Grafik"
+    }
+  ],
+  "/KlrcC": [
+    {
+      "type": 0,
+      "value": "Benutzername"
+    }
+  ],
+  "/U2XaA": [
+    {
+      "type": 0,
+      "value": "Explosion"
+    }
+  ],
+  "07P703": [
+    {
+      "type": 0,
+      "value": "Ein legendärer Dreidecker. Äußerst wendig und auch in maximaler Flughöhe hervorragend."
+    }
+  ],
+  "0Bk2IN": [
+    {
+      "type": 0,
+      "value": "Passiv"
+    }
+  ],
+  "1ICbwz": [
+    {
+      "type": 0,
+      "value": "Entfernen"
+    }
+  ],
+  "1UE6bt": [
+    {
+      "type": 0,
+      "value": "Flugzeug"
+    }
+  ],
+  "1ms0hN": [
+    {
+      "type": 0,
+      "value": "Spieler"
+    }
+  ],
+  "2w7ZSO": [
+    {
+      "type": 0,
+      "value": "Tode"
+    }
+  ],
+  "309viz": [
+    {
+      "type": 0,
+      "value": "Zum Spieler springen"
+    }
+  ],
+  "3R2xaB": [
+    {
+      "type": 0,
+      "value": "Schießen"
+    }
+  ],
+  "45aPwk": [
+    {
+      "type": 0,
+      "value": "Munition"
+    }
+  ],
+  "4EiQX8": [
+    {
+      "type": 0,
+      "value": "Unbenannte Lobby"
+    }
+  ],
+  "4GxiBe": [
+    {
+      "type": 0,
+      "value": "Karte auswählen..."
+    }
+  ],
+  "4MNKGm": [
+    {
+      "type": 0,
+      "value": "Aussteigen, Fallschirm öffnen"
+    }
+  ],
+  "5jSC1l": [
+    {
+      "type": 0,
+      "value": "Der Host hat nicht rechtzeitig geantwortet. Vielleicht hat er das Spiel verlassen, oder eine Firewall blockiert die Verbindung."
+    }
+  ],
+  "6AtUzs": [
+    {
+      "type": 0,
+      "value": "Klein"
+    }
+  ],
+  "6C102L": [
+    {
+      "type": 0,
+      "value": "Einstellungen"
+    }
+  ],
+  "6OnDBs": [
+    {
+      "type": 0,
+      "value": "Treibstoff"
+    }
+  ],
+  "6h1L5u": [
+    {
+      "type": 0,
+      "value": "Leicht"
+    }
+  ],
+  "6zMC33": [
+    {
+      "type": 0,
+      "value": "Der Host hat dich aus dem Spiel entfernt."
+    }
+  ],
+  "79SXbl": [
+    {
+      "type": 0,
+      "value": "Meine Level"
+    }
+  ],
+  "7GHFcs": [
+    {
+      "type": 0,
+      "value": "Wiedereinstieg in"
+    }
+  ],
+  "7sejUS": [
+    {
+      "type": 0,
+      "value": "Richtung"
+    }
+  ],
+  "7uvnUw": [
+    {
+      "type": 0,
+      "value": "Keine"
+    }
+  ],
+  "80jhcO": [
+    {
+      "type": 0,
+      "value": "Umgedreht"
+    }
+  ],
+  "8Am/Pl": [
+    {
+      "type": 0,
+      "value": "Einfaches Flugzeug mit Maschinengewehr, ohne besonders gute oder schlechte Eigenschaften. Eine gute Wahl für Anfänger."
+    }
+  ],
+  "8B1K0N": [
+    {
+      "type": 0,
+      "value": "Gespeichert!"
+    }
+  ],
+  "8WM3G7": [
+    {
+      "type": 0,
+      "value": "Eingabe"
+    }
+  ],
+  "8iVdSN": [
+    {
+      "type": 0,
+      "value": "Steuerung"
+    }
+  ],
+  "9+0fXW": [
+    {
+      "type": 0,
+      "value": "Gelände"
+    }
+  ],
+  "93dkEY": [
+    {
+      "type": 0,
+      "value": "Letzte Nutzung"
+    }
+  ],
+  "9bQEK7": [
+    {
+      "type": 0,
+      "value": "Hauptquartier"
+    }
+  ],
+  "9l2moM": [
+    {
+      "type": 0,
+      "value": "Landebahn der "
+    },
+    {
+      "options": {
+        "Centrals": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Mittelmächte"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Alliierten"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "team"
+    },
+    {
+      "type": 0,
+      "value": " zerstört."
+    }
+  ],
+  "AY7tVh": [
+    {
+      "type": 0,
+      "value": "Bot"
+    }
+  ],
+  "AZRVPH": [
+    {
+      "type": 0,
+      "value": "Host-Menü"
+    }
+  ],
+  "AeYTDy": [
+    {
+      "type": 0,
+      "value": "Trotzdem ansehen"
+    }
+  ],
+  "B/tYl9": [
+    {
+      "type": 0,
+      "value": "Küste"
+    }
+  ],
+  "B1CMe5": [
+    {
+      "type": 0,
+      "value": "Als Host kannst du jederzeit eine Replay-Datei herunterladen."
+    }
+  ],
+  "BDEGh4": [
+    {
+      "type": 0,
+      "value": "Hauptquartier"
+    }
+  ],
+  "BLykMd": [
+    {
+      "type": 0,
+      "value": "Clan"
+    }
+  ],
+  "BXJgxS": [
+    {
+      "type": 0,
+      "value": "Beim Verbinden mit dem Host ist etwas schiefgelaufen."
+    }
+  ],
+  "BkSsse": [
+    {
+      "type": 0,
+      "value": "Diese Datei konnte nicht gelesen werden. Vielleicht ist sie kein Replay, oder sie wurde mit einer zu alten Spielversion aufgenommen."
+    }
+  ],
+  "C06Dta": [
+    {
+      "type": 0,
+      "value": "Host wird erreicht"
+    }
+  ],
+  "CpTJ9C": [
+    {
+      "type": 0,
+      "value": "Runde beenden"
+    }
+  ],
+  "D/agNw": [
+    {
+      "type": 0,
+      "value": "Wasser"
+    }
+  ],
+  "DMjXm5": [
+    {
+      "type": 0,
+      "value": "Hineinzoomen"
+    }
+  ],
+  "DWNyUG": [
+    {
+      "type": 0,
+      "value": "Replay auswählen"
+    }
+  ],
+  "DcRgtq": [
+    {
+      "type": 0,
+      "value": "Alliierte"
+    }
+  ],
+  "Dyoy6E": [
+    {
+      "type": 0,
+      "value": "Spieler entfernen"
+    }
+  ],
+  "E/uHyU": [
+    {
+      "type": 0,
+      "value": "Ein Flugzeug mit recht starkem Maschinengewehr. Eine gute Wahl, besonders für Anfänger."
+    }
+  ],
+  "EB+s18": [
+    {
+      "type": 0,
+      "value": "Überspringt Ergebnisse und Pause und startet sofort eine neue Runde."
+    }
+  ],
+  "EJxKHB": [
+    {
+      "type": 0,
+      "value": "Sieg bei Zeitablauf"
+    }
+  ],
+  "El6eCJ": [
+    {
+      "type": 0,
+      "value": "Kleiner"
+    }
+  ],
+  "F/owlo": [
+    {
+      "type": 0,
+      "value": "Die Verbindung zum Host wurde unterbrochen. Vielleicht hat der Host das Spiel verlassen."
+    }
+  ],
+  "F3eL+0": [
+    {
+      "type": 0,
+      "value": "Verbinde mit Server"
+    }
+  ],
+  "FVxFnN": [
+    {
+      "type": 0,
+      "value": "Replay angehalten"
+    }
+  ],
+  "FeaIOV": [
+    {
+      "type": 0,
+      "value": "Bombe"
+    }
+  ],
+  "G7DhrV": [
+    {
+      "type": 0,
+      "value": "Spielen"
+    }
+  ],
+  "GEspS4": [
+    {
+      "type": 0,
+      "value": "Sopwith Camel"
+    }
+  ],
+  "GJuTty": [
+    {
+      "type": 0,
+      "value": "Aktuelle Version"
+    }
+  ],
+  "GgV4fK": [
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 7
+            },
+            {
+              "type": 0,
+              "value": " Bot"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 7
+            },
+            {
+              "type": 0,
+              "value": " Bots"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "H0TxYO": [
+    {
+      "type": 0,
+      "value": "Kein Spiel mit dem Code "
+    },
+    {
+      "type": 1,
+      "value": "code"
+    },
+    {
+      "type": 0,
+      "value": " gefunden. Prüfe den Code und versuche es erneut."
+    }
+  ],
+  "H6qNPr": [
+    {
+      "type": 0,
+      "value": "Spiel beitreten"
+    }
+  ],
+  "HUQWTK": [
+    {
+      "type": 0,
+      "value": "Unterstützte Teile"
+    }
+  ],
+  "INGml3": [
+    {
+      "type": 0,
+      "value": "4-stelligen Spielcode eingeben..."
+    }
+  ],
+  "JSLtOI": [
+    {
+      "type": 0,
+      "value": "Abgeschossen von"
+    }
+  ],
+  "JqPC9Z": [
+    {
+      "type": 0,
+      "value": "Folge Spieler"
+    }
+  ],
+  "JtkM9d": [
+    {
+      "type": 0,
+      "value": "Keins"
+    }
+  ],
+  "JwnLHL": [
+    {
+      "type": 0,
+      "value": "Replay wird heruntergeladen "
+    },
+    {
+      "type": 1,
+      "value": "percent"
+    },
+    {
+      "type": 0,
+      "value": "%"
+    }
+  ],
+  "Jyv5JT": [
+    {
+      "type": 0,
+      "value": "Normal"
+    }
+  ],
+  "Kdsx9u": [
+    {
+      "type": 0,
+      "value": "Karte & Modus"
+    }
+  ],
+  "L9AKyJ": [
+    {
+      "type": 0,
+      "value": "Abbrechen"
+    }
+  ],
+  "Lo5tsu": [
+    {
+      "type": 0,
+      "value": "Weiterspielen"
+    }
+  ],
+  "M2xffJ": [
+    {
+      "type": 0,
+      "value": "Replay-Datei speichern"
+    }
+  ],
+  "M9/1jj": [
+    {
+      "type": 0,
+      "value": "Äußerst wendig. Nicht für Anfänger empfohlen."
+    }
+  ],
+  "M9uG/P": [
+    {
+      "type": 0,
+      "value": "Bots"
+    }
+  ],
+  "MMvi2N": [
+    {
+      "type": 0,
+      "value": "Kugel"
+    }
+  ],
+  "MYX7pK": [
+    {
+      "type": 0,
+      "value": "Alter"
+    }
+  ],
+  "Ma6JVf": [
+    {
+      "type": 0,
+      "value": "Verlassenes Flugzeug"
+    }
+  ],
+  "Mewnhs": [
+    {
+      "type": 0,
+      "value": "Mehr als "
+    },
+    {
+      "type": 1,
+      "value": "max"
+    },
+    {
+      "type": 0,
+      "value": " Bots können das Spiel verlangsamen."
+    }
+  ],
+  "Mn1HEl": [
+    {
+      "type": 0,
+      "value": "Mittelmächte"
+    }
+  ],
+  "MnSHDt": [
+    {
+      "type": 0,
+      "value": "Sprache wählen"
+    }
+  ],
+  "MrbN1S": [
+    {
+      "type": 0,
+      "value": "(Strafe für Teamkill)"
+    }
+  ],
+  "NCSY6O": [
+    {
+      "type": 0,
+      "value": "Kampf"
+    }
+  ],
+  "NGiyEX": [
+    {
+      "type": 0,
+      "value": "Höhere Punktzahl"
+    }
+  ],
+  "NRgcth": [
+    {
+      "type": 0,
+      "value": "Anderes Replay laden"
+    }
+  ],
+  "Nbb2Yc": [
+    {
+      "type": 0,
+      "value": "Nach rechts"
+    }
+  ],
+  "NyL4Zc": [
+    {
+      "type": 0,
+      "value": "Aufgenommen mit "
+    },
+    {
+      "type": 1,
+      "value": "replayVersion"
+    },
+    {
+      "type": 0,
+      "value": ", du verwendest "
+    },
+    {
+      "type": 1,
+      "value": "currentVersion"
+    },
+    {
+      "type": 0,
+      "value": ". Die Wiedergabe kann abweichen."
+    }
+  ],
+  "OVTgWq": [
+    {
+      "type": 0,
+      "value": "Unbegrenzt"
+    }
+  ],
+  "P2G+0B": [
+    {
+      "type": 0,
+      "value": "Pilot"
+    }
+  ],
+  "PEq+cf": [
+    {
+      "type": 0,
+      "value": "Flugzeug"
+    }
+  ],
+  "PEq6j5": [
+    {
+      "type": 0,
+      "value": "um den Chat zu schließen"
+    }
+  ],
+  "PSkosK": [
+    {
+      "type": 0,
+      "value": "Spielgröße"
+    }
+  ],
+  "PUiIc0": [
+    {
+      "type": 0,
+      "value": "Zufällig"
+    }
+  ],
+  "PzZfKW": [
+    {
+      "type": 0,
+      "value": "Original-Level"
+    }
+  ],
+  "Q1mV6L": [
+    {
+      "type": 0,
+      "value": "Verbindung getrennt"
+    }
+  ],
+  "Q9UCoB": [
+    {
+      "type": 0,
+      "value": "Größer"
+    }
+  ],
+  "QYueam": [
+    {
+      "type": 0,
+      "value": "Trete Spiel "
+    },
+    {
+      "type": 1,
+      "value": "code"
+    },
+    {
+      "type": 0,
+      "value": " bei"
+    }
+  ],
+  "QdN+gh": [
+    {
+      "type": 0,
+      "value": "Wüste"
+    }
+  ],
+  "Qj15PN": [
+    {
+      "type": 0,
+      "value": "Hellen Modus umschalten"
+    }
+  ],
+  "QnT7VI": [
+    {
+      "type": 0,
+      "value": "Bots"
+    }
+  ],
+  "Qt6faF": [
+    {
+      "type": 0,
+      "value": "Spiel hosten"
+    }
+  ],
+  "QwMaWJ": [
+    {
+      "type": 0,
+      "value": "Speichern"
+    }
+  ],
+  "R7Fptk": [
+    {
+      "type": 0,
+      "value": "Zurück zur Lobby"
+    }
+  ],
+  "RJPf0Z": [
+    {
+      "type": 0,
+      "value": "Sound"
+    }
+  ],
+  "RyQOi8": [
+    {
+      "type": 0,
+      "value": "Hauptquartiere"
+    }
+  ],
+  "SDo2PQ": [
+    {
+      "type": 0,
+      "value": "Quellcode auf GitHub ansehen"
+    }
+  ],
+  "SDyaJI": [
+    {
+      "type": 0,
+      "value": "Bombe"
+    }
+  ],
+  "SP08Wt": [
+    {
+      "type": 0,
+      "value": "Schaden"
+    }
+  ],
+  "SdyT+q": [
+    {
+      "type": 0,
+      "value": "Bomben"
+    }
+  ],
+  "Sxp4im": [
+    {
+      "type": 0,
+      "value": "Code"
+    }
+  ],
+  "T+D+U2": [
+    {
+      "type": 0,
+      "value": "Landebahn"
+    }
+  ],
+  "T+NmK1": [
+    {
+      "type": 0,
+      "value": "Bot entfernen"
+    }
+  ],
+  "T2A0lT": [
+    {
+      "type": 0,
+      "value": "Riesig"
+    }
+  ],
+  "T631Pr": [
+    {
+      "type": 0,
+      "value": "Gespeichertes Level öffnen..."
+    }
+  ],
+  "TF2HVX": [
+    {
+      "type": 0,
+      "value": "Keiner"
+    }
+  ],
+  "TcT+Lx": [
+    {
+      "type": 0,
+      "value": "Alliierte"
+    }
+  ],
+  "Telnt5": [
+    {
+      "type": 0,
+      "value": "Zustand"
+    }
+  ],
+  "TktZUh": [
+    {
+      "type": 0,
+      "value": "Host"
+    }
+  ],
+  "Tsq+GT": [
+    {
+      "type": 0,
+      "value": "Lobbyname"
+    }
+  ],
+  "U/mSA3": [
+    {
+      "type": 0,
+      "value": "Steuerung zurücksetzen"
+    }
+  ],
+  "URI5Vx": [
+    {
+      "type": 0,
+      "value": "Benutzereinstellungen"
+    }
+  ],
+  "URl7v/": [
+    {
+      "type": 0,
+      "value": "Replay wird angefordert..."
+    }
+  ],
+  "UdvUli": [
+    {
+      "type": 0,
+      "value": "Gras"
+    }
+  ],
+  "UwCHgC": [
+    {
+      "type": 0,
+      "value": "(Drücke Enter, wenn du bereit bist)"
+    }
+  ],
+  "V/EQaQ": [
+    {
+      "type": 0,
+      "value": "Wird repariert"
+    }
+  ],
+  "V07IkD": [
+    {
+      "type": 0,
+      "value": "Ziehe das Spielfeld, um die Kamera frei zu bewegen, scrolle zum Zoomen."
+    }
+  ],
+  "V27mjT": [
+    {
+      "type": 0,
+      "value": "Mittel"
+    }
+  ],
+  "VJkmRe": [
+    {
+      "type": 0,
+      "value": "Aus dem Spiel entfernt"
+    }
+  ],
+  "VKJO6U": [
+    {
+      "type": 0,
+      "value": "Spiel"
+    }
+  ],
+  "VVxUC9": [
+    {
+      "type": 0,
+      "value": "An"
+    }
+  ],
+  "WBeTqK": [
+    {
+      "type": 0,
+      "value": "Host-Menü"
+    }
+  ],
+  "WLqWDd": [
+    {
+      "type": 0,
+      "value": "Größe"
+    }
+  ],
+  "WRYYYZ": [
+    {
+      "type": 0,
+      "value": "Geschwindigkeit"
+    }
+  ],
+  "WW6Pjz": [
+    {
+      "type": 0,
+      "value": "Pilot"
+    }
+  ],
+  "WWTrIb": [
+    {
+      "type": 0,
+      "value": "Vielseitiges Flugzeug der Mittelklasse. Neben dem Maschinengewehr mit Bomben ausgerüstet. Schneller, starker Motor, aber nicht wendig."
+    }
+  ],
+  "WXjYmQ": [
+    {
+      "type": 0,
+      "value": "Noch keine Spieler beigetreten."
+    }
+  ],
+  "WYS1bQ": [
+    {
+      "type": 0,
+      "value": "Beliebige Taste drücken..."
+    }
+  ],
+  "Wjn/We": [
+    {
+      "type": 0,
+      "value": "Punktetabelle anzeigen"
+    }
+  ],
+  "Wo8cms": [
+    {
+      "type": 0,
+      "value": "Punkte"
+    }
+  ],
+  "XH4Nct": [
+    {
+      "type": 0,
+      "value": "Replay-Datei herunterladen"
+    }
+  ],
+  "XS5GTW": [
+    {
+      "type": 0,
+      "value": "Ende"
+    }
+  ],
+  "XUWCAc": [
+    {
+      "type": 0,
+      "value": "Kugel"
+    }
+  ],
+  "XiQxa8": [
+    {
+      "type": 0,
+      "value": "Landebahn"
+    }
+  ],
+  "Xx0fru": [
+    {
+      "type": 0,
+      "value": "Aus"
+    }
+  ],
+  "Y5ZG9P": [
+    {
+      "type": 0,
+      "value": "Du kannst das jederzeit in den Einstellungen ändern"
+    }
+  ],
+  "Yc8TsJ": [
+    {
+      "type": 0,
+      "value": "Dieses Replay konnte nicht geladen werden. Wenn es mit einer anderen Spielversion aufgenommen wurde, ist es möglicherweise nicht kompatibel."
+    }
+  ],
+  "YzB1NF": [
+    {
+      "type": 0,
+      "value": "Beendet die Runde mit Unentschieden. Erneut drücken, um direkt zur nächsten Runde zu springen."
+    }
+  ],
+  "Z0iZnK": [
+    {
+      "type": 1,
+      "value": "minutes"
+    },
+    {
+      "type": 0,
+      "value": " Minuten"
+    }
+  ],
+  "Z6qKwZ": [
+    {
+      "type": 0,
+      "value": "Abbrechen"
+    }
+  ],
+  "ZNwZqy": [
+    {
+      "type": 0,
+      "value": "(Warte, bis die Runde endet)"
+    }
+  ],
+  "ZX0/sf": [
+    {
+      "type": 0,
+      "value": "Zufällige Bots treten dem Team mit weniger Spielern bei, damit die Teams ausgeglichen bleiben."
+    }
+  ],
+  "ZaKgdz": [
+    {
+      "type": 0,
+      "value": "Mittel"
+    }
+  ],
+  "aLjUL6": [
+    {
+      "type": 0,
+      "value": "Level-Editor"
+    }
+  ],
+  "aQA+eU": [
+    {
+      "type": 0,
+      "value": "Dieses Replay wurde mit einer anderen Spielversion aufgenommen. Es kann abweichen oder nicht richtig abgespielt werden."
+    }
+  ],
+  "aSDY0F": [
+    {
+      "type": 0,
+      "value": "Albatros D.II"
+    }
+  ],
+  "awpOU6": [
+    {
+      "type": 0,
+      "value": "Besitzer"
+    }
+  ],
+  "azXaJ7": [
+    {
+      "type": 0,
+      "value": "ja"
+    }
+  ],
+  "b0BOYV": [
+    {
+      "type": 0,
+      "value": "Schwer"
+    }
+  ],
+  "bLlX70": [
+    {
+      "type": 0,
+      "value": "Replay herunterladen ("
+    },
+    {
+      "type": 1,
+      "value": "seconds"
+    },
+    {
+      "type": 0,
+      "value": "s)"
+    }
+  ],
+  "buqDOb": [
+    {
+      "type": 0,
+      "value": "Benutzernamen wählen"
+    }
+  ],
+  "byMHD6": [
+    {
+      "options": {
+        "Centrals": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Die Mittelmächte haben"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Die Alliierten haben"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "team"
+    },
+    {
+      "type": 0,
+      "value": " gewonnen!"
+    }
+  ],
+  "cFDrGv": [
+    {
+      "type": 0,
+      "value": "Ein optionaler Clan, der deinem Namen vorangestellt wird"
+    }
+  ],
+  "crlI8a": [
+    {
+      "type": 0,
+      "value": "Salmson 2"
+    }
+  ],
+  "czwMiI": [
+    {
+      "type": 0,
+      "value": "Feind getroffen"
+    }
+  ],
+  "d2cMrt": [
+    {
+      "type": 0,
+      "value": "Stumm schalten"
+    }
+  ],
+  "dPTAzZ": [
+    {
+      "type": 0,
+      "value": "Nach links"
+    }
+  ],
+  "daomJy": [
+    {
+      "type": 0,
+      "value": "Beitritt fehlgeschlagen"
+    }
+  ],
+  "ddsayU": [
+    {
+      "type": 0,
+      "value": "Startet für alle ein neues Spiel auf der gewählten Karte. Spieler und Bots bleiben, aber Teams, Punkte und das Replay beginnen von vorn."
+    }
+  ],
+  "e5OODe": [
+    {
+      "type": 0,
+      "value": "Bereit"
+    }
+  ],
+  "e9AUQd": [
+    {
+      "type": 0,
+      "value": "Nächste Runde starten"
+    }
+  ],
+  "ezKLsY": [
+    {
+      "type": 0,
+      "value": "Fokker DR.I"
+    }
+  ],
+  "f3ix4b": [
+    {
+      "type": 0,
+      "value": "Bombe"
+    }
+  ],
+  "g26t4O": [
+    {
+      "type": 0,
+      "value": "Auswahl entfernen"
+    }
+  ],
+  "gAAkRv": [
+    {
+      "type": 0,
+      "value": "Der Name muss zwischen 3 und 20 Zeichen lang sein"
+    }
+  ],
+  "gLE9z1": [
+    {
+      "type": 0,
+      "value": "Sprache"
+    }
+  ],
+  "gVhE9z": [
+    {
+      "type": 0,
+      "value": "Spielmodus"
+    }
+  ],
+  "gg+aZq": [
+    {
+      "type": 0,
+      "value": "Tastenbelegung hinzufügen"
+    }
+  ],
+  "hAeFx5": [
+    {
+      "type": 0,
+      "value": "Wichtiges Gebäude der "
+    },
+    {
+      "options": {
+        "Centrals": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Mittelmächte"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Alliierten"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "team"
+    },
+    {
+      "type": 0,
+      "value": " zerstört."
+    }
+  ],
+  "hfjqBq": [
+    {
+      "type": 0,
+      "value": "Fliegen"
+    }
+  ],
+  "hfzZFF": [
+    {
+      "type": 0,
+      "value": "Replay aus einer anderen Version"
+    }
+  ],
+  "iMTNwO": [
+    {
+      "type": 0,
+      "value": "Gemischt"
+    }
+  ],
+  "ioK/G6": [
+    {
+      "type": 0,
+      "value": "Anzahl"
+    }
+  ],
+  "iu4I/w": [
+    {
+      "type": 0,
+      "value": "Trefferquote"
+    }
+  ],
+  "ivAE2s": [
+    {
+      "type": 0,
+      "value": "Ping"
+    }
+  ],
+  "izomYD": [
+    {
+      "type": 0,
+      "value": "Spiel-Replay ansehen"
+    }
+  ],
+  "jGs85w": [
+    {
+      "type": 0,
+      "value": "Explosion"
+    }
+  ],
+  "jLMFLF": [
+    {
+      "type": 0,
+      "value": "Erneut versuchen"
+    }
+  ],
+  "jlutC2": [
+    {
+      "type": 0,
+      "value": "Nein"
+    }
+  ],
+  "jwBIfl": [
+    {
+      "type": 0,
+      "value": "An Fenster anpassen"
+    }
+  ],
+  "kfnjH9": [
+    {
+      "type": 0,
+      "value": "Einstellungen"
+    }
+  ],
+  "kp9XuR": [
+    {
+      "type": 0,
+      "value": "Pilot"
+    }
+  ],
+  "ksNvP/": [
+    {
+      "type": 0,
+      "value": "Ausrichtung"
+    }
+  ],
+  "l2d2GO": [
+    {
+      "type": 0,
+      "value": "Name"
+    }
+  ],
+  "lA7naj": [
+    {
+      "type": 0,
+      "value": "Neue Taste hinzufügen"
+    }
+  ],
+  "lQ6PJs": [
+    {
+      "type": 0,
+      "value": "Boden"
+    }
+  ],
+  "lRuNA7": [
+    {
+      "type": 0,
+      "value": "Ja"
+    }
+  ],
+  "lyNeuJ": [
+    {
+      "type": 0,
+      "value": "Abbrechen"
+    }
+  ],
+  "mq7h++": [
+    {
+      "type": 0,
+      "value": "Replay ansehen"
+    }
+  ],
+  "mt8kyi": [
+    {
+      "type": 0,
+      "value": "Schlachtfeld wird geladen"
+    }
+  ],
+  "mv9zeu": [
+    {
+      "type": 0,
+      "value": "Gesundheit"
+    }
+  ],
+  "mwsPKY": [
+    {
+      "type": 0,
+      "value": "Bot"
+    }
+  ],
+  "nJj5BE": [
+    {
+      "type": 0,
+      "value": "Mit diesen Einstellungen neu starten"
+    }
+  ],
+  "nTiiQa": [
+    {
+      "type": 0,
+      "value": "Verlassen"
+    }
+  ],
+  "naawT1": [
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Bot"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 7
+            },
+            {
+              "type": 0,
+              "value": " Bots"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " hinzufügen"
+    }
+  ],
+  "nivA/t": [
+    {
+      "type": 0,
+      "value": "Einstellungen"
+    }
+  ],
+  "obtz7Y": [
+    {
+      "type": 0,
+      "value": "Runden"
+    }
+  ],
+  "ohIqzI": [
+    {
+      "type": 0,
+      "value": "Motor an/aus"
+    }
+  ],
+  "ov7Lo+": [
+    {
+      "type": 0,
+      "value": "Spielzeit"
+    }
+  ],
+  "p1ezxU": [
+    {
+      "type": 0,
+      "value": "Spiel hosten"
+    }
+  ],
+  "pPlaQd": [
+    {
+      "type": 0,
+      "value": "Unverwundbar"
+    }
+  ],
+  "pd7fXb": [
+    {
+      "type": 0,
+      "value": "Beitreten"
+    }
+  ],
+  "ph+zWI": [
+    {
+      "type": 0,
+      "value": "Phase"
+    }
+  ],
+  "q/Nn6p": [
+    {
+      "type": 0,
+      "value": "Herauszoomen"
+    }
+  ],
+  "q/xC9j": [
+    {
+      "type": 0,
+      "value": "Level"
+    }
+  ],
+  "q58rGv": [
+    {
+      "type": 0,
+      "value": "Dein Name"
+    }
+  ],
+  "q9p7Ga": [
+    {
+      "type": 0,
+      "value": "Schwierigkeit"
+    }
+  ],
+  "qtiDl6": [
+    {
+      "type": 0,
+      "value": "Position"
+    }
+  ],
+  "r/dEWT": [
+    {
+      "type": 0,
+      "value": "Dein Browser unterstützt die Verbindung nicht, die dieses Spiel benötigt."
+    }
+  ],
+  "r1oUWJ": [
+    {
+      "type": 0,
+      "value": "Alle Nachrichten anzeigen"
+    }
+  ],
+  "r4/ar4": [
+    {
+      "type": 0,
+      "value": "Wasser"
+    }
+  ],
+  "rSfZu5": [
+    {
+      "type": 0,
+      "value": "Jetzt neu starten"
+    }
+  ],
+  "rntL0I": [
+    {
+      "type": 0,
+      "value": "Groß"
+    }
+  ],
+  "sH9h71": [
+    {
+      "type": 0,
+      "value": "Zoom zurücksetzen"
+    }
+  ],
+  "sW9neH": [
+    {
+      "type": 0,
+      "value": "(Strafe für Selbstmord)"
+    }
+  ],
+  "szCmDm": [
+    {
+      "type": 0,
+      "value": "T"
+    }
+  ],
+  "tN8/0L": [
+    {
+      "type": 0,
+      "value": "Team-Chat"
+    }
+  ],
+  "tNvYDv": [
+    {
+      "type": 0,
+      "value": "nein"
+    }
+  ],
+  "tWStS8": [
+    {
+      "type": 0,
+      "value": "Gespeichertes Level löschen"
+    }
+  ],
+  "thIICO": [
+    {
+      "type": 0,
+      "value": "Seit letzter Nutzung"
+    }
+  ],
+  "twmPPM": [
+    {
+      "type": 0,
+      "value": "Dunklen Modus umschalten"
+    }
+  ],
+  "u0u7ge": [
+    {
+      "type": 0,
+      "value": "Bei "
+    },
+    {
+      "type": 1,
+      "value": "time"
+    },
+    {
+      "type": 0,
+      "value": " ist ein Wiedergabefehler aufgetreten. Das passiert meist, wenn ein Replay mit einer anderen Spielversion aufgenommen wurde."
+    }
+  ],
+  "ult8LX": [
+    {
+      "type": 0,
+      "value": "Chat & Oberfläche"
+    }
+  ],
+  "vL5iqo": [
+    {
+      "type": 0,
+      "value": "Seiteneinstellungen"
+    }
+  ],
+  "vdZK2r": [
+    {
+      "type": 0,
+      "value": "Clan darf kein [ oder ] enthalten"
+    }
+  ],
+  "vrJzQq": [
+    {
+      "type": 0,
+      "value": "Bristol F.2b"
+    }
+  ],
+  "wpH/Pl": [
+    {
+      "type": 0,
+      "value": "Komm auf unseren Discord!"
+    }
+  ],
+  "wqE9Oy": [
+    {
+      "type": 0,
+      "value": "Zerstört"
+    }
+  ],
+  "wsJr7x": [
+    {
+      "type": 0,
+      "value": "Server nicht erreichbar. Prüfe deine Internetverbindung und versuche es erneut."
+    }
+  ],
+  "x6pbo9": [
+    {
+      "type": 0,
+      "value": "Landebahnen"
+    }
+  ],
+  "xPJ6oZ": [
+    {
+      "type": 0,
+      "value": "Flugzeug drehen"
+    }
+  ],
+  "xRGqrp": [
+    {
+      "type": 0,
+      "value": "Name festlegen"
+    }
+  ],
+  "xS6Oh+": [
+    {
+      "type": 0,
+      "value": "Nachricht senden..."
+    }
+  ],
+  "xUQ3kM": [
+    {
+      "type": 0,
+      "value": "Alle entfernen"
+    }
+  ],
+  "xVnyJE": [
+    {
+      "type": 0,
+      "value": "Frags"
+    }
+  ],
+  "xgjp90": [
+    {
+      "type": 0,
+      "value": "Kollision anzeigen"
+    }
+  ],
+  "y49T/p": [
+    {
+      "type": 0,
+      "value": "Chat an alle"
+    }
+  ],
+  "y7BgjC": [
+    {
+      "type": 0,
+      "value": "Zufällig"
+    }
+  ],
+  "yG7bvi": [
+    {
+      "type": 0,
+      "value": "Replay-Version"
+    }
+  ],
+  "yHmsMU": [
+    {
+      "type": 0,
+      "value": "Meine Level"
+    }
+  ],
+  "yRjHTu": [
+    {
+      "type": 0,
+      "value": "Junkers J.1"
+    }
+  ],
+  "yi/9eD": [
+    {
+      "type": 0,
+      "value": "Mittelmächte"
+    }
+  ],
+  "yjtXtd": [
+    {
+      "type": 0,
+      "value": "Ass"
+    }
+  ],
+  "zE1YNo": [
+    {
+      "type": 0,
+      "value": "Dieses Spiel verlassen?"
+    }
+  ],
+  "zJii4v": [
+    {
+      "type": 0,
+      "value": "Wieder beitreten"
+    }
+  ],
+  "zKK/Af": [
+    {
+      "type": 0,
+      "value": "Verursacht Schaden"
+    }
+  ],
+  "zV7RzE": [
+    {
+      "type": 0,
+      "value": "Neben dem Maschinengewehr mit Bomben ausgerüstet, extrem robust, aber ein schwerfälliges Flugzeug."
+    }
+  ],
+  "zt6DPR": [
+    {
+      "type": 0,
+      "value": "Name gespeichert!"
+    }
+  ],
+  "ztDpWK": [
+    {
+      "type": 0,
+      "value": "Landezone"
+    }
+  ],
+  "zvKn4f": [
+    {
+      "type": 0,
+      "value": "Spielcode"
+    }
+  ],
+  "zy+Ad+": [
+    {
+      "type": 0,
+      "value": "In meinen Leveln speichern"
+    }
+  ]
+}

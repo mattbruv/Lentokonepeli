@@ -150,7 +150,11 @@ export function Settings() {
                         }
                     >
                         <Select
-                            label="Select Locale"
+                            label={intl.formatMessage({
+                                defaultMessage: "Language",
+                                description:
+                                    "Label for the dropdown on the settings page used to choose the site language",
+                            })}
                             value={settings.locale}
                             allowDeselect={false}
                             onChange={(_, item) => {
@@ -160,7 +164,10 @@ export function Settings() {
                                 });
                             }}
                             data={KNOWN_LOCALE_DROPDOWN_VALUES}
-                            placeholder="Choose locale"
+                            placeholder={intl.formatMessage({
+                                defaultMessage: "Choose language",
+                                description: "Placeholder for the site language dropdown on the settings page",
+                            })}
                             leftSection={<LocaleFlag locale={settings.locale} />}
                             leftSectionWidth={46}
                             renderOption={({ option }) => (

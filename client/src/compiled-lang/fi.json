@@ -605,6 +605,12 @@
       "value": "Centrals"
     }
   ],
+  "MnSHDt": [
+    {
+      "type": 0,
+      "value": "Choose language"
+    }
+  ],
   "MrbN1S": [
     {
       "type": 0,
@@ -1221,6 +1227,12 @@
     {
       "type": 0,
       "value": "Nimen tulee olla vähintään 3 ja enintään 20 merkkiä"
+    }
+  ],
+  "gLE9z1": [
+    {
+      "type": 0,
+      "value": "Language"
     }
   ],
   "gVhE9z": [

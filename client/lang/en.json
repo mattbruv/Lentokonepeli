@@ -347,6 +347,10 @@
     "defaultMessage": "Centrals",
     "description": "Collision legend column header for the Centrals team"
   },
+  "MnSHDt": {
+    "defaultMessage": "Choose language",
+    "description": "Placeholder for the site language dropdown on the settings page"
+  },
   "MrbN1S": {
     "defaultMessage": "(Teamkill penalty)",
     "description": "Shown below the respawn countdown when the wait is longer because of a teamkill"
@@ -718,6 +722,10 @@
   "gAAkRv": {
     "defaultMessage": "Name should be between 3 and 20 characters",
     "description": "Label explaining username constraints"
+  },
+  "gLE9z1": {
+    "defaultMessage": "Language",
+    "description": "Label for the dropdown on the settings page used to choose the site language"
   },
   "gVhE9z": {
     "defaultMessage": "Game mode",

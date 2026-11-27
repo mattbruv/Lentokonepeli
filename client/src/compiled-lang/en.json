@@ -605,6 +605,12 @@
       "value": "Centrals"
     }
   ],
+  "MnSHDt": [
+    {
+      "type": 0,
+      "value": "Choose language"
+    }
+  ],
   "MrbN1S": [
     {
       "type": 0,
@@ -1215,6 +1221,12 @@
     {
       "type": 0,
       "value": "Name should be between 3 and 20 characters"
+    }
+  ],
+  "gLE9z1": [
+    {
+      "type": 0,
+      "value": "Language"
     }
   ],
   "gVhE9z": [
