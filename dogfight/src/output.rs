@@ -4,7 +4,10 @@ use ts_rs::TS;
 use crate::{
     entities::{container::PlayerId, player::PlayerGuid, types::Team},
     game_event::{ChatMessage, KillEvent},
-    network::{encoding::NetworkedBytes, entity_changes_to_binary, EntityChange},
+    network::{
+        encoding::{read_varint, write_varint, NetworkedBytes},
+        entity_changes_to_binary, EntityChange,
+    },
 };
 
 /*
@@ -33,9 +36,7 @@ impl NetworkedBytes for ServerOutput {
         match &self {
             ServerOutput::EntityChanges(changes) => {
                 bytes.push(0);
-                let len = changes.len();
-                assert!(len < 256, "Change count exceeds byte size");
-                bytes.push(len as u8);
+                write_varint(changes.len() as u32, &mut bytes);
                 bytes.extend(entity_changes_to_binary(changes));
             }
             ServerOutput::PlayerJoin(name) => {
@@ -82,7 +83,7 @@ impl NetworkedBytes for ServerOutput {
         match variant {
             0 => {
                 // parse entity changes
-                let (bytes, change_length) = u8::from_bytes(slice)?;
+                let (bytes, change_length) = read_varint(slice)?;
                 slice = &bytes;
                 let mut changes = vec![];
 

@@ -26,6 +26,29 @@ use crate::{
 
 use super::{EntityChange, EntityProperties, NetworkedEntity};
 
+pub(crate) fn write_varint(mut value: u32, out: &mut Vec<u8>) {
+    while value >= 0x80 {
+        out.push((value as u8 & 0x7f) | 0x80);
+        value >>= 7;
+    }
+    out.push(value as u8);
+}
+
+pub(crate) fn read_varint(bytes: &[u8]) -> Option<(&[u8], u32)> {
+    let mut value: u32 = 0;
+    for (i, &byte) in bytes.iter().enumerate().take(5) {
+        let bits = (byte & 0x7f) as u32;
+        if i == 4 && bits > 0x0f {
+            return None;
+        }
+        value |= bits << (7 * i);
+        if byte & 0x80 == 0 {
+            return Some((&bytes[i + 1..], value));
+        }
+    }
+    None
+}
+
 /**
  * This function is used to create the header bytes to tell
  * if properties of an object are changed/included in the binary data or not.
@@ -83,21 +106,12 @@ impl NetworkedBytes for EntityChange {
             EntityChangeType::Properties(_) => 1,
         };
 
-        let mut header: u16 = 0;
-
-        // set entity type as far left 6 bits
-        header |= (*ent_type_u8 as u16) << 10;
-
-        // set the entity ID, 9 bits wide
-        header |= self.id << 1;
-
-        // add update type as a single bit at bit 0
-        header |= update_type as u16;
-
-        let header_bytes = u16::to_le_bytes(header);
+        debug_assert!(*ent_type_u8 < 16);
+        let header: u32 =
+            ((self.id as u32) << 5) | ((*ent_type_u8 as u32) << 1) | update_type as u32;
 
         let mut encoded = vec![];
-        encoded.extend(header_bytes);
+        write_varint(header, &mut encoded);
 
         let data_encoded: Vec<u8> = match &self.update {
             EntityChangeType::Properties(props) => match props {
@@ -130,17 +144,15 @@ impl NetworkedBytes for EntityChange {
     }
 
     fn from_bytes(bytes: &[u8]) -> Option<(&[u8], Self)> {
-        let (mut bytes, header) = u16::from_bytes(bytes)?;
+        let (mut bytes, header) = read_varint(bytes)?;
 
         let update_type = header & 1;
 
-        let ent_type_bitmask: u16 = 0b1111_1100_0000_0000;
-        let ent_byte = ((header & ent_type_bitmask) >> 10) as u8;
+        let ent_byte = ((header >> 1) & 0x0f) as u8;
         let slice = vec![ent_byte];
         let (_, ent_type) = EntityType::from_bytes(&slice)?;
 
-        let ent_id_bitmask: u16 = 0b0000_0011_1111_1110;
-        let entity_id = (header & ent_id_bitmask) >> 1;
+        let entity_id: u16 = (header >> 5).try_into().ok()?;
 
         let update: EntityChangeType = match update_type {
             0 => EntityChangeType::Deleted,

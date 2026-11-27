@@ -96,7 +96,7 @@ function GuestSession({ gameCode, onRetry }: GuestProps & { onRetry: () => void 
                         <Button
                             onClick={downloadReplay}
                             disabled={status.phase !== "ready" || replayDownload.phase !== "idle"}
-                            color="copper"
+                            color="grass"
                             fullWidth
                             rightSection={<IconFileDownload stroke={2.4} />}
                         >

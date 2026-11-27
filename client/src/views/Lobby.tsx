@@ -13,7 +13,7 @@ import { BOT_MESSAGES, difficultyOptions } from "../components/HostMenu";
 import { NameEditor } from "../components/NameEditor";
 import { Panel } from "../components/ui/Panel";
 import { useSettingsContext } from "../contexts/settingsContext";
-import { BOT_WARNING_THRESHOLD, BotDifficultyChoice, LOBBY_NAME_MAX_LENGTH } from "../hooks/useLocalHost";
+import { BOT_WARNING_THRESHOLD, BotDifficultyChoice, LOBBY_NAME_MAX_LENGTH, MAX_BOTS } from "../hooks/useLocalHost";
 import classes from "./Lobby.module.css";
 
 enum LobbyState {
@@ -176,6 +176,7 @@ export function Lobby() {
                                     description: "Label for the number of bots the hosted game starts with",
                                 })}
                                 min={0}
+                                max={MAX_BOTS}
                                 clampBehavior="strict"
                                 allowDecimal={false}
                                 value={botCount}

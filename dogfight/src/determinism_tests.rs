@@ -89,3 +89,44 @@ fn replay_files_are_byte_stable() {
     assert_eq!(replay.to_bytes(), bytes);
     assert_eq!(live.get_replay_file_bytes(), bytes);
 }
+
+#[test]
+fn large_games_round_trip_through_network_encoding() {
+    use crate::{
+        network::encoding::{read_varint, write_varint},
+        output::ServerOutput,
+    };
+
+    for value in [0u32, 1, 127, 128, 16_383, 16_384, u16::MAX as u32, u32::MAX] {
+        let mut bytes = vec![];
+        write_varint(value, &mut bytes);
+        assert_eq!(read_varint(&bytes), Some((&[][..], value)));
+    }
+
+    let mut world = new_world();
+    let mut bots = BotManager::new();
+    for i in 0..1_000 {
+        bots.add_bot(AddBotRequest {
+            guid: PlayerGuid::from(format!("bot{i}").as_str()),
+            name: format!("bot{i}"),
+            team: None,
+            difficulty: BotDifficulty::Easy,
+        });
+    }
+    for _ in 0..200 {
+        let input = bots.tick(&world);
+        world.tick(input);
+    }
+    assert_eq!(world.players.get_map().len(), 1_000);
+
+    let full_state = world.get_full_state();
+    let bytes = ServerOutput::EntityChanges(full_state.clone()).to_bytes();
+    match ServerOutput::from_bytes(&bytes) {
+        Some((rest, ServerOutput::EntityChanges(decoded))) => {
+            assert!(rest.is_empty());
+            assert_eq!(decoded.len(), full_state.len());
+            assert_eq!(ServerOutput::EntityChanges(decoded).to_bytes(), bytes);
+        }
+        _ => panic!("failed to decode entity changes"),
+    }
+}

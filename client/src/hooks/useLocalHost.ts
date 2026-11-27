@@ -65,11 +65,12 @@ export function isLobbyMessage(message: unknown): message is LobbyMessage {
 }
 
 export const LOBBY_NAME_MAX_LENGTH = 32;
-export const BOT_WARNING_THRESHOLD = 32;
+export const BOT_WARNING_THRESHOLD = 64;
 export const DIFFICULTIES: BotDifficulty[] = ["Easy", "Medium", "Hard", "Ace"];
 export type BotDifficultyChoice = BotDifficulty | "Random";
 const KICK_CLOSE_DELAY_MS = 500;
 const MAX_GUESTS = 32;
+export const MAX_BOTS = 256;
 const MAX_GUEST_STRING_LENGTH = 256;
 const MAX_GUEST_BINARY_BYTES = 1024;
 const MAX_GUEST_COMMANDS_PER_SECOND = 60;
@@ -427,7 +428,7 @@ export function useLocalHost(
 
     function addBots(count: number, team: Team | null, choice: BotDifficultyChoice) {
         const existing = JSON.parse(dogfight.engine.get_bots()) as BotInfo[];
-        const toAdd = Math.max(0, count);
+        const toAdd = Math.max(0, Math.min(count, MAX_BOTS - existing.length));
         const taken = new Set([...existing.map((b) => b.name), ...dogfight.playerData.map((p) => p.name)]);
         let number = 1;
         for (let i = 0; i < toAdd; i++) {

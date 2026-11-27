@@ -32,7 +32,13 @@ import { Team } from "dogfight-types/Team";
 import { WorldState } from "dogfight-types/WorldState";
 import { FormEvent, useEffect, useState } from "react";
 import { defineMessages, FormattedMessage, IntlShape, useIntl } from "react-intl";
-import { BOT_WARNING_THRESHOLD, BotDifficultyChoice, DIFFICULTIES, LOBBY_NAME_MAX_LENGTH } from "../hooks/useLocalHost";
+import {
+    BOT_WARNING_THRESHOLD,
+    BotDifficultyChoice,
+    DIFFICULTIES,
+    LOBBY_NAME_MAX_LENGTH,
+    MAX_BOTS,
+} from "../hooks/useLocalHost";
 import { GameSettings, GameSettingsFields } from "./GameSettingsFields";
 import classes from "./HostMenu.module.css";
 
@@ -393,6 +399,9 @@ function BotsTab({ bots, playerData, onAddBots, onRemoveBots }: HostMenuProps) {
     const [count, setCount] = useState(1);
     const [selected, setSelected] = useState<Set<string>>(new Set());
 
+    const remaining = Math.max(0, MAX_BOTS - bots.length);
+    const addCount = Math.min(count, remaining);
+
     const selectedBots = bots.filter((b) => selected.has(b.guid));
     const allSelected = bots.length > 0 && selectedBots.length === bots.length;
 
@@ -437,6 +446,7 @@ function BotsTab({ bots, playerData, onAddBots, onRemoveBots }: HostMenuProps) {
                         description: "Label for the number of bots to add at once in the host menu",
                     })}
                     min={1}
+                    max={Math.max(1, remaining)}
                     clampBehavior="strict"
                     allowDecimal={false}
                     value={count}
@@ -455,17 +465,18 @@ function BotsTab({ bots, playerData, onAddBots, onRemoveBots }: HostMenuProps) {
                 />
                 <Button
                     color="copper"
-                    onClick={() => onAddBots(count, team === "Random" ? null : team, difficulty)}
+                    disabled={remaining <= 0}
+                    onClick={() => onAddBots(addCount, team === "Random" ? null : team, difficulty)}
                     rightSection={<IconUserPlus size={18} stroke={2.4} />}
                 >
                     <FormattedMessage
                         defaultMessage="Add {count, plural, one {Bot} other {# Bots}}"
                         description="Host menu button that adds the chosen number of bots"
-                        values={{ count }}
+                        values={{ count: Math.max(1, addCount) }}
                     />
                 </Button>
             </Group>
-            {bots.length + count > BOT_WARNING_THRESHOLD && (
+            {bots.length + addCount > BOT_WARNING_THRESHOLD && (
                 <Text size="sm" c="orange">
                     {intl.formatMessage(BOT_MESSAGES.TooManyBots, { max: BOT_WARNING_THRESHOLD })}
                 </Text>

@@ -119,7 +119,7 @@ export function Host({ settings, recordGame, lobbyName, initialBots }: HostProps
                             <RoomCode code={host.roomCode} />
                             <Button
                                 onClick={saveReplay}
-                                color="copper"
+                                color="grass"
                                 fullWidth
                                 rightSection={<IconFileDownload stroke={2.4} />}
                             >

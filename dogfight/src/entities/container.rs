@@ -12,6 +12,8 @@ use ts_rs::TS;
 
 pub type EntityIdWrappedType = u16;
 
+pub const MAX_ENTITIES_PER_TYPE: u16 = 2048;
+
 macro_rules! impl_from_u16 {
     ($($id_type:ident),*) => {
         $(
@@ -89,13 +91,13 @@ where
     pub fn new(ent_type: EntityType) -> EntityContainer<T, EntId> {
         let container: EntityContainer<T, EntId> = EntityContainer {
             ent_type: ent_type,
-            ids: (0..2_u16.pow(9)).rev().map(EntId::from).collect(), // generate list of 0 to 2^9 = 512 Ids
+            ids: (0..MAX_ENTITIES_PER_TYPE).rev().map(EntId::from).collect(),
             freed_ids: vec![],
             removed_ids: vec![],
             map: BTreeMap::new(),
         };
 
-        assert!(container.ids.len() <= 512);
+        assert!(container.ids.len() <= MAX_ENTITIES_PER_TYPE as usize);
         container
     }
 
