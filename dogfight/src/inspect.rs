@@ -45,6 +45,7 @@ pub struct PlaneInspect {
 #[ts(export)]
 pub struct ManInspect {
     pub state: ManState,
+    pub invulnerable: bool,
 }
 
 #[derive(Serialize, Debug, TS)]
@@ -186,6 +187,7 @@ impl World {
                     bounding_box: bounds,
                     details: InspectDetails::Man(ManInspect {
                         state: man.get_state(),
+                        invulnerable: !man.past_grace_period(),
                     }),
                 });
             }

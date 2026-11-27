@@ -71,12 +71,14 @@ const EVENT_NAMES: Record<ReplayEventType["type"], string> = {
 export function ReplayControls({ summary, callbacks, events, players, info }: ReplayControlsProps) {
     const intl = useIntl();
     const watchPlayers: ComboboxItem[] = useMemo(() => {
-        return Object.entries(players).map(([guid, name]): ComboboxItem => {
-            return {
-                label: name,
-                value: guid,
-            };
-        });
+        return Object.entries(players)
+            .map(([guid, name]): ComboboxItem => {
+                return {
+                    label: name,
+                    value: guid,
+                };
+            })
+            .sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: "base" }));
     }, [players]);
 
     const [viewEvents, setViewEvents] = useState<ReplayEventType["type"][]>([]);

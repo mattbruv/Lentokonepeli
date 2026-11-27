@@ -67,6 +67,10 @@ const MESSAGES = defineMessages({
         defaultMessage: "Damaging",
         description: "Replay inspector row: whether the explosion still deals damage",
     },
+    invulnerable: {
+        defaultMessage: "Invulnerable",
+        description: "Replay inspector row: whether a pilot who just bailed out is still immune to plane collisions",
+    },
     on: { defaultMessage: "On", description: "Replay inspector value for an enabled toggle" },
     off: { defaultMessage: "Off", description: "Replay inspector value for a disabled toggle" },
     yes: { defaultMessage: "Yes", description: "Replay inspector value for true" },
@@ -141,6 +145,7 @@ function rows(intl: IntlShape, entity: InspectEntity): [string, ReactNode][] {
             return [
                 [intl.formatMessage(MESSAGES.owner), ownerText(intl, entity.owner)],
                 [intl.formatMessage(MESSAGES.mode), details.data.state],
+                [intl.formatMessage(MESSAGES.invulnerable), yesNo(intl, details.data.invulnerable)],
                 position,
             ];
         case "Bullet": {

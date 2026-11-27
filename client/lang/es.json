@@ -843,6 +843,10 @@
     "defaultMessage": "Organizar un partido",
     "description": "Call to action button text for button which starts a new game as a Host"
   },
+  "pPlaQd": {
+    "defaultMessage": "Invulnerable",
+    "description": "Replay inspector row: whether a pilot who just bailed out is still immune to plane collisions"
+  },
   "pd7fXb": {
     "defaultMessage": "Unirse a un juego",
     "description": "Call to action button text for button which joins a an existing game"
