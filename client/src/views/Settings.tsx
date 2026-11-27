@@ -1,8 +1,8 @@
-import { ActionIcon, Button, Kbd, Modal, Select, Text, Tooltip } from "@mantine/core";
+import { Button, Kbd, Modal, Select, Text, Tooltip } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconDeviceGamepad2, IconPlus, IconRestore, IconSitemap, IconTrash, IconUser } from "@tabler/icons-react";
+import { IconDeviceGamepad2, IconPlus, IconRestore, IconSitemap, IconUser, IconX } from "@tabler/icons-react";
 import React, { useState } from "react";
-import { FormattedMessage, useIntl } from "react-intl";
+import { defineMessage, FormattedMessage, MessageDescriptor, useIntl } from "react-intl";
 import { NameEditor } from "../components/NameEditor";
 import { LocaleFlag } from "../components/ui/LocaleFlag";
 import { Panel } from "../components/ui/Panel";
@@ -12,16 +12,59 @@ import { getDefaultLocale, KNOWN_LOCALE_DROPDOWN_VALUES, KnownLocale } from "../
 import { KEYBIND_INTL } from "../intl/messages";
 import classes from "./Settings.module.css";
 
+const KEYBIND_GROUPS: { id: string; title: MessageDescriptor; actions: GameAction[] }[] = [
+    {
+        id: "flying",
+        title: defineMessage({
+            defaultMessage: "Flying",
+            description: "Heading for the group of flight related keybinds on the settings page",
+        }),
+        actions: ["left", "right", "down", "up"],
+    },
+    {
+        id: "combat",
+        title: defineMessage({
+            defaultMessage: "Combat",
+            description: "Heading for the group of combat related keybinds on the settings page",
+        }),
+        actions: ["ctrl", "shift", "space"],
+    },
+    {
+        id: "interface",
+        title: defineMessage({
+            defaultMessage: "Chat & Interface",
+            description: "Heading for the group of chat and interface keybinds on the settings page",
+        }),
+        actions: ["enter", "chatAll", "chatTeam", "viewScoreboard", "toggleMute"],
+    },
+];
+
+const KEY_LABELS: Record<string, string> = {
+    " ": "Space",
+    ArrowLeft: "\u2190",
+    ArrowRight: "\u2192",
+    ArrowUp: "\u2191",
+    ArrowDown: "\u2193",
+    Control: "Ctrl",
+    Escape: "Esc",
+};
+
+function formatKey(key: string): string {
+    if (key in KEY_LABELS) return KEY_LABELS[key];
+    if (key.length === 1) return key.toUpperCase();
+    return key.charAt(0).toUpperCase() + key.slice(1);
+}
+
 export function Settings() {
     const { settings, setSettings } = useSettingsContext();
     const [addToAction, setAddToAction] = useState<GameAction | null>(null);
     const [opened, { open, close }] = useDisclosure(false);
     const intl = useIntl();
 
-    function removeKey(action: string): void {
+    function removeKey(action: GameAction, key: string): void {
         setSettings((prev) => ({
             ...prev,
-            controls: prev.controls.filter((bind) => bind.action !== action),
+            controls: prev.controls.filter((bind) => !(bind.action === action && bind.key === key)),
         }));
     }
 
@@ -135,66 +178,76 @@ export function Settings() {
                     />
                 }
             >
-                <ul className={classes.binds}>
-                    {Object.entries(KEYBIND_INTL).map(([action, descriptor]) => {
-                        const binds = settings.controls.filter((bind) => bind.action === action);
-                        return (
-                            <li key={action} className={classes.bind}>
-                                <span className={classes.action}>{intl.formatMessage(descriptor)}</span>
-                                <span className={classes.keys}>
-                                    {binds.map((bind) => {
-                                        const count = settings.controls.filter((b) => b.key === bind.key).length;
-                                        return (
-                                            <Kbd
-                                                key={bind.key}
-                                                className={classes.key}
-                                                data-conflict={count > 1 || undefined}
-                                            >
-                                                {bind.key === " " ? "Space" : bind.key}
-                                            </Kbd>
-                                        );
-                                    })}
-                                </span>
-                                <span className={classes.bindActions}>
-                                    <Tooltip
-                                        openDelay={250}
-                                        label={intl.formatMessage({
-                                            defaultMessage: "Add new key",
-                                            description: "Tooltip for a button used to add a new keybind for an action",
-                                        })}
-                                    >
-                                        <ActionIcon
-                                            onClick={() => addKey(action as GameAction)}
-                                            color={"grass"}
-                                            variant={"light"}
-                                            size="md"
-                                        >
-                                            <IconPlus size={16} stroke={3} />
-                                        </ActionIcon>
-                                    </Tooltip>
-                                    <Tooltip
-                                        openDelay={250}
-                                        label={intl.formatMessage({
-                                            defaultMessage: "Unbind Last Key",
-                                            description:
-                                                "Tooltip for a button used to remove last keybind from an action",
-                                        })}
-                                    >
-                                        <ActionIcon
-                                            onClick={() => removeKey(action)}
-                                            color={"cherry"}
-                                            variant={"light"}
-                                            size="md"
-                                            disabled={binds.length === 0}
-                                        >
-                                            <IconTrash size={16} stroke={2.4} />
-                                        </ActionIcon>
-                                    </Tooltip>
-                                </span>
-                            </li>
-                        );
-                    })}
-                </ul>
+                <div className={classes.groups}>
+                    {KEYBIND_GROUPS.map((group) => (
+                        <section key={group.id} className={classes.group}>
+                            <h3 className={classes.groupTitle}>{intl.formatMessage(group.title)}</h3>
+                            <ul className={classes.binds}>
+                                {group.actions.map((action) => {
+                                    const binds = settings.controls.filter((bind) => bind.action === action);
+                                    const actionName = intl.formatMessage(KEYBIND_INTL[action]);
+                                    return (
+                                        <li key={action} className={classes.bind}>
+                                            <span className={classes.action}>{actionName}</span>
+                                            <span className={classes.keys}>
+                                                {binds.map((bind) => {
+                                                    const count = settings.controls.filter(
+                                                        (b) => b.key === bind.key,
+                                                    ).length;
+                                                    return (
+                                                        <span
+                                                            key={bind.key}
+                                                            className={classes.keyChip}
+                                                            data-conflict={count > 1 || undefined}
+                                                        >
+                                                            <Kbd className={classes.key}>{formatKey(bind.key)}</Kbd>
+                                                            <button
+                                                                type="button"
+                                                                className={classes.unbind}
+                                                                onClick={() => removeKey(action, bind.key)}
+                                                                aria-label={intl.formatMessage(
+                                                                    {
+                                                                        defaultMessage: "Unbind {key} from {action}",
+                                                                        description:
+                                                                            "Accessible label for a button that removes one key from a game action",
+                                                                    },
+                                                                    { key: formatKey(bind.key), action: actionName },
+                                                                )}
+                                                            >
+                                                                <IconX size={12} stroke={3.5} />
+                                                            </button>
+                                                        </span>
+                                                    );
+                                                })}
+                                                <Tooltip
+                                                    openDelay={250}
+                                                    label={intl.formatMessage({
+                                                        defaultMessage: "Add new key",
+                                                        description:
+                                                            "Tooltip for a button used to add a new keybind for an action",
+                                                    })}
+                                                >
+                                                    <button
+                                                        type="button"
+                                                        className={classes.addKey}
+                                                        onClick={() => addKey(action)}
+                                                        aria-label={intl.formatMessage({
+                                                            defaultMessage: "Add new key",
+                                                            description:
+                                                                "Tooltip for a button used to add a new keybind for an action",
+                                                        })}
+                                                    >
+                                                        <IconPlus size={14} stroke={3} />
+                                                    </button>
+                                                </Tooltip>
+                                            </span>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </section>
+                    ))}
+                </div>
                 {controlsChanged && (
                     <Button
                         mt="lg"

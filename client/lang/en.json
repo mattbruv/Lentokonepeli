@@ -15,6 +15,10 @@
     "defaultMessage": "You'll be disconnected from the current match. If you're the host, the game will end for everyone.",
     "description": "Body of the dialog shown when navigating away from an active game"
   },
+  "+vayKN": {
+    "defaultMessage": "Unbind {key} from {action}",
+    "description": "Accessible label for a button that removes one key from a game action"
+  },
   "/Dq9eZ": {
     "defaultMessage": "Gfx",
     "description": "Checkbox on the bottom game panel that switches between full and simple graphics"
@@ -346,6 +350,10 @@
   "MrbN1S": {
     "defaultMessage": "(Teamkill penalty)",
     "description": "Shown below the respawn countdown when the wait is longer because of a teamkill"
+  },
+  "NCSY6O": {
+    "defaultMessage": "Combat",
+    "description": "Heading for the group of combat related keybinds on the settings page"
   },
   "NGiyEX": {
     "defaultMessage": "Higher score",
@@ -723,6 +731,10 @@
     "defaultMessage": "{team, select, Centrals {Centrals} other {Allies}} important building destroyed.",
     "description": "Chat notice when a team's headquarters is destroyed"
   },
+  "hfjqBq": {
+    "defaultMessage": "Flying",
+    "description": "Heading for the group of flight related keybinds on the settings page"
+  },
   "hfzZFF": {
     "defaultMessage": "Replay from a different version",
     "description": "Title of the dialog warning that a replay was recorded with another game version"
@@ -863,6 +875,10 @@
     "defaultMessage": "Level",
     "description": "Title for selection used to choose the game level"
   },
+  "q58rGv": {
+    "defaultMessage": "Your name",
+    "description": "Placeholder in the name preview on the settings page when no username is entered"
+  },
   "q9p7Ga": {
     "defaultMessage": "Difficulty",
     "description": "Bot panel: label for the bot difficulty dropdown"
@@ -927,13 +943,17 @@
     "defaultMessage": "Playback hit an error at {time}. This usually happens when a replay was recorded with a different version of the game.",
     "description": "Message shown when replay playback fails partway through"
   },
-  "urz5xm": {
-    "defaultMessage": "Unbind Last Key",
-    "description": "Tooltip for a button used to remove last keybind from an action"
+  "ult8LX": {
+    "defaultMessage": "Chat & Interface",
+    "description": "Heading for the group of chat and interface keybinds on the settings page"
   },
   "vL5iqo": {
     "defaultMessage": "Site Settings",
     "description": "Title for a settings section used to modify general site settings"
+  },
+  "vdZK2r": {
+    "defaultMessage": "Clan can't contain [ or ]",
+    "description": "Error shown under the clan field when it contains square brackets"
   },
   "vrJzQq": {
     "defaultMessage": "Bristol F.2b",
@@ -1022,6 +1042,10 @@
   "zV7RzE": {
     "defaultMessage": "Equipped with bombs in addition to a machine gun, extremely durable, but a clumsy aircraft.",
     "description": "Description of the Junkers J.1 aircraft"
+  },
+  "zt6DPR": {
+    "defaultMessage": "Name saved!",
+    "description": "Button text shown briefly after the user saves their name in settings"
   },
   "ztDpWK": {
     "defaultMessage": "Landing zone",

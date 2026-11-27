@@ -32,7 +32,7 @@ export function isValidName(name: string): boolean {
 }
 
 export function isValidClan(clan: string): boolean {
-    return clan.length <= 5;
+    return clan.length <= 5 && !/[[\]]/.test(clan);
 }
 
 export type DogfightSettingsContext = {
@@ -143,7 +143,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     }
 
     function getClan(): string {
-        if (settings.clan?.trim() && isValidName(settings.clan.trim())) {
+        if (settings.clan?.trim() && isValidClan(settings.clan.trim())) {
             return settings.clan.trim();
         }
         return "";

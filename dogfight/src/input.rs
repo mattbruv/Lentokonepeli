@@ -289,6 +289,7 @@ impl World {
         };
         let clan = data
             .clan
+            .filter(|clan| !clan.contains(['[', ']']))
             .map(|clan| sanitize_text(&clan, MAX_CLAN_CHARS))
             .filter(|clan| !clan.is_empty());
         let mut player = Player::new(guid, name, clan);
@@ -460,6 +461,35 @@ mod tests {
         assert_eq!(sanitize_text(&"x".repeat(50), 20).chars().count(), 20);
         assert_eq!(sanitize_text("ääääää", 3), "äää");
         assert_eq!(sanitize_text("ab        cd", 4), "ab");
+    }
+
+    #[test]
+    fn clan_matches_original_rules() {
+        let mut world = World::new();
+        let add = |guid: &str, clan: &str| ServerInput {
+            player_guid: PlayerGuid::from(guid),
+            command: PlayerCommand::AddPlayer(AddPlayerData {
+                guid: PlayerGuid::from(guid),
+                name: guid.to_string(),
+                clan: Some(clan.to_string()),
+            }),
+        };
+        world.handle_input(vec![
+            add("spaced", "A B"),
+            add("short", "X"),
+            add("bracket", "]X["),
+        ]);
+
+        let clan_of = |guid: &str| {
+            world
+                .get_player_from_guid(&PlayerGuid::from(guid))
+                .unwrap()
+                .1
+                .get_clan()
+        };
+        assert_eq!(clan_of("spaced").as_deref(), Some("A B"));
+        assert_eq!(clan_of("short").as_deref(), Some("X"));
+        assert!(clan_of("bracket").is_none());
     }
 
     #[test]

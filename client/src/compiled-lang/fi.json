@@ -23,6 +23,24 @@
       "value": "You'll be disconnected from the current match. If you're the host, the game will end for everyone."
     }
   ],
+  "+vayKN": [
+    {
+      "type": 0,
+      "value": "Unbind "
+    },
+    {
+      "type": 1,
+      "value": "key"
+    },
+    {
+      "type": 0,
+      "value": " from "
+    },
+    {
+      "type": 1,
+      "value": "action"
+    }
+  ],
   "/Dq9eZ": [
     {
       "type": 0,
@@ -591,6 +609,12 @@
     {
       "type": 0,
       "value": "(Rangaistus oman tappamisesta)"
+    }
+  ],
+  "NCSY6O": [
+    {
+      "type": 0,
+      "value": "Combat"
     }
   ],
   "NGiyEX": [
@@ -1239,6 +1263,12 @@
       "value": " important building destroyed."
     }
   ],
+  "hfjqBq": [
+    {
+      "type": 0,
+      "value": "Flying"
+    }
+  ],
   "hfzZFF": [
     {
       "type": 0,
@@ -1476,6 +1506,12 @@
       "value": "Kenttä"
     }
   ],
+  "q58rGv": [
+    {
+      "type": 0,
+      "value": "Your name"
+    }
+  ],
   "q9p7Ga": [
     {
       "type": 0,
@@ -1580,6 +1616,12 @@
       "value": ". This usually happens when a replay was recorded with a different version of the game."
     }
   ],
+  "ult8LX": [
+    {
+      "type": 0,
+      "value": "Chat & Interface"
+    }
+  ],
   "urz5xm": [
     {
       "type": 0,
@@ -1608,6 +1650,12 @@
     {
       "type": 0,
       "value": "Sivustoasetukset"
+    }
+  ],
+  "vdZK2r": [
+    {
+      "type": 0,
+      "value": "Clan can't contain [ or ]"
     }
   ],
   "vrJzQq": [
@@ -1740,6 +1788,12 @@
     {
       "type": 0,
       "value": "Konekiväärin lisäksi pommeilla varustettu, erittäin kestävä, mutta kömpelö kone."
+    }
+  ],
+  "zt6DPR": [
+    {
+      "type": 0,
+      "value": "Name saved!"
     }
   ],
   "ztDpWK": [
