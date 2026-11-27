@@ -4,6 +4,8 @@ pub mod collision;
 pub mod debug;
 #[cfg(test)]
 mod determinism_tests;
+#[cfg(test)]
+mod rules_determinism_tests;
 pub mod entities;
 pub mod game_event;
 pub mod images;
