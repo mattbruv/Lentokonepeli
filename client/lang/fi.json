@@ -1183,6 +1183,10 @@
     "defaultMessage": "Phase",
     "description": "Replay inspector row: explosion animation phase"
   },
+  "pstvky": {
+    "defaultMessage": "Räjähtävät luodit",
+    "description": "Game rule: bullets explode like a bomb wherever they hit something"
+  },
   "q/Nn6p": {
     "defaultMessage": "Zoom out",
     "description": "Replay camera zoom out button"

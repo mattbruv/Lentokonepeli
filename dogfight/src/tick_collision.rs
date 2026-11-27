@@ -465,7 +465,16 @@ impl World {
                     .iter_mut()
                     .any(|(_, w)| bullet.check_collision(w));
 
-            if hit || bullet.expired() {
+            if hit && rules.exploding_bullets {
+                bullet.kill();
+                blow_up(
+                    &mut actions,
+                    Some(shooter),
+                    RemoveData::Bullet(bullet_id),
+                    bullet.get_x(),
+                    bullet.get_y(),
+                );
+            } else if hit || bullet.expired() {
                 bullet.kill();
                 actions.push(Action::RemoveEntity(RemoveData::Bullet(bullet_id)));
             }

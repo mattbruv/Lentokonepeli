@@ -1183,6 +1183,10 @@
     "defaultMessage": "Фаза",
     "description": "Replay inspector row: explosion animation phase"
   },
+  "pstvky": {
+    "defaultMessage": "Разрывные пули",
+    "description": "Game rule: bullets explode like a bomb wherever they hit something"
+  },
   "q/Nn6p": {
     "defaultMessage": "Отдалить",
     "description": "Replay camera zoom out button"

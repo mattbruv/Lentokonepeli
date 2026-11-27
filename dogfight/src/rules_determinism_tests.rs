@@ -289,6 +289,14 @@ fn handpicked() -> Vec<(&'static str, String)> {
             }),
         ),
         (
+            "exploding bullets, no friendly fire",
+            rules_with(|r| {
+                r.exploding_bullets = true;
+                r.friendly_fire = false;
+                r.unlimited_ammo = true;
+            }),
+        ),
+        (
             "floats as the browser sends them",
             r#"{"planes":{"fokker":{"turn_step":0.12131889481511933,"acceleration":6.25},"albatros":{"turn_step":0.055618067930058836},"bristol":{"turn_step":0.06108652381980153,"acceleration":4.850000000000001},"sopwith":{"acceleration":5.123456789012345}}}"#
                 .to_string(),
@@ -344,6 +352,7 @@ fn random_rules(rng: &mut Rng) -> String {
     r.unlimited_ammo = rng.bool(0.3);
     r.unlimited_fuel = rng.bool(0.3);
     r.unlimited_bombs = rng.bool(0.3);
+    r.exploding_bullets = rng.bool(0.3);
     r.indestructible_buildings = rng.bool(0.2);
     r.bullet_plane_damage = rng.range(0, 200);
     r.bullet_runway_damage = rng.range(0, 40);
@@ -512,14 +521,15 @@ handpicked_tests! {
     custom_rules_replay_exactly_extreme_plane_tuning => 8,
     custom_rules_replay_exactly_instant_respawn => 9,
     custom_rules_replay_exactly_slow_respawn => 10,
-    custom_rules_replay_exactly_browser_floats => 11,
-    custom_rules_replay_exactly_clamped_values => 12,
-    custom_rules_replay_exactly_older_preset_json => 13,
+    custom_rules_replay_exactly_exploding_bullets => 11,
+    custom_rules_replay_exactly_browser_floats => 12,
+    custom_rules_replay_exactly_clamped_values => 13,
+    custom_rules_replay_exactly_older_preset_json => 14,
 }
 
 #[test]
 fn handpicked_scenarios_are_all_covered() {
-    assert_eq!(handpicked().len(), 14);
+    assert_eq!(handpicked().len(), 15);
 }
 
 #[test]
@@ -572,4 +582,33 @@ fn restarting_with_different_rules_replays_exactly() {
     );
     assert_eq!(first.world.rules, second_rules.sanitized());
     assert_replay_matches("restart with new rules", &first);
+}
+
+#[test]
+fn exploding_bullets_turn_bullet_hits_into_explosions() {
+    let count_explosions = |exploding: bool| {
+        let mut rules = GameRules::default();
+        rules.bombs = false;
+        rules.plane_collisions = false;
+        rules.unlimited_ammo = true;
+        rules.exploding_bullets = exploding;
+        let mut world = new_world(CLASSIC, GameMode::Normal, 0);
+        world.set_rules(rules);
+        let mut bots = new_bots();
+        let mut explosions = std::collections::HashSet::new();
+        for _ in 0..if THOROUGH { 3_000 } else { 1_500 } {
+            let input = bots.tick(&world);
+            world.tick(input);
+            for (id, _) in world.explosions.get_map() {
+                explosions.insert((world.get_tick() / 60, format!("{id:?}")));
+            }
+        }
+        explosions.len()
+    };
+    let plain = count_explosions(false);
+    let exploding = count_explosions(true);
+    assert!(
+        exploding > plain * 3 + 10,
+        "expected many more explosions with exploding bullets: {plain} vs {exploding}"
+    );
 }

@@ -70,6 +70,10 @@ const M = defineMessages({
     unlimited_ammo: { defaultMessage: "Unlimited ammo", description: "Game rule: planes never run out of bullets" },
     unlimited_fuel: { defaultMessage: "Unlimited fuel", description: "Game rule: planes never run out of fuel" },
     unlimited_bombs: { defaultMessage: "Unlimited bombs", description: "Game rule: planes never run out of bombs" },
+    exploding_bullets: {
+        defaultMessage: "Exploding bullets",
+        description: "Game rule: bullets explode like a bomb wherever they hit something",
+    },
     indestructible_buildings: {
         defaultMessage: "Indestructible buildings",
         description: "Game rule: runways and headquarters cannot be damaged",
@@ -261,6 +265,7 @@ export const WEAPON_RULES: BooleanRule[] = [
     { key: "unlimited_ammo", label: M.unlimited_ammo },
     { key: "unlimited_fuel", label: M.unlimited_fuel },
     { key: "unlimited_bombs", label: M.unlimited_bombs },
+    { key: "exploding_bullets", label: M.exploding_bullets },
 ];
 
 export const DAMAGE_RULES: NumberRule<NumberKeys<GameRules>>[] = [
