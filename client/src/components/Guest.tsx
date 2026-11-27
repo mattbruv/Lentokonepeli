@@ -1,8 +1,8 @@
-import { Button, Stack } from "@mantine/core";
-import { IconFileDownload } from "@tabler/icons-react";
+import { Button, Select, Stack } from "@mantine/core";
+import { IconEye, IconFileDownload } from "@tabler/icons-react";
 import saveAs from "file-saver";
 import { useEffect, useRef, useState } from "react";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useSettingsContext } from "../contexts/settingsContext";
 import { leaveActiveGame, useActiveView } from "../hooks/useActiveView";
 import { ReplayDownload, useGuest } from "../hooks/useGuest";
@@ -15,14 +15,23 @@ import classes from "./HostMenu.module.css";
 
 type GuestProps = {
     gameCode: string;
+    spectator?: boolean;
 };
 
-export function Guest({ gameCode }: GuestProps) {
+export function Guest({ gameCode, spectator = false }: GuestProps) {
     const [attempt, setAttempt] = useState(0);
-    return <GuestSession key={attempt} gameCode={gameCode} onRetry={() => setAttempt((n) => n + 1)} />;
+    return (
+        <GuestSession
+            key={attempt}
+            gameCode={gameCode}
+            spectator={spectator}
+            onRetry={() => setAttempt((n) => n + 1)}
+        />
+    );
 }
 
-function GuestSession({ gameCode, onRetry }: GuestProps & { onRetry: () => void }) {
+function GuestSession({ gameCode, spectator = false, onRetry }: GuestProps & { onRetry: () => void }) {
+    const intl = useIntl();
     const gameContainer = useRef<HTMLDivElement>(null);
 
     const { getClan, getUsername } = useSettingsContext();
@@ -39,7 +48,10 @@ function GuestSession({ gameCode, onRetry }: GuestProps & { onRetry: () => void 
         requestReplay,
         replayDownload,
         lobbyName,
-    } = useGuest(getUsername(), getClan());
+        spectating,
+        followPlayer,
+        followablePlayers,
+    } = useGuest(getUsername(), getClan(), spectator);
 
     function downloadReplay() {
         requestReplay((bytes) => {
@@ -70,7 +82,7 @@ function GuestSession({ gameCode, onRetry }: GuestProps & { onRetry: () => void 
             game={
                 <Game
                     ref={gameContainer}
-                    myPlayerGuid={playerGuid}
+                    myPlayerGuid={spectator ? null : playerGuid}
                     playerData={playerData}
                     intermission={intermission}
                     roomName={lobbyName || gameCode}
@@ -93,6 +105,22 @@ function GuestSession({ gameCode, onRetry }: GuestProps & { onRetry: () => void 
                     <Stack gap="lg">
                         {lobbyName && <div className={classes.lobbyName}>{lobbyName}</div>}
                         <RoomCode code={gameCode} />
+                        {spectator && (
+                            <Select
+                                label={intl.formatMessage({
+                                    defaultMessage: "Following",
+                                    description: "Label for the player picker while spectating a game",
+                                })}
+                                leftSection={<IconEye size={18} stroke={2.2} />}
+                                disabled={status.phase !== "ready" || followablePlayers.length === 0}
+                                allowDeselect={false}
+                                value={spectating}
+                                onChange={(guid) => guid && followPlayer(guid)}
+                                data={followablePlayers
+                                    .map((p) => ({ value: p.guid, label: p.name ?? p.guid }))
+                                    .sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: "base" }))}
+                            />
+                        )}
                         <Button
                             onClick={downloadReplay}
                             disabled={status.phase !== "ready" || replayDownload.phase !== "idle"}

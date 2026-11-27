@@ -1159,10 +1159,26 @@
       "value": "Ein optionaler Clan, der deinem Namen vorangestellt wird"
     }
   ],
+  "caIqIm": [
+    {
+      "type": 0,
+      "value": "Folge"
+    }
+  ],
   "crlI8a": [
     {
       "type": 0,
       "value": "Salmson 2"
+    }
+  ],
+  "cy3xwx": [
+    {
+      "type": 0,
+      "value": "(Zuschauer) "
+    },
+    {
+      "type": 1,
+      "value": "name"
     }
   ],
   "czwMiI": [
@@ -1351,6 +1367,12 @@
     {
       "type": 0,
       "value": "Einstellungen"
+    }
+  ],
+  "kimO3N": [
+    {
+      "type": 0,
+      "value": "Zuschauen"
     }
   ],
   "kp9XuR": [

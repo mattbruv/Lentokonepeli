@@ -675,9 +675,17 @@
     "defaultMessage": "Необязательный клан перед вашим именем",
     "description": "Tooltip for the clan setting section"
   },
+  "caIqIm": {
+    "defaultMessage": "Наблюдение за",
+    "description": "Label for the player picker while spectating a game"
+  },
   "crlI8a": {
     "defaultMessage": "Salmson 2",
     "description": "Name of the Salmson 2 aircraft"
+  },
+  "cy3xwx": {
+    "defaultMessage": "(зритель) {name}",
+    "description": "Chat line prefix for messages sent by spectators, followed by their name"
   },
   "czwMiI": {
     "defaultMessage": "Попала во врага",
@@ -786,6 +794,10 @@
   "kfnjH9": {
     "defaultMessage": "Настройки",
     "description": "Sidebar link description for the Settings page"
+  },
+  "kimO3N": {
+    "defaultMessage": "Наблюдать за игрой",
+    "description": "Button that joins an existing game as a spectator without playing"
   },
   "kp9XuR": {
     "defaultMessage": "Пилот",

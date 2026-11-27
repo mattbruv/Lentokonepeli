@@ -1151,10 +1151,26 @@
       "value": "An optional clan to prefix to your name"
     }
   ],
+  "caIqIm": [
+    {
+      "type": 0,
+      "value": "Following"
+    }
+  ],
   "crlI8a": [
     {
       "type": 0,
       "value": "Salmson 2"
+    }
+  ],
+  "cy3xwx": [
+    {
+      "type": 0,
+      "value": "(spectator) "
+    },
+    {
+      "type": 1,
+      "value": "name"
     }
   ],
   "czwMiI": [
@@ -1339,6 +1355,12 @@
     {
       "type": 0,
       "value": "Settings"
+    }
+  ],
+  "kimO3N": [
+    {
+      "type": 0,
+      "value": "Spectate Game"
     }
   ],
   "kp9XuR": [

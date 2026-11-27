@@ -1,6 +1,6 @@
 import { Button, Modal, NumberInput, PinInput, Select, Text, TextInput } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconPlaneDeparture, IconUsers } from "@tabler/icons-react";
+import { IconEye, IconPlaneDeparture, IconUsers } from "@tabler/icons-react";
 import { FormEvent, useState } from "react";
 
 import { FormattedMessage, useIntl } from "react-intl";
@@ -20,6 +20,7 @@ enum LobbyState {
     Choosing,
     Hosting,
     Joining,
+    Watching,
 }
 
 export function Lobby() {
@@ -62,6 +63,7 @@ export function Lobby() {
         );
     }
     if (lobbyState === LobbyState.Joining) return <Guest gameCode={joinId} />;
+    if (lobbyState === LobbyState.Watching) return <Guest gameCode={joinId} spectator />;
 
     return (
         <div>
@@ -127,6 +129,20 @@ export function Lobby() {
                             <FormattedMessage
                                 defaultMessage={"Join Game"}
                                 description={"Call to action button text for button which joins a an existing game"}
+                            />
+                        </Button>
+                        <Button
+                            onMouseOver={promptUsername}
+                            onFocus={promptUsername}
+                            onClick={() => joinId.length === 4 && setLobbyState(LobbyState.Watching)}
+                            variant="default"
+                            disabled={joinId.length != 4}
+                            fullWidth
+                            leftSection={<IconEye size={18} stroke={2.2} />}
+                        >
+                            <FormattedMessage
+                                defaultMessage={"Spectate Game"}
+                                description={"Button that joins an existing game as a spectator without playing"}
                             />
                         </Button>
                     </form>

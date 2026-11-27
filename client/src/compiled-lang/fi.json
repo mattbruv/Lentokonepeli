@@ -1157,10 +1157,26 @@
       "value": "Valinnainen etuliite käyttääjänimen eteen"
     }
   ],
+  "caIqIm": [
+    {
+      "type": 0,
+      "value": "Seurataan"
+    }
+  ],
   "crlI8a": [
     {
       "type": 0,
       "value": "Salmson 2"
+    }
+  ],
+  "cy3xwx": [
+    {
+      "type": 0,
+      "value": "(katsoja) "
+    },
+    {
+      "type": 1,
+      "value": "name"
     }
   ],
   "czwMiI": [
@@ -1345,6 +1361,12 @@
     {
       "type": 0,
       "value": "Asetukset"
+    }
+  ],
+  "kimO3N": [
+    {
+      "type": 0,
+      "value": "Katsele peliä"
     }
   ],
   "kp9XuR": [

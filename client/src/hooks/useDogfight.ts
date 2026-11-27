@@ -55,6 +55,33 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
         [client],
     );
 
+    function addMessage(message: ChatMessage, spectator = false): void {
+        const timedMessage: ChatMessageTimed = {
+            ...message,
+            spectator,
+            isNewMessage: true,
+            guid: randomGuid(),
+        };
+
+        // stop displaying the message passively after 5 seconds
+        setTimeout(() => {
+            setMessages((prev) =>
+                prev.map((msg) =>
+                    msg.guid === timedMessage.guid
+                        ? {
+                              ...timedMessage,
+                              isNewMessage: false,
+                          }
+                        : msg,
+                ),
+            );
+        }, 5000);
+
+        setMessages((prev) => {
+            return [...prev, timedMessage];
+        });
+    }
+
     function initialize(div: HTMLDivElement, startAudio = true) {
         // TODO: clean this up, just expose the onCommand directly in the client
         // and write out the command in the client
@@ -99,29 +126,7 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
                 }));
             },
             onMessage: (message: ChatMessage): void => {
-                const timedMessage: ChatMessageTimed = {
-                    ...message,
-                    isNewMessage: true,
-                    guid: randomGuid(),
-                };
-
-                // stop displaying the message passively after 5 seconds
-                setTimeout(() => {
-                    setMessages((prev) =>
-                        prev.map((msg) =>
-                            msg.guid === timedMessage.guid
-                                ? {
-                                      ...timedMessage,
-                                      isNewMessage: false,
-                                  }
-                                : msg,
-                        ),
-                    );
-                }, 5000);
-
-                setMessages((prev) => {
-                    return [...prev, timedMessage];
-                });
+                addMessage(message);
             },
         };
 
@@ -228,6 +233,7 @@ export function useDogfight({ handleClientCommand }: DogfightCallbacks) {
         setZoom,
         stepZoom,
         handleGameEvents,
+        addMessage,
         setMyPlayerGuid,
         playerGuid,
         messages,

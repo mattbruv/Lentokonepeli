@@ -1165,10 +1165,26 @@
       "value": "Un clan opcional para anteponer a su nombre"
     }
   ],
+  "caIqIm": [
+    {
+      "type": 0,
+      "value": "Siguiendo a"
+    }
+  ],
   "crlI8a": [
     {
       "type": 0,
       "value": "Salmson 2"
+    }
+  ],
+  "cy3xwx": [
+    {
+      "type": 0,
+      "value": "(espectador) "
+    },
+    {
+      "type": 1,
+      "value": "name"
     }
   ],
   "czwMiI": [
@@ -1353,6 +1369,12 @@
     {
       "type": 0,
       "value": "Ajustes"
+    }
+  ],
+  "kimO3N": [
+    {
+      "type": 0,
+      "value": "Ver como espectador"
     }
   ],
   "kp9XuR": [

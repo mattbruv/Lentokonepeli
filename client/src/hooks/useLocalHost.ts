@@ -16,6 +16,7 @@ import { randomGuid } from "../helpers";
 
 type ConnectedPlayer = {
     player_guid: string;
+    spectator: string | null;
     connection: DataConnection;
     lastPing: number | null;
     replayTransfer: boolean;
@@ -64,14 +65,45 @@ export function isLobbyMessage(message: unknown): message is LobbyMessage {
     return type === "LobbyInfo" || type === "Kicked" || type === "WorldReset";
 }
 
+export type SpectatorMessage =
+    | { type: "SpectatorSay"; data: string }
+    | { type: "SpectatorChat"; data: { name: string; message: string } };
+
+export function isSpectatorMessage(message: unknown): message is SpectatorMessage {
+    if (typeof message !== "object" || message === null) return false;
+    const type = (message as { type?: unknown }).type;
+    return type === "SpectatorSay" || type === "SpectatorChat";
+}
+
+export type SpectatorMetadata = { spectator: true; name: string };
+
+export function sanitizeChatText(text: string, maxChars: number): string {
+    const cleaned = [...text]
+        .filter((c) => !/\p{Cc}/u.test(c))
+        .join("")
+        .trim();
+    return [...cleaned].slice(0, maxChars).join("").trimEnd();
+}
+
+function spectatorName(metadata: unknown): string | null {
+    if (typeof metadata !== "object" || metadata === null) return null;
+    const { spectator, name } = metadata as { spectator?: unknown; name?: unknown };
+    if (spectator !== true) return null;
+    const sanitized = typeof name === "string" ? sanitizeChatText(name, MAX_NAME_CHARS) : "";
+    return sanitized || DEFAULT_SPECTATOR_NAME;
+}
+
 export const LOBBY_NAME_MAX_LENGTH = 32;
+export const MAX_NAME_CHARS = 20;
+export const MAX_MESSAGE_CHARS = 200;
+const DEFAULT_SPECTATOR_NAME = "Player";
 export const BOT_WARNING_THRESHOLD = 64;
 export const DIFFICULTIES: BotDifficulty[] = ["Easy", "Medium", "Hard", "Ace"];
 export type BotDifficultyChoice = BotDifficulty | "Random";
 const KICK_CLOSE_DELAY_MS = 500;
 const MAX_GUESTS = 32;
 export const MAX_BOTS = 256;
-const MAX_GUEST_STRING_LENGTH = 256;
+const MAX_GUEST_STRING_LENGTH = 512;
 const MAX_GUEST_BINARY_BYTES = 1024;
 const MAX_GUEST_COMMANDS_PER_SECOND = 60;
 const MAX_GUEST_CHAT_MESSAGES = 5;
@@ -215,10 +247,13 @@ export function useLocalHost(
             }
 
             const PLAYER_GUID = randomGuid();
+            const spectator = spectatorName(conn.metadata);
 
             conn.on("close", () => {
                 dataConnections.current.delete(conn.connectionId);
-                hostInput.current.push({ player_guid: PLAYER_GUID, command: { type: "RemovePlayer" } });
+                if (spectator === null) {
+                    hostInput.current.push({ player_guid: PLAYER_GUID, command: { type: "RemovePlayer" } });
+                }
             });
 
             conn.on("error", (err) => {
@@ -228,6 +263,7 @@ export function useLocalHost(
             conn.on("open", () => {
                 const user: ConnectedPlayer = {
                     player_guid: PLAYER_GUID,
+                    spectator,
                     connection: conn,
                     lastPing: null,
                     replayTransfer: false,
@@ -241,7 +277,7 @@ export function useLocalHost(
                 const lobbyInfo: LobbyMessage = { type: "LobbyInfo", data: { name: lobbyNameRef.current } };
                 if (
                     !safeSend(user, dogfight.engine.get_full_state()) ||
-                    !safeSend(user, JSON.stringify(out)) ||
+                    (spectator === null && !safeSend(user, JSON.stringify(out))) ||
                     !safeSend(user, JSON.stringify(lobbyInfo))
                 ) {
                     return;
@@ -261,7 +297,9 @@ export function useLocalHost(
 
     function dropConnection(user: ConnectedPlayer) {
         dataConnections.current.delete(user.connection.connectionId);
-        hostInput.current.push({ player_guid: user.player_guid, command: { type: "RemovePlayer" } });
+        if (user.spectator === null) {
+            hostInput.current.push({ player_guid: user.player_guid, command: { type: "RemovePlayer" } });
+        }
         try {
             user.connection.close();
         } catch {
@@ -316,9 +354,13 @@ export function useLocalHost(
                 handleReplayRequest(user.connection, user);
             } else if (isPingMessage(message) && message.type === "Pong") {
                 handlePong(user, message.data);
+            } else if (isSpectatorMessage(message) && message.type === "SpectatorSay") {
+                handleSpectatorSay(user, message.data);
             }
             return;
         }
+
+        if (user.spectator !== null) return;
 
         let buffer: Uint8Array;
         if (data instanceof ArrayBuffer) {
@@ -341,7 +383,20 @@ export function useLocalHost(
         guestInput.current.push({ player_guid: user.player_guid, command });
     }
 
+    function handleSpectatorSay(user: ConnectedPlayer, text: unknown) {
+        if (user.spectator === null || typeof text !== "string") return;
+        const message = sanitizeChatText(text, MAX_MESSAGE_CHARS);
+        if (!message || !allowChat(user)) return;
+
+        const chat: SpectatorMessage = { type: "SpectatorChat", data: { name: user.spectator, message } };
+        const payload = JSON.stringify(chat);
+        for (const other of [...dataConnections.current.values()]) {
+            if (other.spectator !== null) safeSend(other, payload);
+        }
+    }
+
     function handlePong(user: ConnectedPlayer, sentAt: unknown) {
+        if (user.spectator !== null) return;
         if (typeof sentAt !== "number" || !Number.isFinite(sentAt)) return;
         const now = performance.now();
         if (sentAt > now || now - sentAt > MAX_PONG_AGE_MS) return;

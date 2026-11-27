@@ -1,17 +1,22 @@
 import { PlayerCommand } from "dogfight-types/PlayerCommand";
 import { ServerOutput } from "dogfight-types/ServerOutput";
 import Peer, { DataConnection } from "peerjs";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { gameLoop } from "../gameLoop";
 import { useDogfight } from "./useDogfight";
 import {
     isLobbyMessage,
     isPingMessage,
     isReplayMessage,
+    isSpectatorMessage,
+    MAX_MESSAGE_CHARS,
     PeerJSPath,
     PingMessage,
     REPLAY_COOLDOWN_MS,
     ReplayMessage,
+    sanitizeChatText,
+    SpectatorMessage,
+    SpectatorMetadata,
 } from "./useLocalHost";
 
 export type ConnectionFailure = "not-found" | "server" | "timeout" | "unsupported" | "unknown";
@@ -46,7 +51,7 @@ function failureFromPeerError(type: string): ConnectionFailure {
     return "unknown";
 }
 
-export function useGuest(myName: string, clan: string) {
+export function useGuest(myName: string, clan: string, spectator: boolean) {
     const peer = useRef<Peer | null>(null);
     const connection = useRef<DataConnection | null>(null);
 
@@ -56,6 +61,8 @@ export function useGuest(myName: string, clan: string) {
     const heartbeatTimer = useRef<ReturnType<typeof setInterval> | null>(null);
     const lastMessageAt = useRef(0);
     const [lobbyName, setLobbyName] = useState("");
+    const [spectating, setSpectatingState] = useState<string | null>(null);
+    const preferredSpectating = useRef<string | null>(null);
 
     const [replayDownload, setReplayDownloadState] = useState<ReplayDownload>({ phase: "idle" });
     const replayDownloadRef = useRef<ReplayDownload>(replayDownload);
@@ -144,6 +151,33 @@ export function useGuest(myName: string, clan: string) {
         gameLoop.start();
     }
 
+    function setSpectating(guid: string | null) {
+        setSpectatingState(guid);
+        dogfight.setMyPlayerGuid(guid, true);
+    }
+
+    const followablePlayers = useMemo(
+        () => dogfight.playerData.filter((p): p is typeof p & { guid: string } => !!p.guid),
+        [dogfight.playerData],
+    );
+
+    function followPlayer(guid: string) {
+        preferredSpectating.current = guid;
+        setSpectating(guid);
+    }
+
+    useEffect(() => {
+        if (!spectator || status.phase !== "ready" || followablePlayers.length === 0) return;
+        const present = (guid: string | null) => guid !== null && followablePlayers.some((p) => p.guid === guid);
+        if (present(preferredSpectating.current)) {
+            if (spectating !== preferredSpectating.current) setSpectating(preferredSpectating.current);
+            return;
+        }
+        if (present(spectating)) return;
+        const next = followablePlayers.find((p) => !p.bot) ?? followablePlayers[0];
+        setSpectating(next.guid);
+    }, [spectator, status.phase, spectating, followablePlayers]);
+
     function sendChatMessage(message: string, global: boolean) {
         if (sendMessageCallback.current) {
             sendMessageCallback.current(message, global);
@@ -228,13 +262,14 @@ export function useGuest(myName: string, clan: string) {
             console.log("Guest:", x);
             setStatus({ phase: "host" }, HOST_TIMEOUT_MS);
 
-            const conn = peer.current!.connect(PeerJSPath(roomId));
+            const metadata: SpectatorMetadata | undefined = spectator ? { spectator: true, name: myName } : undefined;
+            const conn = peer.current!.connect(PeerJSPath(roomId), { metadata });
             connection.current = conn;
 
             let receivedState = false;
             let receivedGuid = false;
             const checkSynced = () => {
-                if (receivedState && receivedGuid && statusRef.current.phase === "syncing") {
+                if (receivedState && (receivedGuid || spectator) && statusRef.current.phase === "syncing") {
                     becomeReady();
                 }
             };
@@ -250,6 +285,20 @@ export function useGuest(myName: string, clan: string) {
 
             conn.on("open", () => {
                 setStatus({ phase: "syncing" }, SYNC_TIMEOUT_MS);
+
+                if (spectator) {
+                    dogfight.setMyPlayerGuid(null, true);
+                    sendMessageCallback.current = (msg) => {
+                        const text = sanitizeChatText(msg, MAX_MESSAGE_CHARS);
+                        if (!text) return;
+                        const say: SpectatorMessage = { type: "SpectatorSay", data: text };
+                        conn.send(JSON.stringify(say));
+                    };
+                }
+
+                conn.on("data", (data) => handleData(data));
+
+                if (spectator) return;
 
                 // We're the guest, so just send the command off to the remote host.
                 clientCommandCallback.current = (command) => {
@@ -267,57 +316,72 @@ export function useGuest(myName: string, clan: string) {
 
                 const cmd = dogfight.engine.player_command_to_binary(JSON.stringify(command));
                 conn.send(cmd);
+            });
 
-                conn.on("data", (data) => {
-                    lastMessageAt.current = performance.now();
+            function handleData(data: unknown) {
+                lastMessageAt.current = performance.now();
 
-                    if (isReplayMessage(data)) {
-                        handleReplayMessage(data);
+                if (isReplayMessage(data)) {
+                    handleReplayMessage(data);
+                    return;
+                }
+
+                if (typeof data === "string") {
+                    const parsed: unknown = JSON.parse(data);
+                    if (isReplayMessage(parsed)) {
+                        handleReplayMessage(parsed);
                         return;
                     }
-
-                    if (typeof data === "string") {
-                        const parsed: unknown = JSON.parse(data);
-                        if (isReplayMessage(parsed)) {
-                            handleReplayMessage(parsed);
-                            return;
+                    if (isLobbyMessage(parsed)) {
+                        if (parsed.type === "LobbyInfo") {
+                            setLobbyName(parsed.data.name);
+                        } else if (parsed.type === "WorldReset") {
+                            dogfight.clearEntities();
+                        } else {
+                            setStatus({ phase: "kicked" });
                         }
-                        if (isLobbyMessage(parsed)) {
-                            if (parsed.type === "LobbyInfo") {
-                                setLobbyName(parsed.data.name);
-                            } else if (parsed.type === "WorldReset") {
-                                dogfight.clearEntities();
-                            } else {
-                                setStatus({ phase: "kicked" });
-                            }
-                            return;
+                        return;
+                    }
+                    if (isSpectatorMessage(parsed)) {
+                        if (spectator && parsed.type === "SpectatorChat") {
+                            dogfight.addMessage(
+                                {
+                                    sender_name: parsed.data.name,
+                                    team: null,
+                                    private: false,
+                                    message: parsed.data.message,
+                                },
+                                true,
+                            );
                         }
-                        if (isPingMessage(parsed)) {
-                            if (parsed.type === "Ping") {
-                                const pong: PingMessage = { type: "Pong", data: parsed.data };
-                                conn.send(JSON.stringify(pong));
-                            }
-                            return;
+                        return;
+                    }
+                    if (isPingMessage(parsed)) {
+                        if (parsed.type === "Ping") {
+                            const pong: PingMessage = { type: "Pong", data: parsed.data };
+                            conn.send(JSON.stringify(pong));
                         }
-                        const output = parsed as ServerOutput;
-                        dogfight.handleGameEvents([output]);
-                        if (output.type === "YourPlayerGuid") {
-                            dogfight.setMyPlayerGuid(output.data, false);
-                            receivedGuid = true;
-                            checkSynced();
-                        }
-                    } else {
-                        // The type coming in is an ArrayBuffer, need to make it a Uint8Array for
-                        // the WASM bridge -> Rust to receive the right type and for it to work.
-                        const buffer = new Uint8Array(data as ArrayBuffer);
-                        const events_json = dogfight.engine.game_events_from_binary(buffer);
-                        const events = JSON.parse(events_json) as ServerOutput[];
-                        dogfight.handleGameEvents(events);
-                        receivedState = true;
+                        return;
+                    }
+                    const output = parsed as ServerOutput;
+                    if (spectator && output.type === "YourPlayerGuid") return;
+                    dogfight.handleGameEvents([output]);
+                    if (output.type === "YourPlayerGuid") {
+                        dogfight.setMyPlayerGuid(output.data, false);
+                        receivedGuid = true;
                         checkSynced();
                     }
-                });
-            });
+                } else {
+                    // The type coming in is an ArrayBuffer, need to make it a Uint8Array for
+                    // the WASM bridge -> Rust to receive the right type and for it to work.
+                    const buffer = new Uint8Array(data as ArrayBuffer);
+                    const events_json = dogfight.engine.game_events_from_binary(buffer);
+                    const events = JSON.parse(events_json) as ServerOutput[];
+                    dogfight.handleGameEvents(events);
+                    receivedState = true;
+                    checkSynced();
+                }
+            }
         });
     }
 
@@ -338,6 +402,9 @@ export function useGuest(myName: string, clan: string) {
         replayDownload,
         lobbyName,
         status,
+        spectating,
+        followPlayer,
+        followablePlayers,
         playerData: dogfight.playerData,
         intermission: dogfight.intermission,
         playerGuid: dogfight.playerGuid,

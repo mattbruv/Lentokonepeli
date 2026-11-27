@@ -675,9 +675,17 @@
     "defaultMessage": "An optional clan to prefix to your name",
     "description": "Tooltip for the clan setting section"
   },
+  "caIqIm": {
+    "defaultMessage": "Following",
+    "description": "Label for the player picker while spectating a game"
+  },
   "crlI8a": {
     "defaultMessage": "Salmson 2",
     "description": "Name of the Salmson 2 aircraft"
+  },
+  "cy3xwx": {
+    "defaultMessage": "(spectator) {name}",
+    "description": "Chat line prefix for messages sent by spectators, followed by their name"
   },
   "czwMiI": {
     "defaultMessage": "Hit enemy",
@@ -786,6 +794,10 @@
   "kfnjH9": {
     "defaultMessage": "Settings",
     "description": "Sidebar link description for the Settings page"
+  },
+  "kimO3N": {
+    "defaultMessage": "Spectate Game",
+    "description": "Button that joins an existing game as a spectator without playing"
   },
   "kp9XuR": {
     "defaultMessage": "Pilot",

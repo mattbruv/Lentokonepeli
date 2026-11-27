@@ -15,6 +15,7 @@ export enum ChatMode {
 export interface ChatMessageTimed extends ChatMessage {
     guid: string;
     isNewMessage: boolean;
+    spectator?: boolean;
 }
 
 export interface ChatGlobalProps {
@@ -107,8 +108,18 @@ export function Chat({ messages, onSendMessage, myTeam }: ChatLocalProps) {
                 )}
                 <Box mt={"auto"} className="all-messages">
                     {renderMessages.map((msg) => {
-                        const msgClass = (!msg.private ? "global" : "private") + " message";
-                        const output = msg.sender_name ? msg.sender_name + ": " + msg.message : msg.message;
+                        const msgClass = (msg.spectator || msg.private ? "private" : "global") + " message";
+                        const sender = msg.spectator
+                            ? intl.formatMessage(
+                                  {
+                                      defaultMessage: "(spectator) {name}",
+                                      description:
+                                          "Chat line prefix for messages sent by spectators, followed by their name",
+                                  },
+                                  { name: msg.sender_name ?? "" },
+                              )
+                            : msg.sender_name;
+                        const output = sender ? sender + ": " + msg.message : msg.message;
                         return (
                             <div className={msgClass} key={msg.guid}>
                                 {output.trim()}
